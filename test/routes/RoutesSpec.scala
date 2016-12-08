@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package connectors
+package routes
 
+import org.scalatest._
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
-import play.api.mvc._
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
-import scala.concurrent.Future
+class RoutesSpec extends UnitSpec with WithFakeApplication with Matchers {
 
-
-object HelloWorld extends HelloWorld
-
-trait HelloWorld extends FrontendController {
-  val helloWorld = Action.async { implicit request =>
-		Future.successful(Ok(views.html.helloworld.hello_world()))
+  "The URL for the HelloWorld.helloWorld action" should {
+    "be equal to /income-tax-subscription-frontend/hello-world" in {
+      controllers.routes.HelloWorldController.helloWorld().url shouldEqual "/income-tax-subscription-frontend/hello-world"
+    }
   }
 }

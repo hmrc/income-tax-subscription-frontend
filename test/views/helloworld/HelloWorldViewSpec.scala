@@ -14,39 +14,28 @@
  * limitations under the License.
  */
 
-package controllers
+package views.helloworld
 
-import akka.actor._
-import akka.stream._
 import assets.MessageLookup
-import play.api.http.Status
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import org.jsoup.Jsoup
+import play.api.i18n.Messages.Implicits._
+import play.api.test.FakeRequest
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import play.api.Play.current
 
+class HelloWorldViewSpec extends UnitSpec with WithFakeApplication {
 
-class HelloWorldControllerSpec extends UnitSpec with WithFakeApplication{
+  lazy val page = views.html.helloworld.hello_world()(FakeRequest(), applicationMessages)
+  lazy val document = Jsoup.parse(page.body)
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
-
-  "Calling the helloWorld action of the HelloWorldController" should {
-
-    lazy val result = HelloWorldController.helloWorld(FakeRequest())
-    lazy val document = Jsoup.parse(bodyOf(result))
-
-    "return 200" in {
-      status(result) shouldBe Status.OK
-    }
-
-    "return HTML" in {
-      contentType(result) shouldBe Some("text/html")
-      charset(result) shouldBe Some("utf-8")
-    }
+  "The Hello World view" should {
 
     s"have the title '${MessageLookup.HelloWorld.title}'" in {
       document.title() shouldBe MessageLookup.HelloWorld.title
+    }
+
+    s"have the heading (H1) '${MessageLookup.HelloWorld.heading}'" in {
+      document.getElementsByTag("H1").text() shouldBe MessageLookup.HelloWorld.heading
     }
   }
 }

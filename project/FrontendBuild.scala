@@ -49,6 +49,7 @@ private object AppDependencies {
         "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
         "org.pegdown" % "pegdown" % pegdownVersion % scope,
+        "org.scalatestplus" %% "play" % "1.2.0" % scope,
         "org.jsoup" % "jsoup" % "1.8.1" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
       )
