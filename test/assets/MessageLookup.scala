@@ -23,4 +23,9 @@ object MessageLookup {
     val heading = "Hello from income-tax-subscription-frontend !"
   }
 
+  object timeout {
+    val title = "Session timeout"
+    val heading = "Your session has timed out."
+  }
+
 }
