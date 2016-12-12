@@ -25,7 +25,7 @@ import play.api.Play.current
 
 class HelloWorldViewSpec extends UnitSpec with WithFakeApplication {
 
-  lazy val page = views.html.hello_world()(FakeRequest(), applicationMessages)
+  lazy val page = views.html.helloworld.hello_world()(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
   "The Hello World view" should {

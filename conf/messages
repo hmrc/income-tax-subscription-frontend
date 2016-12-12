@@ -1,0 +1,4 @@
+## Timeout page ##
+timeout.title=Session closed due to inactivity
+timeout.heading=You''ve been signed out due to inactivity.
+timeout.returnToHome=You can start again from the <a href="{0}">subscription</a> page.

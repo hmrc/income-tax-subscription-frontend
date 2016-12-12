@@ -1,5 +1,7 @@
-@()(implicit request: Request[_], messages: Messages))
+@()(implicit request: Request[_], messages: Messages)
 
-@views.html.main_template(title = "Session timeout", bodyClasses = None) {
-    <h1>Your session has timed out.</h1>
+@views.html.main_template(title = Messages("timeout.title"), bodyClasses = None) {
+    <h1>@Messages("timeout.heading")</h1>
+
+    <p>@Html(Messages("timeout.returnToHome", controllers.routes.HelloWorldController.helloWorld().url))</p>
 }
