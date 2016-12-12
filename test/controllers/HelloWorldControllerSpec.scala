@@ -20,6 +20,7 @@ import akka.actor._
 import akka.stream._
 import assets.MessageLookup
 import auth._
+import config.{FrontendAppConfig, FrontendAuthConnector}
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -37,6 +38,18 @@ class HelloWorldControllerSpec extends UnitSpec with WithFakeApplication {
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
+
+  "The HelloWorld controller" should {
+    "use the correct applicationConfig" in {
+      HelloWorldController.applicationConfig shouldBe FrontendAppConfig
+    }
+    "use the correct authConnector" in {
+      HelloWorldController.authConnector shouldBe FrontendAuthConnector
+    }
+    "use the correct postSignInRedirectUrl" in {
+      HelloWorldController.postSignInRedirectUrl shouldBe FrontendAppConfig.ggSignInContinueUrl
+    }
+  }
 
   "Calling the helloWorld action of the HelloWorldController with an authorised user" should {
 
