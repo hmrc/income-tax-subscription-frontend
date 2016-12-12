@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package controllers
+package auth
 
-import auth.AuthorisedForIncomeTaxSA
-import config.{FrontendAppConfig, FrontendAuthConnector}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import scala.concurrent.Future
 
-object HelloWorldController extends HelloWorldController {
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
+object AuthTestController extends AuthTestController {
+  override lazy val applicationConfig = mockConfig
+  override lazy val authConnector = mockAuthConnector
+  override lazy val postSignInRedirectUrl = controllers.routes.HelloWorldController.helloWorld().url
 }
 
-trait HelloWorldController extends FrontendController with AuthorisedForIncomeTaxSA  {
-  val helloWorld = Authorised.async { implicit user => implicit request =>
-		Future.successful(Ok(views.html.helloworld.hello_world()))
+trait AuthTestController extends FrontendController with AuthorisedForIncomeTaxSA {
+
+  val authorisedAsyncAction = Authorised.async {
+    implicit user =>  implicit request => Future.successful(Ok(views.html.helloworld.hello_world()))
   }
+
+  val authorisedAction = Authorised {
+    implicit user =>  implicit request => Ok(views.html.helloworld.hello_world())
+  }
+
 }

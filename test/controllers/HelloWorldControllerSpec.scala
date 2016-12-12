@@ -19,6 +19,7 @@ package controllers
 import akka.actor._
 import akka.stream._
 import assets.MessageLookup
+import auth._
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -26,14 +27,20 @@ import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import org.jsoup.Jsoup
 
 
-class HelloWorldControllerSpec extends UnitSpec with WithFakeApplication{
+class HelloWorldControllerSpec extends UnitSpec with WithFakeApplication {
+
+  object HelloWorldTestController extends HelloWorldController {
+    override lazy val applicationConfig = MockConfig
+    override lazy val authConnector = MockAuthConnector
+    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
+  }
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
 
-  "Calling the helloWorld action of the HelloWorldController" should {
+  "Calling the helloWorld action of the HelloWorldController with an authorised user" should {
 
-    lazy val result = HelloWorldController.helloWorld(FakeRequest())
+    lazy val result = HelloWorldTestController.helloWorld(authenticatedFakeRequest())
     lazy val document = Jsoup.parse(bodyOf(result))
 
     "return 200" in {
@@ -47,6 +54,16 @@ class HelloWorldControllerSpec extends UnitSpec with WithFakeApplication{
 
     s"have the title '${MessageLookup.HelloWorld.title}'" in {
       document.title() shouldBe MessageLookup.HelloWorld.title
+    }
+  }
+
+  "Calling the helloWorld action of the HelloWorldController with an unauthorised user" should {
+
+    lazy val result = HelloWorldTestController.helloWorld(FakeRequest())
+    lazy val document = Jsoup.parse(bodyOf(result))
+
+    "return 303" in {
+      status(result) shouldBe Status.SEE_OTHER
     }
   }
 }
