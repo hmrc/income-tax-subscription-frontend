@@ -35,18 +35,18 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
+  private val contactHost = loadConfig(s"contact-frontend.host")
   private val contactFormServiceIdentifier = "MyService"
 
-  override lazy val analyticsToken = loadConfig(s"google-analytics.token")
-  override lazy val analyticsHost = loadConfig(s"google-analytics.host")
-  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override val analyticsToken = loadConfig("google-analytics.token")
+  override val analyticsHost = loadConfig("google-analytics.host")
+  override val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
-  override val ivUpliftUrl = configuration.getString(s"identity-verification.uplift.url").getOrElse("")
-  override val ggSignInUrl = configuration.getString(s"government-gateway-sign-in.url").getOrElse("")
-  override val twoFactorUrl = configuration.getString(s"two-factor.url").getOrElse("")
-  override val notAuthorisedRedirectUrl = configuration.getString(s"not-authorised-callback.url").getOrElse("")
-  override val ggSignInContinueUrl = configuration.getString("government-gateway-sign-in.continue.url").getOrElse("")
+  override val ivUpliftUrl = loadConfig("identity-verification.uplift.url")
+  override val ggSignInUrl = loadConfig("government-gateway.sign-in.url")
+  override val twoFactorUrl = loadConfig("two-factor.url")
+  override val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
+  override val ggSignInContinueUrl = loadConfig("government-gateway.continue.url")
 
 }
