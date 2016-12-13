@@ -26,4 +26,9 @@ class RoutesSpec extends UnitSpec with WithFakeApplication with Matchers {
       controllers.routes.HelloWorldController.helloWorld().url shouldEqual "/income-tax-subscription-frontend/hello-world"
     }
   }
+  "The URL for the timeout.timeout action" should {
+    "be equal to /income-tax-subscription-frontend/session-timeout" in {
+      controllers.routes.SessionTimeoutController.timeout().url shouldEqual "/income-tax-subscription-frontend/session-timeout"
+    }
+  }
 }
