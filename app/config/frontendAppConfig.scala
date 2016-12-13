@@ -25,7 +25,6 @@ trait AppConfig {
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
   val notAuthorisedRedirectUrl: String
-  val ivRegisterUrl: String
   val ivUpliftUrl: String
   val twoFactorUrl: String
   val ggSignInUrl: String
@@ -44,7 +43,6 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
-  override val ivRegisterUrl = configuration.getString(s"identity-verification.registration.url").getOrElse("")
   override val ivUpliftUrl = configuration.getString(s"identity-verification.uplift.url").getOrElse("")
   override val ggSignInUrl = configuration.getString(s"government-gateway-sign-in.url").getOrElse("")
   override val twoFactorUrl = configuration.getString(s"two-factor.url").getOrElse("")

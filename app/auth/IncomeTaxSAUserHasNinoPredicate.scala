@@ -24,12 +24,12 @@ import uk.gov.hmrc.play.frontend.auth._
 
 import scala.concurrent.Future
 
-class IncomeTaxSAUserHasNinoPredicate(ivRegisterURI: URI) extends PageVisibilityPredicate {
+class IncomeTaxSAUserHasNinoPredicate(ivUpliftURI: URI) extends PageVisibilityPredicate {
   override def apply(authContext: AuthContext, request: Request[AnyContent]): Future[PageVisibilityResult] =
     Future.successful(authContext.principal.accounts.paye match {
       case Some(x) => PageIsVisible
-      case _ => PageBlocked(ivRegister)
+      case _ => PageBlocked(ivUplift)
   })
 
-  private val ivRegister = Future.successful(Redirect(ivRegisterURI.toString))
+  private val ivUplift = Future.successful(Redirect(ivUpliftURI.toString))
 }

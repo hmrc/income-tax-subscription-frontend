@@ -23,22 +23,15 @@ import uk.gov.hmrc.play.frontend.auth.{CompositePageVisibilityPredicate, PageVis
 class IncomeTaxSACompositePageVisibilityPredicate(postSignInRedirectUrl: String,
                                                   notAuthorisedRedirectUrl: String,
                                                   ivUpliftUrl: String,
-                                                  ivRegisterUrl: String,
                                                   twoFactorUrl: String) extends CompositePageVisibilityPredicate {
   override def children: Seq[PageVisibilityPredicate] = Seq (
     new IncomeTaxSAStrongCredentialPredicate(twoFactorURI),
-    new IncomeTaxSAUserHasNinoPredicate(ivRegisterUri),
+    new IncomeTaxSAUserHasNinoPredicate(ivUpliftURI),
     new UpliftingIdentityConfidencePredicate(L200, ivUpliftURI)
   )
 
   private val ivUpliftURI: URI =
     new URI(s"$ivUpliftUrl?origin=SABR&" +
-      s"completionURL=${URLEncoder.encode(postSignInRedirectUrl, "UTF-8")}&" +
-      s"failureURL=${URLEncoder.encode(notAuthorisedRedirectUrl, "UTF-8")}" +
-      s"&confidenceLevel=200")
-
-  private val ivRegisterUri: URI =
-    new URI(s"$ivRegisterUrl?origin=SABR&" +
       s"completionURL=${URLEncoder.encode(postSignInRedirectUrl, "UTF-8")}&" +
       s"failureURL=${URLEncoder.encode(notAuthorisedRedirectUrl, "UTF-8")}" +
       s"&confidenceLevel=200")

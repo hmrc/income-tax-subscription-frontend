@@ -35,12 +35,6 @@ package object auth {
   val authorisedUserAccounts = domain.Accounts(paye = Some(domain.PayeAccount(link = "/paye/abc", nino = Nino(nino))))
   val noAuthorisedUserAccounts = domain.Accounts(paye = None)
 
-  val ivRegisterURI: URI =
-    new URI(s"${mockConfig.ivRegisterUrl}?origin=SABR&" +
-      s"completionURL=${URLEncoder.encode("/income-tax-subscription-frontend/hello-world", "UTF-8")}&" +
-      s"failureURL=${URLEncoder.encode(mockConfig.notAuthorisedRedirectUrl, "UTF-8")}" +
-      s"&confidenceLevel=200")
-
   val ivUpliftURI: URI =
     new URI(s"${mockConfig.ivUpliftUrl}?origin=SABR&" +
       s"completionURL=${URLEncoder.encode("/income-tax-subscription-frontend/hello-world", "UTF-8")}&" +

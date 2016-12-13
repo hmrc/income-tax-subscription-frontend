@@ -41,7 +41,6 @@ trait AuthorisedForIncomeTaxSA extends Actions {
     postSignInRedirectUrl,
     applicationConfig.notAuthorisedRedirectUrl,
     applicationConfig.ivUpliftUrl,
-    applicationConfig.ivRegisterUrl,
     applicationConfig.twoFactorUrl
   )
 

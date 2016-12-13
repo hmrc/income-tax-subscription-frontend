@@ -54,7 +54,7 @@ class AuthorisedForIncomeTaxSASpec extends UnitSpec with WithFakeApplication {
     }
 
     "redirect to the IV uplift journey" in {
-      redirectLocation(result) shouldBe Some(ivRegisterURI.toString)
+      redirectLocation(result) shouldBe Some(ivUpliftURI.toString)
     }
   }
 

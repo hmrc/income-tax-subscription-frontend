@@ -26,7 +26,6 @@ class IncomeTaxSACompositePageVisibilityPredicateSpec extends UnitSpec with With
         mockConfig.ggSignInContinueUrl,
         mockConfig.notAuthorisedRedirectUrl,
         mockConfig.ivUpliftUrl,
-        mockConfig.ivRegisterUrl,
         mockConfig.twoFactorUrl)
       val authContext = ggUser.userCL500Context
       val result = predicate(authContext, fakeRequest)
@@ -41,7 +40,6 @@ class IncomeTaxSACompositePageVisibilityPredicateSpec extends UnitSpec with With
         mockConfig.ggSignInContinueUrl,
         mockConfig.notAuthorisedRedirectUrl,
         mockConfig.ivUpliftUrl,
-        mockConfig.ivRegisterUrl,
         mockConfig.twoFactorUrl)
       val authContext = ggUser.userCL200Context
       val result = predicate(authContext, fakeRequest)
@@ -56,7 +54,6 @@ class IncomeTaxSACompositePageVisibilityPredicateSpec extends UnitSpec with With
         mockConfig.ggSignInContinueUrl,
         mockConfig.notAuthorisedRedirectUrl,
         mockConfig.ivUpliftUrl,
-        mockConfig.ivRegisterUrl,
         mockConfig.twoFactorUrl)
       val authContext = ggUser.weakStrengthUserContext
       val result = predicate(authContext, fakeRequest)
@@ -71,7 +68,6 @@ class IncomeTaxSACompositePageVisibilityPredicateSpec extends UnitSpec with With
         mockConfig.ggSignInContinueUrl,
         mockConfig.notAuthorisedRedirectUrl,
         mockConfig.ivUpliftUrl,
-        mockConfig.ivRegisterUrl,
         mockConfig.twoFactorUrl)
       val authContext = ggUser.userCL100Context
       val result = predicate(authContext, fakeRequest)
@@ -86,7 +82,6 @@ class IncomeTaxSACompositePageVisibilityPredicateSpec extends UnitSpec with With
         mockConfig.ggSignInContinueUrl,
         mockConfig.notAuthorisedRedirectUrl,
         mockConfig.ivUpliftUrl,
-        mockConfig.ivRegisterUrl,
         mockConfig.twoFactorUrl)
       val authContext = ggUser.userCL50Context
       val result = predicate(authContext, fakeRequest)
@@ -101,7 +96,6 @@ class IncomeTaxSACompositePageVisibilityPredicateSpec extends UnitSpec with With
         mockConfig.ggSignInContinueUrl,
         mockConfig.notAuthorisedRedirectUrl,
         mockConfig.ivUpliftUrl,
-        mockConfig.ivRegisterUrl,
         mockConfig.twoFactorUrl)
       val authContext = ggUser.userCL200NoAccountsContext
       val result = predicate(authContext, fakeRequest)
