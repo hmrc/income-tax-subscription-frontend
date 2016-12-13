@@ -12,6 +12,7 @@
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
 @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
+@import views.html.helpers.phaseBanner
 
 @head = {
     @uiLayouts.head(
@@ -49,7 +50,7 @@
 
 @serviceInfo = {
     @uiLayouts.serviceInfo(
-      betaBanner = HtmlFormat.empty,
+      betaBanner = phaseBanner("BETA"),
       includeGridWrapper = false,
       serviceInfoContent = Some(serviceInfoContent))
 }
