@@ -20,6 +20,7 @@ import play.api.http.Status
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import play.api.test.FakeRequest
 
 class AuthorisedForIncomeTaxSASpec extends UnitSpec with WithFakeApplication {
 
@@ -96,10 +97,9 @@ class AuthorisedForIncomeTaxSASpec extends UnitSpec with WithFakeApplication {
     }
   }
 
-  // Ignored until answers around how to test this
-  "Calling authenticated action with a timed out user session" ignore {
+  "Calling authenticated action with a timed out user session" should {
 
-    lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockWeakUserId))
+    lazy val result = AuthTestController.authorisedAsyncAction(timeoutFakeRequest())
 
     "result in a redirect status" in {
       status(result) shouldBe Status.SEE_OTHER
