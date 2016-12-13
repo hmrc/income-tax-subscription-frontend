@@ -28,13 +28,7 @@ object AuthTestController extends AuthTestController {
 }
 
 trait AuthTestController extends FrontendController with AuthorisedForIncomeTaxSA {
-
   val authorisedAsyncAction = Authorised.async {
     implicit user =>  implicit request => Future.successful(Ok(views.html.helloworld.hello_world()))
   }
-
-  val authorisedAction = Authorised {
-    implicit user =>  implicit request => Ok(views.html.helloworld.hello_world())
-  }
-
 }

@@ -1,0 +1,11 @@
+@()(implicit request: Request[_], messages: Messages)
+
+@views.html.main_template(title = Messages("lockedOut.title")) {
+
+    <h1 class="heading-large">@Messages("lockedOut.pageHeading")</h1>
+
+    <p>@Messages("lockedOut.paraOne")</p>
+
+    @Html(Messages("lockedOut.paraTwo", "TODO"))
+
+}

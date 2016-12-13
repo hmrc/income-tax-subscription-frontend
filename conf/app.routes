@@ -2,3 +2,4 @@
 
 GET        /hello-world        controllers.HelloWorldController.helloWorld
 GET        /session-timeout    controllers.SessionTimeoutController.timeout
+GET        /not-authorised     controllers.UnauthorisedController.showNotAuthorised(journeyId: Option[String])

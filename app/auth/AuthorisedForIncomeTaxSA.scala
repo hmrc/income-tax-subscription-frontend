@@ -33,7 +33,9 @@ trait AuthorisedForIncomeTaxSA extends Actions {
   private type AsyncPlayRequest = Request[AnyContent] => Future[Result]
   private type AsyncUserRequest = IncomeTaxSAUser => AsyncPlayRequest
 
+  // $COVERAGE-OFF$
   implicit private def hc(implicit request: Request[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
+  // $COVERAGE-ON$
 
   lazy val visibilityPredicate = new IncomeTaxSACompositePageVisibilityPredicate(
     postSignInRedirectUrl,
@@ -52,8 +54,6 @@ trait AuthorisedForIncomeTaxSA extends Actions {
           action(IncomeTaxSAUser(authContext))(request)
       }
     }
-
-    def apply(action: UserRequest): Action[AnyContent] = async(user => request => Future.successful(action(user)(request)))
   }
 
   trait IncomeTaxSARegime extends TaxRegime {

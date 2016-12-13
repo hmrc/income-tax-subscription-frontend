@@ -48,7 +48,7 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override val ivUpliftUrl = configuration.getString(s"identity-verification.uplift.url").getOrElse("")
   override val ggSignInUrl = configuration.getString(s"government-gateway-sign-in.url").getOrElse("")
   override val twoFactorUrl = configuration.getString(s"two-factor.url").getOrElse("")
-  override val notAuthorisedRedirectUrl = configuration.getString(s"two-factor.host").getOrElse("")
+  override val notAuthorisedRedirectUrl = configuration.getString(s"not-authorised-callback.url").getOrElse("")
   override val ggSignInContinueUrl = configuration.getString("government-gateway-sign-in.continue.url").getOrElse("")
 
 }
