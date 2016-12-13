@@ -95,4 +95,18 @@ class AuthorisedForIncomeTaxSASpec extends UnitSpec with WithFakeApplication {
       redirectLocation(result) shouldBe Some(twoFactorURI.toString)
     }
   }
+
+  // Ignored until answers around how to test this
+  "Calling authenticated action with a timed out user session" ignore {
+
+    lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockWeakUserId))
+
+    "result in a redirect status" in {
+      status(result) shouldBe Status.SEE_OTHER
+    }
+
+    "redirect to the Session Timeout Page" in {
+      redirectLocation(result) shouldBe Some(controllers.routes.SessionTimeoutController.timeout().url)
+    }
+  }
 }

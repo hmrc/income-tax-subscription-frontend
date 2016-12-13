@@ -19,6 +19,7 @@ package auth
 import play.api.mvc._
 import uk.gov.hmrc.play.frontend.auth.GovernmentGateway
 import scala.concurrent.Future
+import play.api.mvc.Results.Redirect
 
 class GovernmentGatewayProvider(postSignInRedirectUrl: String, loginUrl: String) extends GovernmentGateway {
   override def handleSessionTimeout(implicit request: Request[_]): Future[FailureResult] = GovernmentGatewayProvider.handleSessionTimeout(request)
@@ -27,6 +28,7 @@ class GovernmentGatewayProvider(postSignInRedirectUrl: String, loginUrl: String)
 }
 
 object GovernmentGatewayProvider {
-  def handleSessionTimeout(implicit request: Request[_]): Future[Result] = Future.successful(???) //Needs timeout redirect
+  def handleSessionTimeout(implicit request: Request[_]): Future[Result] =
+    Future.successful(Redirect(controllers.routes.SessionTimeoutController.timeout().url))
 }
 

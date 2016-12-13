@@ -67,12 +67,14 @@ package object auth {
   val mockUpliftUserIdCL100 = UserIdBuilder("mockUpliftUserIdCL100")
   val mockUpliftUserIdCL50 = UserIdBuilder("mockUpliftUserIdCL50")
   val mockWeakUserId = UserIdBuilder("mockWeakUserId")
+  val mockTimeout = UserIdBuilder("mockTimeout")
 
   object ggUser {
 
     // scalastyle:off
     val loggedInAt = Some(new DateTime(2015, 11, 22, 11, 33, 15, 234, DateTimeZone.UTC))
     val previouslyLoggedInAt = Some(new DateTime(2014, 8, 3, 9, 25, 44, 342, DateTimeZone.UTC))
+    val timedOutCreds = Some(new DateTime(2015, 11, 22, 11, 33, 15, 234, DateTimeZone.UTC))
     // scalastyle:on
 
     val userCL500: Authority =

@@ -20,6 +20,21 @@ import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class IncomeTaxSACompositePageVisibilityPredicateSpec extends UnitSpec with WithFakeApplication {
 
+  "Calling IncomeTaxSACompositePageVisibilityPredicate with an auth context that has strong credentials and CL500 confidence" should {
+    "result in page is visible" in {
+      val predicate = new IncomeTaxSACompositePageVisibilityPredicate(
+        mockConfig.ggSignInContinueUrl,
+        mockConfig.notAuthorisedRedirectUrl,
+        mockConfig.ivUpliftUrl,
+        mockConfig.ivRegisterUrl,
+        mockConfig.twoFactorUrl)
+      val authContext = ggUser.userCL500Context
+      val result = predicate(authContext, fakeRequest)
+      val pageVisibility = await(result)
+      pageVisibility.isVisible shouldBe true
+    }
+  }
+
   "Calling IncomeTaxSACompositePageVisibilityPredicate with an auth context that has strong credentials and CL200 confidence" should {
     "result in page is visible" in {
       val predicate = new IncomeTaxSACompositePageVisibilityPredicate(
@@ -50,6 +65,21 @@ class IncomeTaxSACompositePageVisibilityPredicateSpec extends UnitSpec with With
     }
   }
 
+  "Calling IncomeTaxSACompositePageVisibilityPredicate with an auth context that has strong credentials and CL100 confidence" should {
+    "result in page is not visible" in {
+      val predicate = new IncomeTaxSACompositePageVisibilityPredicate(
+        mockConfig.ggSignInContinueUrl,
+        mockConfig.notAuthorisedRedirectUrl,
+        mockConfig.ivUpliftUrl,
+        mockConfig.ivRegisterUrl,
+        mockConfig.twoFactorUrl)
+      val authContext = ggUser.userCL100Context
+      val result = predicate(authContext, fakeRequest)
+      val pageVisibility = await(result)
+      pageVisibility.isVisible shouldBe false
+    }
+  }
+
   "Calling IncomeTaxSACompositePageVisibilityPredicate with an auth context that has strong credentials and CL50 confidence" should {
     "result in page is not visible" in {
       val predicate = new IncomeTaxSACompositePageVisibilityPredicate(
@@ -59,6 +89,21 @@ class IncomeTaxSACompositePageVisibilityPredicateSpec extends UnitSpec with With
         mockConfig.ivRegisterUrl,
         mockConfig.twoFactorUrl)
       val authContext = ggUser.userCL50Context
+      val result = predicate(authContext, fakeRequest)
+      val pageVisibility = await(result)
+      pageVisibility.isVisible shouldBe false
+    }
+  }
+
+  "Calling IncomeTaxSACompositePageVisibilityPredicate with an auth context that has no NINO on the Auth Profile" should {
+    "result in page is not visible" in {
+      val predicate = new IncomeTaxSACompositePageVisibilityPredicate(
+        mockConfig.ggSignInContinueUrl,
+        mockConfig.notAuthorisedRedirectUrl,
+        mockConfig.ivUpliftUrl,
+        mockConfig.ivRegisterUrl,
+        mockConfig.twoFactorUrl)
+      val authContext = ggUser.userCL200NoAccountsContext
       val result = predicate(authContext, fakeRequest)
       val pageVisibility = await(result)
       pageVisibility.isVisible shouldBe false

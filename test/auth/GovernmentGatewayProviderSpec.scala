@@ -16,10 +16,10 @@
 
 package auth
 
-import java.net.URLEncoder
 import play.api.http.Status
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import play.api.test.Helpers._
 
 class GovernmentGatewayProviderSpec extends UnitSpec with WithFakeApplication {
 
@@ -38,8 +38,12 @@ class GovernmentGatewayProviderSpec extends UnitSpec with WithFakeApplication {
   }
 
   "Government Gateway Provider" should {
-    "handle a session timeout with a redirect" ignore {
+    "handle a session timeout with a redirect" in {
       status(ggw.handleSessionTimeout(FakeRequest())) shouldBe Status.SEE_OTHER
+    }
+
+    "have a redirect location to the session timeout controller route" in {
+      redirectLocation(ggw.handleSessionTimeout(FakeRequest())) shouldBe Some(controllers.routes.SessionTimeoutController.timeout().url)
     }
   }
 }
