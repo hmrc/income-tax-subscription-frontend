@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.helloworld
+package views
 
 import assets.MessageLookup
 import org.jsoup.Jsoup
@@ -23,19 +23,19 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import play.api.Play.current
 
-class HelloWorldViewSpec extends UnitSpec with WithFakeApplication {
+class SessionTimeoutViewSpec extends UnitSpec with WithFakeApplication {
 
-  lazy val page = views.html.helloworld.hello_world()(FakeRequest(), applicationMessages)
+  lazy val page = views.html.timeout.timeout()(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
-  "The Hello World view" should {
+  "The Session timeout view" should {
 
-    s"have the title '${MessageLookup.HelloWorld.title}'" in {
-      document.title() shouldBe MessageLookup.HelloWorld.title
+    s"have the title '${MessageLookup.timeout.title}'" in {
+      document.title() shouldBe MessageLookup.timeout.title
     }
 
-    s"have the heading (H1) '${MessageLookup.HelloWorld.heading}'" in {
-      document.getElementsByTag("H1").text() shouldBe MessageLookup.HelloWorld.heading
+    s"have the heading (H1) '${MessageLookup.timeout.heading}'" in {
+      document.getElementsByTag("H1").text() shouldBe MessageLookup.timeout.heading
     }
   }
 }

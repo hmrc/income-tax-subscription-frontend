@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package assets
+package controllers
 
-object MessageLookup {
+import play.api.mvc._
+import uk.gov.hmrc.play.frontend.controller.FrontendController
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
-  object HelloWorld {
-    val title = "Hello from income-tax-subscription-frontend"
-    val heading = "Hello from income-tax-subscription-frontend !"
-  }
+import scala.concurrent.Future
 
-  object timeout {
-    val title = "Session closed due to inactivity"
-    val heading = "You've been signed out due to inactivity."
-    val returnToHome = "You can start again from the <a href=\"{0}\" rel=\"external\">subscription</a> page."
+object SessionTimeoutController extends SessionTimeoutController{
+}
+
+trait SessionTimeoutController extends FrontendController{
+
+  val timeout = Action.async { implicit request =>
+    Future.successful(Ok(views.html.timeout.timeout()))
   }
 
 }
