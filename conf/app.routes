@@ -2,3 +2,6 @@
 
 GET        /hello-world        controllers.HelloWorldController.helloWorld
 GET        /session-timeout    controllers.SessionTimeoutController.timeout
+GET        /feedback           controllers.FeedbackController.show
+POST       /feedback           controllers.FeedbackController.submit
+GET        /thankyou           controllers.FeedbackController.thankyou

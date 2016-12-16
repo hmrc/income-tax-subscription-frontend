@@ -1,3 +1,7 @@
+## Base ##
+
+base.back=Back
+
 ## Timeout page ##
 timeout.title=Session closed due to inactivity
 timeout.heading=You''ve been signed out due to inactivity.
