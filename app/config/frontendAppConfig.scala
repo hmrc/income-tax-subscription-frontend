@@ -35,15 +35,14 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   private val contactFrontendService = baseUrl("contact-frontend")
-  private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
   private val baseUrl = "income-tax-subscription-frontend"
 
-  override lazy val analyticsToken: String = configuration.getString(s"google-analytics.token").getOrElse("")
-  override lazy val analyticsHost: String = configuration.getString(s"google-analytics.host").getOrElse("auto")
-  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override lazy val analyticsToken: String = loadConfig(s"google-analytics.token")
+  override lazy val analyticsHost: String = loadConfig(s"google-analytics.host")
   override lazy val betaFeedbackUrl = s"$baseUrl/feedback"
   override lazy val betaFeedbackUnauthenticatedUrl = betaFeedbackUrl
   override lazy val contactFormServiceIdentifier = "IRS"
   override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
+  override lazy val reportAProblemPartialUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 }
