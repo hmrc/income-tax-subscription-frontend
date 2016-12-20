@@ -28,4 +28,8 @@ object MockConfig extends AppConfig {
   override val twoFactorUrl: String = "/two-step-verification/register/"
   override val ggSignInUrl: String = "/gg/sign-in"
   override val ggSignInContinueUrl: String = "/income-tax-subscription-frontend/hello-world"
+  override val betaFeedbackUnauthenticatedUrl: String = "/unauthorised"
+  override val betaFeedbackUrl: String = "/feedback"
+  override val contactFormServiceIdentifier: String = "/contact"
+  override val contactFrontendPartialBaseUrl: String = "/contact/partial"
 }

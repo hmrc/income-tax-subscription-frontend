@@ -25,46 +25,35 @@ import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import org.jsoup.Jsoup
-import org.scalatest.Matchers
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 
-
-<<<<<<< HEAD
-class HelloWorldControllerSpec extends UnitSpec with WithFakeApplication {
+class HelloWorldControllerSpec extends PlaySpec with OneAppPerTest {
 
   object HelloWorldTestController extends HelloWorldController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
-=======
-class HelloWorldControllerSpec extends PlaySpec with OneAppPerTest {
->>>>>>> master
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
 
   "The HelloWorld controller" should {
     "use the correct applicationConfig" in {
-      HelloWorldController.applicationConfig shouldBe FrontendAppConfig
+      HelloWorldController.applicationConfig must be (FrontendAppConfig)
     }
     "use the correct authConnector" in {
-      HelloWorldController.authConnector shouldBe FrontendAuthConnector
+      HelloWorldController.authConnector must be (FrontendAuthConnector)
     }
     "use the correct postSignInRedirectUrl" in {
-      HelloWorldController.postSignInRedirectUrl shouldBe FrontendAppConfig.ggSignInContinueUrl
+      HelloWorldController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
     }
   }
 
   "Calling the helloWorld action of the HelloWorldController with an authorised user" should {
 
-<<<<<<< HEAD
     lazy val result = HelloWorldTestController.helloWorld(authenticatedFakeRequest())
-    lazy val document = Jsoup.parse(bodyOf(result))
-=======
-    lazy val result = HelloWorldController.helloWorld(FakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
->>>>>>> master
 
     "return 200" in {
       status(result) must be (Status.OK)
@@ -83,10 +72,10 @@ class HelloWorldControllerSpec extends PlaySpec with OneAppPerTest {
   "Calling the helloWorld action of the HelloWorldController with an unauthorised user" should {
 
     lazy val result = HelloWorldTestController.helloWorld(FakeRequest())
-    lazy val document = Jsoup.parse(bodyOf(result))
+    lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 303" in {
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) must be (Status.SEE_OTHER)
     }
   }
 }
