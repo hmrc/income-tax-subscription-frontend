@@ -16,19 +16,18 @@
 
 package routes
 
-import org.scalatest._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 
-class RoutesSpec extends UnitSpec with WithFakeApplication with Matchers {
+class RoutesSpec extends PlaySpec with OneAppPerTest {
 
   "The URL for the HelloWorld.helloWorld action" should {
     "be equal to /income-tax-subscription-frontend/hello-world" in {
-      controllers.routes.HelloWorldController.helloWorld().url shouldEqual "/income-tax-subscription-frontend/hello-world"
+      controllers.routes.HelloWorldController.helloWorld().url must be ("/income-tax-subscription-frontend/hello-world")
     }
   }
   "The URL for the timeout.timeout action" should {
     "be equal to /income-tax-subscription-frontend/session-timeout" in {
-      controllers.routes.SessionTimeoutController.timeout().url shouldEqual "/income-tax-subscription-frontend/session-timeout"
+      controllers.routes.SessionTimeoutController.timeout().url must be ("/income-tax-subscription-frontend/session-timeout")
     }
   }
 }

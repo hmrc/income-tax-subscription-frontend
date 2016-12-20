@@ -20,8 +20,12 @@ import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
+  val betaFeedbackUrl: String
+  val betaFeedbackUnauthenticatedUrl: String
   val analyticsToken: String
   val analyticsHost: String
+  val contactFormServiceIdentifier: String
+  val contactFrontendPartialBaseUrl: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
   val notAuthorisedRedirectUrl: String
@@ -35,18 +39,25 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private val contactHost = loadConfig(s"contact-frontend.host")
-  private val contactFormServiceIdentifier = "MyService"
+  private val baseUrl = "income-tax-subscription-frontend"
 
-  override val analyticsToken = loadConfig("google-analytics.token")
-  override val analyticsHost = loadConfig("google-analytics.host")
-  override val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-
-  override val ivUpliftUrl = loadConfig("identity-verification.uplift.url")
+  //Authentication/Authorisation Config
   override val ggSignInUrl = loadConfig("government-gateway.sign-in.url")
-  override val twoFactorUrl = loadConfig("two-factor.url")
-  override val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
   override val ggSignInContinueUrl = loadConfig("government-gateway.continue.url")
+  override val twoFactorUrl = loadConfig("two-factor.url")
+  override val ivUpliftUrl = loadConfig("identity-verification.uplift.url")
+  override val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
 
+  //GA Config
+  override val analyticsToken: String = loadConfig(s"google-analytics.token")
+  override val analyticsHost: String = loadConfig(s"google-analytics.host")
+
+  //Contact Frontend Config
+  private val contactFrontendService = baseUrl("contact-frontend")
+  override val betaFeedbackUrl = s"$baseUrl/feedback"
+  override val betaFeedbackUnauthenticatedUrl = betaFeedbackUrl
+  override val contactFormServiceIdentifier = "IRS"
+  override val contactFrontendPartialBaseUrl = s"$contactFrontendService"
+  override val reportAProblemPartialUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override val reportAProblemNonJSUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 }

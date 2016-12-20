@@ -1,5 +1,13 @@
-# microservice specific routes
-
+# Hello World Routes
 GET        /hello-world        controllers.HelloWorldController.helloWorld
-GET        /session-timeout    controllers.SessionTimeoutController.timeout
+
+# Unauthorised Routes
 GET        /not-authorised     controllers.UnauthorisedController.showNotAuthorised(journeyId: Option[String])
+
+# Session Timeout Route
+GET        /session-timeout    controllers.SessionTimeoutController.timeout
+
+# Feedback Routes
+GET        /feedback           controllers.FeedbackController.show
+POST       /feedback           controllers.FeedbackController.submit
+GET        /thankyou           controllers.FeedbackController.thankyou
