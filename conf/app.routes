@@ -1,6 +1,9 @@
 # Hello World Routes
 GET        /hello-world        controllers.HelloWorldController.helloWorld
 
+# Unauthorised Routes
+GET        /not-authorised     controllers.UnauthorisedController.showNotAuthorised(journeyId: Option[String])
+
 # Session Timeout Route
 GET        /session-timeout    controllers.SessionTimeoutController.timeout
 

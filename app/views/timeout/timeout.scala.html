@@ -3,6 +3,7 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(title = Messages("timeout.title"), bodyClasses = None) {
+
     <h1>@Messages("timeout.heading")</h1>
 
     <p>@Html(Messages("timeout.returnToHome", controllers.routes.HelloWorldController.helloWorld().url))</p>

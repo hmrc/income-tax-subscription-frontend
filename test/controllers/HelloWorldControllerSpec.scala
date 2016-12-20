@@ -19,22 +19,40 @@ package controllers
 import akka.actor._
 import akka.stream._
 import assets.MessageLookup
+import auth._
+import config.{FrontendAppConfig, FrontendAuthConnector}
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import org.jsoup.Jsoup
-import org.scalatest.Matchers
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 
-
 class HelloWorldControllerSpec extends PlaySpec with OneAppPerTest {
+
+  object HelloWorldTestController extends HelloWorldController {
+    override lazy val applicationConfig = MockConfig
+    override lazy val authConnector = MockAuthConnector
+    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
+  }
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
 
-  "Calling the helloWorld action of the HelloWorldController" should {
+  "The HelloWorld controller" should {
+    "use the correct applicationConfig" in {
+      HelloWorldController.applicationConfig must be (FrontendAppConfig)
+    }
+    "use the correct authConnector" in {
+      HelloWorldController.authConnector must be (FrontendAuthConnector)
+    }
+    "use the correct postSignInRedirectUrl" in {
+      HelloWorldController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
+    }
+  }
 
-    lazy val result = HelloWorldController.helloWorld(FakeRequest())
+  "Calling the helloWorld action of the HelloWorldController with an authorised user" should {
+
+    lazy val result = HelloWorldTestController.helloWorld(authenticatedFakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -48,6 +66,16 @@ class HelloWorldControllerSpec extends PlaySpec with OneAppPerTest {
 
     s"have the title '${MessageLookup.HelloWorld.title}'" in {
       document.title() must be (MessageLookup.HelloWorld.title)
+    }
+  }
+
+  "Calling the helloWorld action of the HelloWorldController with an unauthorised user" should {
+
+    lazy val result = HelloWorldTestController.helloWorld(FakeRequest())
+    lazy val document = Jsoup.parse(contentAsString(result))
+
+    "return 303" in {
+      status(result) must be (Status.SEE_OTHER)
     }
   }
 }

@@ -44,17 +44,18 @@ private object AppDependencies {
   }
 
   object Test {
-    def apply() = new TestDependencies {
+    def apply(): Seq[ModuleID] = new TestDependencies {
       override lazy val test = Seq(
         "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
         "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % scope,
         "org.pegdown" % "pegdown" % pegdownVersion % scope,
         "org.jsoup" % "jsoup" % "1.8.1" % scope,
-        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
+        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
+        "org.mockito" % "mockito-core" % "1.9.5" %scope
       )
     }.test
   }
 
-  def apply() = compile ++ Test()
+  def apply(): Seq[ModuleID] = compile ++ Test()
 }

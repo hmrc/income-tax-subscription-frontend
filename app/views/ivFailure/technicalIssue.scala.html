@@ -1,0 +1,11 @@
+@()(implicit request: Request[_], messages: Messages)
+
+@views.html.templates.main_template(title = Messages("technicalIssue.title")) {
+
+    <h1 class="heading-large">@Messages("technicalIssue.pageHeading")</h1>
+
+    <p>@Messages("technicalIssue.paraOne")</p>
+
+    <p>@Messages("technicalIssue.paraTwo")</p>
+
+}
