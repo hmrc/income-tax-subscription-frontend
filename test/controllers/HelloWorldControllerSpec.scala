@@ -22,11 +22,12 @@ import assets.MessageLookup
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import org.jsoup.Jsoup
+import org.scalatest.Matchers
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 
 
-class HelloWorldControllerSpec extends UnitSpec with WithFakeApplication{
+class HelloWorldControllerSpec extends PlaySpec with OneAppPerTest {
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
@@ -34,19 +35,19 @@ class HelloWorldControllerSpec extends UnitSpec with WithFakeApplication{
   "Calling the helloWorld action of the HelloWorldController" should {
 
     lazy val result = HelloWorldController.helloWorld(FakeRequest())
-    lazy val document = Jsoup.parse(bodyOf(result))
+    lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
-      status(result) shouldBe Status.OK
+      status(result) must be (Status.OK)
     }
 
     "return HTML" in {
-      contentType(result) shouldBe Some("text/html")
-      charset(result) shouldBe Some("utf-8")
+      contentType(result) must be (Some("text/html"))
+      charset(result) must be (Some("utf-8"))
     }
 
     s"have the title '${MessageLookup.HelloWorld.title}'" in {
-      document.title() shouldBe MessageLookup.HelloWorld.title
+      document.title() must be (MessageLookup.HelloWorld.title)
     }
   }
 }

@@ -18,12 +18,11 @@ package views
 
 import assets.MessageLookup
 import org.jsoup.Jsoup
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
-import play.api.Play.current
 
-class SessionTimeoutViewSpec extends UnitSpec with WithFakeApplication {
+class SessionTimeoutViewSpec extends PlaySpec with OneAppPerTest {
 
   lazy val page = views.html.timeout.timeout()(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
@@ -31,11 +30,11 @@ class SessionTimeoutViewSpec extends UnitSpec with WithFakeApplication {
   "The Session timeout view" should {
 
     s"have the title '${MessageLookup.timeout.title}'" in {
-      document.title() shouldBe MessageLookup.timeout.title
+      document.title() must be (MessageLookup.timeout.title)
     }
 
     s"have the heading (H1) '${MessageLookup.timeout.heading}'" in {
-      document.getElementsByTag("H1").text() shouldBe MessageLookup.timeout.heading
+      document.getElementsByTag("H1").text() must be (MessageLookup.timeout.heading)
     }
   }
 }

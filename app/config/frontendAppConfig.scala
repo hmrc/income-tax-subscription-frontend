@@ -20,8 +20,12 @@ import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
+  val betaFeedbackUrl: String
+  val betaFeedbackUnauthenticatedUrl: String
   val analyticsToken: String
   val analyticsHost: String
+  val contactFormServiceIdentifier: String
+  val contactFrontendPartialBaseUrl: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
 }
@@ -30,11 +34,16 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
+  private val contactFrontendService = baseUrl("contact-frontend")
   private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = "MyService"
+  private val baseUrl = "income-tax-subscription-frontend"
 
-  override lazy val analyticsToken = loadConfig(s"google-analytics.token")
-  override lazy val analyticsHost = loadConfig(s"google-analytics.host")
+  override lazy val analyticsToken: String = configuration.getString(s"google-analytics.token").getOrElse("")
+  override lazy val analyticsHost: String = configuration.getString(s"google-analytics.host").getOrElse("auto")
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override lazy val betaFeedbackUrl = s"$baseUrl/feedback"
+  override lazy val betaFeedbackUnauthenticatedUrl = betaFeedbackUrl
+  override lazy val contactFormServiceIdentifier = "IRS"
+  override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
 }
