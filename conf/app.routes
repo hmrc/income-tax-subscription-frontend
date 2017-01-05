@@ -1,6 +1,10 @@
 # Hello World Routes
 GET        /hello-world        controllers.HelloWorldController.helloWorld
 
+# Summary Routes
+GET        /summary            controllers.SummaryController.showSummary
+POST       /summary            controllers.SummaryController.submitSummary
+
 # Unauthorised Routes
 GET        /not-authorised     controllers.UnauthorisedController.showNotAuthorised(journeyId: Option[String])
 
