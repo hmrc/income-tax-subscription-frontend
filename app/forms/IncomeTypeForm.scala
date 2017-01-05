@@ -21,7 +21,10 @@ import play.api.data.Form
 import play.api.data.Forms._
 
 object IncomeTypeForm {
-  val IncomeTypeForm = Form(
+
+  val incomeType = "incomeType"
+
+  val incomeTypeForm = Form(
     mapping(
       "incomeType" -> text
     )(IncomeTypeModel.apply)(IncomeTypeModel.unapply)
