@@ -20,14 +20,29 @@ import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 
 class RoutesSpec extends PlaySpec with OneAppPerTest {
 
+  val contextRoute: String = "/income-tax-subscription-frontend"
+
   "The URL for the HelloWorld.helloWorld action" should {
-    "be equal to /income-tax-subscription-frontend/hello-world" in {
-      controllers.routes.HelloWorldController.helloWorld().url must be ("/income-tax-subscription-frontend/hello-world")
+    s"be equal to $contextRoute/hello-world" in {
+      controllers.routes.HelloWorldController.helloWorld().url must be (s"$contextRoute/hello-world")
     }
   }
+
   "The URL for the timeout.timeout action" should {
-    "be equal to /income-tax-subscription-frontend/session-timeout" in {
-      controllers.routes.SessionTimeoutController.timeout().url must be ("/income-tax-subscription-frontend/session-timeout")
+    s"be equal to $contextRoute/session-timeout" in {
+      controllers.routes.SessionTimeoutController.timeout().url must be (s"$contextRoute/session-timeout")
+    }
+  }
+
+  "The URL for the SummaryController.showSummary action" should {
+    s"be equal to $contextRoute/summary" in {
+      controllers.routes.SummaryController.showSummary().url must be (s"$contextRoute/summary")
+    }
+  }
+
+  "The URL for the SummaryController.submitSummary action" should {
+    s"be equal to $contextRoute/summary" in {
+      controllers.routes.SummaryController.submitSummary().url must be (s"$contextRoute/summary")
     }
   }
 }
