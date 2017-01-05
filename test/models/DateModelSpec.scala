@@ -16,10 +16,19 @@
 
 package models
 
-import play.api.libs.json.Json
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-case class IncomeTypeModel(incomeType: String)
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import org.scalatest.Matchers._
 
-object IncomeTypeModel {
-  implicit val format = Json.format[IncomeTypeModel]
+class DateModelSpec extends PlaySpec with OneAppPerTest {
+
+  "the DateModel" should {
+    "convert correctly to java.time.LocalDate" in {
+      val date = DateModel("01", "02", "2017")
+      date.toLocalDate shouldBe LocalDate.parse("01/02/2017", DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+      date.toLocalDate.isEqual(date) shouldBe true
+    }
+  }
 }

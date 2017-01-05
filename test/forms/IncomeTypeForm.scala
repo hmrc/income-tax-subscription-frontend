@@ -14,12 +14,25 @@
  * limitations under the License.
  */
 
-package models
+package forms
 
-import play.api.libs.json.Json
+import models.IncomeTypeModel
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import org.scalatest.Matchers._
 
-case class IncomeTypeModel(incomeType: String)
+class IncomeTypeFormSpec extends PlaySpec with OneAppPerTest {
 
-object IncomeTypeModel {
-  implicit val format = Json.format[IncomeTypeModel]
+  import IncomeTypeForm._
+
+  "The IncomeTypeForm" should {
+    "transform the request to the form case class" in {
+      val testIncomeType = "ABC"
+      val testInput = Map(incomeType -> testIncomeType)
+      val expected = IncomeTypeModel(testIncomeType)
+      val actual = incomeTypeForm.bind(testInput).value
+
+      actual shouldBe Some(expected)
+    }
+  }
+
 }
