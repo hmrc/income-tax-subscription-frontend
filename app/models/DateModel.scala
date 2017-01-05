@@ -16,10 +16,16 @@
 
 package models
 
+import java.time.LocalDate
+
 import play.api.libs.json.Json
 
-case class DateModel(day: String, month: String, year: String)
+case class DateModel(day: String, month: String, year: String) {
+  def toLocalDate = LocalDate.of(year.toInt, month.toInt, day.toInt)
+}
 
 object DateModel {
+  implicit def dateConvert(date: DateModel): LocalDate = date.toLocalDate
+
   implicit val format = Json.format[DateModel]
 }
