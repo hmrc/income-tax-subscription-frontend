@@ -17,17 +17,22 @@
 package forms
 
 import models.BusinessNameModel
-import play.api.data.Form
-import play.api.data.Forms._
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import org.scalatest.Matchers._
 
-object BusinessNameForm {
+class BusinessNameFormSpec extends PlaySpec with OneAppPerTest {
 
-  val businessName = "businessName"
+  import BusinessNameForm._
 
-  val businessNameForm = Form(
-    mapping(
-      businessName -> text
-    )(BusinessNameModel.apply)(BusinessNameModel.unapply)
-  )
+  "The BusinessNameForm" should {
+    "transform the request to the form case class" in {
+      val testBusinessName = "ABC"
+      val testInput = Map(businessName -> testBusinessName)
+      val expected = BusinessNameModel(testBusinessName)
+      val actual = businessNameForm.bind(testInput).value
+
+      actual shouldBe Some(expected)
+    }
+  }
 
 }
