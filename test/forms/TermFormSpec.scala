@@ -17,17 +17,20 @@
 package forms
 
 import models.TermModel
-import play.api.data.Form
-import play.api.data.Forms._
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import org.scalatest.Matchers._
 
+class TermFormSpec extends PlaySpec with OneAppPerTest {
 
-object TermForm {
-  val termName = "termName"
+  import TermForm._
 
-  val termForm = Form(
-    mapping(
-      termName -> boolean
-    )(TermModel.apply)(TermModel.unapply)
-  )
-
+  "The termForm " should {
+    "transform the data to the case class" in {
+      val testTerm = true
+      val testInput = Map(termName -> testTerm.toString)
+      val expected = TermModel(testTerm)
+      val actual = termForm.bind(testInput).value
+      actual shouldBe Some(expected)
+    }
+  }
 }
