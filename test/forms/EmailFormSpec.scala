@@ -16,20 +16,20 @@
 
 package forms
 
-import models.BusinessNameModel
+import models.EmailModel
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import org.scalatest.Matchers._
 
-class BusinessNameFormSpec extends PlaySpec with OneAppPerTest {
+class EmailFormSpec extends PlaySpec with OneAppPerTest {
 
-  import BusinessNameForm._
+  import EmailForm._
 
-  "The businessNameForm" should {
+  "The emailForm " should {
     "transform the data to the case class" in {
-      val testBusinessName = "ABC"
-      val testInput = Map(businessName -> testBusinessName)
-      val expected = BusinessNameModel(testBusinessName)
-      val actual = businessNameForm.bind(testInput).value
+      val testEmail = "ABC@gmsil.com"
+      val testInput = Map(emailAddress -> testEmail)
+      val expected = EmailModel(testEmail)
+      val actual = emailForm.bind(testInput).value
 
       actual shouldBe Some(expected)
     }

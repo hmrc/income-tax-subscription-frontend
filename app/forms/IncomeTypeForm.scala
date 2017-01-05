@@ -20,7 +20,7 @@ import models.IncomeTypeModel
 import play.api.data.Form
 import play.api.data.Forms._
 
-object IncomeTypeForm {
+object giIncomeTypeForm {
   val IncomeTypeForm = Form(
     mapping(
       "incomeType" -> text
