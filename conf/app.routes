@@ -5,6 +5,10 @@ GET        /hello-world        controllers.HelloWorldController.helloWorld
 GET        /summary            controllers.SummaryController.showSummary
 POST       /summary            controllers.SummaryController.submitSummary
 
+# Confirmation Routes
+GET        /confirmation       controllers.ConfirmationController.showConfirmation
+POST       /confirmation       controllers.ConfirmationController.submitConfirmation
+
 # Unauthorised Routes
 GET        /not-authorised     controllers.UnauthorisedController.showNotAuthorised(journeyId: Option[String])
 
