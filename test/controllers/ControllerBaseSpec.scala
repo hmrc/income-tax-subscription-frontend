@@ -24,7 +24,6 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 
-
 trait ControllerBaseSpec extends PlaySpec with OneAppPerTest {
 
   implicit val system = ActorSystem()

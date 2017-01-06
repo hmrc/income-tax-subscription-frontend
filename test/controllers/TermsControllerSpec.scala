@@ -16,26 +16,25 @@
 
 package controllers
 
-import akka.actor._
-import akka.stream._
-import assets.MessageLookup
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.http.Status
-import play.api.test.FakeRequest
+import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class TermsControllerSpec extends PlaySpec with OneAppPerTest {
+class TermsControllerSpec extends ControllerBaseSpec {
+
+  override val controllerName: String = "ContactEmailControllerSpec"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "showTerms" -> TestTermsController.showTerms,
+    "submitTerms" -> TestTermsController.submitTerms
+  )
 
   object TestTermsController extends TermsController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
 
   "The TermsController controller" should {
     "use the correct applicationConfig" in {
@@ -58,15 +57,6 @@ class TermsControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the showTerms action of the TermsController with an unauthorised user" should {
-
-    lazy val result = TestTermsController.showTerms(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
-
   "Calling the submitTerms action of the TermsController with an authorised user" should {
 
     lazy val result = TestTermsController.submitTerms(authenticatedFakeRequest())
@@ -76,12 +66,5 @@ class TermsControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the submitTerms action of the TermsController with an unauthorised user" should {
-
-    lazy val result = TestTermsController.submitTerms(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
+  authorisationTests
 }

@@ -16,27 +16,25 @@
 
 package controllers
 
-import akka.actor._
-import akka.stream._
-import assets.MessageLookup
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.http.Status
-import play.api.test.FakeRequest
+import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class BusinessIncomeTypeControllerSpec extends PlaySpec with OneAppPerTest {
+class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec {
+
+  override val controllerName: String = "BusinessIncomeTypeController"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "showBusinessIncomeType" -> TestBusinessIncomeTypeController.showBusinessIncomeType,
+    "submitBusinessIncomeType" -> TestBusinessIncomeTypeController.submitBusinessIncomeType
+  )
 
   object TestBusinessIncomeTypeController extends BusinessIncomeTypeController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
-
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
 
   "The BusinessIncomeType controller" should {
     "use the correct applicationConfig" in {
@@ -59,15 +57,6 @@ class BusinessIncomeTypeControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the showBusinessIncomeType action of the BusinessIncomeType with an unauthorised user" should {
-
-    lazy val result = TestBusinessIncomeTypeController.showBusinessIncomeType(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
-
   "Calling the submitBusinessIncomeType action of the BusinessIncomeType with an authorised user" should {
 
     lazy val result = TestBusinessIncomeTypeController.submitBusinessIncomeType(authenticatedFakeRequest())
@@ -77,12 +66,5 @@ class BusinessIncomeTypeControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the submitBusinessIncomeType action of the BusinessIncomeType with an unauthorised user" should {
-
-    lazy val result = TestBusinessIncomeTypeController.submitBusinessIncomeType(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
+  authorisationTests
 }

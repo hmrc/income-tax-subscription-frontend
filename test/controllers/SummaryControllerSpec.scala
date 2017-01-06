@@ -51,7 +51,6 @@ class SummaryControllerSpec extends ControllerBaseSpec {
   "Calling the showSummary action of the SummaryController with an authorised user" should {
 
     lazy val result = TestSummaryController.showSummary(authenticatedFakeRequest())
-    val t = TestSummaryController.showSummary
 
     "return unimplemented (501)" in {
       status(result) must be(Status.NOT_IMPLEMENTED)

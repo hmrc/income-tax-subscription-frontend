@@ -16,26 +16,24 @@
 
 package controllers
 
-import akka.actor._
-import akka.stream._
-import assets.MessageLookup
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.http.Status
-import play.api.test.FakeRequest
+import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class BusinessNameControllerSpec extends PlaySpec with OneAppPerTest {
+class BusinessNameControllerSpec extends ControllerBaseSpec {
 
+  override val controllerName: String = "BusinessIncomeTypeController"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "showBusinessIncomeType" -> TestBusinessNameController.showBusinessName,
+    "submitBusinessIncomeType" -> TestBusinessNameController.submitBusinessName
+  )
   object TestBusinessNameController extends BusinessNameController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
 
   "The BusinessNameController controller" should {
     "use the correct applicationConfig" in {
@@ -58,15 +56,6 @@ class BusinessNameControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the showBusinessName action of the BusinessNameController with an unauthorised user" should {
-
-    lazy val result = TestBusinessNameController.showBusinessName(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
-
   "Calling the submitBusinessName action of the BusinessNameController with an authorised user" should {
 
     lazy val result = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest())
@@ -76,12 +65,5 @@ class BusinessNameControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the submitBusinessName action of the BusinessNameController with an unauthorised user" should {
-
-    lazy val result = TestBusinessNameController.submitBusinessName(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
+  authorisationTests
 }

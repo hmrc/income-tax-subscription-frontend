@@ -16,27 +16,25 @@
 
 package controllers
 
-import akka.actor._
-import akka.stream._
-import assets.MessageLookup
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.http.Status
-import play.api.test.FakeRequest
+import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class BusinessAccountingPeriodControllerSpec extends PlaySpec with OneAppPerTest {
+class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec {
+
+  override val controllerName: String = "BusinessAccountingPeriodController"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "showSummary" -> TestBusinessAccountingPeriodController.showAccountingPeriod,
+    "submitSummary" -> TestBusinessAccountingPeriodController.submitAccountingPeriod
+  )
 
   object TestBusinessAccountingPeriodController extends BusinessAccountingPeriodController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
-
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
 
   "The BusinessAccountingPeriod controller" should {
     "use the correct applicationConfig" in {
@@ -59,15 +57,6 @@ class BusinessAccountingPeriodControllerSpec extends PlaySpec with OneAppPerTest
     }
   }
 
-  "Calling the showAccountingPeriod action of the BusinessAccountingPeriod with an unauthorised user" should {
-
-    lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
-
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user" should {
 
     lazy val result = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest())
@@ -77,12 +66,6 @@ class BusinessAccountingPeriodControllerSpec extends PlaySpec with OneAppPerTest
     }
   }
 
-  "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an unauthorised user" should {
+  authorisationTests
 
-    lazy val result = TestBusinessAccountingPeriodController.submitAccountingPeriod(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
 }

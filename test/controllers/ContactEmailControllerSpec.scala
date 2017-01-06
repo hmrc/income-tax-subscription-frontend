@@ -16,26 +16,25 @@
 
 package controllers
 
-import akka.actor._
-import akka.stream._
-import assets.MessageLookup
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.http.Status
-import play.api.test.FakeRequest
+import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class ContactEmailControllerSpec extends PlaySpec with OneAppPerTest {
+class ContactEmailControllerSpec extends ControllerBaseSpec {
+
+  override val controllerName: String = "ContactEmailControllerSpec"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "showContactEmail" -> TestContactEmailController.showContactEmail,
+    "submitContactEmail" -> TestContactEmailController.submitContactEmail
+  )
 
   object TestContactEmailController extends ContactEmailController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
 
   "The ContactEmailController controller" should {
     "use the correct applicationConfig" in {
@@ -58,15 +57,6 @@ class ContactEmailControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the showContactEmail action of the ContactEmailController with an unauthorised user" should {
-
-    lazy val result = TestContactEmailController.showContactEmail(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
-
   "Calling the submitContactEmail action of the ContactEmailController with an authorised user" should {
 
     lazy val result = TestContactEmailController.submitContactEmail(authenticatedFakeRequest())
@@ -76,12 +66,5 @@ class ContactEmailControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the submitContactEmail action of the ContactEmailController with an unauthorised user" should {
-
-    lazy val result = TestContactEmailController.submitContactEmail(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
+  authorisationTests
 }
