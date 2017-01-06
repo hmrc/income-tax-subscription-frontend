@@ -16,18 +16,19 @@
 
 package controllers
 
-import akka.actor._
-import akka.stream._
-import assets.MessageLookup
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.http.Status
-import play.api.test.FakeRequest
+import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class SummaryControllerSpec extends PlaySpec with OneAppPerTest {
+class SummaryControllerSpec extends ControllerBaseSpec {
+
+  override val controllerName: String = "SummaryController"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "showSummary" -> TestSummaryController.showSummary,
+    "submitSummary" -> TestSummaryController.submitSummary
+  )
 
   object TestSummaryController extends SummaryController {
     override lazy val applicationConfig = MockConfig
@@ -35,36 +36,25 @@ class SummaryControllerSpec extends PlaySpec with OneAppPerTest {
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
-
   "The Summary controller" should {
     "use the correct applicationConfig" in {
-      SummaryController.applicationConfig must be (FrontendAppConfig)
+      SummaryController.applicationConfig must be(FrontendAppConfig)
     }
     "use the correct authConnector" in {
-      SummaryController.authConnector must be (FrontendAuthConnector)
+      SummaryController.authConnector must be(FrontendAuthConnector)
     }
     "use the correct postSignInRedirectUrl" in {
-      SummaryController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
+      SummaryController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
     }
   }
 
   "Calling the showSummary action of the SummaryController with an authorised user" should {
 
     lazy val result = TestSummaryController.showSummary(authenticatedFakeRequest())
+    val t = TestSummaryController.showSummary
 
     "return unimplemented (501)" in {
-      status(result) must be (Status.NOT_IMPLEMENTED)
-    }
-  }
-
-  "Calling the showSummary action of the SummaryController with an unauthorised user" should {
-
-    lazy val result = TestSummaryController.showSummary(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
+      status(result) must be(Status.NOT_IMPLEMENTED)
     }
   }
 
@@ -73,16 +63,10 @@ class SummaryControllerSpec extends PlaySpec with OneAppPerTest {
     lazy val result = TestSummaryController.submitSummary(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
-      status(result) must be (Status.NOT_IMPLEMENTED)
+      status(result) must be(Status.NOT_IMPLEMENTED)
     }
   }
 
-  "Calling the submitSummary action of the SummaryController with an unauthorised user" should {
+  authorisationTests
 
-    lazy val result = TestSummaryController.submitSummary(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
 }
