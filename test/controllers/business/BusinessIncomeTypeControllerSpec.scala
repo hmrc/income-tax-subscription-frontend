@@ -14,58 +14,58 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.business
 
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class SummaryControllerSpec extends ControllerBaseSpec {
+class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec {
 
-  override val controllerName: String = "SummaryController"
+  override val controllerName: String = "BusinessIncomeTypeController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showSummary" -> TestSummaryController.showSummary,
-    "submitSummary" -> TestSummaryController.submitSummary
+    "showBusinessIncomeType" -> TestBusinessIncomeTypeController.showBusinessIncomeType,
+    "submitBusinessIncomeType" -> TestBusinessIncomeTypeController.submitBusinessIncomeType
   )
 
-  object TestSummaryController extends SummaryController {
+  object TestBusinessIncomeTypeController extends BusinessIncomeTypeController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
 
-  "The Summary controller" should {
+  "The BusinessIncomeType controller" should {
     "use the correct applicationConfig" in {
-      SummaryController.applicationConfig must be(FrontendAppConfig)
+      BusinessIncomeTypeController.applicationConfig must be (FrontendAppConfig)
     }
     "use the correct authConnector" in {
-      SummaryController.authConnector must be(FrontendAuthConnector)
+      BusinessIncomeTypeController.authConnector must be (FrontendAuthConnector)
     }
     "use the correct postSignInRedirectUrl" in {
-      SummaryController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
+      BusinessIncomeTypeController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
     }
   }
 
-  "Calling the showSummary action of the SummaryController with an authorised user" should {
+  "Calling the showBusinessIncomeType action of the BusinessIncomeType with an authorised user" should {
 
-    lazy val result = TestSummaryController.showSummary(authenticatedFakeRequest())
+    lazy val result = TestBusinessIncomeTypeController.showBusinessIncomeType(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+      status(result) must be (Status.NOT_IMPLEMENTED)
     }
   }
 
-  "Calling the submitSummary action of the SummaryController with an authorised user" should {
+  "Calling the submitBusinessIncomeType action of the BusinessIncomeType with an authorised user" should {
 
-    lazy val result = TestSummaryController.submitSummary(authenticatedFakeRequest())
+    lazy val result = TestBusinessIncomeTypeController.submitBusinessIncomeType(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+      status(result) must be (Status.NOT_IMPLEMENTED)
     }
   }
 
   authorisationTests
-
 }
