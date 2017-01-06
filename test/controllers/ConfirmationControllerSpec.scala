@@ -48,7 +48,7 @@ class ConfirmationControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the showSummary action of the ConfirmationController with an authorised user" should {
+  "Calling the showConfirmation action of the ConfirmationController with an authorised user" should {
 
     lazy val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
 
@@ -57,7 +57,7 @@ class ConfirmationControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the showSummary action of the ConfirmationController with an unauthorised user" should {
+  "Calling the showConfirmation action of the ConfirmationController with an unauthorised user" should {
 
     lazy val result = TestConfirmationController.showConfirmation(FakeRequest())
 
@@ -66,7 +66,7 @@ class ConfirmationControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the submitSummary action of the ConfirmationController with an authorised user" should {
+  "Calling the submitConfirmation action of the ConfirmationController with an authorised user" should {
 
     lazy val result = TestConfirmationController.submitConfirmation(authenticatedFakeRequest())
 
@@ -75,7 +75,7 @@ class ConfirmationControllerSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "Calling the submitSummary action of the ConfirmationController with an unauthorised user" should {
+  "Calling the submitConfirmation action of the ConfirmationController with an unauthorised user" should {
 
     lazy val result = TestConfirmationController.submitConfirmation(FakeRequest())
 
