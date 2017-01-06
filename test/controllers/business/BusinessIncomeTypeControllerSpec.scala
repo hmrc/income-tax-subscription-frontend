@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.business
 
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

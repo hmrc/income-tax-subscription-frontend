@@ -14,51 +14,53 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.business
 
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class BusinessNameControllerSpec extends ControllerBaseSpec {
+class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec {
 
-  override val controllerName: String = "BusinessIncomeTypeController"
+  override val controllerName: String = "BusinessAccountingPeriodController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showBusinessIncomeType" -> TestBusinessNameController.showBusinessName,
-    "submitBusinessIncomeType" -> TestBusinessNameController.submitBusinessName
+    "showSummary" -> TestBusinessAccountingPeriodController.showAccountingPeriod,
+    "submitSummary" -> TestBusinessAccountingPeriodController.submitAccountingPeriod
   )
-  object TestBusinessNameController extends BusinessNameController {
+
+  object TestBusinessAccountingPeriodController extends BusinessAccountingPeriodController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
 
-  "The BusinessNameController controller" should {
+  "The BusinessAccountingPeriod controller" should {
     "use the correct applicationConfig" in {
-      BusinessNameController.applicationConfig must be (FrontendAppConfig)
+      BusinessAccountingPeriodController.applicationConfig must be (FrontendAppConfig)
     }
     "use the correct authConnector" in {
-      BusinessNameController.authConnector must be (FrontendAuthConnector)
+      BusinessAccountingPeriodController.authConnector must be (FrontendAuthConnector)
     }
     "use the correct postSignInRedirectUrl" in {
-      BusinessNameController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
+      BusinessAccountingPeriodController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
     }
   }
 
-  "Calling the showBusinessName action of the BusinessNameController with an authorised user" should {
+  "Calling the showAccountingPeriod action of the BusinessAccountingPeriod with an authorised user" should {
 
-    lazy val result = TestBusinessNameController.showBusinessName(authenticatedFakeRequest())
+    lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
       status(result) must be (Status.NOT_IMPLEMENTED)
     }
   }
 
-  "Calling the submitBusinessName action of the BusinessNameController with an authorised user" should {
+  "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user" should {
 
-    lazy val result = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest())
+    lazy val result = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
       status(result) must be (Status.NOT_IMPLEMENTED)
@@ -66,4 +68,5 @@ class BusinessNameControllerSpec extends ControllerBaseSpec {
   }
 
   authorisationTests
+
 }

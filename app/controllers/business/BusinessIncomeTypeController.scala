@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.business
 
 import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
@@ -25,19 +25,19 @@ import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
-object BusinessAccountingPeriodController extends BusinessAccountingPeriodController  {
+object BusinessIncomeTypeController extends BusinessIncomeTypeController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
 }
 
-trait BusinessAccountingPeriodController extends FrontendController with AuthorisedForIncomeTaxSA {
+trait BusinessIncomeTypeController extends FrontendController with AuthorisedForIncomeTaxSA {
 
-  val showAccountingPeriod = Authorised.async { implicit user => implicit request =>
+  val showBusinessIncomeType = Authorised.async { implicit user => implicit request =>
     Future.successful(NotImplemented)
   }
 
-  val submitAccountingPeriod = Authorised.async { implicit user => implicit request =>
+  val submitBusinessIncomeType = Authorised.async { implicit user => implicit request =>
     Future.successful(NotImplemented)
   }
 }
