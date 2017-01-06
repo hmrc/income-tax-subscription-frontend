@@ -17,20 +17,24 @@
 package forms
 
 import models.DateModel
-import play.api.data.Form
-import play.api.data.Forms._
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import org.scalatest.Matchers._
 
-object DateForm {
+class DateFormSpec extends PlaySpec with OneAppPerTest {
 
-  val dateDay = "dateDay"
-  val dateMonth = "dateMonth"
-  val dateYear = "dateYear"
+  import DateForm._
 
-  val dateForm = Form(
-    mapping(
-      dateDay -> text,
-      dateMonth -> text,
-      dateYear -> text
-    )(DateModel.apply)(DateModel.unapply)
-  )
+  "The DateForm" should {
+    "transform the request to the form case class" in {
+      val testDateDay = "01"
+      val testDateMonth = "02"
+      val testDateYear = "2000"
+      val testInput = Map(dateDay -> testDateDay, dateMonth -> testDateMonth, dateYear -> testDateYear)
+      val expected = DateModel(testDateDay, testDateMonth, testDateYear)
+      val actual = dateForm.bind(testInput).value
+
+      actual shouldBe Some(expected)
+    }
+  }
+
 }
