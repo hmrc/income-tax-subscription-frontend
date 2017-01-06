@@ -30,7 +30,6 @@ class BusinessNameFormSpec extends PlaySpec with OneAppPerTest {
       val testInput = Map(businessName -> testBusinessName)
       val expected = BusinessNameModel(testBusinessName)
       val actual = businessNameForm.bind(testInput).value
-
       actual shouldBe Some(expected)
     }
   }
