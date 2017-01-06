@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json.Json
 
-case class TermModel(agreeToTerms: Boolean)
+case class TermModel(hasAcceptedTerms: Boolean)
 
 object TermModel {
   implicit val format = Json.format[TermModel]

@@ -22,7 +22,7 @@ import play.api.data.Forms._
 
 
 object TermForm {
-  val termName = "termName"
+  val termName = "hasAcceptedTerms"
 
   val termForm = Form(
     mapping(
