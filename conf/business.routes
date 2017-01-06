@@ -1,7 +1,11 @@
 #Accounting Period Routes
-GET        /accounting-period            controllers.BusinessAccountingPeriodController.showAccountingPeriod
-POST       /accounting-period            controllers.BusinessAccountingPeriodController.submitAccountingPeriod
+GET        /accounting-period           controllers.BusinessAccountingPeriodController.showAccountingPeriod
+POST       /accounting-period           controllers.BusinessAccountingPeriodController.submitAccountingPeriod
 
-#Business Name Routes
+#Name Routes
 GET        /name                        controllers.BusinessNameController.showBusinessName
 POST       /name                        controllers.BusinessNameController.submitBusinessName
+
+#Income Type Routes
+GET        /income-type                 controllers.BusinessIncomeTypeController.showBusinessIncomeType
+POST       /income-type                 controllers.BusinessIncomeTypeController.submitBusinessIncomeType
