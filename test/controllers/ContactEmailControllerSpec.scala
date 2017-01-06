@@ -22,50 +22,49 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class SummaryControllerSpec extends ControllerBaseSpec {
+class ContactEmailControllerSpec extends ControllerBaseSpec {
 
-  override val controllerName: String = "SummaryController"
+  override val controllerName: String = "ContactEmailControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showSummary" -> TestSummaryController.showSummary,
-    "submitSummary" -> TestSummaryController.submitSummary
+    "showContactEmail" -> TestContactEmailController.showContactEmail,
+    "submitContactEmail" -> TestContactEmailController.submitContactEmail
   )
 
-  object TestSummaryController extends SummaryController {
+  object TestContactEmailController extends ContactEmailController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
 
-  "The Summary controller" should {
+  "The ContactEmailController controller" should {
     "use the correct applicationConfig" in {
-      SummaryController.applicationConfig must be(FrontendAppConfig)
+      ContactEmailController.applicationConfig must be (FrontendAppConfig)
     }
     "use the correct authConnector" in {
-      SummaryController.authConnector must be(FrontendAuthConnector)
+      ContactEmailController.authConnector must be (FrontendAuthConnector)
     }
     "use the correct postSignInRedirectUrl" in {
-      SummaryController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
+      ContactEmailController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
     }
   }
 
-  "Calling the showSummary action of the SummaryController with an authorised user" should {
+  "Calling the showContactEmail action of the ContactEmailController with an authorised user" should {
 
-    lazy val result = TestSummaryController.showSummary(authenticatedFakeRequest())
+    lazy val result = TestContactEmailController.showContactEmail(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+      status(result) must be (Status.NOT_IMPLEMENTED)
     }
   }
 
-  "Calling the submitSummary action of the SummaryController with an authorised user" should {
+  "Calling the submitContactEmail action of the ContactEmailController with an authorised user" should {
 
-    lazy val result = TestSummaryController.submitSummary(authenticatedFakeRequest())
+    lazy val result = TestContactEmailController.submitContactEmail(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+      status(result) must be (Status.NOT_IMPLEMENTED)
     }
   }
 
   authorisationTests
-
 }

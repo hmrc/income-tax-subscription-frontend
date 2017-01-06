@@ -22,50 +22,49 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class SummaryControllerSpec extends ControllerBaseSpec {
+class TermsControllerSpec extends ControllerBaseSpec {
 
-  override val controllerName: String = "SummaryController"
+  override val controllerName: String = "ContactEmailControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showSummary" -> TestSummaryController.showSummary,
-    "submitSummary" -> TestSummaryController.submitSummary
+    "showTerms" -> TestTermsController.showTerms,
+    "submitTerms" -> TestTermsController.submitTerms
   )
 
-  object TestSummaryController extends SummaryController {
+  object TestTermsController extends TermsController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
 
-  "The Summary controller" should {
+  "The TermsController controller" should {
     "use the correct applicationConfig" in {
-      SummaryController.applicationConfig must be(FrontendAppConfig)
+      TermsController.applicationConfig must be (FrontendAppConfig)
     }
     "use the correct authConnector" in {
-      SummaryController.authConnector must be(FrontendAuthConnector)
+      TermsController.authConnector must be (FrontendAuthConnector)
     }
     "use the correct postSignInRedirectUrl" in {
-      SummaryController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
+      TermsController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
     }
   }
 
-  "Calling the showSummary action of the SummaryController with an authorised user" should {
+  "Calling the showTerms action of the TermsController with an authorised user" should {
 
-    lazy val result = TestSummaryController.showSummary(authenticatedFakeRequest())
+    lazy val result = TestTermsController.showTerms(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+      status(result) must be (Status.NOT_IMPLEMENTED)
     }
   }
 
-  "Calling the submitSummary action of the SummaryController with an authorised user" should {
+  "Calling the submitTerms action of the TermsController with an authorised user" should {
 
-    lazy val result = TestSummaryController.submitSummary(authenticatedFakeRequest())
+    lazy val result = TestTermsController.submitTerms(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+      status(result) must be (Status.NOT_IMPLEMENTED)
     }
   }
 
   authorisationTests
-
 }
