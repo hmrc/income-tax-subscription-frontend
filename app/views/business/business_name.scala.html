@@ -1,5 +1,11 @@
-@(form: Form[_])
+@import models._
+@import forms.BusinessNameForm._
 
-@import helper._
+@(form: Form[BusinessNameModel])(implicit messages: Messages)
 
-  @input(form(""))
+@import helpers._
+
+@inputHelper(
+    form(businessName),
+    maxLength = 10
+)

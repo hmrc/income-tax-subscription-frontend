@@ -18,10 +18,10 @@ package controllers.business
 
 import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import forms.BusinessNameForm
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
-import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
@@ -33,11 +33,13 @@ object BusinessNameController extends BusinessNameController {
 
 trait BusinessNameController extends FrontendController with AuthorisedForIncomeTaxSA {
 
-  val showBusinessName = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
+  val showBusinessName = Authorised.async { implicit user =>
+    implicit request =>
+      Future.successful(Ok(views.html.business.business_name(BusinessNameForm.businessNameForm)))
   }
 
-  val submitBusinessName = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
+  val submitBusinessName = Authorised.async { implicit user =>
+    implicit request =>
+      Future.successful(NotImplemented)
   }
 }
