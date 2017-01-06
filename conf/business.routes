@@ -1,3 +1,7 @@
 #Accounting Period Routes
 GET        /accounting-period            controllers.BusinessAccountingPeriodController.showAccountingPeriod
 POST       /accounting-period            controllers.BusinessAccountingPeriodController.submitAccountingPeriod
+
+#Business Name Routes
+GET        /name                        controllers.BusinessNameController.showBusinessName
+POST       /name                        controllers.BusinessNameController.submitBusinessName
