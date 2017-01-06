@@ -19,3 +19,7 @@ GET        /thankyou           controllers.FeedbackController.thankyou
 # Terms Routes
 GET        /terms              controllers.TermsController.showTerms
 POST       /terms              controllers.TermsController.submitTerms
+
+# Contact Email Routes
+GET        /contact-email      controllers.ContactEmailController.showContactEmail
+POST       /contact-email      controllers.ContactEmailController.submitContactEmail

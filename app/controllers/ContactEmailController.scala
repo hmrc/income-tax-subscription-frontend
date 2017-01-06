@@ -25,19 +25,19 @@ import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
-object TermsController {
+object ContactEmailController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
 }
 
-trait TermsController extends FrontendController with AuthorisedForIncomeTaxSA {
+trait ContactEmailController extends FrontendController with AuthorisedForIncomeTaxSA {
 
-  val showTerms = Authorised.async { implicit user => implicit request =>
+  val showContactEmail = Authorised.async { implicit user => implicit request =>
     Future.successful(NotImplemented)
   }
 
-  val submitTerms = Authorised.async { implicit user => implicit request =>
+  val submitContactEmail = Authorised.async { implicit user => implicit request =>
     Future.successful(NotImplemented)
   }
 }
