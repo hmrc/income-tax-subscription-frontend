@@ -1,5 +1,45 @@
-@(field: play.api.data.Field)(implicit messages: Messages)
+@(field: play.api.data.Field,
+        divClass: Option[String],
+        labelClass: Option[String],
+        labelDataAttributes: Option[String],
+        hideErrors: Option[Boolean],
+        errorId: Option[String],
+        label: Option[Boolean],
+        inputHint: Option[String],
+        hintId: Option[String],
+        fieldType: Option[String],
+        dataAttributes: Option[String],
+        inputClass: Option[String],
+        autoComplete: Option[Boolean],
+        maxLength: Option[Int],
+        max: Option[String],
+        pattern: Option[String],
+        title: Option[String],
+        required: Option[Boolean],
+        labelTextClass: Option[String]
+
+)(implicit messages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers.input
 
-@input(field)
+@input(field,
+    '_divClass -> divClass,
+    '_labelClass -> labelClass,
+    '_labelDataAttributes -> labelDataAttributes,
+    '_hideErrors -> hideErrors,
+    '_error_id -> errorId,
+    '_label -> label,
+    '_inputHint -> inputHint,
+    '_hintId -> hintId,
+    '_type -> fieldType,
+    '_dataAttributes -> dataAttributes,
+    '_inputClass -> inputClass,
+    '_autoComplete -> autoComplete,
+    '_maxLength -> maxLength,
+    '_max -> max,
+    '_pattern -> pattern,
+    '_title -> title,
+    '_required -> required,
+    '_labelTextClass -> labelTextClass
+
+)
