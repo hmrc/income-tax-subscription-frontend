@@ -1,9 +1,15 @@
-@(field: play.api.data.Field,
+@import play.api.data.Field
+
+@(field: Field,
+        parentField: Option[Field],
+        labelAfter: Option[Boolean],
+        labelHighlight: Option[Boolean],
         divClass: Option[String],
         labelClass: Option[String],
         labelDataAttributes: Option[String],
         hideErrors: Option[Boolean],
         errorId: Option[String],
+        labelTextClass: Option[String],
         label: Option[Boolean],
         inputHint: Option[String],
         hintId: Option[String],
@@ -15,16 +21,18 @@
         max: Option[String],
         pattern: Option[String],
         title: Option[String],
-        required: Option[Boolean],
-        labelTextClass: Option[String]
-
+        required: Option[Boolean]
 )(implicit messages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers.input
 
 @input(field,
+    'parentField -> parentField,
+    '_labelAfter -> labelAfter,
+    '_labelHighlight -> labelHighlight,
     '_divClass -> divClass,
     '_labelClass -> labelClass,
+    '_labelTextClass -> labelTextClass,
     '_labelDataAttributes -> labelDataAttributes,
     '_hideErrors -> hideErrors,
     '_error_id -> errorId,
@@ -39,7 +47,5 @@
     '_max -> max,
     '_pattern -> pattern,
     '_title -> title,
-    '_required -> required,
-    '_labelTextClass -> labelTextClass
-
+    '_required -> required
 )
