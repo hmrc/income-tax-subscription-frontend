@@ -23,10 +23,15 @@ object MessageLookup {
     val heading = "Hello from income-tax-subscription-frontend !"
   }
 
-  object timeout {
+  object Timeout {
     val title = "Session closed due to inactivity"
     val heading = "You've been signed out due to inactivity."
-    val returnToHome = "You can start again from the <a href=\"{0}\" rel=\"external\">subscription</a> page."
+    val returnToHome = """You can start again from the <a href="{0}" rel="external">subscription</a> page."""
   }
 
-}
+  object Confirmation {
+    val title = "Submitted"
+    val heading = title
+  }
+
+  }

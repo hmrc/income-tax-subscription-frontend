@@ -1,0 +1,5 @@
+@()(implicit request: Request[_], messages: Messages)
+
+@views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None) {
+    <h1>@Messages("confirmation.heading")</h1>
+}

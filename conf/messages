@@ -1,11 +1,10 @@
 ## Base ##
-
-base.back=Back
+base.back                   = Back
 
 ## Timeout page ##
-timeout.title=Session closed due to inactivity
-timeout.heading=You''ve been signed out due to inactivity.
-timeout.returnToHome=You can start again from the <a href="{0}">subscription</a> page.
+timeout.title               = Session closed due to inactivity
+timeout.heading             = You''ve been signed out due to inactivity.
+timeout.returnToHome        = You can start again from the <a href="{0}">subscription</a> page.
 
 ## Failure Messages ##
 notAuthorised.title         = Not Authorised
@@ -21,3 +20,7 @@ technicalIssue.title        = Technical Issues
 technicalIssue.pageHeading  = There is a technical problem
 technicalIssue.paraOne      = This online service is experiencing difficulties.
 technicalIssue.paraTwo      = Please try again in 5 minutes.
+
+## Confirmation page ##
+confirmation.title          = Submitted
+confirmation.heading        = Submitted

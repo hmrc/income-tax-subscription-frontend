@@ -22,19 +22,19 @@ import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
-class SessionTimeoutViewSpec extends PlaySpec with OneAppPerTest {
+class ConfirmationViewSpec extends PlaySpec with OneAppPerTest {
 
-  lazy val page = views.html.timeout.timeout()(FakeRequest(), applicationMessages)
+  lazy val page = views.html.confirmation()(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
-  "The Session timeout view" should {
+  "The Confirmation view" should {
 
-    s"have the title '${MessageLookup.Timeout.title}'" in {
-      document.title() must be (MessageLookup.Timeout.title)
+    s"have the title '${MessageLookup.Confirmation.title}'" in {
+      document.title() must be (MessageLookup.Confirmation.title)
     }
 
-    s"have the heading (H1) '${MessageLookup.Timeout.heading}'" in {
-      document.getElementsByTag("H1").text() must be (MessageLookup.Timeout.heading)
+    s"have the heading (H1) '${MessageLookup.Confirmation.heading}'" in {
+      document.getElementsByTag("H1").text() must be (MessageLookup.Confirmation.heading)
     }
   }
 }

@@ -21,8 +21,6 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
-import uk.gov.hmrc.play.http.HttpResponse
-
 import scala.concurrent.Future
 
 object ConfirmationController extends ConfirmationController {
@@ -34,7 +32,7 @@ object ConfirmationController extends ConfirmationController {
 trait ConfirmationController extends FrontendController with AuthorisedForIncomeTaxSA  {
 
   val showConfirmation = Authorised.async { implicit user => implicit request =>
-		Future.successful(NotImplemented)
+		Future.successful(Ok(views.html.confirmation()))
   }
 
   val submitConfirmation = Authorised.async { implicit user => implicit request =>
