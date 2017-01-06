@@ -21,10 +21,13 @@ import play.api.data.Form
 import play.api.data.Forms._
 
 object EmailForm {
+
   val emailAddress = "emailAddress"
+
   val emailForm = Form(
     mapping(
       emailAddress -> text
     )(EmailModel.apply)(EmailModel.unapply)
   )
+
 }

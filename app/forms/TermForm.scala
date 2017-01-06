@@ -22,11 +22,12 @@ import play.api.data.Forms._
 
 
 object TermForm {
-  val termName = "hasAcceptedTerms"
+
+  val hasAcceptedTerms = "hasAcceptedTerms"
 
   val termForm = Form(
     mapping(
-      termName -> boolean
+      hasAcceptedTerms -> boolean
     )(TermModel.apply)(TermModel.unapply)
   )
 

@@ -27,7 +27,7 @@ class TermFormSpec extends PlaySpec with OneAppPerTest {
   "The termForm " should {
     "transform the data to the case class" in {
       val testTerm = true
-      val testInput = Map(termName -> testTerm.toString)
+      val testInput = Map(hasAcceptedTerms -> testTerm.toString)
       val expected = TermModel(testTerm)
       val actual = termForm.bind(testInput).value
       actual shouldBe Some(expected)

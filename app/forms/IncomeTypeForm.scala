@@ -26,7 +26,7 @@ object IncomeTypeForm {
 
   val incomeTypeForm = Form(
     mapping(
-      "incomeType" -> text
+      incomeType -> text
     )(IncomeTypeModel.apply)(IncomeTypeModel.unapply)
   )
 
