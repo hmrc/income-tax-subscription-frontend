@@ -30,21 +30,21 @@ class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
   val testField2 = "testField2"
   val testField3 = "testField3"
 
-  val testInvalid = (fieldName: String) => ErrorMessageFactory.error("", fieldName, "errMsg", "arg1", "arg2")
+  val testInvalid = ErrorMessageFactory.error("", "errMsg", "arg1", "arg2")
 
-  val checkLength: String => String => ValidationResult = (fieldName: String) => (a: String) =>
+  val checkLength: String => ValidationResult = (a: String) =>
     a.length > 10 match {
       case true => Valid
-      case false => testInvalid(fieldName)
+      case false => testInvalid
     }
 
   def testConstraint[A](f: A => ValidationResult) = Constraint[A]("")(f)
 
   val testForm = Form(
     mapping(
-      testField1 -> text.verifying(testConstraint(checkLength(testField1))),
-      testField2 -> text.verifying(testConstraint(checkLength(testField2))),
-      testField3 -> text.verifying(testConstraint(checkLength(testField3)))
+      testField1 -> text.verifying(testConstraint(checkLength)),
+      testField2 -> text.verifying(testConstraint(checkLength)),
+      testField3 -> text.verifying(testConstraint(checkLength))
     )(TestModel.apply)(TestModel.unapply)
   )
 
@@ -69,7 +69,14 @@ class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
     "in case of errors retrieve the error associated to the field" in {
       val testData = Map[String, String](testField1 -> "", testField2 -> "", testField3 -> "")
       val validatedForm = testForm.bind(testData)
-      val expected = testInvalid(testField3).errors.head.args.head
+      println
+      println(validatedForm)
+      println
+      println(validatedForm.errors)
+      println
+      println(validatedForm.errors.map(e => e.key))
+      println
+      val expected = testInvalid.errors.head.args.head
 
       val actual = ErrorMessageHelper.getFieldError(validatedForm, testField3)
       actual shouldBe Some(expected)
@@ -84,10 +91,11 @@ class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
     "in case of errors retrieve the all the summary errors on the form" in {
       val testData = Map[String, String](testField1 -> "", testField2 -> "", testField3 -> "")
       val validatedForm = testForm.bind(testData)
+
       val expected = Seq(
-        testInvalid(testField1).errors.map(e => e.args(1)),
-        testInvalid(testField2).errors.map(e => e.args(1)),
-        testInvalid(testField3).errors.map(e => e.args(1))
+        testInvalid.errors.map(e => (testField1, e.args(1))),
+        testInvalid.errors.map(e => (testField2, e.args(1))),
+        testInvalid.errors.map(e => (testField3, e.args(1)))
       ).flatten
 
       val actual = ErrorMessageHelper.getSummaryErrors(validatedForm)

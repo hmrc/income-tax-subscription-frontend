@@ -17,4 +17,4 @@
 package forms.validation.models
 
 
-case class SummaryError(messageKey: String, messageArgs: Seq[String] = Seq(), targets: TargetIds) extends ErrorMessage
+case class SummaryError(messageKey: String, messageArgs: Seq[String] = Seq()) extends ErrorMessage

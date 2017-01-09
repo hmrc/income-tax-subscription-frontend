@@ -44,9 +44,9 @@ object ErrorMessageHelper {
     filterFieldError(err)
   }
 
-  def getSummaryErrors(form: Form[_]): Seq[SummaryError] = {
+  def getSummaryErrors(form: Form[_]): Seq[(String, SummaryError)] = {
     val err = form.errors
-    err.map(e => e.args(1).asInstanceOf[SummaryError])
+    err.map(e => (e.key, e.args(1).asInstanceOf[SummaryError]))
   }
 
 }

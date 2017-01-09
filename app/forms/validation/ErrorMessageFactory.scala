@@ -16,15 +16,14 @@
 
 package forms.validation
 
-import forms.validation.models.{FieldError, SummaryError, TargetIds}
+import forms.validation.models.{FieldError, SummaryError}
 import play.api.data.validation.Invalid
 
 object ErrorMessageFactory {
 
-  def error(errName: String, anchor: String, errKey: String, errArgs: String*): Invalid = {
+  def error(errName: String, errKey: String, errArgs: String*): Invalid = {
     val fieldError = FieldError(errKey, errArgs)
-    val targetIds = TargetIds(anchor)
-    val summaryError = SummaryError(errKey, errArgs, targetIds)
+    val summaryError = SummaryError(errKey, errArgs)
     error(errName, fieldError, summaryError)
   }
 
