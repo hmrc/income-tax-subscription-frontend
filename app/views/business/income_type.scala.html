@@ -1,0 +1,16 @@
+@import models.IncomeTypeModel
+@import play.api.data.Form
+
+@(form: Form[IncomeTypeModel])(implicit request: Request[_], messages: Messages)
+
+@import forms.IncomeTypeForm
+@import helpers.radioHelper
+
+@views.html.templates.main_template(title = Messages("sar.business.income-type.title"), bodyClasses = None) {
+    <h1>@Messages("sar.business.income-type.h1")</h1>
+
+    @radioHelper(
+        form(IncomeTypeForm.incomeType)
+    )
+
+}

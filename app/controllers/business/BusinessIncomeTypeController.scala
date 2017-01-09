@@ -18,6 +18,7 @@ package controllers.business
 
 import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import forms.IncomeTypeForm
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
@@ -33,11 +34,13 @@ object BusinessIncomeTypeController extends BusinessIncomeTypeController {
 
 trait BusinessIncomeTypeController extends FrontendController with AuthorisedForIncomeTaxSA {
 
-  val showBusinessIncomeType = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
+  val showBusinessIncomeType = Authorised.async { implicit user =>
+    implicit request =>
+      Future.successful(Ok(views.html.business.income_type(IncomeTypeForm.incomeTypeForm)))
   }
 
-  val submitBusinessIncomeType = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
+  val submitBusinessIncomeType = Authorised.async { implicit user =>
+    implicit request =>
+      Future.successful(NotImplemented)
   }
 }

@@ -1,0 +1,22 @@
+@import play.api.data.Field
+
+@(field: Field,
+    fieldSetClass: Option[String] = None
+)(implicit messages: Messages)
+
+<div class="form-group">
+    <fieldset @fieldSetClass.fold(Html(""))(cls => Html(s"""class="$cls""""))>
+
+        <legend class="visually-hidden">Do you already have a personal user account?</legend>
+
+        <label class="block-label selection-button-radio" for="radio-inline-1">
+            <input id="radio-inline-1" type="radio" name="radio-inline-group" value="Yes">
+            Yes
+        </label>
+        <label class="block-label selection-button-radio" for="radio-inline-2">
+            <input id="radio-inline-2" type="radio" name="radio-inline-group" value="No">
+            No
+        </label>
+
+    </fieldset>
+</div>
