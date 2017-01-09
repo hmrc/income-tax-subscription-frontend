@@ -30,7 +30,29 @@ class BusinessNameControllerSpec extends ControllerBaseSpec {
     "showBusinessIncomeType" -> TestBusinessNameController.showBusinessName,
     "submitBusinessIncomeType" -> TestBusinessNameController.submitBusinessName
   )
-  object TestBusinessNameController extends BusinessNameController {o ok (200)" in {
+  object TestBusinessNameController extends BusinessNameController {
+    override lazy val applicationConfig = MockConfig
+    override lazy val authConnector = MockAuthConnector
+    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
+  }
+
+  "The BusinessNameController controller" should {
+    "use the correct applicationConfig" in {
+      BusinessNameController.applicationConfig must be (FrontendAppConfig)
+    }
+    "use the correct authConnector" in {
+      BusinessNameController.authConnector must be (FrontendAuthConnector)
+    }
+    "use the correct postSignInRedirectUrl" in {
+      BusinessNameController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
+    }
+  }
+
+  "Calling the showBusinessName action of the BusinessNameController with an authorised user" should {
+
+    lazy val result = TestBusinessNameController.showBusinessName(authenticatedFakeRequest())
+
+    "return ok (200)" in {
       status(result) must be (Status.OK)
     }
   }
