@@ -1,26 +1,31 @@
 ## Base ##
-base.back                   = Back
+base.back                                                       = Back
 
 ## Timeout page ##
-timeout.title               = Session closed due to inactivity
-timeout.heading             = You''ve been signed out due to inactivity.
-timeout.returnToHome        = You can start again from the <a href="{0}">subscription</a> page.
+timeout.title                                                   = Session closed due to inactivity
+timeout.heading                                                 = You''ve been signed out due to inactivity.
+timeout.returnToHome                                            = You can start again from the <a href="{0}">subscription</a> page.
 
 ## Failure Messages ##
-notAuthorised.title         = Not Authorised
-notAuthorised.pageHeading   = We were unable to confirm your identity
-notAuthorised.paraOne       = <p>If you can''t confirm your identity and you have a query you can <a href="{0}" target="_blank">contact HM Revenue and Customs (opens in a new window)</a> to get help.</p>
+notAuthorised.title                                             = Not Authorised
+notAuthorised.pageHeading                                       = We were unable to confirm your identity
+notAuthorised.paraOne                                           = <p>If you can''t confirm your identity and you have a query you can <a href="{0}" target="_blank">contact HM Revenue and Customs (opens in a new window)</a> to get help.</p>
 
-lockedOut.title             = Locked Out
-lockedOut.pageHeading       = You have tried to confirm your identity too many times
-lockedOut.paraOne           = You can try again in 7 days.
-lockedOut.paraTwo           = <p>If you have a query you can <a href="{0}" target="_blank">contact HM Revenue and Customs (opens in a new window)</a> to get help.</p>
+lockedOut.title                                                 = Locked Out
+lockedOut.pageHeading                                           = You have tried to confirm your identity too many times
+lockedOut.paraOne                                               = You can try again in 7 days.
+lockedOut.paraTwo                                               = <p>If you have a query you can <a href="{0}" target="_blank">contact HM Revenue and Customs (opens in a new window)</a> to get help.</p>
 
-technicalIssue.title        = Technical Issues
-technicalIssue.pageHeading  = There is a technical problem
-technicalIssue.paraOne      = This online service is experiencing difficulties.
-technicalIssue.paraTwo      = Please try again in 5 minutes.
+technicalIssue.title                                            = Technical Issues
+technicalIssue.pageHeading                                      = There is a technical problem
+technicalIssue.paraOne                                          = This online service is experiencing difficulties.
+technicalIssue.paraTwo                                          = Please try again in 5 minutes.
 
 ## Confirmation page ##
-confirmation.title          = Submitted
-confirmation.heading        = Submitted
+confirmation.title                                              = Submitted
+confirmation.heading                                            = Submitted
+confirmation.submissionReference.label                          = Submission number:
+confirmation.submissionDate.label                               = Date:
+confirmation.emailConfirmation                                  = You''ll receive an email confirming that your application has been received.
+confirmation.whatHappensNext.heading                            = What happens next
+confirmation.whatHappensNext.para1                              = Your process for HMRC.

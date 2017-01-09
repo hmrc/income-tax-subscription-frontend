@@ -32,6 +32,14 @@ object MessageLookup {
   object Confirmation {
     val title = "Submitted"
     val heading = title
-  }
+    val submissionReferenceLabel = "Submission number:"
+    val submissionDateLabel = "Date:"
+    val emailConfirmation = "You'll receive an email confirming that your application has been received."
+    object whatHappensNext {
+      val heading = "What happens next"
+      val para1 = "Your process for HMRC."
+    }
 
   }
+
+}

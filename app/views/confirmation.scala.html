@@ -1,5 +1,27 @@
-@()(implicit request: Request[_], messages: Messages)
+@import java.util.Date
+
+@(submissionReference: String, submissionDate: Date)(implicit request: Request[_], messages: Messages)
 
 @views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None) {
-    <h1>@Messages("confirmation.heading")</h1>
+
+    <section id="confirmation-heading" class="transaction-banner--complete">
+        <h1 class="transaction-banner__heading" style="color:#fff">@Messages("confirmation.heading")</h1>
+        <p>
+            <span id="submission-reference-label"  class="h3-heading">@Messages("confirmation.submissionReference.label")</span>
+            <span id="submission-reference-value"  class="h3-heading">@submissionReference</span>
+        </p>
+        <p>
+            <span id="submission-date-label"  class="h3-heading">@Messages("confirmation.submissionDate.label")</span>
+            <span id="submission-date-value"  class="h3-heading">@submissionDate.format("d MMMMM yyyy")</span>
+        </p>
+    </section>
+
+    <p id="emailConfirmation">@Messages("confirmation.emailConfirmation")</p>
+
+    <section id="whatHappensNext">
+        <h2>@Messages("confirmation.whatHappensNext.heading")</h2>
+        <p id="para1">@Messages("confirmation.whatHappensNext.para1")</p>
+    </section>
+
+
 }
