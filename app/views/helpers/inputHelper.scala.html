@@ -1,52 +1,17 @@
+@import play.api.data.Form
 @import play.api.data.Field
 @(field: Field,
-        parentField: Option[Field] = None,
-        labelParams : Option[LabelParams] = None,
-        divClass: Option[String] = None,
-        labelDataAttributes: Option[String] = None,
-        hideErrors: Option[Boolean] = None,
-        errorId: Option[String] = None,
-        inputHint: Option[String] = None,
-        hintId: Option[String] = None,
-        fieldType: Option[String] = None,
-        dataAttributes: Option[String] = None,
-        inputClass: Option[String] = None,
-        autoComplete: Option[Boolean] = None,
-        maxLength: Option[Int] = None,
-        max: Option[String] = None,
-        pattern: Option[String] = None,
-        title: Option[String] = None,
-        required: Option[Boolean] = None
+        parentForm: Option[Form[_]] = None,
+        inputId: String,
+        maxLength: Option[Int]
+
 )(implicit messages: Messages)
 
-@import uk.gov.hmrc.play.views.html.helpers.input
+<label class="form-label" for=@inputId>
 
-@inputParams = @{
-    paramSeq(
-        'parentField -> parentField,
-        '_labelAfter -> labelParams.labelAfter,
-        '_labelHighlight -> labelParams.labelHighlight,
-        '_divClass -> divClass,
-        '_labelClass -> labelParams.labelClass,
-        '_labelTextClass -> labelParams.labelTextClass,
-        '_labelDataAttributes -> labelParams.labelDataAttributes,
-        '_hideErrors -> hideErrors,
-        '_error_id -> errorId,
-        '_label -> labelParams.label,
-        '_inputHint -> inputHint,
-        '_hintId -> hintId,
-        '_type -> fieldType,
-        '_dataAttributes -> dataAttributes,
-        '_inputClass -> inputClass,
-        '_autoComplete -> autoComplete,
-        '_maxlength -> maxLength,
-        '_max -> max,
-        '_pattern -> pattern,
-        '_title -> title,
-        '_required -> required
-    )
-}
+    <input name = @field.name class="form-control" id=@inputId type="text"
+        @maxLength.fold(Html(""))(max => Html(s"maxlength=$max"))
+    >
 
-@input(field,
-    inputParams :_*
-)
+</label>
+
