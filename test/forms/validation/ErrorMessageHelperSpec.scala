@@ -30,7 +30,7 @@ class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
   val testField2 = "testField2"
   val testField3 = "testField3"
 
-  val testInvalid = ErrorMessageFactory.error("", "errMsg", "arg1", "arg2")
+  val testInvalid = ErrorMessageFactory.error("errMsg", "arg1", "arg2")
 
   val checkLength: String => ValidationResult = (a: String) =>
     a.length > 10 match {
@@ -69,13 +69,6 @@ class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
     "in case of errors retrieve the error associated to the field" in {
       val testData = Map[String, String](testField1 -> "", testField2 -> "", testField3 -> "")
       val validatedForm = testForm.bind(testData)
-      println
-      println(validatedForm)
-      println
-      println(validatedForm.errors)
-      println
-      println(validatedForm.errors.map(e => e.key))
-      println
       val expected = testInvalid.errors.head.args.head
 
       val actual = ErrorMessageHelper.getFieldError(validatedForm, testField3)

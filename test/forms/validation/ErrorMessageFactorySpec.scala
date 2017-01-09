@@ -27,19 +27,17 @@ class ErrorMessageFactorySpec extends PlaySpec with OneServerPerSuite {
       val fieldError = FieldError("errMsgField", Seq("arg1", "arg2"))
       val summaryError = SummaryError("errMsgSummary", Seq("arg1", "arg2"))
 
-      val errorMessage = "errorType1"
-      val actual = ErrorMessageFactory.error(errorMessage, fieldError, summaryError)
-      actual.errors.head.message shouldBe errorMessage
+      val actual = ErrorMessageFactory.error(fieldError, summaryError)
+      actual.errors.head.message shouldBe ""
       actual.errors.head.args.head shouldBe fieldError
       actual.errors.head.args(1) shouldBe summaryError
     }
 
     "correctly package the Invalid instance when the shortcut function is used" in {
-      val errorMessage = "errorType1"
       val errMsg = "errMsg"
       val errArgs = Seq("arg1", "arg2")
-      val actual = ErrorMessageFactory.error(errorMessage, errMsg, errArgs: _*)
-      actual.errors.head.message shouldBe errorMessage
+      val actual = ErrorMessageFactory.error(errMsg, errArgs: _*)
+      actual.errors.head.message shouldBe ""
       actual.errors.head.args.head shouldBe FieldError(errMsg, errArgs)
       actual.errors.head.args(1) shouldBe SummaryError(errMsg, errArgs)
     }

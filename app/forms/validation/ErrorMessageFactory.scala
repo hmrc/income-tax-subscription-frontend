@@ -21,13 +21,13 @@ import play.api.data.validation.Invalid
 
 object ErrorMessageFactory {
 
-  def error(errName: String, errKey: String, errArgs: String*): Invalid = {
+  def error(errKey: String, errArgs: String*): Invalid = {
     val fieldError = FieldError(errKey, errArgs)
     val summaryError = SummaryError(errKey, errArgs)
-    error(errName, fieldError, summaryError)
+    error(fieldError, summaryError)
   }
 
-  def error(errName: String, fieldError: FieldError, summaryError: SummaryError): Invalid =
-    Invalid(errName, fieldError, summaryError)
+  def error(fieldError: FieldError, summaryError: SummaryError): Invalid =
+    Invalid("", fieldError, summaryError)
 
 }
