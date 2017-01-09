@@ -49,22 +49,39 @@ class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
   )
 
   "Error message helper" should {
-    "retrieve the error associated to the field" in {
+
+    "in case of no errors, None sould be returned for the field error" in {
+      val actual = ErrorMessageHelper.getFieldError(testForm, testField3)
+      actual shouldBe None
+
+      val actual2 = ErrorMessageHelper.getFieldError(testForm(testField3))
+      actual2 shouldBe None
+
+      val actual3 = ErrorMessageHelper.getFieldError(testForm(testField3), testForm)
+      actual3 shouldBe None
+    }
+
+    "in case of no errors, get summary error should return an empty sequence" in {
+      val actual = ErrorMessageHelper.getSummaryErrors(testForm)
+      actual shouldBe Seq()
+    }
+
+    "in case of errors retrieve the error associated to the field" in {
       val testData = Map[String, String](testField1 -> "", testField2 -> "", testField3 -> "")
       val validatedForm = testForm.bind(testData)
       val expected = testInvalid(testField3).errors.head.args.head
 
       val actual = ErrorMessageHelper.getFieldError(validatedForm, testField3)
-      actual shouldBe expected
+      actual shouldBe Some(expected)
 
       val actual2 = ErrorMessageHelper.getFieldError(validatedForm(testField3))
-      actual2 shouldBe expected
+      actual2 shouldBe Some(expected)
 
       val actual3 = ErrorMessageHelper.getFieldError(validatedForm(testField3), validatedForm)
-      actual3 shouldBe expected
+      actual3 shouldBe Some(expected)
     }
 
-    "retrieve the all the summary errors on the form" in {
+    "in case of errors retrieve the all the summary errors on the form" in {
       val testData = Map[String, String](testField1 -> "", testField2 -> "", testField3 -> "")
       val validatedForm = testForm.bind(testData)
       val expected = Seq(

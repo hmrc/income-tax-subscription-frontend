@@ -22,21 +22,24 @@ import play.api.data.{Field, Form, FormError}
 
 object ErrorMessageHelper {
 
-  @inline private def filterFieldError(errors: Seq[FormError]): FieldError =
-    errors.head.args.head.asInstanceOf[FieldError]
+  @inline private def filterFieldError(errors: Seq[FormError]): Option[FieldError] =
+    errors match {
+      case Nil => None
+      case _ => Some(errors.head.args.head.asInstanceOf[FieldError])
+    }
 
 
-  def getFieldError(form: Form[_], fieldName: String) = {
+  def getFieldError(form: Form[_], fieldName: String): Option[FieldError] = {
     val err = form.errors(fieldName)
     filterFieldError(err)
   }
 
-  def getFieldError(field: Field) = {
+  def getFieldError(field: Field): Option[FieldError] = {
     val err = field.errors
     filterFieldError(err)
   }
 
-  def getFieldError(field: Field, parentForm: Form[_]) = {
+  def getFieldError(field: Field, parentForm: Form[_]): Option[FieldError] = {
     val err = parentForm.errors(field.name)
     filterFieldError(err)
   }
