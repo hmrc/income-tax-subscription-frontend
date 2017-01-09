@@ -16,26 +16,34 @@
 
 package forms.validation
 
-import play.api.data.{Field, Form}
+import forms.validation.models.{FieldError, SummaryError}
+import play.api.data.{Field, Form, FormError}
 
 
 object ErrorMessageHelper {
 
+  @inline private def filterFieldError(errors: Seq[FormError]): FieldError =
+    errors.head.args.head.asInstanceOf[FieldError]
+
+
   def getFieldError(form: Form[_], fieldName: String) = {
     val err = form.errors(fieldName)
-    err
+    filterFieldError(err)
   }
 
   def getFieldError(field: Field) = {
-    field.errors
+    val err = field.errors
+    filterFieldError(err)
   }
 
   def getFieldError(field: Field, parentForm: Form[_]) = {
-    parentForm.errors(field.name)
+    val err = parentForm.errors(field.name)
+    filterFieldError(err)
   }
 
-  def getSummaryErrors(form: Form[_]) = {
-    form.errors
+  def getSummaryErrors(form: Form[_]): Seq[SummaryError] = {
+    val err = form.errors
+    err.map(e => e.args(1).asInstanceOf[SummaryError])
   }
 
 }

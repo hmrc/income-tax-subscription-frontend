@@ -16,12 +16,11 @@
 
 package forms.validation
 
-import forms.validation.ErrorMessageHelper
+import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.data.Form
 import play.api.data.Forms._
-import org.scalatest.Matchers._
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
+import play.api.data.validation.{Constraint, Valid, ValidationResult}
 
 class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
 
@@ -31,19 +30,21 @@ class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
   val testField2 = "testField2"
   val testField3 = "testField3"
 
-  val checkLength: String => ValidationResult = a =>
+  val testInvalid = (fieldName: String) => ErrorMessageFactory.error("", fieldName, "errMsg", "arg1", "arg2")
+
+  val checkLength: String => String => ValidationResult = (fieldName: String) => (a: String) =>
     a.length > 10 match {
       case true => Valid
-      case false => Invalid("my Error Message","arg1","arg2")
+      case false => testInvalid(fieldName)
     }
 
   def testConstraint[A](f: A => ValidationResult) = Constraint[A]("")(f)
 
   val testForm = Form(
     mapping(
-      testField1 -> text.verifying((a: String) => a.length > 10),
-      testField2 -> text.verifying("my Error Message", (a: String) => a.length > 10),
-      testField3 -> text.verifying(testConstraint(checkLength))
+      testField1 -> text.verifying(testConstraint(checkLength(testField1))),
+      testField2 -> text.verifying(testConstraint(checkLength(testField2))),
+      testField3 -> text.verifying(testConstraint(checkLength(testField3)))
     )(TestModel.apply)(TestModel.unapply)
   )
 
@@ -51,9 +52,29 @@ class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
     "retrieve the error associated to the field" in {
       val testData = Map[String, String](testField1 -> "", testField2 -> "", testField3 -> "")
       val validatedForm = testForm.bind(testData)
+      val expected = testInvalid(testField3).errors.head.args.head
 
       val actual = ErrorMessageHelper.getFieldError(validatedForm, testField3)
-      actual shouldBe testField1
+      actual shouldBe expected
+
+      val actual2 = ErrorMessageHelper.getFieldError(validatedForm(testField3))
+      actual2 shouldBe expected
+
+      val actual3 = ErrorMessageHelper.getFieldError(validatedForm(testField3), validatedForm)
+      actual3 shouldBe expected
+    }
+
+    "retrieve the all the summary errors on the form" in {
+      val testData = Map[String, String](testField1 -> "", testField2 -> "", testField3 -> "")
+      val validatedForm = testForm.bind(testData)
+      val expected = Seq(
+        testInvalid(testField1).errors.map(e => e.args(1)),
+        testInvalid(testField2).errors.map(e => e.args(1)),
+        testInvalid(testField3).errors.map(e => e.args(1))
+      ).flatten
+
+      val actual = ErrorMessageHelper.getSummaryErrors(validatedForm)
+      actual shouldBe expected
     }
   }
 
