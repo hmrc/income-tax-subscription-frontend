@@ -1,6 +1,12 @@
 ## Base ##
 
 base.back=Back
+base.continue=Continue
+
+## Business Name
+sar.business_name.title     = What is your business name?
+sar.business_name.heading   = What is your business name?
+sar.business_name.hint      = This does not mean trading name
 
 ## Timeout page ##
 timeout.title=Session closed due to inactivity
