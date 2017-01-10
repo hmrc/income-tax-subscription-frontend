@@ -1,6 +1,6 @@
-@import java.util.Date
+@import models.DateModel
 
-@(submissionReference: String, submissionDate: Date)(implicit request: Request[_], messages: Messages)
+@(submissionReference: String, submissionDate: DateModel)(implicit request: Request[_], messages: Messages)
 
 @views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None) {
 
@@ -13,7 +13,7 @@
             </p>
             <p>
                 <span id="submission-date-label" class="h3-heading">@Messages("confirmation.submissionDate.label")</span>
-                <span id="submission-date-value" class="h3-heading">@submissionDate.format("d MMMMM yyyy")</span>
+                <span id="submission-date-value" class="h3-heading">@submissionDate.toOutputDateFormat</span>
             </p>
         </section>
 

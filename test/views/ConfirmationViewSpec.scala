@@ -16,19 +16,17 @@
 
 package views
 
-import java.text.SimpleDateFormat
 import assets.MessageLookup
 import org.jsoup.Jsoup
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import java.util.Date
+import models.DateModel
 
 class ConfirmationViewSpec extends PlaySpec with OneAppPerTest {
 
   val submissionReferenceValue = "000-032407"
-  val submissionDateValue: Date = new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2016")
-  val expectedOutputDateFormat = "1 January 2016"
+  val submissionDateValue = DateModel("1","1","2016")
 
   lazy val page = views.html.confirmation(
     submissionReference = submissionReferenceValue,
@@ -74,7 +72,7 @@ class ConfirmationViewSpec extends PlaySpec with OneAppPerTest {
       }
 
       s"has a submission date value '$submissionDateValue'" in {
-        document.select("#submission-date-value").text() mustBe expectedOutputDateFormat
+        document.select("#submission-date-value").text() mustBe submissionDateValue.toOutputDateFormat
       }
     }
 
