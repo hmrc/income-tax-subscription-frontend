@@ -3,13 +3,9 @@
     label: String
 )(implicit messages: Messages)
 
-<fieldset>
-    <legend class="visually-hidden">Which types of waste do you transport regularly?</legend>
-
+<div class="form-group">
     <label class="block-label selection-button-checkbox" for="@{field.name}">
-        <input id="@{field.name}" name="Terms" type="checkbox" value="true">
+        <input id="@{field.name}" name="@{field.name}" type="checkbox" value="true">
         @label
     </label>
-
-
-</fieldset>
+</div>
