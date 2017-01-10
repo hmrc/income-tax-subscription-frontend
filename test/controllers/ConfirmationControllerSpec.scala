@@ -71,22 +71,4 @@ class ConfirmationControllerSpec extends PlaySpec with OneAppPerTest {
       status(result) must be (Status.SEE_OTHER)
     }
   }
-
-  "Calling the submitConfirmation action of the ConfirmationController with an authorised user" should {
-
-    lazy val result = TestConfirmationController.submitConfirmation(authenticatedFakeRequest())
-
-    "return unimplemented (501)" in {
-      status(result) must be (Status.NOT_IMPLEMENTED)
-    }
-  }
-
-  "Calling the submitConfirmation action of the ConfirmationController with an unauthorised user" should {
-
-    lazy val result = TestConfirmationController.submitConfirmation(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
 }

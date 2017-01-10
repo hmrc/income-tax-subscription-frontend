@@ -40,8 +40,4 @@ trait ConfirmationController extends FrontendController with AuthorisedForIncome
       submissionDate = DateModel("01","01","2016")
     )))
   }
-
-  val submitConfirmation = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
-  }
 }
