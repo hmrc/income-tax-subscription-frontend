@@ -1,22 +1,31 @@
 @import play.api.data.Field
 
 @(field: Field,
+    legend: String,
+    options: Seq[String],
+    inline: Boolean = false,
     fieldSetClass: Option[String] = None
 )(implicit messages: Messages)
 
+@fieldSetClassValue = @{
+    (inline, fieldSetClass) match {
+        case (false, _ )       => fieldSetClass.fold(Html(""))(cls => Html(s"""class="$cls""""))
+        case (true, Some(cls)) => Html(s"""class="inline $cls"""")
+        case _                 => Html(s"""class="inline"""")
+    }
+}
+
 <div class="form-group">
-    <fieldset @fieldSetClass.fold(Html(""))(cls => Html(s"""class="$cls""""))>
-
-        <legend class="visually-hidden">Do you already have a personal user account?</legend>
-
-        <label class="block-label selection-button-radio" for="radio-inline-1">
-            <input id="radio-inline-1" type="radio" name="radio-inline-group" value="Yes">
-            Yes
-        </label>
-        <label class="block-label selection-button-radio" for="radio-inline-2">
-            <input id="radio-inline-2" type="radio" name="radio-inline-group" value="No">
-            No
-        </label>
-
+    <fieldset @fieldSetClassValue>
+        <legend class="visually-hidden" id="@field.name">@legend</legend>
+        @options.zipWithIndex.map{
+            case (option, i) => {
+                <label class="block-label selection-button-radio" for="@{field.name}-@{i+1}">
+                    <input id="@{field.name}-@{i+1}" type="radio" name="@{field.name}" value="@option">
+                    @option
+                </label>
+            }
+        }
     </fieldset>
 </div>
+
