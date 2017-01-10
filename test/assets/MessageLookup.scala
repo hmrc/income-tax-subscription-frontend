@@ -18,9 +18,18 @@ package assets
 
 object MessageLookup {
 
+  val continue = "Continue"
+
   object HelloWorld {
     val title = "Hello from income-tax-subscription-frontend"
     val heading = "Hello from income-tax-subscription-frontend !"
+  }
+
+  object BusinessName {
+    val title = "What is your business name?"
+    val heading = "What is your business name?"
+    val label = "Enter your business name"
+    val hint = "This does not mean trading name"
   }
 
   object timeout {

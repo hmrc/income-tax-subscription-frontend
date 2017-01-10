@@ -1,14 +1,23 @@
 @import models._
 @import forms.BusinessNameForm._
 @import helpers._
+@import uk.gov.hmrc.play.views.html.helpers.form
 
-@(form: Form[BusinessNameModel])(implicit request: Request[_], messages: Messages)
+@(businessNameForm: Form[BusinessNameModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @views.html.templates.main_template(title = Messages("sar.business_name.title"), bodyClasses = None) {
-    <h1>@Messages("sar.business_name.h1")</h1>
-    @inputHelper(
-        field = form(businessName),
-        label = Messages("sar.business_name.label"),
-        maxLength = 10
-    )
+
+    <h1>@Messages("sar.business_name.heading")</h1>
+
+    @form(action = postAction) {
+
+        @inputHelper(
+            field = businessNameForm(businessName),
+            formHint = Messages("sar.business_name.hint"),
+            maxLength = 40
+        )
+
+        @continueButton()
+
+    }
 }
