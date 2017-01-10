@@ -18,10 +18,10 @@ package controllers
 
 import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import forms.TermForm
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
-import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
@@ -34,7 +34,7 @@ object TermsController extends TermsController {
 trait TermsController extends FrontendController with AuthorisedForIncomeTaxSA {
 
   val showTerms = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
+    Future.successful(Ok(views.html.terms(TermForm.termForm)))
   }
 
   val submitTerms = Authorised.async { implicit user => implicit request =>
