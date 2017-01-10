@@ -1,12 +1,14 @@
 @import play.api.data.Field
-@(field: Field)(implicit messages: Messages)
+@(field: Field,
+    label: String
+)(implicit messages: Messages)
 
 <fieldset>
     <legend class="visually-hidden">Which types of waste do you transport regularly?</legend>
 
-    <label class="block-label selection-button-checkbox" for="Read and agree">
-        <input id="Read and agree" name="Terms" type="checkbox" value="Read and agree">
-        Waste from animal carcasses
+    <label class="block-label selection-button-checkbox" for="@{field.name}">
+        <input id="@{field.name}" name="Terms" type="checkbox" value="true">
+        @label
     </label>
 
 

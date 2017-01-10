@@ -7,8 +7,9 @@
 
 
 @views.html.templates.main_template(title = "Hello from income-tax-subscription-frontend", bodyClasses = None) {
-<h1>Hello from income-tax-subscription-frontend !</h1>
-@checkboxHelper(
-field = form (hasAcceptedTerms))
-
+    <h1>Hello from income-tax-subscription-frontend !</h1>
+    @checkboxHelper(
+        field = form (hasAcceptedTerms),
+        label = ""
+    )
 }
