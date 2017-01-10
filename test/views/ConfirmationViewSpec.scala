@@ -52,7 +52,7 @@ class ConfirmationViewSpec extends PlaySpec with OneAppPerTest {
 
         lazy val heading = document.select("H1")
 
-        s"has the text ${MessageLookup.Confirmation.heading}'" in {
+        s"has the text '${MessageLookup.Confirmation.heading}'" in {
           heading.text() mustBe MessageLookup.Confirmation.heading
         }
 
@@ -88,11 +88,68 @@ class ConfirmationViewSpec extends PlaySpec with OneAppPerTest {
         document.select("#whatHappensNext h2").text() mustBe MessageLookup.Confirmation.whatHappensNext.heading
       }
 
-      s"has a paragraph stating HMRC process' ${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
-        document.select("#para1").text() mustBe MessageLookup.Confirmation.whatHappensNext.para1
+      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
+        document.select("#whatHappensNext p").text() mustBe MessageLookup.Confirmation.whatHappensNext.para1
       }
 
+      s"has a bullet point relating to correspondence '${MessageLookup.Confirmation.whatHappensNext.bullet1}'" in {
+        document.select("#whatHappensNext li:nth-child(1)").text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet1
+      }
 
+      s"has a bullet point relating to implications and obligations '${MessageLookup.Confirmation.whatHappensNext.bullet2}'" in {
+        document.select("#whatHappensNext li:nth-child(2)").text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet2
+      }
+
+    }
+    "have a 'Register for more tax' section" which {
+
+      s"has the section heading '${MessageLookup.Confirmation.registerForMoreTax.heading}'" in {
+        document.select("#registerForMoreTax h2").text() mustBe MessageLookup.Confirmation.registerForMoreTax.heading
+      }
+
+      s"has a link stating PAYE '${MessageLookup.Confirmation.registerForMoreTax.link1}'" in {
+        document.select("#registerForMoreTax a:nth-child(1)").text() mustBe MessageLookup.Confirmation.registerForMoreTax.link1
+      }
+
+      s"has a link stating VAT '${MessageLookup.Confirmation.registerForMoreTax.link2}'" in {
+        document.select("#registerForMoreTax a:nth-child(2)").text() mustBe MessageLookup.Confirmation.registerForMoreTax.link2
+      }
+
+    }
+
+    "have a 'Guidance' section" which {
+
+      s"has the section heading '${MessageLookup.Confirmation.guidanceSection.heading}'" in {
+        document.select("#guidanceSection h2").text() mustBe MessageLookup.Confirmation.guidanceSection.heading
+      }
+
+      s"has a link stating Quarterly filing '${MessageLookup.Confirmation.guidanceSection.link1}'" in {
+        document.select("#guidanceSection a:nth-child(1)").text() mustBe MessageLookup.Confirmation.guidanceSection.link1
+      }
+
+      s"has a link stating Downloading software '${MessageLookup.Confirmation.guidanceSection.link2}'" in {
+        document.select("#guidanceSection a:nth-child(2)").text() mustBe MessageLookup.Confirmation.guidanceSection.link2
+      }
+
+      s"has a link stating Further reading '${MessageLookup.Confirmation.guidanceSection.link3}'" in {
+        document.select("#guidanceSection a:nth-child(3)").text() mustBe MessageLookup.Confirmation.guidanceSection.link3
+      }
+
+    }
+
+    "have a 'Give us feedback' section" which {
+
+      s"has the section heading '${MessageLookup.Confirmation.giveUsFeedback.heading}'" in {
+        document.select("#giveUsFeedback h2").text() mustBe MessageLookup.Confirmation.giveUsFeedback.heading
+      }
+
+      s"has a link stating service question '${MessageLookup.Confirmation.giveUsFeedback.link1}'" in {
+        document.select("#giveUsFeedback a").text() mustBe MessageLookup.Confirmation.giveUsFeedback.link1
+      }
+
+      s"has the text stating feedback duration '${MessageLookup.Confirmation.giveUsFeedback.feedbackDuration}'" in {
+        document.select("#giveUsFeedback span").text() mustBe MessageLookup.Confirmation.giveUsFeedback.feedbackDuration
+      }
     }
 
   }

@@ -4,24 +4,55 @@
 
 @views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None) {
 
-    <section id="confirmation-heading" class="transaction-banner--complete">
-        <h1 class="transaction-banner__heading" style="color:#fff">@Messages("confirmation.heading")</h1>
-        <p>
-            <span id="submission-reference-label"  class="h3-heading">@Messages("confirmation.submissionReference.label")</span>
-            <span id="submission-reference-value"  class="h3-heading">@submissionReference</span>
-        </p>
-        <p>
-            <span id="submission-date-label"  class="h3-heading">@Messages("confirmation.submissionDate.label")</span>
-            <span id="submission-date-value"  class="h3-heading">@submissionDate.format("d MMMMM yyyy")</span>
-        </p>
-    </section>
+    <div class="form-group">
+        <section id="confirmation-heading" class="transaction-banner--complete">
+            <h1 class="transaction-banner__heading" style="color:#fff">@Messages("confirmation.heading")</h1>
+            <p>
+                <span id="submission-reference-label" class="h3-heading">@Messages("confirmation.submissionReference.label")</span>
+                <span id="submission-reference-value" class="h3-heading">@submissionReference</span>
+            </p>
+            <p>
+                <span id="submission-date-label" class="h3-heading">@Messages("confirmation.submissionDate.label")</span>
+                <span id="submission-date-value" class="h3-heading">@submissionDate.format("d MMMMM yyyy")</span>
+            </p>
+        </section>
 
-    <p id="emailConfirmation">@Messages("confirmation.emailConfirmation")</p>
+        <p id="emailConfirmation">@Messages("confirmation.emailConfirmation")</p>
+    </div>
 
-    <section id="whatHappensNext">
+    <section class="form-group" id="whatHappensNext">
         <h2>@Messages("confirmation.whatHappensNext.heading")</h2>
-        <p id="para1">@Messages("confirmation.whatHappensNext.para1")</p>
+        <p>@Messages("confirmation.whatHappensNext.para1")</p>
+        <ul class="bullets">
+            <li>@Messages("confirmation.whatHappensNext.bullet1")</li>
+            <li>@Messages("confirmation.whatHappensNext.bullet2")</li>
+        </ul>
     </section>
+
+    <section id="registerForMoreTax">
+        <h2>@Messages("confirmation.registerForMoreTax.heading")</h2>
+        <div class="link-list">
+            <a class="link-list__item" href="#">@Messages("confirmation.registerForMoreTax.link1")</a>
+            <a class="link-list__item" href="#">@Messages("confirmation.registerForMoreTax.link2")</a>
+        </div>
+    </section>
+
+    <section id="guidanceSection">
+        <h2>@Messages("confirmation.guidanceSection.heading")</h2>
+        <div class="link-list">
+            <a class="link-list__item" href="#">@Messages("confirmation.guidanceSection.link1")</a>
+            <a class="link-list__item" href="#">@Messages("confirmation.guidanceSection.link2")</a>
+            <a class="link-list__item" href="#">@Messages("confirmation.guidanceSection.link3")</a>
+        </div>
+    </section>
+
+    <section id="giveUsFeedback">
+        <h2>@Messages("confirmation.giveUsFeedback.heading")</h2>
+        <a href="#">@Messages("confirmation.giveUsFeedback.link1")</a>
+        <span>@Messages("confirmation.giveUsFeedback.feedbackDuration")</span>
+    </section>
+
+
 
 
 }

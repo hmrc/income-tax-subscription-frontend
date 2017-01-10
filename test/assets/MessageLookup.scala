@@ -35,9 +35,31 @@ object MessageLookup {
     val submissionReferenceLabel = "Submission number:"
     val submissionDateLabel = "Date:"
     val emailConfirmation = "You'll receive an email confirming that your application has been received."
+
     object whatHappensNext {
       val heading = "What happens next"
       val para1 = "Your process for HMRC."
+      val bullet1 = "What correspondence user will expect to receive and within what time period"
+      val bullet2 = "What implications and obligations on the user as a result of this subscription if any"
+    }
+
+    object registerForMoreTax {
+      val heading = "Register for more tax"
+      val link1 = "PAYE (Pay as you earn)"
+      val link2 = "VAT (Value added tax)"
+    }
+
+    object guidanceSection {
+      val heading = "Guidance"
+      val link1 = "Quarterly filing instructions"
+      val link2 = "Downloading software"
+      val link3 = "Further reading"
+    }
+
+    object giveUsFeedback {
+      val heading = "Give us feedback"
+      val link1 = "What did you think of this service?"
+      val feedbackDuration = "(takes 30 seconds)"
     }
 
   }
