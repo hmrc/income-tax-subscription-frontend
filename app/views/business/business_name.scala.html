@@ -7,8 +7,8 @@
 @views.html.templates.main_template(title = Messages("sar.business_name.title"), bodyClasses = None) {
     <h1>@Messages("sar.business_name.h1")</h1>
     @inputHelper(
-        form(businessName),
-        inputId = "businessName",
+        field = form(businessName),
+        label = Messages("sar.business_name.label"),
         maxLength = 10
     )
 }

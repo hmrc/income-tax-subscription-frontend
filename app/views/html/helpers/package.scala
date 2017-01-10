@@ -19,10 +19,4 @@ package views.html
 package object helpers {
   implicit def optionWrapperUtil[T, S <: T](data: S): Option[T] = Some(data)
 
-  def paramSeq(items: (Symbol, Option[Any])*): Seq[(Symbol, Any)] = items.filter {
-    case (s, Some(option)) => true
-    case _ => false
-  }.view.map {
-    case (s, Some(option)) => (s, option)
-  }
 }
