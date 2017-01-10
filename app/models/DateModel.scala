@@ -29,6 +29,6 @@ case class DateModel(day: String, month: String, year: String) {
 
 object DateModel {
   implicit def dateConvert(date: DateModel): LocalDate = date.toLocalDate
-
+  implicit def dateConvert(date: LocalDate): DateModel = DateModel(date.getDayOfMonth.toString, date.getMonthValue.toString, date.getYear.toString)
   implicit val format = Json.format[DateModel]
 }

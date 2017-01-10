@@ -16,12 +16,15 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import models.DateModel
+import models.DateModel.dateConvert
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+
 import scala.concurrent.Future
 
 object ConfirmationController extends ConfirmationController {
@@ -37,7 +40,7 @@ trait ConfirmationController extends FrontendController with AuthorisedForIncome
     // and actual value returned from DES once we have the service/connector implemented
 		Future.successful(Ok(views.html.confirmation(
       submissionReference = "000-032407",
-      submissionDate = DateModel("01","01","2016")
+      submissionDate = dateConvert(LocalDate.now())
     )))
   }
 }
