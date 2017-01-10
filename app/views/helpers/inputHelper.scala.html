@@ -4,7 +4,7 @@
         label: String,
         parentForm: Option[Form[_]] = None,
         formHint : Option[String] = None,
-        maxLength: Option[Int]
+        maxLength: Option[Int] = None
 )(implicit messages: Messages)
 
 @hintText(hint:String) = {
@@ -13,11 +13,14 @@
     </span>
 }
 
-<label class="form-label" for=@{field.name}>
-    @label
-    @formHint.fold(Html(""))(hint => hintText(hint))
-</label>
+<div class="form-group">
+    <label class="form-label" for=@{field.name}>
+        @label
+        @formHint.fold(Html(""))(hint => hintText(hint))
+    </label>
 
-<input name = @{field.name} class="form-control" id=@{field.name} type="text"
-       @maxLength.fold(Html(""))(max => Html(s"maxlength=$max"))
->
+    <input name = @{field.name} class="form-control" id=@{field.name} type="text"
+           @maxLength.fold(Html(""))(max => Html(s"maxlength=$max"))
+        @field.value.map(v => Html(s"""value="$v""""))
+    >
+</div>
