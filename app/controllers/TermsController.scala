@@ -33,11 +33,13 @@ object TermsController extends TermsController {
 
 trait TermsController extends FrontendController with AuthorisedForIncomeTaxSA {
 
-  val showTerms = Authorised.async { implicit user => implicit request =>
-    Future.successful(Ok(views.html.terms(TermForm.termForm)))
+  val showTerms = Authorised.async { implicit user =>
+    implicit request =>
+      Future.successful(Ok(views.html.terms(TermForm.termForm)))
   }
 
-  val submitTerms = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
+  val submitTerms = Authorised.async { implicit user =>
+    implicit request =>
+      Future.successful(NotImplemented)
   }
 }
