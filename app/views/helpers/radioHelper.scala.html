@@ -15,13 +15,20 @@
     }
 }
 
+@isSelected(option: String) = {
+    @field.value match {
+        case Some(`option`) => {checked="checked"}
+        case _ => {}
+    }
+}
+
 <div class="form-group">
     <fieldset @fieldSetClassValue>
         <legend class="visually-hidden" id="@field.name">@legend</legend>
         @options.zipWithIndex.map{
             case (option, i) => {
                 <label class="block-label selection-button-radio" for="@{field.name}-@{i+1}">
-                    <input id="@{field.name}-@{i+1}" type="radio" name="@{field.name}" value="@option">
+                    <input id="@{field.name}-@{i+1}" type="radio" name="@{field.name}" value="@option" @isSelected(option)>
                     @option
                 </label>
             }

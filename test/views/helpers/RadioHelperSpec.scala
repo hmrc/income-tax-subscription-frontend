@@ -26,12 +26,12 @@ class RadioHelperSpec extends PlaySpec with OneServerPerSuite {
       radioName -> text
     )(TestData.apply)(TestData.unapply)
   )
-  val testField = testForm(radioName)
 
   "RadioHelper" should {
     "populate the relavent content in the correct positions" in {
       val testLegend = "my test legend text"
       val testOptions = Seq("Yes", "No")
+      val testField = testForm(radioName)
       val doc = radioHelper(testField, testLegend, testOptions).doc
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
       doc.getElementsByTag("legend").text() shouldBe testLegend
@@ -46,6 +46,20 @@ class RadioHelperSpec extends PlaySpec with OneServerPerSuite {
       lablesForInputs.size() shouldBe 2
       lablesForInputs.get(0).text() shouldBe "Yes"
       lablesForInputs.get(1).text() shouldBe "No"
+    }
+
+    "if the form is populated, then select the correct radio button" in {
+      val testLegend = "my test legend text"
+      val testOptions = Seq("Yes", "No")
+      val testField = testForm.fill(TestData("No"))(radioName)
+      val doc = radioHelper(testField, testLegend, testOptions).doc
+
+      val inputs = doc.getElementsByTag("input")
+      inputs.size() shouldBe 2
+      inputs.get(0).attr("value") shouldBe "Yes"
+      inputs.get(0).attr("checked") shouldBe ""
+      inputs.get(1).attr("value") shouldBe "No"
+      inputs.get(1).attr("checked") shouldBe "checked"
     }
   }
 
