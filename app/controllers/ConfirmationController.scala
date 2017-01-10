@@ -36,7 +36,7 @@ object ConfirmationController extends ConfirmationController {
 trait ConfirmationController extends FrontendController with AuthorisedForIncomeTaxSA  {
 
   val showConfirmation = Authorised.async { implicit user => implicit request =>
-    // The view accepts a dummy reference number & date, this will be replaced with
+    // The view accepts a dummy reference number this will be replaced with
     // and actual value returned from DES once we have the service/connector implemented
 		Future.successful(Ok(views.html.confirmation(
       submissionReference = "000-032407",
