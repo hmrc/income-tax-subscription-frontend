@@ -24,6 +24,8 @@ import play.api.data.validation.{Constraint, Valid, ValidationResult}
 
 class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
 
+  import ConstraintUtil._
+
   case class TestModel(testField1: String, testField2: String, testField3: String)
 
   val testField1 = "testField1"
@@ -38,13 +40,11 @@ class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
       case false => testInvalid
     }
 
-  def testConstraint[A](f: A => ValidationResult) = Constraint[A]("")(f)
-
   val testForm = Form(
     mapping(
-      testField1 -> text.verifying(testConstraint(checkLength)),
-      testField2 -> text.verifying(testConstraint(checkLength)),
-      testField3 -> text.verifying(testConstraint(checkLength))
+      testField1 -> text.verifying(constraint(checkLength)),
+      testField2 -> text.verifying(constraint(checkLength)),
+      testField3 -> text.verifying(constraint(checkLength))
     )(TestModel.apply)(TestModel.unapply)
   )
 
