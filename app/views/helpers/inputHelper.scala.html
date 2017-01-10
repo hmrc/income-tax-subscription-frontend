@@ -1,7 +1,7 @@
 @import play.api.data.Form
 @import play.api.data.Field
 @(field: Field,
-        label: String,
+        label: Option[String] = None,
         parentForm: Option[Form[_]] = None,
         formHint : Option[String] = None,
         maxLength: Option[Int] = None
@@ -15,7 +15,7 @@
 
 <div class="form-group">
     <label class="form-label" for=@{field.name}>
-        @label
+        @label.fold(Html(""))(label => Html(label))
         @formHint.fold(Html(""))(hint => hintText(hint))
     </label>
 

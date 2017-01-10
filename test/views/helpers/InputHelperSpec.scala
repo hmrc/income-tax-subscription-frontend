@@ -27,8 +27,8 @@ import org.scalatest.Matchers._
 
 class InputHelperSpec extends PlaySpec with OneServerPerSuite {
 
-  private def inputHelper(field: Field, label: String, formHint: Option[String] = None, maxLength: Option[Int] = None)
-  = views.html.helpers.inputHelper(field, label, formHint = formHint, maxLength = maxLength)(applicationMessages)
+  private def inputHelper(field: Field, label: Option[String], formHint: Option[String] = None, maxLength: Option[Int] = None)
+  = views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength)(applicationMessages)
 
   implicit class HtmlFormatUtil(html: Html) {
     def doc: Document = Jsoup.parse(html.body)
@@ -49,7 +49,7 @@ class InputHelperSpec extends PlaySpec with OneServerPerSuite {
       val testHint = "my test hint text"
       val testField = testForm(inputName)
       val maxLength = 10
-      val doc = inputHelper(testField, testLabel, formHint = Some(testHint), maxLength = Some(maxLength)).doc
+      val doc = inputHelper(testField, Some(testLabel), formHint = Some(testHint), maxLength = Some(maxLength)).doc
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
       doc.getElementsByTag("label").text() should include(testLabel)
       doc.getElementsByTag("label").text() should include(testHint)
@@ -65,7 +65,7 @@ class InputHelperSpec extends PlaySpec with OneServerPerSuite {
     "if the form is populated, then the input should be populated correctly" in {
       val testLabel = "my test label text"
       val testField = testForm.fill(TestData("My previous input"))(inputName)
-      val doc = inputHelper(testField, testLabel).doc
+      val doc = inputHelper(testField, Some(testLabel)).doc
 
       val inputs = doc.getElementsByTag("input")
       inputs.size() shouldBe 1
