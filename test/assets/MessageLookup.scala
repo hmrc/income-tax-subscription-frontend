@@ -27,8 +27,7 @@ object MessageLookup {
 
   object BusinessName {
     val title = "What is your business name?"
-    val heading = "What is your business name?"
-    val label = "Enter your business name"
+    val heading = title
     val hint = "This does not mean trading name"
   }
 
