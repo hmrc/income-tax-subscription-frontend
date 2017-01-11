@@ -2,10 +2,14 @@
 base.back                                                       = Back
 base.continue                                                   = Continue
 
+## Business Income page
+business.income_type.title                                      = How do you receive your business income?
+business.income_type.heading                                    = How do you receive your business income?
+
 ## Business Name
-sar.business_name.title                                         = What is your business name?
-sar.business_name.heading                                       = What is your business name?
-sar.business_name.hint                                          = This does not mean trading name
+business.name.title                                             = What is your business name?
+business.name.heading                                           = What is your business name?
+business.name.hint                                              = This does not mean trading name
 
 ## Terms and Conditions Messages
 terms.title                 = Terms

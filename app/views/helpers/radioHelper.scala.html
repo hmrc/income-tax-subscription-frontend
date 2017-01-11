@@ -25,13 +25,11 @@
 <div class="form-group">
     <fieldset @fieldSetClassValue>
         <legend class="visuallyhidden" id="@field.name">@legend</legend>
-        @options.zipWithIndex.map{
-            case (option, i) => {
-                <label class="block-label selection-button-radio" for="@{field.name}-@{i+1}">
-                    <input id="@{field.name}-@{i+1}" type="radio" name="@{field.name}" value="@option" @isSelected(option)>
-                    @option
-                </label>
-            }
+        @for(option <- options) {
+            <label class="block-label selection-button-radio" for="@{field.name}-@option">
+                <input id="@{field.name}-@option" type="radio" name="@{field.name}" value="@option" @isSelected(option)>
+                @option
+            </label>
         }
     </fieldset>
 </div>

@@ -5,15 +5,15 @@
 
 @(businessNameForm: Form[BusinessNameModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@views.html.templates.main_template(title = Messages("sar.business_name.title"), bodyClasses = None) {
+@views.html.templates.main_template(title = Messages("business.name.title"), bodyClasses = None) {
 
-    <h1>@Messages("sar.business_name.heading")</h1>
+    <h1>@Messages("business.name.heading")</h1>
 
     @form(action = postAction) {
 
         @inputHelper(
             field = businessNameForm(businessName),
-            formHint = Messages("sar.business_name.hint"),
+            formHint = Messages("business.name.hint"),
             maxLength = 40
         )
 
