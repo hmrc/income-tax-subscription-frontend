@@ -44,8 +44,8 @@ class SessionTimeoutControllerSpec extends PlaySpec with OneAppPerTest {
       charset(result) must be (Some("utf-8"))
     }
 
-    s"have the title '${MessageLookup.timeout.title}'" in {
-      document.title() must be (MessageLookup.timeout.title)
+    s"have the title '${MessageLookup.Timeout.title}'" in {
+      document.title() must be (MessageLookup.Timeout.title)
     }
   }
 }
