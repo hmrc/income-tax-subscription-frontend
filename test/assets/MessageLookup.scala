@@ -38,6 +38,11 @@ object MessageLookup {
     val accruals = "Accruals"
   }
 
+  object Terms {
+    val title = "Terms"
+    val heading = title
+  }
+
   object Timeout {
     val title = "Session closed due to inactivity"
     val heading = "You've been signed out due to inactivity."
