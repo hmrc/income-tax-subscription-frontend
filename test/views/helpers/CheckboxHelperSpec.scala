@@ -18,22 +18,18 @@ package views.helpers
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.data.{Field, Form}
-import play.api.data. Forms._
-import play.twirl.api.Html
 import org.scalatest.Matchers._
+import play.api.data.Forms._
+import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
+import play.twirl.api.Html
+import util.UnitTestTrait
 
 
-class CheckboxHelperSpec extends PlaySpec with OneServerPerSuite {
+class CheckboxHelperSpec extends UnitTestTrait {
 
   private def checkboxHelper(field: Field, label: String)
-  = views.html.helpers.checkboxHelper(field, label) (applicationMessages)
-
-  implicit class HtmlFormatUtil(html: Html) {
-    def doc: Document = Jsoup.parse(html.body)
-  }
+  = views.html.helpers.checkboxHelper(field, label)(applicationMessages)
 
   case class TestData(checked: Boolean)
 

@@ -16,23 +16,16 @@
 
 package views.helpers
 
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
+import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
-import play.twirl.api.Html
-import org.scalatest.Matchers._
+import util.UnitTestTrait
 
-class InputHelperSpec extends PlaySpec with OneServerPerSuite {
+class InputHelperSpec extends UnitTestTrait {
 
   private def inputHelper(field: Field, label: Option[String], formHint: Option[String] = None, maxLength: Option[Int] = None)
   = views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength)(applicationMessages)
-
-  implicit class HtmlFormatUtil(html: Html) {
-    def doc: Document = Jsoup.parse(html.body)
-  }
 
   case class TestData(input: String)
 
