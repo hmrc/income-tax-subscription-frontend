@@ -7,7 +7,6 @@ POST       /summary            controllers.SummaryController.submitSummary
 
 # Confirmation Routes
 GET        /confirmation       controllers.ConfirmationController.showConfirmation
-POST       /confirmation       controllers.ConfirmationController.submitConfirmation
 
 # Unauthorised Routes
 GET        /not-authorised     controllers.UnauthorisedController.showNotAuthorised(journeyId: Option[String])
