@@ -7,6 +7,10 @@ sar.business_name.title                                         = What is your b
 sar.business_name.heading                                       = What is your business name?
 sar.business_name.hint                                          = This does not mean trading name
 
+## Terms and Conditions Messages
+terms.title                 = Terms
+terms.heading               = Terms
+
 ## Timeout page ##
 timeout.title                                                   = Session closed due to inactivity
 timeout.heading                                                 = You''ve been signed out due to inactivity.
