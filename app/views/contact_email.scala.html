@@ -1,0 +1,9 @@
+@import models._
+@import forms.TermForm._
+@import helpers.checkboxHelper
+
+@()(implicit request: Request[_], messages: Messages)
+
+@views.html.templates.main_template(title = Messages("contact_email.title"), bodyClasses = None) {
+    <h1>@Messages("contact_email.heading")</h1>
+}
