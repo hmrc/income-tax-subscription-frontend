@@ -21,7 +21,7 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
-import uk.gov.hmrc.play.http.HttpResponse
+import forms.EmailForm
 
 import scala.concurrent.Future
 
@@ -34,10 +34,13 @@ object ContactEmailController extends ContactEmailController {
 trait ContactEmailController extends FrontendController with AuthorisedForIncomeTaxSA {
 
   val showContactEmail = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
+    Future.successful(Ok(views.html.contact_email(
+      contactEmailForm = EmailForm.emailForm,
+      postAction = controllers.routes.ContactEmailController.submitContactEmail()
+    )))
   }
 
   val submitContactEmail = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
+    Future.successful(Redirect(controllers.routes.TermsController.showTerms()))
   }
 }

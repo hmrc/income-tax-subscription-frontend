@@ -15,6 +15,10 @@ business.name.hint                                              = This does not 
 terms.title                 = Terms
 terms.heading               = Terms
 
+## Contact Email Address page ##
+contact_email.title                                             = What is your contact email address?
+contact_email.heading                                           = What is your contact email address?
+
 ## Timeout page ##
 timeout.title                                                   = Session closed due to inactivity
 timeout.heading                                                 = You''ve been signed out due to inactivity.
@@ -23,7 +27,6 @@ timeout.returnToHome                                            = You can start 
 ## Failure Messages ##
 notAuthorised.title                                             = Not Authorised
 notAuthorised.pageHeading                                       = We were unable to confirm your identity
-notAuthorised.paraOne                                           = <p>If you can''t confirm your identity and you have a query you can <a href="{0}" target="_blank">contact HM Revenue and Customs (opens in a new window)</a> to get help.</p>
 
 lockedOut.title                                                 = Locked Out
 lockedOut.pageHeading                                           = You have tried to confirm your identity too many times
