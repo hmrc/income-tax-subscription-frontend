@@ -54,7 +54,7 @@ class TermsViewSpec extends UnitTestTrait {
 
       "has a continue button" in {
         document.select("button").attr("type") mustBe "submit"
-        document.select("button").text() mustBe MessageLookup.continue
+        document.select("button").text() mustBe MessageLookup.Base.continue
       }
 
     }

@@ -16,6 +16,7 @@
 
 package views.helpers
 
+import assets.MessageLookup
 import forms.submapping.DateMapping._
 import models.DateModel
 import org.scalatest.Matchers._
@@ -53,9 +54,9 @@ class DateHelperSpec extends UnitTestTrait {
       inputs.get(2).attr("maxlength") shouldBe "4"
 
       val labels = doc.getElementsByTag("label")
-      labels.get(0).text shouldBe "Day"
-      labels.get(1).text shouldBe "Month"
-      labels.get(2).text shouldBe "Year"
+      labels.get(0).text shouldBe MessageLookup.Base.day
+      labels.get(1).text shouldBe MessageLookup.Base.month
+      labels.get(2).text shouldBe MessageLookup.Base.year
     }
 
     "if the form is populated with true, then the checkbox is marked as checked" in {

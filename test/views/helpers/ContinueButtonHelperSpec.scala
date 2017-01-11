@@ -48,8 +48,8 @@ class ContinueButtonHelperSpec extends UnitTestTrait {
         continueButton.attr("id") mustBe "continue-button"
       }
 
-      s"has the value '${MessageLookup.continue}'" in {
-        continueButton.text() mustBe MessageLookup.continue
+      s"has the value '${MessageLookup.Base.continue}'" in {
+        continueButton.text() mustBe MessageLookup.Base.continue
       }
     }
   }

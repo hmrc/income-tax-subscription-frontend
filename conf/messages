@@ -1,6 +1,11 @@
 ## Base ##
 base.back                                                       = Back
 base.continue                                                   = Continue
+base.start_date                                                 = Start date
+base.end_date                                                   = End date
+base.day                                                        = Day
+base.month                                                      = Month
+base.year                                                       = Year
 
 ## Business Name
 sar.business_name.title                                         = What is your business name?
