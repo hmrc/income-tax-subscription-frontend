@@ -31,6 +31,13 @@ object MessageLookup {
     val hint = "This does not mean trading name"
   }
 
+  object BusinessIncomeType {
+    val title = "How do you receive your business income?"
+    val heading = title
+    val cash = "Cash"
+    val accruals = "Accruals"
+  }
+
   object timeout {
     val title = "Session closed due to inactivity"
     val heading = "You've been signed out due to inactivity."

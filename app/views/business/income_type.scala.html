@@ -2,18 +2,27 @@
 @import play.api.data.Form
 @import forms.IncomeTypeForm
 @import helpers.radioHelper
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import helpers._
 
-@(form: Form[IncomeTypeModel])(implicit request: Request[_], messages: Messages)
+@(incomeTypeForm: Form[IncomeTypeModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@question = @{Messages("sar.business.income-type.h1")}
+@question = @{Messages("business.income_type.heading")}
 
-@views.html.templates.main_template(title = Messages("sar.business.income-type.title"), bodyClasses = None) {
+@views.html.templates.main_template(title = Messages("business.income_type.title"), bodyClasses = None) {
+
     <h1>@question</h1>
 
-    @radioHelper(
-        field = form(IncomeTypeForm.incomeType),
-        legend = question,
-        options = Seq("Cash", "Accruals")
-    )
+    @form(action = postAction) {
+
+        @radioHelper(
+            field = incomeTypeForm(IncomeTypeForm.incomeType),
+            legend = question,
+            options = Seq("Cash", "Accruals")
+        )
+
+        @continueButton()
+
+    }
 
 }
