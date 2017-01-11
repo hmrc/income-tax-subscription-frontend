@@ -25,10 +25,16 @@ import org.scalatest.Matchers._
 class DateModelSpec extends PlaySpec with OneAppPerTest {
 
   "the DateModel" should {
+
+    val date = DateModel("01", "02", "2017")
+
     "convert correctly to java.time.LocalDate" in {
-      val date = DateModel("01", "02", "2017")
       date.toLocalDate shouldBe LocalDate.parse("01/02/2017", DateTimeFormatter.ofPattern("dd/MM/yyyy"))
       date.toLocalDate.isEqual(date) shouldBe true
+    }
+
+    "correctly format a date output to a view into d MMMMM uuuu" in {
+      date.toOutputDateFormat shouldBe "1 February 2017"
     }
   }
 }
