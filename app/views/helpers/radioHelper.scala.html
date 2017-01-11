@@ -1,0 +1,38 @@
+@import play.api.data.Field
+
+@(field: Field,
+    legend: String,
+    options: Seq[String],
+    inline: Boolean = false,
+    fieldSetClass: Option[String] = None
+)(implicit messages: Messages)
+
+@fieldSetClassValue = @{
+    (inline, fieldSetClass) match {
+        case (false, _ )       => fieldSetClass.fold(Html(""))(cls => Html(s"""class="$cls""""))
+        case (true, Some(cls)) => Html(s"""class="inline $cls"""")
+        case _                 => Html(s"""class="inline"""")
+    }
+}
+
+@isSelected(option: String) = {
+    @field.value match {
+        case Some(`option`) => {checked="checked"}
+        case _ => {}
+    }
+}
+
+<div class="form-group">
+    <fieldset @fieldSetClassValue>
+        <legend class="visuallyhidden" id="@field.name">@legend</legend>
+        @options.zipWithIndex.map{
+            case (option, i) => {
+                <label class="block-label selection-button-radio" for="@{field.name}-@{i+1}">
+                    <input id="@{field.name}-@{i+1}" type="radio" name="@{field.name}" value="@option" @isSelected(option)>
+                    @option
+                </label>
+            }
+        }
+    </fieldset>
+</div>
+

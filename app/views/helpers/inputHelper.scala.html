@@ -1,0 +1,26 @@
+@import play.api.data.Form
+@import play.api.data.Field
+@(field: Field,
+        label: Option[String] = None,
+        parentForm: Option[Form[_]] = None,
+        formHint : Option[String] = None,
+        maxLength: Option[Int] = None
+)(implicit messages: Messages)
+
+@hintText(hint:String) = {
+    <span class="form-hint">
+        @hint
+    </span>
+}
+
+<div class="form-group">
+    <label class="form-label" for=@{field.name}>
+        @label.fold(Html(""))(label => Html(label))
+        @formHint.fold(Html(""))(hint => hintText(hint))
+    </label>
+
+    <input name = @{field.name} class="form-control" id=@{field.name} type="text"
+           @maxLength.fold(Html(""))(max => Html(s"maxlength=$max"))
+        @field.value.map(v => Html(s"""value="$v""""))
+    >
+</div>
