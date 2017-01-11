@@ -1,0 +1,29 @@
+@import play.api.data.Form
+@import play.api.data.Field
+@import models._
+@import forms.AccountingPeriodForm._
+@import helpers._
+@import uk.gov.hmrc.play.views.html.helpers.form
+
+@(dateForm: Form[AccountingPeriodModel], postAction: Call)(implicit request: Request[_], messages: Messages)
+
+@views.html.templates.main_template(title = Messages("accounting_period.title"), bodyClasses = None) {
+
+    <h1>@Messages("accounting_period.heading")</h1>
+
+    @form(action = postAction) {
+
+        @dateHelper(
+            field = dateForm(startDate),
+            label = "Start date"
+        )
+
+        @dateHelper(
+            field = dateForm(startDate),
+            label = "End date"
+        )
+
+        @continueButton()
+
+    }
+}

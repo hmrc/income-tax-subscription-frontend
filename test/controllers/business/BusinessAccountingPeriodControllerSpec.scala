@@ -53,8 +53,8 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec {
 
     lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be (Status.NOT_IMPLEMENTED)
+    "return ok (200)" in {
+      status(result) must be (Status.OK)
     }
   }
 
