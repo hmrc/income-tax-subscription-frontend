@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package forms
+package models
 
-import models.DateModel
-import play.api.data.Form
-import play.api.data.Forms._
+import play.api.libs.json.Json
 
-object DateForm {
 
-  val dateDay = "dateDay"
-  val dateMonth = "dateMonth"
-  val dateYear = "dateYear"
+case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel)
 
-  val dateForm = Form(
-    mapping(
-      dateDay -> text,
-      dateMonth -> text,
-      dateYear -> text
-    )(DateModel.apply)(DateModel.unapply)
-  )
+object AccountingPeriodModel {
+  implicit val format = Json.format[AccountingPeriodModel]
 }

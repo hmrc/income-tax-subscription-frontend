@@ -17,13 +17,13 @@
 package views
 
 import assets.MessageLookup
+import forms.TermForm
 import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import forms.TermForm
+import util.UnitTestTrait
 
-class TermsViewSpec extends PlaySpec with OneAppPerTest {
+class TermsViewSpec extends UnitTestTrait {
 
   lazy val page = views.html.terms(
     termsForm = TermForm.termForm,
@@ -34,11 +34,11 @@ class TermsViewSpec extends PlaySpec with OneAppPerTest {
   "The Terms view" should {
 
     s"have the title '${MessageLookup.Terms.title}'" in {
-      document.title() must be (MessageLookup.Terms.title)
+      document.title() must be(MessageLookup.Terms.title)
     }
 
     s"have the heading (H1) '${MessageLookup.Terms.heading}'" in {
-      document.getElementsByTag("H1").text() must be (MessageLookup.Terms.heading)
+      document.getElementsByTag("H1").text() must be(MessageLookup.Terms.heading)
     }
 
     "have a form" which {
@@ -54,7 +54,7 @@ class TermsViewSpec extends PlaySpec with OneAppPerTest {
 
       "has a continue button" in {
         document.select("button").attr("type") mustBe "submit"
-        document.select("button").text() mustBe MessageLookup.continue
+        document.select("button").text() mustBe MessageLookup.Base.continue
       }
 
     }

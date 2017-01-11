@@ -1,0 +1,32 @@
+@import play.api.data.Form
+@import play.api.data.Field
+
+@(field: Field,
+    label: Option[String] = None,
+    parentForm: Option[Form[_]] = None
+)(implicit messages: Messages)
+
+@import forms.submapping.DateMapping._
+
+<div class="form-group">
+    <fieldset>
+        <legend>@label</legend>
+            <div class="form-date">
+                @inputHelper(
+                    field(dateDay),
+                    label = Messages("base.day"),
+                    maxLength = 2
+                )
+                @inputHelper(
+                    field(dateMonth),
+                    label = Messages("base.month"),
+                    maxLength = 2
+                )
+                @inputHelper(
+                    field(dateYear),
+                    label = Messages("base.year"),
+                    maxLength = 4
+                )
+            </div>
+    </fieldset>
+</div>

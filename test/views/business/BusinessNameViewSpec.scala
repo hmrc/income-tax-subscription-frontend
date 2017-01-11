@@ -20,11 +20,11 @@ import assets.MessageLookup
 import assets.MessageLookup.{BusinessName => messages}
 import forms.BusinessNameForm
 import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import util.UnitTestTrait
 
-class BusinessNameViewSpec extends PlaySpec with OneAppPerTest {
+class BusinessNameViewSpec extends UnitTestTrait {
 
   lazy val page = views.html.business.business_name(
     businessNameForm = BusinessNameForm.businessNameForm,
