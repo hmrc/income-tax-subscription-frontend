@@ -52,10 +52,4 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "The URL for the ConfirmationController.submitConfirmation action" should {
-    s"be equal to $contextRoute/confirmation" in {
-      controllers.routes.ConfirmationController.submitConfirmation().url must be (s"$contextRoute/confirmation")
-    }
-  }
-
 }
