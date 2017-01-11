@@ -29,12 +29,12 @@ class SessionTimeoutViewSpec extends UnitTestTrait {
 
   "The Session timeout view" should {
 
-    s"have the title '${MessageLookup.timeout.title}'" in {
-      document.title() must be(MessageLookup.timeout.title)
+    s"have the title '${MessageLookup.Timeout.title}'" in {
+      document.title() must be (MessageLookup.Timeout.title)
     }
 
-    s"have the heading (H1) '${MessageLookup.timeout.heading}'" in {
-      document.getElementsByTag("H1").text() must be(MessageLookup.timeout.heading)
+    s"have the heading (H1) '${MessageLookup.Timeout.heading}'" in {
+      document.getElementsByTag("H1").text() must be (MessageLookup.Timeout.heading)
     }
   }
 }
