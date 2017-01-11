@@ -18,9 +18,10 @@ package controllers
 
 import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+
 import scala.concurrent.Future
 
 object HelloWorldController extends HelloWorldController {
@@ -29,8 +30,10 @@ object HelloWorldController extends HelloWorldController {
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
 }
 
-trait HelloWorldController extends FrontendController with AuthorisedForIncomeTaxSA  {
-  val helloWorld = Authorised.async { implicit user => implicit request =>
-		Future.successful(Ok(views.html.helloworld.hello_world()))
+trait HelloWorldController extends FrontendController with AuthorisedForIncomeTaxSA {
+  val helloWorld = // Authorised.async { implicit user =>
+    UnauthorisedAction.async {
+    implicit request =>
+      Future.successful(Ok(views.html.helloworld.hello_world()))
   }
 }

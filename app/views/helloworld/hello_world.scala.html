@@ -1,5 +1,37 @@
 @()(implicit request: Request[_], messages: Messages)
+@import views.html.helpers._
+@import forms.BusinessNameForm._
+@testForm = @{
+    businessNameForm
+}
 
 @views.html.templates.main_template(title = "Hello from income-tax-subscription-frontend", bodyClasses = None) {
+    @summaryErrorHelper(testForm)
     <h1>Hello from income-tax-subscription-frontend !</h1>
+
+
+
+<fieldset class="form-field-group form-field-group--error">
+    <legend>Please enter your full name</legend>
+    <div class="form-field">
+        <label>
+            First Name
+            <span class="error-notification">Please enter your first name</span>
+            <input type="text"
+                   class="form-control"/>
+        </label>
+    </div>
+    <div class="form-field">
+        <label>
+            Surname
+            <span class="error-notification">Please enter your surname</span>
+            <input type="text"
+                   class="form-control"/>
+        </label>
+    </div>
+</fieldset>
+
+
+
+
 }
