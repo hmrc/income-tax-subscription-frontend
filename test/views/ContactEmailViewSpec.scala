@@ -21,10 +21,14 @@ import org.jsoup.Jsoup
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.test.FakeRequest
 import play.api.i18n.Messages.Implicits.applicationMessages
+import forms.EmailForm
 
 class ContactEmailViewSpec extends PlaySpec with OneAppPerTest {
 
-  lazy val page = views.html.contact_email()(FakeRequest(), applicationMessages)
+  lazy val page = views.html.contact_email(
+    contactEmailForm = EmailForm.emailForm,
+    postAction = controllers.routes.ContactEmailController.submitContactEmail()
+  )(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
   "The Contact Email Address view" should {
@@ -35,6 +39,22 @@ class ContactEmailViewSpec extends PlaySpec with OneAppPerTest {
 
     s"have the heading (H1) '${messages.heading}'" in {
       document.select("h1").text() mustBe messages.heading
+    }
+
+    "has a form" which {
+
+      "has a text input field for the email address" in {
+        document.select("input[name=emailAddress]").isEmpty mustBe false
+      }
+
+      "has a continue button" in {
+        document.select("#continue-button").isEmpty mustBe false
+      }
+
+      s"has a post action to '${controllers.routes.ContactEmailController.submitContactEmail().url}'" in {
+        document.select("form").attr("action") mustBe controllers.routes.ContactEmailController.submitContactEmail().url
+        document.select("form").attr("method") mustBe "POST"
+      }
     }
   }
 }
