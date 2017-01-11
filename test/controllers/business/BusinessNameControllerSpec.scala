@@ -61,10 +61,13 @@ class BusinessNameControllerSpec extends ControllerBaseSpec {
 
     lazy val result = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be (Status.NOT_IMPLEMENTED)
+    "return a redirect status (SEE_OTHER - 303)" in {
+      status(result) must be(Status.SEE_OTHER)
+    }
+
+    s"redirect to '${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url}'" in {
+      redirectLocation(result) mustBe Some(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
     }
   }
-
   authorisationTests
 }

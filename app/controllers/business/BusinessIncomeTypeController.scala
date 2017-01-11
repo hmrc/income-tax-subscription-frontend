@@ -39,8 +39,7 @@ trait BusinessIncomeTypeController extends FrontendController with AuthorisedFor
       Future.successful(Ok(views.html.business.income_type(IncomeTypeForm.incomeTypeForm)))
   }
 
-  val submitBusinessIncomeType = Authorised.async { implicit user =>
-    implicit request =>
-      Future.successful(NotImplemented)
+  val submitBusinessIncomeType = Authorised.async { implicit user => implicit request =>
+      Future.successful(Redirect(controllers.routes.ContactEmailController.showContactEmail()))
   }
 }
