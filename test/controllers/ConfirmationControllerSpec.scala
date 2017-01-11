@@ -18,8 +18,10 @@ package controllers
 
 import akka.actor._
 import akka.stream._
+import assets.MessageLookup
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import org.jsoup.Jsoup
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.http.Status
 import play.api.test.FakeRequest
@@ -52,32 +54,18 @@ class ConfirmationControllerSpec extends PlaySpec with OneAppPerTest {
 
     lazy val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be (Status.NOT_IMPLEMENTED)
+    "return status ok (200)" in {
+      status(result) must be (Status.OK)
+    }
+    s"return some html with title of ${MessageLookup.Confirmation.title}" in {
+      contentType(result) mustBe Some("text/html")
+      Jsoup.parse(contentAsString(result)).title mustEqual MessageLookup.Confirmation.title
     }
   }
 
   "Calling the showConfirmation action of the ConfirmationController with an unauthorised user" should {
 
     lazy val result = TestConfirmationController.showConfirmation(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
-
-  "Calling the submitConfirmation action of the ConfirmationController with an authorised user" should {
-
-    lazy val result = TestConfirmationController.submitConfirmation(authenticatedFakeRequest())
-
-    "return unimplemented (501)" in {
-      status(result) must be (Status.NOT_IMPLEMENTED)
-    }
-  }
-
-  "Calling the submitConfirmation action of the ConfirmationController with an unauthorised user" should {
-
-    lazy val result = TestConfirmationController.submitConfirmation(FakeRequest())
 
     "return 303" in {
       status(result) must be (Status.SEE_OTHER)
