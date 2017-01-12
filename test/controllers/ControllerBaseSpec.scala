@@ -18,8 +18,9 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import play.api.data.Form
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import util.UnitTestTrait
@@ -32,7 +33,7 @@ trait ControllerBaseSpec extends UnitTestTrait {
   val controllerName: String
   val authorisedRoutes: Map[String, Action[AnyContent]]
 
-  def authorisationTests = {
+  final def authorisationTests = {
     authorisedRoutes.foreach {
       case (name, call) =>
         s"Calling the $name action of the $controllerName with an unauthorised user" should {
@@ -45,4 +46,13 @@ trait ControllerBaseSpec extends UnitTestTrait {
         }
     }
   }
+
+  implicit class FakeRequestUtil(fakeRequest: FakeRequest[_]) {
+    implicit def post[T](form: Form[T], data: T): FakeRequest[AnyContentAsFormUrlEncoded] =
+      fakeRequest.post(form.fill(data))
+
+    implicit def post[T](form: Form[T]): FakeRequest[AnyContentAsFormUrlEncoded] =
+      fakeRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+  }
+
 }

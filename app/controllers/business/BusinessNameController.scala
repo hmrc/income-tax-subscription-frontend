@@ -22,6 +22,8 @@ import forms.BusinessNameForm
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import play.api.data.Form
+import services.KeystoreService
 
 import scala.concurrent.Future
 
@@ -29,19 +31,39 @@ object BusinessNameController extends BusinessNameController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
+
+  override val keystoreService = KeystoreService
 }
 
 trait BusinessNameController extends FrontendController with AuthorisedForIncomeTaxSA {
 
-  val showBusinessName = Authorised.async { implicit user =>
-    implicit request =>
-      Future.successful(Ok(views.html.business.business_name(
-        businessNameForm = BusinessNameForm.businessNameForm,
-        postAction = controllers.business.routes.BusinessNameController.submitBusinessName()
-      )))
+  val keystoreService: KeystoreService
+
+  implicit class FormUtil[T](form: Form[T]) {
+    def fill(data: Option[T]): Form[T] = data.fold(form)(form.fill)
   }
 
-  val submitBusinessName = Authorised.async { implicit user => implicit request =>
-      Future.successful(Redirect(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType()))
+  val showBusinessName = Authorised.async { implicit user =>
+    implicit request =>
+      keystoreService.fetchBusinessName() map {
+        businessNameModel =>
+          Ok(views.html.business.business_name(
+            businessNameForm = BusinessNameForm.businessNameForm.fill(businessNameModel),
+            postAction = controllers.business.routes.BusinessNameController.submitBusinessName()
+          ))
+      }
+  }
+
+  val submitBusinessName = Authorised.async { implicit user =>
+    implicit request =>
+      BusinessNameForm.businessNameForm.bindFromRequest.fold(
+        formWithErrors => {
+          Future.successful(NotImplemented)
+        },
+        businessName => {
+          keystoreService.saveBusinessName(businessName) map (
+            _ => Redirect(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType()))
+        }
+      )
   }
 }
