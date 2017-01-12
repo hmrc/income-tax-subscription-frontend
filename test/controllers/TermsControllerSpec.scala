@@ -61,10 +61,13 @@ class TermsControllerSpec extends ControllerBaseSpec {
 
     lazy val result = TestTermsController.submitTerms(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be (Status.NOT_IMPLEMENTED)
+    "return a redirect status (SEE_OTHER - 303)" in {
+      status(result) must be(Status.SEE_OTHER)
+    }
+
+    s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+      redirectLocation(result) mustBe Some(controllers.routes.SummaryController.showSummary().url)
     }
   }
-
   authorisationTests
 }

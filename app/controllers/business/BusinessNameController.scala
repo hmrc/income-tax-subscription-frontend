@@ -59,11 +59,10 @@ trait BusinessNameController extends FrontendController with AuthorisedForIncome
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
         formWithErrors => {
           Future.successful(NotImplemented)
-        }
-        ,
+        },
         businessName => {
-          keystoreService.saveBusinessName(businessName)
-          Future.successful(NotImplemented)
+          keystoreService.saveBusinessName(businessName) map (
+            _ => Redirect(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType()))
         }
       )
   }

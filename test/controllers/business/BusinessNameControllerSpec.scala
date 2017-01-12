@@ -19,6 +19,8 @@ package controllers.business
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.ControllerBaseSpec
+import forms.BusinessNameForm
+import models.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -61,15 +63,56 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
 
       status(result) must be(Status.OK)
 
-      verifyKeystore(
-        fetchBusinessName = 1,
-        saveBusinessName = 0
-      )
+      for {
+        _ <- result
+      } yield {
+        verifyKeystore(
+          fetchBusinessName = 1,
+          saveBusinessName = 0
+        )
+      }
+
     }
   }
 
-  "Calling the submitBusinessName action of the BusinessNameController with an authorised user" should {
+  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and valid entry" should {
 
+    lazy val result = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest().post(BusinessNameForm.businessNameForm, BusinessNameModel("Test business")))
+
+    "return a redirect status (SEE_OTHER - 303)" in {
+      setupMockKeystoreSaveFunctions()
+
+      status(result) must be(Status.SEE_OTHER)
+
+      for {
+        _ <- result
+      } yield {
+        verifyKeystore(
+          fetchBusinessName = 0,
+          saveBusinessName = 1
+        )
+      }
+
+    }
+
+    s"redirect to '${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url}'" in {
+      setupMockKeystoreSaveFunctions()
+
+      redirectLocation(result) mustBe Some(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
+
+      for {
+        _ <- result
+      } yield {
+        verifyKeystore(
+          fetchBusinessName = 0,
+          saveBusinessName = 1
+        )
+      }
+
+    }
+  }
+
+  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid entry" should {
     lazy val result = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
@@ -78,4 +121,5 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
   }
 
   authorisationTests
+
 }
