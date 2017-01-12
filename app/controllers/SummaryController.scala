@@ -38,6 +38,6 @@ trait SummaryController extends FrontendController with AuthorisedForIncomeTaxSA
   }
 
   val submitSummary = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
+    Future.successful(Redirect(controllers.routes.ConfirmationController.showConfirmation()))
   }
 }

@@ -43,6 +43,6 @@ trait TermsController extends FrontendController with AuthorisedForIncomeTaxSA {
 
   val submitTerms = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(NotImplemented)
+      Future.successful(Redirect(controllers.routes.SummaryController.showSummary()))
   }
 }

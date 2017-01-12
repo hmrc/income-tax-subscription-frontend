@@ -44,6 +44,6 @@ trait BusinessAccountingPeriodController extends FrontendController with Authori
 
   val submitAccountingPeriod = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(NotImplemented)
+    Future.successful(Redirect(controllers.business.routes.BusinessNameController.showBusinessName()))
   }
 }
