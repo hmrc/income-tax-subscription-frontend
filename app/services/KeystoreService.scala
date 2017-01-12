@@ -27,11 +27,14 @@ import scala.concurrent.Future
 
 trait KeystoreService {
 
+  type FO[T] = Future[Option[T]]
+  type FC = Future[CacheMap]
+
   protected val session: SessionCache
 
-  protected def fetch[T](location: String)(implicit hc: HeaderCarrier, reads: Reads[T]): Future[Option[T]] = session.fetchAndGetEntry(location)
+  protected def fetch[T](location: String)(implicit hc: HeaderCarrier, reads: Reads[T]): FO[T] = session.fetchAndGetEntry(location)
 
-  protected def save[T](location: String, obj: T)(implicit hc: HeaderCarrier, reads: Writes[T]): Future[CacheMap] = session.cache(location, obj)
+  protected def save[T](location: String, obj: T)(implicit hc: HeaderCarrier, reads: Writes[T]): FC = session.cache(location, obj)
 
   def fetchAll()(implicit hc: HeaderCarrier): Future[Option[CacheMap]] = session.fetch()
 
@@ -39,18 +42,14 @@ trait KeystoreService {
 
   import CacheConstants._
 
-  def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): Future[Option[BusinessNameModel]] =
+  def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =
     fetch[BusinessNameModel](BusinessName)
 
-  def saveBusinessName(businessNameModel: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): Future[CacheMap] =
+  def saveBusinessName(businessNameModel: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FC =
     save[BusinessNameModel](BusinessName, businessNameModel)
 
 }
 
 object KeystoreService extends KeystoreService {
   val session = SessionCache
-}
-
-object CacheConstants {
-  val BusinessName = "businessNameModel"
 }

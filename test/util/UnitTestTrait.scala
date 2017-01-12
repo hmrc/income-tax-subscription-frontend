@@ -21,10 +21,18 @@ import org.jsoup.nodes.Document
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.twirl.api.Html
 
+import scala.concurrent.Future
+
 
 trait UnitTestTrait extends PlaySpec with OneServerPerSuite {
 
   implicit def optionWrapperUtil[T, S <: T](data: S): Option[T] = Some(data)
+
+  implicit def futureWrapperUtil[T](value: T): Future[T] = Future.successful(value)
+
+  implicit def futureWrapperUtil[T](err: Throwable): Future[T] = Future.failed(err)
+
+  implicit def futureOptionWrapperUtil[T](value: T): Future[Option[T]] = Future.successful(value)
 
   implicit class HtmlFormatUtil(html: Html) {
     def doc: Document = Jsoup.parse(html.body)

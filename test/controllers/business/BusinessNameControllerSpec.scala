@@ -22,29 +22,33 @@ import controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import services.mocks.MockKeystoreService
 
-class BusinessNameControllerSpec extends ControllerBaseSpec {
+class BusinessNameControllerSpec extends ControllerBaseSpec
+  with MockKeystoreService {
 
   override val controllerName: String = "BusinessIncomeTypeController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "showBusinessIncomeType" -> TestBusinessNameController.showBusinessName,
     "submitBusinessIncomeType" -> TestBusinessNameController.submitBusinessName
   )
+
   object TestBusinessNameController extends BusinessNameController {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
+    override val keystoreService = MockKeystoreService
   }
 
   "The BusinessNameController controller" should {
     "use the correct applicationConfig" in {
-      BusinessNameController.applicationConfig must be (FrontendAppConfig)
+      BusinessNameController.applicationConfig must be(FrontendAppConfig)
     }
     "use the correct authConnector" in {
-      BusinessNameController.authConnector must be (FrontendAuthConnector)
+      BusinessNameController.authConnector must be(FrontendAuthConnector)
     }
     "use the correct postSignInRedirectUrl" in {
-      BusinessNameController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
+      BusinessNameController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
     }
   }
 
@@ -53,7 +57,9 @@ class BusinessNameControllerSpec extends ControllerBaseSpec {
     lazy val result = TestBusinessNameController.showBusinessName(authenticatedFakeRequest())
 
     "return ok (200)" in {
-      status(result) must be (Status.OK)
+      setupMockKeystore(fetchBusinessName = None)
+
+      status(result) must be(Status.OK)
     }
   }
 
@@ -62,7 +68,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec {
     lazy val result = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
-      status(result) must be (Status.NOT_IMPLEMENTED)
+      status(result) must be(Status.NOT_IMPLEMENTED)
     }
   }
 
