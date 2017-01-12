@@ -27,8 +27,7 @@ import play.api.data.Forms.{mapping, _}
 import play.api.data.validation.Valid
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.twirl.api.Html
-
-
+import org.scalatest.Matchers._
 
 class SummaryErrorHelperSpec extends PlaySpec with OneServerPerSuite {
 
@@ -42,7 +41,7 @@ class SummaryErrorHelperSpec extends PlaySpec with OneServerPerSuite {
   case class TestData(field1: String, field2: String, field3: String)
 
   val errorMessage = ErrorMessageFactory.error("errKey")
-  val summmaryErrorMessage: SummaryError = errorMessage.errors.head.args(1).asInstanceOf[SummaryError]
+  val summaryErrorMessage: SummaryError = errorMessage.errors.head.args(1).asInstanceOf[SummaryError]
 
   val testValidation = (data: String) => {
     data.length > 0 match {
@@ -63,23 +62,20 @@ class SummaryErrorHelperSpec extends PlaySpec with OneServerPerSuite {
     )(TestData.apply)(TestData.unapply)
   )
 
-  "SummeryErrorHelper" should {
-    "if the form not  present error it should continue" in {
+  "SummaryErrorHelper" should {
+    "if the form does not present an error, it should continue a successful flow" in {
       val page = summaryErrorHelper(testForm)
-      val doc = page.doc(field1Name).doc
+      val doc = page.doc
 
-      val inputs = doc.getElementsByTag("field1")
-      inputs.size() shouldBe 1
-      inputs.get(0).attr("value") shouldBe "My previous input"
-    }
+      val summaryDiv = doc.getElementById("field1")
+      summaryDiv shouldBe null
     }
 
-    "SummeryErrorHelper" should {
-      "if the form present error it should display error message" in {
-        val page = summaryErrorHelper(testForm.fill(TestData("data", " ", "data")))
-        val doc = page.doc
-        val inputs = doc.getElementsByTag("field2")
-      }
+    "if the form does present an error, the error should be displayed back" in {
+      val page = summaryErrorHelper(testForm.fill(TestData("data", " ", "data")))
+      val doc = page.doc
+      val inputs = doc.getElementsByTag("field2")
     }
   }
+
 }
