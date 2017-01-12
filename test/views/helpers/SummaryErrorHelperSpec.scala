@@ -29,6 +29,7 @@ import play.api.i18n.Messages.Implicits.applicationMessages
 import play.twirl.api.Html
 
 
+
 class SummaryErrorHelperSpec extends PlaySpec with OneServerPerSuite {
 
   private def summaryErrorHelper(form: Form[_])
@@ -65,15 +66,19 @@ class SummaryErrorHelperSpec extends PlaySpec with OneServerPerSuite {
   "SummeryErrorHelper" should {
     "if the form not  present error it should continue" in {
       val page = summaryErrorHelper(testForm)
-      val doc = page.doc
+      val doc = page.doc(field1Name).doc
 
+      val inputs = doc.getElementsByTag("field1")
+      inputs.size() shouldBe 1
+      inputs.get(0).attr("value") shouldBe "My previous input"
+    }
     }
 
     "SummeryErrorHelper" should {
       "if the form present error it should display error message" in {
         val page = summaryErrorHelper(testForm.fill(TestData("data", " ", "data")))
         val doc = page.doc
-
+        val inputs = doc.getElementsByTag("field2")
       }
     }
   }
