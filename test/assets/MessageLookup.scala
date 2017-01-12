@@ -18,17 +18,41 @@ package assets
 
 object MessageLookup {
 
-  val continue = "Continue"
+  object Base {
+    val continue = "Continue"
+    val startDate = "Start date"
+    val endDate = "End date"
+    val day = "Day"
+    val month = "Month"
+    val year = "Year"
+  }
 
   object HelloWorld {
     val title = "Hello from income-tax-subscription-frontend"
     val heading = "Hello from income-tax-subscription-frontend !"
   }
 
+  object ContactEmail {
+    val title = "What is your contact email address?"
+    val heading = title
+  }
+
   object BusinessName {
     val title = "What is your business name?"
     val heading = title
     val hint = "This does not mean trading name"
+  }
+
+  object BusinessIncomeType {
+    val title = "How do you receive your business income?"
+    val heading = title
+    val cash = "Cash"
+    val accruals = "Accruals"
+  }
+
+  object Terms {
+    val title = "Terms"
+    val heading = title
   }
 
   object Timeout {

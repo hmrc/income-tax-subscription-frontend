@@ -18,6 +18,7 @@ package controllers.business
 
 import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import forms.AccountingPeriodForm
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
@@ -25,7 +26,7 @@ import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
-object BusinessAccountingPeriodController extends BusinessAccountingPeriodController  {
+object BusinessAccountingPeriodController extends BusinessAccountingPeriodController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
@@ -33,11 +34,16 @@ object BusinessAccountingPeriodController extends BusinessAccountingPeriodContro
 
 trait BusinessAccountingPeriodController extends FrontendController with AuthorisedForIncomeTaxSA {
 
-  val showAccountingPeriod = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
+  val showAccountingPeriod = Authorised.async { implicit user =>
+    implicit request =>
+      Future.successful(Ok(views.html.business.accounting_period(
+        AccountingPeriodForm.accountingPeriodForm,
+        controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod()
+      )))
   }
 
-  val submitAccountingPeriod = Authorised.async { implicit user => implicit request =>
-    Future.successful(NotImplemented)
+  val submitAccountingPeriod = Authorised.async { implicit user =>
+    implicit request =>
+      Future.successful(NotImplemented)
   }
 }

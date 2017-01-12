@@ -1,0 +1,22 @@
+@import models._
+@import forms.EmailForm._
+@import helpers._
+@import uk.gov.hmrc.play.views.html.helpers.form
+
+@(contactEmailForm: Form[EmailModel], postAction: Call)(implicit request: Request[_], messages: Messages)
+
+@views.html.templates.main_template(title = Messages("contact_email.title"), bodyClasses = None) {
+
+    <h1>@Messages("contact_email.heading")</h1>
+
+    @form(action = postAction) {
+
+        @inputHelper(
+            field = contactEmailForm(emailAddress),
+            maxLength = 120
+        )
+
+        @continueButton()
+
+    }
+}

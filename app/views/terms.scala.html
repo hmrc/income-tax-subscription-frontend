@@ -1,13 +1,23 @@
 @import models._
 @import forms.TermForm._
 @import helpers.checkboxHelper
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import views.html.helpers._
 
-@(form: Form[TermModel])(implicit request: Request[_], messages: Messages)
+@(termsForm: Form[TermModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@views.html.templates.main_template(title = Messages("sar.terms.title"), bodyClasses = None) {
-    <h1>@Messages("sar.terms.h1")</h1>
-    @checkboxHelper(
-        field = form (hasAcceptedTerms),
-        label = "Read and agree"
-    )
+@views.html.templates.main_template(title = Messages("terms.title"), bodyClasses = None) {
+
+    <h1>@Messages("terms.heading")</h1>
+
+    @form(action = postAction) {
+
+        @checkboxHelper(
+            field = termsForm(hasAcceptedTerms),
+            label = "Read and agree"
+        )
+
+        @continueButton()
+
+    }
 }

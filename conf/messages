@@ -1,11 +1,28 @@
 ## Base ##
 base.back                                                       = Back
 base.continue                                                   = Continue
+base.start_date                                                 = Start date
+base.end_date                                                   = End date
+base.day                                                        = Day
+base.month                                                      = Month
+base.year                                                       = Year
+
+## Business Income page
+business.income_type.title                                      = How do you receive your business income?
+business.income_type.heading                                    = How do you receive your business income?
 
 ## Business Name
-sar.business_name.title                                         = What is your business name?
-sar.business_name.heading                                       = What is your business name?
-sar.business_name.hint                                          = This does not mean trading name
+business.name.title                                             = What is your business name?
+business.name.heading                                           = What is your business name?
+business.name.hint                                              = This does not mean trading name
+
+## Terms and Conditions Messages
+terms.title                 = Terms
+terms.heading               = Terms
+
+## Contact Email Address page ##
+contact_email.title                                             = What is your contact email address?
+contact_email.heading                                           = What is your contact email address?
 
 ## Timeout page ##
 timeout.title                                                   = Session closed due to inactivity
@@ -15,7 +32,6 @@ timeout.returnToHome                                            = You can start 
 ## Failure Messages ##
 notAuthorised.title                                             = Not Authorised
 notAuthorised.pageHeading                                       = We were unable to confirm your identity
-notAuthorised.paraOne                                           = <p>If you can''t confirm your identity and you have a query you can <a href="{0}" target="_blank">contact HM Revenue and Customs (opens in a new window)</a> to get help.</p>
 
 lockedOut.title                                                 = Locked Out
 lockedOut.pageHeading                                           = You have tried to confirm your identity too many times
