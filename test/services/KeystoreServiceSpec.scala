@@ -16,7 +16,68 @@
 
 package services
 
+import config.SessionCache
+import models.BusinessNameModel
+import org.scalatest.Matchers._
+import services.mocks.MockKeystoreService
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.play.http.HttpResponse
+import util.UnitTestTrait
 
-class KeystoreServiceSpec {
+class KeystoreServiceSpec extends UnitTestTrait
+  with MockKeystoreService {
+
+  "Keystore service" should {
+    "be configured with the correct session cache object" in {
+      KeystoreService.session shouldBe SessionCache
+    }
+  }
+
+  "mock keystore service" should {
+    object TestKeystore {
+      val keystoreService: KeystoreService = MockKeystoreService
+    }
+
+    "configure and verify fetch and save business name as specified" in {
+      val testBusinessName = BusinessNameModel("my business name")
+      setupMockKeystore(fetchBusinessName = testBusinessName)
+      for {
+        businessName <- TestKeystore.keystoreService.fetchBusinessName()
+        _ <- TestKeystore.keystoreService.saveBusinessName(testBusinessName)
+      } yield {
+        businessName shouldBe testBusinessName
+
+        verifyKeystore(
+          fetchBusinessName = 1,
+          saveBusinessName = 1
+        )
+      }
+    }
+
+    "configure and verify fetch all as specified" in {
+      val testFetchAll = CacheMap("", Map())
+      setupMockKeystore(fetchAll = testFetchAll)
+      for {
+        fetched <- TestKeystore.keystoreService.fetchAll()
+      } yield {
+        fetched shouldBe testFetchAll
+
+        verifyKeystore(fetchAll = 1)
+      }
+    }
+
+    "configure and verify remove all as specified" in {
+      val testDeleteAll = HttpResponse(200)
+      setupMockKeystore(deleteAll = testDeleteAll)
+      for {
+        response <- TestKeystore.keystoreService.deleteAll()
+      } yield {
+        response shouldBe testDeleteAll
+
+        verifyKeystore(fetchAll = 1)
+      }
+    }
+
+  }
 
 }

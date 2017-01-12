@@ -20,11 +20,16 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.twirl.api.Html
+import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
 
 trait UnitTestTrait extends PlaySpec with OneServerPerSuite {
+
+  implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+
+  implicit val hc = HeaderCarrier()
 
   implicit def optionWrapperUtil[T, S <: T](data: S): Option[T] = Some(data)
 

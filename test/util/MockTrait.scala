@@ -62,5 +62,6 @@ trait MockTrait extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach 
   type M[T] = MockConfiguration[T]
   type MO[T] = MockConfiguration[Option[T]]
   type MFO[T] = MockConfiguration[Future[Option[T]]]
+  type MF[T] = MockConfiguration[Future[T]]
 
 }

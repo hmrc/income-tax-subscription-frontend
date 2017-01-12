@@ -21,6 +21,7 @@ import org.mockito.Matchers
 import org.mockito.Mockito._
 import services.KeystoreService
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
+import uk.gov.hmrc.play.http.HttpResponse
 import util.MockTrait
 
 import scala.concurrent.Future
@@ -39,7 +40,6 @@ trait MockKeystoreService extends MockTrait {
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(MockKeystoreService.session)
-    setupMockKeystoreSaveFunctions()
   }
 
   private final def mockFetchFromKeyStore[T](key: String, config: MFO[T]): Unit =
@@ -56,17 +56,29 @@ trait MockKeystoreService extends MockTrait {
     when(MockKeystoreService.session.cache(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
 
   protected final def setupMockKeystore(
-                                         fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure
+                                         fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
+                                         fetchAll: MFO[CacheMap] = DoNotConfigure,
+                                         deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
+
+    setupMockKeystoreSaveFunctions()
+
+    fetchAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.fetch()(Matchers.any())).thenReturn(dataToReturn))
+    deleteAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.remove()(Matchers.any())).thenReturn(dataToReturn))
   }
 
   protected final def verifyKeystore(
                                       fetchBusinessName: Option[Int] = None,
-                                      saveBusinessName: Option[Int] = None
+                                      saveBusinessName: Option[Int] = None,
+                                      fetchAll: Option[Int] = None,
+                                      deleteAll: Option[Int] = None
                                     ): Unit = {
     verifyKeystoreFetch(BusinessName, fetchBusinessName)
-    verifyKeystoreSave(BusinessName, fetchBusinessName)
+    verifyKeystoreSave(BusinessName, saveBusinessName)
+
+    fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(Matchers.any()))
+    deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(Matchers.any()))
   }
 
 }

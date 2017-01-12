@@ -60,6 +60,11 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
       setupMockKeystore(fetchBusinessName = None)
 
       status(result) must be(Status.OK)
+
+      verifyKeystore(
+        fetchBusinessName = 1,
+        saveBusinessName = 0
+      )
     }
   }
 
