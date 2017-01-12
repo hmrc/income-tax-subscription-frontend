@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package views.business
+package views
 
-import assets.MessageLookup
-import assets.MessageLookup.{BusinessName => messages}
-import forms.BusinessNameForm
+import assets.MessageLookup.{ContactEmail => messages}
 import org.jsoup.Jsoup
-import play.api.i18n.Messages.Implicits._
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.test.FakeRequest
-import util.UnitTestTrait
+import play.api.i18n.Messages.Implicits.applicationMessages
+import forms.EmailForm
 
-class BusinessNameViewSpec extends UnitTestTrait {
+class ContactEmailViewSpec extends PlaySpec with OneAppPerTest {
 
-  lazy val page = views.html.business.business_name(
-    businessNameForm = BusinessNameForm.businessNameForm,
-    postAction = controllers.business.routes.BusinessNameController.submitBusinessName()
+  lazy val page = views.html.contact_email(
+    contactEmailForm = EmailForm.emailForm,
+    postAction = controllers.routes.ContactEmailController.submitContactEmail()
   )(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
-  "The Business Name view" should {
+  "The Contact Email Address view" should {
 
     s"have the title '${messages.title}'" in {
       document.title() mustBe messages.title
@@ -44,24 +43,18 @@ class BusinessNameViewSpec extends UnitTestTrait {
 
     "has a form" which {
 
-      s"has the hint text '${MessageLookup.BusinessName.hint}'" in {
-        document.select("span.form-hint").text() mustBe MessageLookup.BusinessName.hint
-      }
-
-      "has a text input field for the business name" in {
-        document.select("input[name=BusinessName]").isEmpty mustBe false
+      "has a text input field for the email address" in {
+        document.select("input[name=emailAddress]").isEmpty mustBe false
       }
 
       "has a continue button" in {
         document.select("#continue-button").isEmpty mustBe false
       }
 
-      s"has a post action to '${controllers.business.routes.BusinessNameController.submitBusinessName().url}'" in {
-        document.select("form").attr("action") mustBe controllers.business.routes.BusinessNameController.submitBusinessName().url
+      s"has a post action to '${controllers.routes.ContactEmailController.submitContactEmail().url}'" in {
+        document.select("form").attr("action") mustBe controllers.routes.ContactEmailController.submitContactEmail().url
         document.select("form").attr("method") mustBe "POST"
       }
-
     }
-
   }
 }

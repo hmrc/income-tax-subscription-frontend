@@ -18,9 +18,12 @@ package controllers
 
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
 
 class ContactEmailControllerSpec extends ControllerBaseSpec {
 
@@ -51,9 +54,15 @@ class ContactEmailControllerSpec extends ControllerBaseSpec {
   "Calling the showContactEmail action of the ContactEmailController with an authorised user" should {
 
     lazy val result = TestContactEmailController.showContactEmail(authenticatedFakeRequest())
+    lazy val document = Jsoup.parse(contentAsString(result))
 
-    "return unimplemented (501)" in {
-      status(result) must be (Status.NOT_IMPLEMENTED)
+
+    "return status (200)" in {
+      status(result) must be (Status.OK)
+    }
+
+    "render the Contact Email address view" in {
+      document.title() mustBe Messages("contact_email.title")
     }
   }
 
@@ -61,8 +70,12 @@ class ContactEmailControllerSpec extends ControllerBaseSpec {
 
     lazy val result = TestContactEmailController.submitContactEmail(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be (Status.NOT_IMPLEMENTED)
+    "return a redirect status (SEE_OTHER - 303)" in {
+      status(result) must be (Status.SEE_OTHER)
+    }
+
+    s"redirect to '${controllers.routes.TermsController.showTerms().url}'" in {
+      redirectLocation(result) mustBe Some(controllers.routes.TermsController.showTerms().url)
     }
   }
 

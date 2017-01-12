@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package forms.submapping
 
 import models.DateModel
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import org.scalatest.Matchers._
+import play.api.data.Forms.{mapping, _}
 
-class DateFormSpec extends PlaySpec with OneAppPerTest {
+object DateMapping {
 
-  import DateForm._
+  val dateDay = "dateDay"
+  val dateMonth = "dateMonth"
+  val dateYear = "dateYear"
 
-  "The DateForm" should {
-    "transform the request to the form case class" in {
-      val testDateDay = "01"
-      val testDateMonth = "02"
-      val testDateYear = "2000"
-      val testInput = Map(dateDay -> testDateDay, dateMonth -> testDateMonth, dateYear -> testDateYear)
-      val expected = DateModel(testDateDay, testDateMonth, testDateYear)
-      val actual = dateForm.bind(testInput).value
-
-      actual shouldBe Some(expected)
-    }
-  }
+  val dateMapping = mapping(
+    dateDay -> text,
+    dateMonth -> text,
+    dateYear -> text
+  )(DateModel.apply)(DateModel.unapply)
 
 }
