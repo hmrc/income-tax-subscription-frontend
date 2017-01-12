@@ -18,11 +18,11 @@ package views
 
 import assets.MessageLookup
 import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import util.UnitTestTrait
 
-class SessionTimeoutViewSpec extends PlaySpec with OneAppPerTest {
+class SessionTimeoutViewSpec extends UnitTestTrait {
 
   lazy val page = views.html.timeout.timeout()(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)

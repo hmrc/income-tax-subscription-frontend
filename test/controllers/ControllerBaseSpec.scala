@@ -18,13 +18,13 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
+import util.UnitTestTrait
 
-trait ControllerBaseSpec extends PlaySpec with OneAppPerTest {
+trait ControllerBaseSpec extends UnitTestTrait {
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()

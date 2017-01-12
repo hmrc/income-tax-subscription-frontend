@@ -1,6 +1,11 @@
 ## Base ##
 base.back                                                       = Back
 base.continue                                                   = Continue
+base.start_date                                                 = Start date
+base.end_date                                                   = End date
+base.day                                                        = Day
+base.month                                                      = Month
+base.year                                                       = Year
 
 ## Business Income page
 business.income_type.title                                      = How do you receive your business income?

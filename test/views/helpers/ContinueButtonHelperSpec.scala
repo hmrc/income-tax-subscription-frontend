@@ -18,10 +18,10 @@ package views.helpers
 
 import assets.MessageLookup
 import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.i18n.Messages.Implicits.applicationMessages
+import util.UnitTestTrait
 
-class ContinueButtonHelperSpec extends PlaySpec with OneServerPerSuite {
+class ContinueButtonHelperSpec extends UnitTestTrait {
 
   val view = views.html.helpers.continueButton()(applicationMessages)
   val html = Jsoup.parse(view.body)
@@ -48,8 +48,8 @@ class ContinueButtonHelperSpec extends PlaySpec with OneServerPerSuite {
         continueButton.attr("id") mustBe "continue-button"
       }
 
-      s"has the value '${MessageLookup.continue}'" in {
-        continueButton.text() mustBe MessageLookup.continue
+      s"has the value '${MessageLookup.Base.continue}'" in {
+        continueButton.text() mustBe MessageLookup.Base.continue
       }
     }
   }
