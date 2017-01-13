@@ -19,10 +19,13 @@ package controllers.business
 import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import forms.AccountingPeriodForm
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.i18n.Messages.Implicits._
+import models.AccountingPeriodModel
 import play.api.Play.current
-import uk.gov.hmrc.play.http.HttpResponse
+import play.api.data.Form
+import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.Html
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
@@ -34,16 +37,25 @@ object BusinessAccountingPeriodController extends BusinessAccountingPeriodContro
 
 trait BusinessAccountingPeriodController extends FrontendController with AuthorisedForIncomeTaxSA {
 
-  val showAccountingPeriod = Authorised.async { implicit user =>
+  def view(form: Form[AccountingPeriodModel])(implicit request: Request[_]): Html =
+    views.html.business.accounting_period(
+      form,
+      controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod()
+    )
+
+  val showAccountingPeriod: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Ok(views.html.business.accounting_period(
-        AccountingPeriodForm.accountingPeriodForm,
-        controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod()
-      )))
+      Future.successful(Ok(view(AccountingPeriodForm.accountingPeriodForm)))
   }
 
-  val submitAccountingPeriod = Authorised.async { implicit user =>
+  val submitAccountingPeriod: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Redirect(controllers.business.routes.BusinessNameController.showBusinessName()))
+      AccountingPeriodForm.accountingPeriodForm.bindFromRequest().fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        accountingPeriod => {
+          //TODO save to keystore
+          Future.successful(Redirect(controllers.business.routes.BusinessNameController.showBusinessName()))
+        }
+      )
   }
 }

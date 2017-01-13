@@ -17,19 +17,48 @@
 package forms
 
 import forms.submapping.DateMapping._
-import models.AccountingPeriodModel
+import models.{AccountingPeriodModel, DateModel}
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import forms.validation.util.ConstraintUtil._
+import forms.validation.ErrorMessageFactory
+import play.api.data.validation.{Constraint, Valid, ValidationResult}
+
+import scala.util.Try
 
 object AccountingPeriodForm {
 
   val startDate = "startDate"
   val endDate = "endDate"
 
+  val dateValidation: Constraint[DateModel] = constraint[DateModel](
+    date => {
+      lazy val invalidDate = ErrorMessageFactory.error("error.invalid_date")
+      Try[ValidationResult] {
+        date.toLocalDate
+        Valid
+      }.getOrElse(invalidDate)
+    }
+  )
+
+  val dateEmpty: Constraint[DateModel] = constraint[DateModel](
+    date => {
+      lazy val emptyDate = ErrorMessageFactory.error("error.empty_date")
+      if (date.day.isEmpty && date.month.isEmpty && date.year.isEmpty) emptyDate else Valid
+    }
+  )
+
+  val endDateAfterStart: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
+    accountingPeriod => {
+      lazy val invalid = ErrorMessageFactory.error("error.end_date_violation")
+      if (accountingPeriod.endDate.isAfter(accountingPeriod.startDate)) Valid else invalid
+    }
+  )
+
   val accountingPeriodForm = Form(
     mapping(
-      startDate -> dateMapping,
-      endDate -> dateMapping
+      startDate -> dateMapping.verifying(dateEmpty andThen dateValidation),
+      endDate -> dateMapping.verifying(dateEmpty andThen dateValidation)
     )(AccountingPeriodModel.apply)(AccountingPeriodModel.unapply)
   )
 

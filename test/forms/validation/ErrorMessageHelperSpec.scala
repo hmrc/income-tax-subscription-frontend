@@ -24,7 +24,7 @@ import play.api.data.validation.{Constraint, Valid, ValidationResult}
 
 class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
 
-  import ConstraintUtil._
+  import forms.validation.util.ConstraintUtil._
 
   case class TestModel(testField1: String, testField2: String, testField3: String)
 
