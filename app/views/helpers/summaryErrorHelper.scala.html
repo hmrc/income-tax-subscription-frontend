@@ -14,14 +14,14 @@
     <li role="tooltip"><a href="#@{err._1}">@{err._2.toText}</a></li>
 }
 
-@if(form.hasGlobalErrors) {
+@if(form.hasErrors) {
 
     <div class="flash error-summary error-summary--show"
          id="error-summary-display"
          role="alert"
          aria-labelledby="error-summary-heading"
          tabindex="-1">
-        <h2 id="error-summary-heading" class="h3-heading">Summary Heading</h2>
+        <h2 id="error-summary-heading" class="h3-heading">@Messages("base.error_heading")</h2>
         <ul>
             @errors.map(errMsg)
         </ul>

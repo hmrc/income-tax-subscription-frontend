@@ -6,6 +6,7 @@ base.end_date                                                   = End date
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
+base.error_heading                                              = Error Summary
 
 ## Business Income page
 business.income_type.title                                      = How do you receive your business income?

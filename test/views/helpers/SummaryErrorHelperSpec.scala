@@ -66,16 +66,26 @@ class SummaryErrorHelperSpec extends PlaySpec with OneServerPerSuite {
     "if the form does not present an error, it should continue a successful flow" in {
       val page = summaryErrorHelper(testForm)
       val doc = page.doc
-
-      val summaryDiv = doc.getElementById("field1")
+      val summaryDiv = doc.getElementById("error-summary-display")
       summaryDiv shouldBe null
     }
 
     "if the form does present an error, the error should be displayed back" in {
-      val page = summaryErrorHelper(testForm.fill(TestData("data", " ", "data")))
+      val filledForm = testForm.fillAndValidate(TestData("data", " ", "data"))
+      val page = summaryErrorHelper(filledForm)
       val doc = page.doc
-      val inputs = doc.getElementsByTag("field2")
+
+      val fieldUl = doc.getElementsByTag("ul")
+      val fieldLi = fieldUl.get(0).getElementsByTag("li")
+      fieldLi.size() shouldBe 2
+      val aField1 = fieldLi.get(0).getElementsByTag("a")
+      aField1.attr("href") shouldBe "#field1"
+      aField1.text shouldBe "errKey"
+      val aField2 = fieldLi.get(1).getElementsByTag("a")
+      aField2.attr("href") shouldBe "#field3"
+      aField2.text shouldBe "errKey"
+      val summaryHeading = doc.getElementsByTag("h2")
+      summaryHeading.text shouldBe "Error Summary"
     }
   }
-
 }
