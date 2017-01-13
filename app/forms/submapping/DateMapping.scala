@@ -16,8 +16,10 @@
 
 package forms.submapping
 
+import forms.validation.util._
 import models.DateModel
-import play.api.data.Forms.{mapping, _}
+import play.api.data.Forms.mapping
+import play.api.data.Mapping
 
 object DateMapping {
 
@@ -25,10 +27,10 @@ object DateMapping {
   val dateMonth = "dateMonth"
   val dateYear = "dateYear"
 
-  val dateMapping = mapping(
-    dateDay -> text,
-    dateMonth -> text,
-    dateYear -> text
+  val dateMapping: Mapping[DateModel] = mapping(
+    dateDay -> oText.toText,
+    dateMonth -> oText.toText,
+    dateYear -> oText.toText
   )(DateModel.apply)(DateModel.unapply)
 
 }

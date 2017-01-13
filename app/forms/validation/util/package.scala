@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package forms.validation
 
 
 import play.api.data.Forms._
@@ -24,10 +24,12 @@ package object util {
 
   val oText: Mapping[Option[String]] = optional(text)
 
-  implicit def oTextTransformer(mapping: Mapping[Option[String]]): Mapping[String] =
-    mapping.transform(
-      x => x.fold("")(x => x),
-      x => Some(x)
-    )
+  implicit class oTextUtil(mapping: Mapping[Option[String]]) {
+    def toText: Mapping[String] =
+      mapping.transform(
+        x => x.fold("")(x => x),
+        x => Some(x)
+      )
+  }
 
 }

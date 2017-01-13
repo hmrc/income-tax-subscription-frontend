@@ -82,6 +82,7 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
       implicit def assert(fieldName: String): TestTrait = new TestTrait {
 
         private def errorMsgIsDefined(err: ErrorMessage): Unit = {
+          //TODO uncomment when the error messages are defined
           //          withClue(s"\nthe error message for: ${err.messageKey} is not defined in the messages file\n") {
           //            err.toText should not be err.messageKey
           //          }
@@ -107,7 +108,8 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
             withClue(s"getSummaryErrors failed, form.errors:\n${form.errors}\n") {
               Try {
                 ErrorMessageHelper.getSummaryErrors(form)
-              }.isSuccess shouldBe true
+              }
+                .isSuccess shouldBe true
             }
             val sErrs = ErrorMessageHelper.getSummaryErrors(form)
             val expectedErr = invalid.errors.head.args(1).asInstanceOf[SummaryError]
@@ -137,8 +139,27 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
           }
         }
 
-        override def doesNotHaveSpecifiedErrors(invalid: Invalid) = {
+        private def doesNotHavSummaryError(invalid: Invalid): Unit = {
+          withClue(s"\nThe summary errors contained the specified error for $fieldName:\n") {
+            withClue(s"getSummaryErrors failed, form.errors:\n${form.errors}\n") {
+              Try {
+                ErrorMessageHelper.getSummaryErrors(form)
+              }.isSuccess shouldBe true
+            }
+            val sErrs = ErrorMessageHelper.getSummaryErrors(form)
+            val expectedErr = invalid.errors.head.args(1).asInstanceOf[SummaryError]
+            val summaryForFieldName = sErrs.filter(_._1 == fieldName)
+            summaryForFieldName match {
+              case Nil => // valid
+              case _ => summaryForFieldName.map(_._2).contains(expectedErr) shouldBe false
+            }
+            errorMsgIsDefined(expectedErr)
+          }
+        }
+
+        override def doesNotHaveSpecifiedErrors(invalid: Invalid): Unit = {
           doesNotHaveSpecifiedFieldError(invalid)
+          doesNotHavSummaryError(invalid)
         }
       }
     }
@@ -147,11 +168,11 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
       val empty = ErrorMessageFactory.error("error.empty_date")
       val invalid = ErrorMessageFactory.error("error.invalid_date")
 
-      val emptyDateInput = DataMap.emptyDate(startDate) ++ DataMap.emptyDate(endDate)
+      val emptyDateInput = DataMap.emptyDate(startDate)
       val emptyTest = accountingPeriodForm.bind(emptyDateInput)
       emptyTest assert startDate hasExpectedErrors empty
 
-      val invalidDateInput = DataMap.date(startDate)("30", "2", "2017") ++ DataMap.emptyDate(endDate)
+      val invalidDateInput = DataMap.date(startDate)("30", "2", "2017")
       val invalidTest = accountingPeriodForm.bind(invalidDateInput)
       invalidTest assert startDate hasExpectedErrors invalid
     }
@@ -161,17 +182,21 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
       val invalid = ErrorMessageFactory.error("error.invalid_date")
       val violation = ErrorMessageFactory.error("error.end_date_violation")
 
-      val emptyDateInput = DataMap.emptyDate(endDate) ++ DataMap.emptyDate(startDate)
+      val emptyDateInput = DataMap.emptyDate(endDate)
       val emptyTest = accountingPeriodForm.bind(emptyDateInput)
       emptyTest assert endDate hasExpectedErrors empty
 
-      val invalidDateInput = DataMap.date(endDate)("29", "2", "2017") ++ DataMap.emptyDate(startDate)
+      val invalidDateInput = DataMap.date(endDate)("29", "2", "2017")
       val invalidTest = accountingPeriodForm.bind(invalidDateInput)
       invalidTest assert endDate hasExpectedErrors invalid
 
-      val endDateViolationInput = DataMap.date(endDate)("27", "2", "2017") ++ DataMap.date(startDate)("28", "2", "2017")
+      val endDateViolationInput = DataMap.date(startDate)("28", "2", "2017") ++ DataMap.date(endDate)("28", "2", "2017")
       val violationTest = accountingPeriodForm.bind(endDateViolationInput)
       violationTest assert endDate hasExpectedErrors violation
+
+      val validInput = DataMap.date(startDate)("27", "2", "2017") ++ DataMap.date(endDate)("28", "2", "2017")
+      val validTest = accountingPeriodForm.bind(validInput)
+      validTest assert endDate doesNotHaveSpecifiedErrors violation
     }
   }
 
