@@ -25,6 +25,7 @@ object MessageLookup {
     val day = "Day"
     val month = "Month"
     val year = "Year"
+    val errorHeading = "Error Summary"
   }
 
   object HelloWorld {

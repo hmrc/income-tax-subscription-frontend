@@ -37,7 +37,7 @@ class RadioHelperSpec extends UnitTestTrait {
   )
 
   "RadioHelper" should {
-    "populate the relavent content in the correct positions" in {
+    "populate the relevent content in the correct positions" in {
       val testLegend = "my test legend text"
       val testOptions = Seq("Yes", "No")
       val testField = testForm(radioName)
