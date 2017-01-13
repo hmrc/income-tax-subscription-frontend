@@ -1,13 +1,14 @@
-@import play.api.data.Form
-@import play.api.data.Field
-@import models._
 @import forms.AccountingPeriodForm._
 @import helpers._
+@import models._
+@import play.api.data.Form
 @import uk.gov.hmrc.play.views.html.helpers.form
 
 @(dateForm: Form[AccountingPeriodModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @views.html.templates.main_template(title = Messages("accounting_period.title"), bodyClasses = None) {
+
+    @summaryErrorHelper(dateForm)
 
     <h1>@Messages("accounting_period.heading")</h1>
 
