@@ -19,6 +19,8 @@ package controllers.business
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.ControllerBaseSpec
+import forms.AccountingPeriodForm
+import models.{AccountingPeriodModel, DateModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -39,13 +41,13 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec {
 
   "The BusinessAccountingPeriod controller" should {
     "use the correct applicationConfig" in {
-      BusinessAccountingPeriodController.applicationConfig must be (FrontendAppConfig)
+      BusinessAccountingPeriodController.applicationConfig must be(FrontendAppConfig)
     }
     "use the correct authConnector" in {
-      BusinessAccountingPeriodController.authConnector must be (FrontendAuthConnector)
+      BusinessAccountingPeriodController.authConnector must be(FrontendAuthConnector)
     }
     "use the correct postSignInRedirectUrl" in {
-      BusinessAccountingPeriodController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
+      BusinessAccountingPeriodController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
     }
   }
 
@@ -54,20 +56,30 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec {
     lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(authenticatedFakeRequest())
 
     "return ok (200)" in {
-      status(result) must be (Status.OK)
+      status(result) must be(Status.OK)
     }
   }
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user" should {
 
-    lazy val result = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest())
+    lazy val badrequest = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest())
+    lazy val goodRequest = TestBusinessAccountingPeriodController.submitAccountingPeriod(
+      authenticatedFakeRequest().post(
+        AccountingPeriodForm.accountingPeriodForm,
+        AccountingPeriodModel(startDate = DateModel("1", "4", "2017"), endDate = DateModel("1", "4", "2018"))
+      )
+    )
+
+    "return a bad request status (400) for invalid submission" in {
+      status(badrequest) must be(Status.BAD_REQUEST)
+    }
 
     "return a redirect status (SEE_OTHER - 303)" in {
-      status(result) must be (Status.SEE_OTHER)
+      status(goodRequest) must be(Status.SEE_OTHER)
     }
 
     s"redirect to '${controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
-      redirectLocation(result) mustBe Some(controllers.business.routes.BusinessNameController.showBusinessName().url)
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.showBusinessName().url)
     }
   }
 
