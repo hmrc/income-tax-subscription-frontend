@@ -24,7 +24,7 @@ import org.scalatest.Matchers._
 
 import scala.util.Try
 
-trait TestTrait[T] {
+trait FormValidationTrait[T] {
 
   val form: Form[T]
   val fieldName: String
