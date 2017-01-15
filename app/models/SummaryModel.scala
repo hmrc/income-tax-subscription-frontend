@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package services
+package models
 
-object CacheConstants {
-  val BusinessName = "BusinessName"
-  val AccountingPeriod = "AccountingPeriod"
-  val ContactEmail = "ContactEmail"
-  val IncomeType = "IncomeType"
-  val Terms = "Terms"
-}
+
+case class SummaryModel(accountingPeriod: Option[AccountingPeriodModel] = None,
+                        businessName: Option[BusinessNameModel] = None,
+                        incomeType: Option[IncomeTypeModel] = None,
+                        contactEmail: Option[EmailModel] = None,
+                        terms: Option[TermModel] = None)
