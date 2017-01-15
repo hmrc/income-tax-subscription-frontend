@@ -69,7 +69,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and valid entry" should {
+  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and valid submission" should {
 
     def callShow = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest().post(BusinessNameForm.businessNameForm, BusinessNameModel("Test business")))
 
@@ -96,7 +96,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid entry" should {
+  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
     lazy val result = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {

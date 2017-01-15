@@ -68,7 +68,7 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitBusinessIncomeType action of the BusinessIncomeType with an authorised user" should {
+  "Calling the submitBusinessIncomeType action of the BusinessIncomeType with an authorised user and valid submission" should {
 
     def callShow = TestBusinessIncomeTypeController.submitBusinessIncomeType(authenticatedFakeRequest()
       .post(IncomeTypeForm.incomeTypeForm, IncomeTypeModel("Cash")))
@@ -96,7 +96,7 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitBusinessIncomeType action of the BusinessIncomeType with an authorised user and invalid entry" should {
+  "Calling the submitBusinessIncomeType action of the BusinessIncomeType with an authorised user and invalid submission" should {
     lazy val result = TestBusinessIncomeTypeController.submitBusinessIncomeType(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {

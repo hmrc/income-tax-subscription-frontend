@@ -29,7 +29,6 @@ object BusinessNameController extends BusinessNameController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
-
   override val keystoreService = KeystoreService
 }
 

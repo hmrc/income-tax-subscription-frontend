@@ -69,7 +69,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user and a valid entry" should {
+  "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user and a valid submission" should {
 
     def callShow = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest()
       .post(AccountingPeriodForm.accountingPeriodForm, AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))))
@@ -97,7 +97,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user and invalid entry" should {
+  "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user and invalid submission" should {
     lazy val result = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
