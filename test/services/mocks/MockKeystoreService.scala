@@ -60,7 +60,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchAccountingPeriod: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchContactEmail: MFO[EmailModel] = DoNotConfigure,
                                          fetchIncomeType: MFO[IncomeTypeModel] = DoNotConfigure,
-                                         fetchTerm: MFO[TermModel] = DoNotConfigure,
+                                         fetchTerms: MFO[TermModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
@@ -68,7 +68,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriod, fetchAccountingPeriod)
     mockFetchFromKeyStore[EmailModel](ContactEmail, fetchContactEmail)
     mockFetchFromKeyStore[IncomeTypeModel](IncomeType, fetchIncomeType)
-    mockFetchFromKeyStore[TermModel](Term, fetchTerm)
+    mockFetchFromKeyStore[TermModel](Terms, fetchTerms)
 
     setupMockKeystoreSaveFunctions()
 
@@ -85,8 +85,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveContactEmail: Option[Int] = None,
                                       fetchIncomeType: Option[Int] = None,
                                       saveIncomeType: Option[Int] = None,
-                                      fetchTerm: Option[Int] = None,
-                                      saveTerm: Option[Int] = None,
+                                      fetchTerms: Option[Int] = None,
+                                      saveTerms: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
@@ -98,8 +98,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(ContactEmail, saveContactEmail)
     verifyKeystoreFetch(IncomeType, fetchIncomeType)
     verifyKeystoreSave(IncomeType, saveIncomeType)
-    verifyKeystoreFetch(Term, fetchTerm)
-    verifyKeystoreSave(Term, saveTerm)
+    verifyKeystoreFetch(Terms, fetchTerms)
+    verifyKeystoreSave(Terms, saveTerms)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(Matchers.any()))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(Matchers.any()))

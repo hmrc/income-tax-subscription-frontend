@@ -66,11 +66,11 @@ trait KeystoreService {
   def saveIncomeType(incomeType: IncomeTypeModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeTypeModel]): FC =
     save[IncomeTypeModel](IncomeType, incomeType)
 
-  def fetchTerm()(implicit hc: HeaderCarrier, reads: Reads[TermModel]): FO[TermModel] =
-    fetch[TermModel](Term)
+  def fetchTerms()(implicit hc: HeaderCarrier, reads: Reads[TermModel]): FO[TermModel] =
+    fetch[TermModel](Terms)
 
-  def saveTerm(term: TermModel)(implicit hc: HeaderCarrier, reads: Reads[TermModel]): FC =
-    save[TermModel](Term, term)
+  def saveTerms(terms: TermModel)(implicit hc: HeaderCarrier, reads: Reads[TermModel]): FC =
+    save[TermModel](Terms, terms)
 }
 
 object KeystoreService extends KeystoreService {

@@ -21,5 +21,5 @@ object CacheConstants {
   val AccountingPeriod = "AccountingPeriod"
   val ContactEmail = "ContactEmail"
   val IncomeType = "IncomeType"
-  val Term = "Term"
+  val Terms = "Terms"
 }
