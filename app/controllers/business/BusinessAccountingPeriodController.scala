@@ -16,15 +16,12 @@
 
 package controllers.business
 
-import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.BaseController
 import forms.AccountingPeriodForm
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 import services.KeystoreService
-import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
@@ -43,9 +40,9 @@ trait BusinessAccountingPeriodController extends BaseController {
   val showAccountingPeriod = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchAccountingPeriod() map {
-        accountingPeriodModel =>
+        accountingPeriod =>
           Ok(views.html.business.accounting_period(
-            AccountingPeriodForm.accountingPeriodForm.fill(accountingPeriodModel),
+            AccountingPeriodForm.accountingPeriodForm.fill(accountingPeriod),
             controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod()
           ))
       }

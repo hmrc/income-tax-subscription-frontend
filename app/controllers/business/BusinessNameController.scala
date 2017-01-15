@@ -16,14 +16,11 @@
 
 package controllers.business
 
-import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.BaseController
 import forms.BusinessNameForm
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
-import play.api.data.Form
+import play.api.i18n.Messages.Implicits._
 import services.KeystoreService
 
 import scala.concurrent.Future
@@ -43,9 +40,9 @@ trait BusinessNameController extends BaseController {
   val showBusinessName = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchBusinessName() map {
-        businessNameModel =>
+        businessName =>
           Ok(views.html.business.business_name(
-            businessNameForm = BusinessNameForm.businessNameForm.fill(businessNameModel),
+            businessNameForm = BusinessNameForm.businessNameForm.fill(businessName),
             postAction = controllers.business.routes.BusinessNameController.submitBusinessName()
           ))
       }
