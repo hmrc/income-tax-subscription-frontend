@@ -18,6 +18,7 @@ package controllers.business
 
 import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import controllers.BaseController
 import forms.BusinessNameForm
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
@@ -35,13 +36,9 @@ object BusinessNameController extends BusinessNameController {
   override val keystoreService = KeystoreService
 }
 
-trait BusinessNameController extends FrontendController with AuthorisedForIncomeTaxSA {
+trait BusinessNameController extends BaseController {
 
   val keystoreService: KeystoreService
-
-  implicit class FormUtil[T](form: Form[T]) {
-    def fill(data: Option[T]): Form[T] = data.fold(form)(form.fill)
-  }
 
   val showBusinessName = Authorised.async { implicit user =>
     implicit request =>

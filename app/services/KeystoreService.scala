@@ -18,7 +18,7 @@ package services
 
 
 import config.SessionCache
-import models.BusinessNameModel
+import models._
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
@@ -45,9 +45,32 @@ trait KeystoreService {
   def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =
     fetch[BusinessNameModel](BusinessName)
 
-  def saveBusinessName(businessNameModel: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FC =
-    save[BusinessNameModel](BusinessName, businessNameModel)
+  def saveBusinessName(businessName: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FC =
+    save[BusinessNameModel](BusinessName, businessName)
 
+  def fetchAccountingPeriod()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FO[AccountingPeriodModel] =
+    fetch[AccountingPeriodModel](AccountingPeriod)
+
+  def saveAccountingPeriod(accountingPeriod: AccountingPeriodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FC =
+    save[AccountingPeriodModel](AccountingPeriod, accountingPeriod)
+
+  def fetchContactEmail()(implicit hc: HeaderCarrier, reads: Reads[EmailModel]): FO[EmailModel] =
+    fetch[EmailModel](ContactEmail)
+
+  def saveContactEmail(contactEmail: EmailModel)(implicit hc: HeaderCarrier, reads: Reads[EmailModel]): FC =
+    save[EmailModel](ContactEmail, contactEmail)
+
+  def fetchIncomeType()(implicit hc: HeaderCarrier, reads: Reads[IncomeTypeModel]): FO[IncomeTypeModel] =
+    fetch[IncomeTypeModel](IncomeType)
+
+  def saveIncomeType(incomeType: IncomeTypeModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeTypeModel]): FC =
+    save[IncomeTypeModel](IncomeType, incomeType)
+
+  def fetchTerm()(implicit hc: HeaderCarrier, reads: Reads[TermModel]): FO[TermModel] =
+    fetch[TermModel](Term)
+
+  def saveTerm(term: TermModel)(implicit hc: HeaderCarrier, reads: Reads[TermModel]): FC =
+    save[TermModel](Term, term)
 }
 
 object KeystoreService extends KeystoreService {

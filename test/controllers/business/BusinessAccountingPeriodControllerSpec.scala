@@ -19,11 +19,15 @@ package controllers.business
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.ControllerBaseSpec
+import forms.AccountingPeriodForm
+import models.{AccountingPeriodModel, DateModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import services.mocks.MockKeystoreService
 
-class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec {
+class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
+  with MockKeystoreService {
 
   override val controllerName: String = "BusinessAccountingPeriodController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -35,17 +39,18 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
+    override val keystoreService = MockKeystoreService
   }
 
   "The BusinessAccountingPeriod controller" should {
     "use the correct applicationConfig" in {
-      BusinessAccountingPeriodController.applicationConfig must be (FrontendAppConfig)
+      BusinessAccountingPeriodController.applicationConfig must be(FrontendAppConfig)
     }
     "use the correct authConnector" in {
-      BusinessAccountingPeriodController.authConnector must be (FrontendAuthConnector)
+      BusinessAccountingPeriodController.authConnector must be(FrontendAuthConnector)
     }
     "use the correct postSignInRedirectUrl" in {
-      BusinessAccountingPeriodController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
+      BusinessAccountingPeriodController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
     }
   }
 
@@ -54,20 +59,52 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec {
     lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(authenticatedFakeRequest())
 
     "return ok (200)" in {
-      status(result) must be (Status.OK)
+      setupMockKeystore(fetchAccountingPeriod = None)
+
+      status(result) must be(Status.OK)
+
+      await(result)
+      verifyKeystore(fetchAccountingPeriod = 1, saveAccountingPeriod = 0)
+
     }
   }
 
-  "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user" should {
+  "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user and a valid entry" should {
 
-    lazy val result = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest())
+    def callShow = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest()
+      .post(AccountingPeriodForm.accountingPeriodForm, AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))))
 
     "return a redirect status (SEE_OTHER - 303)" in {
-      status(result) must be (Status.SEE_OTHER)
+      setupMockKeystoreSaveFunctions()
+
+      val result = callShow
+
+      status(result) must be(Status.SEE_OTHER)
+
+      await(result)
+      verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 1)
     }
 
     s"redirect to '${controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
+      setupMockKeystoreSaveFunctions()
+
+      val result = callShow
+
       redirectLocation(result) mustBe Some(controllers.business.routes.BusinessNameController.showBusinessName().url)
+
+      await(result)
+      verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 1)
+    }
+  }
+
+  "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user and invalid entry" should {
+    lazy val result = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest())
+
+    "return unimplemented (501)" in {
+      status(result) must be(Status.NOT_IMPLEMENTED)
+
+      await(result)
+      verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 0)
     }
   }
 

@@ -16,7 +16,7 @@
 
 package services.mocks
 
-import models.BusinessNameModel
+import models._
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import services.KeystoreService
@@ -57,10 +57,18 @@ trait MockKeystoreService extends MockTrait {
 
   protected final def setupMockKeystore(
                                          fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
+                                         fetchAccountingPeriod: MFO[AccountingPeriodModel] = DoNotConfigure,
+                                         fetchContactEmail: MFO[EmailModel] = DoNotConfigure,
+                                         fetchIncomeType: MFO[IncomeTypeModel] = DoNotConfigure,
+                                         fetchTerm: MFO[TermModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
+    mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriod, fetchAccountingPeriod)
+    mockFetchFromKeyStore[EmailModel](ContactEmail, fetchContactEmail)
+    mockFetchFromKeyStore[IncomeTypeModel](IncomeType, fetchIncomeType)
+    mockFetchFromKeyStore[TermModel](Term, fetchTerm)
 
     setupMockKeystoreSaveFunctions()
 
@@ -71,11 +79,27 @@ trait MockKeystoreService extends MockTrait {
   protected final def verifyKeystore(
                                       fetchBusinessName: Option[Int] = None,
                                       saveBusinessName: Option[Int] = None,
+                                      fetchAccountingPeriod: Option[Int] = None,
+                                      saveAccountingPeriod: Option[Int] = None,
+                                      fetchContactEmail: Option[Int] = None,
+                                      saveContactEmail: Option[Int] = None,
+                                      fetchIncomeType: Option[Int] = None,
+                                      saveIncomeType: Option[Int] = None,
+                                      fetchTerm: Option[Int] = None,
+                                      saveTerm: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
     verifyKeystoreFetch(BusinessName, fetchBusinessName)
     verifyKeystoreSave(BusinessName, saveBusinessName)
+    verifyKeystoreFetch(AccountingPeriod, fetchAccountingPeriod)
+    verifyKeystoreSave(AccountingPeriod, saveAccountingPeriod)
+    verifyKeystoreFetch(ContactEmail, fetchContactEmail)
+    verifyKeystoreSave(ContactEmail, saveContactEmail)
+    verifyKeystoreFetch(IncomeType, fetchIncomeType)
+    verifyKeystoreSave(IncomeType, saveIncomeType)
+    verifyKeystoreFetch(Term, fetchTerm)
+    verifyKeystoreSave(Term, saveTerm)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(Matchers.any()))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(Matchers.any()))
