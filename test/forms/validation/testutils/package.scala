@@ -16,20 +16,23 @@
 
 package forms.validation
 
+import play.api.data.Form
 
-import play.api.data.Forms._
-import play.api.data._
 
-package object util {
+package object testutils {
 
-  val oText: Mapping[Option[String]] = optional(text)
+  implicit class prefixUtil(prefix: String) {
+    def `*`(name: String): String = prefix match {
+      case "" => name
+      case _ => s"$prefix.$name"
+    }
+  }
 
-  implicit class oTextUtil(mapping: Mapping[Option[String]]) {
-    def toText: Mapping[String] =
-      mapping.transform(
-        x => x.fold("")(x => x),
-        x => Some(x)
-      )
+  implicit class ErrorValidationUtil[T](testForm: Form[T]) {
+    implicit def assert(testFieldName: String): TestTrait[T] = new TestTrait[T] {
+      override val form: Form[T] = testForm
+      override val fieldName: String = testFieldName
+    }
   }
 
 }

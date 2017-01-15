@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package forms.submapping
+package forms.validation.testutils
 
-import forms.validation.utils._
-import models.DateModel
-import play.api.data.Forms.mapping
-import play.api.data.Mapping
+object DataMap {
 
-object DateMapping {
+  import forms.submapping.DateMapping._
 
-  val dateDay = "dateDay"
-  val dateMonth = "dateMonth"
-  val dateYear = "dateYear"
+  def date(prefix: String)(day: String, month: String, year: String): Map[String, String] =
+    Map(prefix * dateDay -> day, prefix * dateMonth -> month, prefix * dateYear -> year)
 
-  val dateMapping: Mapping[DateModel] = mapping(
-    dateDay -> oText.toText,
-    dateMonth -> oText.toText,
-    dateYear -> oText.toText
-  )(DateModel.apply)(DateModel.unapply)
-
+  val emptyDate: String => Map[String, String] = (prefix: String) => date(prefix)("", "", "")
 }

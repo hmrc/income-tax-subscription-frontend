@@ -20,11 +20,11 @@ import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.{Constraint, Valid, ValidationResult}
+import play.api.data.validation.{Valid, ValidationResult}
 
 class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
 
-  import forms.validation.util.ConstraintUtil._
+  import forms.validation.utils.ConstraintUtil._
 
   case class TestModel(testField1: String, testField2: String, testField3: String)
 

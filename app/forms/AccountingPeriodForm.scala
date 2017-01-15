@@ -17,12 +17,12 @@
 package forms
 
 import forms.submapping.DateMapping._
+import forms.validation.ErrorMessageFactory
+import forms.validation.models.TargetIds
+import forms.validation.utils.ConstraintUtil._
 import models.{AccountingPeriodModel, DateModel}
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import forms.validation.util.ConstraintUtil._
-import forms.validation.ErrorMessageFactory
-import forms.validation.models.TargetIds
 import play.api.data.validation.{Constraint, Valid, ValidationResult}
 
 import scala.util.Try
@@ -51,7 +51,7 @@ object AccountingPeriodForm {
 
   val endDateAfterStart: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
     accountingPeriod => {
-      lazy val invalid = ErrorMessageFactory.error(TargetIds(endDate),"error.end_date_violation")
+      lazy val invalid = ErrorMessageFactory.error(TargetIds(endDate), "error.end_date_violation")
       if (accountingPeriod.endDate.isAfter(accountingPeriod.startDate)) Valid else invalid
     }
   )

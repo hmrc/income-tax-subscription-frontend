@@ -16,18 +16,18 @@
 
 package views.helpers
 
-import forms.validation.ConstraintUtil._
 import forms.validation.ErrorMessageFactory
 import forms.validation.models.SummaryError
+import forms.validation.utils.ConstraintUtil._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
 import play.api.data.validation.Valid
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.twirl.api.Html
-import org.scalatest.Matchers._
 
 class SummaryErrorHelperSpec extends PlaySpec with OneServerPerSuite {
 

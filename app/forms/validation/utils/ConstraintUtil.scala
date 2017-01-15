@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.validation.util
+package forms.validation.utils
 
 import play.api.data.validation.{Constraint, Valid, ValidationResult}
 

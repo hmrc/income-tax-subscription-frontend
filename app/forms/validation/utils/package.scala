@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package forms.submapping
+package forms.validation
 
-import forms.validation.utils._
-import models.DateModel
-import play.api.data.Forms.mapping
-import play.api.data.Mapping
 
-object DateMapping {
+import play.api.data.Forms._
+import play.api.data._
 
-  val dateDay = "dateDay"
-  val dateMonth = "dateMonth"
-  val dateYear = "dateYear"
+package object utils {
 
-  val dateMapping: Mapping[DateModel] = mapping(
-    dateDay -> oText.toText,
-    dateMonth -> oText.toText,
-    dateYear -> oText.toText
-  )(DateModel.apply)(DateModel.unapply)
+  val oText: Mapping[Option[String]] = optional(text)
+
+  implicit class oTextUtil(mapping: Mapping[Option[String]]) {
+    def toText: Mapping[String] =
+      mapping.transform(
+        x => x.fold("")(x => x),
+        x => Some(x)
+      )
+  }
 
 }
