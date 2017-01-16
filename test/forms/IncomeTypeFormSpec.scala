@@ -21,7 +21,7 @@ import forms.validation.testutils.{DataMap, _}
 import models.IncomeTypeModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-
+import play.api.i18n.Messages.Implicits._
 
 class IncomeTypeFormSpec extends PlaySpec with OneAppPerTest {
 

@@ -22,6 +22,7 @@ import forms.validation.testutils.{DataMap, _}
 import models.{AccountingPeriodModel, DateModel}
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import play.api.i18n.Messages.Implicits._
 
 class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
 

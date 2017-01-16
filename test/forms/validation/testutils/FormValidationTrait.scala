@@ -21,22 +21,22 @@ import forms.validation.models.{ErrorMessage, FieldError, SummaryError}
 import play.api.data.Form
 import play.api.data.validation.Invalid
 import org.scalatest.Matchers._
-
 import scala.util.Try
+import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
 
 trait FormValidationTrait[T] {
 
   val form: Form[T]
   val fieldName: String
 
-  def errorMsgIsDefined(err: ErrorMessage): Unit = {
-    //TODO uncomment when the error messages are defined
-    //          withClue(s"\nthe error message for: ${err.messageKey} is not defined in the messages file\n") {
-    //            err.toText should not be err.messageKey
-    //          }
+  def errorMsgIsDefined(err: ErrorMessage)(implicit messages: Messages): Unit = {
+    withClue(s"\nthe error message for: ${err.messageKey} is not defined in the messages file\n") {
+      err.toText should not be err.messageKey
+    }
   }
 
-  def hasFieldError(invalid: Invalid): Unit = {
+  def hasFieldError(invalid: Invalid)(implicit messages: Messages): Unit = {
     withClue(s"\nThe $fieldName field did not contain the expected error:\n") {
       val oErr = ErrorMessageHelper.getFieldError(form, fieldName)
       val expectedErr = invalid.errors.head.args.head.asInstanceOf[FieldError]
@@ -51,7 +51,7 @@ trait FormValidationTrait[T] {
     }
   }
 
-  def hasSummaryError(invalid: Invalid): Unit = {
+  def hasSummaryError(invalid: Invalid)(implicit messages: Messages): Unit = {
     withClue(s"\nThe summary errors did not contain an error for $fieldName:\n") {
       withClue(s"getSummaryErrors failed, form.errors:\n${form.errors}\n") {
         Try {
@@ -70,12 +70,12 @@ trait FormValidationTrait[T] {
     }
   }
 
-  def hasExpectedErrors(invalid: Invalid): Unit = {
+  def hasExpectedErrors(invalid: Invalid)(implicit messages: Messages): Unit = {
     hasFieldError(invalid)
     hasSummaryError(invalid)
   }
 
-  def doesNotHaveSpecifiedFieldError(invalid: Invalid): Unit = {
+  def doesNotHaveSpecifiedFieldError(invalid: Invalid)(implicit messages: Messages): Unit = {
     val specifiedErr = invalid.errors.head.args.head.asInstanceOf[FieldError]
     withClue(s"\nThe $fieldName field contained the specified error $specifiedErr:\n") {
       val oErr = ErrorMessageHelper.getFieldError(form, fieldName)
@@ -86,13 +86,13 @@ trait FormValidationTrait[T] {
     }
   }
 
-  def doesNotHavSummaryError(invalid: Invalid): Unit = {
+  def doesNotHavSummaryError(invalid: Invalid)(implicit messages: Messages): Unit = {
     withClue(s"\nThe summary errors contained the specified error for $fieldName:\n") {
       withClue(s"getSummaryErrors failed, form.errors:\n${form.errors}\n") {
         Try {
           ErrorMessageHelper.getSummaryErrors(form)
         }
-        .isSuccess shouldBe true
+          .isSuccess shouldBe true
       }
       val sErrs = ErrorMessageHelper.getSummaryErrors(form)
       val expectedErr = invalid.errors.head.args(1).asInstanceOf[SummaryError]
@@ -105,7 +105,7 @@ trait FormValidationTrait[T] {
     }
   }
 
-  def doesNotHaveSpecifiedErrors(invalid: Invalid): Unit = {
+  def doesNotHaveSpecifiedErrors(invalid: Invalid)(implicit messages: Messages): Unit = {
     doesNotHaveSpecifiedFieldError(invalid)
     doesNotHavSummaryError(invalid)
   }

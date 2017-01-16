@@ -21,6 +21,7 @@ import forms.validation.testutils.{DataMap, _}
 import models.TermModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import play.api.i18n.Messages.Implicits._
 
 class TermFormSpec extends PlaySpec with OneAppPerTest {
 
