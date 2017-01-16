@@ -20,7 +20,6 @@ import forms.validation.ErrorMessageFactory
 import forms.validation.models.SummaryError
 import forms.validation.testutils.DataMap
 import forms.validation.utils.MappingUtil._
-import org.jsoup.nodes.Element
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.Forms.mapping
