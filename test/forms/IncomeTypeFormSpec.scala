@@ -41,6 +41,10 @@ class IncomeTypeFormSpec extends PlaySpec with OneAppPerTest {
       val empty = ErrorMessageFactory.error("error.income_type.empty")
       val invalid = ErrorMessageFactory.error("error.income_type.invalid")
 
+      val emptyInput0 = DataMap.EmptyMap
+      val emptyTest0 = incomeTypeForm.bind(emptyInput0)
+      emptyTest0 assert incomeType hasExpectedErrors empty
+
       val emptyInput = DataMap.inType("")
       val emptyTest = incomeTypeForm.bind(emptyInput)
       emptyTest assert incomeType hasExpectedErrors empty

@@ -18,7 +18,7 @@ package forms
 
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils._
+import forms.validation.utils.MappingUtil._
 import models.TermModel
 import play.api.data.Form
 import play.api.data.Forms._

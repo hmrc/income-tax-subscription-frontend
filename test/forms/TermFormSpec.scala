@@ -38,6 +38,10 @@ class TermFormSpec extends PlaySpec with OneAppPerTest {
     "validate terms correctly" in {
       val empty = ErrorMessageFactory.error("error.terms.empty")
 
+      val emptyInput0 = DataMap.EmptyMap
+      val emptyTest0 = termForm.bind(emptyInput0)
+      emptyTest0 assert hasAcceptedTerms hasExpectedErrors empty
+
       val emptyInput = DataMap.terms("")
       val emptyTest = termForm.bind(emptyInput)
       emptyTest assert hasAcceptedTerms hasExpectedErrors empty

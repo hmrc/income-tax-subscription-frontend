@@ -18,6 +18,7 @@ package forms
 
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
+import forms.validation.utils.MappingUtil._
 import models.IncomeTypeModel
 import play.api.data.Form
 import play.api.data.Forms._
@@ -48,7 +49,7 @@ object IncomeTypeForm {
 
   val incomeTypeForm = Form(
     mapping(
-      incomeType -> text.verifying(incomeEmpty andThen incomeInvalid)
+      incomeType -> oText.toText.verifying(incomeEmpty andThen incomeInvalid)
     )(IncomeTypeModel.apply)(IncomeTypeModel.unapply)
   )
 

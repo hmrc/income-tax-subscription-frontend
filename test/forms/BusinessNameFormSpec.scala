@@ -42,6 +42,10 @@ class BusinessNameFormSpec extends PlaySpec with OneAppPerTest {
       val maxLen = ErrorMessageFactory.error("error.business_name.maxLength")
       val invalid = ErrorMessageFactory.error("error.business_name.invalid")
 
+      val emptyInput0 = DataMap.EmptyMap
+      val emptyTest0 = businessNameForm.bind(emptyInput0)
+      emptyTest0 assert businessName hasExpectedErrors empty
+
       val emptyInput = DataMap.busName("")
       val emptyTest = businessNameForm.bind(emptyInput)
       emptyTest assert businessName hasExpectedErrors empty

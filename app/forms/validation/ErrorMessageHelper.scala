@@ -27,7 +27,9 @@ object ErrorMessageHelper {
   @inline private def filterFieldError(errors: Seq[FormError]): Option[FieldError] =
     errors match {
       case Nil => None
-      case _ => Some(errors.head.args.head.asInstanceOf[FieldError])
+      case _ =>
+        val args = errors.head.args
+        if (args.isEmpty) None else Some(args.head.asInstanceOf[FieldError])
     }
 
   def getFieldError(form: Form[_], fieldName: String): Option[FieldError] = {

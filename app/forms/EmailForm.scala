@@ -17,7 +17,8 @@
 package forms
 
 import forms.validation.ErrorMessageFactory
-import forms.validation.utils.ConstraintUtil.{constraint, _}
+import forms.validation.utils.ConstraintUtil._
+import forms.validation.utils.MappingUtil._
 import forms.validation.utils.Patterns
 import models.EmailModel
 import play.api.data.Form
@@ -52,7 +53,7 @@ object EmailForm {
 
   val emailForm = Form(
     mapping(
-      emailAddress -> text.verifying(emailEmpty andThen emailTooLong andThen emailInvalid)
+      emailAddress -> oText.toText.verifying(emailEmpty andThen emailTooLong andThen emailInvalid)
     )(EmailModel.apply)(EmailModel.unapply)
   )
 

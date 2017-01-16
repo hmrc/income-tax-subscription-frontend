@@ -26,6 +26,8 @@ object DataMap {
 
   type DataMap = Map[String, String]
 
+  val EmptyMap = DataMap()
+
   def DataMap(elems: (String, String)*): DataMap = Map(elems: _*)
 
   def date(prefix: String)(day: String, month: String, year: String): DataMap =

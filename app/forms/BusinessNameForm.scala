@@ -17,11 +17,12 @@
 package forms
 
 import forms.validation.ErrorMessageFactory
+import forms.validation.utils.ConstraintUtil._
+import forms.validation.utils.MappingUtil._
+import forms.validation.utils.Patterns
 import models.BusinessNameModel
 import play.api.data.Form
 import play.api.data.Forms._
-import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils.Patterns
 import play.api.data.validation.{Constraint, Valid}
 
 object BusinessNameForm {
@@ -54,7 +55,7 @@ object BusinessNameForm {
 
   val businessNameForm = Form(
     mapping(
-      businessName -> text.verifying(nameEmpty andThen nameTooLong andThen nameInvalid)
+      businessName -> oText.toText.verifying(nameEmpty andThen nameTooLong andThen nameInvalid)
     )(BusinessNameModel.apply)(BusinessNameModel.unapply)
   )
 

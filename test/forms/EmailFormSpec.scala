@@ -44,6 +44,10 @@ class EmailFormSpec extends PlaySpec with OneAppPerTest {
       val maxLen = ErrorMessageFactory.error("error.contact_email.maxLength")
       val invalid = ErrorMessageFactory.error("error.contact_email.invalid")
 
+      val emptyInput0 = DataMap.EmptyMap
+      val emptyTest0 = emailForm.bind(emptyInput0)
+      emptyTest0 assert emailAddress hasExpectedErrors empty
+
       val emptyInput = DataMap.email("")
       val emptyTest = emailForm.bind(emptyInput)
       emptyTest assert emailAddress hasExpectedErrors empty
