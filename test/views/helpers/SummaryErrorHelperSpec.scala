@@ -20,9 +20,10 @@ import forms.validation.ErrorMessageFactory
 import forms.validation.models.SummaryError
 import forms.validation.testutils.DataMap
 import forms.validation.utils.MappingUtil._
+import org.jsoup.nodes.Element
 import org.scalatest.Matchers._
 import play.api.data.Form
-import play.api.data.Forms.{mapping, _}
+import play.api.data.Forms.mapping
 import play.api.data.validation.Invalid
 import play.api.i18n.Messages.Implicits.applicationMessages
 import util.UnitTestTrait
@@ -51,6 +52,8 @@ class SummaryErrorHelperSpec extends UnitTestTrait {
     )(TestData.apply)(TestData.unapply)
   )
 
+  import scala.collection.JavaConversions._
+
   "SummaryErrorHelper" should {
     "if the form does not present an error, it should continue a successful flow" in {
       val page = summaryErrorHelper(testForm)
@@ -64,9 +67,19 @@ class SummaryErrorHelperSpec extends UnitTestTrait {
       val page = summaryErrorHelper(filledForm)
       val doc = page.doc
 
+      val summary = doc.getElementById("error-summary-display")
+      summary should not be null
+      summary.attr("class") shouldBe "flash error-summary error-summary--show"
+      summary.attr("role") shouldBe "alert"
+      summary.attr("aria-labelledby") shouldBe "error-summary-heading"
+      summary.attr("tabindex") shouldBe "-1"
+
       val fieldUl = doc.getElementsByTag("ul")
       val fieldLi = fieldUl.get(0).getElementsByTag("li")
       fieldLi.size() shouldBe 2
+
+      fieldLi.foreach(x => x.attr("role") shouldBe "tooltip")
+
       val aField1 = fieldLi.get(0).getElementsByTag("a")
       aField1.attr("href") shouldBe "#field1"
       aField1.text shouldBe summaryErrorMessage.toText
