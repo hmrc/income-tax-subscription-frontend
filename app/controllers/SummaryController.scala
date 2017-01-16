@@ -21,6 +21,7 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import services.KeystoreService
 import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
@@ -29,15 +30,26 @@ object SummaryController extends SummaryController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
+  override val keystoreService = KeystoreService
 }
 
-trait SummaryController extends FrontendController with AuthorisedForIncomeTaxSA  {
+trait SummaryController extends FrontendController with AuthorisedForIncomeTaxSA {
 
-  val showSummary = Authorised.async { implicit user => implicit request =>
-		Future.successful(NotImplemented)
+  val keystoreService: KeystoreService
+
+  import services.CacheUtil._
+
+  val showSummary = Authorised.async { implicit user =>
+    implicit request =>
+      keystoreService.fetchAll() map {
+        case Some(cache) => val summary = cache.getSummary
+        //TODO show page
+      }
+      Future.successful(NotImplemented)
   }
 
-  val submitSummary = Authorised.async { implicit user => implicit request =>
-    Future.successful(Redirect(controllers.routes.ConfirmationController.showConfirmation()))
+  val submitSummary = Authorised.async { implicit user =>
+    implicit request =>
+      Future.successful(Redirect(controllers.routes.ConfirmationController.showConfirmation()))
   }
 }
