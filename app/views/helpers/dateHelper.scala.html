@@ -4,29 +4,38 @@
 @import views.html.helpers._
 
 @(field: Field,
-    label: Option[String] = None,
-    parentForm: Option[Form[_]] = None
+        label: Option[String] = None,
+        hintText: Option[String] = None,
+        parentForm: Option[Form[_]] = None
 )(implicit messages: Messages)
 
 <div class="form-group">
     <fieldset id="@field.name">
-        <legend><h2>@label</h2></legend>
-            <div class="form-date">
-                @inputHelper(
-                    field(dateDay),
-                    label = Messages("base.day"),
-                    maxLength = 2
-                )
-                @inputHelper(
-                    field(dateMonth),
-                    label = Messages("base.month"),
-                    maxLength = 2
-                )
-                @inputHelper(
-                    field(dateYear),
-                    label = Messages("base.year"),
-                    maxLength = 4
-                )
-            </div>
+        <legend>
+            <h2>@label</h2>
+            @hintText match {
+                case Some(hint) => {
+                    <span class="form-hint">@hint</span>
+                }
+                case _ => {}
+            }
+        </legend>
+        <div class="form-date">
+            @inputHelper(
+                field(dateDay),
+                label = Messages("base.day"),
+                maxLength = 2
+            )
+            @inputHelper(
+                field(dateMonth),
+                label = Messages("base.month"),
+                maxLength = 2
+            )
+            @inputHelper(
+                field(dateYear),
+                label = Messages("base.year"),
+                maxLength = 4
+            )
+        </div>
     </fieldset>
 </div>

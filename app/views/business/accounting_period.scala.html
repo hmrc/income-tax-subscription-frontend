@@ -15,12 +15,14 @@
 
         @dateHelper(
             field = accountingPeriodForm(startDate),
-            label = Messages("base.startDate")
+            label = Messages("base.startDate"),
+            hintText = Messages("base.exampleDate")
         )
 
         @dateHelper(
             field = accountingPeriodForm(endDate),
-            label = Messages("base.endDate")
+            label = Messages("base.endDate"),
+            hintText = Messages("base.exampleDate")
         )
 
         @continueButton()

@@ -4,6 +4,7 @@ base.continue                                                   = Continue
 base.submit                                                     = Submit
 base.startDate                                                  = Start date
 base.endDate                                                    = End date
+base.exampleDate                                                = Example: 30 04 2017
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
@@ -55,6 +56,11 @@ summary.title                                                   = Check your ans
 summary.heading                                                 = Check your answers
 summary.accounting_period                                       = Business accounting period
 summary.accounting_period.month                                 = {0} month period
+summary.business_name                                           = Business name
+summary.income_type                                             = Income type
+summary.contact_email                                           = Contact email
+summary.terms                                                   = Terms and conditions
+summary.terms.accepted                                          = Read and accepted
 
 ## Confirmation page ##
 confirmation.title                                              = Submitted

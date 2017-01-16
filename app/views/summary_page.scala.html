@@ -15,8 +15,6 @@
         </div>
         <a class="tabular-data__data-2" href="@changeUrl" id="@field-edit">@Messages("base.change")</a>
     </div>
-    <hr>
-
 }
 
 @accountingPeriod(period: AccountingPeriodModel) = @{
@@ -28,11 +26,50 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
+@businessName(name: BusinessNameModel) = @{
+    val rowName = "businessName"
+    val rowQuestion = Messages("summary.business_name")
+    val rowAnswer = name.businessName
+    val rowUrl = controllers.business.routes.BusinessNameController.submitBusinessName().url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@incomeType(income: IncomeTypeModel) = @{
+    val rowName = "incomeType"
+    val rowQuestion = Messages("summary.income_type")
+    val rowAnswer = income.incomeType
+    val rowUrl = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType().url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@contactEmail(email: EmailModel) = @{
+    val rowName = "contactEmail"
+    val rowQuestion = Messages("summary.contact_email")
+    val rowAnswer = email.emailAddress
+    val rowUrl = controllers.routes.ContactEmailController.submitContactEmail().url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@terms(terms: TermModel) = @{
+    if(terms.hasAcceptedTerms) {
+        val rowName = "terms"
+        val rowQuestion = Messages("summary.terms")
+        val rowAnswer = Messages("summary.terms.accepted")
+        val rowUrl = controllers.routes.TermsController.submitTerms().url
+        summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+    } else Html("")
+}
+
 @views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None) {
     <h1>@Messages("summary.heading")</h1>
 
-    <div>
+    <div class="form-group">
         @summaryModel.accountingPeriod.map(accountingPeriod)
+        @summaryModel.businessName.map(businessName)
+        @summaryModel.incomeType.map(incomeType)
+        @summaryModel.contactEmail.map(contactEmail)
+        @summaryModel.terms.map(terms)
+        <hr>
     </div>
 
     @form(action = postAction) {
