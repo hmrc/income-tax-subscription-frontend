@@ -33,6 +33,11 @@ object MessageLookup {
     val heading = "Hello from income-tax-subscription-frontend !"
   }
 
+  object AccountingPeriod {
+    val title = "What is your accounting period?"
+    val heading = "What is your accounting period?"
+  }
+
   object ContactEmail {
     val title = "What is your contact email address?"
     val heading = title

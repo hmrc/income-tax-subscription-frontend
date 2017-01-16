@@ -1,16 +1,16 @@
 @import play.api.data.Form
 @import play.api.data.Field
+@import forms.submapping.DateMapping._
+@import views.html.helpers._
 
 @(field: Field,
     label: Option[String] = None,
     parentForm: Option[Form[_]] = None
 )(implicit messages: Messages)
 
-@import forms.submapping.DateMapping._
-
 <div class="form-group">
-    <fieldset>
-        <legend>@label</legend>
+    <fieldset id="@field.name">
+        <legend><h2>@label</h2></legend>
             <div class="form-date">
                 @inputHelper(
                     field(dateDay),
