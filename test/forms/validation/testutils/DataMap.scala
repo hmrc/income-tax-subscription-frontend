@@ -18,9 +18,10 @@ package forms.validation.testutils
 
 object DataMap {
 
-  import forms.submapping.DateMapping._
   import forms.BusinessNameForm._
+  import forms.EmailForm._
   import forms.IncomeTypeForm._
+  import forms.submapping.DateMapping._
 
   type DataMap = Map[String, String]
 
@@ -34,5 +35,7 @@ object DataMap {
   def busName(name: String): DataMap = Map(businessName -> name)
 
   def inType(iType: String): DataMap = Map(incomeType -> iType)
+
+  def email(email: String): DataMap = Map(emailAddress -> email)
 
 }

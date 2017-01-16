@@ -16,17 +16,43 @@
 
 package forms
 
+import forms.validation.ErrorMessageFactory
+import forms.validation.utils.ConstraintUtil.{constraint, _}
+import forms.validation.utils.Patterns
 import models.EmailModel
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.{Constraint, Valid}
 
 object EmailForm {
 
   val emailAddress = "emailAddress"
+  val emailMaxLength = 70
+
+  val emailEmpty: Constraint[String] = constraint[String](
+    email => {
+      lazy val emptyName = ErrorMessageFactory.error("error.contact_email.empty")
+      if (email.isEmpty) emptyName else Valid
+    }
+  )
+
+  val emailTooLong: Constraint[String] = constraint[String](
+    email => {
+      lazy val tooLong = ErrorMessageFactory.error("error.contact_email.maxLength")
+      if (email.trim.length > emailMaxLength) tooLong else Valid
+    }
+  )
+
+  val emailInvalid: Constraint[String] = constraint[String](
+    email => {
+      lazy val invalidName = ErrorMessageFactory.error("error.contact_email.invalid")
+      if (Patterns.validEmail(email.trim)) Valid else invalidName
+    }
+  )
 
   val emailForm = Form(
     mapping(
-      emailAddress -> text
+      emailAddress -> text.verifying(emailEmpty andThen emailTooLong andThen emailInvalid)
     )(EmailModel.apply)(EmailModel.unapply)
   )
 
