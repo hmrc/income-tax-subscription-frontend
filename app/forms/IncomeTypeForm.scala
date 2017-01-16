@@ -16,17 +16,39 @@
 
 package forms
 
+import forms.validation.ErrorMessageFactory
+import forms.validation.utils.ConstraintUtil._
 import models.IncomeTypeModel
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.{Constraint, Valid}
 
 object IncomeTypeForm {
 
   val incomeType = "incomeType"
+  val option_cash = "Cash"
+  val option_accruals = "Accruals"
+
+  val incomeEmpty: Constraint[String] = constraint[String](
+    income => {
+      lazy val emptyIncome = ErrorMessageFactory.error("error.income_type.empty")
+      if (income.isEmpty) emptyIncome else Valid
+    }
+  )
+
+  val incomeInvalid: Constraint[String] = constraint[String](
+    income => {
+      lazy val invalidName = ErrorMessageFactory.error("error.income_type.invalid")
+      income match {
+        case `option_cash` | `option_accruals` => Valid
+        case _ => invalidName
+      }
+    }
+  )
 
   val incomeTypeForm = Form(
     mapping(
-      incomeType -> text
+      incomeType -> text.verifying(incomeEmpty andThen incomeInvalid)
     )(IncomeTypeModel.apply)(IncomeTypeModel.unapply)
   )
 

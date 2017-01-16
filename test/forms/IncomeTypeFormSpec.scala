@@ -16,9 +16,12 @@
 
 package forms
 
+import forms.validation.ErrorMessageFactory
+import forms.validation.testutils.{DataMap, _}
 import models.IncomeTypeModel
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import org.scalatest.Matchers._
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+
 
 class IncomeTypeFormSpec extends PlaySpec with OneAppPerTest {
 
@@ -26,12 +29,32 @@ class IncomeTypeFormSpec extends PlaySpec with OneAppPerTest {
 
   "The IncomeTypeForm" should {
     "transform the request to the form case class" in {
-      val testIncomeType = "ABC"
+      val testIncomeType = option_cash
       val testInput = Map(incomeType -> testIncomeType)
       val expected = IncomeTypeModel(testIncomeType)
       val actual = incomeTypeForm.bind(testInput).value
 
       actual shouldBe Some(expected)
+    }
+
+    "validate income type correctly" in {
+      val empty = ErrorMessageFactory.error("error.income_type.empty")
+      val invalid = ErrorMessageFactory.error("error.income_type.invalid")
+
+      val emptyInput = DataMap.inType("")
+      val emptyTest = incomeTypeForm.bind(emptyInput)
+      emptyTest assert incomeType hasExpectedErrors empty
+
+      val invalidInput = DataMap.inType("α")
+      val invalidTest = incomeTypeForm.bind(invalidInput)
+      invalidTest assert incomeType hasExpectedErrors invalid
+    }
+
+    "The following submission should be valid" in {
+      val testCash = DataMap.inType(option_cash)
+      incomeTypeForm isValidFor testCash
+      val testAccruals = DataMap.inType(option_accruals)
+      incomeTypeForm isValidFor testAccruals
     }
   }
 

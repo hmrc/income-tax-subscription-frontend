@@ -20,6 +20,7 @@ object DataMap {
 
   import forms.submapping.DateMapping._
   import forms.BusinessNameForm._
+  import forms.IncomeTypeForm._
 
   type DataMap = Map[String, String]
 
@@ -31,4 +32,7 @@ object DataMap {
   val emptyDate: String => DataMap = (prefix: String) => date(prefix)("", "", "")
 
   def busName(name: String): DataMap = Map(businessName -> name)
+
+  def inType(iType: String): DataMap = Map(incomeType -> iType)
+
 }
