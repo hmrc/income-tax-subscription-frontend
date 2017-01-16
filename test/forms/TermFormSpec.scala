@@ -16,9 +16,13 @@
 
 package forms
 
+import assets.MessageLookup
+import forms.validation.ErrorMessageFactory
+import forms.validation.testutils.{DataMap, _}
 import models.TermModel
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import org.scalatest.Matchers._
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import play.api.i18n.Messages.Implicits._
 
 class TermFormSpec extends PlaySpec with OneAppPerTest {
 
@@ -31,6 +35,30 @@ class TermFormSpec extends PlaySpec with OneAppPerTest {
       val expected = TermModel(testTerm)
       val actual = termForm.bind(testInput).value
       actual shouldBe Some(expected)
+    }
+
+    "validate terms correctly" in {
+      val empty = ErrorMessageFactory.error("error.terms.empty")
+
+      empty fieldErrorIs MessageLookup.Error.Terms.empty
+      empty summaryErrorIs MessageLookup.Error.Terms.empty
+
+      val emptyInput0 = DataMap.EmptyMap
+      val emptyTest0 = termForm.bind(emptyInput0)
+      emptyTest0 assert hasAcceptedTerms hasExpectedErrors empty
+
+      val emptyInput = DataMap.terms("")
+      val emptyTest = termForm.bind(emptyInput)
+      emptyTest assert hasAcceptedTerms hasExpectedErrors empty
+
+      val invalidInput = DataMap.terms(false)
+      val invalidTest = termForm.bind(invalidInput)
+      invalidTest assert hasAcceptedTerms hasExpectedErrors empty
+    }
+
+    "The following submissions should be valid" in {
+      val valid = DataMap.terms(true)
+      termForm isValidFor valid
     }
   }
 }

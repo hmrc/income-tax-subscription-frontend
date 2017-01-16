@@ -102,4 +102,36 @@ object MessageLookup {
 
   }
 
+  object Error {
+
+    object Date {
+      val empty = "Please enter a date"
+      val invalid = "Please enter a valid date"
+    }
+
+    val end_date_violation = "The end date must be after the start date"
+
+    object BusinessName {
+      val empty = "Please enter a business name"
+      val maxLength = "The business name is too long"
+      val invalid = "The business name contains invalid characters"
+    }
+
+    object ContactEmail {
+      val empty = "Please enter a contact email"
+      val maxLength = "The email is too long"
+      val invalid = "The email is invalid"
+    }
+
+    object IncomeType {
+      val empty = "Please select an income type"
+      val invalid = "Please select an income type"
+    }
+
+    object Terms {
+      val empty = "Please accept the terms and conditions"
+    }
+
+  }
+
 }

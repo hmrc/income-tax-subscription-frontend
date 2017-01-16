@@ -16,9 +16,13 @@
 
 package forms
 
+import assets.MessageLookup
+import forms.validation.ErrorMessageFactory
+import forms.validation.testutils.{DataMap, _}
 import models.EmailModel
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import org.scalatest.Matchers._
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import play.api.i18n.Messages.Implicits._
 
 class EmailFormSpec extends PlaySpec with OneAppPerTest {
 
@@ -32,6 +36,58 @@ class EmailFormSpec extends PlaySpec with OneAppPerTest {
       val actual = emailForm.bind(testInput).value
 
       actual shouldBe Some(expected)
+    }
+
+    "validate contact email correctly" in {
+      val maxLength = emailMaxLength
+
+      val empty = ErrorMessageFactory.error("error.contact_email.empty")
+      val maxLen = ErrorMessageFactory.error("error.contact_email.maxLength")
+      val invalid = ErrorMessageFactory.error("error.contact_email.invalid")
+
+      empty fieldErrorIs MessageLookup.Error.ContactEmail.empty
+      empty summaryErrorIs MessageLookup.Error.ContactEmail.empty
+
+      maxLen fieldErrorIs MessageLookup.Error.ContactEmail.maxLength
+      maxLen summaryErrorIs MessageLookup.Error.ContactEmail.maxLength
+
+      invalid fieldErrorIs MessageLookup.Error.ContactEmail.invalid
+      invalid summaryErrorIs MessageLookup.Error.ContactEmail.invalid
+
+      val emptyInput0 = DataMap.EmptyMap
+      val emptyTest0 = emailForm.bind(emptyInput0)
+      emptyTest0 assert emailAddress hasExpectedErrors empty
+
+      val emptyInput = DataMap.email("")
+      val emptyTest = emailForm.bind(emptyInput)
+      emptyTest assert emailAddress hasExpectedErrors empty
+
+      val maxLengthInput = DataMap.email("a" * maxLength + 1)
+      val maxLengthTest = emailForm.bind(maxLengthInput)
+      maxLengthTest assert emailAddress hasExpectedErrors maxLen
+
+      val withinLimitInput = DataMap.email("a" * maxLength)
+      val withinLimitTest = emailForm.bind(withinLimitInput)
+      withinLimitTest assert emailAddress doesNotHaveSpecifiedErrors maxLen
+
+      val testInvalids = List[DataMap.DataMap](
+        DataMap.email("a@a"),
+        DataMap.email("a@a."),
+        DataMap.email("@a.a"),
+        DataMap.email("a.a@a")
+      )
+      testInvalids.foreach {
+        invalidInput =>
+          val invalidTest = emailForm.bind(invalidInput)
+          invalidTest assert emailAddress hasExpectedErrors invalid
+      }
+    }
+
+    "The following submissions should be valid" in {
+      val valid = DataMap.email("test@example.com")
+      emailForm isValidFor valid
+      val valid2 = DataMap.email("test.test@example.com")
+      emailForm isValidFor valid2
     }
   }
 

@@ -75,33 +75,33 @@ class TermsControllerSpec extends ControllerBaseSpec
     "return a redirect status (SEE_OTHER - 303)" in {
       setupMockKeystoreSaveFunctions()
 
-      val result = callShow
+      val goodResult = callShow
 
-      status(result) must be(Status.SEE_OTHER)
+      status(goodResult) must be(Status.SEE_OTHER)
 
-      await(result)
+      await(goodResult)
       verifyKeystore(fetchTerms = 0, saveTerms = 1)
     }
 
     s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
       setupMockKeystoreSaveFunctions()
 
-      val result = callShow
+      val goodResult = callShow
 
-      redirectLocation(result) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+      redirectLocation(goodResult) mustBe Some(controllers.routes.SummaryController.showSummary().url)
 
-      await(result)
+      await(goodResult)
       verifyKeystore(fetchTerms = 0, saveTerms = 1)
     }
   }
 
   "Calling the submitTerms action of the TermsController with an authorised user and invalid submission" should {
-    lazy val result = TestTermsController.submitTerms(authenticatedFakeRequest())
+    lazy val badRequest = TestTermsController.submitTerms(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+    "return a bad request status (400)" in {
+      status(badRequest) must be(Status.BAD_REQUEST)
 
-      await(result)
+      await(badRequest)
       verifyKeystore(fetchTerms = 0, saveTerms = 0)
     }
   }

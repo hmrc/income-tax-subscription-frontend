@@ -11,6 +11,8 @@
 
 @views.html.templates.main_template(title = Messages("business.income_type.title"), bodyClasses = None) {
 
+    @summaryErrorHelper(incomeTypeForm)
+
     <h1>@question</h1>
 
     @form(action = postAction) {

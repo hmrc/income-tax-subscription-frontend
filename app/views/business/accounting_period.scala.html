@@ -1,5 +1,4 @@
 @import play.api.data.Form
-@import play.api.data.Field
 @import models._
 @import forms.AccountingPeriodForm._
 @import helpers._
@@ -8,6 +7,8 @@
 @(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @views.html.templates.main_template(title = Messages("accounting_period.title"), bodyClasses = None) {
+
+    @summaryErrorHelper(accountingPeriodForm)
 
     <h1>@Messages("accounting_period.heading")</h1>
 

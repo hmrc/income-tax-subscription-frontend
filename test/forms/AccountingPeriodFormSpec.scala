@@ -16,19 +16,19 @@
 
 package forms
 
+import assets.MessageLookup
+import forms.submapping.DateMapping
+import forms.validation.ErrorMessageFactory
+import forms.validation.testutils.{DataMap, _}
 import models.{AccountingPeriodModel, DateModel}
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import org.scalatest.Matchers._
-import submapping.DateMapping
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import play.api.i18n.Messages.Implicits._
 
 class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
 
   import AccountingPeriodForm._
   import DateMapping._
-
-  implicit class prefixUtil(prefix: String) {
-    def `*`(name: String) = s"$prefix.$name"
-  }
 
   "The DateForm" should {
     "transform the request to the form case class" in {
@@ -52,6 +52,69 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
       val actual = accountingPeriodForm.bind(testInput).value
 
       actual shouldBe Some(expected)
+    }
+
+    "start date should be correctly validated" in {
+      val empty = ErrorMessageFactory.error("error.date.empty")
+      val invalid = ErrorMessageFactory.error("error.date.invalid")
+
+      empty fieldErrorIs MessageLookup.Error.Date.empty
+      empty summaryErrorIs MessageLookup.Error.Date.empty
+
+      invalid fieldErrorIs MessageLookup.Error.Date.invalid
+      invalid summaryErrorIs MessageLookup.Error.Date.invalid
+
+      val emptyDateInput0 = DataMap.EmptyMap
+      val emptyTest0 = accountingPeriodForm.bind(emptyDateInput0)
+      emptyTest0 assert startDate hasExpectedErrors empty
+
+      val emptyDateInput = DataMap.emptyDate(startDate)
+      val emptyTest = accountingPeriodForm.bind(emptyDateInput)
+      emptyTest assert startDate hasExpectedErrors empty
+
+      val invalidDateInput = DataMap.date(startDate)("30", "2", "2017")
+      val invalidTest = accountingPeriodForm.bind(invalidDateInput)
+      invalidTest assert startDate hasExpectedErrors invalid
+    }
+
+    "end date should be correctly validated" in {
+      val empty = ErrorMessageFactory.error("error.date.empty")
+      val invalid = ErrorMessageFactory.error("error.date.invalid")
+      val violation = ErrorMessageFactory.error("error.end_date_violation")
+
+      empty fieldErrorIs MessageLookup.Error.Date.empty
+      empty summaryErrorIs MessageLookup.Error.Date.empty
+
+      invalid fieldErrorIs MessageLookup.Error.Date.invalid
+      invalid summaryErrorIs MessageLookup.Error.Date.invalid
+
+      violation fieldErrorIs MessageLookup.Error.end_date_violation
+      violation summaryErrorIs MessageLookup.Error.end_date_violation
+
+      val emptyDateInput0 = DataMap.EmptyMap
+      val emptyTest0 = accountingPeriodForm.bind(emptyDateInput0)
+      emptyTest0 assert endDate hasExpectedErrors empty
+
+      val emptyDateInput = DataMap.emptyDate(endDate)
+      val emptyTest = accountingPeriodForm.bind(emptyDateInput)
+      emptyTest assert endDate hasExpectedErrors empty
+
+      val invalidDateInput = DataMap.date(endDate)("29", "2", "2017")
+      val invalidTest = accountingPeriodForm.bind(invalidDateInput)
+      invalidTest assert endDate hasExpectedErrors invalid
+
+      val endDateViolationInput = DataMap.date(startDate)("28", "2", "2017") ++ DataMap.date(endDate)("28", "2", "2017")
+      val violationTest = accountingPeriodForm.bind(endDateViolationInput)
+      violationTest assert endDate hasExpectedErrors violation
+
+      val validInput = DataMap.date(startDate)("27", "2", "2017") ++ DataMap.date(endDate)("28", "2", "2017")
+      val validTest = accountingPeriodForm.bind(validInput)
+      validTest assert endDate doesNotHaveSpecifiedErrors violation
+    }
+
+    "The following submission should be valid" in {
+      val testData = DataMap.date(startDate)("28", "2", "2017") ++ DataMap.date(endDate)("28", "2", "2018")
+      accountingPeriodForm isValidFor testData
     }
   }
 

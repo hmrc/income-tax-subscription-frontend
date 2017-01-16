@@ -19,8 +19,12 @@ package controllers.business
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.BaseController
 import forms.AccountingPeriodForm
+import models.AccountingPeriodModel
 import play.api.Play.current
+import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.Html
 import services.KeystoreService
 
 import scala.concurrent.Future
@@ -37,23 +41,26 @@ trait BusinessAccountingPeriodController extends BaseController {
 
   val keystoreService: KeystoreService
 
-  val showAccountingPeriod = Authorised.async { implicit user =>
+  def view(form: Form[AccountingPeriodModel])(implicit request: Request[_]): Html =
+    views.html.business.accounting_period(
+      form,
+      controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod()
+    )
+
+  val showAccountingPeriod: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchAccountingPeriod() map {
         accountingPeriod =>
-          Ok(views.html.business.accounting_period(
-            AccountingPeriodForm.accountingPeriodForm.fill(accountingPeriod),
-            controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod()
+          Ok(view(
+            AccountingPeriodForm.accountingPeriodForm.fill(accountingPeriod)
           ))
       }
   }
 
-  val submitAccountingPeriod = Authorised.async { implicit user =>
+  val submitAccountingPeriod: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      AccountingPeriodForm.accountingPeriodForm.bindFromRequest.fold(
-        formWithErrors => {
-          Future.successful(NotImplemented)
-        },
+      AccountingPeriodForm.accountingPeriodForm.bindFromRequest().fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         accountingPeriod => {
           keystoreService.saveAccountingPeriod(accountingPeriod) map (
             _ => Redirect(controllers.business.routes.BusinessNameController.showBusinessName()))

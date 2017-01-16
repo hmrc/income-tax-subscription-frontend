@@ -18,8 +18,12 @@ package controllers
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import forms.EmailForm
+import models.EmailModel
 import play.api.Play.current
+import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.Html
 import services.KeystoreService
 
 import scala.concurrent.Future
@@ -35,23 +39,23 @@ trait ContactEmailController extends BaseController {
 
   val keystoreService: KeystoreService
 
-  val showContactEmail = Authorised.async { implicit user =>
+  def view(contactEmailForm: Form[EmailModel])(implicit request: Request[_]): Html =
+    views.html.contact_email(
+      contactEmailForm = contactEmailForm,
+      postAction = controllers.routes.ContactEmailController.submitContactEmail()
+    )
+
+  val showContactEmail: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchContactEmail() map {
-        contactEmail =>
-          Ok(views.html.contact_email(
-            contactEmailForm = EmailForm.emailForm.fill(contactEmail),
-            postAction = controllers.routes.ContactEmailController.submitContactEmail()
-          ))
+        contactEmail => Ok(view(contactEmailForm = EmailForm.emailForm.fill(contactEmail)))
       }
   }
 
-  val submitContactEmail = Authorised.async { implicit user =>
+  val submitContactEmail: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       EmailForm.emailForm.bindFromRequest.fold(
-        formWithErrors => {
-          Future.successful(NotImplemented)
-        },
+        formWithErrors => Future.successful(BadRequest(view(contactEmailForm = formWithErrors))),
         contactEmail => {
           keystoreService.saveContactEmail(contactEmail) map (
             _ => Redirect(controllers.routes.TermsController.showTerms()))
