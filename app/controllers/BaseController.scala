@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package forms
+package controllers
 
-import models.TermModel
+import auth.AuthorisedForIncomeTaxSA
 import play.api.data.Form
-import play.api.data.Forms._
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 
-object TermForm {
+trait BaseController extends FrontendController with AuthorisedForIncomeTaxSA {
 
-  val hasAcceptedTerms = "hasAcceptedTerms"
-
-  // TODO use more appropriate validation, verifying(b => b) is only temporary to allow the submission of an empty form to fail
-  val termForm = Form(
-    mapping(
-      hasAcceptedTerms -> boolean.verifying(b => b)
-    )(TermModel.apply)(TermModel.unapply)
-  )
+  implicit class FormUtil[T](form: Form[T]) {
+    def fill(data: Option[T]): Form[T] = data.fold(form)(form.fill)
+  }
 
 }

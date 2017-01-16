@@ -16,13 +16,12 @@
 
 package controllers.business
 
-import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import controllers.BaseController
 import forms.AccountingPeriodForm
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
-import uk.gov.hmrc.play.http.HttpResponse
+import play.api.i18n.Messages.Implicits._
+import services.KeystoreService
 
 import scala.concurrent.Future
 
@@ -30,20 +29,35 @@ object BusinessAccountingPeriodController extends BusinessAccountingPeriodContro
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
+
+  override val keystoreService = KeystoreService
 }
 
-trait BusinessAccountingPeriodController extends FrontendController with AuthorisedForIncomeTaxSA {
+trait BusinessAccountingPeriodController extends BaseController {
+
+  val keystoreService: KeystoreService
 
   val showAccountingPeriod = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Ok(views.html.business.accounting_period(
-        AccountingPeriodForm.accountingPeriodForm,
-        controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod()
-      )))
+      keystoreService.fetchAccountingPeriod() map {
+        accountingPeriod =>
+          Ok(views.html.business.accounting_period(
+            AccountingPeriodForm.accountingPeriodForm.fill(accountingPeriod),
+            controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod()
+          ))
+      }
   }
 
   val submitAccountingPeriod = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Redirect(controllers.business.routes.BusinessNameController.showBusinessName()))
+      AccountingPeriodForm.accountingPeriodForm.bindFromRequest.fold(
+        formWithErrors => {
+          Future.successful(NotImplemented)
+        },
+        accountingPeriod => {
+          keystoreService.saveAccountingPeriod(accountingPeriod) map (
+            _ => Redirect(controllers.business.routes.BusinessNameController.showBusinessName()))
+        }
+      )
   }
 }
