@@ -21,8 +21,11 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import services.CacheUtilSpec
+import services.mocks.MockKeystoreService
 
-class SummaryControllerSpec extends ControllerBaseSpec {
+class SummaryControllerSpec extends ControllerBaseSpec
+  with MockKeystoreService {
 
   override val controllerName: String = "SummaryController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -34,6 +37,7 @@ class SummaryControllerSpec extends ControllerBaseSpec {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
+    override val keystoreService = MockKeystoreService
   }
 
   "The Summary controller" should {
@@ -53,6 +57,8 @@ class SummaryControllerSpec extends ControllerBaseSpec {
     lazy val result = TestSummaryController.showSummary(authenticatedFakeRequest())
 
     "return unimplemented (501)" in {
+      setupMockKeystore(fetchAll = CacheUtilSpec.testCacheMap)
+
       status(result) must be(Status.NOT_IMPLEMENTED)
     }
   }

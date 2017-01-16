@@ -16,10 +16,9 @@
 
 package models
 
-import play.api.libs.json.Json
 
-case class BusinessNameModel(businessName: String)
-
-object BusinessNameModel {
-  implicit val format = Json.format[BusinessNameModel]
-}
+case class SummaryModel(accountingPeriod: Option[AccountingPeriodModel] = None,
+                        businessName: Option[BusinessNameModel] = None,
+                        incomeType: Option[IncomeTypeModel] = None,
+                        contactEmail: Option[EmailModel] = None,
+                        terms: Option[TermModel] = None)
