@@ -18,12 +18,12 @@ package forms.validation.testutils
 
 import forms.validation.ErrorMessageHelper
 import forms.validation.models.{ErrorMessage, FieldError, SummaryError}
+import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.validation.Invalid
-import org.scalatest.Matchers._
-import scala.util.Try
 import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
+
+import scala.util.Try
 
 trait FormValidationTrait[T] {
 

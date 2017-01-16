@@ -16,6 +16,7 @@
 
 package forms
 
+import assets.MessageLookup
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.{DataMap, _}
 import models.EmailModel
@@ -43,6 +44,15 @@ class EmailFormSpec extends PlaySpec with OneAppPerTest {
       val empty = ErrorMessageFactory.error("error.contact_email.empty")
       val maxLen = ErrorMessageFactory.error("error.contact_email.maxLength")
       val invalid = ErrorMessageFactory.error("error.contact_email.invalid")
+
+      empty fieldErrorIs MessageLookup.Error.ContactEmail.empty
+      empty summaryErrorIs MessageLookup.Error.ContactEmail.empty
+
+      maxLen fieldErrorIs MessageLookup.Error.ContactEmail.maxLength
+      maxLen summaryErrorIs MessageLookup.Error.ContactEmail.maxLength
+
+      invalid fieldErrorIs MessageLookup.Error.ContactEmail.invalid
+      invalid summaryErrorIs MessageLookup.Error.ContactEmail.invalid
 
       val emptyInput0 = DataMap.EmptyMap
       val emptyTest0 = emailForm.bind(emptyInput0)

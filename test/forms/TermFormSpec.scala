@@ -16,6 +16,7 @@
 
 package forms
 
+import assets.MessageLookup
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.{DataMap, _}
 import models.TermModel
@@ -38,6 +39,9 @@ class TermFormSpec extends PlaySpec with OneAppPerTest {
 
     "validate terms correctly" in {
       val empty = ErrorMessageFactory.error("error.terms.empty")
+
+      empty fieldErrorIs MessageLookup.Error.Terms.empty
+      empty summaryErrorIs MessageLookup.Error.Terms.empty
 
       val emptyInput0 = DataMap.EmptyMap
       val emptyTest0 = termForm.bind(emptyInput0)

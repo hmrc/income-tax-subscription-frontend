@@ -16,6 +16,7 @@
 
 package forms
 
+import assets.MessageLookup
 import forms.submapping.DateMapping
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.{DataMap, _}
@@ -57,6 +58,12 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
       val empty = ErrorMessageFactory.error("error.date.empty")
       val invalid = ErrorMessageFactory.error("error.date.invalid")
 
+      empty fieldErrorIs MessageLookup.Error.Date.empty
+      empty summaryErrorIs MessageLookup.Error.Date.empty
+
+      invalid fieldErrorIs MessageLookup.Error.Date.invalid
+      invalid summaryErrorIs MessageLookup.Error.Date.invalid
+
       val emptyDateInput0 = DataMap.EmptyMap
       val emptyTest0 = accountingPeriodForm.bind(emptyDateInput0)
       emptyTest0 assert startDate hasExpectedErrors empty
@@ -74,6 +81,15 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
       val empty = ErrorMessageFactory.error("error.date.empty")
       val invalid = ErrorMessageFactory.error("error.date.invalid")
       val violation = ErrorMessageFactory.error("error.end_date_violation")
+
+      empty fieldErrorIs MessageLookup.Error.Date.empty
+      empty summaryErrorIs MessageLookup.Error.Date.empty
+
+      invalid fieldErrorIs MessageLookup.Error.Date.invalid
+      invalid summaryErrorIs MessageLookup.Error.Date.invalid
+
+      violation fieldErrorIs MessageLookup.Error.end_date_violation
+      violation summaryErrorIs MessageLookup.Error.end_date_violation
 
       val emptyDateInput0 = DataMap.EmptyMap
       val emptyTest0 = accountingPeriodForm.bind(emptyDateInput0)

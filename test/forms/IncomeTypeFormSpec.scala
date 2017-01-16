@@ -16,6 +16,7 @@
 
 package forms
 
+import assets.MessageLookup
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.{DataMap, _}
 import models.IncomeTypeModel
@@ -40,6 +41,12 @@ class IncomeTypeFormSpec extends PlaySpec with OneAppPerTest {
     "validate income type correctly" in {
       val empty = ErrorMessageFactory.error("error.income_type.empty")
       val invalid = ErrorMessageFactory.error("error.income_type.invalid")
+
+      empty fieldErrorIs MessageLookup.Error.IncomeType.empty
+      empty summaryErrorIs MessageLookup.Error.IncomeType.empty
+
+      invalid fieldErrorIs MessageLookup.Error.IncomeType.invalid
+      invalid summaryErrorIs MessageLookup.Error.IncomeType.invalid
 
       val emptyInput0 = DataMap.EmptyMap
       val emptyTest0 = incomeTypeForm.bind(emptyInput0)

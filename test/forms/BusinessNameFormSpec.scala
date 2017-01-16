@@ -16,6 +16,7 @@
 
 package forms
 
+import assets.MessageLookup
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.{DataMap, _}
 import models.BusinessNameModel
@@ -42,6 +43,16 @@ class BusinessNameFormSpec extends PlaySpec with OneAppPerTest {
       val empty = ErrorMessageFactory.error("error.business_name.empty")
       val maxLen = ErrorMessageFactory.error("error.business_name.maxLength")
       val invalid = ErrorMessageFactory.error("error.business_name.invalid")
+
+      empty fieldErrorIs MessageLookup.Error.BusinessName.empty
+      empty summaryErrorIs MessageLookup.Error.BusinessName.empty
+
+      maxLen fieldErrorIs MessageLookup.Error.BusinessName.maxLength
+      maxLen summaryErrorIs MessageLookup.Error.BusinessName.maxLength
+
+      invalid fieldErrorIs MessageLookup.Error.BusinessName.invalid
+      invalid summaryErrorIs MessageLookup.Error.BusinessName.invalid
+
 
       val emptyInput0 = DataMap.EmptyMap
       val emptyTest0 = businessNameForm.bind(emptyInput0)
