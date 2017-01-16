@@ -18,47 +18,36 @@ package views.helpers
 
 import forms.validation.ErrorMessageFactory
 import forms.validation.models.SummaryError
-import forms.validation.utils.ConstraintUtil._
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import forms.validation.testutils.DataMap
+import forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
-import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
-import play.api.data.validation.Valid
+import play.api.data.validation.Invalid
 import play.api.i18n.Messages.Implicits.applicationMessages
-import play.twirl.api.Html
+import util.UnitTestTrait
 
-class SummaryErrorHelperSpec extends PlaySpec with OneServerPerSuite {
+class SummaryErrorHelperSpec extends UnitTestTrait {
 
   private def summaryErrorHelper(form: Form[_])
   = views.html.helpers.summaryErrorHelper(form)(applicationMessages)
 
-  implicit class HtmlFormatUtil(html: Html) {
-    def doc: Document = Jsoup.parse(html.body)
-  }
-
   case class TestData(field1: String, field2: String, field3: String)
 
-  val errorMessage = ErrorMessageFactory.error("errKey")
-  val summaryErrorMessage: SummaryError = errorMessage.errors.head.args(1).asInstanceOf[SummaryError]
+  import ErrorMessageFactory._
 
-  val testValidation = (data: String) => {
-    data.length > 0 match {
-      case true => errorMessage
-      case _ => Valid
-    }
-  }
-  val testConstraint = constraint(testValidation)
+  val errorMessage: Invalid = DataMap.alwaysFailInvalid
+  val summaryErrorMessage: SummaryError = errorMessage.errors.head.args(SummaryErrorLoc).asInstanceOf[SummaryError]
 
   val field1Name = "field1"
   val field2Name = "field2"
   val field3Name = "field3"
+
   val testForm = Form(
     mapping(
-      field1Name -> text.verifying(testConstraint),
-      field2Name -> text,
-      field3Name -> text.verifying(testConstraint)
+      field1Name -> oText.toText.verifying(DataMap.alwaysFail),
+      field2Name -> oText.toText,
+      field3Name -> oText.toText.verifying(DataMap.alwaysFail)
     )(TestData.apply)(TestData.unapply)
   )
 
@@ -71,7 +60,7 @@ class SummaryErrorHelperSpec extends PlaySpec with OneServerPerSuite {
     }
 
     "if the form does present an error, the error should be displayed back" in {
-      val filledForm = testForm.fillAndValidate(TestData("data", " ", "data"))
+      val filledForm = testForm.bind(DataMap.EmptyMap)
       val page = summaryErrorHelper(filledForm)
       val doc = page.doc
 
@@ -80,12 +69,13 @@ class SummaryErrorHelperSpec extends PlaySpec with OneServerPerSuite {
       fieldLi.size() shouldBe 2
       val aField1 = fieldLi.get(0).getElementsByTag("a")
       aField1.attr("href") shouldBe "#field1"
-      aField1.text shouldBe "errKey"
+      aField1.text shouldBe summaryErrorMessage.toText
       val aField2 = fieldLi.get(1).getElementsByTag("a")
       aField2.attr("href") shouldBe "#field3"
-      aField2.text shouldBe "errKey"
+      aField2.text shouldBe summaryErrorMessage.toText
       val summaryHeading = doc.getElementsByTag("h2")
       summaryHeading.text shouldBe "Error Summary"
     }
   }
+
 }

@@ -16,15 +16,13 @@
 
 package views.helpers
 
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import forms.validation.testutils.DataMap
 import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
-import play.twirl.api.Html
 import util.UnitTestTrait
-
+import forms.validation.utils.MappingUtil._
 
 class CheckboxHelperSpec extends UnitTestTrait {
 
@@ -36,17 +34,18 @@ class CheckboxHelperSpec extends UnitTestTrait {
   val checkedName = "checkedAns"
   val testForm = Form(
     mapping(
-      checkedName -> boolean
+      checkedName -> oText.toBoolean.verifying(DataMap.alwaysFail)
     )(TestData.apply)(TestData.unapply)
   )
+  val testLabel = "my test label text"
 
   "checkboxHelper" should {
     "populate the relevant content in the correct positions" in {
-      val testLabel = "my test label text"
       val testField = testForm(checkedName)
 
       val doc = checkboxHelper(testField, testLabel).doc
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
+      doc.getElementsByTag("div").hasClass("form-field") shouldBe true
       doc.getElementsByTag("label").text() should include(testLabel)
       val inputs = doc.getElementsByTag("input")
 
@@ -56,7 +55,6 @@ class CheckboxHelperSpec extends UnitTestTrait {
     }
 
     "if the form is populated with true, then the checkbox is marked as checked" in {
-      val testLabel = "my test label text"
       val testField = testForm.fill(TestData(true))(checkedName)
       val doc = checkboxHelper(testField, testLabel).doc
 
@@ -64,6 +62,18 @@ class CheckboxHelperSpec extends UnitTestTrait {
 
       inputs.size() shouldBe 1
       inputs.get(0).attr("checked") shouldBe "checked"
+    }
+
+    "when there is error on the field, the errors needs to be displayed, but not otherwise" in {
+      val testField = testForm(checkedName)
+      val doc = checkboxHelper(testField, testLabel).doc
+      doc.getElementsByTag("div").hasClass("form-field--error") shouldBe false
+      doc.getElementsByClass("error-notification").isEmpty shouldBe true
+
+      val errorField = testForm.bind(DataMap.EmptyMap)(checkedName)
+      val errDoc = checkboxHelper(errorField, testLabel).doc
+      errDoc.getElementsByTag("div").hasClass("form-field--error") shouldBe true
+      errDoc.getElementsByClass("error-notification").isEmpty shouldBe false
     }
   }
 }

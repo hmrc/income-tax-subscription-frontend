@@ -16,6 +16,10 @@
 
 package forms.validation.testutils
 
+import forms.validation.ErrorMessageFactory
+import forms.validation.utils.ConstraintUtil.constraint
+import play.api.data.validation.{Constraint, Invalid}
+
 object DataMap {
 
   import forms.BusinessNameForm._
@@ -44,5 +48,9 @@ object DataMap {
   def terms(acceptedTerms: String): DataMap = Map(hasAcceptedTerms -> acceptedTerms)
 
   def terms(acceptedTerms: Boolean): DataMap = terms(acceptedTerms.toString)
+
+  val alwaysFailInvalid: Invalid = ErrorMessageFactory.error("always fail")
+
+  def alwaysFail[T]: Constraint[T] = constraint[T]((t: T) => alwaysFailInvalid)
 
 }

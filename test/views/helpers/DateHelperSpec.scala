@@ -18,6 +18,7 @@ package views.helpers
 
 import assets.MessageLookup
 import forms.submapping.DateMapping._
+import forms.validation.testutils.DataMap
 import models.DateModel
 import org.scalatest.Matchers._
 import play.api.data.{Field, Form}
@@ -31,16 +32,18 @@ class DateHelperSpec extends UnitTestTrait {
 
   val dateName = "testDate"
   val testForm = Form(
-    dateName -> dateMapping
+    dateName -> dateMapping.verifying(DataMap.alwaysFail)
   )
+
+  val testLabel = "my test label text"
 
   "dateHelper" should {
     "populate the relevant content in the correct positions" in {
-      val testLabel = "my test label text"
       val testField = testForm(dateName)
 
       val doc = dateHelper(testField, testLabel).doc
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
+      doc.getElementsByTag("div").hasClass("form-field") shouldBe true
       doc.getElementsByTag("legend").text() should include(testLabel)
 
       val inputs = doc.getElementsByTag("input")
@@ -60,7 +63,6 @@ class DateHelperSpec extends UnitTestTrait {
     }
 
     "if the form is populated with true, then the checkbox is marked as checked" in {
-      val testLabel = "my test label text"
       val testField = testForm.fill(DateModel("31", "01", "2017"))(dateName)
       val doc = dateHelper(testField, testLabel).doc
 
@@ -70,6 +72,18 @@ class DateHelperSpec extends UnitTestTrait {
       inputs.get(0).attr("value") shouldBe "31"
       inputs.get(1).attr("value") shouldBe "01"
       inputs.get(2).attr("value") shouldBe "2017"
+    }
+
+    "when there is error on the field, the errors needs to be displayed, but not otherwise" in {
+      val testField = testForm(dateName)
+      val doc = dateHelper(testField, testLabel).doc
+      doc.getElementsByTag("div").hasClass("form-field--error") shouldBe false
+      doc.getElementsByClass("error-notification").isEmpty shouldBe true
+
+      val errorField = testForm.bind(DataMap.EmptyMap)(dateName)
+      val errDoc = dateHelper(errorField, testLabel).doc
+      errDoc.getElementsByTag("div").hasClass("form-field--error") shouldBe true
+      errDoc.getElementsByClass("error-notification").isEmpty shouldBe false
     }
   }
 
