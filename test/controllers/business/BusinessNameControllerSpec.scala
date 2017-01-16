@@ -63,60 +63,47 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
 
       status(result) must be(Status.OK)
 
-      for {
-        _ <- result
-      } yield {
-        verifyKeystore(
-          fetchBusinessName = 1,
-          saveBusinessName = 0
-        )
-      }
+      await(result)
+      verifyKeystore(fetchBusinessName = 1, saveBusinessName = 0)
 
     }
   }
 
-  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and valid entry" should {
+  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and valid submission" should {
 
-    lazy val result = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest().post(BusinessNameForm.businessNameForm, BusinessNameModel("Test business")))
+    def callShow = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest().post(BusinessNameForm.businessNameForm, BusinessNameModel("Test business")))
 
     "return a redirect status (SEE_OTHER - 303)" in {
       setupMockKeystoreSaveFunctions()
 
-      status(result) must be(Status.SEE_OTHER)
+      val goodRequest = callShow
 
-      for {
-        _ <- result
-      } yield {
-        verifyKeystore(
-          fetchBusinessName = 0,
-          saveBusinessName = 1
-        )
-      }
+      status(goodRequest) must be(Status.SEE_OTHER)
 
+      await(goodRequest)
+      verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
     }
 
     s"redirect to '${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url}'" in {
       setupMockKeystoreSaveFunctions()
 
-      redirectLocation(result) mustBe Some(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
+      val goodRequest = callShow
 
-      for {
-        _ <- result
-      } yield {
-        verifyKeystore(
-          fetchBusinessName = 0,
-          saveBusinessName = 1
-        )
-      }
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
 
+      await(goodRequest)
+      verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
     }
   }
 
-  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid entry" should {
-    lazy val result = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest())
+  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
+    lazy val badRequest = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+    "return a bad request status (400)" in {
+      status(badRequest) must be(Status.BAD_REQUEST)
+
+      await(badRequest)
+      verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 0)
     }
   }
 

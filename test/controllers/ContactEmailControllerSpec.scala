@@ -18,14 +18,18 @@ package controllers
 
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import forms.EmailForm
+import models.EmailModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
+import services.mocks.MockKeystoreService
 
-class ContactEmailControllerSpec extends ControllerBaseSpec {
+class ContactEmailControllerSpec extends ControllerBaseSpec
+  with MockKeystoreService {
 
   override val controllerName: String = "ContactEmailControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -37,17 +41,18 @@ class ContactEmailControllerSpec extends ControllerBaseSpec {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
+    override val keystoreService = MockKeystoreService
   }
 
   "The ContactEmailController controller" should {
     "use the correct applicationConfig" in {
-      ContactEmailController.applicationConfig must be (FrontendAppConfig)
+      ContactEmailController.applicationConfig must be(FrontendAppConfig)
     }
     "use the correct authConnector" in {
-      ContactEmailController.authConnector must be (FrontendAuthConnector)
+      ContactEmailController.authConnector must be(FrontendAuthConnector)
     }
     "use the correct postSignInRedirectUrl" in {
-      ContactEmailController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
+      ContactEmailController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
     }
   }
 
@@ -58,7 +63,12 @@ class ContactEmailControllerSpec extends ControllerBaseSpec {
 
 
     "return status (200)" in {
-      status(result) must be (Status.OK)
+      setupMockKeystore(fetchContactEmail = None)
+
+      status(result) must be(Status.OK)
+
+      await(result)
+      verifyKeystore(fetchContactEmail = 1, saveContactEmail = 0)
     }
 
     "render the Contact Email address view" in {
@@ -66,18 +76,43 @@ class ContactEmailControllerSpec extends ControllerBaseSpec {
     }
   }
 
-  "Calling the submitContactEmail action of the ContactEmailController with an authorised user" should {
+  "Calling the submitContactEmail action of the ContactEmailController with an authorised user and valid submission" should {
 
-    lazy val result = TestContactEmailController.submitContactEmail(authenticatedFakeRequest())
+    def callShow = TestContactEmailController.submitContactEmail(authenticatedFakeRequest()
+      .post(EmailForm.emailForm, EmailModel("test@example.com")))
 
     "return a redirect status (SEE_OTHER - 303)" in {
-      status(result) must be (Status.SEE_OTHER)
+      setupMockKeystoreSaveFunctions()
+
+      val goodRequest = callShow
+      status(goodRequest) must be(Status.SEE_OTHER)
+
+      await(goodRequest)
+      verifyKeystore(fetchContactEmail = 0, saveContactEmail = 1)
     }
 
     s"redirect to '${controllers.routes.TermsController.showTerms().url}'" in {
-      redirectLocation(result) mustBe Some(controllers.routes.TermsController.showTerms().url)
+      setupMockKeystoreSaveFunctions()
+
+      val goodRequest = callShow
+      redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+
+      await(goodRequest)
+      verifyKeystore(fetchContactEmail = 0, saveContactEmail = 1)
     }
   }
+
+  "Calling the submitContactEmail action of the ContactEmailController with an authorised user and invalid submission" should {
+    lazy val badRequest = TestContactEmailController.submitContactEmail(authenticatedFakeRequest())
+
+    "return a bad request status (400)" in {
+      status(badRequest) must be(Status.BAD_REQUEST)
+
+      await(badRequest)
+      verifyKeystore(fetchContactEmail = 0, saveContactEmail = 0)
+    }
+  }
+
 
   authorisationTests
 }

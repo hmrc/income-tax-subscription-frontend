@@ -18,11 +18,15 @@ package controllers
 
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import forms.TermForm
+import models.TermModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import services.mocks.MockKeystoreService
 
-class TermsControllerSpec extends ControllerBaseSpec {
+class TermsControllerSpec extends ControllerBaseSpec
+  with MockKeystoreService {
 
   override val controllerName: String = "ContactEmailControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -34,17 +38,18 @@ class TermsControllerSpec extends ControllerBaseSpec {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
+    override val keystoreService = MockKeystoreService
   }
 
   "The TermsController controller" should {
     "use the correct applicationConfig" in {
-      TermsController.applicationConfig must be (FrontendAppConfig)
+      TermsController.applicationConfig must be(FrontendAppConfig)
     }
     "use the correct authConnector" in {
-      TermsController.authConnector must be (FrontendAuthConnector)
+      TermsController.authConnector must be(FrontendAuthConnector)
     }
     "use the correct postSignInRedirectUrl" in {
-      TermsController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
+      TermsController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
     }
   }
 
@@ -53,21 +58,53 @@ class TermsControllerSpec extends ControllerBaseSpec {
     lazy val result = TestTermsController.showTerms(authenticatedFakeRequest())
 
     "return ok (200)" in {
-      status(result) must be (Status.OK)
+      setupMockKeystore(fetchTerms = None)
+
+      status(result) must be(Status.OK)
+
+      await(result)
+      verifyKeystore(fetchTerms = 1, saveTerms = 0)
     }
   }
 
-  "Calling the submitTerms action of the TermsController with an authorised user" should {
+  "Calling the submitTerms action of the TermsController with an authorised user and valid submission" should {
 
-    lazy val result = TestTermsController.submitTerms(authenticatedFakeRequest())
+    def callShow = TestTermsController.submitTerms(authenticatedFakeRequest()
+      .post(TermForm.termForm, TermModel(true)))
 
     "return a redirect status (SEE_OTHER - 303)" in {
-      status(result) must be(Status.SEE_OTHER)
+      setupMockKeystoreSaveFunctions()
+
+      val goodResult = callShow
+
+      status(goodResult) must be(Status.SEE_OTHER)
+
+      await(goodResult)
+      verifyKeystore(fetchTerms = 0, saveTerms = 1)
     }
 
     s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
-      redirectLocation(result) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+      setupMockKeystoreSaveFunctions()
+
+      val goodResult = callShow
+
+      redirectLocation(goodResult) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+
+      await(goodResult)
+      verifyKeystore(fetchTerms = 0, saveTerms = 1)
     }
   }
+
+  "Calling the submitTerms action of the TermsController with an authorised user and invalid submission" should {
+    lazy val badRequest = TestTermsController.submitTerms(authenticatedFakeRequest())
+
+    "return a bad request status (400)" in {
+      status(badRequest) must be(Status.BAD_REQUEST)
+
+      await(badRequest)
+      verifyKeystore(fetchTerms = 0, saveTerms = 0)
+    }
+  }
+
   authorisationTests
 }

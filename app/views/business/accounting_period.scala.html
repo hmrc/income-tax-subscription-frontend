@@ -1,27 +1,27 @@
+@import play.api.data.Form
+@import models._
 @import forms.AccountingPeriodForm._
 @import helpers._
-@import models._
-@import play.api.data.Form
 @import uk.gov.hmrc.play.views.html.helpers.form
 
-@(dateForm: Form[AccountingPeriodModel], postAction: Call)(implicit request: Request[_], messages: Messages)
+@(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @views.html.templates.main_template(title = Messages("accounting_period.title"), bodyClasses = None) {
 
-    @summaryErrorHelper(dateForm)
+    @summaryErrorHelper(accountingPeriodForm)
 
     <h1>@Messages("accounting_period.heading")</h1>
 
     @form(action = postAction) {
 
         @dateHelper(
-            field = dateForm(startDate),
-            label = Messages("base.start_date")
+            field = accountingPeriodForm(startDate),
+            label = Messages("base.startDate")
         )
 
         @dateHelper(
-            field = dateForm(endDate),
-            label = Messages("base.end_date")
+            field = accountingPeriodForm(endDate),
+            label = Messages("base.endDate")
         )
 
         @continueButton()

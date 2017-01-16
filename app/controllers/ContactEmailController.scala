@@ -16,12 +16,15 @@
 
 package controllers
 
-import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 import forms.EmailForm
+import models.EmailModel
+import play.api.Play.current
+import play.api.data.Form
+import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.Html
+import services.KeystoreService
 
 import scala.concurrent.Future
 
@@ -29,18 +32,34 @@ object ContactEmailController extends ContactEmailController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
+  override val keystoreService = KeystoreService
 }
 
-trait ContactEmailController extends FrontendController with AuthorisedForIncomeTaxSA {
+trait ContactEmailController extends BaseController {
 
-  val showContactEmail = Authorised.async { implicit user => implicit request =>
-    Future.successful(Ok(views.html.contact_email(
-      contactEmailForm = EmailForm.emailForm,
+  val keystoreService: KeystoreService
+
+  def view(contactEmailForm: Form[EmailModel])(implicit request: Request[_]): Html =
+    views.html.contact_email(
+      contactEmailForm = contactEmailForm,
       postAction = controllers.routes.ContactEmailController.submitContactEmail()
-    )))
+    )
+
+  val showContactEmail: Action[AnyContent] = Authorised.async { implicit user =>
+    implicit request =>
+      keystoreService.fetchContactEmail() map {
+        contactEmail => Ok(view(contactEmailForm = EmailForm.emailForm.fill(contactEmail)))
+      }
   }
 
-  val submitContactEmail = Authorised.async { implicit user => implicit request =>
-    Future.successful(Redirect(controllers.routes.TermsController.showTerms()))
+  val submitContactEmail: Action[AnyContent] = Authorised.async { implicit user =>
+    implicit request =>
+      EmailForm.emailForm.bindFromRequest.fold(
+        formWithErrors => Future.successful(BadRequest(view(contactEmailForm = formWithErrors))),
+        contactEmail => {
+          keystoreService.saveContactEmail(contactEmail) map (
+            _ => Redirect(controllers.routes.TermsController.showTerms()))
+        }
+      )
   }
 }

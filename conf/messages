@@ -1,12 +1,16 @@
 ## Base ##
 base.back                                                       = Back
 base.continue                                                   = Continue
-base.start_date                                                 = Start date
-base.end_date                                                   = End date
+base.startDate                                                  = Start date
+base.endDate                                                    = End date
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
 base.error_heading                                              = Error Summary
+
+## Business Accounting Period page
+accounting_period.heading                                       = What is your accounting period?
+accounting_period.title                                         = What is your accounting period?
 
 ## Business Income page
 business.income_type.title                                      = How do you receive your business income?
@@ -18,8 +22,8 @@ business.name.heading                                           = What is your b
 business.name.hint                                              = This does not mean trading name
 
 ## Terms and Conditions Messages
-terms.title                 = Terms
-terms.heading               = Terms
+terms.title                                                     = Terms
+terms.heading                                                   = Terms
 
 ## Contact Email Address page ##
 contact_email.title                                             = What is your contact email address?

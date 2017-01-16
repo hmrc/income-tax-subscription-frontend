@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package services
+package controllers
 
-object CacheConstants {
-  val BusinessName = "BusinessName"
-  val AccountingPeriod = "AccountingPeriod"
-  val ContactEmail = "ContactEmail"
-  val IncomeType = "IncomeType"
-  val Terms = "Terms"
+import auth.AuthorisedForIncomeTaxSA
+import play.api.data.Form
+import uk.gov.hmrc.play.frontend.controller.FrontendController
+
+
+trait BaseController extends FrontendController with AuthorisedForIncomeTaxSA {
+
+  implicit class FormUtil[T](form: Form[T]) {
+    def fill(data: Option[T]): Form[T] = data.fold(form)(form.fill)
+  }
+
 }

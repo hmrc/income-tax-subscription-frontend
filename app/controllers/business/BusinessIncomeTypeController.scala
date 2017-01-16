@@ -16,13 +16,16 @@
 
 package controllers.business
 
-import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import controllers.BaseController
 import forms.IncomeTypeForm
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.i18n.Messages.Implicits._
+import models.IncomeTypeModel
 import play.api.Play.current
-import uk.gov.hmrc.play.http.HttpResponse
+import play.api.data.Form
+import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.Html
+import services.KeystoreService
 
 import scala.concurrent.Future
 
@@ -30,19 +33,34 @@ object BusinessIncomeTypeController extends BusinessIncomeTypeController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
+  override val keystoreService = KeystoreService
 }
 
-trait BusinessIncomeTypeController extends FrontendController with AuthorisedForIncomeTaxSA {
+trait BusinessIncomeTypeController extends BaseController {
 
-  val showBusinessIncomeType = Authorised.async { implicit user =>
+  val keystoreService: KeystoreService
+
+  def view(incomeTypeForm: Form[IncomeTypeModel])(implicit request: Request[_]): Html =
+    views.html.business.income_type(
+      incomeTypeForm = incomeTypeForm,
+      postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType()
+    )
+
+  val showBusinessIncomeType: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Ok(views.html.business.income_type(
-        incomeTypeForm = IncomeTypeForm.incomeTypeForm,
-        postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType()
-      )))
+      keystoreService.fetchIncomeType() map {
+        incomeType => Ok(view(incomeTypeForm = IncomeTypeForm.incomeTypeForm.fill(incomeType)))
+      }
   }
 
-  val submitBusinessIncomeType = Authorised.async { implicit user => implicit request =>
-      Future.successful(Redirect(controllers.routes.ContactEmailController.showContactEmail()))
+  val submitBusinessIncomeType: Action[AnyContent] = Authorised.async { implicit user =>
+    implicit request =>
+      IncomeTypeForm.incomeTypeForm.bindFromRequest.fold(
+        formWithErrors => Future.successful(BadRequest(view(incomeTypeForm = formWithErrors))),
+        incomeType => {
+          keystoreService.saveIncomeType(incomeType) map (
+            _ => Redirect(controllers.routes.ContactEmailController.showContactEmail()))
+        }
+      )
   }
 }

@@ -16,12 +16,15 @@
 
 package controllers
 
-import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import forms.TermForm
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.i18n.Messages.Implicits._
+import models.TermModel
 import play.api.Play.current
+import play.api.data.Form
+import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.Html
+import services.KeystoreService
 
 import scala.concurrent.Future
 
@@ -29,20 +32,34 @@ object TermsController extends TermsController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
+  override val keystoreService = KeystoreService
 }
 
-trait TermsController extends FrontendController with AuthorisedForIncomeTaxSA {
+trait TermsController extends BaseController {
 
-  val showTerms = Authorised.async { implicit user =>
+  val keystoreService: KeystoreService
+
+  def view(termsForm: Form[TermModel])(implicit request: Request[_]): Html =
+    views.html.terms(
+      termsForm = termsForm,
+      postAction = controllers.routes.TermsController.submitTerms()
+    )
+
+  val showTerms: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Ok(views.html.terms(
-        termsForm = TermForm.termForm,
-        postAction = controllers.routes.TermsController.submitTerms()
-      )))
+      keystoreService.fetchTerms() map {
+        terms => Ok(view(TermForm.termForm.fill(terms)))
+      }
   }
 
-  val submitTerms = Authorised.async { implicit user =>
+  val submitTerms: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Redirect(controllers.routes.SummaryController.showSummary()))
+      TermForm.termForm.bindFromRequest.fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        terms => {
+          keystoreService.saveTerms(terms) map (
+            _ => Redirect(controllers.routes.SummaryController.showSummary()))
+        }
+      )
   }
 }

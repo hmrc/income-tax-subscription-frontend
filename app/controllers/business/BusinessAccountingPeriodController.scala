@@ -16,8 +16,8 @@
 
 package controllers.business
 
-import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import controllers.BaseController
 import forms.AccountingPeriodForm
 import models.AccountingPeriodModel
 import play.api.Play.current
@@ -25,7 +25,7 @@ import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import services.KeystoreService
 
 import scala.concurrent.Future
 
@@ -33,9 +33,13 @@ object BusinessAccountingPeriodController extends BusinessAccountingPeriodContro
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
+
+  override val keystoreService = KeystoreService
 }
 
-trait BusinessAccountingPeriodController extends FrontendController with AuthorisedForIncomeTaxSA {
+trait BusinessAccountingPeriodController extends BaseController {
+
+  val keystoreService: KeystoreService
 
   def view(form: Form[AccountingPeriodModel])(implicit request: Request[_]): Html =
     views.html.business.accounting_period(
@@ -45,7 +49,12 @@ trait BusinessAccountingPeriodController extends FrontendController with Authori
 
   val showAccountingPeriod: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Ok(view(AccountingPeriodForm.accountingPeriodForm)))
+      keystoreService.fetchAccountingPeriod() map {
+        accountingPeriod =>
+          Ok(view(
+            AccountingPeriodForm.accountingPeriodForm.fill(accountingPeriod)
+          ))
+      }
   }
 
   val submitAccountingPeriod: Action[AnyContent] = Authorised.async { implicit user =>
@@ -53,8 +62,8 @@ trait BusinessAccountingPeriodController extends FrontendController with Authori
       AccountingPeriodForm.accountingPeriodForm.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         accountingPeriod => {
-          //TODO save to keystore
-          Future.successful(Redirect(controllers.business.routes.BusinessNameController.showBusinessName()))
+          keystoreService.saveAccountingPeriod(accountingPeriod) map (
+            _ => Redirect(controllers.business.routes.BusinessNameController.showBusinessName()))
         }
       )
   }
