@@ -15,7 +15,8 @@
 
         @inputHelper(
             field = contactEmailForm(emailAddress),
-            maxLength = 120
+            maxLength = emailMaxLength,
+            parentForm = contactEmailForm
         )
 
         @continueButton()

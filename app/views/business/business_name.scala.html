@@ -16,7 +16,8 @@
         @inputHelper(
             field = businessNameForm(businessName),
             formHint = Messages("business.name.hint"),
-            maxLength = 40
+            maxLength = businessNameMaxLength,
+            parentForm = businessNameForm
         )
 
         @continueButton()

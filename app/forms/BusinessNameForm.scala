@@ -30,7 +30,7 @@ object BusinessNameForm {
   val businessName = "businessName"
 
   //TODO refactor and confirm
-  val businessNamemaxLength = 140
+  val businessNameMaxLength = 140
 
   val nameEmpty: Constraint[String] = constraint[String](
     name => {
@@ -42,7 +42,7 @@ object BusinessNameForm {
   val nameTooLong: Constraint[String] = constraint[String](
     name => {
       lazy val tooLong = ErrorMessageFactory.error("error.business_name.maxLength")
-      if (name.trim.length > businessNamemaxLength) tooLong else Valid
+      if (name.trim.length > businessNameMaxLength) tooLong else Valid
     }
   )
 

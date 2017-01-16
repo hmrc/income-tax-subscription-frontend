@@ -56,6 +56,12 @@ object ErrorMessageHelper {
   def getFieldError(field: Field, parentForm: Form[_]): Option[FieldError] =
     getFieldError(parentForm, field.name)
 
+  def getFieldError(field: Field, parentForm: Option[Form[_]] = None): Option[FieldError] =
+    parentForm match {
+      case Some(form) => getFieldError(field, form)
+      case _ => getFieldError(field)
+    }
+
   /**
     *
     * @param form

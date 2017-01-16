@@ -20,7 +20,8 @@
         @radioHelper(
             field = incomeTypeForm(IncomeTypeForm.incomeType),
             legend = question,
-            options = Seq("Cash", "Accruals")
+            options = Seq("Cash", "Accruals"),
+            parentForm = incomeTypeForm
         )
 
         @continueButton()
