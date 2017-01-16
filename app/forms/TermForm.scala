@@ -25,9 +25,10 @@ object TermForm {
 
   val hasAcceptedTerms = "hasAcceptedTerms"
 
+  // TODO use more appropriate validation, verifying(b => b) is only temporary to allow the submission of an empty form to fail
   val termForm = Form(
     mapping(
-      hasAcceptedTerms -> boolean
+      hasAcceptedTerms -> boolean.verifying(b => b)
     )(TermModel.apply)(TermModel.unapply)
   )
 

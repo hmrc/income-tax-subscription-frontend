@@ -16,12 +16,11 @@
 
 package controllers
 
-import auth.AuthorisedForIncomeTaxSA
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import forms.TermForm
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
+import services.KeystoreService
 
 import scala.concurrent.Future
 
@@ -29,20 +28,34 @@ object TermsController extends TermsController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
+  override val keystoreService = KeystoreService
 }
 
-trait TermsController extends FrontendController with AuthorisedForIncomeTaxSA {
+trait TermsController extends BaseController {
+
+  val keystoreService: KeystoreService
 
   val showTerms = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Ok(views.html.terms(
-        termsForm = TermForm.termForm,
-        postAction = controllers.routes.TermsController.submitTerms()
-      )))
+      keystoreService.fetchTerms() map {
+        terms =>
+          Ok(views.html.terms(
+            termsForm = TermForm.termForm.fill(terms),
+            postAction = controllers.routes.TermsController.submitTerms()
+          ))
+      }
   }
 
   val submitTerms = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Redirect(controllers.routes.SummaryController.showSummary()))
+      TermForm.termForm.bindFromRequest.fold(
+        formWithErrors => {
+          Future.successful(NotImplemented)
+        },
+        terms => {
+          keystoreService.saveTerms(terms) map (
+            _ => Redirect(controllers.routes.SummaryController.showSummary()))
+        }
+      )
   }
 }
