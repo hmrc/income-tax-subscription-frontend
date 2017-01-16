@@ -42,10 +42,8 @@ trait SummaryController extends FrontendController with AuthorisedForIncomeTaxSA
   val showSummary = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchAll() map {
-        case Some(cache) => val summary = cache.getSummary
-        //TODO show page
+        case Some(cache) => Ok(views.html.summary_page(cache.getSummary, controllers.routes.SummaryController.submitSummary()))
       }
-      Future.successful(NotImplemented)
   }
 
   val submitSummary = Authorised.async { implicit user =>

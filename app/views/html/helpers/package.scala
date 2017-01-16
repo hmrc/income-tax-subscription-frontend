@@ -16,6 +16,13 @@
 
 package views.html
 
+import models.DateModel
+
 package object helpers {
   implicit def optionWrapperUtil[T, S <: T](data: S): Option[T] = Some(data)
+
+  def monthInBetween(start: DateModel,end: DateModel) :Int = {
+    import java.time.temporal.ChronoUnit
+    ChronoUnit.MONTHS.between(start,end).toInt
+  }
 }
