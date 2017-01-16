@@ -21,6 +21,7 @@ object DataMap {
   import forms.BusinessNameForm._
   import forms.EmailForm._
   import forms.IncomeTypeForm._
+  import forms.TermForm._
   import forms.submapping.DateMapping._
 
   type DataMap = Map[String, String]
@@ -37,5 +38,9 @@ object DataMap {
   def inType(iType: String): DataMap = Map(incomeType -> iType)
 
   def email(email: String): DataMap = Map(emailAddress -> email)
+
+  def terms(acceptedTerms: String): DataMap = Map(hasAcceptedTerms -> acceptedTerms)
+
+  def terms(acceptedTerms: Boolean): DataMap = terms(acceptedTerms.toString)
 
 }

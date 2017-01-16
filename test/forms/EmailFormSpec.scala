@@ -37,7 +37,7 @@ class EmailFormSpec extends PlaySpec with OneAppPerTest {
       actual shouldBe Some(expected)
     }
 
-    "validate business name correctly" in {
+    "validate contact email correctly" in {
       val maxLength = emailMaxLength
 
       val empty = ErrorMessageFactory.error("error.contact_email.empty")

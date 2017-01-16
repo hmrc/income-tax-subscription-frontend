@@ -16,18 +16,29 @@
 
 package forms
 
+import forms.validation.ErrorMessageFactory
+import forms.validation.utils.ConstraintUtil._
+import forms.validation.utils._
 import models.TermModel
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.{Constraint, Valid}
 
 
 object TermForm {
 
   val hasAcceptedTerms = "hasAcceptedTerms"
 
+  val acceptedTermsEmpty: Constraint[Boolean] = constraint[Boolean](
+    terms => {
+      lazy val notAccepted = ErrorMessageFactory.error("error.terms.empty")
+      if (!terms) notAccepted else Valid
+    }
+  )
+
   val termForm = Form(
     mapping(
-      hasAcceptedTerms -> boolean
+      hasAcceptedTerms -> oText.toBoolean.verifying(acceptedTermsEmpty)
     )(TermModel.apply)(TermModel.unapply)
   )
 
