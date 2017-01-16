@@ -18,7 +18,15 @@ package assets
 
 object MessageLookup {
 
-  val continue = "Continue"
+  object Base {
+    val continue = "Continue"
+    val startDate = "Start date"
+    val endDate = "End date"
+    val day = "Day"
+    val month = "Month"
+    val year = "Year"
+    val errorHeading = "Error Summary"
+  }
 
   object HelloWorld {
     val title = "Hello from income-tax-subscription-frontend"

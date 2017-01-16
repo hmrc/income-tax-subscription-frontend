@@ -61,11 +61,14 @@ class SummaryControllerSpec extends ControllerBaseSpec {
 
     lazy val result = TestSummaryController.submitSummary(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+    "return a redirect status (SEE_OTHER - 303)" in {
+      status(result) must be(Status.SEE_OTHER)
+    }
+
+    s"redirect to '${controllers.routes.ConfirmationController.showConfirmation().url}'" in {
+      redirectLocation(result) mustBe Some(controllers.routes.ConfirmationController.showConfirmation().url)
     }
   }
-
   authorisationTests
 
 }

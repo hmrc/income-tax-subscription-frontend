@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-package forms
+package services
 
-import models.DateModel
-import play.api.data.Form
-import play.api.data.Forms._
-
-object DateForm {
-
-  val dateDay = "dateDay"
-  val dateMonth = "dateMonth"
-  val dateYear = "dateYear"
-
-  val dateForm = Form(
-    mapping(
-      dateDay -> text,
-      dateMonth -> text,
-      dateYear -> text
-    )(DateModel.apply)(DateModel.unapply)
-  )
+object CacheConstants {
+  val BusinessName = "businessNameModel"
 }

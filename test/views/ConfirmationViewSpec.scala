@@ -17,16 +17,16 @@
 package views
 
 import assets.MessageLookup
+import models.DateModel
 import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import models.DateModel
+import util.UnitTestTrait
 
-class ConfirmationViewSpec extends PlaySpec with OneAppPerTest {
+class ConfirmationViewSpec extends UnitTestTrait {
 
   val submissionReferenceValue = "000-032407"
-  val submissionDateValue = DateModel("1","1","2016")
+  val submissionDateValue = DateModel("1", "1", "2016")
 
   lazy val page = views.html.confirmation(
     submissionReference = submissionReferenceValue,

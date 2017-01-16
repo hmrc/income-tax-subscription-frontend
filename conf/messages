@@ -6,6 +6,7 @@ base.endDate                                                    = End date
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
+base.error_heading                                              = Error Summary
 
 ## Business Accounting Period page
 accounting_period.heading                                       = What is your accounting period?
@@ -20,8 +21,8 @@ business.name.heading                                           = What is your b
 business.name.hint                                              = This does not mean trading name
 
 ## Terms and Conditions Messages
-terms.title                 = Terms
-terms.heading               = Terms
+terms.title                                                     = Terms
+terms.heading                                                   = Terms
 
 ## Contact Email Address page ##
 contact_email.title                                             = What is your contact email address?

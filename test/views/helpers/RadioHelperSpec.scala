@@ -16,23 +16,16 @@
 
 package views.helpers
 
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
 import org.scalatest.Matchers._
-import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
-import play.api.data.{Field, Form}
 import play.api.data.Forms._
+import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits._
-import play.twirl.api.Html
+import util.UnitTestTrait
 
-class RadioHelperSpec extends PlaySpec with OneServerPerSuite {
+class RadioHelperSpec extends UnitTestTrait {
 
   private def radioHelper(field: Field, legend: String, options: Seq[String])
   = views.html.helpers.radioHelper(field, legend, options)(applicationMessages)
-
-  implicit class HtmlFormatUtil(html: Html) {
-    def doc: Document = Jsoup.parse(html.body)
-  }
 
   case class TestData(radio: String)
 
@@ -44,7 +37,7 @@ class RadioHelperSpec extends PlaySpec with OneServerPerSuite {
   )
 
   "RadioHelper" should {
-    "populate the relavent content in the correct positions" in {
+    "populate the relevent content in the correct positions" in {
       val testLegend = "my test legend text"
       val testOptions = Seq("Yes", "No")
       val testField = testForm(radioName)
