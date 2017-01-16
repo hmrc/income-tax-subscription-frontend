@@ -39,11 +39,11 @@ trait FormValidationTrait[T] {
   def hasFieldError(invalid: Invalid): Unit = {
     withClue(s"\nThe $fieldName field did not contain the expected error:\n") {
       val oErr = ErrorMessageHelper.getFieldError(form, fieldName)
-      withClue(s"No errors were found for $fieldName\nformErrors=${form.errors}\n") {
+      val expectedErr = invalid.errors.head.args.head.asInstanceOf[FieldError]
+      withClue(s"No errors were found for $fieldName\nformErrors=${form.errors}\nExpected: $expectedErr") {
         oErr shouldBe defined
       }
       val actual = oErr.get
-      val expectedErr = invalid.errors.head.args.head.asInstanceOf[FieldError]
       withClue(s"Expected: $expectedErr\nbut found: $actual\n") {
         expectedErr shouldBe actual
       }
@@ -56,8 +56,7 @@ trait FormValidationTrait[T] {
       withClue(s"getSummaryErrors failed, form.errors:\n${form.errors}\n") {
         Try {
           ErrorMessageHelper.getSummaryErrors(form)
-        }
-          .isSuccess shouldBe true
+        }.isSuccess shouldBe true
       }
       val sErrs = ErrorMessageHelper.getSummaryErrors(form)
       val expectedErr = invalid.errors.head.args(1).asInstanceOf[SummaryError]
@@ -92,7 +91,8 @@ trait FormValidationTrait[T] {
       withClue(s"getSummaryErrors failed, form.errors:\n${form.errors}\n") {
         Try {
           ErrorMessageHelper.getSummaryErrors(form)
-        }.isSuccess shouldBe true
+        }
+        .isSuccess shouldBe true
       }
       val sErrs = ErrorMessageHelper.getSummaryErrors(form)
       val expectedErr = invalid.errors.head.args(1).asInstanceOf[SummaryError]

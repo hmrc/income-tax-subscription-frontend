@@ -19,9 +19,16 @@ package forms.validation.testutils
 object DataMap {
 
   import forms.submapping.DateMapping._
+  import forms.BusinessNameForm._
 
-  def date(prefix: String)(day: String, month: String, year: String): Map[String, String] =
+  type DataMap = Map[String, String]
+
+  def DataMap(elems: (String, String)*): DataMap = Map(elems: _*)
+
+  def date(prefix: String)(day: String, month: String, year: String): DataMap =
     Map(prefix * dateDay -> day, prefix * dateMonth -> month, prefix * dateYear -> year)
 
-  val emptyDate: String => Map[String, String] = (prefix: String) => date(prefix)("", "", "")
+  val emptyDate: String => DataMap = (prefix: String) => date(prefix)("", "", "")
+
+  def busName(name: String): DataMap = Map(businessName -> name)
 }

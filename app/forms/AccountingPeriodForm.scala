@@ -34,7 +34,7 @@ object AccountingPeriodForm {
 
   val dateValidation: Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val invalidDate = ErrorMessageFactory.error("error.invalid_date")
+      lazy val invalidDate = ErrorMessageFactory.error("error.date.invalid")
       Try[ValidationResult] {
         date.toLocalDate
         Valid
@@ -44,8 +44,8 @@ object AccountingPeriodForm {
 
   val dateEmpty: Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val emptyDate = ErrorMessageFactory.error("error.empty_date")
-      if (date.day.isEmpty && date.month.isEmpty && date.year.isEmpty) emptyDate else Valid
+      lazy val emptyDate = ErrorMessageFactory.error("error.date.empty")
+      if (date.day.trim.isEmpty && date.month.trim.isEmpty && date.year.trim.isEmpty) emptyDate else Valid
     }
   )
 

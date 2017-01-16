@@ -53,8 +53,8 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "start date should be correctly validated" in {
-      val empty = ErrorMessageFactory.error("error.empty_date")
-      val invalid = ErrorMessageFactory.error("error.invalid_date")
+      val empty = ErrorMessageFactory.error("error.date.empty")
+      val invalid = ErrorMessageFactory.error("error.date.invalid")
 
       val emptyDateInput = DataMap.emptyDate(startDate)
       val emptyTest = accountingPeriodForm.bind(emptyDateInput)
@@ -66,8 +66,8 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "end date should be correctly validated" in {
-      val empty = ErrorMessageFactory.error("error.empty_date")
-      val invalid = ErrorMessageFactory.error("error.invalid_date")
+      val empty = ErrorMessageFactory.error("error.date.empty")
+      val invalid = ErrorMessageFactory.error("error.date.invalid")
       val violation = ErrorMessageFactory.error("error.end_date_violation")
 
       val emptyDateInput = DataMap.emptyDate(endDate)

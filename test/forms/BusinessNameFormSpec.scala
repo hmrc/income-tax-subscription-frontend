@@ -16,9 +16,11 @@
 
 package forms
 
+import forms.validation.ErrorMessageFactory
+import forms.validation.testutils.{DataMap, _}
 import models.BusinessNameModel
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import org.scalatest.Matchers._
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 
 class BusinessNameFormSpec extends PlaySpec with OneAppPerTest {
 
@@ -26,11 +28,40 @@ class BusinessNameFormSpec extends PlaySpec with OneAppPerTest {
 
   "The businessNameForm" should {
     "transform the data to the case class" in {
-      val testBusinessName = "ABC"
+      val testBusinessName = "Test business"
       val testInput = Map(businessName -> testBusinessName)
       val expected = BusinessNameModel(testBusinessName)
       val actual = businessNameForm.bind(testInput).value
       actual shouldBe Some(expected)
+    }
+
+    "validate business name correctly" in {
+      val maxLength = businessNamemaxLength
+
+      val empty = ErrorMessageFactory.error("error.business_name.empty")
+      val maxLen = ErrorMessageFactory.error("error.business_name.maxLength")
+      val invalid = ErrorMessageFactory.error("error.business_name.invalid")
+
+      val emptyInput = DataMap.busName("")
+      val emptyTest = businessNameForm.bind(emptyInput)
+      emptyTest assert businessName hasExpectedErrors empty
+
+      val maxLengthInput = DataMap.busName("a" * maxLength + 1)
+      val maxLengthTest = businessNameForm.bind(maxLengthInput)
+      maxLengthTest assert businessName hasExpectedErrors maxLen
+
+      val withinLimitInput = DataMap.busName("a" * maxLength)
+      val withinLimitTest = businessNameForm.bind(withinLimitInput)
+      withinLimitTest assert businessName doesNotHaveSpecifiedErrors maxLen
+
+      val invalidInput = DataMap.busName("α")
+      val invalidTest = businessNameForm.bind(invalidInput)
+      invalidTest assert businessName hasExpectedErrors invalid
+    }
+
+    "The following submission should be valid" in {
+      val valid = DataMap.busName("Test business")
+      businessNameForm isValidFor valid
     }
   }
 
