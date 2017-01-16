@@ -1,6 +1,14 @@
 ## Base ##
 base.back                                                       = Back
 base.continue                                                   = Continue
+base.startDate                                                  = Start date
+base.endDate                                                    = End date
+base.day                                                        = Day
+base.month                                                      = Month
+base.year                                                       = Year
+
+## Business Accounting Period page
+accounting_period.heading                                       = What is your accounting period?
 
 ## Business Income page
 business.income_type.title                                      = How do you receive your business income?
