@@ -28,7 +28,7 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
 
   lazy val page = views.html.business.accounting_period(
     accountingPeriodForm = AccountingPeriodForm.accountingPeriodForm,
-    postAction = controllers.business.routes.BusinessNameController.submitBusinessName()
+    postAction = controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod()
   )(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
@@ -45,7 +45,20 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
     "has a form" which {
 
       s"Has a legend with the text '${commonMessages.startDate}'" in {
-        document.select("legend:nth-child(1) h2").text() mustBe commonMessages.startDate
+        document.select("#startDate legend h2").text() mustBe commonMessages.startDate
+      }
+
+      s"Has a legend with the text '${commonMessages.endDate}'" in {
+        document.select("#endDate legend h2").text() mustBe commonMessages.endDate
+      }
+
+      "has a continue button" in {
+        document.select("#continue-button").isEmpty mustBe false
+      }
+
+      s"has a post action to '${controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod().url}'" in {
+        document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod().url
+        document.select("form").attr("method") mustBe "POST"
       }
 
     }
