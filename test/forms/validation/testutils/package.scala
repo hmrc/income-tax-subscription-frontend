@@ -16,8 +16,9 @@
 
 package forms.validation
 
+import org.scalatest.Matchers._
 import play.api.data.Form
-
+import play.api.test.FakeRequest
 
 package object testutils {
 
@@ -32,6 +33,24 @@ package object testutils {
     implicit def assert(testFieldName: String): FormValidationTrait[T] = new FormValidationTrait[T] {
       override val form: Form[T] = testForm
       override val fieldName: String = testFieldName
+    }
+
+    def isValidFor(data: T): Unit = {
+      val validated = testForm.fillAndValidate(data)
+      validated.hasErrors shouldBe false
+      validated.hasGlobalErrors shouldBe false
+    }
+
+    def isValidFor(data: Map[String, String]): Unit = {
+      val validated = testForm.bind(data)
+      validated.hasErrors shouldBe false
+      validated.hasGlobalErrors shouldBe false
+    }
+
+    def isValidFor(request: FakeRequest[_]): Unit = {
+      val validated = testForm.bindFromRequest()(request)
+      validated.hasErrors shouldBe false
+      validated.hasGlobalErrors shouldBe false
     }
   }
 

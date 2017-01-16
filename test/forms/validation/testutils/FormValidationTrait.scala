@@ -29,14 +29,14 @@ trait FormValidationTrait[T] {
   val form: Form[T]
   val fieldName: String
 
-  private def errorMsgIsDefined(err: ErrorMessage): Unit = {
+  def errorMsgIsDefined(err: ErrorMessage): Unit = {
     //TODO uncomment when the error messages are defined
     //          withClue(s"\nthe error message for: ${err.messageKey} is not defined in the messages file\n") {
     //            err.toText should not be err.messageKey
     //          }
   }
 
-  private def hasFieldError(invalid: Invalid): Unit = {
+  def hasFieldError(invalid: Invalid): Unit = {
     withClue(s"\nThe $fieldName field did not contain the expected error:\n") {
       val oErr = ErrorMessageHelper.getFieldError(form, fieldName)
       withClue(s"No errors were found for $fieldName\nformErrors=${form.errors}\n") {
@@ -51,7 +51,7 @@ trait FormValidationTrait[T] {
     }
   }
 
-  private def hasSummaryError(invalid: Invalid): Unit = {
+  def hasSummaryError(invalid: Invalid): Unit = {
     withClue(s"\nThe summary errors did not contain an error for $fieldName:\n") {
       withClue(s"getSummaryErrors failed, form.errors:\n${form.errors}\n") {
         Try {
@@ -76,7 +76,7 @@ trait FormValidationTrait[T] {
     hasSummaryError(invalid)
   }
 
-  private def doesNotHaveSpecifiedFieldError(invalid: Invalid): Unit = {
+  def doesNotHaveSpecifiedFieldError(invalid: Invalid): Unit = {
     val specifiedErr = invalid.errors.head.args.head.asInstanceOf[FieldError]
     withClue(s"\nThe $fieldName field contained the specified error $specifiedErr:\n") {
       val oErr = ErrorMessageHelper.getFieldError(form, fieldName)
@@ -87,7 +87,7 @@ trait FormValidationTrait[T] {
     }
   }
 
-  private def doesNotHavSummaryError(invalid: Invalid): Unit = {
+  def doesNotHavSummaryError(invalid: Invalid): Unit = {
     withClue(s"\nThe summary errors contained the specified error for $fieldName:\n") {
       withClue(s"getSummaryErrors failed, form.errors:\n${form.errors}\n") {
         Try {

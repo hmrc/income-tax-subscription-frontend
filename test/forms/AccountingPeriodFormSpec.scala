@@ -86,6 +86,11 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
       val validTest = accountingPeriodForm.bind(validInput)
       validTest assert endDate doesNotHaveSpecifiedErrors violation
     }
+
+    "The following submission should be valid" in {
+      val testData = DataMap.date(startDate)("28", "2", "2017") ++ DataMap.date(endDate)("28", "2", "2018")
+      accountingPeriodForm isValidFor testData
+    }
   }
 
 }
