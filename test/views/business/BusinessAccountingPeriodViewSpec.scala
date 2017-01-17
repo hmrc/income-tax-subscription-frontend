@@ -16,6 +16,7 @@
 
 package views.business
 
+import assets.MessageLookup
 import assets.MessageLookup.{Base => commonMessages}
 import assets.MessageLookup.{AccountingPeriod => messages}
 import forms.AccountingPeriodForm
@@ -61,6 +62,11 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
         document.select("form").attr("method") mustBe "POST"
       }
 
+    }
+
+    "has an accordion" in {
+      document.select("details").isEmpty mustBe false
+      document.select("details summary").text mustBe MessageLookup.Base.where_can_i_get_this_information
     }
 
   }

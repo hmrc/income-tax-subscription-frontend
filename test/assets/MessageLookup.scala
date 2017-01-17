@@ -28,6 +28,7 @@ object MessageLookup {
     val year = "Year"
     val errorHeading = "Error Summary"
     val chage = "Change"
+    val where_can_i_get_this_information = "Where can I get this information"
   }
 
   object HelloWorld {
@@ -126,6 +127,7 @@ object MessageLookup {
 
     object BusinessAccountingPeriod {
       val minStartDate = "You can't enter a start date that's before 1 April 2017"
+
       def maxEndDate(months: String, date: String): String =
         s"The end date must be within $months months of the start date, you can't enter a date that's after $date"
     }
