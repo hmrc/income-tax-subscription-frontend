@@ -107,9 +107,14 @@ object MessageLookup {
     object Date {
       val empty = "Please enter a date"
       val invalid = "Please enter a valid date"
+      val end_violation = "The end date must be after the start date"
     }
 
-    val end_date_violation = "The end date must be after the start date"
+    object BusinessAccountingPeriod {
+      val minStartDate = "You can't enter a start date that's before 1 April 2017"
+      def maxEndDate(months: String, date: String): String =
+        s"The end date must be within $months months of the start date, you can't enter a date that's after $date"
+    }
 
     object BusinessName {
       val empty = "Please enter a business name"

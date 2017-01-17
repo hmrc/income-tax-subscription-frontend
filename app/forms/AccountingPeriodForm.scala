@@ -16,6 +16,8 @@
 
 package forms
 
+import java.time.LocalDate
+
 import forms.submapping.DateMapping._
 import forms.validation.ErrorMessageFactory
 import forms.validation.models.TargetIds
@@ -29,8 +31,10 @@ import scala.util.Try
 
 object AccountingPeriodForm {
 
-  val startDate = "startDate"
-  val endDate = "endDate"
+  val minStartDate: LocalDate = DateModel("01","04","2017").toLocalDate
+  val maxMonths: Int = 24
+  val startDate: String = "startDate"
+  val endDate: String = "endDate"
 
   val dateValidation: Constraint[DateModel] = constraint[DateModel](
     date => {
@@ -49,6 +53,13 @@ object AccountingPeriodForm {
     }
   )
 
+  val startDateBeforeApr17: Constraint[DateModel] = constraint[DateModel](
+    date => {
+      lazy val invalid = ErrorMessageFactory.error(TargetIds(startDate), "error.business_accounting_period.minStartDate")
+      if (date.isBefore(minStartDate)) invalid else Valid
+    }
+  )
+
   val endDateAfterStart: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
     accountingPeriod => {
       lazy val invalid = ErrorMessageFactory.error(TargetIds(endDate), "error.end_date_violation")
@@ -56,11 +67,24 @@ object AccountingPeriodForm {
     }
   )
 
+  val endDate24MonthRule: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
+    accountingPeriod => {
+      lazy val maxEndDate = accountingPeriod.startDate.plusMonths(maxMonths)
+      lazy val invalid = ErrorMessageFactory.error(
+        TargetIds(endDate),
+        "error.business_accounting_period.maxEndDate",
+        DateModel.dateConvert(maxEndDate).toOutputDateFormat,
+        maxMonths.toString
+      )
+      if (accountingPeriod.endDate.isAfter(maxEndDate)) invalid else Valid
+    }
+  )
+
   val accountingPeriodForm = Form(
     mapping(
-      startDate -> dateMapping.verifying(dateEmpty andThen dateValidation),
+      startDate -> dateMapping.verifying(dateEmpty andThen dateValidation andThen startDateBeforeApr17),
       endDate -> dateMapping.verifying(dateEmpty andThen dateValidation)
-    )(AccountingPeriodModel.apply)(AccountingPeriodModel.unapply).verifying(endDateAfterStart)
+    )(AccountingPeriodModel.apply)(AccountingPeriodModel.unapply).verifying(endDateAfterStart andThen endDate24MonthRule)
   )
 
 }
