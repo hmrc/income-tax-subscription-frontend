@@ -56,10 +56,10 @@ class SummaryControllerSpec extends ControllerBaseSpec
 
     lazy val result = TestSummaryController.showSummary(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
+    "return ok (200)" in {
       setupMockKeystore(fetchAll = CacheUtilSpec.testCacheMap)
 
-      status(result) must be(Status.NOT_IMPLEMENTED)
+      status(result) must be(Status.OK)
     }
   }
 

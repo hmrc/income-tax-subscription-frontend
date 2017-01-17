@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-package views.html
+package views.html.helpers
 
-package object helpers {
-  implicit def optionWrapperUtil[T, S <: T](data: S): Option[T] = Some(data)
+object SummaryIdConstants {
+
+  val AccountingPeriodId = "accountingPeriod"
+  val BusinessNameId = "businessName"
+  val IncomeTypeId = "incomeType"
+  val ContactEmailId = "contactEmail"
+  val TermsId = "terms"
+
 }

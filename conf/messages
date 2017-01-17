@@ -60,7 +60,7 @@ summary.business_name                                           = Business name
 summary.income_type                                             = Income type
 summary.contact_email                                           = Contact email
 summary.terms                                                   = Terms and conditions
-summary.terms.accepted                                          = Read and accepted
+summary.terms.agreed                                            = Read and agreed
 
 ## Confirmation page ##
 confirmation.title                                              = Submitted

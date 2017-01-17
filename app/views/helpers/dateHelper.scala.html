@@ -13,12 +13,7 @@
     <fieldset id="@field.name">
         <legend>
             <h2>@label</h2>
-            @hintText match {
-                case Some(hint) => {
-                    <span class="form-hint">@hint</span>
-                }
-                case _ => {}
-            }
+            @hintText.map(hint => Html(s"""<span class="form-hint">$hint</span>"""))
         </legend>
         <div class="form-date">
             @inputHelper(
