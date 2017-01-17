@@ -135,7 +135,7 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
       }
     }
 
-    "accept a valid data" in {
+    "accept a valid date" in {
       val testData = DataMap.date(startDate)("28", "5", "2017") ++ DataMap.date(endDate)("28", "5", "2018")
       accountingPeriodForm isValidFor testData
     }
