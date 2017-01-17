@@ -16,8 +16,7 @@
 
 package views.business
 
-import assets.MessageLookup.{Base => commonMessages}
-import assets.MessageLookup.{AccountingPeriod => messages}
+import assets.MessageLookup.{AccountingPeriod => messages, Base => commonMessages}
 import forms.AccountingPeriodForm
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
@@ -61,6 +60,11 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
         document.select("form").attr("method") mustBe "POST"
       }
 
+    }
+
+    "has an accordion" in {
+      document.select("details").isEmpty mustBe false
+      document.select("details summary").text mustBe commonMessages.where_can_i_get_this_information
     }
 
   }
