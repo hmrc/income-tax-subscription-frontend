@@ -19,8 +19,12 @@ package controllers.business
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.BaseController
 import forms.IncomeTypeForm
+import models.IncomeTypeModel
 import play.api.Play.current
+import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.Html
 import services.KeystoreService
 
 import scala.concurrent.Future
@@ -36,23 +40,23 @@ trait BusinessIncomeTypeController extends BaseController {
 
   val keystoreService: KeystoreService
 
-  val showBusinessIncomeType = Authorised.async { implicit user =>
+  def view(incomeTypeForm: Form[IncomeTypeModel])(implicit request: Request[_]): Html =
+    views.html.business.income_type(
+      incomeTypeForm = incomeTypeForm,
+      postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType()
+    )
+
+  val showBusinessIncomeType: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchIncomeType() map {
-        incomeType =>
-          Ok(views.html.business.income_type(
-            incomeTypeForm = IncomeTypeForm.incomeTypeForm.fill(incomeType),
-            postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType()
-          ))
+        incomeType => Ok(view(incomeTypeForm = IncomeTypeForm.incomeTypeForm.fill(incomeType)))
       }
   }
 
-  val submitBusinessIncomeType = Authorised.async { implicit user =>
+  val submitBusinessIncomeType: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       IncomeTypeForm.incomeTypeForm.bindFromRequest.fold(
-        formWithErrors => {
-          Future.successful(NotImplemented)
-        },
+        formWithErrors => Future.successful(BadRequest(view(incomeTypeForm = formWithErrors))),
         incomeType => {
           keystoreService.saveIncomeType(incomeType) map (
             _ => Redirect(controllers.routes.ContactEmailController.showContactEmail()))

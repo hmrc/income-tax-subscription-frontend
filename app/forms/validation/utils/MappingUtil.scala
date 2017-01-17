@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 
-package forms
+package forms.validation.utils
 
-import models.IncomeTypeModel
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import org.scalatest.Matchers._
 
-class IncomeTypeFormSpec extends PlaySpec with OneAppPerTest {
+import play.api.data.Forms._
+import play.api.data._
 
-  import IncomeTypeForm._
+object MappingUtil {
 
-  "The IncomeTypeForm" should {
-    "transform the request to the form case class" in {
-      val testIncomeType = "ABC"
-      val testInput = Map(incomeType -> testIncomeType)
-      val expected = IncomeTypeModel(testIncomeType)
-      val actual = incomeTypeForm.bind(testInput).value
+  val oText: Mapping[Option[String]] = optional(text)
 
-      actual shouldBe Some(expected)
-    }
+  implicit class OTextUtil(mapping: Mapping[Option[String]]) {
+    def toText: Mapping[String] =
+      mapping.transform(
+        x => x.fold("")(x => x),
+        x => Some(x)
+      )
+
+    def toBoolean: Mapping[Boolean] = mapping.transform(
+      {
+        case Some("true") => true
+        case _ => false
+      },
+      x => Some(x.toString)
+    )
   }
 
 }

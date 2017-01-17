@@ -45,11 +45,11 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
     "has a form" which {
 
       s"Has a legend with the text '${commonMessages.startDate}'" in {
-        document.select("#startDate legend h2").text() mustBe commonMessages.startDate
+        document.select("#startDate legend span.form-label-bold").text() mustBe commonMessages.startDate
       }
 
       s"Has a legend with the text '${commonMessages.endDate}'" in {
-        document.select("#endDate legend h2").text() mustBe commonMessages.endDate
+        document.select("#endDate legend span.form-label-bold").text() mustBe commonMessages.endDate
       }
 
       "has a continue button" in {

@@ -1,16 +1,28 @@
 @import play.api.data.Form
 @import play.api.data.Field
 @import forms.submapping.DateMapping._
-@import views.html.helpers._
 
 @(field: Field,
     label: Option[String] = None,
     parentForm: Option[Form[_]] = None
 )(implicit messages: Messages)
 
-<div class="form-group">
+@import forms.validation.ErrorMessageHelper._
+
+@hasError = @{
+    val fieldError = getFieldError(field, parentForm)
+    fieldError match {
+        case Some(_) => true
+        case _ => false
+    }
+}
+
+<div class="form-group form-field@if(hasError) { form-field--error}">
     <fieldset id="@field.name">
-        <legend><h2>@label</h2></legend>
+        <legend>
+            <span class="form-label-bold">@label</span>
+            @fieldErrorHelper(field, parentForm)
+        </legend>
             <div class="form-date">
                 @inputHelper(
                     field(dateDay),

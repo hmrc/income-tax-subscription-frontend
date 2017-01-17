@@ -16,11 +16,13 @@
 
 package views.helpers
 
+import forms.validation.testutils.DataMap
 import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
 import util.UnitTestTrait
+import forms.validation.utils.MappingUtil._
 
 class InputHelperSpec extends UnitTestTrait {
 
@@ -32,18 +34,19 @@ class InputHelperSpec extends UnitTestTrait {
   val inputName = "input"
   val testForm = Form(
     mapping(
-      inputName -> text
+      inputName -> oText.toText.verifying(DataMap.alwaysFail)
     )(TestData.apply)(TestData.unapply)
   )
+  val testLabel = "my test label text"
 
   "InputHelper" should {
     "populate the relevant content in the correct positions" in {
-      val testLabel = "my test label text"
       val testHint = "my test hint text"
       val testField = testForm(inputName)
       val maxLength = 10
       val doc = inputHelper(testField, Some(testLabel), formHint = Some(testHint), maxLength = Some(maxLength)).doc
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
+      doc.getElementsByTag("div").hasClass("form-field") shouldBe true
       doc.getElementsByTag("label").text() should include(testLabel)
       doc.getElementsByTag("label").text() should include(testHint)
       doc.getElementsByTag("span").text() shouldBe testHint
@@ -56,13 +59,24 @@ class InputHelperSpec extends UnitTestTrait {
     }
 
     "if the form is populated, then the input should be populated correctly" in {
-      val testLabel = "my test label text"
       val testField = testForm.fill(TestData("My previous input"))(inputName)
       val doc = inputHelper(testField, Some(testLabel)).doc
 
       val inputs = doc.getElementsByTag("input")
       inputs.size() shouldBe 1
       inputs.get(0).attr("value") shouldBe "My previous input"
+    }
+
+    "when there is error on the field, the errors needs to be displayed, but not otherwise" in {
+      val testField = testForm(inputName)
+      val doc = inputHelper(testField, testLabel).doc
+      doc.getElementsByTag("div").hasClass("form-field--error") shouldBe false
+      doc.getElementsByClass("error-notification").isEmpty shouldBe true
+
+      val errorField = testForm.bind(DataMap.EmptyMap)(inputName)
+      val errDoc = inputHelper(errorField, testLabel).doc
+      errDoc.getElementsByTag("div").hasClass("form-field--error") shouldBe true
+      errDoc.getElementsByClass("error-notification").isEmpty shouldBe false
     }
   }
 

@@ -3,9 +3,12 @@
 @(field: Field,
     legend: String,
     options: Seq[String],
+    parentForm: Option[Form[_]] = None,
     inline: Boolean = false,
     fieldSetClass: Option[String] = None
 )(implicit messages: Messages)
+
+@import forms.validation.ErrorMessageHelper._
 
 @fieldSetClassValue = @{
     (inline, fieldSetClass) match {
@@ -22,9 +25,18 @@
     }
 }
 
-<div class="form-group">
+@hasError = @{
+    val fieldError = getFieldError(field, parentForm)
+    fieldError match {
+        case Some(_) => true
+        case _ => false
+    }
+}
+
+<div class="form-group form-field@if(hasError) { form-field--error}">
     <fieldset @fieldSetClassValue>
         <legend class="visuallyhidden" id="@field.name">@legend</legend>
+        @fieldErrorHelper(field, parentForm)
         @for(option <- options) {
             <label class="block-label selection-button-radio" for="@{field.name}-@option">
                 <input id="@{field.name}-@option" type="radio" name="@{field.name}" value="@option" @isSelected(option)>

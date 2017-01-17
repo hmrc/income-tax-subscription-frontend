@@ -19,8 +19,12 @@ package controllers.business
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.BaseController
 import forms.BusinessNameForm
+import models.BusinessNameModel
 import play.api.Play.current
+import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.Html
 import services.KeystoreService
 
 import scala.concurrent.Future
@@ -36,23 +40,24 @@ trait BusinessNameController extends BaseController {
 
   val keystoreService: KeystoreService
 
-  val showBusinessName = Authorised.async { implicit user =>
+  def view(businessNameForm: Form[BusinessNameModel])(implicit request: Request[_]): Html =
+    views.html.business.business_name(
+      businessNameForm = businessNameForm,
+      postAction = controllers.business.routes.BusinessNameController.submitBusinessName()
+    )
+
+
+  val showBusinessName: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchBusinessName() map {
-        businessName =>
-          Ok(views.html.business.business_name(
-            businessNameForm = BusinessNameForm.businessNameForm.fill(businessName),
-            postAction = controllers.business.routes.BusinessNameController.submitBusinessName()
-          ))
+        businessName => Ok(view(BusinessNameForm.businessNameForm.fill(businessName)))
       }
   }
 
-  val submitBusinessName = Authorised.async { implicit user =>
+  val submitBusinessName: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
-        formWithErrors => {
-          Future.successful(NotImplemented)
-        },
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         businessName => {
           keystoreService.saveBusinessName(businessName) map (
             _ => Redirect(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType()))

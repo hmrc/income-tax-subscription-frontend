@@ -102,4 +102,41 @@ object MessageLookup {
 
   }
 
+  object Error {
+
+    object Date {
+      val empty = "Please enter a date"
+      val invalid = "Please enter a valid date"
+      val end_violation = "The end date must be after the start date"
+    }
+
+    object BusinessAccountingPeriod {
+      val minStartDate = "You can't enter a start date that's before 1 April 2017"
+      def maxEndDate(months: String, date: String): String =
+        s"The end date must be within $months months of the start date, you can't enter a date that's after $date"
+    }
+
+    object BusinessName {
+      val empty = "Please enter a business name"
+      val maxLength = "The business name is too long"
+      val invalid = "The business name contains invalid characters"
+    }
+
+    object ContactEmail {
+      val empty = "Please enter a contact email"
+      val maxLength = "The email is too long"
+      val invalid = "The email is invalid"
+    }
+
+    object IncomeType {
+      val empty = "Please select an income type"
+      val invalid = "Please select an income type"
+    }
+
+    object Terms {
+      val empty = "Please accept the terms and conditions"
+    }
+
+  }
+
 }

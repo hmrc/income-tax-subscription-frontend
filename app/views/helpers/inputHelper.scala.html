@@ -3,24 +3,35 @@
 @(field: Field,
         label: Option[String] = None,
         parentForm: Option[Form[_]] = None,
-        formHint : Option[String] = None,
+        formHint: Option[String] = None,
         maxLength: Option[Int] = None
 )(implicit messages: Messages)
 
-@hintText(hint:String) = {
+@import forms.validation.ErrorMessageHelper._
+
+@hintText(hint: String) = {
     <span class="form-hint">
-        @hint
+    @hint
     </span>
 }
 
-<div class="form-group">
-    <label class="form-label" for=@{field.name}>
+@hasError = @{
+    val fieldError = getFieldError(field, parentForm)
+    fieldError match {
+        case Some(_) => true
+        case _ => false
+    }
+}
+
+<div class="form-group form-field@if(hasError) { form-field--error}">
+    <label class="form-label" for=@field.name>
         @label.fold(Html(""))(label => Html(label))
         @formHint.fold(Html(""))(hint => hintText(hint))
+        @fieldErrorHelper(field, parentForm)
     </label>
 
-    <input name = @{field.name} class="form-control" id=@{field.name} type="text"
-           @maxLength.fold(Html(""))(max => Html(s"maxlength=$max"))
+    <input name = @field.name class="form-control" id=@field.name type="text"
+        @maxLength.fold(Html(""))(max => Html(s"maxlength=$max"))
         @field.value.map(v => Html(s"""value="$v""""))
     >
 </div>

@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package forms.submapping
+package forms.validation.utils
 
-import forms.validation.utils.MappingUtil._
-import models.DateModel
-import play.api.data.Forms.mapping
-import play.api.data.Mapping
 
-object DateMapping {
+object Patterns {
 
-  val dateDay = "dateDay"
-  val dateMonth = "dateMonth"
-  val dateYear = "dateYear"
+  // ISO 8859-1 standard
+  // ASCII range {32 to 126} + {160 to 255} all values inclusive
+  val iso8859_1Regex = """^([\x20-\x7E\xA0-\xFF])*$"""
 
-  val dateMapping: Mapping[DateModel] = mapping(
-    dateDay -> oText.toText,
-    dateMonth -> oText.toText,
-    dateYear -> oText.toText
-  )(DateModel.apply)(DateModel.unapply)
+  val emailRegex = """(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"""
+
+  def validText(text: String): Boolean = text matches iso8859_1Regex
+
+  def validEmail(text: String): Boolean = text matches emailRegex
 
 }

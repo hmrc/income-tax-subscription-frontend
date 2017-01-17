@@ -76,33 +76,33 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     "return a redirect status (SEE_OTHER - 303)" in {
       setupMockKeystoreSaveFunctions()
 
-      val result = callShow
+      val goodRequest = callShow
 
-      status(result) must be(Status.SEE_OTHER)
+      status(goodRequest) must be(Status.SEE_OTHER)
 
-      await(result)
+      await(goodRequest)
       verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
     }
 
     s"redirect to '${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url}'" in {
       setupMockKeystoreSaveFunctions()
 
-      val result = callShow
+      val goodRequest = callShow
 
-      redirectLocation(result) mustBe Some(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
 
-      await(result)
+      await(goodRequest)
       verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
     }
   }
 
   "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
-    lazy val result = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest())
+    lazy val badRequest = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+    "return a bad request status (400)" in {
+      status(badRequest) must be(Status.BAD_REQUEST)
 
-      await(result)
+      await(badRequest)
       verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 0)
     }
   }
