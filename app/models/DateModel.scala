@@ -23,12 +23,21 @@ import play.api.libs.json.Json
 
 case class DateModel(day: String, month: String, year: String) {
   val outputFormat = DateTimeFormatter.ofPattern("d MMMM uuuu").withResolverStyle(ResolverStyle.STRICT)
+
   def toLocalDate: LocalDate = LocalDate.of(year.toInt, month.toInt, day.toInt)
+
   def toOutputDateFormat: String = toLocalDate.format(outputFormat)
+
+  def diffInMonth(that: DateModel): Int = {
+    import java.time.temporal.ChronoUnit
+    ChronoUnit.MONTHS.between(this, that).toInt
+  }
 }
 
 object DateModel {
   implicit def dateConvert(date: DateModel): LocalDate = date.toLocalDate
+
   implicit def dateConvert(date: LocalDate): DateModel = DateModel(date.getDayOfMonth.toString, date.getMonthValue.toString, date.getYear.toString)
+
   implicit val format = Json.format[DateModel]
 }

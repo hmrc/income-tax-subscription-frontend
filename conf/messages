@@ -1,12 +1,15 @@
 ## Base ##
 base.back                                                       = Back
 base.continue                                                   = Continue
+base.submit                                                     = Submit
 base.startDate                                                  = Start date
 base.endDate                                                    = End date
+base.exampleDate                                                = Example: 30 04 2017
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
 base.error_heading                                              = Error Summary
+base.change                                                     = Change
 
 ## Business Accounting Period page
 accounting_period.heading                                       = What is your accounting period?
@@ -47,6 +50,17 @@ technicalIssue.title                                            = Technical Issu
 technicalIssue.pageHeading                                      = There is a technical problem
 technicalIssue.paraOne                                          = This online service is experiencing difficulties.
 technicalIssue.paraTwo                                          = Please try again in 5 minutes.
+
+## Summary page ##
+summary.title                                                   = Check your answers
+summary.heading                                                 = Check your answers
+summary.accounting_period                                       = Business accounting period
+summary.accounting_period.month                                 = {0} month period
+summary.business_name                                           = Business name
+summary.income_type                                             = Income type
+summary.contact_email                                           = Contact email
+summary.terms                                                   = Terms and conditions
+summary.terms.agreed                                            = Read and agreed
 
 ## Confirmation page ##
 confirmation.title                                              = Submitted

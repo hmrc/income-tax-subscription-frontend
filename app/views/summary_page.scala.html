@@ -1,0 +1,82 @@
+@import models.SummaryModel
+@import helpers._
+@import uk.gov.hmrc.play.views.html.helpers.form
+
+@(summaryModel: SummaryModel, postAction: Call)(implicit request: Request[_], messages: Messages)
+@import SummaryIdConstants._
+
+@summaryRow(field: String, question: String, answer: String, changeUrl: String) = {
+    <hr>
+    <div class="tabular-data__entry" id="@field-row">
+        <div class="tabular-data__heading tabular-data__heading--label" id="@field-question">
+        @question
+        </div>
+        <div class="tabular-data__data-1" id="@field-answer">
+        @Html(answer)
+        </div>
+        <a class="tabular-data__data-2" href="@changeUrl" id="@field-edit">@Messages("base.change")</a>
+    </div>
+}
+
+@accountingPeriod(period: AccountingPeriodModel) = @{
+    val rowName = AccountingPeriodId
+    val rowQuestion = Messages("summary.accounting_period")
+    val periodInMonth = period.startDate.diffInMonth(period.endDate)
+    val rowAnswer = s"${period.startDate.toOutputDateFormat} to ${period.endDate.toOutputDateFormat}</p>${Messages("summary.accounting_period.month", periodInMonth)}"
+    val rowUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@businessName(name: BusinessNameModel) = @{
+    val rowName = BusinessNameId
+    val rowQuestion = Messages("summary.business_name")
+    val rowAnswer = name.businessName
+    val rowUrl = controllers.business.routes.BusinessNameController.showBusinessName().url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@incomeType(income: IncomeTypeModel) = @{
+    val rowName = IncomeTypeId
+    val rowQuestion = Messages("summary.income_type")
+    val rowAnswer = income.incomeType
+    val rowUrl = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@contactEmail(email: EmailModel) = @{
+    val rowName = ContactEmailId
+    val rowQuestion = Messages("summary.contact_email")
+    val rowAnswer = email.emailAddress
+    val rowUrl = controllers.routes.ContactEmailController.showContactEmail().url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@terms(terms: TermModel) = @{
+    if(terms.hasAcceptedTerms) {
+        val rowName = TermsId
+        val rowQuestion = Messages("summary.terms")
+        val rowAnswer = Messages("summary.terms.agreed")
+        val rowUrl = controllers.routes.TermsController.showTerms().url
+        summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+    } else Html("")
+}
+
+@views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None) {
+    <h1>@Messages("summary.heading")</h1>
+
+    <div class="form-group">
+        @summaryModel.accountingPeriod.map(accountingPeriod)
+        @summaryModel.businessName.map(businessName)
+        @summaryModel.incomeType.map(incomeType)
+        @summaryModel.contactEmail.map(contactEmail)
+        @summaryModel.terms.map(terms)
+        <hr>
+    </div>
+
+    <div class="form-group">
+    @form(action = postAction) {
+        @continueButton(Messages("base.submit"))
+    }
+    </div>
+
+}

@@ -17,13 +17,15 @@
         @dateHelper(
             field = accountingPeriodForm(startDate),
             label = Messages("base.startDate"),
-            parentForm = accountingPeriodForm
+            parentForm = accountingPeriodForm,
+            hintText = Messages("base.exampleDate")
         )
 
         @dateHelper(
             field = accountingPeriodForm(endDate),
             label = Messages("base.endDate"),
-            parentForm = accountingPeriodForm
+            parentForm = accountingPeriodForm,
+            hintText = Messages("base.exampleDate")
         )
 
         @continueButton()

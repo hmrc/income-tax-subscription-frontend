@@ -20,12 +20,14 @@ object MessageLookup {
 
   object Base {
     val continue = "Continue"
+    val submit = "Submit"
     val startDate = "Start date"
     val endDate = "End date"
     val day = "Day"
     val month = "Month"
     val year = "Year"
     val errorHeading = "Error Summary"
+    val chage = "Change"
   }
 
   object HelloWorld {
@@ -40,25 +42,37 @@ object MessageLookup {
 
   object ContactEmail {
     val title = "What is your contact email address?"
-    val heading = title
+    val heading: String = title
   }
 
   object BusinessName {
     val title = "What is your business name?"
-    val heading = title
+    val heading: String = title
     val hint = "This does not mean trading name"
   }
 
   object BusinessIncomeType {
     val title = "How do you receive your business income?"
-    val heading = title
+    val heading: String = title
     val cash = "Cash"
     val accruals = "Accruals"
   }
 
   object Terms {
     val title = "Terms"
-    val heading = title
+    val heading: String = title
+  }
+
+  object Summary {
+    val title = "Check your answers"
+    val heading: String = title
+    val accounting_period = "Business accounting period"
+    val accounting_period_month: Int => String = (month: Int) => s"$month month period"
+    val business_name = "Business name"
+    val income_type = "Income type"
+    val contact_email = "Contact email"
+    val terms = "Terms and conditions"
+    val terms_agreed = "Read and agreed"
   }
 
   object Timeout {
@@ -69,7 +83,7 @@ object MessageLookup {
 
   object Confirmation {
     val title = "Submitted"
-    val heading = title
+    val heading: String = title
     val submissionReferenceLabel = "Submission number:"
     val submissionDateLabel = "Date:"
     val emailConfirmation = "You'll receive an email confirming that your application has been received."

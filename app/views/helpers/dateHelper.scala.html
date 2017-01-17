@@ -3,8 +3,9 @@
 @import forms.submapping.DateMapping._
 
 @(field: Field,
-    label: Option[String] = None,
-    parentForm: Option[Form[_]] = None
+        label: Option[String] = None,
+        hintText: Option[String] = None,
+        parentForm: Option[Form[_]] = None
 )(implicit messages: Messages)
 
 @import forms.validation.ErrorMessageHelper._
@@ -21,6 +22,7 @@
     <fieldset id="@field.name">
         <legend>
             <span class="form-label-bold">@label</span>
+            @hintText.map(hint => Html(s"""<span class="form-hint">$hint</span>"""))
             @fieldErrorHelper(field, parentForm)
         </legend>
             <div class="form-date">
