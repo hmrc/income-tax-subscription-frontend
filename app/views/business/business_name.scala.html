@@ -7,6 +7,8 @@
 
 @views.html.templates.main_template(title = Messages("business.name.title"), bodyClasses = None) {
 
+    @summaryErrorHelper(businessNameForm)
+
     <h1>@Messages("business.name.heading")</h1>
 
     @form(action = postAction) {
@@ -14,7 +16,8 @@
         @inputHelper(
             field = businessNameForm(businessName),
             formHint = Messages("business.name.hint"),
-            maxLength = 40
+            maxLength = businessNameMaxLength,
+            parentForm = businessNameForm
         )
 
         @continueButton()

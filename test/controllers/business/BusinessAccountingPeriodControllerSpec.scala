@@ -77,33 +77,33 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     "return a redirect status (SEE_OTHER - 303)" in {
       setupMockKeystoreSaveFunctions()
 
-      val result = callShow
+      val goodRequest = callShow
 
-      status(result) must be(Status.SEE_OTHER)
+      status(goodRequest) must be(Status.SEE_OTHER)
 
-      await(result)
+      await(goodRequest)
       verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 1)
     }
 
     s"redirect to '${controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
       setupMockKeystoreSaveFunctions()
 
-      val result = callShow
+      val goodRequest = callShow
 
-      redirectLocation(result) mustBe Some(controllers.business.routes.BusinessNameController.showBusinessName().url)
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.showBusinessName().url)
 
-      await(result)
+      await(goodRequest)
       verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 1)
     }
   }
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user and invalid submission" should {
-    lazy val result = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest())
+    lazy val badrequest = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+    "return a bad request status (400)" in {
+      status(badrequest) must be(Status.BAD_REQUEST)
 
-      await(result)
+      await(badrequest)
       verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 0)
     }
   }

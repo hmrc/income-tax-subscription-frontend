@@ -8,13 +8,16 @@
 
 @views.html.templates.main_template(title = Messages("terms.title"), bodyClasses = None) {
 
+    @summaryErrorHelper(termsForm)
+
     <h1>@Messages("terms.heading")</h1>
 
     @form(action = postAction) {
 
         @checkboxHelper(
             field = termsForm(hasAcceptedTerms),
-            label = "Read and agree"
+            label = "Read and agree",
+            parentForm = termsForm
         )
 
         @continueButton()

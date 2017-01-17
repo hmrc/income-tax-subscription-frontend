@@ -18,8 +18,12 @@ package controllers
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import forms.TermForm
+import models.TermModel
 import play.api.Play.current
+import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.Html
 import services.KeystoreService
 
 import scala.concurrent.Future
@@ -35,23 +39,23 @@ trait TermsController extends BaseController {
 
   val keystoreService: KeystoreService
 
-  val showTerms = Authorised.async { implicit user =>
+  def view(termsForm: Form[TermModel])(implicit request: Request[_]): Html =
+    views.html.terms(
+      termsForm = termsForm,
+      postAction = controllers.routes.TermsController.submitTerms()
+    )
+
+  val showTerms: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchTerms() map {
-        terms =>
-          Ok(views.html.terms(
-            termsForm = TermForm.termForm.fill(terms),
-            postAction = controllers.routes.TermsController.submitTerms()
-          ))
+        terms => Ok(view(TermForm.termForm.fill(terms)))
       }
   }
 
-  val submitTerms = Authorised.async { implicit user =>
+  val submitTerms: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       TermForm.termForm.bindFromRequest.fold(
-        formWithErrors => {
-          Future.successful(NotImplemented)
-        },
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         terms => {
           keystoreService.saveTerms(terms) map (
             _ => Redirect(controllers.routes.SummaryController.showSummary()))

@@ -16,17 +16,46 @@
 
 package forms
 
+import forms.validation.ErrorMessageFactory
+import forms.validation.utils.ConstraintUtil._
+import forms.validation.utils.MappingUtil._
+import forms.validation.utils.Patterns
 import models.BusinessNameModel
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.{Constraint, Valid}
 
 object BusinessNameForm {
 
   val businessName = "businessName"
 
+  //TODO refactor and confirm
+  val businessNameMaxLength = 140
+
+  val nameEmpty: Constraint[String] = constraint[String](
+    name => {
+      lazy val emptyName = ErrorMessageFactory.error("error.business_name.empty")
+      if (name.isEmpty) emptyName else Valid
+    }
+  )
+
+  val nameTooLong: Constraint[String] = constraint[String](
+    name => {
+      lazy val tooLong = ErrorMessageFactory.error("error.business_name.maxLength")
+      if (name.trim.length > businessNameMaxLength) tooLong else Valid
+    }
+  )
+
+  val nameInvalid: Constraint[String] = constraint[String](
+    name => {
+      lazy val invalidName = ErrorMessageFactory.error("error.business_name.invalid")
+      if (Patterns.validText(name.trim)) Valid else invalidName
+    }
+  )
+
   val businessNameForm = Form(
     mapping(
-      businessName -> text
+      businessName -> oText.toText.verifying(nameEmpty andThen nameTooLong andThen nameInvalid)
     )(BusinessNameModel.apply)(BusinessNameModel.unapply)
   )
 

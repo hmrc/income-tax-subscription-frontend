@@ -84,31 +84,31 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
     "return a redirect status (SEE_OTHER - 303)" in {
       setupMockKeystoreSaveFunctions()
 
-      val result = callShow
-      status(result) must be(Status.SEE_OTHER)
+      val goodRequest = callShow
+      status(goodRequest) must be(Status.SEE_OTHER)
 
-      await(result)
+      await(goodRequest)
       verifyKeystore(fetchContactEmail = 0, saveContactEmail = 1)
     }
 
     s"redirect to '${controllers.routes.TermsController.showTerms().url}'" in {
       setupMockKeystoreSaveFunctions()
 
-      val result = callShow
-      redirectLocation(result) mustBe Some(controllers.routes.TermsController.showTerms().url)
+      val goodRequest = callShow
+      redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
 
-      await(result)
+      await(goodRequest)
       verifyKeystore(fetchContactEmail = 0, saveContactEmail = 1)
     }
   }
 
   "Calling the submitContactEmail action of the ContactEmailController with an authorised user and invalid submission" should {
-    lazy val result = TestContactEmailController.submitContactEmail(authenticatedFakeRequest())
+    lazy val badRequest = TestContactEmailController.submitContactEmail(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+    "return a bad request status (400)" in {
+      status(badRequest) must be(Status.BAD_REQUEST)
 
-      await(result)
+      await(badRequest)
       verifyKeystore(fetchContactEmail = 0, saveContactEmail = 0)
     }
   }

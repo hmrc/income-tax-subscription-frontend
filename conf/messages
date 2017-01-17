@@ -82,3 +82,24 @@ confirmation.guidanceSection.link3                              = Further readin
 confirmation.giveUsFeedback.heading                             = Give us feedback
 confirmation.giveUsFeedback.link1                               = What did you think of this service?
 confirmation.giveUsFeedback.feedbackDuration                    = (takes 30 seconds)
+
+## Errors ##
+error.date.empty                                                = Please enter a date
+error.date.invalid                                              = Please enter a valid date
+error.end_date_violation                                        = The end date must be after the start date
+
+error.business_accounting_period.minStartDate                   = You can''t enter a start date that''s before 1 April 2017
+error.business_accounting_period.maxEndDate                     = The end date must be within {1} months of the start date, you can''t enter a date that''s after {0}
+
+error.business_name.empty                                       = Please enter a business name
+error.business_name.maxLength                                   = The business name is too long
+error.business_name.invalid                                     = The business name contains invalid characters
+
+error.contact_email.empty                                       = Please enter a contact email
+error.contact_email.maxLength                                   = The email is too long
+error.contact_email.invalid                                     = The email is invalid
+
+error.income_type.empty                                         = Please select an income type
+error.income_type.invalid                                       = Please select an income type
+
+error.terms.empty                                               = Please accept the terms and conditions

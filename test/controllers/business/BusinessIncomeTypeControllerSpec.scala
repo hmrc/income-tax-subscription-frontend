@@ -71,38 +71,38 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
   "Calling the submitBusinessIncomeType action of the BusinessIncomeType with an authorised user and valid submission" should {
 
     def callShow = TestBusinessIncomeTypeController.submitBusinessIncomeType(authenticatedFakeRequest()
-      .post(IncomeTypeForm.incomeTypeForm, IncomeTypeModel("Cash")))
+      .post(IncomeTypeForm.incomeTypeForm, IncomeTypeModel(IncomeTypeForm.option_cash)))
 
     "return a redirect status (SEE_OTHER - 303)" in {
       setupMockKeystoreSaveFunctions()
 
-      val result = callShow
+      val goodRequest = callShow
 
-      status(result) must be(Status.SEE_OTHER)
+      status(goodRequest) must be(Status.SEE_OTHER)
 
-      await(result)
+      await(goodRequest)
       verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
     }
 
     s"redirect to '${controllers.routes.ContactEmailController.showContactEmail().url}'" in {
       setupMockKeystoreSaveFunctions()
 
-      val result = callShow
+      val goodRequest = callShow
 
-      redirectLocation(result) mustBe Some(controllers.routes.ContactEmailController.showContactEmail().url)
+      redirectLocation(goodRequest) mustBe Some(controllers.routes.ContactEmailController.showContactEmail().url)
 
-      await(result)
+      await(goodRequest)
       verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
     }
   }
 
   "Calling the submitBusinessIncomeType action of the BusinessIncomeType with an authorised user and invalid submission" should {
-    lazy val result = TestBusinessIncomeTypeController.submitBusinessIncomeType(authenticatedFakeRequest())
+    lazy val badRequest = TestBusinessIncomeTypeController.submitBusinessIncomeType(authenticatedFakeRequest())
 
-    "return unimplemented (501)" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+    "return a bad request status (400)" in {
+      status(badRequest) must be(Status.BAD_REQUEST)
 
-      await(result)
+      await(badRequest)
       verifyKeystore(fetchIncomeType = 0, saveIncomeType = 0)
     }
   }

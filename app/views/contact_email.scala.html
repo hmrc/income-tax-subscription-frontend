@@ -7,13 +7,16 @@
 
 @views.html.templates.main_template(title = Messages("contact_email.title"), bodyClasses = None) {
 
+    @summaryErrorHelper(contactEmailForm)
+
     <h1>@Messages("contact_email.heading")</h1>
 
     @form(action = postAction) {
 
         @inputHelper(
             field = contactEmailForm(emailAddress),
-            maxLength = 120
+            maxLength = emailMaxLength,
+            parentForm = contactEmailForm
         )
 
         @continueButton()

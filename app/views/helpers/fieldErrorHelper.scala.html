@@ -1,0 +1,17 @@
+@import play.api.data.Form
+@import play.api.data.Field
+
+@(field: Field, parentForm: Option[Form[_]] = None)(implicit messages: Messages)
+
+    @import forms.validation.ErrorMessageHelper._
+
+    @error = @{
+        getFieldError(field, parentForm)
+    }
+
+    @error match {
+        case Some(err) => {
+            <span class="error-notification" role="tooltip" id="error-message-@field.name">@err.toText</span>
+        }
+        case _ => {}
+    }
