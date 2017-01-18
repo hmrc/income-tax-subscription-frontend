@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package util
+package utils
 
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar

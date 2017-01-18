@@ -20,7 +20,7 @@ import assets.MessageLookup
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import util.UnitTestTrait
+import utils.UnitTestTrait
 
 class SessionTimeoutViewSpec extends UnitTestTrait {
 

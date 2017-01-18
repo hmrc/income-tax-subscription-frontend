@@ -22,10 +22,10 @@ import forms.EmailForm
 import models.EmailModel
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers._
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent}
+import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 
 class ContactEmailControllerSpec extends ControllerBaseSpec

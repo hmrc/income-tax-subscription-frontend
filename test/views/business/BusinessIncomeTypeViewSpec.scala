@@ -16,7 +16,6 @@
 
 package views.business
 
-import assets.MessageLookup
 import assets.MessageLookup.{BusinessIncomeType => messages}
 import forms.IncomeTypeForm
 import org.jsoup.Jsoup

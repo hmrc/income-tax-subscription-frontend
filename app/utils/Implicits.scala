@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package views.html
+package utils
 
-import utils.Implicits
 
-package object helpers extends Implicits
+trait Implicits {
+  implicit def optionWrapperUtil[T, S <: T](data: S): Option[T] = Some(data)
+}
+
+object Implicits extends Implicits
