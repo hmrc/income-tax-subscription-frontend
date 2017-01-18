@@ -22,7 +22,7 @@ import org.scalatest.Matchers._
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.HttpResponse
-import util.UnitTestTrait
+import utils.{TestModels, UnitTestTrait}
 
 class KeystoreServiceSpec extends UnitTestTrait
   with MockKeystoreService {
@@ -55,7 +55,7 @@ class KeystoreServiceSpec extends UnitTestTrait
     }
 
     "configure and verify fetch all as specified" in {
-      val testFetchAll = CacheMap("", Map())
+      val testFetchAll = TestModels.emptyCacheMap
       setupMockKeystore(fetchAll = testFetchAll)
       for {
         fetched <- TestKeystore.keystoreService.fetchAll()

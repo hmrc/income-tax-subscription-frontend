@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package util
+package utils
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -25,13 +25,11 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
 
-trait UnitTestTrait extends PlaySpec with OneServerPerSuite {
+trait UnitTestTrait extends PlaySpec with OneServerPerSuite with Implicits {
 
   implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
 
   implicit val hc = HeaderCarrier()
-
-  implicit def optionWrapperUtil[T, S <: T](data: S): Option[T] = Some(data)
 
   implicit def futureWrapperUtil[T](value: T): Future[T] = Future.successful(value)
 

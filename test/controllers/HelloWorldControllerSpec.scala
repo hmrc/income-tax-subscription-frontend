@@ -21,11 +21,11 @@ import akka.stream._
 import assets.MessageLookup
 import auth._
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import org.jsoup.Jsoup
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 
 class HelloWorldControllerSpec extends PlaySpec with OneAppPerTest {
 

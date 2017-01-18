@@ -24,7 +24,7 @@ import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import util.UnitTestTrait
+import utils.UnitTestTrait
 import views.html.helpers.SummaryIdConstants._
 
 class SummaryPageViewSpec extends UnitTestTrait {

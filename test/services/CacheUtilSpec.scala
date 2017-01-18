@@ -18,13 +18,12 @@ package services
 
 import models._
 import org.scalatest.Matchers._
-import uk.gov.hmrc.http.cache.client.CacheMap
-import util.UnitTestTrait
+import utils.UnitTestTrait
 
 class CacheUtilSpec extends UnitTestTrait {
 
   import CacheUtil._
-  import CacheUtilSpec._
+  import utils.TestModels._
 
   "CacheUtil" should {
 
@@ -60,26 +59,3 @@ class CacheUtilSpec extends UnitTestTrait {
   }
 }
 
-object CacheUtilSpec {
-
-  import CacheConstants._
-
-  val testAccountingPeriod = AccountingPeriodModel(DateModel("01", "04", "2018"), DateModel("01", "04", "2018"))
-  val testBusinessName = BusinessNameModel("test business")
-  val testContactEmail = EmailModel("test@example.com")
-  val testIncomeType = IncomeTypeModel("Cash")
-  val testTerms = TermModel(true)
-
-  val emptyCacheMap = CacheMap("", Map())
-
-  val testCacheMap = CacheMap(
-    "", Map(
-      AccountingPeriod -> AccountingPeriodModel.format.writes(testAccountingPeriod),
-      BusinessName -> BusinessNameModel.format.writes(testBusinessName),
-      ContactEmail -> EmailModel.format.writes(testContactEmail),
-      IncomeType -> IncomeTypeModel.format.writes(testIncomeType),
-      Terms -> TermModel.format.writes(testTerms)
-    )
-  )
-
-}

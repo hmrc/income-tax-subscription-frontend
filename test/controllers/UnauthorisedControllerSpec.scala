@@ -19,8 +19,8 @@ package controllers
 import connectors.IdentityVerificationConnector
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import testHelpers.MockIdentityVerificationConnector
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class UnauthorisedControllerSpec extends UnitSpec with WithFakeApplication {
 

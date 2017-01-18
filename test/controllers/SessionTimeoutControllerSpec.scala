@@ -19,11 +19,11 @@ package controllers
 import akka.actor._
 import akka.stream._
 import assets.MessageLookup
+import org.jsoup.Jsoup
+import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.http.Status
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 
 class SessionTimeoutControllerSpec extends PlaySpec with OneAppPerTest {
 

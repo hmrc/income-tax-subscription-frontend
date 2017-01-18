@@ -17,11 +17,11 @@
 package views
 
 import assets.MessageLookup.{ContactEmail => messages}
+import forms.EmailForm
 import org.jsoup.Jsoup
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import play.api.test.FakeRequest
 import play.api.i18n.Messages.Implicits.applicationMessages
-import forms.EmailForm
+import play.api.test.FakeRequest
 
 class ContactEmailViewSpec extends PlaySpec with OneAppPerTest {
 

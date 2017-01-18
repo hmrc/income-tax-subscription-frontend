@@ -21,8 +21,8 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.CacheUtilSpec
 import services.mocks.MockKeystoreService
+import utils.TestModels
 
 class SummaryControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -57,7 +57,7 @@ class SummaryControllerSpec extends ControllerBaseSpec
     lazy val result = TestSummaryController.showSummary(authenticatedFakeRequest())
 
     "return ok (200)" in {
-      setupMockKeystore(fetchAll = CacheUtilSpec.testCacheMap)
+      setupMockKeystore(fetchAll = TestModels.testCacheMap)
 
       status(result) must be(Status.OK)
     }
