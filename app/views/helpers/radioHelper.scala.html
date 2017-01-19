@@ -1,8 +1,9 @@
 @import play.api.data.Field
+@import views.html.helpers.RadioOption
 
 @(field: Field,
     legend: String,
-    options: Seq[String],
+    options: Seq[RadioOption],
     parentForm: Option[Form[_]] = None,
     inline: Boolean = false,
     fieldSetClass: Option[String] = None
@@ -38,9 +39,9 @@
         <legend class="visuallyhidden" id="@field.name">@legend</legend>
         @fieldErrorHelper(field, parentForm)
         @for(option <- options) {
-            <label class="block-label selection-button-radio" for="@{field.name}-@option">
-                <input id="@{field.name}-@option" type="radio" name="@{field.name}" value="@option" @isSelected(option)>
-                @option
+            <label class="block-label selection-button-radio" for="@{field.name}-@option.optionName">
+                <input id="@{field.name}-@option.optionName" type="radio" name="@field.name" value="@option.optionName" @isSelected(option.optionName)>
+                @option.message
             </label>
         }
     </fieldset>

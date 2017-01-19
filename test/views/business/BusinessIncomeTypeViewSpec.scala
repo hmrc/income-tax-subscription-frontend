@@ -49,18 +49,24 @@ class BusinessIncomeTypeViewSpec extends PlaySpec with OneAppPerTest {
           document.select("fieldset legend").text() mustBe messages.heading
         }
 
-        "has a radio option for 'incomeType-Cash'" in {
-          val cashRadio = document.select("#incomeType-Cash")
+        s"has a radio option for 'incomeType-${IncomeTypeForm.option_cash}'" in {
+          val cashRadio = document.select(s"#incomeType-${IncomeTypeForm.option_cash}")
           cashRadio.attr("type") mustBe "radio"
           cashRadio.attr("name") mustBe "incomeType"
-          cashRadio.attr("value") mustBe messages.cash
+          cashRadio.attr("value") mustBe IncomeTypeForm.option_cash
+          val label = document.getElementsByAttributeValue("for", s"incomeType-${IncomeTypeForm.option_cash}")
+          label.size() mustBe 1
+          label.get(0).text() mustBe messages.cash
         }
 
-        "has a radio option for 'incomeType-Accruals'" in {
-          val cashRadio = document.select("#incomeType-Accruals")
+        s"has a radio option for 'incomeType-${IncomeTypeForm.option_accruals}'" in {
+          val cashRadio = document.select(s"#incomeType-${IncomeTypeForm.option_accruals}")
           cashRadio.attr("type") mustBe "radio"
           cashRadio.attr("name") mustBe "incomeType"
-          cashRadio.attr("value") mustBe messages.accruals
+          cashRadio.attr("value") mustBe IncomeTypeForm.option_accruals
+          val label = document.getElementsByAttributeValue("for", s"incomeType-${IncomeTypeForm.option_accruals}")
+          label.size() mustBe 1
+          label.get(0).text() mustBe messages.accruals
         }
       }
 

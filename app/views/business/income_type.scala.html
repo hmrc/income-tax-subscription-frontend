@@ -7,7 +7,9 @@
 
 @(incomeTypeForm: Form[IncomeTypeModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
-@question = @{Messages("business.income_type.heading")}
+@question = @{
+    Messages("business.income_type.heading")
+}
 
 @views.html.templates.main_template(title = Messages("business.income_type.title"), bodyClasses = None) {
 
@@ -20,7 +22,10 @@
         @radioHelper(
             field = incomeTypeForm(IncomeTypeForm.incomeType),
             legend = question,
-            options = Seq("Cash", "Accruals"),
+            options = Seq(
+                RadioOption(IncomeTypeForm.option_cash, Messages("business.income_type.cash")),
+                RadioOption(IncomeTypeForm.option_accruals, Messages("business.income_type.accruals"))
+            ),
             parentForm = incomeTypeForm
         )
 
