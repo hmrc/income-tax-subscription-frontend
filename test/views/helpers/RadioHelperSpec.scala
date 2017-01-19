@@ -17,16 +17,17 @@
 package views.helpers
 
 import forms.validation.testutils.DataMap
+import forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits._
 import utils.UnitTestTrait
-import forms.validation.utils.MappingUtil._
+import views.html.helpers.RadioOption
 
 class RadioHelperSpec extends UnitTestTrait {
 
-  private def radioHelper(field: Field, legend: String, options: Seq[String])
+  private def radioHelper(field: Field, legend: String, options: Seq[RadioOption])
   = views.html.helpers.radioHelper(field, legend, options)(applicationMessages)
 
   case class TestData(radio: String)
@@ -39,7 +40,9 @@ class RadioHelperSpec extends UnitTestTrait {
   )
 
   val testLegend = "my test legend text"
-  val testOptions = Seq("Yes", "No")
+  val yesOption = RadioOption("yes", "Yes - you can")
+  val noOption = RadioOption("no", "No - you cannot")
+  val testOptions: Seq[RadioOption] = Seq(yesOption, noOption)
 
   "RadioHelper" should {
     "populate the relevent content in the correct positions" in {
@@ -50,26 +53,30 @@ class RadioHelperSpec extends UnitTestTrait {
       doc.getElementsByTag("legend").text() shouldBe testLegend
       val inputs = doc.getElementsByTag("input")
       inputs.size() shouldBe 2
-      inputs.get(0).attr("value") shouldBe "Yes"
+      inputs.get(0).attr("name") shouldBe radioName
+      inputs.get(0).attr("value") shouldBe yesOption.optionName
+      inputs.get(0).attr("id") shouldBe s"$radioName-${yesOption.optionName}"
       inputs.get(0).attr("type") shouldBe "radio"
-      inputs.get(1).attr("value") shouldBe "No"
+      inputs.get(1).attr("name") shouldBe radioName
+      inputs.get(1).attr("value") shouldBe noOption.optionName
+      inputs.get(1).attr("id") shouldBe s"$radioName-${noOption.optionName}"
       inputs.get(1).attr("type") shouldBe "radio"
 
       val lablesForInputs = doc.getElementsByTag("label")
       lablesForInputs.size() shouldBe 2
-      lablesForInputs.get(0).text() shouldBe "Yes"
-      lablesForInputs.get(1).text() shouldBe "No"
+      lablesForInputs.get(0).text() shouldBe yesOption.message
+      lablesForInputs.get(1).text() shouldBe noOption.message
     }
 
     "if the form is populated, then select the correct radio button" in {
-      val testField = testForm.fill(TestData("No"))(radioName)
+      val testField = testForm.fill(TestData("no"))(radioName)
       val doc = radioHelper(testField, testLegend, testOptions).doc
 
       val inputs = doc.getElementsByTag("input")
       inputs.size() shouldBe 2
-      inputs.get(0).attr("value") shouldBe "Yes"
+      inputs.get(0).attr("value") shouldBe yesOption.optionName
       inputs.get(0).attr("checked") shouldBe ""
-      inputs.get(1).attr("value") shouldBe "No"
+      inputs.get(1).attr("value") shouldBe noOption.optionName
       inputs.get(1).attr("checked") shouldBe "checked"
     }
 

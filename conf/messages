@@ -19,6 +19,8 @@ accounting_period.title                                         = What is your a
 ## Business Income page
 business.income_type.title                                      = How do you receive your business income?
 business.income_type.heading                                    = How do you receive your business income?
+business.income_type.cash                                       = Cash
+business.income_type.accruals                                   = Accruals
 
 ## Business Name
 business.name.title                                             = What is your business name?
