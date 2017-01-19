@@ -73,7 +73,7 @@ class RadioHelperSpec extends UnitTestTrait {
       productElementThrown.getMessage shouldBe "The parameter for RadioName.productElement cannot exceed 1. {2}"
 
       val illegalArgumentExceptionThrown = intercept[IllegalArgumentException] {
-        RadioOption("a a","b")
+        RadioOption("a a", "b")
       }
       illegalArgumentExceptionThrown.getMessage shouldBe "RadioName: the optionName parameter must not contain any spaces {a a}"
     }

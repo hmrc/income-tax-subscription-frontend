@@ -32,34 +32,23 @@ object EligibleController extends EligibleController {
   override lazy val applicationConfig = FrontendAppConfig
   override lazy val authConnector = FrontendAuthConnector
   override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
-  override val keystoreService = KeystoreService
 }
 
 trait EligibleController extends BaseController {
 
-  val keystoreService: KeystoreService
 
-  def view(termsForm: Form[TermModel])(implicit request: Request[_]): Html =
-    views.html.terms(
-      termsForm = termsForm,
+  def view()(implicit request: Request[_]): Html =
+    views.html.eligible(
       postAction = controllers.routes.EligibleController.submitEligible()
     )
 
   val showEligible: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      keystoreService.fetchTerms() map {
-        terms => Ok(view(TermForm.termForm.fill(terms)))
-      }
+      Future.successful(Ok(view()))
   }
 
   val submitEligible: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      TermForm.termForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
-        terms => {
-          keystoreService.saveTerms(terms) map (
-            _ => Redirect(controllers.routes.SummaryController.showSummary()))
-        }
-      )
+      Future.successful(NotImplemented)
   }
 }

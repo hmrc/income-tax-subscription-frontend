@@ -38,12 +38,14 @@ class EligibleViewSpec extends UnitTestTrait {
 
     s"have the heading (H1) '${MessageLookup.Eligible.heading}'" in {
       document.getElementsByTag("H1").text() must be(MessageLookup.Eligible.heading)
+    }
 
     s"have the paragraph 1 (P) '${MessageLookup.Eligible.line_1}'" in {
-      document.getElementsByTag("P").text() must be(MessageLookup.Eligible.line_1)
+      document.getElementsByTag("P").text() must include(MessageLookup.Eligible.line_1)
+    }
 
     s"have the paragraph 2 (P) '${MessageLookup.Eligible.line_2}'" in {
-      document.getElementsByTag("P").text() must be(MessageLookup.Eligible.line_2)
+      document.getElementsByTag("P").text() must include(MessageLookup.Eligible.line_2)
     }
 
     "have a form" which {
