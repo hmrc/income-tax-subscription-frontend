@@ -17,6 +17,39 @@
 package views.html.helpers
 
 
-case class RadioOption(optionName: String, message: String) {
+class RadioOption(val optionName: String, val message: String) extends Product with Serializable {
+
   override def toString: String = message
+
+  def copy(optionName: String = this.optionName, message: String = this.message) = RadioOption(optionName, message)
+
+  override def equals(obj: scala.Any): Boolean =
+    obj match {
+      case that: RadioOption if that.optionName.equals(this.optionName) && that.message.equals(this.message) => true
+      case _ => false
+    }
+
+  override def hashCode(): Int = {
+    val prime = 37
+    (prime + optionName.hashCode) * prime + message.hashCode
+  }
+
+  override def canEqual(that: Any): Boolean = that.isInstanceOf[RadioOption]
+
+  override def productArity: Int = 2
+
+  override def productElement(n: Int): Any = n match {
+    case 0 => optionName
+    case 1 => message
+    case _ => throw new IndexOutOfBoundsException(n.toString)
+  }
+}
+
+object RadioOption {
+  def apply(optionName: String, message: String) = {
+    if (optionName.contains(" ")) throw new IllegalArgumentException(s"RadioName: the optionName parameter must not contain any spaces {$optionName}")
+    new RadioOption(optionName, message)
+  }
+
+  def unapply(obj: RadioOption): Option[(String, String)] = Some((obj.optionName, obj.message))
 }

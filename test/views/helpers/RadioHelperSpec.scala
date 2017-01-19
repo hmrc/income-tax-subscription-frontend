@@ -69,7 +69,7 @@ class RadioHelperSpec extends UnitTestTrait {
     }
 
     "if the form is populated, then select the correct radio button" in {
-      val testField = testForm.fill(TestData("no"))(radioName)
+      val testField = testForm.fill(TestData(noOption.optionName))(radioName)
       val doc = radioHelper(testField, testLegend, testOptions).doc
 
       val inputs = doc.getElementsByTag("input")
