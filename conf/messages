@@ -106,3 +106,9 @@ error.income_type.empty                                         = Please select 
 error.income_type.invalid                                       = Please select an income type
 
 error.terms.empty                                               = Please accept the terms and conditions
+
+## Eligibility ##
+eligible.title                                                  = You can send digital updates
+eligible.heading                                                = You can send digital updates
+eligible.line_1                                                 = Your answers mean you should be able to start sending HMRC digital updates after you sign up.
+eligible.line_2                                                 = You just need to enter a few more details.

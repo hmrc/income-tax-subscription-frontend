@@ -155,4 +155,12 @@ object MessageLookup {
 
   }
 
+  object Eligible {
+
+    val title = "You can send digital updates."
+    val heading = "You can send digital updates."
+    val line_1 = "Your answers mean you should be able to start sending HMRC digital updates after you sign up."
+    val line_2 = "You just need to enter a few more details."
+  }
+
 }
