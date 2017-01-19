@@ -41,7 +41,7 @@ class RadioOption(val optionName: String, val message: String) extends Product w
   override def productElement(n: Int): Any = n match {
     case 0 => optionName
     case 1 => message
-    case _ => throw new IndexOutOfBoundsException(n.toString)
+    case _ => throw new IndexOutOfBoundsException(s"The parameter for RadioName.productElement cannot exceed 1. {$n}")
   }
 }
 
