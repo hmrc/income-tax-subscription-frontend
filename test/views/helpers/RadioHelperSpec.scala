@@ -48,15 +48,22 @@ class RadioHelperSpec extends UnitTestTrait {
     "have the correct implementations" in {
       val op1 = RadioOption("a", "msg")
       val op2 = op1.copy()
+      val op3 = RadioOption("b", "msg")
+
       op1.eq(op2) shouldBe false
       op1.canEqual(op2) shouldBe true
       op1.equals(op2) shouldBe true
       op1.hashCode == op2.hashCode shouldBe true
 
+      op1.canEqual(op3) shouldBe true
+      op1.equals(op3) shouldBe false
+      op1.hashCode == op3.hashCode shouldBe false
+
       op1 match {
         case RadioOption("a", "msg") => true shouldBe true
         case _ => fail()
       }
+
       op1.productArity shouldBe 2
       op1.productElement(0) shouldBe "a"
       op1.productElement(1) shouldBe "msg"
