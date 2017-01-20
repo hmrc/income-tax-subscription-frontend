@@ -5,14 +5,16 @@
 
 @views.html.templates.main_template(title = Messages("eligible.title"), bodyClasses = None) {
 
-  <h1>@Messages("eligible.heading")</h1>
+    <h1 class="heading-xlarge">@Messages("eligible.heading")</h1>
 
-  <p>@Messages("eligible.line_1")</p>
-  <p>@Messages("eligible.line_2")</p>
+    <div class="form-group">
+        <p>@Messages("eligible.line_1")</p>
+        <p>@Messages("eligible.line_2")</p>
+    </div>
 
-  @form(action = postAction) {
+    @form(action = postAction) {
 
-    @continueButton()
+        @continueButton()
 
-  }
+    }
 }
