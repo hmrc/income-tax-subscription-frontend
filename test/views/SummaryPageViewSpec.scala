@@ -32,7 +32,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
 
   val testAccountingPeriod = AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))
   val testBusinessName = BusinessNameModel("test business name")
-  val testIncomeType = TestModels.testIncomeType
+  val testIncomeType: IncomeTypeModel = TestModels.testIncomeType
   val testContactEmail = EmailModel("test@example.com")
   val testTerms = TermModel(true)
   val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
@@ -129,7 +129,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
     "display the correct info for the income source" in {
       val sectionId = IncomeSourceId
       val expectedQuestion = messages.income_source
-      val expectedAnswer = MessageLookup.IncomeSource.both
+      val expectedAnswer = MessageLookup.Summary.IncomeSource.both
       val expectedEditLink = controllers.routes.IncomeSourceController.showIncomeSource().url
 
       sectionTest(
@@ -157,7 +157,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
     "display the correct info for the income type" in {
       val sectionId = IncomeTypeId
       val expectedQuestion = messages.income_type
-      val expectedAnswer = MessageLookup.BusinessIncomeType.cash
+      val expectedAnswer = messages.IncomeType.cash
       val expectedEditLink = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
 
       sectionTest(

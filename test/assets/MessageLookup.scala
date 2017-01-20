@@ -87,10 +87,23 @@ object MessageLookup {
     val title = "Check your answers"
     val heading: String = title
     val income_source = "Income type"
+
+    object IncomeSource {
+      val business = "Business"
+      val property = "Property"
+      val both = "Business and property"
+    }
+
     val accounting_period = "Business accounting period"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "Business name"
-    val income_type = "Income type"
+    val income_type = "Accounting type"
+
+    object IncomeType {
+      val cash = "Cash basis"
+      val accruals = "Accruals basis"
+    }
+
     val contact_email = "Contact email"
     val terms = "Terms and conditions"
     val terms_agreed = "Read and agreed"
