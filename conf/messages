@@ -12,6 +12,13 @@ base.error_heading                                              = Error Summary
 base.change                                                     = Change
 base.where_can_i_get_this_information                           = Where can I get this information
 
+## Income source page
+income_source.title                                             = Where does your income come from?
+income_source.heading                                           = Where does your income come from?
+income_source.business                                          = My business
+income_source.property                                          = Property (for example, renting out a property)
+income_source.both                                              = Both business and property
+
 ## Business Accounting Period page
 accounting_period.heading                                       = What is your accounting period?
 accounting_period.title                                         = What is your accounting period?
@@ -104,5 +111,8 @@ error.contact_email.invalid                                     = The email is i
 
 error.income_type.empty                                         = Please select an income type
 error.income_type.invalid                                       = Please select an income type
+
+error.income_source.empty                                       = Please select an income source
+error.income_source.invalid                                     = Please select an income source
 
 error.terms.empty                                               = Please accept the terms and conditions

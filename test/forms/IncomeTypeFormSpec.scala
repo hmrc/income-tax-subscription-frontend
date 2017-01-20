@@ -52,19 +52,19 @@ class IncomeTypeFormSpec extends PlaySpec with OneAppPerTest {
       val emptyTest0 = incomeTypeForm.bind(emptyInput0)
       emptyTest0 assert incomeType hasExpectedErrors empty
 
-      val emptyInput = DataMap.inType("")
+      val emptyInput = DataMap.incomeType("")
       val emptyTest = incomeTypeForm.bind(emptyInput)
       emptyTest assert incomeType hasExpectedErrors empty
 
-      val invalidInput = DataMap.inType("α")
+      val invalidInput = DataMap.incomeType("α")
       val invalidTest = incomeTypeForm.bind(invalidInput)
       invalidTest assert incomeType hasExpectedErrors invalid
     }
 
     "The following submission should be valid" in {
-      val testCash = DataMap.inType(option_cash)
+      val testCash = DataMap.incomeType(option_cash)
       incomeTypeForm isValidFor testCash
-      val testAccruals = DataMap.inType(option_accruals)
+      val testAccruals = DataMap.incomeType(option_accruals)
       incomeTypeForm isValidFor testAccruals
     }
   }

@@ -36,6 +36,14 @@ object MessageLookup {
     val heading = "Hello from income-tax-subscription-frontend !"
   }
 
+  object IncomeSource {
+    val title = "Where does your income come from?"
+    val heading: String = title
+    val business = "My business"
+    val property = "Property (for example, renting out a property)"
+    val both = "Both business and property"
+  }
+
   object AccountingPeriod {
     val title = "What is your accounting period?"
     val heading = "What is your accounting period?"
@@ -147,6 +155,11 @@ object MessageLookup {
     object IncomeType {
       val empty = "Please select an income type"
       val invalid = "Please select an income type"
+    }
+
+    object IncomeSource {
+      val empty = "Please select an income source"
+      val invalid = "Please select an income source"
     }
 
     object Terms {

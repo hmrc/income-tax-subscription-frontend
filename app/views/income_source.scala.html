@@ -1,0 +1,37 @@
+@import models.IncomeSourceModel
+@import play.api.data.Form
+@import forms.IncomeSourceForm
+@import helpers.radioHelper
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import helpers._
+
+@(incomeSourceForm: Form[IncomeSourceModel], postAction: Call)(implicit request: Request[_], messages: Messages)
+
+@question = @{
+    Messages("income_source.heading")
+}
+
+@views.html.templates.main_template(title = Messages("income_source.title"), bodyClasses = None) {
+
+    @summaryErrorHelper(incomeSourceForm)
+
+    <h1>@question</h1>
+
+    @form(action = postAction) {
+
+        @radioHelper(
+            field = incomeSourceForm(IncomeSourceForm.incomeSource),
+            legend = question,
+            options = Seq(
+                RadioOption(IncomeSourceForm.option_business, Messages("income_source.business")),
+                RadioOption(IncomeSourceForm.option_property, Messages("income_source.property")),
+                RadioOption(IncomeSourceForm.option_both, Messages("income_source.both"))
+            ),
+            parentForm = incomeSourceForm
+        )
+
+        @continueButton()
+
+    }
+
+}

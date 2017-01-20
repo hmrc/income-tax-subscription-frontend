@@ -42,6 +42,12 @@ trait KeystoreService {
 
   import CacheConstants._
 
+  def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FO[IncomeSourceModel] =
+    fetch[IncomeSourceModel](IncomeSource)
+
+  def saveIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
+    save[IncomeSourceModel](IncomeSource, incomeSource)
+
   def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =
     fetch[BusinessNameModel](BusinessName)
 

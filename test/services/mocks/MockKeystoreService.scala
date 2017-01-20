@@ -56,6 +56,7 @@ trait MockKeystoreService extends MockTrait {
     when(MockKeystoreService.session.cache(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
 
   protected final def setupMockKeystore(
+                                         fetchIncomeSource: MFO[IncomeSourceModel] = DoNotConfigure,
                                          fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
                                          fetchAccountingPeriod: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchContactEmail: MFO[EmailModel] = DoNotConfigure,
@@ -64,6 +65,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
+    mockFetchFromKeyStore[IncomeSourceModel](IncomeSource, fetchIncomeSource)
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriod, fetchAccountingPeriod)
     mockFetchFromKeyStore[EmailModel](ContactEmail, fetchContactEmail)
@@ -77,6 +79,8 @@ trait MockKeystoreService extends MockTrait {
   }
 
   protected final def verifyKeystore(
+                                      fetchIncomeSource: Option[Int] = None,
+                                      saveIncomeSource: Option[Int] = None,
                                       fetchBusinessName: Option[Int] = None,
                                       saveBusinessName: Option[Int] = None,
                                       fetchAccountingPeriod: Option[Int] = None,
@@ -90,6 +94,8 @@ trait MockKeystoreService extends MockTrait {
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
+    verifyKeystoreFetch(IncomeSource, fetchIncomeSource)
+    verifyKeystoreSave(IncomeSource, saveIncomeSource)
     verifyKeystoreFetch(BusinessName, fetchBusinessName)
     verifyKeystoreSave(BusinessName, saveBusinessName)
     verifyKeystoreFetch(AccountingPeriod, fetchAccountingPeriod)
