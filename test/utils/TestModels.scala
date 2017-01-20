@@ -16,6 +16,7 @@
 
 package utils
 
+import forms.IncomeSourceForm
 import models._
 import play.api.libs.json.JsValue
 import services.CacheConstants
@@ -65,5 +66,11 @@ object TestModels extends Implicits {
       terms.fold(emptyMap)(model => Map(Terms -> TermModel.format.writes(model)))
     CacheMap("", map)
   }
+
+  def testIncomeSourceBusiness = IncomeSourceModel(IncomeSourceForm.option_business)
+
+  def testIncomeSourceProperty = IncomeSourceModel(IncomeSourceForm.option_property)
+
+  def testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
 
 }
