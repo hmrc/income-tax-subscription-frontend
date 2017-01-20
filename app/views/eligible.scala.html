@@ -1,0 +1,20 @@
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import views.html.helpers._
+
+@(postAction: Call)(implicit request: Request[_], messages: Messages)
+
+@views.html.templates.main_template(title = Messages("eligible.title"), bodyClasses = None) {
+
+    <h1 class="heading-xlarge">@Messages("eligible.heading")</h1>
+
+    <div class="form-group">
+        <p>@Messages("eligible.line_1")</p>
+        <p>@Messages("eligible.line_2")</p>
+    </div>
+
+    @form(action = postAction) {
+
+        @continueButton()
+
+    }
+}

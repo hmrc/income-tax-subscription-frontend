@@ -1,0 +1,36 @@
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import views.html.helpers._
+@import forms.NotEligibleForm
+
+@(notEligibleForm: Form[NotEligibleModel], postAction: Call)(implicit request: Request[_], messages: Messages)
+
+@views.html.templates.main_template(title = Messages("not-eligible.title"), bodyClasses = None) {
+
+    @summaryErrorHelper(notEligibleForm)
+
+    <h1 class="heading-xlarge">@Messages("not-eligible.heading")</h1>
+
+    <div class="form-group">
+        <p>@Messages("not-eligible.line_1")</p>
+        <p>@Messages("not-eligible.line_2")</p>
+        <p>@Messages("not-eligible.line_3")</p>
+    </div>
+
+    @form(action = postAction) {
+
+        <div class="form-group">
+            @radioHelper(
+                field = notEligibleForm(NotEligibleForm.choice),
+                legend = Messages("not-eligible.question"),
+                options = Seq(
+                    RadioOption(NotEligibleForm.option_signup, Messages("not-eligible.signup")),
+                    RadioOption(NotEligibleForm.option_signout, Messages("not-eligible.signout"))
+                ),
+                parentForm = notEligibleForm
+            )
+        </div>
+
+        @continueButton()
+
+    }
+}

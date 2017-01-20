@@ -149,10 +149,33 @@ object MessageLookup {
       val invalid = "Please select an income type"
     }
 
+    object NotEligible {
+      val empty = "Please select an option"
+      val invalid = "Please select an option"
+    }
+
     object Terms {
       val empty = "Please accept the terms and conditions"
     }
 
+  }
+
+  object Eligible {
+    val title = "You can send digital updates"
+    val heading: String = title
+    val line_1 = "Your answers mean you should be able to start sending HMRC digital updates after you sign up."
+    val line_2 = "You just need to enter a few more details."
+  }
+
+  object Not_Eligible {
+    val title = "You can't send digital updates yet"
+    val heading: String = title
+    val line_1 = "Your answers mean you're not eligible to send digital updates to HMRC right now."
+    val line_2 = "You can still sign up for the service. HMRC are working to make digital updates available for all sole traders in the coming months. If you sign up now, you will be able to send digital updates to HMRC when you become eligible."
+    val line_3 = "If you choose to sign up, we'll ask you a few questions about your income and contact details."
+    val signUp = "I want to sign up"
+    val signOut = "I don't want to sign up - sign me out"
+    val question = "Choose what you would like to do next"
   }
 
 }

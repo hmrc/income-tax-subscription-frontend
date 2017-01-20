@@ -105,4 +105,23 @@ error.contact_email.invalid                                     = The email is i
 error.income_type.empty                                         = Please select an income type
 error.income_type.invalid                                       = Please select an income type
 
+error.not-eligible.empty                                        = Please select an option
+error.not-eligible.invalid                                      = Please select an option
+
 error.terms.empty                                               = Please accept the terms and conditions
+
+## Eligible page ##
+eligible.title                                                  = You can send digital updates
+eligible.heading                                                = You can send digital updates
+eligible.line_1                                                 = Your answers mean you should be able to start sending HMRC digital updates after you sign up.
+eligible.line_2                                                 = You just need to enter a few more details.
+
+## Not eligible page ##
+not-eligible.title                                              = You can''t send digital updates yet
+not-eligible.heading                                            = You can''t send digital updates yet
+not-eligible.line_1                                             = Your answers mean you''re not eligible to send digital updates to HMRC right now.
+not-eligible.line_2                                             = You can still sign up for the service. HMRC are working to make digital updates available for all sole traders in the coming months. If you sign up now, you will be able to send digital updates to HMRC when you become eligible.
+not-eligible.line_3                                             = If you choose to sign up, we''ll ask you a few questions about your income and contact details.
+not-eligible.question                                           = Choose what you would like to do next
+not-eligible.signup                                             = I want to sign up
+not-eligible.signout                                            = I don''t want to sign up - sign me out

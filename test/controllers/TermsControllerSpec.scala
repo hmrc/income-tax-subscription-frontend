@@ -28,7 +28,7 @@ import services.mocks.MockKeystoreService
 class TermsControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
 
-  override val controllerName: String = "ContactEmailControllerSpec"
+  override val controllerName: String = "TermsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "showTerms" -> TestTermsController.showTerms,
     "submitTerms" -> TestTermsController.submitTerms

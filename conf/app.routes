@@ -26,3 +26,11 @@ POST       /terms              controllers.TermsController.submitTerms
 # Contact Email Routes
 GET        /contact-email      controllers.ContactEmailController.showContactEmail
 POST       /contact-email      controllers.ContactEmailController.submitContactEmail
+
+# Eligible Routes
+GET        /eligible           controllers.EligibleController.showEligible
+POST       /eligible           controllers.EligibleController.submitEligible
+
+# Not Eligible Routes
+GET        /not-eligible       controllers.NotEligibleController.showNotEligible
+POST       /not-eligible       controllers.NotEligibleController.submitNotEligible
