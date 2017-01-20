@@ -16,6 +16,7 @@
 
 package services
 
+import forms.IncomeSourceForm
 import models._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -44,15 +45,31 @@ object CacheUtil {
                      bus: Reads[BusinessNameModel],
                      inc: Reads[IncomeTypeModel],
                      ema: Reads[EmailModel],
-                     ter: Reads[TermModel]): SummaryModel =
-      SummaryModel(
-        getIncomeSource(),
-        getAccountingPeriod(),
-        getBusinessName(),
-        getIncomeType(),
-        getContactEmail(),
-        getTerms()
-      )
+                     ter: Reads[TermModel]): SummaryModel = {
+      val incomeSource = getIncomeSource()
+      incomeSource match {
+        case Some(src) =>
+          src.source match {
+            case IncomeSourceForm.option_property =>
+              SummaryModel(
+                incomeSource,
+                contactEmail = getContactEmail(),
+                terms = getTerms()
+              )
+            case _ =>
+              SummaryModel(
+                incomeSource,
+                getAccountingPeriod(),
+                getBusinessName(),
+                getIncomeType(),
+                getContactEmail(),
+                getTerms()
+              )
+          }
+        case _ => SummaryModel()
+      }
+
+    }
   }
 
 }

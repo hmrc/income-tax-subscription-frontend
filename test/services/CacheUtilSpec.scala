@@ -45,7 +45,7 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getTerms() shouldBe Some(testTerms)
     }
 
-    "The getSummary should populate the Summary model corectly" in {
+    "The getSummary should populate the Summary model correctly" in {
       testCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceBoth,
@@ -54,6 +54,24 @@ class CacheUtilSpec extends UnitTestTrait {
           testIncomeType,
           testContactEmail,
           testTerms
+        )
+
+      // for the property only journey, this should only populate the subset of views
+      // relevant to the journey
+      val overPopulatedPropertyCacheMap =
+        testCacheMap(
+          testIncomeSourceProperty,
+          testAccountingPeriod,
+          testBusinessName,
+          testIncomeType,
+          testContactEmail,
+          testTerms
+        )
+      overPopulatedPropertyCacheMap.getSummary() shouldBe
+        SummaryModel(
+          testIncomeSourceProperty,
+          contactEmail = testContactEmail,
+          terms = testTerms
         )
 
       emptyCacheMap.getSummary() shouldBe SummaryModel()
