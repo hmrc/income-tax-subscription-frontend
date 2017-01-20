@@ -28,6 +28,8 @@ object DataMap {
   import forms.TermForm._
   import forms.IncomeSourceForm
   import forms.submapping.DateMapping._
+  import forms.PropertyIncomeForm
+
 
   type DataMap = Map[String, String]
 
@@ -43,6 +45,8 @@ object DataMap {
   def busName(name: String): DataMap = Map(businessName -> name)
 
   def incomeType(iType: String): DataMap = Map(IncomeTypeForm.incomeType -> iType)
+
+  def propertyIncomeValue(iType: String): DataMap = Map(PropertyIncomeForm.incomeValue -> iType)
 
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 

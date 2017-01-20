@@ -48,6 +48,12 @@ trait KeystoreService {
   def saveIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
     save[IncomeSourceModel](IncomeSource, incomeSource)
 
+  def fetchPropertyIncome()(implicit hc: HeaderCarrier, reads: Reads[PropertyIncomeModel]): FO[PropertyIncomeModel] =
+    fetch[PropertyIncomeModel](PropertyIncome)
+
+  def savePropertyIncome(propertyIncome: PropertyIncomeModel)(implicit hc: HeaderCarrier, reads: Reads[PropertyIncomeModel]): FC =
+    save[PropertyIncomeModel](PropertyIncome, propertyIncome)
+
   def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =
     fetch[BusinessNameModel](BusinessName)
 

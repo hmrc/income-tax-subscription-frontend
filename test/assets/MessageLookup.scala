@@ -44,6 +44,17 @@ object MessageLookup {
     val both = "Both business and property"
   }
 
+  object Property {
+
+    object Income {
+      val title = "How much was your income from property this year?"
+      val heading: String = title
+      val lt10k = "Less than £10,000"
+      val ge10k = "£10,000 or more"
+    }
+
+  }
+
   object AccountingPeriod {
     val title = "What is your accounting period?"
     val heading = "What is your accounting period?"
@@ -126,6 +137,15 @@ object MessageLookup {
   }
 
   object Error {
+
+    object Property {
+
+      object Income {
+        val empty = "Please select an option"
+        val invalid = "Please select an option"
+      }
+
+    }
 
     object Date {
       val empty = "Please enter a date"

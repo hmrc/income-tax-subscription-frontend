@@ -19,6 +19,13 @@ income_source.business                                          = My business
 income_source.property                                          = Property (for example, renting out a property)
 income_source.both                                              = Both business and property
 
+# Property income page
+property.income.title                                           = How much was your income from property this year?
+property.income.heading                                         = How much was your income from property this year?
+property.income.lt10k                                           = Less than £10,000
+property.income.ge10k                                           = £10,000 or more
+
+
 ## Business Accounting Period page
 accounting_period.heading                                       = What is your accounting period?
 accounting_period.title                                         = What is your accounting period?
@@ -94,6 +101,12 @@ confirmation.giveUsFeedback.link1                               = What did you t
 confirmation.giveUsFeedback.feedbackDuration                    = (takes 30 seconds)
 
 ## Errors ##
+error.income_source.empty                                       = Please select an income source
+error.income_source.invalid                                     = Please select an income source
+
+error.property.income.empty                                     = Please select an option
+error.property.income.invalid                                   = Please select an option
+
 error.date.empty                                                = Please enter a date
 error.date.invalid                                              = Please enter a valid date
 error.end_date_violation                                        = The end date must be after the start date
@@ -112,7 +125,5 @@ error.contact_email.invalid                                     = The email is i
 error.income_type.empty                                         = Please select an income type
 error.income_type.invalid                                       = Please select an income type
 
-error.income_source.empty                                       = Please select an income source
-error.income_source.invalid                                     = Please select an income source
 
 error.terms.empty                                               = Please accept the terms and conditions

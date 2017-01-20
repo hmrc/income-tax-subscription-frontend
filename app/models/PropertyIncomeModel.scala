@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package services
+package models
 
-object CacheConstants {
-  val IncomeSource = "IncomeSource"
-  val PropertyIncome = "PropertyIncome"
-  val BusinessName = "BusinessName"
-  val AccountingPeriod = "AccountingPeriod"
-  val ContactEmail = "ContactEmail"
-  val IncomeType = "IncomeType"
-  val Terms = "Terms"
+import play.api.libs.json.Json
+
+
+case class PropertyIncomeModel(incomeValue: String)
+
+object PropertyIncomeModel {
+  implicit val format = Json.format[PropertyIncomeModel]
 }
