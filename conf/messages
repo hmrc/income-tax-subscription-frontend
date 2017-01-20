@@ -24,6 +24,7 @@ property.income.title                                           = How much was y
 property.income.heading                                         = How much was your income from property this year?
 property.income.lt10k                                           = Less than £10,000
 property.income.ge10k                                           = £10,000 or more
+property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
 
 
 ## Business Accounting Period page

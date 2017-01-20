@@ -14,8 +14,9 @@
 
     <h1>@question</h1>
 
-    @form(action = postAction) {
+    <p>@Messages("property.income.line_1")</p>
 
+    @form(action = postAction) {
         @radioHelper(
             field = propertyIncomeForm(PropertyIncomeForm.incomeValue),
             legend = question,

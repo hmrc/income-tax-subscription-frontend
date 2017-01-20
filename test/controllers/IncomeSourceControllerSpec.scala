@@ -83,12 +83,13 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
     }
 
-    "return an unimplemented (501) for property" in {
+    "return a SEE OTHER (300) for property" in {
       setupMockKeystoreSaveFunctions()
 
       val goodRequest = callShow(IncomeSourceForm.option_property)
 
-      status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest).get mustBe controllers.property.routes.PropertyIncomeController.submitPropertyIncome().url
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
