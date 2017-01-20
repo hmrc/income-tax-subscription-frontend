@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package services
+package models
 
-object CacheConstants {
-  val IncomeSource = "IncomeSource"
-  val PropertyIncome = "PropertyIncome"
-  val BusinessName = "BusinessName"
-  val AccountingPeriod = "AccountingPeriod"
-  val ContactEmail = "ContactEmail"
-  val IncomeType = "IncomeType"
-  val Terms = "Terms"
-  val NotEligible = "NotEligible"
+import play.api.libs.json.Json
+
+case class NotEligibleModel(choice: String)
+
+object NotEligibleModel {
+  implicit val format = Json.format[NotEligibleModel]
 }

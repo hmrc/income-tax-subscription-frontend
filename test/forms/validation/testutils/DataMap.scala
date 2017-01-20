@@ -27,6 +27,7 @@ object DataMap {
   import forms.IncomeTypeForm
   import forms.TermForm._
   import forms.IncomeSourceForm
+  import forms.NotEligibleForm._
   import forms.submapping.DateMapping._
   import forms.PropertyIncomeForm
 
@@ -49,6 +50,8 @@ object DataMap {
   def propertyIncomeValue(iType: String): DataMap = Map(PropertyIncomeForm.incomeValue -> iType)
 
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
+
+  def notEligibleChoice(iType: String): DataMap = Map(choice-> iType)
 
   def email(email: String): DataMap = Map(emailAddress -> email)
 

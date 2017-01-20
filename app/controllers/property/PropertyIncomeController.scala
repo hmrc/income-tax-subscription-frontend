@@ -23,7 +23,7 @@ import models.PropertyIncomeModel
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.KeystoreService
 
@@ -58,9 +58,19 @@ trait PropertyIncomeController extends BaseController {
       PropertyIncomeForm.propertyIncomeForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(propertyIncomeForm = formWithErrors))),
         propertyIncome => {
-          keystoreService.savePropertyIncome(propertyIncome) map (
-            _ => NotImplemented)
+          keystoreService.savePropertyIncome(propertyIncome) flatMap { _ =>
+            propertyIncome.incomeValue match {
+              case PropertyIncomeForm.option_LT10k => notEligible
+              case PropertyIncomeForm.option_GE10k => eligible
+            }
+          }
         }
       )
   }
+
+  def eligible(implicit request: Request[_]): Future[Result] =
+    Future.successful(Redirect(controllers.routes.EligibleController.showEligible()))
+
+  def notEligible(implicit request: Request[_]): Future[Result] =
+    Future.successful(Redirect(controllers.routes.NotEligibleController.showNotEligible()))
 }

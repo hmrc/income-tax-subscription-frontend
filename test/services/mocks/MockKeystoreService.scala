@@ -63,6 +63,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchContactEmail: MFO[EmailModel] = DoNotConfigure,
                                          fetchIncomeType: MFO[IncomeTypeModel] = DoNotConfigure,
                                          fetchTerms: MFO[TermModel] = DoNotConfigure,
+                                         fetchNotEligible: MFO[NotEligibleModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
@@ -73,6 +74,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[EmailModel](ContactEmail, fetchContactEmail)
     mockFetchFromKeyStore[IncomeTypeModel](IncomeType, fetchIncomeType)
     mockFetchFromKeyStore[TermModel](Terms, fetchTerms)
+    mockFetchFromKeyStore[NotEligibleModel](NotEligible, fetchNotEligible)
 
     setupMockKeystoreSaveFunctions()
 
@@ -95,6 +97,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveIncomeType: Option[Int] = None,
                                       fetchTerms: Option[Int] = None,
                                       saveTerms: Option[Int] = None,
+                                      fetchNotEligible: Option[Int] = None,
+                                      saveNotEligible: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
@@ -112,6 +116,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(IncomeType, saveIncomeType)
     verifyKeystoreFetch(Terms, fetchTerms)
     verifyKeystoreSave(Terms, saveTerms)
+    verifyKeystoreFetch(NotEligible, fetchNotEligible)
+    verifyKeystoreSave(NotEligible, saveNotEligible)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(Matchers.any()))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(Matchers.any()))

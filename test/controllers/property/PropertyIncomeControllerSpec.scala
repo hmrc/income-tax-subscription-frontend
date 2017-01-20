@@ -73,23 +73,25 @@ class PropertyIncomeControllerSpec extends ControllerBaseSpec
     def callShow(option: String) = TestPropertyIncomeController.submitPropertyIncome(authenticatedFakeRequest()
       .post(PropertyIncomeForm.propertyIncomeForm, PropertyIncomeModel(option)))
 
-    "return an unimplemented (501) for less than 10k" in {
+    "return a SEE OTHER (303) for less than 10k" in {
       setupMockKeystoreSaveFunctions()
 
       val goodRequest = callShow(PropertyIncomeForm.option_LT10k)
 
-      status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest).get mustBe controllers.routes.NotEligibleController.showNotEligible().url
 
       await(goodRequest)
       verifyKeystore(fetchPropertyIncome = 0, savePropertyIncome = 1)
     }
 
-    "return an unimplemented (501) for 10k or more" in {
+    "return SEE OTHER (303)  for 10k or more" in {
       setupMockKeystoreSaveFunctions()
 
       val goodRequest = callShow(PropertyIncomeForm.option_GE10k)
 
-      status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest).get mustBe controllers.routes.EligibleController.showEligible().url
 
       await(goodRequest)
       verifyKeystore(fetchPropertyIncome = 0, savePropertyIncome = 1)

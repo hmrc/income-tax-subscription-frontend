@@ -83,6 +83,12 @@ trait KeystoreService {
 
   def saveTerms(terms: TermModel)(implicit hc: HeaderCarrier, reads: Reads[TermModel]): FC =
     save[TermModel](Terms, terms)
+
+  def fetchNotEligible()(implicit hc: HeaderCarrier, reads: Reads[NotEligibleModel]): FO[NotEligibleModel] =
+    fetch[NotEligibleModel](NotEligible)
+
+  def saveNotEligible(choice: NotEligibleModel)(implicit hc: HeaderCarrier, reads: Reads[NotEligibleModel]): FC =
+    save[NotEligibleModel](NotEligible, choice)
 }
 
 object KeystoreService extends KeystoreService {
