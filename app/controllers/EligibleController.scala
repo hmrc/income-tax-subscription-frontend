@@ -17,14 +17,10 @@
 package controllers
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import forms.TermForm
-import models.TermModel
 import play.api.Play.current
-import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.KeystoreService
 
 import scala.concurrent.Future
 
@@ -35,7 +31,6 @@ object EligibleController extends EligibleController {
 }
 
 trait EligibleController extends BaseController {
-
 
   def view()(implicit request: Request[_]): Html =
     views.html.eligible(
