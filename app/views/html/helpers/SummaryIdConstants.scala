@@ -18,6 +18,7 @@ package views.html.helpers
 
 object SummaryIdConstants {
 
+  val IncomeSourceId = "incomeSource"
   val AccountingPeriodId = "accountingPeriod"
   val BusinessNameId = "businessName"
   val IncomeTypeId = "incomeType"

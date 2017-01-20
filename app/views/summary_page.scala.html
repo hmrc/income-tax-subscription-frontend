@@ -4,6 +4,7 @@
 
 @(summaryModel: SummaryModel, postAction: Call)(implicit request: Request[_], messages: Messages)
 @import SummaryIdConstants._
+@import SummaryHelper._
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: String) = {
     <hr>
@@ -16,6 +17,14 @@
         </div>
         <a class="tabular-data__data-2" href="@changeUrl" id="@field-edit">@Messages("base.change")</a>
     </div>
+}
+
+@incomeSource(source: IncomeSourceModel) = @{
+    val rowName = IncomeSourceId
+    val rowQuestion = Messages("summary.income_source")
+    val rowAnswer = incomeSourceText(source)
+    val rowUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
 @accountingPeriod(period: AccountingPeriodModel) = @{
@@ -38,7 +47,7 @@
 @incomeType(income: IncomeTypeModel) = @{
     val rowName = IncomeTypeId
     val rowQuestion = Messages("summary.income_type")
-    val rowAnswer = income.incomeType
+    val rowAnswer = incomeTypeText(income)
     val rowUrl = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
@@ -65,6 +74,7 @@
     <h1>@Messages("summary.heading")</h1>
 
     <div class="form-group">
+        @summaryModel.incomeSource.map(incomeSource)
         @summaryModel.accountingPeriod.map(accountingPeriod)
         @summaryModel.businessName.map(businessName)
         @summaryModel.incomeType.map(incomeType)

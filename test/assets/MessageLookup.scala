@@ -86,6 +86,7 @@ object MessageLookup {
   object Summary {
     val title = "Check your answers"
     val heading: String = title
+    val income_source = "Income type"
     val accounting_period = "Business accounting period"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "Business name"

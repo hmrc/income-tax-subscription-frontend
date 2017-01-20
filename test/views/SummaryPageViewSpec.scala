@@ -15,6 +15,7 @@
  */
 
 package views
+
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
 import models._
@@ -24,17 +25,19 @@ import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import utils.UnitTestTrait
+import utils.{TestModels, UnitTestTrait}
 import views.html.helpers.SummaryIdConstants._
 
 class SummaryPageViewSpec extends UnitTestTrait {
 
   val testAccountingPeriod = AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))
   val testBusinessName = BusinessNameModel("test business name")
-  val testIncomeType = IncomeTypeModel("Cash")
+  val testIncomeType = TestModels.testIncomeType
   val testContactEmail = EmailModel("test@example.com")
   val testTerms = TermModel(true)
+  val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
   val testSummary = SummaryModel(
+    incomeSource = testIncomeSource,
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
     incomeType = testIncomeType,
@@ -123,6 +126,20 @@ class SummaryPageViewSpec extends UnitTestTrait {
       )
     }
 
+    "display the correct info for the income source" in {
+      val sectionId = IncomeSourceId
+      val expectedQuestion = messages.income_source
+      val expectedAnswer = MessageLookup.IncomeSource.both
+      val expectedEditLink = controllers.routes.IncomeSourceController.showIncomeSource().url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )
+    }
+
     "display the correct info for the business name" in {
       val sectionId = BusinessNameId
       val expectedQuestion = messages.business_name
@@ -140,7 +157,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
     "display the correct info for the income type" in {
       val sectionId = IncomeTypeId
       val expectedQuestion = messages.income_type
-      val expectedAnswer = testIncomeType.incomeType
+      val expectedAnswer = MessageLookup.BusinessIncomeType.cash
       val expectedEditLink = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
 
       sectionTest(

@@ -26,6 +26,8 @@ object CacheUtil {
 
     import services.CacheConstants._
 
+    def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
+
     def getAccountingPeriod()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriod)
 
     def getBusinessName()(implicit read: Reads[BusinessNameModel]): Option[BusinessNameModel] = cacheMap.getEntry(BusinessName)
@@ -37,12 +39,14 @@ object CacheUtil {
     def getTerms()(implicit read: Reads[TermModel]): Option[TermModel] = cacheMap.getEntry(Terms)
 
     def getSummary()(implicit
+                     isrc: Reads[IncomeSourceModel],
                      acc: Reads[AccountingPeriodModel],
                      bus: Reads[BusinessNameModel],
                      inc: Reads[IncomeTypeModel],
                      ema: Reads[EmailModel],
                      ter: Reads[TermModel]): SummaryModel =
       SummaryModel(
+        getIncomeSource(),
         getAccountingPeriod(),
         getBusinessName(),
         getIncomeType(),

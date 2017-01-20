@@ -72,6 +72,7 @@ technicalIssue.paraTwo                                          = Please try aga
 ## Summary page ##
 summary.title                                                   = Check your answers
 summary.heading                                                 = Check your answers
+summary.income_source                                           = Income type
 summary.accounting_period                                       = Business accounting period
 summary.accounting_period.month                                 = {0} month period
 summary.business_name                                           = Business name

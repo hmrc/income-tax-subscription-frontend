@@ -28,6 +28,7 @@ class CacheUtilSpec extends UnitTestTrait {
   "CacheUtil" should {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
+      emptyCacheMap.getIncomeSource() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
       emptyCacheMap.getAccountingPeriod() shouldBe None
       emptyCacheMap.getContactEmail() shouldBe None
@@ -36,6 +37,7 @@ class CacheUtilSpec extends UnitTestTrait {
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
+      testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
       testCacheMap.getAccountingPeriod() shouldBe Some(testAccountingPeriod)
       testCacheMap.getContactEmail() shouldBe Some(testContactEmail)
@@ -46,6 +48,7 @@ class CacheUtilSpec extends UnitTestTrait {
     "The getSummary should populate the Summary model corectly" in {
       testCacheMap.getSummary() shouldBe
         SummaryModel(
+          testIncomeSourceBoth,
           testAccountingPeriod,
           testBusinessName,
           testIncomeType,
