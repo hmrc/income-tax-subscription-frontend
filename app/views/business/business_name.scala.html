@@ -9,13 +9,14 @@
 
     @summaryErrorHelper(businessNameForm)
 
-    <h1>@Messages("business.name.heading")</h1>
+    <h1 class="heading-xlarge">@Messages("business.name.heading")</h1>
+
+    <p>@Messages("business.name.line_1")</p>
 
     @form(action = postAction) {
 
         @inputHelper(
             field = businessNameForm(businessName),
-            formHint = Messages("business.name.hint"),
             maxLength = businessNameMaxLength,
             parentForm = businessNameForm
         )

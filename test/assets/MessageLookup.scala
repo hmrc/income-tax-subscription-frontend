@@ -85,9 +85,9 @@ object MessageLookup {
   }
 
   object BusinessName {
-    val title = "What is your business name?"
-    val heading: String = title
-    val hint = "This does not mean trading name"
+    val title = "Business name"
+    val heading: String = "What is your business name?"
+    val line_1 = "This is the business name you gave when you registered for Self Assessment."
   }
 
   object BusinessIncomeType {
