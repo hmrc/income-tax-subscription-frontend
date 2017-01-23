@@ -101,8 +101,14 @@ object MessageLookup {
   }
 
   object Terms {
-    val title = "Terms"
+    val title = "Terms and conditions"
     val heading: String = title
+    val line_1 = "To use this service you must accept the terms and conditions."
+    val line_2 = "By accepting the terms and conditions, you agree:"
+    val li_1 = "that HMRC can use the email address you have provided to contact you about your digital tax updates"
+    val li_2 = "to use accounting software to send digital income and expenditure updates to HMRC at least every 3 months from the start of your accounting period"
+    val li_3 = "to contact HMRC immediately if you start a new business or sell or close down your current business"
+    val checkbox = "I accept the terms and conditions"
   }
 
   object Summary {

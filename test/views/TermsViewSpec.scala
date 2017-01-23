@@ -17,6 +17,7 @@
 package views
 
 import assets.MessageLookup
+import assets.MessageLookup.{Terms => messages}
 import forms.TermForm
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
@@ -33,12 +34,32 @@ class TermsViewSpec extends UnitTestTrait {
 
   "The Terms view" should {
 
-    s"have the title '${MessageLookup.Terms.title}'" in {
-      document.title() must be(MessageLookup.Terms.title)
+    s"have the title '${messages.title}'" in {
+      document.title() must be(messages.title)
     }
 
-    s"have the heading (H1) '${MessageLookup.Terms.heading}'" in {
-      document.getElementsByTag("H1").text() must be(MessageLookup.Terms.heading)
+    s"have the heading (H1) '${messages.heading}'" in {
+      document.getElementsByTag("H1").text() must be(messages.heading)
+    }
+
+    s"have the line_1 (P) '${messages.line_1}'" in {
+      document.getElementsByTag("p").text() must include(messages.line_1)
+    }
+
+    s"have the line_2 (P) '${messages.line_2}'" in {
+      document.getElementsByTag("p").text() must include(messages.line_2)
+    }
+
+    s"have the li_1 (li) '${messages.li_1}'" in {
+      document.getElementsByTag("li").text() must include(messages.li_1)
+    }
+
+    s"have the li_2 (li) '${messages.li_2}'" in {
+      document.getElementsByTag("li").text() must include(messages.li_2)
+    }
+
+    s"have the li_3 (li) '${messages.li_3}'" in {
+      document.getElementsByTag("li").text() must include(messages.li_3)
     }
 
     "have a form" which {
@@ -50,6 +71,7 @@ class TermsViewSpec extends UnitTestTrait {
 
       "has a checkbox to agree to the terms and conditions" in {
         document.select("input").attr("type") mustBe "checkbox"
+        document.select("input").parents().get(0).text() mustBe messages.checkbox
       }
 
       "has a continue button" in {

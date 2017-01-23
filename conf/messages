@@ -55,8 +55,14 @@ business.name.heading                                           = What is your b
 business.name.line_1                                            = This is the business name you gave when you registered for Self Assessment.
 
 ## Terms and Conditions Messages
-terms.title                                                     = Terms
-terms.heading                                                   = Terms
+terms.title                                                     = Terms and conditions
+terms.heading                                                   = Terms and conditions
+terms.line_1                                                    = To use this service you must accept the <a href="{0}">terms and conditions</a>.
+terms.line_2                                                    = By accepting the terms and conditions, you agree:
+terms.li_1                                                      = that HMRC can use the email address you have provided to contact you about your digital tax updates
+terms.li_2                                                      = to use accounting software to send digital income and expenditure updates to HMRC at least every 3 months from the start of your accounting period
+terms.li_3                                                      = to contact HMRC immediately if you start a new business or sell or close down your current business
+terms.checkbox                                                  = I accept the <a href="{0}">terms and conditions</a>
 
 ## Contact Email Address page ##
 contact_email.title                                             = Enter your email address
