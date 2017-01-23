@@ -77,6 +77,7 @@ object MessageLookup {
     object Hint {
       val line_1 = "Your accounting period start date is usually the day after the end of your previous accounting period, or 'year end'. For example, if you made your accounts up to 5 April 2017, your next period will start on 6 April 2017."
     }
+
   }
 
   object ContactEmail {
@@ -91,10 +92,11 @@ object MessageLookup {
   }
 
   object BusinessIncomeType {
-    val title = "How do you receive your business income?"
-    val heading: String = title
-    val cash = "Cash"
-    val accruals = "Accruals"
+    val title = "Accounting method"
+    val heading: String = "Which accounting method do you use?"
+    val line_1 = "This is how you keep records of your business income and expenses for your tax return."
+    val cash = "Cash basis accounting You only record income or expenses when you receive money or pay a bill"
+    val accruals = "Traditional accounting (‘accruals basis’) You record income and expenses by the date you invoiced or were billed"
   }
 
   object Terms {

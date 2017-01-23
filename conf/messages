@@ -10,7 +10,6 @@ base.month                                                      = Month
 base.year                                                       = Year
 base.error_heading                                              = Error Summary
 base.change                                                     = Change
-base.where_can_i_get_this_information                           = Where can I get this information
 
 ## Income source page
 income_source.title                                             = Where does your income come from?
@@ -43,10 +42,12 @@ business.sole_trader.yes                                        = Yes - I’m a 
 business.sole_trader.no                                         = No - I am a different type of business
 
 ## Business Income page
-business.income_type.title                                      = How do you receive your business income?
-business.income_type.heading                                    = How do you receive your business income?
-business.income_type.cash                                       = Cash
-business.income_type.accruals                                   = Accruals
+business.income_type.title                                      = Accounting method
+business.income_type.heading                                    = Which accounting method do you use?
+business.income_type.line_1                                     = This is how you keep records of your business income and expenses for your tax return.
+business.income_type.cash                                       = <span class="heading-small">Cash basis accounting</span><br>You only record income or expenses when you receive money or pay a bill
+business.income_type.accruals                                   = <span class="heading-small">Traditional accounting (‘accruals basis’)</span><br>You record income and expenses by the date you invoiced or were billed
+
 
 ## Business Name
 business.name.title                                             = Business name
