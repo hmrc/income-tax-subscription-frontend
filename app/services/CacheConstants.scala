@@ -17,6 +17,8 @@
 package services
 
 object CacheConstants {
+  val IncomeSource = "IncomeSource"
+  val PropertyIncome = "PropertyIncome"
   val BusinessName = "BusinessName"
   val AccountingPeriod = "AccountingPeriod"
   val ContactEmail = "ContactEmail"

@@ -24,6 +24,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utils.TestModels
 
 class NotEligibleControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -63,7 +64,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchNotEligible = 1, saveNotEligible = 0)
+      verifyKeystore(fetchNotEligible = 1, saveNotEligible = 0, fetchIncomeSource = 0)
     }
   }
 
@@ -72,15 +73,38 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
     def callShow(option: String) = TestNotEligibleController.submitNotEligible(authenticatedFakeRequest()
       .post(NotEligibleForm.notEligibleForm, NotEligibleModel(option)))
 
-    "return a not implemented status (501) for SignUp" in {
-      setupMockKeystoreSaveFunctions()
+    "return a not implemented status (501) for SignUp on a business journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
       status(goodRequest) must be(Status.NOT_IMPLEMENTED)
 
       await(goodRequest)
-      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1)
+      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)
+    }
+
+    "return a not implemented status (501) for SignUp on a property journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+
+      val goodRequest = callShow(NotEligibleForm.option_signup)
+
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest).get mustBe controllers.routes.ContactEmailController.showContactEmail().url
+
+      await(goodRequest)
+      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)
+    }
+
+    "return a not implemented status (501) for SignUp on a business and property journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+
+      val goodRequest = callShow(NotEligibleForm.option_signup)
+
+      status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+
+      await(goodRequest)
+      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)
     }
 
     "return a not implemented status (501) for SignOut" in {
@@ -91,7 +115,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       status(goodRequest) must be(Status.NOT_IMPLEMENTED)
 
       await(goodRequest)
-      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1)
+      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 0)
     }
 
   }
@@ -103,7 +127,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 0)
+      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 0, fetchIncomeSource = 0)
     }
   }
 

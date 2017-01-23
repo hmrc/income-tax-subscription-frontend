@@ -36,6 +36,25 @@ object MessageLookup {
     val heading = "Hello from income-tax-subscription-frontend !"
   }
 
+  object IncomeSource {
+    val title = "Where does your income come from?"
+    val heading: String = title
+    val business = "My business"
+    val property = "Property (for example, renting out a property)"
+    val both = "Both business and property"
+  }
+
+  object Property {
+
+    object Income {
+      val title = "How much was your income from property this year?"
+      val heading: String = title
+      val lt10k = "Less than £10,000"
+      val ge10k = "£10,000 or more"
+    }
+
+  }
+
   object AccountingPeriod {
     val title = "What is your accounting period?"
     val heading = "What is your accounting period?"
@@ -67,10 +86,24 @@ object MessageLookup {
   object Summary {
     val title = "Check your answers"
     val heading: String = title
+    val income_source = "Income type"
+
+    object IncomeSource {
+      val business = "Business"
+      val property = "Property"
+      val both = "Business and property"
+    }
+
     val accounting_period = "Business accounting period"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "Business name"
-    val income_type = "Income type"
+    val income_type = "Accounting type"
+
+    object IncomeType {
+      val cash = "Cash basis"
+      val accruals = "Accruals basis"
+    }
+
     val contact_email = "Contact email"
     val terms = "Terms and conditions"
     val terms_agreed = "Read and agreed"
@@ -119,6 +152,15 @@ object MessageLookup {
 
   object Error {
 
+    object Property {
+
+      object Income {
+        val empty = "Please select an option"
+        val invalid = "Please select an option"
+      }
+
+    }
+
     object Date {
       val empty = "Please enter a date"
       val invalid = "Please enter a valid date"
@@ -152,6 +194,11 @@ object MessageLookup {
     object NotEligible {
       val empty = "Please select an option"
       val invalid = "Please select an option"
+    }
+
+    object IncomeSource {
+      val empty = "Please select an income source"
+      val invalid = "Please select an income source"
     }
 
     object Terms {

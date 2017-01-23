@@ -17,7 +17,7 @@
 package controllers
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import forms.NotEligibleForm
+import forms.{IncomeSourceForm, NotEligibleForm}
 import models.NotEligibleModel
 import play.api.Play.current
 import play.api.data.Form
@@ -25,6 +25,7 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.KeystoreService
+import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -67,7 +68,17 @@ trait NotEligibleController extends BaseController {
       )
   }
 
-  def signUp(implicit request: Request[_]): Future[Result] = Future.successful(NotImplemented)
+  def signUp(implicit request: Request[_]): Future[Result] =
+    keystoreService.fetchIncomeSource() map {
+      case Some(incomeSource) =>
+        incomeSource.source match {
+          case IncomeSourceForm.option_business | IncomeSourceForm.option_both => NotImplemented
+          case IncomeSourceForm.option_property =>
+            Redirect(controllers.routes.ContactEmailController.showContactEmail())
+        }
+      case _ => throw new InternalServerException("NotEligibleController: fetchIncomeSource failed")
+    }
+
 
   def signOut(implicit request: Request[_]): Future[Result] = Future.successful(NotImplemented)
 

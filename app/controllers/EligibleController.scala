@@ -44,6 +44,6 @@ trait EligibleController extends BaseController {
 
   val submitEligible: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(NotImplemented)
+      Future.successful(Redirect(controllers.routes.ContactEmailController.showContactEmail()))
   }
 }

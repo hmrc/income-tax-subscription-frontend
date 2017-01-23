@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package views.html.helpers
+package models
 
-object SummaryIdConstants {
+import play.api.libs.json.Json
 
-  val IncomeSourceId = "incomeSource"
-  val AccountingPeriodId = "accountingPeriod"
-  val BusinessNameId = "businessName"
-  val IncomeTypeId = "incomeType"
-  val ContactEmailId = "contactEmail"
-  val TermsId = "terms"
 
+case class IncomeSourceModel(source: String)
+
+object IncomeSourceModel {
+  implicit val format = Json.format[IncomeSourceModel]
 }

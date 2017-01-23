@@ -1,0 +1,3 @@
+# Income Source Routes
+GET         /income        controllers.property.PropertyIncomeController.showPropertyIncome
+POST        /income        controllers.property.PropertyIncomeController.submitPropertyIncome

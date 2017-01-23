@@ -60,10 +60,11 @@ class EligibleControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submitTerms action of the TermsController with an authorised user" should {
-    lazy val badRequest = TestEligibleController.submitEligible(authenticatedFakeRequest())
+    lazy val goodRequest = TestEligibleController.submitEligible(authenticatedFakeRequest())
 
-    "return a not implemented (501)" in {
-      status(badRequest) must be(Status.NOT_IMPLEMENTED)
+    "return a SEE OTHER (303)" in {
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest).get mustBe controllers.routes.ContactEmailController.showContactEmail().url
     }
   }
 

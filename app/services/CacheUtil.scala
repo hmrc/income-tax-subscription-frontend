@@ -16,6 +16,7 @@
 
 package services
 
+import forms.IncomeSourceForm
 import models._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -25,6 +26,8 @@ object CacheUtil {
   implicit class CacheMapUtil(cacheMap: CacheMap) {
 
     import services.CacheConstants._
+
+    def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
 
     def getAccountingPeriod()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriod)
 
@@ -37,18 +40,36 @@ object CacheUtil {
     def getTerms()(implicit read: Reads[TermModel]): Option[TermModel] = cacheMap.getEntry(Terms)
 
     def getSummary()(implicit
+                     isrc: Reads[IncomeSourceModel],
                      acc: Reads[AccountingPeriodModel],
                      bus: Reads[BusinessNameModel],
                      inc: Reads[IncomeTypeModel],
                      ema: Reads[EmailModel],
-                     ter: Reads[TermModel]): SummaryModel =
-      SummaryModel(
-        getAccountingPeriod(),
-        getBusinessName(),
-        getIncomeType(),
-        getContactEmail(),
-        getTerms()
-      )
+                     ter: Reads[TermModel]): SummaryModel = {
+      val incomeSource = getIncomeSource()
+      incomeSource match {
+        case Some(src) =>
+          src.source match {
+            case IncomeSourceForm.option_property =>
+              SummaryModel(
+                incomeSource,
+                contactEmail = getContactEmail(),
+                terms = getTerms()
+              )
+            case _ =>
+              SummaryModel(
+                incomeSource,
+                getAccountingPeriod(),
+                getBusinessName(),
+                getIncomeType(),
+                getContactEmail(),
+                getTerms()
+              )
+          }
+        case _ => SummaryModel()
+      }
+
+    }
   }
 
 }

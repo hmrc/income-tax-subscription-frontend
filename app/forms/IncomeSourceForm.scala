@@ -19,38 +19,39 @@ package forms
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
-import models.IncomeTypeModel
+import models.IncomeSourceModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid}
 
-object IncomeTypeForm {
+object IncomeSourceForm {
 
-  val incomeType = "incomeType"
-  val option_cash = "Cash"
-  val option_accruals = "Accruals"
+  val incomeSource = "incomeSource"
+  val option_business = "Business"
+  val option_property = "Property"
+  val option_both = "Both"
 
-  val incomeEmpty: Constraint[String] = constraint[String](
-    income => {
-      lazy val emptyIncome = ErrorMessageFactory.error("error.income_type.empty")
-      if (income.isEmpty) emptyIncome else Valid
+  val sourceEmpty: Constraint[String] = constraint[String](
+    source => {
+      lazy val emptySource = ErrorMessageFactory.error("error.income_source.empty")
+      if (source.isEmpty) emptySource else Valid
     }
   )
 
-  val incomeInvalid: Constraint[String] = constraint[String](
-    income => {
-      lazy val invalidIncome = ErrorMessageFactory.error("error.income_type.invalid")
-      income match {
-        case `option_cash` | `option_accruals` => Valid
-        case _ => invalidIncome
+  val sourceInvalid: Constraint[String] = constraint[String](
+    source => {
+      lazy val invalidSource = ErrorMessageFactory.error("error.income_source.invalid")
+      source match {
+        case `option_business` | `option_property` | `option_both` => Valid
+        case _ => invalidSource
       }
     }
   )
 
-  val incomeTypeForm = Form(
+  val incomeSourceForm = Form(
     mapping(
-      incomeType -> oText.toText.verifying(incomeEmpty andThen incomeInvalid)
-    )(IncomeTypeModel.apply)(IncomeTypeModel.unapply)
+      incomeSource -> oText.toText.verifying(sourceEmpty andThen sourceInvalid)
+    )(IncomeSourceModel.apply)(IncomeSourceModel.unapply)
   )
 
 }

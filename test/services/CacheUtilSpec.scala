@@ -28,6 +28,7 @@ class CacheUtilSpec extends UnitTestTrait {
   "CacheUtil" should {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
+      emptyCacheMap.getIncomeSource() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
       emptyCacheMap.getAccountingPeriod() shouldBe None
       emptyCacheMap.getContactEmail() shouldBe None
@@ -36,6 +37,7 @@ class CacheUtilSpec extends UnitTestTrait {
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
+      testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
       testCacheMap.getAccountingPeriod() shouldBe Some(testAccountingPeriod)
       testCacheMap.getContactEmail() shouldBe Some(testContactEmail)
@@ -43,14 +45,33 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getTerms() shouldBe Some(testTerms)
     }
 
-    "The getSummary should populate the Summary model corectly" in {
+    "The getSummary should populate the Summary model correctly" in {
       testCacheMap.getSummary() shouldBe
         SummaryModel(
+          testIncomeSourceBoth,
           testAccountingPeriod,
           testBusinessName,
           testIncomeType,
           testContactEmail,
           testTerms
+        )
+
+      // for the property only journey, this should only populate the subset of views
+      // relevant to the journey
+      val overPopulatedPropertyCacheMap =
+        testCacheMap(
+          testIncomeSourceProperty,
+          testAccountingPeriod,
+          testBusinessName,
+          testIncomeType,
+          testContactEmail,
+          testTerms
+        )
+      overPopulatedPropertyCacheMap.getSummary() shouldBe
+        SummaryModel(
+          testIncomeSourceProperty,
+          contactEmail = testContactEmail,
+          terms = testTerms
         )
 
       emptyCacheMap.getSummary() shouldBe SummaryModel()

@@ -16,6 +16,7 @@
 
 package utils
 
+import forms.{IncomeSourceForm, IncomeTypeForm}
 import models._
 import play.api.libs.json.JsValue
 import services.CacheConstants
@@ -37,20 +38,23 @@ object TestModels extends Implicits {
 
   val testBusinessName = BusinessNameModel("test business")
   val testContactEmail = EmailModel("test@example.com")
-  val testIncomeType = IncomeTypeModel("Cash")
+  val testIncomeType = IncomeTypeModel(IncomeTypeForm.option_cash)
   val testTerms = TermModel(true)
 
   val emptyCacheMap = CacheMap("", Map())
 
   val testCacheMap: CacheMap =
-    testCacheMap(accountingPeriod = testAccountingPeriod,
+    testCacheMap(
+      incomeSource = testIncomeSourceBoth,
+      accountingPeriod = testAccountingPeriod,
       businessName = testBusinessName,
       incomeType = testIncomeType,
       contactEmail = testContactEmail,
       terms = testTerms
     )
 
-  def testCacheMap(accountingPeriod: Option[AccountingPeriodModel] = None,
+  def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
+                   accountingPeriod: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    incomeType: Option[IncomeTypeModel] = None,
                    contactEmail: Option[EmailModel] = None,
@@ -58,6 +62,7 @@ object TestModels extends Implicits {
                   ): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
+      incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
       accountingPeriod.fold(emptyMap)(model => Map(AccountingPeriod -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       incomeType.fold(emptyMap)(model => Map(IncomeType -> IncomeTypeModel.format.writes(model))) ++
@@ -65,5 +70,11 @@ object TestModels extends Implicits {
       terms.fold(emptyMap)(model => Map(Terms -> TermModel.format.writes(model)))
     CacheMap("", map)
   }
+
+  def testIncomeSourceBusiness = IncomeSourceModel(IncomeSourceForm.option_business)
+
+  def testIncomeSourceProperty = IncomeSourceModel(IncomeSourceForm.option_property)
+
+  def testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
 
 }
