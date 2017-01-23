@@ -4,7 +4,7 @@ base.continue                                                   = Continue
 base.submit                                                     = Submit
 base.startDate                                                  = Start date
 base.endDate                                                    = End date
-base.exampleDate                                                = Example: 30 04 2017
+base.exampleDate                                                = For example, 31 3 1980
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
@@ -28,8 +28,12 @@ property.income.line_1                                          = This is the am
 
 
 ## Business Accounting Period page
-accounting_period.heading                                       = What is your accounting period?
-accounting_period.title                                         = What is your accounting period?
+accounting_period.title                                         = Business accounting period
+accounting_period.heading                                       = Enter your accounting period dates
+accounting_period.line_1                                        = This is the period your business accounts cover.
+accounting_period.line_2                                        = You will only be able to send digital updates to HMRC if your accounting period starts on or after 1 April 2017. If it starts before this date, you will still be able to register, but you will have to report your income and expenditure in a Self Assessment tax return.
+accounting_period.hint                                          = Help me find my accounting period dates
+accounting_period.hint.line_1                                   = Your accounting period start date is usually the day after the end of your previous accounting period, or ''year end''. For example, if you made your accounts up to 5 April 2017, your next period will start on 6 April 2017.
 
 # Sole trader page
 business.sole_trader.title                                      = Are you a sole trader?

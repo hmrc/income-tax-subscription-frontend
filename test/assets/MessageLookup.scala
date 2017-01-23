@@ -56,18 +56,27 @@ object MessageLookup {
   }
 
   object Business {
-    object SoleTrader{
+
+    object SoleTrader {
       val title = "Are you a sole trader?"
       val heading: String = title
       val line_1 = "As a sole trader, you run your own business as an individual. You can keep all your business's profits after you've paid tax on them. 'Sole trader' means you're responsible for the business, not that you have to work alone."
       val yes = "Yes - I’m a sole trader"
       val no = "No - I am a different type of business"
     }
+
   }
 
   object AccountingPeriod {
-    val title = "What is your accounting period?"
-    val heading = "What is your accounting period?"
+    val title = "Business accounting period"
+    val heading = "Enter your accounting period dates"
+    val line_1 = "This is the period your business accounts cover."
+    val line_2 = "You will only be able to send digital updates to HMRC if your accounting period starts on or after 1 April 2017. If it starts before this date, you will still be able to register, but you will have to report your income and expenditure in a Self Assessment tax return."
+    val hint = "Help me find my accounting period dates"
+
+    object Hint {
+      val line_1 = "Your accounting period start date is usually the day after the end of your previous accounting period, or 'year end'. For example, if you made your accounts up to 5 April 2017, your next period will start on 6 April 2017."
+    }
   }
 
   object ContactEmail {
