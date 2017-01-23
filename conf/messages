@@ -59,8 +59,9 @@ terms.title                                                     = Terms
 terms.heading                                                   = Terms
 
 ## Contact Email Address page ##
-contact_email.title                                             = What is your contact email address?
-contact_email.heading                                           = What is your contact email address?
+contact_email.title                                             = Enter your email address
+contact_email.heading                                           = Enter your email address
+contact_email.line_1                                            = We’ll use this to get in touch with updates about your estimated Income Tax calculations.
 
 ## Timeout page ##
 timeout.title                                                   = Session closed due to inactivity

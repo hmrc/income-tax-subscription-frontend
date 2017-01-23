@@ -41,6 +41,10 @@ class ContactEmailViewSpec extends PlaySpec with OneAppPerTest {
       document.select("h1").text() mustBe messages.heading
     }
 
+    s"have the line_1 (P) '${messages.line_1}'" in {
+      document.select("p").text() must include(messages.line_1)
+    }
+
     "has a form" which {
 
       "has a text input field for the email address" in {

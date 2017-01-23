@@ -81,8 +81,9 @@ object MessageLookup {
   }
 
   object ContactEmail {
-    val title = "What is your contact email address?"
+    val title = "Enter your email address"
     val heading: String = title
+    val line_1 = "We’ll use this to get in touch with updates about your estimated Income Tax calculations."
   }
 
   object BusinessName {
