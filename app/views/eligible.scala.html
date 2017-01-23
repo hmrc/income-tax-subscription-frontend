@@ -4,6 +4,7 @@
 @(postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @views.html.templates.main_template(title = Messages("eligible.title"), bodyClasses = None) {
+    @back_link()
 
     <h1 class="heading-xlarge">@Messages("eligible.heading")</h1>
 

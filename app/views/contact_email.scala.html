@@ -6,6 +6,7 @@
 @(contactEmailForm: Form[EmailModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @views.html.templates.main_template(title = Messages("contact_email.title"), bodyClasses = None) {
+    @back_link()
 
     @summaryErrorHelper(contactEmailForm)
 

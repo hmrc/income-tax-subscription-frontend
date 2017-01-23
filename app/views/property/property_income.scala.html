@@ -9,6 +9,7 @@
 }
 
 @views.html.templates.main_template(title = Messages("property.income.title"), bodyClasses = None) {
+    @back_link()
 
     @summaryErrorHelper(propertyIncomeForm)
 

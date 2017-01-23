@@ -5,6 +5,7 @@
 @(notEligibleForm: Form[NotEligibleModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
 @views.html.templates.main_template(title = Messages("not-eligible.title"), bodyClasses = None) {
+    @back_link()
 
     @summaryErrorHelper(notEligibleForm)
 

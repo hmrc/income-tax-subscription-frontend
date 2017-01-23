@@ -71,6 +71,8 @@
 }
 
 @views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None) {
+    @back_link()
+
     <h1 class="heading-xlarge">@Messages("summary.heading")</h1>
 
     <div class="form-group">
