@@ -58,6 +58,7 @@ trait MockKeystoreService extends MockTrait {
   protected final def setupMockKeystore(
                                          fetchIncomeSource: MFO[IncomeSourceModel] = DoNotConfigure,
                                          fetchPropertyIncome: MFO[PropertyIncomeModel] = DoNotConfigure,
+                                         fetchSoleTrader: MFO[SoleTraderModel] = DoNotConfigure,
                                          fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
                                          fetchAccountingPeriod: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchContactEmail: MFO[EmailModel] = DoNotConfigure,
@@ -68,6 +69,7 @@ trait MockKeystoreService extends MockTrait {
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
     mockFetchFromKeyStore[IncomeSourceModel](IncomeSource, fetchIncomeSource)
+    mockFetchFromKeyStore[SoleTraderModel](SoleTrader, fetchSoleTrader)
     mockFetchFromKeyStore[PropertyIncomeModel](PropertyIncome, fetchPropertyIncome)
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriod, fetchAccountingPeriod)
@@ -85,6 +87,8 @@ trait MockKeystoreService extends MockTrait {
   protected final def verifyKeystore(
                                       fetchIncomeSource: Option[Int] = None,
                                       saveIncomeSource: Option[Int] = None,
+                                      fetchSoleTrader: Option[Int] = None,
+                                      saveSoleTrader: Option[Int] = None,
                                       fetchPropertyIncome: Option[Int] = None,
                                       savePropertyIncome: Option[Int] = None,
                                       fetchBusinessName: Option[Int] = None,
@@ -104,6 +108,8 @@ trait MockKeystoreService extends MockTrait {
                                     ): Unit = {
     verifyKeystoreFetch(IncomeSource, fetchIncomeSource)
     verifyKeystoreSave(IncomeSource, saveIncomeSource)
+    verifyKeystoreFetch(SoleTrader, fetchSoleTrader)
+    verifyKeystoreSave(SoleTrader, saveSoleTrader)
     verifyKeystoreFetch(PropertyIncome, fetchPropertyIncome)
     verifyKeystoreSave(PropertyIncome, savePropertyIncome)
     verifyKeystoreFetch(BusinessName, fetchBusinessName)

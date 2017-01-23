@@ -31,6 +31,13 @@ property.income.line_1                                          = This is the am
 accounting_period.heading                                       = What is your accounting period?
 accounting_period.title                                         = What is your accounting period?
 
+# Sole trader page
+business.sole_trader.title                                      = Are you a sole trader?
+business.sole_trader.heading                                    = Are you a sole trader?
+business.sole_trader.line_1                                     = As a sole trader, you run your own business as an individual. You can keep all your business''s profits after you''ve paid tax on them. ''Sole trader'' means you''re responsible for the business, not that you have to work alone.
+business.sole_trader.yes                                        = Yes - I’m a sole trader
+business.sole_trader.no                                         = No - I am a different type of business
+
 ## Business Income page
 business.income_type.title                                      = How do you receive your business income?
 business.income_type.heading                                    = How do you receive your business income?
@@ -110,6 +117,9 @@ confirmation.giveUsFeedback.feedbackDuration                    = (takes 30 seco
 ## Errors ##
 error.income_source.empty                                       = Please select an income source
 error.income_source.invalid                                     = Please select an income source
+
+error.business.sole_trader.empty                                = Please select an option
+error.business.sole_trader.invalid                              = Please select an option
 
 error.property.income.empty                                     = Please select an option
 error.property.income.invalid                                   = Please select an option

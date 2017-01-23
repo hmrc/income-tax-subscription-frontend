@@ -152,6 +152,15 @@ object MessageLookup {
 
   object Error {
 
+    object Business {
+
+      object SoleTrader {
+        val empty = "Please select an option"
+        val invalid = "Please select an option"
+      }
+
+    }
+
     object Property {
 
       object Income {

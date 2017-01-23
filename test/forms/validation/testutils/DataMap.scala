@@ -23,6 +23,7 @@ import play.api.data.validation.{Constraint, Invalid}
 object DataMap {
 
   import forms.BusinessNameForm._
+  import forms.SoleTraderForm
   import forms.EmailForm._
   import forms.IncomeTypeForm
   import forms.TermForm._
@@ -45,13 +46,15 @@ object DataMap {
 
   def busName(name: String): DataMap = Map(businessName -> name)
 
+  def soleTrader(isSoleTrader: String): DataMap = Map(SoleTraderForm.soleTrader -> isSoleTrader)
+
   def incomeType(iType: String): DataMap = Map(IncomeTypeForm.incomeType -> iType)
 
   def propertyIncomeValue(iType: String): DataMap = Map(PropertyIncomeForm.incomeValue -> iType)
 
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 
-  def notEligibleChoice(iType: String): DataMap = Map(choice-> iType)
+  def notEligibleChoice(iType: String): DataMap = Map(choice -> iType)
 
   def email(email: String): DataMap = Map(emailAddress -> email)
 
