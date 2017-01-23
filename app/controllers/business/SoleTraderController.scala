@@ -72,6 +72,6 @@ trait SoleTraderController extends BaseController {
     Future.successful(Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod()))
 
   def no(implicit request: Request[_]): Future[Result] =
-    Future.successful(NotImplemented)
+    Future.successful(Redirect(controllers.routes.NotEligibleController.showNotEligible()))
 
 }

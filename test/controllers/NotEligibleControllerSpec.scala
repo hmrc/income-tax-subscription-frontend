@@ -73,18 +73,19 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
     def callShow(option: String) = TestNotEligibleController.submitNotEligible(authenticatedFakeRequest()
       .post(NotEligibleForm.notEligibleForm, NotEligibleModel(option)))
 
-    "return a not implemented status (501) for SignUp on a business journey" in {
+    "return a see other status (303) for SignUp on a business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
-      status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
 
       await(goodRequest)
       verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)
     }
 
-    "return a not implemented status (501) for SignUp on a property journey" in {
+    "return a see other status (303) for SignUp on a property journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
 
       val goodRequest = callShow(NotEligibleForm.option_signup)
@@ -96,12 +97,13 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)
     }
 
-    "return a not implemented status (501) for SignUp on a business and property journey" in {
+    "return a see other status (303) for SignUp on a business and property journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
-      status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
 
       await(goodRequest)
       verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)

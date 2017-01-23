@@ -72,7 +72,8 @@ trait NotEligibleController extends BaseController {
     keystoreService.fetchIncomeSource() map {
       case Some(incomeSource) =>
         incomeSource.source match {
-          case IncomeSourceForm.option_business | IncomeSourceForm.option_both => NotImplemented
+          case IncomeSourceForm.option_business | IncomeSourceForm.option_both =>
+            Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
           case IncomeSourceForm.option_property =>
             Redirect(controllers.routes.ContactEmailController.showContactEmail())
         }

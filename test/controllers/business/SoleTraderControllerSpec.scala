@@ -85,12 +85,13 @@ class SoleTraderControllerSpec extends ControllerBaseSpec
       verifyKeystore(fetchSoleTrader = 0, saveSoleTrader = 1)
     }
 
-    "return a unimplemented (501) for no" in {
+    "return a SEE OTHER (303) for no" in {
       setupMockKeystoreSaveFunctions()
 
       val goodRequest = callShow(SoleTraderForm.option_no)
 
-      status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest).get mustBe controllers.routes.NotEligibleController.showNotEligible().url
 
       await(goodRequest)
       verifyKeystore(fetchSoleTrader = 0, saveSoleTrader = 1)
