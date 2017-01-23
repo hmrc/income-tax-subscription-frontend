@@ -80,6 +80,18 @@ class SummaryPageViewSpec extends UnitTestTrait {
       document.select("h1").text() mustBe messages.heading
     }
 
+    s"have the line_1 (P) '${messages.line_1}'" in {
+      document.select("p").text() must include(messages.line_1)
+    }
+
+    s"have the secondary heading (H2) '${messages.h2}'" in {
+      document.select("h2").text() must include(messages.h2)
+    }
+
+    s"have the line_2 (P) '${messages.line_2}'" in {
+      document.select("p").text() must include(messages.line_2)
+    }
+
     "has a form" which {
 
       "has a submit button" in {
