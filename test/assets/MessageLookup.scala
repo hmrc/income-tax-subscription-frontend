@@ -55,6 +55,16 @@ object MessageLookup {
 
   }
 
+  object Business {
+    object SoleTrader{
+      val title = "Are you a sole trader?"
+      val heading: String = title
+      val line_1 = "As a sole trader, you run your own business as an individual. You can keep all your business's profits after you've paid tax on them. 'Sole trader' means you're responsible for the business, not that you have to work alone."
+      val yes = "Yes - I’m a sole trader"
+      val no = "No - I am a different type of business"
+    }
+  }
+
   object AccountingPeriod {
     val title = "What is your accounting period?"
     val heading = "What is your accounting period?"
