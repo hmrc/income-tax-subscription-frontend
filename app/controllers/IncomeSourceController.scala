@@ -72,6 +72,6 @@ trait IncomeSourceController extends BaseController {
 
   def property(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.property.routes.PropertyIncomeController.showPropertyIncome()))
 
-  def both(implicit request: Request[_]): Future[Result] = Future.successful(NotImplemented)
+  def both(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.property.routes.PropertyIncomeController.showPropertyIncome()))
 
 }

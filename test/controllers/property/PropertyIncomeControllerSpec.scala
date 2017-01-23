@@ -25,6 +25,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utils.TestModels
 
 class PropertyIncomeControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -82,11 +83,11 @@ class PropertyIncomeControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest).get mustBe controllers.routes.NotEligibleController.showNotEligible().url
 
       await(goodRequest)
-      verifyKeystore(fetchPropertyIncome = 0, savePropertyIncome = 1)
+      verifyKeystore(fetchPropertyIncome = 0, savePropertyIncome = 1, fetchIncomeSource = 0)
     }
 
-    "return SEE OTHER (303)  for 10k or more" in {
-      setupMockKeystoreSaveFunctions()
+    "return SEE OTHER (303)  for 10k or more when on the property journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
 
       val goodRequest = callShow(PropertyIncomeForm.option_GE10k)
 
@@ -94,7 +95,19 @@ class PropertyIncomeControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest).get mustBe controllers.routes.EligibleController.showEligible().url
 
       await(goodRequest)
-      verifyKeystore(fetchPropertyIncome = 0, savePropertyIncome = 1)
+      verifyKeystore(fetchPropertyIncome = 0, savePropertyIncome = 1, fetchIncomeSource = 1)
+    }
+
+    "return SEE OTHER (303)  for 10k or more when on the business and property journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+
+      val goodRequest = callShow(PropertyIncomeForm.option_GE10k)
+
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest).get mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
+
+      await(goodRequest)
+      verifyKeystore(fetchPropertyIncome = 0, savePropertyIncome = 1, fetchIncomeSource = 1)
     }
 
   }
