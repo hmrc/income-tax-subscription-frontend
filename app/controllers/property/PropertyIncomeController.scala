@@ -43,7 +43,8 @@ trait PropertyIncomeController extends BaseController {
   def view(propertyIncomeForm: Form[PropertyIncomeModel])(implicit request: Request[_]): Html =
     views.html.property.property_income(
       propertyIncomeForm = propertyIncomeForm,
-      postAction = controllers.property.routes.PropertyIncomeController.submitPropertyIncome()
+      postAction = controllers.property.routes.PropertyIncomeController.submitPropertyIncome(),
+      backUrl = backUrl
     )
 
   val showPropertyIncome: Action[AnyContent] = Authorised.async { implicit user =>
@@ -81,4 +82,6 @@ trait PropertyIncomeController extends BaseController {
 
   def notEligible(implicit request: Request[_]): Future[Result] =
     Future.successful(Redirect(controllers.routes.NotEligibleController.showNotEligible()))
+
+  lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url
 }

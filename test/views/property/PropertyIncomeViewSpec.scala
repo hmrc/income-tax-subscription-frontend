@@ -25,13 +25,23 @@ import play.api.test.FakeRequest
 
 class PropertyIncomeViewSpec extends PlaySpec with OneAppPerTest {
 
+  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+
   lazy val page = views.html.property.property_income(
     propertyIncomeForm = PropertyIncomeForm.propertyIncomeForm,
-    postAction = controllers.property.routes.PropertyIncomeController.submitPropertyIncome()
+    postAction = controllers.property.routes.PropertyIncomeController.submitPropertyIncome(),
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages)
+
   lazy val document = Jsoup.parse(page.body)
 
   "The Property Income view" should {
+
+    s"have a back buttong pointed to $backUrl" in {
+      val backLink = document.select("#back")
+      backLink.isEmpty mustBe false
+      backLink.attr("href") mustBe backUrl
+    }
 
     s"have the title '${messages.title}'" in {
       document.title() mustBe messages.title
