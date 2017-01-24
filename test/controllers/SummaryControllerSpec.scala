@@ -75,6 +75,13 @@ class SummaryControllerSpec extends ControllerBaseSpec
       redirectLocation(result) mustBe Some(controllers.routes.ConfirmationController.showConfirmation().url)
     }
   }
+
+  "The back url" should {
+    s"point to ${controllers.routes.TermsController.showTerms().url}" in {
+      TestSummaryController.backUrl mustBe controllers.routes.TermsController.showTerms().url
+    }
+  }
+
   authorisationTests
 
 }

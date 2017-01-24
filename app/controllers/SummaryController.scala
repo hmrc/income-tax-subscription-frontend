@@ -42,7 +42,11 @@ trait SummaryController extends FrontendController with AuthorisedForIncomeTaxSA
   val showSummary = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchAll() map {
-        case Some(cache) => Ok(views.html.summary_page(cache.getSummary, controllers.routes.SummaryController.submitSummary()))
+        case Some(cache) =>
+          Ok(views.html.summary_page(cache.getSummary,
+            controllers.routes.SummaryController.submitSummary(),
+            backUrl = backUrl
+          ))
       }
   }
 
@@ -50,4 +54,7 @@ trait SummaryController extends FrontendController with AuthorisedForIncomeTaxSA
     implicit request =>
       Future.successful(Redirect(controllers.routes.ConfirmationController.showConfirmation()))
   }
+
+  lazy val backUrl: String = controllers.routes.TermsController.showTerms().url
+
 }

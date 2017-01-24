@@ -2,7 +2,7 @@
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 
-@(summaryModel: SummaryModel, postAction: Call)(implicit request: Request[_], messages: Messages)
+@(summaryModel: SummaryModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 @import SummaryIdConstants._
 @import SummaryHelper._
 
@@ -71,7 +71,7 @@
 }
 
 @views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None) {
-    @back_link()
+    @back_link(backUrl)
 
     <h1 class="heading-xlarge">@Messages("summary.heading")</h1>
 

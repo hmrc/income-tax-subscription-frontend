@@ -4,12 +4,12 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers._
 
-@(termsForm: Form[TermModel], postAction: Call)(implicit request: Request[_], messages: Messages)
+@(termsForm: Form[TermModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @termsHref = @{"https://www.gov.uk/help/terms-conditions"}
 
 @views.html.templates.main_template(title = Messages("terms.title"), bodyClasses = None) {
-    @back_link()
+    @back_link(backUrl)
 
     @summaryErrorHelper(termsForm)
 

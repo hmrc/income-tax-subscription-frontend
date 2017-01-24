@@ -46,10 +46,12 @@ class SummaryPageViewSpec extends UnitTestTrait {
   )
 
   lazy val postAction: Call = controllers.routes.SummaryController.submitSummary()
+  lazy val backUrl: String = controllers.routes.TermsController.showTerms().url
 
   lazy val page: Html = views.html.summary_page(
     summaryModel = testSummary,
-    postAction = postAction
+    postAction = postAction,
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages)
 
   lazy val document: Document = page.doc
@@ -71,6 +73,12 @@ class SummaryPageViewSpec extends UnitTestTrait {
   }
 
   "Summary page view" should {
+
+    s"have a back buttong pointed to $backUrl" in {
+      val backLink = document.getElementById("back")
+      backLink.isEmpty shouldBe false
+      backLink.attr("href") shouldBe backUrl
+    }
 
     s"have the title '${messages.title}'" in {
       document.title() mustBe messages.title
