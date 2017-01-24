@@ -23,8 +23,10 @@ import forms.SoleTraderForm
 import models.SoleTraderModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utils.TestModels
 
 class SoleTraderControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -59,6 +61,9 @@ class SoleTraderControllerSpec extends ControllerBaseSpec
     lazy val result = TestSoleTraderController.showSoleTrader(authenticatedFakeRequest())
 
     "return ok (200)" in {
+      // required for backurl
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+
       setupMockKeystore(fetchSoleTrader = None)
 
       status(result) must be(Status.OK)
@@ -74,7 +79,8 @@ class SoleTraderControllerSpec extends ControllerBaseSpec
       .post(SoleTraderForm.soleTraderForm, SoleTraderModel(answer)))
 
     "return an SEE OTHER (303) for yes" in {
-      setupMockKeystoreSaveFunctions()
+      // required for backurl
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       val goodRequest = callShow(SoleTraderForm.option_yes)
 
@@ -86,7 +92,8 @@ class SoleTraderControllerSpec extends ControllerBaseSpec
     }
 
     "return a SEE OTHER (303) for no" in {
-      setupMockKeystoreSaveFunctions()
+      // required for backurl
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       val goodRequest = callShow(SoleTraderForm.option_no)
 
@@ -102,6 +109,9 @@ class SoleTraderControllerSpec extends ControllerBaseSpec
     lazy val badRequest = TestSoleTraderController.submitSoleTrader(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
+      // required for backurl
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
@@ -109,6 +119,20 @@ class SoleTraderControllerSpec extends ControllerBaseSpec
     }
   }
 
+  "The back url" should {
+    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on business journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+      await(TestSoleTraderController.backUrl(FakeRequest())) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+      verifyKeystore(fetchIncomeSource = 1)
+    }
+
+    s"point to ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url} if on business + property journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+      await(TestSoleTraderController.backUrl(FakeRequest())) mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+      verifyKeystore(fetchIncomeSource = 1)
+    }
+  }
 
   authorisationTests
+
 }

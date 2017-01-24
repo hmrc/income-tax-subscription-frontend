@@ -25,13 +25,23 @@ import play.api.test.FakeRequest
 
 class SoleTraderViewSpec extends PlaySpec with OneAppPerTest {
 
+  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+
   lazy val page = views.html.business.sole_trader(
     soleTraderForm = SoleTraderForm.soleTraderForm,
-    postAction = controllers.business.routes.SoleTraderController.submitSoleTrader()
+    postAction = controllers.business.routes.SoleTraderController.submitSoleTrader(),
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages)
+
   lazy val document = Jsoup.parse(page.body)
 
   "The Sole trader view" should {
+
+    s"have a back buttong pointed to $backUrl" in {
+      val backLink = document.select("#back")
+      backLink.isEmpty mustBe false
+      backLink.attr("href") mustBe backUrl
+    }
 
     s"have the title '${messages.title}'" in {
       document.title() mustBe messages.title
