@@ -55,37 +55,68 @@ object MessageLookup {
 
   }
 
+  object Business {
+
+    object SoleTrader {
+      val title = "Are you a sole trader?"
+      val heading: String = title
+      val line_1 = "As a sole trader, you run your own business as an individual. You can keep all your business's profits after you've paid tax on them. 'Sole trader' means you're responsible for the business, not that you have to work alone."
+      val yes = "Yes - I’m a sole trader"
+      val no = "No - I am a different type of business"
+    }
+
+  }
+
   object AccountingPeriod {
-    val title = "What is your accounting period?"
-    val heading = "What is your accounting period?"
+    val title = "Business accounting period"
+    val heading = "Enter your accounting period dates"
+    val line_1 = "This is the period your business accounts cover."
+    val line_2 = "You will only be able to send digital updates to HMRC if your accounting period starts on or after 1 April 2017. If it starts before this date, you will still be able to register, but you will have to report your income and expenditure in a Self Assessment tax return."
+    val hint = "Help me find my accounting period dates"
+
+    object Hint {
+      val line_1 = "Your accounting period start date is usually the day after the end of your previous accounting period, or 'year end'. For example, if you made your accounts up to 5 April 2017, your next period will start on 6 April 2017."
+    }
+
   }
 
   object ContactEmail {
-    val title = "What is your contact email address?"
+    val title = "Enter your email address"
     val heading: String = title
+    val line_1 = "We’ll use this to get in touch with updates about your estimated Income Tax calculations."
   }
 
   object BusinessName {
-    val title = "What is your business name?"
-    val heading: String = title
-    val hint = "This does not mean trading name"
+    val title = "Business name"
+    val heading: String = "What is your business name?"
+    val line_1 = "This is the business name you gave when you registered for Self Assessment."
   }
 
   object BusinessIncomeType {
-    val title = "How do you receive your business income?"
-    val heading: String = title
-    val cash = "Cash"
-    val accruals = "Accruals"
+    val title = "Accounting method"
+    val heading: String = "Which accounting method do you use?"
+    val line_1 = "This is how you keep records of your business income and expenses for your tax return."
+    val cash = "Cash basis accounting You only record income or expenses when you receive money or pay a bill"
+    val accruals = "Traditional accounting (‘accruals basis’) You record income and expenses by the date you invoiced or were billed"
   }
 
   object Terms {
-    val title = "Terms"
+    val title = "Terms and conditions"
     val heading: String = title
+    val line_1 = "To use this service you must accept the terms and conditions."
+    val line_2 = "By accepting the terms and conditions, you agree:"
+    val li_1 = "that HMRC can use the email address you have provided to contact you about your digital tax updates"
+    val li_2 = "to use accounting software to send digital income and expenditure updates to HMRC at least every 3 months from the start of your accounting period"
+    val li_3 = "to contact HMRC immediately if you start a new business or sell or close down your current business"
+    val checkbox = "I accept the terms and conditions"
   }
 
   object Summary {
     val title = "Check your answers"
     val heading: String = title
+    val line_1 = "You can edit your answers if you need to. When you're ready, submit your answers to sign up to send HMRC digital income and expenditure updates."
+    val h2 = "Now send your application"
+    val line_2 = "By submitting this notification you are confirming that, to the best of your knowledge, the details you are providing are correct."
     val income_source = "Income type"
 
     object IncomeSource {
@@ -94,7 +125,7 @@ object MessageLookup {
       val both = "Business and property"
     }
 
-    val accounting_period = "Business accounting period"
+    val accounting_period = "Accounting period"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "Business name"
     val income_type = "Accounting type"
@@ -104,9 +135,9 @@ object MessageLookup {
       val accruals = "Accruals basis"
     }
 
-    val contact_email = "Contact email"
+    val contact_email = "Email"
     val terms = "Terms and conditions"
-    val terms_agreed = "Read and agreed"
+    val terms_agreed = "I agree"
   }
 
   object Timeout {
@@ -151,6 +182,15 @@ object MessageLookup {
   }
 
   object Error {
+
+    object Business {
+
+      object SoleTrader {
+        val empty = "Please select an option"
+        val invalid = "Please select an option"
+      }
+
+    }
 
     object Property {
 

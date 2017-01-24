@@ -18,7 +18,7 @@ package controllers.property
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.BaseController
-import forms.PropertyIncomeForm
+import forms.{IncomeSourceForm, PropertyIncomeForm}
 import models.PropertyIncomeModel
 import play.api.Play.current
 import play.api.data.Form
@@ -68,8 +68,16 @@ trait PropertyIncomeController extends BaseController {
       )
   }
 
-  def eligible(implicit request: Request[_]): Future[Result] =
-    Future.successful(Redirect(controllers.routes.EligibleController.showEligible()))
+  def eligible(implicit request: Request[_]): Future[Result] = {
+    keystoreService.fetchIncomeSource() map {
+      case Some(incomeSource) => incomeSource.source match {
+        case IncomeSourceForm.option_property =>
+          Redirect(controllers.routes.EligibleController.showEligible())
+        case IncomeSourceForm.option_both =>
+          Redirect(controllers.business.routes.SoleTraderController.showSoleTrader())
+      }
+    }
+  }
 
   def notEligible(implicit request: Request[_]): Future[Result] =
     Future.successful(Redirect(controllers.routes.NotEligibleController.showNotEligible()))

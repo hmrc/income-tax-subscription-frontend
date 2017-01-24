@@ -17,14 +17,16 @@
 
     <h1>@question</h1>
 
+    <p>@Messages("business.income_type.line_1")</p>
+
     @form(action = postAction) {
 
         @radioHelper(
             field = incomeTypeForm(IncomeTypeForm.incomeType),
             legend = question,
             options = Seq(
-                RadioOption(IncomeTypeForm.option_cash, Messages("business.income_type.cash")),
-                RadioOption(IncomeTypeForm.option_accruals, Messages("business.income_type.accruals"))
+                RadioOption(IncomeTypeForm.option_accruals, Messages("business.income_type.accruals")),
+                RadioOption(IncomeTypeForm.option_cash, Messages("business.income_type.cash"))
             ),
             parentForm = incomeTypeForm
         )

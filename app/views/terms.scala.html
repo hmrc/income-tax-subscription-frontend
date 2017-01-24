@@ -6,17 +6,29 @@
 
 @(termsForm: Form[TermModel], postAction: Call)(implicit request: Request[_], messages: Messages)
 
+@termsHref = @{"https://www.gov.uk/help/terms-conditions"}
+
 @views.html.templates.main_template(title = Messages("terms.title"), bodyClasses = None) {
 
     @summaryErrorHelper(termsForm)
 
     <h1>@Messages("terms.heading")</h1>
 
+    <p>@Html(Messages("terms.line_1", termsHref))</p>
+
+    <p>@Messages("terms.line_2")</p>
+
+    <ul class="list list-bullet">
+        <li>@Messages("terms.li_1")</li>
+        <li>@Messages("terms.li_2")</li>
+        <li>@Messages("terms.li_3")</li>
+    </ul>
+
     @form(action = postAction) {
 
         @checkboxHelper(
             field = termsForm(hasAcceptedTerms),
-            label = "Read and agree",
+            label = Messages("terms.checkbox", termsHref),
             parentForm = termsForm
         )
 

@@ -42,11 +42,11 @@ class BusinessNameViewSpec extends UnitTestTrait {
       document.select("h1").text() mustBe messages.heading
     }
 
-    "has a form" which {
+    s"have the line_1 (P) '${messages.line_1}'" in {
+      document.select("p").text() must include(messages.line_1)
+    }
 
-      s"has the hint text '${MessageLookup.BusinessName.hint}'" in {
-        document.select("span.form-hint").text() mustBe MessageLookup.BusinessName.hint
-      }
+    "has a form" which {
 
       "has a text input field for the business name" in {
         document.select("input[name=BusinessName]").isEmpty mustBe false

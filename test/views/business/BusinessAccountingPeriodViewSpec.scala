@@ -41,6 +41,14 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
       document.select("h1").text() mustBe messages.heading
     }
 
+    s"have the line_1 (P) '${messages.line_1}'" in {
+      document.select("p").text() must include(messages.line_1)
+    }
+
+    s"have the line_2 (P) '${messages.line_2}'" in {
+      document.select("p").text() must include(messages.line_2)
+    }
+
     "has a form" which {
 
       s"Has a legend with the text '${commonMessages.startDate}'" in {
@@ -64,7 +72,8 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
 
     "has an accordion" in {
       document.select("details").isEmpty mustBe false
-      document.select("details summary").text mustBe commonMessages.where_can_i_get_this_information
+      document.select("details summary").text mustBe messages.hint
+      document.select("details div").text mustBe messages.Hint.line_1
     }
 
   }

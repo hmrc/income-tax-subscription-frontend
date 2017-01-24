@@ -72,35 +72,37 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     def callShow(option: String) = TestIncomeSourceController.submitIncomeSource(authenticatedFakeRequest()
       .post(IncomeSourceForm.incomeSourceForm, IncomeSourceModel(option)))
 
-    "return an unimplemented (501) for business" in {
+    "return an SEE OTHER (303) for business" in {
       setupMockKeystoreSaveFunctions()
 
       val goodRequest = callShow(IncomeSourceForm.option_business)
 
-      status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest).get mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
     }
 
-    "return a SEE OTHER (300) for property" in {
+    "return a SEE OTHER (303) for property" in {
       setupMockKeystoreSaveFunctions()
 
       val goodRequest = callShow(IncomeSourceForm.option_property)
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest).get mustBe controllers.property.routes.PropertyIncomeController.submitPropertyIncome().url
+      redirectLocation(goodRequest).get mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
     }
 
-    "return an unimplemented (501) for both" in {
+    "return a SEE OTHER (303) for both" in {
       setupMockKeystoreSaveFunctions()
 
       val goodRequest = callShow(IncomeSourceForm.option_both)
 
-      status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest).get mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)

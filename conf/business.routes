@@ -1,3 +1,7 @@
+#Are You a Sole Trader Routes
+GET        /sole-trader                 controllers.business.SoleTraderController.showSoleTrader
+POST       /sole-trader                 controllers.business.SoleTraderController.submitSoleTrader
+
 #Accounting Period Routes
 GET        /accounting-period           controllers.business.BusinessAccountingPeriodController.showAccountingPeriod
 POST       /accounting-period           controllers.business.BusinessAccountingPeriodController.submitAccountingPeriod

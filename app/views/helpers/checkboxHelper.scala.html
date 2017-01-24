@@ -25,6 +25,6 @@
     @fieldErrorHelper(field, parentForm)
     <label class="block-label selection-button-checkbox" for="@{field.name}">
         <input id="@{field.name}" name="@{field.name}" type="checkbox" value="true" @isChecked>
-        @label
+        @Html(label)
     </label>
 </div>

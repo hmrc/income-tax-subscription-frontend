@@ -16,22 +16,22 @@
 
 package views.business
 
-import assets.MessageLookup.{BusinessIncomeType => messages}
-import forms.IncomeTypeForm
+import assets.MessageLookup.Business.{SoleTrader => messages}
+import forms.SoleTraderForm
 import org.jsoup.Jsoup
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
-class BusinessIncomeTypeViewSpec extends PlaySpec with OneAppPerTest {
+class SoleTraderViewSpec extends PlaySpec with OneAppPerTest {
 
-  lazy val page = views.html.business.income_type(
-    incomeTypeForm = IncomeTypeForm.incomeTypeForm,
-    postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType()
+  lazy val page = views.html.business.sole_trader(
+    soleTraderForm = SoleTraderForm.soleTraderForm,
+    postAction = controllers.business.routes.SoleTraderController.submitSoleTrader()
   )(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
-  "The Business Income Type view" should {
+  "The Sole trader view" should {
 
     s"have the title '${messages.title}'" in {
       document.title() mustBe messages.title
@@ -41,36 +41,38 @@ class BusinessIncomeTypeViewSpec extends PlaySpec with OneAppPerTest {
       document.select("h1").text() mustBe messages.heading
     }
 
-    s"have the line_1 (P) '${messages.line_1}'" in {
+    s"have the line 1 (P) '${messages.line_1}'" in {
       document.select("p").text() must include(messages.line_1)
     }
 
     "has a form" which {
 
-      s"has a fieldset for Cash and Accruals" which {
+      s"has a fieldset for yes and no" which {
+
+        val fieldName = SoleTraderForm.soleTrader
 
         s"has a legend which is visually hidden with the text '${messages.heading}'" in {
           document.select("fieldset legend").text() mustBe messages.heading
         }
 
-        s"has a radio option for 'incomeType-${IncomeTypeForm.option_cash}'" in {
-          val cashRadio = document.select(s"#incomeType-${IncomeTypeForm.option_cash}")
+        s"has a radio option for '$fieldName-${SoleTraderForm.option_yes}'" in {
+          val cashRadio = document.select(s"#$fieldName-${SoleTraderForm.option_yes}")
           cashRadio.attr("type") mustBe "radio"
-          cashRadio.attr("name") mustBe "incomeType"
-          cashRadio.attr("value") mustBe IncomeTypeForm.option_cash
-          val label = document.getElementsByAttributeValue("for", s"incomeType-${IncomeTypeForm.option_cash}")
+          cashRadio.attr("name") mustBe fieldName
+          cashRadio.attr("value") mustBe SoleTraderForm.option_yes
+          val label = document.getElementsByAttributeValue("for", s"$fieldName-${SoleTraderForm.option_yes}")
           label.size() mustBe 1
-          label.get(0).text() mustBe messages.cash
+          label.get(0).text() mustBe messages.yes
         }
 
-        s"has a radio option for 'incomeType-${IncomeTypeForm.option_accruals}'" in {
-          val cashRadio = document.select(s"#incomeType-${IncomeTypeForm.option_accruals}")
+        s"has a radio option for '$fieldName-${SoleTraderForm.option_no}'" in {
+          val cashRadio = document.select(s"#$fieldName-${SoleTraderForm.option_no}")
           cashRadio.attr("type") mustBe "radio"
-          cashRadio.attr("name") mustBe "incomeType"
-          cashRadio.attr("value") mustBe IncomeTypeForm.option_accruals
-          val label = document.getElementsByAttributeValue("for", s"incomeType-${IncomeTypeForm.option_accruals}")
+          cashRadio.attr("name") mustBe fieldName
+          cashRadio.attr("value") mustBe SoleTraderForm.option_no
+          val label = document.getElementsByAttributeValue("for", s"$fieldName-${SoleTraderForm.option_no}")
           label.size() mustBe 1
-          label.get(0).text() mustBe messages.accruals
+          label.get(0).text() mustBe messages.no
         }
       }
 
@@ -78,8 +80,8 @@ class BusinessIncomeTypeViewSpec extends PlaySpec with OneAppPerTest {
         document.select("#continue-button").isEmpty mustBe false
       }
 
-      s"has a post action to '${controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType().url}'" in {
-        document.select("form").attr("action") mustBe controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType().url
+      s"has a post action to '${controllers.business.routes.SoleTraderController.submitSoleTrader().url}'" in {
+        document.select("form").attr("action") mustBe controllers.business.routes.SoleTraderController.submitSoleTrader().url
         document.select("form").attr("method") mustBe "POST"
       }
 

@@ -41,7 +41,7 @@
         @for(option <- options) {
             <label class="block-label selection-button-radio" for="@{field.name}-@option.optionName">
                 <input id="@{field.name}-@option.optionName" type="radio" name="@field.name" value="@option.optionName" @isSelected(option.optionName)>
-                @option.message
+                @Html(option.message)
             </label>
         }
     </fieldset>

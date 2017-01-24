@@ -4,13 +4,12 @@ base.continue                                                   = Continue
 base.submit                                                     = Submit
 base.startDate                                                  = Start date
 base.endDate                                                    = End date
-base.exampleDate                                                = Example: 30 04 2017
+base.exampleDate                                                = For example, 31 3 1980
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
 base.error_heading                                              = Error Summary
 base.change                                                     = Change
-base.where_can_i_get_this_information                           = Where can I get this information
 
 ## Income source page
 income_source.title                                             = Where does your income come from?
@@ -28,27 +27,47 @@ property.income.line_1                                          = This is the am
 
 
 ## Business Accounting Period page
-accounting_period.heading                                       = What is your accounting period?
-accounting_period.title                                         = What is your accounting period?
+accounting_period.title                                         = Business accounting period
+accounting_period.heading                                       = Enter your accounting period dates
+accounting_period.line_1                                        = This is the period your business accounts cover.
+accounting_period.line_2                                        = You will only be able to send digital updates to HMRC if your accounting period starts on or after 1 April 2017. If it starts before this date, you will still be able to register, but you will have to report your income and expenditure in a Self Assessment tax return.
+accounting_period.hint                                          = Help me find my accounting period dates
+accounting_period.hint.line_1                                   = Your accounting period start date is usually the day after the end of your previous accounting period, or ''year end''. For example, if you made your accounts up to 5 April 2017, your next period will start on 6 April 2017.
+
+# Sole trader page
+business.sole_trader.title                                      = Are you a sole trader?
+business.sole_trader.heading                                    = Are you a sole trader?
+business.sole_trader.line_1                                     = As a sole trader, you run your own business as an individual. You can keep all your business''s profits after you''ve paid tax on them. ''Sole trader'' means you''re responsible for the business, not that you have to work alone.
+business.sole_trader.yes                                        = Yes - I’m a sole trader
+business.sole_trader.no                                         = No - I am a different type of business
 
 ## Business Income page
-business.income_type.title                                      = How do you receive your business income?
-business.income_type.heading                                    = How do you receive your business income?
-business.income_type.cash                                       = Cash
-business.income_type.accruals                                   = Accruals
+business.income_type.title                                      = Accounting method
+business.income_type.heading                                    = Which accounting method do you use?
+business.income_type.line_1                                     = This is how you keep records of your business income and expenses for your tax return.
+business.income_type.cash                                       = <span class="heading-small">Cash basis accounting</span><br>You only record income or expenses when you receive money or pay a bill
+business.income_type.accruals                                   = <span class="heading-small">Traditional accounting (‘accruals basis’)</span><br>You record income and expenses by the date you invoiced or were billed
+
 
 ## Business Name
-business.name.title                                             = What is your business name?
+business.name.title                                             = Business name
 business.name.heading                                           = What is your business name?
-business.name.hint                                              = This does not mean trading name
+business.name.line_1                                            = This is the business name you gave when you registered for Self Assessment.
 
 ## Terms and Conditions Messages
-terms.title                                                     = Terms
-terms.heading                                                   = Terms
+terms.title                                                     = Terms and conditions
+terms.heading                                                   = Terms and conditions
+terms.line_1                                                    = To use this service you must accept the <a href="{0}">terms and conditions</a>.
+terms.line_2                                                    = By accepting the terms and conditions, you agree:
+terms.li_1                                                      = that HMRC can use the email address you have provided to contact you about your digital tax updates
+terms.li_2                                                      = to use accounting software to send digital income and expenditure updates to HMRC at least every 3 months from the start of your accounting period
+terms.li_3                                                      = to contact HMRC immediately if you start a new business or sell or close down your current business
+terms.checkbox                                                  = I accept the <a href="{0}">terms and conditions</a>
 
 ## Contact Email Address page ##
-contact_email.title                                             = What is your contact email address?
-contact_email.heading                                           = What is your contact email address?
+contact_email.title                                             = Enter your email address
+contact_email.heading                                           = Enter your email address
+contact_email.line_1                                            = We’ll use this to get in touch with updates about your estimated Income Tax calculations.
 
 ## Timeout page ##
 timeout.title                                                   = Session closed due to inactivity
@@ -72,19 +91,22 @@ technicalIssue.paraTwo                                          = Please try aga
 ## Summary page ##
 summary.title                                                   = Check your answers
 summary.heading                                                 = Check your answers
+summary.line_1                                                  = You can edit your answers if you need to.<br>When you''re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
+summary.h2                                                      = Now send your application
+summary.line_2                                                  = By submitting this notification you are confirming that, to the best of your knowledge, the details you are providing are correct.
 summary.income_source                                           = Income type
 summary.income_source.business                                  = Business
 summary.income_source.property                                  = Property
 summary.income_source.both                                      = Business and property
-summary.accounting_period                                       = Business accounting period
+summary.accounting_period                                       = Accounting period
 summary.accounting_period.month                                 = {0} month period
 summary.business_name                                           = Business name
 summary.income_type                                             = Accounting type
 summary.income_type.cash                                        = Cash basis
 summary.income_type.accruals                                    = Accruals basis
-summary.contact_email                                           = Contact email
+summary.contact_email                                           = Email
 summary.terms                                                   = Terms and conditions
-summary.terms.agreed                                            = Read and agreed
+summary.terms.agreed                                            = I agree
 
 ## Confirmation page ##
 confirmation.title                                              = Submitted
@@ -110,6 +132,9 @@ confirmation.giveUsFeedback.feedbackDuration                    = (takes 30 seco
 ## Errors ##
 error.income_source.empty                                       = Please select an income source
 error.income_source.invalid                                     = Please select an income source
+
+error.business.sole_trader.empty                                = Please select an option
+error.business.sole_trader.invalid                              = Please select an option
 
 error.property.income.empty                                     = Please select an option
 error.property.income.invalid                                   = Please select an option
