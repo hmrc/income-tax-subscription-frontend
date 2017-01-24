@@ -18,7 +18,7 @@ package controllers.business
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.BaseController
-import forms.{AccountingPeriodForm, SoleTraderForm}
+import forms.{AccountingPeriodForm, IncomeSourceForm, PropertyIncomeForm, SoleTraderForm}
 import models.AccountingPeriodModel
 import play.api.Play.current
 import play.api.data.Form
@@ -71,8 +71,8 @@ trait BusinessAccountingPeriodController extends BaseController {
       )
   }
 
-  def backUrl(implicit request: Request[_]): Future[String] =
-    keystoreService.fetchSoleTrader().map {
+  def backUrl(implicit request: Request[_]): Future[String] = {
+    lazy val checkSoleTrader = keystoreService.fetchSoleTrader().map {
       case Some(soleTrader) =>
         soleTrader.isSoleTrader match {
           case SoleTraderForm.option_yes =>
@@ -81,5 +81,24 @@ trait BusinessAccountingPeriodController extends BaseController {
             controllers.routes.NotEligibleController.showNotEligible().url
         }
     }
+
+    lazy val checkPropertyIncome = keystoreService.fetchPropertyIncome() flatMap {
+      case Some(propertyIncome) => propertyIncome.incomeValue match {
+        case PropertyIncomeForm.option_LT10k =>
+          Future.successful(controllers.routes.NotEligibleController.showNotEligible().url)
+        case PropertyIncomeForm.option_GE10k =>
+          checkSoleTrader
+      }
+    }
+
+    keystoreService.fetchIncomeSource() flatMap {
+      case Some(incomeSource) => incomeSource.source match {
+        case IncomeSourceForm.option_business =>
+          checkSoleTrader
+        case IncomeSourceForm.option_both =>
+          checkPropertyIncome
+      }
+    }
+  }
 
 }
