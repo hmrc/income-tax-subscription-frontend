@@ -127,19 +127,25 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
     s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
       await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 0)
     }
 
-    s"point to ${controllers.routes.EligibleController.showEligible().url} on the property journey" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+    s"point to ${controllers.routes.EligibleController.showEligible().url} on the property journey when property income GE10k" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty, fetchPropertyIncome = TestModels.testPropertyIncomeGE10k)
       await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.routes.EligibleController.showEligible().url
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
+    }
+
+    s"point to ${controllers.routes.NotEligibleController.showNotEligible().url} on the property journey when property income LT10k" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty, fetchPropertyIncome = TestModels.testPropertyIncomeLT10k)
+      await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.routes.NotEligibleController.showNotEligible().url
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
     }
 
     s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the business and property journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
       await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 0)
     }
   }
 

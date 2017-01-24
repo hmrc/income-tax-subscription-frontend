@@ -17,8 +17,8 @@
 package controllers
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import forms.{EmailForm, IncomeSourceForm}
-import models.EmailModel
+import forms.{EmailForm, IncomeSourceForm, IncomeTypeForm, PropertyIncomeForm}
+import models.{EmailModel, PropertyIncomeModel}
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
@@ -66,12 +66,19 @@ trait ContactEmailController extends BaseController {
   }
 
   def backUrl(implicit request: Request[_]): Future[String] =
-    keystoreService.fetchIncomeSource() map {
+    keystoreService.fetchIncomeSource() flatMap {
       case Some(source) => source.source match {
         case IncomeSourceForm.option_business | IncomeSourceForm.option_both =>
-          controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+          Future.successful(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
         case _ =>
-          controllers.routes.EligibleController.showEligible().url
+          keystoreService.fetchPropertyIncome() map {
+            case Some(propertyIncome) => propertyIncome.incomeValue match {
+              case PropertyIncomeForm.option_LT10k =>
+                controllers.routes.NotEligibleController.showNotEligible().url
+              case PropertyIncomeForm.option_GE10k =>
+                controllers.routes.EligibleController.showEligible().url
+            }
+          }
       }
     }
 
