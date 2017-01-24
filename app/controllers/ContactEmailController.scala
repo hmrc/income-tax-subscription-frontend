@@ -17,7 +17,7 @@
 package controllers
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import forms.EmailForm
+import forms.{EmailForm, IncomeSourceForm}
 import models.EmailModel
 import play.api.Play.current
 import play.api.data.Form
@@ -39,27 +39,40 @@ trait ContactEmailController extends BaseController {
 
   val keystoreService: KeystoreService
 
-  def view(contactEmailForm: Form[EmailModel])(implicit request: Request[_]): Html =
+  def view(contactEmailForm: Form[EmailModel], backUrl: String)(implicit request: Request[_]): Html =
     views.html.contact_email(
       contactEmailForm = contactEmailForm,
-      postAction = controllers.routes.ContactEmailController.submitContactEmail()
+      postAction = controllers.routes.ContactEmailController.submitContactEmail(),
+      backUrl = backUrl
     )
 
   val showContactEmail: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      keystoreService.fetchContactEmail() map {
-        contactEmail => Ok(view(contactEmailForm = EmailForm.emailForm.fill(contactEmail)))
-      }
+      for {
+        contactEmail <- keystoreService.fetchContactEmail()
+        backUrl <- backUrl
+      } yield Ok(view(contactEmailForm = EmailForm.emailForm.fill(contactEmail), backUrl = backUrl))
   }
 
   val submitContactEmail: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       EmailForm.emailForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(contactEmailForm = formWithErrors))),
+        formWithErrors => backUrl.map(backUrl => BadRequest(view(contactEmailForm = formWithErrors, backUrl = backUrl))),
         contactEmail => {
           keystoreService.saveContactEmail(contactEmail) map (
             _ => Redirect(controllers.routes.TermsController.showTerms()))
         }
       )
   }
+
+  def backUrl(implicit request: Request[_]): Future[String] =
+    keystoreService.fetchIncomeSource() map {
+      case Some(source) => source.source match {
+        case IncomeSourceForm.option_business | IncomeSourceForm.option_both =>
+          controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+        case _ =>
+          controllers.routes.EligibleController.showEligible().url
+      }
+    }
+
 }

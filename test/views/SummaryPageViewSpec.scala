@@ -75,7 +75,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
   "Summary page view" should {
 
     s"have a back buttong pointed to $backUrl" in {
-      val backLink = document.getElementById("back")
+      val backLink = document.select("#back")
       backLink.isEmpty shouldBe false
       backLink.attr("href") shouldBe backUrl
     }

@@ -37,7 +37,7 @@ class TermsViewSpec extends UnitTestTrait {
   "The Terms view" should {
 
     s"have a back buttong pointed to $backUrl" in {
-      val backLink = document.getElementById("back")
+      val backLink = document.select("#back")
       backLink.isEmpty mustBe false
       backLink.attr("href") mustBe backUrl
     }

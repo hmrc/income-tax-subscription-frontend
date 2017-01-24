@@ -25,13 +25,21 @@ import play.api.test.FakeRequest
 
 class ContactEmailViewSpec extends PlaySpec with OneAppPerTest {
 
+  lazy val backUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
   lazy val page = views.html.contact_email(
     contactEmailForm = EmailForm.emailForm,
-    postAction = controllers.routes.ContactEmailController.submitContactEmail()
+    postAction = controllers.routes.ContactEmailController.submitContactEmail(),
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
   "The Contact Email Address view" should {
+
+    s"have a back buttong pointed to $backUrl" in {
+      val backLink = document.select("#back")
+      backLink.isEmpty mustBe false
+      backLink.attr("href") mustBe backUrl
+    }
 
     s"have the title '${messages.title}'" in {
       document.title() mustBe messages.title
