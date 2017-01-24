@@ -16,7 +16,7 @@
 
 package utils
 
-import forms.{IncomeSourceForm, IncomeTypeForm}
+import forms.{IncomeSourceForm, IncomeTypeForm, SoleTraderForm}
 import models._
 import play.api.libs.json.JsValue
 import services.CacheConstants
@@ -71,10 +71,14 @@ object TestModels extends Implicits {
     CacheMap("", map)
   }
 
-  def testIncomeSourceBusiness = IncomeSourceModel(IncomeSourceForm.option_business)
+  lazy val testIncomeSourceBusiness = IncomeSourceModel(IncomeSourceForm.option_business)
 
-  def testIncomeSourceProperty = IncomeSourceModel(IncomeSourceForm.option_property)
+  lazy val testIncomeSourceProperty = IncomeSourceModel(IncomeSourceForm.option_property)
 
-  def testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
+  lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
+
+  lazy val testIsSoleTrader = SoleTraderModel(SoleTraderForm.option_yes)
+
+  lazy val testIsNotSoleTrader = SoleTraderModel(SoleTraderForm.option_no)
 
 }

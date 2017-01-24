@@ -107,6 +107,12 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
   }
 
+  "The back url" should {
+    s"point to ${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}" in {
+      TestBusinessNameController.backUrl mustBe controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+    }
+  }
+
   authorisationTests
 
 }

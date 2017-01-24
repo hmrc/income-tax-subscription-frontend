@@ -124,9 +124,9 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url} on the business journey" in {
+    s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-      await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+      await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
       verifyKeystore(fetchIncomeSource = 1)
     }
 
@@ -136,9 +136,9 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
       verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"point to ${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url} on the business and property journey" in {
+    s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the business and property journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
-      await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+      await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
       verifyKeystore(fetchIncomeSource = 1)
     }
   }

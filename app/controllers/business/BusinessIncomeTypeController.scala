@@ -43,7 +43,8 @@ trait BusinessIncomeTypeController extends BaseController {
   def view(incomeTypeForm: Form[IncomeTypeModel])(implicit request: Request[_]): Html =
     views.html.business.income_type(
       incomeTypeForm = incomeTypeForm,
-      postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType()
+      postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType(),
+      backUrl = backUrl
     )
 
   val showBusinessIncomeType: Action[AnyContent] = Authorised.async { implicit user =>
@@ -63,4 +64,7 @@ trait BusinessIncomeTypeController extends BaseController {
         }
       )
   }
+
+  lazy val backUrl: String = controllers.business.routes.BusinessNameController.showBusinessName().url
+
 }

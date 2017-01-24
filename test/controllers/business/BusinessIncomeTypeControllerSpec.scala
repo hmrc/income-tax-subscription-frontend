@@ -107,6 +107,12 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
     }
   }
 
+  "The back url" should {
+    s"point to ${controllers.business.routes.BusinessNameController.showBusinessName().url}" in {
+      TestBusinessIncomeTypeController.backUrl mustBe controllers.business.routes.BusinessNameController.showBusinessName().url
+    }
+  }
 
   authorisationTests
+
 }

@@ -25,13 +25,22 @@ import utils.UnitTestTrait
 
 class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
 
+  lazy val backUrl = controllers.business.routes.SoleTraderController.showSoleTrader().url
+
   lazy val page = views.html.business.accounting_period(
     accountingPeriodForm = AccountingPeriodForm.accountingPeriodForm,
-    postAction = controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod()
+    postAction = controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(),
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
   "The Business Accounting Period view" should {
+
+    s"have a back buttong pointed to $backUrl" in {
+      val backLink = document.select("#back")
+      backLink.isEmpty mustBe false
+      backLink.attr("href") mustBe backUrl
+    }
 
     s"have the title '${messages.title}'" in {
       document.title() mustBe messages.title

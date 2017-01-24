@@ -69,7 +69,7 @@ trait ContactEmailController extends BaseController {
     keystoreService.fetchIncomeSource() map {
       case Some(source) => source.source match {
         case IncomeSourceForm.option_business | IncomeSourceForm.option_both =>
-          controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+          controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
         case _ =>
           controllers.routes.EligibleController.showEligible().url
       }

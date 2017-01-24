@@ -23,8 +23,10 @@ import forms.AccountingPeriodForm
 import models.{AccountingPeriodModel, DateModel}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utils.TestModels
 
 class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -59,6 +61,9 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(authenticatedFakeRequest())
 
     "return ok (200)" in {
+      // required for backurl
+      setupMockKeystore(fetchSoleTrader = TestModels.testIsSoleTrader)
+
       setupMockKeystore(fetchAccountingPeriod = None)
 
       status(result) must be(Status.OK)
@@ -75,7 +80,8 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
       .post(AccountingPeriodForm.accountingPeriodForm, AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))))
 
     "return a redirect status (SEE_OTHER - 303)" in {
-      setupMockKeystoreSaveFunctions()
+      // required for backurl
+      setupMockKeystore(fetchSoleTrader = TestModels.testIsSoleTrader)
 
       val goodRequest = callShow
 
@@ -86,7 +92,8 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     }
 
     s"redirect to '${controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
-      setupMockKeystoreSaveFunctions()
+      // required for backurl
+      setupMockKeystore(fetchSoleTrader = TestModels.testIsSoleTrader)
 
       val goodRequest = callShow
 
@@ -101,10 +108,27 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     lazy val badrequest = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
+      // required for backurl
+      setupMockKeystore(fetchSoleTrader = TestModels.testIsSoleTrader)
+
       status(badrequest) must be(Status.BAD_REQUEST)
 
       await(badrequest)
       verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 0)
+    }
+  }
+
+  "The back url" should {
+    s"point to ${controllers.business.routes.SoleTraderController.showSoleTrader().url} if user answered yes to sole trader" in {
+      setupMockKeystore(fetchSoleTrader = TestModels.testIsSoleTrader)
+      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
+      verifyKeystore(fetchSoleTrader = 1)
+    }
+
+    s"point to ${controllers.routes.NotEligibleController.showNotEligible().url} if user answered no to sole trader" in {
+      setupMockKeystore(fetchSoleTrader = TestModels.testIsNotSoleTrader)
+      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.routes.NotEligibleController.showNotEligible().url
+      verifyKeystore(fetchSoleTrader = 1)
     }
   }
 

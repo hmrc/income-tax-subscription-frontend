@@ -5,14 +5,14 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import helpers._
 
-@(incomeTypeForm: Form[IncomeTypeModel], postAction: Call)(implicit request: Request[_], messages: Messages)
+@(incomeTypeForm: Form[IncomeTypeModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @question = @{
     Messages("business.income_type.heading")
 }
 
 @views.html.templates.main_template(title = Messages("business.income_type.title"), bodyClasses = None) {
-    @back_link()
+    @back_link(backUrl)
 
     @summaryErrorHelper(incomeTypeForm)
 

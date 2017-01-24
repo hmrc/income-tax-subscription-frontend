@@ -24,14 +24,22 @@ import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
 class BusinessIncomeTypeViewSpec extends PlaySpec with OneAppPerTest {
+  lazy val backUrl = controllers.business.routes.BusinessNameController.showBusinessName().url
 
   lazy val page = views.html.business.income_type(
     incomeTypeForm = IncomeTypeForm.incomeTypeForm,
-    postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType()
+    postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType(),
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
   "The Business Income Type view" should {
+
+    s"have a back buttong pointed to $backUrl" in {
+      val backLink = document.select("#back")
+      backLink.isEmpty mustBe false
+      backLink.attr("href") mustBe backUrl
+    }
 
     s"have the title '${messages.title}'" in {
       document.title() mustBe messages.title
