@@ -65,4 +65,5 @@ trait TermsController extends BaseController {
   }
 
   lazy val backUrl :String = controllers.routes.ContactEmailController.showContactEmail().url
+
 }

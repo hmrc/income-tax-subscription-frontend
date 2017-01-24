@@ -68,6 +68,12 @@ class EligibleControllerSpec extends ControllerBaseSpec
     }
   }
 
+  "The back url" should {
+    s"point to ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url}" in {
+      TestEligibleController.backUrl mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+    }
+  }
+
   authorisationTests
 
 }
