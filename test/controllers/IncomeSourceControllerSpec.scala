@@ -40,17 +40,6 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     MockKeystoreService
   )
 
-  //  "The IncomeSource controller" should {
-  //    "use the correct applicationConfig" in {
-  //      IncomeSourceController.applicationConfig must be(FrontendAppConfig)
-  //    }
-  //    "use the correct authConnector" in {
-  //      IncomeSourceController.authConnector must be(FrontendAuthConnector)
-  //    }
-  //    "use the correct postSignInRedirectUrl" in {
-  //      IncomeSourceController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-  //    }
-  //  }
   "test" should {
     "en" in {
       val m: Messages = messagesApi.preferred(authenticatedFakeRequest())

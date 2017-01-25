@@ -44,18 +44,6 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
     MockKeystoreService
   )
 
-//  "The ContactEmailController controller" should {
-  //    "use the correct applicationConfig" in {
-  //      ContactEmailController.applicationConfig must be(FrontendAppConfig)
-  //    }
-  //    "use the correct authConnector" in {
-  //      ContactEmailController.authConnector must be(FrontendAuthConnector)
-  //    }
-  //    "use the correct postSignInRedirectUrl" in {
-  //      ContactEmailController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-  //    }
-  //  }
-
   "Calling the showContactEmail action of the ContactEmailController with an authorised user" should {
 
     lazy val result = TestContactEmailController.showContactEmail(authenticatedFakeRequest())

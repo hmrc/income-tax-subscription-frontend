@@ -30,18 +30,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec {
     "showConfirmation" -> TestConfirmationController.showConfirmation
   )
 
-  //  "The Summary controller" should {
-  //    "use the correct applicationConfig" in {
-  //      ConfirmationController.applicationConfig must be(FrontendAppConfig)
-  //    }
-  //    "use the correct authConnector" in {
-  //      ConfirmationController.authConnector must be(FrontendAuthConnector)
-  //    }
-  //    "use the correct postSignInRedirectUrl" in {
-  //      ConfirmationController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-  //    }
-  //  }
-
   authorisationTests
 
 }

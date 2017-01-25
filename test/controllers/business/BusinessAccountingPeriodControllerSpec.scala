@@ -42,18 +42,6 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     MockKeystoreService
   )
 
-  //  "The BusinessAccountingPeriod controller" should {
-  //    "use the correct applicationConfig" in {
-  //      BusinessAccountingPeriodController.applicationConfig must be(FrontendAppConfig)
-  //    }
-  //    "use the correct authConnector" in {
-  //      BusinessAccountingPeriodController.authConnector must be(FrontendAuthConnector)
-  //    }
-  //    "use the correct postSignInRedirectUrl" in {
-  //      BusinessAccountingPeriodController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-  //    }
-  //  }
-
   "Calling the showAccountingPeriod action of the BusinessAccountingPeriod with an authorised user" should {
 
     lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(authenticatedFakeRequest())

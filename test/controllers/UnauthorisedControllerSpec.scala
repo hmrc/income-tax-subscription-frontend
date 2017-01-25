@@ -32,12 +32,6 @@ class UnauthorisedControllerSpec extends UnitTestTrait {
     messagesApi
   )
 
-  //  "The UnauthorisedController" should {
-  //    "use the correct IdentityVerificationConnector" in {
-  //      UnauthorisedController.identityVerificationConnector shouldBe IdentityVerificationConnector
-  //    }
-  //  }
-
   "GET /not-authorised" should {
     "show not authorised page" in {
       val result = testUnauthorisedController().showNotAuthorised(None)(fakeRequest)

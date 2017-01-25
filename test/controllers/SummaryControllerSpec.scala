@@ -38,18 +38,6 @@ class SummaryControllerSpec extends ControllerBaseSpec
     MockKeystoreService
   )
 
-//  "The Summary controller" should {
-  //    "use the correct applicationConfig" in {
-  //      SummaryController.applicationConfig must be(FrontendAppConfig)
-  //    }
-  //    "use the correct authConnector" in {
-  //      SummaryController.authConnector must be(FrontendAuthConnector)
-  //    }
-  //    "use the correct postSignInRedirectUrl" in {
-  //      SummaryController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-  //    }
-  //  }
-
   "Calling the showSummary action of the SummaryController with an authorised user" should {
 
     lazy val result = TestSummaryController.showSummary(authenticatedFakeRequest())

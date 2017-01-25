@@ -42,18 +42,6 @@ class PropertyIncomeControllerSpec extends ControllerBaseSpec
     MockKeystoreService
   )
 
-//  "The PropertyIncome controller" should {
-//    "use the correct applicationConfig" in {
-//      PropertyIncomeController.applicationConfig must be(FrontendAppConfig)
-//    }
-//    "use the correct authConnector" in {
-//      PropertyIncomeController.authConnector must be(FrontendAuthConnector)
-//    }
-//    "use the correct postSignInRedirectUrl" in {
-//      PropertyIncomeController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-//    }
-//  }
-
   "Calling the showIncomeSource action of the PropertyIncome controller with an authorised user" should {
 
     lazy val result = TestPropertyIncomeController.showPropertyIncome(authenticatedFakeRequest())

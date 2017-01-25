@@ -42,18 +42,6 @@ class SoleTraderControllerSpec extends ControllerBaseSpec
     MockKeystoreService
   )
 
-  //  "The SoleTrader controller" should {
-  //    "use the correct applicationConfig" in {
-  //      SoleTraderController.applicationConfig must be(FrontendAppConfig)
-  //    }
-  //    "use the correct authConnector" in {
-  //      SoleTraderController.authConnector must be(FrontendAuthConnector)
-  //    }
-  //    "use the correct postSignInRedirectUrl" in {
-  //      SoleTraderController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-  //    }
-  //  }
-
   "Calling the showSoleTrader action of the SoleTrader with an authorised user" should {
 
     lazy val result = TestSoleTraderController.showSoleTrader(authenticatedFakeRequest())

@@ -36,18 +36,6 @@ class EligibleControllerSpec extends ControllerBaseSpec
     messagesApi
   )
 
-  //  "The EligibleController controller" should {
-  //    "use the correct applicationConfig" in {
-  //      TermsController.applicationConfig must be(FrontendAppConfig)
-  //    }
-  //    "use the correct authConnector" in {
-  //      TermsController.authConnector must be(FrontendAuthConnector)
-  //    }
-  //    "use the correct postSignInRedirectUrl" in {
-  //      TermsController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-  //    }
-  //  }
-
   "Calling the showTerms action of the TermsController with an authorised user" should {
 
     lazy val result = TestEligibleController.showEligible(authenticatedFakeRequest())

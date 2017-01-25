@@ -41,18 +41,6 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
     MockKeystoreService
   )
 
-  //  "The NotEligible controller" should {
-  //    "use the correct applicationConfig" in {
-  //      NotEligibleController.applicationConfig must be(FrontendAppConfig)
-  //    }
-  //    "use the correct authConnector" in {
-  //      NotEligibleController.authConnector must be(FrontendAuthConnector)
-  //    }
-  //    "use the correct postSignInRedirectUrl" in {
-  //      NotEligibleController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-  //    }
-  //  }
-
   "Calling the showNotEligible action of the NotEligible controller with an authorised user" should {
 
     lazy val result = TestNotEligibleController.showNotEligible(authenticatedFakeRequest())

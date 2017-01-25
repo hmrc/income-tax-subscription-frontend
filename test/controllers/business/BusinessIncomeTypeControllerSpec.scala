@@ -40,18 +40,6 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
     MockKeystoreService
   )
 
-//  "The BusinessIncomeType controller" should {
-  //    "use the correct applicationConfig" in {
-  //      BusinessIncomeTypeController.applicationConfig must be(FrontendAppConfig)
-  //    }
-  //    "use the correct authConnector" in {
-  //      BusinessIncomeTypeController.authConnector must be(FrontendAuthConnector)
-  //    }
-  //    "use the correct postSignInRedirectUrl" in {
-  //      BusinessIncomeTypeController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-  //    }
-  //  }
-
   "Calling the showBusinessIncomeType action of the BusinessIncomeType with an authorised user" should {
 
     lazy val result = TestBusinessIncomeTypeController.showBusinessIncomeType(authenticatedFakeRequest())
