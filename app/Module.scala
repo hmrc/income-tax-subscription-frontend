@@ -17,6 +17,7 @@
 import com.google.inject.AbstractModule
 import config.{AppConfig, FrontendAppConfig}
 import uk.gov.hmrc.http.cache.client.SessionCache
+import uk.gov.hmrc.play.http.{HttpDelete, HttpGet, HttpPost, HttpPut}
 import uk.gov.hmrc.play.http.ws._
 
 class Module extends AbstractModule {
@@ -24,9 +25,13 @@ class Module extends AbstractModule {
   override def configure(): Unit = {
     bind(classOf[SessionCache]).to(classOf[config.SessionCache]).asEagerSingleton()
     bind(classOf[WSGet]).to(classOf[config.WSHttp]).asEagerSingleton()
+    bind(classOf[HttpGet]).to(classOf[config.WSHttp]).asEagerSingleton()
     bind(classOf[WSPost]).to(classOf[config.WSHttp]).asEagerSingleton()
+    bind(classOf[HttpPost]).to(classOf[config.WSHttp]).asEagerSingleton()
     bind(classOf[WSDelete]).to(classOf[config.WSHttp]).asEagerSingleton()
+    bind(classOf[HttpDelete]).to(classOf[config.WSHttp]).asEagerSingleton()
     bind(classOf[WSPut]).to(classOf[config.WSHttp]).asEagerSingleton()
+    bind(classOf[HttpPut]).to(classOf[config.WSHttp]).asEagerSingleton()
     bind(classOf[WSHttp]).to(classOf[config.WSHttp]).asEagerSingleton()
     bind(classOf[AppConfig]).to(classOf[FrontendAppConfig]).asEagerSingleton()
   }
