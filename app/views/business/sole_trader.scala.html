@@ -5,13 +5,14 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import helpers._
 
-@(soleTraderForm: Form[SoleTraderModel], postAction: Call)(implicit request: Request[_], messages: Messages)
+@(soleTraderForm: Form[SoleTraderModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @question = @{
     Messages("business.sole_trader.heading")
 }
 
 @views.html.templates.main_template(title = Messages("business.sole_trader.title"), bodyClasses = None) {
+    @back_link(backUrl)
 
     @summaryErrorHelper(soleTraderForm)
 

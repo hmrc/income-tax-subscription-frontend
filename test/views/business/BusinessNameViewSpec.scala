@@ -16,7 +16,6 @@
 
 package views.business
 
-import assets.MessageLookup
 import assets.MessageLookup.{BusinessName => messages}
 import forms.BusinessNameForm
 import org.jsoup.Jsoup
@@ -26,13 +25,22 @@ import utils.UnitTestTrait
 
 class BusinessNameViewSpec extends UnitTestTrait {
 
+  lazy val backUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+
   lazy val page = views.html.business.business_name(
     businessNameForm = BusinessNameForm.businessNameForm,
-    postAction = controllers.business.routes.BusinessNameController.submitBusinessName()
+    postAction = controllers.business.routes.BusinessNameController.submitBusinessName(),
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
   "The Business Name view" should {
+
+    s"have a back buttong pointed to $backUrl" in {
+      val backLink = document.select("#back")
+      backLink.isEmpty mustBe false
+      backLink.attr("href") mustBe backUrl
+    }
 
     s"have the title '${messages.title}'" in {
       document.title() mustBe messages.title

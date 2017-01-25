@@ -3,9 +3,10 @@
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 
-@(businessNameForm: Form[BusinessNameModel], postAction: Call)(implicit request: Request[_], messages: Messages)
+@(businessNameForm: Form[BusinessNameModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @views.html.templates.main_template(title = Messages("business.name.title"), bodyClasses = None) {
+    @back_link(backUrl)
 
     @summaryErrorHelper(businessNameForm)
 

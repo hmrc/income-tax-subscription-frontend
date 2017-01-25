@@ -43,9 +43,9 @@ trait BusinessNameController extends BaseController {
   def view(businessNameForm: Form[BusinessNameModel])(implicit request: Request[_]): Html =
     views.html.business.business_name(
       businessNameForm = businessNameForm,
-      postAction = controllers.business.routes.BusinessNameController.submitBusinessName()
+      postAction = controllers.business.routes.BusinessNameController.submitBusinessName(),
+      backUrl = backUrl
     )
-
 
   val showBusinessName: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
@@ -64,4 +64,7 @@ trait BusinessNameController extends BaseController {
         }
       )
   }
+
+  lazy val backUrl: String = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+
 }

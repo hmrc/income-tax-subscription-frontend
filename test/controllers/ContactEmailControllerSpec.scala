@@ -25,8 +25,10 @@ import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utils.TestModels
 
 class ContactEmailControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -63,6 +65,9 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
 
 
     "return status (200)" in {
+      // fetchIncomeSource is required for the back url
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+
       setupMockKeystore(fetchContactEmail = None)
 
       status(result) must be(Status.OK)
@@ -82,7 +87,8 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
       .post(EmailForm.emailForm, EmailModel("test@example.com")))
 
     "return a redirect status (SEE_OTHER - 303)" in {
-      setupMockKeystoreSaveFunctions()
+      // fetchIncomeSource is required for the back url
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callShow
       status(goodRequest) must be(Status.SEE_OTHER)
@@ -92,7 +98,8 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
     }
 
     s"redirect to '${controllers.routes.TermsController.showTerms().url}'" in {
-      setupMockKeystoreSaveFunctions()
+      // fetchIncomeSource is required for the back url
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callShow
       redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
@@ -106,6 +113,9 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
     lazy val badRequest = TestContactEmailController.submitContactEmail(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
+      // fetchIncomeSource is required for the back url
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
@@ -113,6 +123,32 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
     }
   }
 
+  "The back url" should {
+    s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the business journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+      await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 0)
+    }
+
+    s"point to ${controllers.routes.EligibleController.showEligible().url} on the property journey when property income GE10k" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty, fetchPropertyIncome = TestModels.testPropertyIncomeGE10k)
+      await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.routes.EligibleController.showEligible().url
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
+    }
+
+    s"point to ${controllers.routes.NotEligibleController.showNotEligible().url} on the property journey when property income LT10k" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty, fetchPropertyIncome = TestModels.testPropertyIncomeLT10k)
+      await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.routes.NotEligibleController.showNotEligible().url
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
+    }
+
+    s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the business and property journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+      await(TestContactEmailController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 0)
+    }
+  }
 
   authorisationTests
+
 }

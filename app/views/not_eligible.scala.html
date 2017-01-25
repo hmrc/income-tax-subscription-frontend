@@ -2,9 +2,10 @@
 @import views.html.helpers._
 @import forms.NotEligibleForm
 
-@(notEligibleForm: Form[NotEligibleModel], postAction: Call)(implicit request: Request[_], messages: Messages)
+@(notEligibleForm: Form[NotEligibleModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @views.html.templates.main_template(title = Messages("not-eligible.title"), bodyClasses = None) {
+    @back_link(backUrl)
 
     @summaryErrorHelper(notEligibleForm)
 

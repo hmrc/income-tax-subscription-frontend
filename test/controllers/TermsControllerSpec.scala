@@ -106,5 +106,11 @@ class TermsControllerSpec extends ControllerBaseSpec
     }
   }
 
+  "The back url" should {
+    s"point to ${controllers.routes.ContactEmailController.showContactEmail().url}" in {
+      TestTermsController.backUrl mustBe controllers.routes.ContactEmailController.showContactEmail().url
+    }
+  }
+
   authorisationTests
 }

@@ -34,7 +34,8 @@ trait EligibleController extends BaseController {
 
   def view()(implicit request: Request[_]): Html =
     views.html.eligible(
-      postAction = controllers.routes.EligibleController.submitEligible()
+      postAction = controllers.routes.EligibleController.submitEligible(),
+      backUrl = backUrl
     )
 
   val showEligible: Action[AnyContent] = Authorised.async { implicit user =>
@@ -46,4 +47,7 @@ trait EligibleController extends BaseController {
     implicit request =>
       Future.successful(Redirect(controllers.routes.ContactEmailController.showContactEmail()))
   }
+
+  lazy val backUrl: String = controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+
 }

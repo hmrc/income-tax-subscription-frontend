@@ -22,6 +22,7 @@ import forms.NotEligibleForm
 import models.NotEligibleModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import utils.TestModels
@@ -59,12 +60,15 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
     lazy val result = TestNotEligibleController.showNotEligible(authenticatedFakeRequest())
 
     "return ok (200)" in {
+      // required for backurl
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+
       setupMockKeystore(fetchNotEligible = None)
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchNotEligible = 1, saveNotEligible = 0, fetchIncomeSource = 0)
+      verifyKeystore(fetchNotEligible = 1, saveNotEligible = 0, fetchIncomeSource = 1)
     }
   }
 
@@ -98,6 +102,9 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
     }
 
     "return a see other status (303) for SignUp on a business and property journey" in {
+      // required for backurl
+      setupMockKeystore(fetchPropertyIncome = TestModels.testPropertyIncomeLT10k)
+
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callShow(NotEligibleForm.option_signup)
@@ -126,13 +133,42 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
     lazy val badRequest = TestNotEligibleController.submitNotEligible(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
+      // required for backurl
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 0, fetchIncomeSource = 0)
+      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 0, fetchIncomeSource = 1)
     }
   }
 
+  "The back url" should {
+    s"point to ${controllers.business.routes.SoleTraderController.showSoleTrader().url} on business journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 0)
+    }
+
+    s"point to ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url} on property journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 0)
+    }
+
+    s"point to ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url} if on business + property journey with property income LE10k" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth, fetchPropertyIncome = TestModels.testPropertyIncomeLT10k)
+      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
+    }
+
+    s"point to ${controllers.business.routes.SoleTraderController.showSoleTrader().url} if on business + property journey with property income GE10k" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth, fetchPropertyIncome = TestModels.testPropertyIncomeGE10k)
+      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
+      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
+    }
+  }
 
   authorisationTests
+
 }

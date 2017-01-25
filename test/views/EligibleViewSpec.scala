@@ -25,12 +25,20 @@ import utils.UnitTestTrait
 
 class EligibleViewSpec extends UnitTestTrait {
 
+  lazy val backUrl = controllers.routes.ContactEmailController.showContactEmail().url
   lazy val page = views.html.eligible(
-    postAction = controllers.routes.EligibleController.submitEligible()
+    postAction = controllers.routes.EligibleController.submitEligible(),
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages)
   lazy val document = Jsoup.parse(page.body)
 
   "The Eligible view" should {
+
+    s"have a back buttong pointed to $backUrl" in {
+      val backLink = document.select("#back")
+      backLink.isEmpty mustBe false
+      backLink.attr("href") mustBe backUrl
+    }
 
     s"have the title '${MessageLookup.Eligible.title}'" in {
       document.title() must be(MessageLookup.Eligible.title)

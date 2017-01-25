@@ -17,7 +17,7 @@
 package controllers
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import forms.{IncomeSourceForm, NotEligibleForm}
+import forms.{IncomeSourceForm, NotEligibleForm, PropertyIncomeForm, SoleTraderForm}
 import models.NotEligibleModel
 import play.api.Play.current
 import play.api.data.Form
@@ -40,23 +40,25 @@ trait NotEligibleController extends BaseController {
 
   val keystoreService: KeystoreService
 
-  def view(notEligibleForm: Form[NotEligibleModel])(implicit request: Request[_]): Html =
+  def view(notEligibleForm: Form[NotEligibleModel], backUrl: String)(implicit request: Request[_]): Html =
     views.html.not_eligible(
       notEligibleForm = notEligibleForm,
-      postAction = controllers.routes.NotEligibleController.submitNotEligible()
+      postAction = controllers.routes.NotEligibleController.submitNotEligible(),
+      backUrl = backUrl
     )
 
   val showNotEligible: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      keystoreService.fetchNotEligible.map {
-        choice => Ok(view(NotEligibleForm.notEligibleForm.fill(choice)))
-      }
+      for {
+        choice <- keystoreService.fetchNotEligible
+        backUrl <- backUrl
+      } yield Ok(view(NotEligibleForm.notEligibleForm.fill(choice), backUrl))
   }
 
   val submitNotEligible: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       NotEligibleForm.notEligibleForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(notEligibleForm = formWithErrors))),
+        formWithErrors => backUrl.map(backUrl => BadRequest(view(notEligibleForm = formWithErrors, backUrl = backUrl))),
         choice => {
           keystoreService.saveNotEligible(choice).flatMap { _ =>
             choice.choice match {
@@ -82,5 +84,28 @@ trait NotEligibleController extends BaseController {
 
 
   def signOut(implicit request: Request[_]): Future[Result] = Future.successful(NotImplemented)
+
+  def backUrl(implicit request: Request[_]): Future[String] = {
+    lazy val checkProperty = keystoreService.fetchPropertyIncome().map {
+      case Some(propertyIncome) =>
+        propertyIncome.incomeValue match {
+          case PropertyIncomeForm.option_LT10k =>
+            controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+          case _ => controllers.business.routes.SoleTraderController.showSoleTrader().url
+        }
+    }
+
+    keystoreService.fetchIncomeSource() flatMap {
+      case Some(incomeSource) =>
+        incomeSource.source match {
+          case IncomeSourceForm.option_business =>
+            Future.successful(controllers.business.routes.SoleTraderController.showSoleTrader().url)
+          case IncomeSourceForm.option_property =>
+            Future.successful(controllers.property.routes.PropertyIncomeController.showPropertyIncome().url)
+          case IncomeSourceForm.option_both =>
+            checkProperty
+        }
+    }
+  }
 
 }

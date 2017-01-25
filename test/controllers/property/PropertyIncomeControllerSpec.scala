@@ -123,6 +123,12 @@ class PropertyIncomeControllerSpec extends ControllerBaseSpec
     }
   }
 
+  "The back url" should {
+    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+      TestPropertyIncomeController.backUrl mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+    }
+  }
+
   authorisationTests
 
 }

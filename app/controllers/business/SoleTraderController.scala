@@ -18,7 +18,7 @@ package controllers.business
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.BaseController
-import forms.SoleTraderForm
+import forms.{IncomeSourceForm, SoleTraderForm}
 import models.SoleTraderModel
 import play.api.Play.current
 import play.api.data.Form
@@ -40,24 +40,25 @@ trait SoleTraderController extends BaseController {
 
   val keystoreService: KeystoreService
 
-  def view(soleTraderForm: Form[SoleTraderModel])(implicit request: Request[_]): Html =
+  def view(soleTraderForm: Form[SoleTraderModel], backUrl: String)(implicit request: Request[_]): Html =
     views.html.business.sole_trader(
       soleTraderForm = soleTraderForm,
-      postAction = controllers.business.routes.SoleTraderController.submitSoleTrader()
+      postAction = controllers.business.routes.SoleTraderController.submitSoleTrader(),
+      backUrl = backUrl
     )
-
 
   val showSoleTrader: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      keystoreService.fetchSoleTrader() map {
-        soleTrader => Ok(view(SoleTraderForm.soleTraderForm.fill(soleTrader)))
-      }
+      for {
+        soleTrader <- keystoreService.fetchSoleTrader()
+        backUrl <- backUrl
+      } yield Ok(view(soleTraderForm = SoleTraderForm.soleTraderForm.fill(soleTrader), backUrl = backUrl))
   }
 
   val submitSoleTrader: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       SoleTraderForm.soleTraderForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        formWithErrors => backUrl.map(backUrl => BadRequest(view(soleTraderForm = formWithErrors, backUrl = backUrl))),
         soleTrader =>
           keystoreService.saveSoleTrader(soleTrader) flatMap { _ =>
             soleTrader.isSoleTrader match {
@@ -73,5 +74,15 @@ trait SoleTraderController extends BaseController {
 
   def no(implicit request: Request[_]): Future[Result] =
     Future.successful(Redirect(controllers.routes.NotEligibleController.showNotEligible()))
+
+  def backUrl(implicit request: Request[_]): Future[String] =
+    keystoreService.fetchIncomeSource() map {
+      case Some(source) => source.source match {
+        case IncomeSourceForm.option_business =>
+          controllers.routes.IncomeSourceController.showIncomeSource().url
+        case IncomeSourceForm.option_both  =>
+          controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+      }
+    }
 
 }

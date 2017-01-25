@@ -42,7 +42,8 @@ trait TermsController extends BaseController {
   def view(termsForm: Form[TermModel])(implicit request: Request[_]): Html =
     views.html.terms(
       termsForm = termsForm,
-      postAction = controllers.routes.TermsController.submitTerms()
+      postAction = controllers.routes.TermsController.submitTerms(),
+      backUrl = backUrl
     )
 
   val showTerms: Action[AnyContent] = Authorised.async { implicit user =>
@@ -62,4 +63,7 @@ trait TermsController extends BaseController {
         }
       )
   }
+
+  lazy val backUrl :String = controllers.routes.ContactEmailController.showContactEmail().url
+
 }

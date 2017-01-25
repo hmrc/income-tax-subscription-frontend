@@ -2,13 +2,14 @@
 @import helpers.{radioHelper, _}
 @import play.api.data.Form
 @import uk.gov.hmrc.play.views.html.helpers.form
-@(propertyIncomeForm: Form[PropertyIncomeModel], postAction: Call)(implicit request: Request[_], messages: Messages)
+@(propertyIncomeForm: Form[PropertyIncomeModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
 
 @question = @{
     Messages("property.income.heading")
 }
 
 @views.html.templates.main_template(title = Messages("property.income.title"), bodyClasses = None) {
+    @back_link(backUrl)
 
     @summaryErrorHelper(propertyIncomeForm)
 

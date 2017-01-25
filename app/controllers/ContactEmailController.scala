@@ -17,8 +17,8 @@
 package controllers
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
-import forms.EmailForm
-import models.EmailModel
+import forms.{EmailForm, IncomeSourceForm, IncomeTypeForm, PropertyIncomeForm}
+import models.{EmailModel, PropertyIncomeModel}
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
@@ -39,27 +39,47 @@ trait ContactEmailController extends BaseController {
 
   val keystoreService: KeystoreService
 
-  def view(contactEmailForm: Form[EmailModel])(implicit request: Request[_]): Html =
+  def view(contactEmailForm: Form[EmailModel], backUrl: String)(implicit request: Request[_]): Html =
     views.html.contact_email(
       contactEmailForm = contactEmailForm,
-      postAction = controllers.routes.ContactEmailController.submitContactEmail()
+      postAction = controllers.routes.ContactEmailController.submitContactEmail(),
+      backUrl = backUrl
     )
 
   val showContactEmail: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      keystoreService.fetchContactEmail() map {
-        contactEmail => Ok(view(contactEmailForm = EmailForm.emailForm.fill(contactEmail)))
-      }
+      for {
+        contactEmail <- keystoreService.fetchContactEmail()
+        backUrl <- backUrl
+      } yield Ok(view(contactEmailForm = EmailForm.emailForm.fill(contactEmail), backUrl = backUrl))
   }
 
   val submitContactEmail: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       EmailForm.emailForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(contactEmailForm = formWithErrors))),
+        formWithErrors => backUrl.map(backUrl => BadRequest(view(contactEmailForm = formWithErrors, backUrl = backUrl))),
         contactEmail => {
           keystoreService.saveContactEmail(contactEmail) map (
             _ => Redirect(controllers.routes.TermsController.showTerms()))
         }
       )
   }
+
+  def backUrl(implicit request: Request[_]): Future[String] =
+    keystoreService.fetchIncomeSource() flatMap {
+      case Some(source) => source.source match {
+        case IncomeSourceForm.option_business | IncomeSourceForm.option_both =>
+          Future.successful(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
+        case _ =>
+          keystoreService.fetchPropertyIncome() map {
+            case Some(propertyIncome) => propertyIncome.incomeValue match {
+              case PropertyIncomeForm.option_LT10k =>
+                controllers.routes.NotEligibleController.showNotEligible().url
+              case PropertyIncomeForm.option_GE10k =>
+                controllers.routes.EligibleController.showEligible().url
+            }
+          }
+      }
+    }
+
 }

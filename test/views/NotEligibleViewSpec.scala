@@ -25,13 +25,23 @@ import utils.UnitTestTrait
 
 class NotEligibleViewSpec extends UnitTestTrait {
 
+  lazy val backUrl = controllers.business.routes.SoleTraderController.showSoleTrader().url
+
   lazy val page = views.html.not_eligible(
     notEligibleForm = NotEligibleForm.notEligibleForm,
-    postAction = controllers.routes.NotEligibleController.submitNotEligible()
+    postAction = controllers.routes.NotEligibleController.submitNotEligible(),
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages)
+
   lazy val document = Jsoup.parse(page.body)
 
   "The Not Eligible view" should {
+
+    s"have a back buttong pointed to $backUrl" in {
+      val backLink = document.select("#back")
+      backLink.isEmpty mustBe false
+      backLink.attr("href") mustBe backUrl
+    }
 
     s"have the title '${messages.title}'" in {
       document.title() must be(messages.title)
