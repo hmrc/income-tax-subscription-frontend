@@ -24,11 +24,11 @@ import scala.concurrent.Future
 object AuthTestController extends AuthTestController {
   override lazy val applicationConfig = mockConfig
   override lazy val authConnector = mockAuthConnector
-  override lazy val postSignInRedirectUrl = controllers.routes.HelloWorldController.helloWorld().url
+  override lazy val postSignInRedirectUrl = controllers.routes.EligibleController.showEligible().url
 }
 
 trait AuthTestController extends FrontendController with AuthorisedForIncomeTaxSA {
   val authorisedAsyncAction = Authorised.async {
-    implicit user =>  implicit request => Future.successful(Ok(views.html.helloworld.hello_world()))
+    implicit user =>  implicit request => Future.successful(Ok)
   }
 }

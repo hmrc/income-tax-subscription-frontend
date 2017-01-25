@@ -22,12 +22,6 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
 
   val contextRoute: String = "/income-tax-subscription-frontend"
 
-  "The URL for the HelloWorld.helloWorld action" should {
-    s"be equal to $contextRoute/hello-world" in {
-      controllers.routes.HelloWorldController.helloWorld().url must be (s"$contextRoute/hello-world")
-    }
-  }
-
   "The URL for the timeout.timeout action" should {
     s"be equal to $contextRoute/session-timeout" in {
       controllers.routes.SessionTimeoutController.timeout().url must be (s"$contextRoute/session-timeout")

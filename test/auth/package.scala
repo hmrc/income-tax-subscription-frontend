@@ -37,13 +37,13 @@ package object auth {
 
   val ivUpliftURI: URI =
     new URI(s"${mockConfig.ivUpliftUrl}?origin=SABR&" +
-      s"completionURL=${URLEncoder.encode("/income-tax-subscription-frontend/hello-world", "UTF-8")}&" +
+      s"completionURL=${URLEncoder.encode("/income-tax-subscription-frontend/eligible", "UTF-8")}&" +
       s"failureURL=${URLEncoder.encode(mockConfig.notAuthorisedRedirectUrl, "UTF-8")}" +
       s"&confidenceLevel=200")
 
   val twoFactorURI: URI =
     new URI(s"${mockConfig.twoFactorUrl}?" +
-      s"continue=${URLEncoder.encode("/income-tax-subscription-frontend/hello-world", "UTF-8")}&" +
+      s"continue=${URLEncoder.encode("/income-tax-subscription-frontend/eligible", "UTF-8")}&" +
       s"failure=${URLEncoder.encode(mockConfig.notAuthorisedRedirectUrl, "UTF-8")}")
 
   object ggSession {
