@@ -16,85 +16,87 @@
 
 package controllers
 
-import connectors.IdentityVerificationConnector
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import testHelpers.MockIdentityVerificationConnector
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import utils.UnitTestTrait
+import org.scalatest.Matchers._
 
-class UnauthorisedControllerSpec extends UnitSpec with WithFakeApplication {
+class UnauthorisedControllerSpec extends UnitTestTrait {
 
   val fakeRequest = FakeRequest("GET", "/")
 
-  def testUnauthorisedController(identityVerificationEnabled: Boolean = true): UnauthorisedController = new UnauthorisedController {
-    override val identityVerificationConnector: IdentityVerificationConnector = MockIdentityVerificationConnector
-  }
+  def testUnauthorisedController(identityVerificationEnabled: Boolean = true): UnauthorisedController = new UnauthorisedController()(
+    appConfig,
+    MockIdentityVerificationConnector,
+    messagesApi
+  )
 
-  "The UnauthorisedController" should {
-    "use the correct IdentityVerificationConnector" in {
-      UnauthorisedController.identityVerificationConnector shouldBe IdentityVerificationConnector
-    }
-  }
+  //  "The UnauthorisedController" should {
+  //    "use the correct IdentityVerificationConnector" in {
+  //      UnauthorisedController.identityVerificationConnector shouldBe IdentityVerificationConnector
+  //    }
+  //  }
 
   "GET /not-authorised" should {
     "show not authorised page" in {
       val result = testUnauthorisedController().showNotAuthorised(None)(fakeRequest)
-      contentAsString(result) should include ("We were unable to confirm your identity")
+      contentAsString(result) should include("We were unable to confirm your identity")
     }
 
     "show generic not_authorised template for FailedMatching journey" in {
       val result = testUnauthorisedController().showNotAuthorised(Some("failed-matching-journey-id"))(fakeRequest)
-      contentAsString(result) should include ("We were unable to confirm your identity")
+      contentAsString(result) should include("We were unable to confirm your identity")
     }
 
     "show generic not_authorised template for InsufficientEvidence journey" in {
       val result = testUnauthorisedController().showNotAuthorised(Some("insufficient-evidence-journey-id"))(fakeRequest)
-      contentAsString(result) should include ("We were unable to confirm your identity")
+      contentAsString(result) should include("We were unable to confirm your identity")
     }
 
     "show generic not_authorised template for Incomplete journey" in {
       val result = testUnauthorisedController().showNotAuthorised(Some("incomplete-journey-id"))(fakeRequest)
-      contentAsString(result) should include ("We were unable to confirm your identity")
+      contentAsString(result) should include("We were unable to confirm your identity")
     }
 
     "show generic not_authorised template for PreconditionFailed journey" in {
       val result = testUnauthorisedController().showNotAuthorised(Some("precondition-failed-journey-id"))(fakeRequest)
-      contentAsString(result) should include ("We were unable to confirm your identity")
+      contentAsString(result) should include("We were unable to confirm your identity")
     }
 
     "show generic not_authorised template for UserAborted journey" in {
       val result = testUnauthorisedController().showNotAuthorised(Some("user-aborted-journey-id"))(fakeRequest)
-      contentAsString(result) should include ("We were unable to confirm your identity")
+      contentAsString(result) should include("We were unable to confirm your identity")
     }
 
     "show technical_issue template for TechnicalIssue journey" in {
       val result = testUnauthorisedController().showNotAuthorised(Some("technical-issue-journey-id"))(fakeRequest)
-      contentAsString(result) should include ("There is a technical problem")
+      contentAsString(result) should include("There is a technical problem")
     }
 
     "show locked_out template for LockedOut journey" in {
       val result = testUnauthorisedController().showNotAuthorised(Some("locked-out-journey-id"))(fakeRequest)
-      contentAsString(result) should include ("You have tried to confirm your identity too many times")
+      contentAsString(result) should include("You have tried to confirm your identity too many times")
     }
 
     "show timeout template for Timeout journey" in {
       val result = testUnauthorisedController().showNotAuthorised(Some("timeout-journey-id"))(fakeRequest)
-      contentAsString(result) should include ("signed out due to inactivity")
+      contentAsString(result) should include("signed out due to inactivity")
     }
 
     "show generic not_authorised template for unkown response journey" in {
       val result = testUnauthorisedController().showNotAuthorised(Some("invalid-journey-id"))(fakeRequest)
-      contentAsString(result) should include ("We were unable to confirm your identity")
+      contentAsString(result) should include("We were unable to confirm your identity")
     }
 
     "show generic not_authorised template for failed journey" in {
       val result = testUnauthorisedController().showNotAuthorised(Some("failed-iv-journey-id"))(fakeRequest)
-      contentAsString(result) should include ("We were unable to confirm your identity")
+      contentAsString(result) should include("We were unable to confirm your identity")
     }
 
     "show 2FA failure page when no journey ID specified" in {
       val result = testUnauthorisedController().showNotAuthorised(None)(fakeRequest)
-      contentAsString(result) should include ("We were unable to confirm your identity")
+      contentAsString(result) should include("We were unable to confirm your identity")
       contentAsString(result) should not include "If you cannot confirm your identity and you have a query you can"
     }
   }

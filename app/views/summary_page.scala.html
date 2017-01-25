@@ -1,8 +1,9 @@
 @import models.SummaryModel
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
+@import config.AppConfig
 
-@(summaryModel: SummaryModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(summaryModel: SummaryModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @import SummaryIdConstants._
 @import SummaryHelper._
 

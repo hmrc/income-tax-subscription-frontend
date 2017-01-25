@@ -19,11 +19,11 @@ package views.business
 import assets.MessageLookup.Business.{SoleTrader => messages}
 import forms.SoleTraderForm
 import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import utils.UnitTestTrait
 
-class SoleTraderViewSpec extends PlaySpec with OneAppPerTest {
+class SoleTraderViewSpec extends UnitTestTrait {
 
   lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
 
@@ -31,7 +31,7 @@ class SoleTraderViewSpec extends PlaySpec with OneAppPerTest {
     soleTraderForm = SoleTraderForm.soleTraderForm,
     postAction = controllers.business.routes.SoleTraderController.submitSoleTrader(),
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
 
   lazy val document = Jsoup.parse(page.body)
 

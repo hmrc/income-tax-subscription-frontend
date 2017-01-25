@@ -10,15 +10,15 @@ POST       /summary            @controllers.SummaryController.submitSummary
 GET        /confirmation       @controllers.ConfirmationController.showConfirmation
 
 # Unauthorised Routes
-GET        /not-authorised     controllers.UnauthorisedController.showNotAuthorised(journeyId: Option[String])
+GET        /not-authorised     @controllers.UnauthorisedController.showNotAuthorised(journeyId: Option[String])
 
 # Session Timeout Route
 GET        /session-timeout    @controllers.SessionTimeoutController.timeout
 
 # Feedback Routes
-GET        /feedback           controllers.FeedbackController.show
-POST       /feedback           controllers.FeedbackController.submit
-GET        /thankyou           controllers.FeedbackController.thankyou
+GET        /feedback           @controllers.FeedbackController.show
+POST       /feedback           @controllers.FeedbackController.submit
+GET        /thankyou           @controllers.FeedbackController.thankyou
 
 # Terms Routes
 GET        /terms              @controllers.TermsController.showTerms

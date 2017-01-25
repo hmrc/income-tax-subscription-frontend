@@ -31,7 +31,7 @@ class TermsViewSpec extends UnitTestTrait {
     termsForm = TermForm.termForm,
     postAction = controllers.routes.TermsController.submitTerms(),
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Terms view" should {

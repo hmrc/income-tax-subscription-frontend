@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 trait BaseController extends FrontendController with AuthorisedForIncomeTaxSA with I18nSupport {
 
   val baseConfig: BaseControllerConfig
-  override lazy val applicationConfig = baseConfig.applicationConfig
+  override lazy implicit val applicationConfig = baseConfig.applicationConfig
   override lazy val authConnector = baseConfig.authConnector
   override lazy val postSignInRedirectUrl = baseConfig.postSignInRedirectUrl
 

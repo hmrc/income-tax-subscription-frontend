@@ -16,22 +16,22 @@
 
 package controllers
 
-import play.api.mvc._
-import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
-import scala.concurrent.Future
-import views.html.ivFailure._
+import javax.inject.Inject
+
+import config.AppConfig
 import connectors.IdentityVerificationConnector
 import enums.IdentityVerificationResult
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc._
+import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
+import views.html.ivFailure._
 
-object UnauthorisedController extends UnauthorisedController {
-	override val identityVerificationConnector: IdentityVerificationConnector = IdentityVerificationConnector
-}
+import scala.concurrent.Future
 
-trait UnauthorisedController extends FrontendController {
-
-  val identityVerificationConnector: IdentityVerificationConnector
+class UnauthorisedController @Inject()(implicit val applicationConfig: AppConfig,
+                                       val identityVerificationConnector: IdentityVerificationConnector,
+                                       val messagesApi: MessagesApi
+                                      ) extends FrontendController with I18nSupport {
 
   def showNotAuthorised(journeyId: Option[String]): Action[AnyContent] = UnauthorisedAction.async { implicit request =>
     val result = journeyId map { id =>

@@ -19,18 +19,18 @@ package views
 import assets.MessageLookup.{ContactEmail => messages}
 import forms.EmailForm
 import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.test.FakeRequest
+import utils.UnitTestTrait
 
-class ContactEmailViewSpec extends PlaySpec with OneAppPerTest {
+class ContactEmailViewSpec extends UnitTestTrait {
 
   lazy val backUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
   lazy val page = views.html.contact_email(
     contactEmailForm = EmailForm.emailForm,
     postAction = controllers.routes.ContactEmailController.submitContactEmail(),
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Contact Email Address view" should {

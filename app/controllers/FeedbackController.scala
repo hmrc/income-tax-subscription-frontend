@@ -17,10 +17,12 @@
 package controllers
 
 import java.net.URLEncoder
+import javax.inject.{Inject, Singleton}
 
-import config.{AppConfig, FrontendAppConfig, WSHttp}
+import config.AppConfig
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, RequestHeader}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.frontend.auth.Actions
@@ -28,56 +30,62 @@ import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.partials._
 import views.html.feedback.feedback_thankyou
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 
 import scala.concurrent.Future
+//
+//object FeedbackController extends FeedbackController {
+//
+//  override val httpPost = WSHttp
+//  override val httpGet = WSHttp
+//
+//  override val applicationConfig: AppConfig = FrontendAppConfig
+//
+//
+//}
 
-object FeedbackController extends FeedbackController with PartialRetriever {
+@Singleton
+class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
+                                   val wsHttp: WSHttp,
+                                   val messagesApi: MessagesApi
+                                  ) extends FrontendController with Actions with PartialRetriever with I18nSupport {
+  override val httpGet = wsHttp
+  val httpPost = wsHttp
+  //  def contactFormReferer(implicit request: Request[AnyContent]): String
+  //
+  //  def localSubmitUrl(implicit request: Request[AnyContent]): String
 
-  override val httpPost = WSHttp
-  override val httpGet = WSHttp
+  private val TICKET_ID = "ticketId"
 
-  override def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
+  implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
+    override val httpGet: HttpGet = wsHttp
+  }
 
-  override def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit().url
+
+  implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
+    override def httpGet: HttpGet = wsHttp
+
+    override def crypto: (String) => String = cookie => SessionCookieCryptoFilter.encrypt(cookie)
+  }
+
+  def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
+
+  def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit().url
 
   protected def authConnector: AuthConnector = config.FrontendAuthConnector
 
   protected def loadPartial(url: String)(implicit request: RequestHeader): HtmlPartial = ???
 
-  implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
-    override val httpGet: HttpGet = WSHttp
-  }
 
-  override implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
-    override def httpGet: HttpGet = WSHttp
-
-    override def crypto: (String) => String = cookie => SessionCookieCryptoFilter.encrypt(cookie)
-  }
-
-  override val applicationConfig: AppConfig = FrontendAppConfig
-
-}
-
-trait FeedbackController extends FrontendController with Actions {
-  implicit val formPartialRetriever: FormPartialRetriever
-  implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever
-
-  def httpPost: HttpPost
-  def contactFormReferer(implicit request: Request[AnyContent]): String
-  def localSubmitUrl(implicit request: Request[AnyContent]): String
-
-  val applicationConfig: AppConfig
-
-  private val TICKET_ID = "ticketId"
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =
     s"${applicationConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/?submitUrl=${urlEncode(localSubmitUrl)}" +
       s"&service=${urlEncode(applicationConfig.contactFormServiceIdentifier)}&referer=${urlEncode(contactFormReferer)}"
+
   private def feedbackHmrcSubmitPartialUrl(implicit request: Request[AnyContent]) =
     s"${applicationConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form?resubmitUrl=${urlEncode(localSubmitUrl)}"
+
   private def feedbackThankYouPartialUrl(ticketId: String)(implicit request: Request[AnyContent]) =
     s"${applicationConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/confirmation?ticketId=${urlEncode(ticketId)}"
 
@@ -123,7 +131,7 @@ trait FeedbackController extends FrontendController with Actions {
   object PlaHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsConverter {
     override val crypto = encryptCookieString _
 
-    def encryptCookieString(cookie: String) : String = {
+    def encryptCookieString(cookie: String): String = {
       SessionCookieCryptoFilter.encrypt(cookie)
     }
   }

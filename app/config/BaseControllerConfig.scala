@@ -21,8 +21,7 @@ import javax.inject._
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 
 @Singleton
-class BaseControllerConfig {
-  lazy val applicationConfig: AppConfig = FrontendAppConfig
+class BaseControllerConfig @Inject()(val applicationConfig: AppConfig) {
   lazy val authConnector: AuthConnector = FrontendAuthConnector
-  lazy val postSignInRedirectUrl: String = FrontendAppConfig.ggSignInContinueUrl
+  lazy val postSignInRedirectUrl: String = applicationConfig.ggSignInContinueUrl
 }

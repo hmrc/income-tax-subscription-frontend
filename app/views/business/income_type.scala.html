@@ -4,8 +4,9 @@
 @import helpers.radioHelper
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import helpers._
+@import config.AppConfig
 
-@(incomeTypeForm: Form[IncomeTypeModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(incomeTypeForm: Form[IncomeTypeModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     Messages("business.income_type.heading")

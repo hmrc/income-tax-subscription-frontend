@@ -19,11 +19,11 @@ package views.property
 import assets.MessageLookup.Property.{Income => messages}
 import forms.PropertyIncomeForm
 import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import utils.UnitTestTrait
 
-class PropertyIncomeViewSpec extends PlaySpec with OneAppPerTest {
+class PropertyIncomeViewSpec extends UnitTestTrait {
 
   lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
 
@@ -31,7 +31,7 @@ class PropertyIncomeViewSpec extends PlaySpec with OneAppPerTest {
     propertyIncomeForm = PropertyIncomeForm.propertyIncomeForm,
     postAction = controllers.property.routes.PropertyIncomeController.submitPropertyIncome(),
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
 
   lazy val document = Jsoup.parse(page.body)
 

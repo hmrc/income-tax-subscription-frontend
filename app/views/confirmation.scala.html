@@ -1,6 +1,7 @@
 @import models.DateModel
+@import config.AppConfig
 
-@(submissionReference: String, submissionDate: DateModel)(implicit request: Request[_], messages: Messages)
+@(submissionReference: String, submissionDate: DateModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None) {
 

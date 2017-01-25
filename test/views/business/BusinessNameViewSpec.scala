@@ -31,7 +31,7 @@ class BusinessNameViewSpec extends UnitTestTrait {
     businessNameForm = BusinessNameForm.businessNameForm,
     postAction = controllers.business.routes.BusinessNameController.submitBusinessName(),
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Business Name view" should {

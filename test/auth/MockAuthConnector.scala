@@ -16,15 +16,16 @@
 
 package auth
 
+import auth.ggUser._
 import config.WSHttp
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
+
 import scala.concurrent.Future
-import ggUser._
 
 object MockAuthConnector extends AuthConnector {
-  override val http : HttpGet = WSHttp
+  override val http: HttpGet = new WSHttp()
   override val serviceUrl: String = ""
 
   override def currentAuthority(implicit hc: HeaderCarrier): Future[Option[Authority]] = {

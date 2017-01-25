@@ -31,7 +31,7 @@ class NotEligibleViewSpec extends UnitTestTrait {
     notEligibleForm = NotEligibleForm.notEligibleForm,
     postAction = controllers.routes.NotEligibleController.submitNotEligible(),
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
 
   lazy val document = Jsoup.parse(page.body)
 

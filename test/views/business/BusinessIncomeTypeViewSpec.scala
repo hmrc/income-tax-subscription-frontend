@@ -19,18 +19,18 @@ package views.business
 import assets.MessageLookup.{BusinessIncomeType => messages}
 import forms.IncomeTypeForm
 import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import utils.UnitTestTrait
 
-class BusinessIncomeTypeViewSpec extends PlaySpec with OneAppPerTest {
+class BusinessIncomeTypeViewSpec extends UnitTestTrait {
   lazy val backUrl = controllers.business.routes.BusinessNameController.showBusinessName().url
 
   lazy val page = views.html.business.income_type(
     incomeTypeForm = IncomeTypeForm.incomeTypeForm,
     postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType(),
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Business Income Type view" should {

@@ -31,7 +31,7 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
     accountingPeriodForm = AccountingPeriodForm.accountingPeriodForm,
     postAction = controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(),
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Business Accounting Period view" should {

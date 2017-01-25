@@ -3,8 +3,9 @@
 @import forms.AccountingPeriodForm._
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
+@import config.AppConfig
 
-@(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @hintAnswer = {
     @Messages("accounting_period.hint.line_1")

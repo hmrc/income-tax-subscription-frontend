@@ -52,7 +52,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
     summaryModel = testSummary,
     postAction = postAction,
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
 
   lazy val document: Document = page.doc
 

@@ -16,29 +16,26 @@
 
 package connectors
 
-import play.api.data.validation.ValidationError
-import play.api.libs.json.{JsPath, Json}
-import config.WSHttp
+import javax.inject.{Inject, Singleton}
+
 import enums.IdentityVerificationResult.IdentityVerificationResult
 import play.api.Logger
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpResponse}
+import play.api.data.validation.ValidationError
+import play.api.libs.json.{JsPath, Json}
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpResponse}
 
 import scala.concurrent.Future
 
-object IdentityVerificationConnector extends IdentityVerificationConnector with ServicesConfig {
-  override val serviceUrl = baseUrl("identity-verification")
-  override def http: HttpGet = WSHttp
-}
-
-trait IdentityVerificationConnector {
-  val serviceUrl: String
-  def http: HttpGet
+@Singleton
+class IdentityVerificationConnector @Inject()(val http: HttpGet) extends ServicesConfig {
+  val serviceUrl: String = baseUrl("identity-verification")
 
   private def url(journeyId: String) = s"$serviceUrl/mdtp/journey/journeyId/$journeyId"
 
   private[connectors] case class IdentityVerificationResponse(result: IdentityVerificationResult)
+
   private implicit val formats = Json.format[IdentityVerificationResponse]
 
   def identityVerificationResponse(journeyId: String)(implicit hc: HeaderCarrier): Future[IdentityVerificationResult] = {
@@ -60,6 +57,6 @@ trait IdentityVerificationConnector {
   private def formatJsonErrors(errors: Seq[(JsPath, Seq[ValidationError])]): String = {
     errors.map(p => p._1 + " - " + p._2.map(_.message).mkString(",")).mkString(" | ")
   }
-
-  private[connectors] class JsonValidationException(message: String) extends Exception(message)
 }
+
+private[connectors] class JsonValidationException(message: String) extends Exception(message)

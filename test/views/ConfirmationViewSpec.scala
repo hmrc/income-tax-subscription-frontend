@@ -31,7 +31,7 @@ class ConfirmationViewSpec extends UnitTestTrait {
   lazy val page = views.html.confirmation(
     submissionReference = submissionReferenceValue,
     submissionDate = submissionDateValue
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Confirmation view" should {

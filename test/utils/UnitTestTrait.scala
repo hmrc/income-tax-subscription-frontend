@@ -16,9 +16,12 @@
 
 package utils
 
+import auth.{MockAuthConnector, MockConfig}
+import config.BaseControllerConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
+import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import uk.gov.hmrc.play.http.HeaderCarrier
 
@@ -40,5 +43,14 @@ trait UnitTestTrait extends PlaySpec with OneServerPerSuite with Implicits {
   implicit class HtmlFormatUtil(html: Html) {
     def doc: Document = Jsoup.parse(html.body)
   }
+
+  implicit val appConfig = MockConfig
+
+  object MockBaseControllerConfig extends BaseControllerConfig(applicationConfig = MockConfig) {
+    override lazy val authConnector = MockAuthConnector
+    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
+  }
+
+  implicit lazy val messagesApi = app.injector.instanceOf[MessagesApi]
 
 }
