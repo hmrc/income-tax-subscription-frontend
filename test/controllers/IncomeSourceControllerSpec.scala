@@ -17,11 +17,14 @@
 package controllers
 
 import auth._
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import config.BaseControllerConfig
 import forms.IncomeSourceForm
 import models.IncomeSourceModel
+import play.api.{Configuration, Environment}
 import play.api.http.Status
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 
@@ -34,22 +37,29 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     "submitIncomeSource" -> TestIncomeSourceController.submitIncomeSource
   )
 
-  object TestIncomeSourceController extends IncomeSourceController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-    override val keystoreService = MockKeystoreService
-  }
 
-  "The IncomeSource controller" should {
-    "use the correct applicationConfig" in {
-      IncomeSourceController.applicationConfig must be(FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      IncomeSourceController.authConnector must be(FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      IncomeSourceController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
+  object TestIncomeSourceController extends IncomeSourceController(
+    TestBaseConfig,
+    messagesApi,
+    MockKeystoreService
+  )
+
+  //  "The IncomeSource controller" should {
+  //    "use the correct applicationConfig" in {
+  //      IncomeSourceController.applicationConfig must be(FrontendAppConfig)
+  //    }
+  //    "use the correct authConnector" in {
+  //      IncomeSourceController.authConnector must be(FrontendAuthConnector)
+  //    }
+  //    "use the correct postSignInRedirectUrl" in {
+  //      IncomeSourceController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
+  //    }
+  //  }
+  "test" should {
+    "en" in {
+      val m: Messages = messagesApi.preferred(authenticatedFakeRequest())
+      m must not be null
+      m.apply("base.back") must be("Back")
     }
   }
 

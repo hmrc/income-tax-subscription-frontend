@@ -18,8 +18,11 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import auth.{MockAuthConnector, MockConfig}
+import config.BaseControllerConfig
 import play.api.data.Form
 import play.api.http.Status
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
@@ -54,5 +57,13 @@ trait ControllerBaseSpec extends UnitTestTrait {
     implicit def post[T](form: Form[T]): FakeRequest[AnyContentAsFormUrlEncoded] =
       fakeRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
   }
+
+  object TestBaseConfig extends BaseControllerConfig {
+    override lazy val applicationConfig = MockConfig
+    override lazy val authConnector = MockAuthConnector
+    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
+  }
+
+  implicit lazy val messagesApi = app.injector.instanceOf[MessagesApi]
 
 }

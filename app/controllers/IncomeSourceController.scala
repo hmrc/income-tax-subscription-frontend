@@ -16,28 +16,26 @@
 
 package controllers
 
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import javax.inject.Inject
+
+import config.BaseControllerConfig
 import forms.IncomeSourceForm
 import models.IncomeSourceModel
-import play.api.Play.current
 import play.api.data.Form
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.KeystoreService
 
 import scala.concurrent.Future
 
-object IncomeSourceController extends IncomeSourceController {
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
-  override val keystoreService = KeystoreService
-}
+class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
+                                       val messagesApi: MessagesApi,
+                                       val keystoreService: KeystoreService) extends BaseController with I18nSupport {
 
-trait IncomeSourceController extends BaseController {
-
-  val keystoreService: KeystoreService
+  override lazy val applicationConfig = baseConfig.applicationConfig
+  override lazy val authConnector = baseConfig.authConnector
+  override lazy val postSignInRedirectUrl = baseConfig.postSignInRedirectUrl
 
   def view(incomeSourceForm: Form[IncomeSourceModel])(implicit request: Request[_]): Html =
     views.html.income_source(

@@ -2,8 +2,8 @@
 GET        /hello-world        controllers.HelloWorldController.helloWorld
 
 # Income Source Routes
-GET        /income-source      controllers.IncomeSourceController.showIncomeSource
-POST       /income-source      controllers.IncomeSourceController.submitIncomeSource
+GET        /income-source      @controllers.IncomeSourceController.showIncomeSource
+POST       /income-source      @controllers.IncomeSourceController.submitIncomeSource
 
 # Summary Routes
 GET        /summary            controllers.SummaryController.showSummary

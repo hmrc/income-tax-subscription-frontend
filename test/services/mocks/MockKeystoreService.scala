@@ -33,9 +33,7 @@ trait MockKeystoreService extends MockTrait {
 
   val returnedCacheMap: CacheMap = CacheMap("", Map())
 
-  object MockKeystoreService extends KeystoreService {
-    override val session: SessionCache = mock[SessionCache]
-  }
+  object MockKeystoreService extends KeystoreService(mock[SessionCache])
 
   override def beforeEach(): Unit = {
     super.beforeEach()
