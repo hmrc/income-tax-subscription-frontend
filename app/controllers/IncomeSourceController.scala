@@ -22,7 +22,7 @@ import config.BaseControllerConfig
 import forms.IncomeSourceForm
 import models.IncomeSourceModel
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.KeystoreService
@@ -31,11 +31,8 @@ import scala.concurrent.Future
 
 class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
-                                       val keystoreService: KeystoreService) extends BaseController with I18nSupport {
-
-  override lazy val applicationConfig = baseConfig.applicationConfig
-  override lazy val authConnector = baseConfig.authConnector
-  override lazy val postSignInRedirectUrl = baseConfig.postSignInRedirectUrl
+                                       val keystoreService: KeystoreService
+                                      ) extends BaseController {
 
   def view(incomeSourceForm: Form[IncomeSourceModel])(implicit request: Request[_]): Html =
     views.html.income_source(

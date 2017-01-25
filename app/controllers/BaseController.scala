@@ -17,11 +17,17 @@
 package controllers
 
 import auth.AuthorisedForIncomeTaxSA
+import config.BaseControllerConfig
 import play.api.data.Form
+import play.api.i18n.I18nSupport
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
+trait BaseController extends FrontendController with AuthorisedForIncomeTaxSA with I18nSupport {
 
-trait BaseController extends FrontendController with AuthorisedForIncomeTaxSA {
+  val baseConfig: BaseControllerConfig
+  override lazy val applicationConfig = baseConfig.applicationConfig
+  override lazy val authConnector = baseConfig.authConnector
+  override lazy val postSignInRedirectUrl = baseConfig.postSignInRedirectUrl
 
   implicit class FormUtil[T](form: Form[T]) {
     def fill(data: Option[T]): Form[T] = data.fold(form)(form.fill)

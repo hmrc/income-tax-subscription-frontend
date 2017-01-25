@@ -36,24 +36,23 @@ class PropertyIncomeControllerSpec extends ControllerBaseSpec
     "submitPropertyIncome" -> TestPropertyIncomeController.submitPropertyIncome
   )
 
-  object TestPropertyIncomeController extends PropertyIncomeController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-    override val keystoreService = MockKeystoreService
-  }
+  object TestPropertyIncomeController extends PropertyIncomeController(
+    MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService
+  )
 
-  "The PropertyIncome controller" should {
-    "use the correct applicationConfig" in {
-      PropertyIncomeController.applicationConfig must be(FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      PropertyIncomeController.authConnector must be(FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      PropertyIncomeController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-    }
-  }
+//  "The PropertyIncome controller" should {
+//    "use the correct applicationConfig" in {
+//      PropertyIncomeController.applicationConfig must be(FrontendAppConfig)
+//    }
+//    "use the correct authConnector" in {
+//      PropertyIncomeController.authConnector must be(FrontendAuthConnector)
+//    }
+//    "use the correct postSignInRedirectUrl" in {
+//      PropertyIncomeController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
+//    }
+//  }
 
   "Calling the showIncomeSource action of the PropertyIncome controller with an authorised user" should {
 

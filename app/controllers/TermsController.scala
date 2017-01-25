@@ -16,28 +16,23 @@
 
 package controllers
 
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import javax.inject.Inject
+
+import config.BaseControllerConfig
 import forms.TermForm
 import models.TermModel
-import play.api.Play.current
 import play.api.data.Form
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.KeystoreService
 
 import scala.concurrent.Future
 
-object TermsController extends TermsController {
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
-  override val keystoreService = KeystoreService
-}
-
-trait TermsController extends BaseController {
-
-  val keystoreService: KeystoreService
+class TermsController @Inject()(val baseConfig: BaseControllerConfig,
+                                val messagesApi: MessagesApi,
+                                val keystoreService: KeystoreService
+                               ) extends BaseController {
 
   def view(termsForm: Form[TermModel])(implicit request: Request[_]): Html =
     views.html.terms(
@@ -64,6 +59,6 @@ trait TermsController extends BaseController {
       )
   }
 
-  lazy val backUrl :String = controllers.routes.ContactEmailController.showContactEmail().url
+  lazy val backUrl: String = controllers.routes.ContactEmailController.showContactEmail().url
 
 }

@@ -17,7 +17,6 @@
 package controllers
 
 import auth._
-import config.{FrontendAppConfig, FrontendAuthConnector}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -32,23 +31,22 @@ class EligibleControllerSpec extends ControllerBaseSpec
     "submitEligible" -> TestEligibleController.submitEligible
   )
 
-  object TestEligibleController extends EligibleController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-  }
+  object TestEligibleController extends EligibleController(
+    MockBaseControllerConfig,
+    messagesApi
+  )
 
-  "The EligibleController controller" should {
-    "use the correct applicationConfig" in {
-      TermsController.applicationConfig must be(FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      TermsController.authConnector must be(FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      TermsController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-    }
-  }
+  //  "The EligibleController controller" should {
+  //    "use the correct applicationConfig" in {
+  //      TermsController.applicationConfig must be(FrontendAppConfig)
+  //    }
+  //    "use the correct authConnector" in {
+  //      TermsController.authConnector must be(FrontendAuthConnector)
+  //    }
+  //    "use the correct postSignInRedirectUrl" in {
+  //      TermsController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
+  //    }
+  //  }
 
   "Calling the showTerms action of the TermsController with an authorised user" should {
 

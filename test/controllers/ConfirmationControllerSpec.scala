@@ -16,59 +16,32 @@
 
 package controllers
 
-import akka.actor._
-import akka.stream._
-import assets.MessageLookup
-import auth._
-import config.{FrontendAppConfig, FrontendAuthConnector}
-import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import play.api.http.Status
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.mvc.{Action, AnyContent}
 
-class ConfirmationControllerSpec extends PlaySpec with OneAppPerTest {
+class ConfirmationControllerSpec extends ControllerBaseSpec {
 
-  object TestConfirmationController extends ConfirmationController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-  }
+  object TestConfirmationController extends ConfirmationController(
+    MockBaseControllerConfig,
+    messagesApi
+  )
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
+  override val controllerName: String = "ConfirmationControllerSpec"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "showConfirmation" -> TestConfirmationController.showConfirmation
+  )
 
-  "The Summary controller" should {
-    "use the correct applicationConfig" in {
-      ConfirmationController.applicationConfig must be (FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      ConfirmationController.authConnector must be (FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      ConfirmationController.postSignInRedirectUrl must be (FrontendAppConfig.ggSignInContinueUrl)
-    }
-  }
+  //  "The Summary controller" should {
+  //    "use the correct applicationConfig" in {
+  //      ConfirmationController.applicationConfig must be(FrontendAppConfig)
+  //    }
+  //    "use the correct authConnector" in {
+  //      ConfirmationController.authConnector must be(FrontendAuthConnector)
+  //    }
+  //    "use the correct postSignInRedirectUrl" in {
+  //      ConfirmationController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
+  //    }
+  //  }
 
-  "Calling the showConfirmation action of the ConfirmationController with an authorised user" should {
+  authorisationTests
 
-    lazy val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
-
-    "return status ok (200)" in {
-      status(result) must be (Status.OK)
-    }
-    s"return some html with title of ${MessageLookup.Confirmation.title}" in {
-      contentType(result) mustBe Some("text/html")
-      Jsoup.parse(contentAsString(result)).title mustEqual MessageLookup.Confirmation.title
-    }
-  }
-
-  "Calling the showConfirmation action of the ConfirmationController with an unauthorised user" should {
-
-    lazy val result = TestConfirmationController.showConfirmation(FakeRequest())
-
-    "return 303" in {
-      status(result) must be (Status.SEE_OTHER)
-    }
-  }
 }

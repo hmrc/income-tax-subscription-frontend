@@ -45,4 +45,3 @@ class SessionCache extends uk.gov.hmrc.http.cache.client.SessionCache with AppNa
   override lazy val domain = getConfString("session-cache.domain", throw new Exception(s"Could not find config 'session-cache.domain'"))
 }
 
-object SessionCache extends SessionCache

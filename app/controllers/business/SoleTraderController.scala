@@ -16,29 +16,25 @@
 
 package controllers.business
 
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import javax.inject.Inject
+
+import config.BaseControllerConfig
 import controllers.BaseController
 import forms.{IncomeSourceForm, SoleTraderForm}
 import models.SoleTraderModel
-import play.api.Play.current
 import play.api.data.Form
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.KeystoreService
 
 import scala.concurrent.Future
 
-object SoleTraderController extends SoleTraderController {
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
-  override val keystoreService = KeystoreService
-}
 
-trait SoleTraderController extends BaseController {
-
-  val keystoreService: KeystoreService
+class SoleTraderController @Inject()(val baseConfig: BaseControllerConfig,
+                                     val messagesApi: MessagesApi,
+                                     val keystoreService: KeystoreService
+                                    ) extends BaseController {
 
   def view(soleTraderForm: Form[SoleTraderModel], backUrl: String)(implicit request: Request[_]): Html =
     views.html.business.sole_trader(
@@ -80,7 +76,7 @@ trait SoleTraderController extends BaseController {
       case Some(source) => source.source match {
         case IncomeSourceForm.option_business =>
           controllers.routes.IncomeSourceController.showIncomeSource().url
-        case IncomeSourceForm.option_both  =>
+        case IncomeSourceForm.option_both =>
           controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
       }
     }

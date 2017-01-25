@@ -1,15 +1,15 @@
 #Are You a Sole Trader Routes
-GET        /sole-trader                 controllers.business.SoleTraderController.showSoleTrader
-POST       /sole-trader                 controllers.business.SoleTraderController.submitSoleTrader
+GET        /sole-trader                 @controllers.business.SoleTraderController.showSoleTrader
+POST       /sole-trader                 @controllers.business.SoleTraderController.submitSoleTrader
 
 #Accounting Period Routes
-GET        /accounting-period           controllers.business.BusinessAccountingPeriodController.showAccountingPeriod
-POST       /accounting-period           controllers.business.BusinessAccountingPeriodController.submitAccountingPeriod
+GET        /accounting-period           @controllers.business.BusinessAccountingPeriodController.showAccountingPeriod
+POST       /accounting-period           @controllers.business.BusinessAccountingPeriodController.submitAccountingPeriod
 
 #Name Routes
-GET        /name                        controllers.business.BusinessNameController.showBusinessName
-POST       /name                        controllers.business.BusinessNameController.submitBusinessName
+GET        /name                        @controllers.business.BusinessNameController.showBusinessName
+POST       /name                        @controllers.business.BusinessNameController.submitBusinessName
 
 #Income Type Routes
-GET        /income-type                 controllers.business.BusinessIncomeTypeController.showBusinessIncomeType
-POST       /income-type                 controllers.business.BusinessIncomeTypeController.submitBusinessIncomeType
+GET        /income-type                 @controllers.business.BusinessIncomeTypeController.showBusinessIncomeType
+POST       /income-type                 @controllers.business.BusinessIncomeTypeController.submitBusinessIncomeType

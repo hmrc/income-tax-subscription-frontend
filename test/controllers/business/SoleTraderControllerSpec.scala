@@ -17,7 +17,6 @@
 package controllers.business
 
 import auth._
-import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.ControllerBaseSpec
 import forms.SoleTraderForm
 import models.SoleTraderModel
@@ -37,24 +36,23 @@ class SoleTraderControllerSpec extends ControllerBaseSpec
     "submitSoleTrader" -> TestSoleTraderController.submitSoleTrader
   )
 
-  object TestSoleTraderController extends SoleTraderController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-    override val keystoreService = MockKeystoreService
-  }
+  object TestSoleTraderController extends SoleTraderController(
+    MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService
+  )
 
-  "The SoleTrader controller" should {
-    "use the correct applicationConfig" in {
-      SoleTraderController.applicationConfig must be(FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      SoleTraderController.authConnector must be(FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      SoleTraderController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-    }
-  }
+  //  "The SoleTrader controller" should {
+  //    "use the correct applicationConfig" in {
+  //      SoleTraderController.applicationConfig must be(FrontendAppConfig)
+  //    }
+  //    "use the correct authConnector" in {
+  //      SoleTraderController.authConnector must be(FrontendAuthConnector)
+  //    }
+  //    "use the correct postSignInRedirectUrl" in {
+  //      SoleTraderController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
+  //    }
+  //  }
 
   "Calling the showSoleTrader action of the SoleTrader with an authorised user" should {
 

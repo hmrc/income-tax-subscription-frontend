@@ -58,7 +58,7 @@ trait ControllerBaseSpec extends UnitTestTrait {
       fakeRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
   }
 
-  object TestBaseConfig extends BaseControllerConfig {
+  object MockBaseControllerConfig extends BaseControllerConfig {
     override lazy val applicationConfig = MockConfig
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl

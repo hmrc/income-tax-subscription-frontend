@@ -20,7 +20,6 @@ import config.SessionCache
 import models.BusinessNameModel
 import org.scalatest.Matchers._
 import services.mocks.MockKeystoreService
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.HttpResponse
 import utils.{TestModels, UnitTestTrait}
 
@@ -28,8 +27,11 @@ class KeystoreServiceSpec extends UnitTestTrait
   with MockKeystoreService {
 
   "Keystore service" should {
-    "be configured with the correct session cache object" in {
-      KeystoreService.session shouldBe SessionCache
+    "be DIed with the correct session cache object" in {
+      val cache = app.injector.instanceOf[SessionCache]
+      cache.defaultSource shouldBe cache.getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
+      cache.baseUri shouldBe cache.baseUrl("session-cache")
+      cache.domain shouldBe cache.getConfString("session-cache.domain", throw new Exception(s"Could not find config 'session-cache.domain'"))
     }
   }
 

@@ -16,28 +16,23 @@
 
 package controllers
 
-import config.{FrontendAppConfig, FrontendAuthConnector}
-import forms.{EmailForm, IncomeSourceForm, IncomeTypeForm, PropertyIncomeForm}
-import models.{EmailModel, PropertyIncomeModel}
-import play.api.Play.current
+import javax.inject.Inject
+
+import config.BaseControllerConfig
+import forms.{EmailForm, IncomeSourceForm, PropertyIncomeForm}
+import models.EmailModel
 import play.api.data.Form
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.KeystoreService
 
 import scala.concurrent.Future
 
-object ContactEmailController extends ContactEmailController {
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
-  override val keystoreService = KeystoreService
-}
-
-trait ContactEmailController extends BaseController {
-
-  val keystoreService: KeystoreService
+class ContactEmailController @Inject()(val baseConfig: BaseControllerConfig,
+                                       val messagesApi: MessagesApi,
+                                       val keystoreService: KeystoreService
+                                      ) extends BaseController {
 
   def view(contactEmailForm: Form[EmailModel], backUrl: String)(implicit request: Request[_]): Html =
     views.html.contact_email(

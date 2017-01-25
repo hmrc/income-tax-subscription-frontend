@@ -17,14 +17,11 @@
 package controllers
 
 import auth._
-import config.BaseControllerConfig
 import forms.IncomeSourceForm
 import models.IncomeSourceModel
-import play.api.{Configuration, Environment}
 import play.api.http.Status
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 
@@ -37,9 +34,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     "submitIncomeSource" -> TestIncomeSourceController.submitIncomeSource
   )
 
-
   object TestIncomeSourceController extends IncomeSourceController(
-    TestBaseConfig,
+    MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService
   )

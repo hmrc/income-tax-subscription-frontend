@@ -17,7 +17,6 @@
 package controllers
 
 import auth._
-import config.{FrontendAppConfig, FrontendAuthConnector}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -33,24 +32,23 @@ class SummaryControllerSpec extends ControllerBaseSpec
     "submitSummary" -> TestSummaryController.submitSummary
   )
 
-  object TestSummaryController extends SummaryController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-    override val keystoreService = MockKeystoreService
-  }
+  object TestSummaryController extends SummaryController (
+    MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService
+  )
 
-  "The Summary controller" should {
-    "use the correct applicationConfig" in {
-      SummaryController.applicationConfig must be(FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      SummaryController.authConnector must be(FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      SummaryController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-    }
-  }
+//  "The Summary controller" should {
+  //    "use the correct applicationConfig" in {
+  //      SummaryController.applicationConfig must be(FrontendAppConfig)
+  //    }
+  //    "use the correct authConnector" in {
+  //      SummaryController.authConnector must be(FrontendAuthConnector)
+  //    }
+  //    "use the correct postSignInRedirectUrl" in {
+  //      SummaryController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
+  //    }
+  //  }
 
   "Calling the showSummary action of the SummaryController with an authorised user" should {
 

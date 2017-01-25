@@ -17,7 +17,6 @@
 package controllers.business
 
 import auth._
-import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.ControllerBaseSpec
 import forms.AccountingPeriodForm
 import models.{AccountingPeriodModel, DateModel}
@@ -37,24 +36,23 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     "submitSummary" -> TestBusinessAccountingPeriodController.submitAccountingPeriod
   )
 
-  object TestBusinessAccountingPeriodController extends BusinessAccountingPeriodController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-    override val keystoreService = MockKeystoreService
-  }
+  object TestBusinessAccountingPeriodController extends BusinessAccountingPeriodController(
+    MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService
+  )
 
-  "The BusinessAccountingPeriod controller" should {
-    "use the correct applicationConfig" in {
-      BusinessAccountingPeriodController.applicationConfig must be(FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      BusinessAccountingPeriodController.authConnector must be(FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      BusinessAccountingPeriodController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-    }
-  }
+  //  "The BusinessAccountingPeriod controller" should {
+  //    "use the correct applicationConfig" in {
+  //      BusinessAccountingPeriodController.applicationConfig must be(FrontendAppConfig)
+  //    }
+  //    "use the correct authConnector" in {
+  //      BusinessAccountingPeriodController.authConnector must be(FrontendAuthConnector)
+  //    }
+  //    "use the correct postSignInRedirectUrl" in {
+  //      BusinessAccountingPeriodController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
+  //    }
+  //  }
 
   "Calling the showAccountingPeriod action of the BusinessAccountingPeriod with an authorised user" should {
 

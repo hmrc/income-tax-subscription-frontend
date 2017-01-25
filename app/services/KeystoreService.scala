@@ -97,5 +97,3 @@ class KeystoreService @Inject()(val session: SessionCache) {
     save[NotEligibleModel](NotEligible, choice)
 }
 
-object KeystoreService extends KeystoreService(config.SessionCache)
-
