@@ -17,7 +17,6 @@
 package controllers
 
 import auth._
-import config.{FrontendAppConfig, FrontendAuthConnector}
 import forms.NotEligibleForm
 import models.NotEligibleModel
 import play.api.http.Status
@@ -36,24 +35,11 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
     "submitNotEligible" -> TestNotEligibleController.submitNotEligible
   )
 
-  object TestNotEligibleController extends NotEligibleController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-    override val keystoreService = MockKeystoreService
-  }
-
-  "The NotEligible controller" should {
-    "use the correct applicationConfig" in {
-      NotEligibleController.applicationConfig must be(FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      NotEligibleController.authConnector must be(FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      NotEligibleController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-    }
-  }
+  object TestNotEligibleController extends NotEligibleController(
+    MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService
+  )
 
   "Calling the showNotEligible action of the NotEligible controller with an authorised user" should {
 

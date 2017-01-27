@@ -17,7 +17,6 @@
 package controllers.business
 
 import auth._
-import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.ControllerBaseSpec
 import forms.IncomeTypeForm
 import models.IncomeTypeModel
@@ -35,24 +34,11 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
     "submitBusinessIncomeType" -> TestBusinessIncomeTypeController.submitBusinessIncomeType
   )
 
-  object TestBusinessIncomeTypeController extends BusinessIncomeTypeController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-    override val keystoreService = MockKeystoreService
-  }
-
-  "The BusinessIncomeType controller" should {
-    "use the correct applicationConfig" in {
-      BusinessIncomeTypeController.applicationConfig must be(FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      BusinessIncomeTypeController.authConnector must be(FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      BusinessIncomeTypeController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-    }
-  }
+  object TestBusinessIncomeTypeController extends BusinessIncomeTypeController (
+    MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService
+  )
 
   "Calling the showBusinessIncomeType action of the BusinessIncomeType with an authorised user" should {
 

@@ -1,6 +1,3 @@
-# Hello World Routes
-GET        /hello-world        controllers.HelloWorldController.helloWorld
-
 # Income Source Routes
 GET        /income-source      controllers.IncomeSourceController.showIncomeSource
 POST       /income-source      controllers.IncomeSourceController.submitIncomeSource

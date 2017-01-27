@@ -29,7 +29,7 @@ class EligibleViewSpec extends UnitTestTrait {
   lazy val page = views.html.eligible(
     postAction = controllers.routes.EligibleController.submitEligible(),
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Eligible view" should {

@@ -16,21 +16,19 @@
 
 package controllers
 
-import config.{FrontendAppConfig, FrontendAuthConnector}
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
+import javax.inject.Inject
+
+import config.BaseControllerConfig
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 
 import scala.concurrent.Future
 
-object EligibleController extends EligibleController {
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
-}
 
-trait EligibleController extends BaseController {
+class EligibleController @Inject()(val baseConfig: BaseControllerConfig,
+                                   val messagesApi: MessagesApi
+                                  ) extends BaseController {
 
   def view()(implicit request: Request[_]): Html =
     views.html.eligible(

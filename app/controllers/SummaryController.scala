@@ -16,26 +16,18 @@
 
 package controllers
 
-import auth.AuthorisedForIncomeTaxSA
-import config.{FrontendAppConfig, FrontendAuthConnector}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
+import javax.inject.Inject
+
+import config.BaseControllerConfig
+import play.api.i18n.MessagesApi
 import services.KeystoreService
-import uk.gov.hmrc.play.http.HttpResponse
 
 import scala.concurrent.Future
 
-object SummaryController extends SummaryController {
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
-  override val keystoreService = KeystoreService
-}
-
-trait SummaryController extends FrontendController with AuthorisedForIncomeTaxSA {
-
-  val keystoreService: KeystoreService
+class SummaryController @Inject()(val baseConfig: BaseControllerConfig,
+                                  val messagesApi: MessagesApi,
+                                  val keystoreService: KeystoreService
+                                 ) extends BaseController {
 
   import services.CacheUtil._
 

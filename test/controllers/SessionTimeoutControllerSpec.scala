@@ -16,36 +16,38 @@
 
 package controllers
 
-import akka.actor._
-import akka.stream._
 import assets.MessageLookup
 import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.http.Status
+import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-class SessionTimeoutControllerSpec extends PlaySpec with OneAppPerTest {
+class SessionTimeoutControllerSpec extends ControllerBaseSpec {
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
+  override val controllerName: String = "SessionTimeoutController"
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
+
+  object TestSessionTimeoutController extends SessionTimeoutController()(
+    MockBaseControllerConfig.applicationConfig,
+    messagesApi)
 
   "Calling the timeout action of the SessionTimeoutController" should {
 
-    lazy val result = SessionTimeoutController.timeout(FakeRequest())
+    lazy val result = TestSessionTimeoutController.timeout(FakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
-      status(result) must be (Status.OK)
+      status(result) must be(Status.OK)
     }
 
     "return HTML" in {
-      contentType(result) must be (Some("text/html"))
-      charset(result) must be (Some("utf-8"))
+      contentType(result) must be(Some("text/html"))
+      charset(result) must be(Some("utf-8"))
     }
 
     s"have the title '${MessageLookup.Timeout.title}'" in {
-      document.title() must be (MessageLookup.Timeout.title)
+      document.title() must be(MessageLookup.Timeout.title)
     }
   }
 }

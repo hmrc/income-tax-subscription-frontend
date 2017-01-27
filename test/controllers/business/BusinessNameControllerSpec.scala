@@ -17,7 +17,6 @@
 package controllers.business
 
 import auth._
-import config.{FrontendAppConfig, FrontendAuthConnector}
 import controllers.ControllerBaseSpec
 import forms.BusinessNameForm
 import models.BusinessNameModel
@@ -35,24 +34,11 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     "submitBusinessIncomeType" -> TestBusinessNameController.submitBusinessName
   )
 
-  object TestBusinessNameController extends BusinessNameController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-    override val keystoreService = MockKeystoreService
-  }
-
-  "The BusinessNameController controller" should {
-    "use the correct applicationConfig" in {
-      BusinessNameController.applicationConfig must be(FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      BusinessNameController.authConnector must be(FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      BusinessNameController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-    }
-  }
+  object TestBusinessNameController extends BusinessNameController(
+    MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService
+  )
 
   "Calling the showBusinessName action of the BusinessNameController with an authorised user" should {
 

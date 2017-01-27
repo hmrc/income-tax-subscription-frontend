@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package controllers
+package config
 
-import play.api.mvc.{Action, AnyContent}
+import play.api.libs.json.Json
 
-class ConfirmationControllerSpec extends ControllerBaseSpec {
+import scala.io.Source
 
-  object TestConfirmationController extends ConfirmationController(
-    MockBaseControllerConfig,
-    messagesApi
-  )
+trait AppVersion {
 
-  override val controllerName: String = "ConfirmationControllerSpec"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showConfirmation" -> TestConfirmationController.showConfirmation
-  )
-
-  authorisationTests
+  private val stream = getClass.getResourceAsStream("/provenance.json")
+  val appVersion: String = (Json.parse(Source.fromInputStream(stream).mkString) \ "version").as[String]
+  stream.close()
 
 }

@@ -24,7 +24,7 @@ import utils.UnitTestTrait
 
 class SessionTimeoutViewSpec extends UnitTestTrait {
 
-  lazy val page = views.html.timeout.timeout()(FakeRequest(), applicationMessages)
+  lazy val page = views.html.timeout.timeout()(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Session timeout view" should {

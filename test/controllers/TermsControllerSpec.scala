@@ -17,7 +17,6 @@
 package controllers
 
 import auth._
-import config.{FrontendAppConfig, FrontendAuthConnector}
 import forms.TermForm
 import models.TermModel
 import play.api.http.Status
@@ -34,24 +33,11 @@ class TermsControllerSpec extends ControllerBaseSpec
     "submitTerms" -> TestTermsController.submitTerms
   )
 
-  object TestTermsController extends TermsController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-    override val keystoreService = MockKeystoreService
-  }
-
-  "The TermsController controller" should {
-    "use the correct applicationConfig" in {
-      TermsController.applicationConfig must be(FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      TermsController.authConnector must be(FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      TermsController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-    }
-  }
+  object TestTermsController extends TermsController (
+    MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService
+  )
 
   "Calling the showTerms action of the TermsController with an authorised user" should {
 

@@ -2,8 +2,9 @@
 @import forms.EmailForm._
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
+@import config.AppConfig
 
-@(contactEmailForm: Form[EmailModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(contactEmailForm: Form[EmailModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @views.html.templates.main_template(title = Messages("contact_email.title"), bodyClasses = None) {
     @back_link(backUrl)

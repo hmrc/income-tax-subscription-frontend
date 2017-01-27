@@ -1,10 +1,11 @@
 @import views.html.templates.main_template
+@import config.AppConfig
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("timeout.title"), bodyClasses = None) {
 
 <h1>@Messages("timeout.heading")</h1>
 
-<p>@Html(Messages("timeout.returnToHome", controllers.routes.HelloWorldController.helloWorld().url))</p>
+<p>@Html(Messages("timeout.returnToHome", controllers.routes.IncomeSourceController.showIncomeSource().url))</p>
 }

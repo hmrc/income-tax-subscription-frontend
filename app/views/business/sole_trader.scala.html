@@ -4,8 +4,9 @@
 @import helpers.radioHelper
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import helpers._
+@import config.AppConfig
 
-@(soleTraderForm: Form[SoleTraderModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages)
+@(soleTraderForm: Form[SoleTraderModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     Messages("business.sole_trader.heading")

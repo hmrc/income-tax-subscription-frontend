@@ -19,16 +19,16 @@ package views
 import assets.MessageLookup.{IncomeSource => messages}
 import forms.IncomeSourceForm
 import org.jsoup.Jsoup
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import utils.UnitTestTrait
 
-class IncomeSourceViewSpec extends PlaySpec with OneAppPerTest {
+class IncomeSourceViewSpec extends UnitTestTrait {
 
   lazy val page = views.html.income_source(
     incomeSourceForm = IncomeSourceForm.incomeSourceForm,
     postAction = controllers.routes.IncomeSourceController.submitIncomeSource()
-  )(FakeRequest(), applicationMessages)
+  )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Income source view" should {

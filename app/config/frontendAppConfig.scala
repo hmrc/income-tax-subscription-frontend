@@ -16,7 +16,9 @@
 
 package config
 
-import play.api.Play.{configuration, current}
+import javax.inject.{Inject, Singleton}
+
+import play.api.Configuration
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
@@ -35,29 +37,31 @@ trait AppConfig {
   val ggSignInContinueUrl: String
 }
 
-object FrontendAppConfig extends AppConfig with ServicesConfig {
+@Singleton
+class FrontendAppConfig @Inject()(configuration: Configuration) extends AppConfig with ServicesConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   private val baseUrl = "income-tax-subscription-frontend"
 
   //Authentication/Authorisation Config
-  override val ggSignInUrl = loadConfig("government-gateway.sign-in.url")
-  override val ggSignInContinueUrl = loadConfig("government-gateway.continue.url")
-  override val twoFactorUrl = loadConfig("two-factor.url")
-  override val ivUpliftUrl = loadConfig("identity-verification.uplift.url")
-  override val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
+  override lazy val ggSignInUrl = loadConfig("government-gateway.sign-in.url")
+  override lazy val ggSignInContinueUrl = loadConfig("government-gateway.continue.url")
+  override lazy val twoFactorUrl = loadConfig("two-factor.url")
+  override lazy val ivUpliftUrl = loadConfig("identity-verification.uplift.url")
+  override lazy val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
 
   //GA Config
-  override val analyticsToken: String = loadConfig(s"google-analytics.token")
-  override val analyticsHost: String = loadConfig(s"google-analytics.host")
+  override lazy val analyticsToken: String = loadConfig(s"google-analytics.token")
+  override lazy val analyticsHost: String = loadConfig(s"google-analytics.host")
 
   //Contact Frontend Config
-  private val contactFrontendService = baseUrl("contact-frontend")
-  override val betaFeedbackUrl = s"$baseUrl/feedback"
-  override val betaFeedbackUnauthenticatedUrl = betaFeedbackUrl
-  override val contactFormServiceIdentifier = "IRS"
-  override val contactFrontendPartialBaseUrl = s"$contactFrontendService"
-  override val reportAProblemPartialUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override val reportAProblemNonJSUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  private lazy val contactFrontendService = baseUrl("contact-frontend")
+  override lazy val betaFeedbackUrl = s"$baseUrl/feedback"
+  override lazy val betaFeedbackUnauthenticatedUrl = betaFeedbackUrl
+  override lazy val contactFormServiceIdentifier = "IRS"
+  override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
+  override lazy val reportAProblemPartialUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 }
+

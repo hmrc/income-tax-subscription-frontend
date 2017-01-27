@@ -16,29 +16,24 @@
 
 package controllers.property
 
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import javax.inject.Inject
+
+import config.BaseControllerConfig
 import controllers.BaseController
 import forms.{IncomeSourceForm, PropertyIncomeForm}
 import models.PropertyIncomeModel
-import play.api.Play.current
 import play.api.data.Form
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.KeystoreService
 
 import scala.concurrent.Future
 
-object PropertyIncomeController extends PropertyIncomeController {
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
-  override val keystoreService = KeystoreService
-}
-
-trait PropertyIncomeController extends BaseController {
-
-  val keystoreService: KeystoreService
+class PropertyIncomeController @Inject()(val baseConfig: BaseControllerConfig,
+                                         val messagesApi: MessagesApi,
+                                         val keystoreService: KeystoreService
+                                        ) extends BaseController {
 
   def view(propertyIncomeForm: Form[PropertyIncomeModel])(implicit request: Request[_]): Html =
     views.html.property.property_income(

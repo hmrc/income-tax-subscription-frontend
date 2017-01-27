@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package config
 
-import play.api.mvc.{Action, AnyContent}
+import javax.inject._
 
-class ConfirmationControllerSpec extends ControllerBaseSpec {
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 
-  object TestConfirmationController extends ConfirmationController(
-    MockBaseControllerConfig,
-    messagesApi
-  )
-
-  override val controllerName: String = "ConfirmationControllerSpec"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showConfirmation" -> TestConfirmationController.showConfirmation
-  )
-
-  authorisationTests
-
+@Singleton
+class BaseControllerConfig @Inject()(val applicationConfig: AppConfig) {
+  lazy val authConnector: AuthConnector = FrontendAuthConnector
+  lazy val postSignInRedirectUrl: String = applicationConfig.ggSignInContinueUrl
 }

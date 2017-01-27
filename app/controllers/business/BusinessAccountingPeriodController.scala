@@ -16,30 +16,24 @@
 
 package controllers.business
 
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import javax.inject.Inject
+
+import config.BaseControllerConfig
 import controllers.BaseController
 import forms.{AccountingPeriodForm, IncomeSourceForm, PropertyIncomeForm, SoleTraderForm}
 import models.AccountingPeriodModel
-import play.api.Play.current
 import play.api.data.Form
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.KeystoreService
 
 import scala.concurrent.Future
 
-object BusinessAccountingPeriodController extends BusinessAccountingPeriodController {
-  override lazy val applicationConfig = FrontendAppConfig
-  override lazy val authConnector = FrontendAuthConnector
-  override lazy val postSignInRedirectUrl = FrontendAppConfig.ggSignInContinueUrl
-
-  override val keystoreService = KeystoreService
-}
-
-trait BusinessAccountingPeriodController extends BaseController {
-
-  val keystoreService: KeystoreService
+class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControllerConfig,
+                                                   val messagesApi: MessagesApi,
+                                                   val keystoreService: KeystoreService
+                                                  ) extends BaseController {
 
   def view(form: Form[AccountingPeriodModel], backUrl: String)(implicit request: Request[_]): Html =
     views.html.business.accounting_period(

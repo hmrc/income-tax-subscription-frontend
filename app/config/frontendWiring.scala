@@ -16,29 +16,33 @@
 
 package config
 
+import javax.inject._
+
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
 
 object FrontendAuditConnector extends Auditing with AppName {
   override lazy val auditingConfig = LoadAuditingConfig(s"auditing")
 }
 
-object WSHttp extends WSGet with WSPut with WSPost with WSDelete with AppName with RunMode {
+@Singleton
+class WSHttp extends uk.gov.hmrc.play.http.ws.WSHttp with AppName with RunMode {
   override val hooks = NoneRequired
 }
 
 object FrontendAuthConnector extends AuthConnector with ServicesConfig {
   val serviceUrl = baseUrl("auth")
-  lazy val http = WSHttp
+  lazy val http = new WSHttp()
 }
 
-object SessionCache extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
-  override lazy val http = WSHttp
+
+@Singleton
+class SessionCache @Inject()(val http: WSHttp) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
   override lazy val defaultSource: String = getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
 
   override lazy val baseUri = baseUrl("session-cache")
   override lazy val domain = getConfString("session-cache.domain", throw new Exception(s"Could not find config 'session-cache.domain'"))
 }
+

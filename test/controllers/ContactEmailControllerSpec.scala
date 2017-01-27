@@ -17,7 +17,6 @@
 package controllers
 
 import auth._
-import config.{FrontendAppConfig, FrontendAuthConnector}
 import forms.EmailForm
 import models.EmailModel
 import org.jsoup.Jsoup
@@ -39,24 +38,11 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
     "submitContactEmail" -> TestContactEmailController.submitContactEmail
   )
 
-  object TestContactEmailController extends ContactEmailController {
-    override lazy val applicationConfig = MockConfig
-    override lazy val authConnector = MockAuthConnector
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-    override val keystoreService = MockKeystoreService
-  }
-
-  "The ContactEmailController controller" should {
-    "use the correct applicationConfig" in {
-      ContactEmailController.applicationConfig must be(FrontendAppConfig)
-    }
-    "use the correct authConnector" in {
-      ContactEmailController.authConnector must be(FrontendAuthConnector)
-    }
-    "use the correct postSignInRedirectUrl" in {
-      ContactEmailController.postSignInRedirectUrl must be(FrontendAppConfig.ggSignInContinueUrl)
-    }
-  }
+  object TestContactEmailController extends ContactEmailController (
+    MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService
+  )
 
   "Calling the showContactEmail action of the ContactEmailController with an authorised user" should {
 

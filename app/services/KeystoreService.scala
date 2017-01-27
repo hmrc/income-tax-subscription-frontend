@@ -17,7 +17,8 @@
 package services
 
 
-import config.SessionCache
+import javax.inject._
+
 import models._
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
@@ -25,12 +26,11 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
-trait KeystoreService {
+@Singleton
+class KeystoreService @Inject()(val session: SessionCache) {
 
   type FO[T] = Future[Option[T]]
   type FC = Future[CacheMap]
-
-  protected val session: SessionCache
 
   protected def fetch[T](location: String)(implicit hc: HeaderCarrier, reads: Reads[T]): FO[T] = session.fetchAndGetEntry(location)
 
@@ -97,6 +97,3 @@ trait KeystoreService {
     save[NotEligibleModel](NotEligible, choice)
 }
 
-object KeystoreService extends KeystoreService {
-  val session = SessionCache
-}

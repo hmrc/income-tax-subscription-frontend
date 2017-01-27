@@ -31,11 +31,6 @@ object MessageLookup {
     val where_can_i_get_this_information = "Where can I get this information"
   }
 
-  object HelloWorld {
-    val title = "Hello from income-tax-subscription-frontend"
-    val heading = "Hello from income-tax-subscription-frontend !"
-  }
-
   object IncomeSource {
     val title = "Where does your income come from?"
     val heading: String = title
