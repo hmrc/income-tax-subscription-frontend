@@ -3,8 +3,8 @@ GET        /sole-trader                 controllers.business.SoleTraderControlle
 POST       /sole-trader                 controllers.business.SoleTraderController.submitSoleTrader
 
 #Accounting Period Routes
-GET        /accounting-period           controllers.business.BusinessAccountingPeriodController.showAccountingPeriod
-POST       /accounting-period           controllers.business.BusinessAccountingPeriodController.submitAccountingPeriod
+GET        /accounting-period           controllers.business.BusinessAccountingPeriodController.showAccountingPeriod(editMode: Boolean ?= false)
+POST       /accounting-period           controllers.business.BusinessAccountingPeriodController.submitAccountingPeriod(editMode: Boolean ?= false)
 
 #Name Routes
 GET        /name                        controllers.business.BusinessNameController.showBusinessName

@@ -33,7 +33,7 @@
     val rowQuestion = Messages("summary.accounting_period")
     val periodInMonth = period.startDate.diffInMonth(period.endDate)
     val rowAnswer = s"${period.startDate.toOutputDateFormat} to ${period.endDate.toOutputDateFormat}</p>${Messages("summary.accounting_period.month", periodInMonth)}"
-    val rowUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+    val rowUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

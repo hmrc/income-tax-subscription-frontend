@@ -30,8 +30,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "IncomeSourceController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showIncomeSource" -> TestIncomeSourceController.showIncomeSource(),
-    "submitIncomeSource" -> TestIncomeSourceController.submitIncomeSource()
+    "showIncomeSource" -> TestIncomeSourceController.showIncomeSource(isEditMode = true),
+    "submitIncomeSource" -> TestIncomeSourceController.submitIncomeSource(isEditMode = true)
   )
 
   object TestIncomeSourceController extends IncomeSourceController(
@@ -50,7 +50,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
   "Calling the showIncomeSource action of the IncomeSource controller with an authorised user" should {
 
-    lazy val result = TestIncomeSourceController.showIncomeSource()(authenticatedFakeRequest())
+    lazy val result = TestIncomeSourceController.showIncomeSource(isEditMode = true)(authenticatedFakeRequest())
 
     "return ok (200)" in {
       setupMockKeystore(fetchIncomeSource = None)
@@ -145,7 +145,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submitIncomeSource action of the IncomeSource controller with an authorised user and invalid submission" should {
-    lazy val badRequest = TestIncomeSourceController.submitIncomeSource()(authenticatedFakeRequest())
+    lazy val badRequest = TestIncomeSourceController.submitIncomeSource(isEditMode = true)(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)

@@ -40,14 +40,14 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
       postAction = controllers.routes.IncomeSourceController.submitIncomeSource(editMode = isEditMode)
     )
 
-  def showIncomeSource(isEditMode: Boolean = false): Action[AnyContent] = Authorised.async { implicit user =>
+  def showIncomeSource(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchIncomeSource() map {
         incomeSource => Ok(view(incomeSourceForm = IncomeSourceForm.incomeSourceForm.fill(incomeSource), isEditMode = isEditMode))
       }
   }
 
-  def submitIncomeSource(isEditMode: Boolean = false): Action[AnyContent] = Authorised.async { implicit user =>
+  def submitIncomeSource(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       IncomeSourceForm.incomeSourceForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
