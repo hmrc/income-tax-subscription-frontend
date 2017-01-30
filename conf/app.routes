@@ -1,6 +1,6 @@
 # Income Source Routes
-GET        /income-source      controllers.IncomeSourceController.showIncomeSource
-POST       /income-source      controllers.IncomeSourceController.submitIncomeSource
+GET        /income-source      controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
+POST       /income-source      controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
 
 # Summary Routes
 GET        /summary            controllers.SummaryController.showSummary

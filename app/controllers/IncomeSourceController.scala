@@ -34,31 +34,34 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val keystoreService: KeystoreService
                                       ) extends BaseController {
 
-  def view(incomeSourceForm: Form[IncomeSourceModel])(implicit request: Request[_]): Html =
+  def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.income_source(
       incomeSourceForm = incomeSourceForm,
-      postAction = controllers.routes.IncomeSourceController.submitIncomeSource()
+      postAction = controllers.routes.IncomeSourceController.submitIncomeSource(editMode = isEditMode)
     )
 
-  val showIncomeSource: Action[AnyContent] = Authorised.async { implicit user =>
+  def showIncomeSource(isEditMode: Boolean = false): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchIncomeSource() map {
-        incomeSource => Ok(view(incomeSourceForm = IncomeSourceForm.incomeSourceForm.fill(incomeSource)))
+        incomeSource => Ok(view(incomeSourceForm = IncomeSourceForm.incomeSourceForm.fill(incomeSource), isEditMode = isEditMode))
       }
   }
 
-  val submitIncomeSource: Action[AnyContent] = Authorised.async { implicit user =>
+  def submitIncomeSource(isEditMode: Boolean = false): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       IncomeSourceForm.incomeSourceForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(incomeSourceForm = formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
         incomeSource =>
           keystoreService.saveIncomeSource(incomeSource) flatMap (
             _ =>
-              incomeSource.source match {
-                case IncomeSourceForm.option_business => business
-                case IncomeSourceForm.option_property => property
-                case IncomeSourceForm.option_both => both
-              }
+              if (isEditMode)
+                Future.successful(Redirect(controllers.routes.SummaryController.submitSummary()))
+              else
+                incomeSource.source match {
+                  case IncomeSourceForm.option_business => business
+                  case IncomeSourceForm.option_property => property
+                  case IncomeSourceForm.option_both => both
+                }
             )
       )
   }

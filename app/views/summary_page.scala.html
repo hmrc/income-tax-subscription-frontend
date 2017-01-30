@@ -24,7 +24,7 @@
     val rowName = IncomeSourceId
     val rowQuestion = Messages("summary.income_source")
     val rowAnswer = incomeSourceText(source)
-    val rowUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+    val rowUrl = controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
