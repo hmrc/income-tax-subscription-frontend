@@ -41,7 +41,7 @@
     val rowName = BusinessNameId
     val rowQuestion = Messages("summary.business_name")
     val rowAnswer = name.businessName
-    val rowUrl = controllers.business.routes.BusinessNameController.showBusinessName().url
+    val rowUrl = controllers.business.routes.BusinessNameController.showBusinessName(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

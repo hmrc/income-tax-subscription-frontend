@@ -30,8 +30,8 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "BusinessIncomeTypeController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showBusinessIncomeType" -> TestBusinessNameController.showBusinessName,
-    "submitBusinessIncomeType" -> TestBusinessNameController.submitBusinessName
+    "showBusinessIncomeType" -> TestBusinessNameController.showBusinessName(isEditMode = false),
+    "submitBusinessIncomeType" -> TestBusinessNameController.submitBusinessName(isEditMode = false)
   )
 
   object TestBusinessNameController extends BusinessNameController(
@@ -42,7 +42,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
 
   "Calling the showBusinessName action of the BusinessNameController with an authorised user" should {
 
-    lazy val result = TestBusinessNameController.showBusinessName(authenticatedFakeRequest())
+    lazy val result = TestBusinessNameController.showBusinessName(isEditMode = false)(authenticatedFakeRequest())
 
     "return ok (200)" in {
       setupMockKeystore(fetchBusinessName = None)
@@ -57,33 +57,59 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
 
   "Calling the submitBusinessName action of the BusinessNameController with an authorised user and valid submission" should {
 
-    def callShow = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest().post(BusinessNameForm.businessNameForm, BusinessNameModel("Test business")))
+    def callShow(isEditMode: Boolean) = TestBusinessNameController.submitBusinessName(isEditMode = isEditMode)(authenticatedFakeRequest().post(BusinessNameForm.businessNameForm, BusinessNameModel("Test business")))
 
-    "return a redirect status (SEE_OTHER - 303)" in {
-      setupMockKeystoreSaveFunctions()
+    "When it is not in edit mode" should {
+      "return a redirect status (SEE_OTHER - 303)" in {
+        setupMockKeystoreSaveFunctions()
 
-      val goodRequest = callShow
+        val goodRequest = callShow(isEditMode = false)
 
-      status(goodRequest) must be(Status.SEE_OTHER)
+        status(goodRequest) must be(Status.SEE_OTHER)
 
-      await(goodRequest)
-      verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        await(goodRequest)
+        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+      }
+
+      s"redirect to '${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url}'" in {
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callShow(isEditMode = false)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+      }
     }
 
-    s"redirect to '${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url}'" in {
-      setupMockKeystoreSaveFunctions()
+    "When it is in edit mode" should {
+      "return a redirect status (SEE_OTHER - 303)" in {
+        setupMockKeystoreSaveFunctions()
 
-      val goodRequest = callShow
+        val goodRequest = callShow(isEditMode = true)
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
+        status(goodRequest) must be(Status.SEE_OTHER)
 
-      await(goodRequest)
-      verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        await(goodRequest)
+        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+      }
+
+      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callShow(isEditMode = true)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+      }
     }
   }
 
   "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessNameController.submitBusinessName(authenticatedFakeRequest())
+    lazy val badRequest = TestBusinessNameController.submitBusinessName(isEditMode = false)(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)
