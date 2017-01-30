@@ -38,7 +38,7 @@ class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControlle
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.business.accounting_period(
       form,
-      controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(),
+      controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(editMode = isEditMode),
       backUrl = backUrl
     )
 
