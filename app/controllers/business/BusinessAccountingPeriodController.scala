@@ -60,12 +60,11 @@ class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControlle
       AccountingPeriodForm.accountingPeriodForm.bindFromRequest().fold(
         formWithErrors => backUrl.map(backUrl => BadRequest(view(form = formWithErrors, backUrl = backUrl, isEditMode = isEditMode))),
         accountingPeriod =>
-          keystoreService.saveAccountingPeriod(accountingPeriod) map (
-            _ =>
-              if (isEditMode)
-                Redirect(controllers.routes.SummaryController.showSummary())
-              else
-                Redirect(controllers.business.routes.BusinessNameController.showBusinessName())
+          keystoreService.saveAccountingPeriod(accountingPeriod) map (_ =>
+            if (isEditMode)
+              Redirect(controllers.routes.SummaryController.showSummary())
+            else
+              Redirect(controllers.business.routes.BusinessNameController.showBusinessName())
             )
       )
   }

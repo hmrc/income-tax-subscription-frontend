@@ -52,16 +52,15 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
       IncomeSourceForm.incomeSourceForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
         incomeSource =>
-          keystoreService.saveIncomeSource(incomeSource) flatMap (
-            _ =>
-              if (isEditMode)
-                Future.successful(Redirect(controllers.routes.SummaryController.submitSummary()))
-              else
-                incomeSource.source match {
-                  case IncomeSourceForm.option_business => business
-                  case IncomeSourceForm.option_property => property
-                  case IncomeSourceForm.option_both => both
-                }
+          keystoreService.saveIncomeSource(incomeSource) flatMap (_ =>
+            if (isEditMode)
+              Future.successful(Redirect(controllers.routes.SummaryController.submitSummary()))
+            else
+              incomeSource.source match {
+                case IncomeSourceForm.option_business => business
+                case IncomeSourceForm.option_property => property
+                case IncomeSourceForm.option_both => both
+              }
             )
       )
   }
