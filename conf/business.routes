@@ -11,5 +11,5 @@ GET        /name                        controllers.business.BusinessNameControl
 POST       /name                        controllers.business.BusinessNameController.submitBusinessName(editMode: Boolean ?= false)
 
 #Income Type Routes
-GET        /income-type                 controllers.business.BusinessIncomeTypeController.showBusinessIncomeType
-POST       /income-type                 controllers.business.BusinessIncomeTypeController.submitBusinessIncomeType
+GET        /income-type                 controllers.business.BusinessIncomeTypeController.showBusinessIncomeType(editMode: Boolean ?= false)
+POST       /income-type                 controllers.business.BusinessIncomeTypeController.submitBusinessIncomeType(editMode: Boolean ?= false)

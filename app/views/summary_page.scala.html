@@ -49,7 +49,7 @@
     val rowName = IncomeTypeId
     val rowQuestion = Messages("summary.income_type")
     val rowAnswer = incomeTypeText(income)
-    val rowUrl = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+    val rowUrl = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

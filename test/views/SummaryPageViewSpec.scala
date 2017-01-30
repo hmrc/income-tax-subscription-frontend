@@ -178,7 +178,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
       val sectionId = IncomeTypeId
       val expectedQuestion = messages.income_type
       val expectedAnswer = messages.IncomeType.cash
-      val expectedEditLink = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+      val expectedEditLink = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
