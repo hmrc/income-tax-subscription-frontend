@@ -192,7 +192,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
       val sectionId = ContactEmailId
       val expectedQuestion = messages.contact_email
       val expectedAnswer = testContactEmail.emailAddress
-      val expectedEditLink = controllers.routes.ContactEmailController.showContactEmail().url
+      val expectedEditLink = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

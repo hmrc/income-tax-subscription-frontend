@@ -57,7 +57,7 @@
     val rowName = ContactEmailId
     val rowQuestion = Messages("summary.contact_email")
     val rowAnswer = email.emailAddress
-    val rowUrl = controllers.routes.ContactEmailController.showContactEmail().url
+    val rowUrl = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
