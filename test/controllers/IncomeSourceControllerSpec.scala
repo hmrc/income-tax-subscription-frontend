@@ -24,6 +24,7 @@ import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utils.TestModels
 
 class IncomeSourceControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -105,9 +106,9 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         }
     }
 
-    "When it is in edit mode" should {
+    "When it is in edit mode and user's selection has not changed" should {
       s"return an SEE OTHER (303) for business and goto ${controllers.routes.SummaryController.showSummary().url}" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
         val goodRequest = callShow(IncomeSourceForm.option_business, isEditMode = true)
 
@@ -115,11 +116,11 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest).get mustBe controllers.routes.SummaryController.showSummary().url
 
         await(goodRequest)
-        verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+        verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
       }
 
       s"return a SEE OTHER (303) for property and goto ${controllers.routes.SummaryController.showSummary()}" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
 
         val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = true)
 
@@ -127,11 +128,11 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest).get mustBe controllers.routes.SummaryController.showSummary().url
 
         await(goodRequest)
-        verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+        verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
       }
 
       s"return a SEE OTHER (303) for both and goto ${controllers.routes.SummaryController.showSummary().url}" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
         val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = true)
 
@@ -139,7 +140,45 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest).get mustBe controllers.routes.SummaryController.showSummary().url
 
         await(goodRequest)
-        verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+        verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
+      }
+    }
+
+    "When it is in edit mode and user's selection has changed" should {
+      s"return an SEE OTHER (303) for business and goto ${controllers.business.routes.SoleTraderController.showSoleTrader().url}" in {
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+
+        val goodRequest = callShow(IncomeSourceForm.option_business, isEditMode = true)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
+
+        await(goodRequest)
+        verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)
+      }
+
+      s"return a SEE OTHER (303) for property and goto ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url}" in {
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+
+        val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = true)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+
+        await(goodRequest)
+        verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)
+      }
+
+      s"return a SEE OTHER (303) for both and goto ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url}" in {
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+
+        val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = true)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+
+        await(goodRequest)
+        verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)
       }
     }
   }
