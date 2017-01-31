@@ -35,6 +35,7 @@ trait AppConfig {
   val twoFactorUrl: String
   val ggSignInUrl: String
   val ggSignInContinueUrl: String
+  val alreadyEnrolledUrl : String
 }
 
 @Singleton
@@ -50,6 +51,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration) extends AppConfi
   override lazy val twoFactorUrl = loadConfig("two-factor.url")
   override lazy val ivUpliftUrl = loadConfig("identity-verification.uplift.url")
   override lazy val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
+  override lazy val alreadyEnrolledUrl = loadConfig("already-enrolled.url")
 
   //GA Config
   override lazy val analyticsToken: String = loadConfig(s"google-analytics.token")

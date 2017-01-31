@@ -20,7 +20,6 @@ import play.api.http.Status
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
-import play.api.test.FakeRequest
 
 class AuthorisedForIncomeTaxSASpec extends UnitSpec with WithFakeApplication {
 
@@ -109,4 +108,17 @@ class AuthorisedForIncomeTaxSASpec extends UnitSpec with WithFakeApplication {
       redirectLocation(result) shouldBe Some(controllers.routes.SessionTimeoutController.timeout().url)
     }
   }
+
+  "Calling authenticated action with an enrolled user" should {
+    lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled))
+
+    "result in a redirect status" in {
+      status(result) shouldBe Status.SEE_OTHER
+    }
+
+    "redirect to the Already Enrolled Page" in {
+      redirectLocation(result) shouldBe Some(mockConfig.alreadyEnrolledUrl)
+    }
+  }
+
 }

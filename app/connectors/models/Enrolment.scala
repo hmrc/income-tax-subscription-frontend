@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package config
+package connectors.models
 
-import javax.inject._
+import play.api.libs.json.Json
 
-import connectors.EnrolmentConnector
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+case class Enrolment(key: String, identifiers: Seq[Identifier], state: String) {
+  def isEnrolled: Enrolment.Enrolled = state.equals("Activated")
+}
 
-@Singleton
-class BaseControllerConfig @Inject()(val applicationConfig: AppConfig,
-                                     val enrolmentConnector: EnrolmentConnector
-                                    ) {
-  lazy val authConnector: AuthConnector = FrontendAuthConnector
-  lazy val postSignInRedirectUrl: String = applicationConfig.ggSignInContinueUrl
+object Enrolment {
+  implicit val formats = Json.format[Enrolment]
+
+  type Enrolled = Boolean
+  val Enrolled: Enrolled = true
+  val NotEnrolled: Enrolled = false
+
+  implicit class OEnrolmentUtil(enrolment: Option[Enrolment]) {
+    def isEnrolled: Enrolled = enrolment.fold(false)(_.isEnrolled)
+  }
+
 }

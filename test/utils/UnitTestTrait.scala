@@ -18,6 +18,7 @@ package utils
 
 import auth.{MockAuthConnector, MockConfig}
 import config.BaseControllerConfig
+import connectors.MockEnrolmentConnector
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
@@ -46,7 +47,9 @@ trait UnitTestTrait extends PlaySpec with OneServerPerSuite with Implicits {
 
   implicit val appConfig = MockConfig
 
-  object MockBaseControllerConfig extends BaseControllerConfig(applicationConfig = MockConfig) {
+  object MockBaseControllerConfig extends BaseControllerConfig(
+    applicationConfig = MockConfig,
+    enrolmentConnector = MockEnrolmentConnector) {
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }

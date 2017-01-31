@@ -36,6 +36,7 @@ object MockAuthConnector extends AuthConnector {
       case auth.mockUpliftUserIdCL100 => Future.successful(Some(userCL100))
       case auth.mockUpliftUserIdCL50 => Future.successful(Some(userCL50))
       case auth.mockWeakUserId => Future.successful(Some(weakStrengthUser))
+      case auth.mockEnrolled => Future.successful(Some(userCL200.copy(uri = auth.mockEnrolled)))
     })
   }
 }

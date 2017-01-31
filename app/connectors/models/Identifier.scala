@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package config
+package connectors.models
 
-import javax.inject._
+import play.api.libs.json.Json
 
-import connectors.EnrolmentConnector
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+case class Identifier(key: String, value: String)
 
-@Singleton
-class BaseControllerConfig @Inject()(val applicationConfig: AppConfig,
-                                     val enrolmentConnector: EnrolmentConnector
-                                    ) {
-  lazy val authConnector: AuthConnector = FrontendAuthConnector
-  lazy val postSignInRedirectUrl: String = applicationConfig.ggSignInContinueUrl
+object Identifier {
+  implicit val formats = Json.format[Identifier]
 }
