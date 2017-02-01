@@ -34,28 +34,31 @@ class ContactEmailController @Inject()(val baseConfig: BaseControllerConfig,
                                        val keystoreService: KeystoreService
                                       ) extends BaseController {
 
-  def view(contactEmailForm: Form[EmailModel], backUrl: String)(implicit request: Request[_]): Html =
+  def view(contactEmailForm: Form[EmailModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.contact_email(
       contactEmailForm = contactEmailForm,
-      postAction = controllers.routes.ContactEmailController.submitContactEmail(),
+      postAction = controllers.routes.ContactEmailController.submitContactEmail(editMode = isEditMode),
       backUrl = backUrl
     )
 
-  val showContactEmail: Action[AnyContent] = Authorised.async { implicit user =>
+  def showContactEmail(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       for {
         contactEmail <- keystoreService.fetchContactEmail()
         backUrl <- backUrl
-      } yield Ok(view(contactEmailForm = EmailForm.emailForm.fill(contactEmail), backUrl = backUrl))
+      } yield Ok(view(contactEmailForm = EmailForm.emailForm.fill(contactEmail), backUrl = backUrl, isEditMode = isEditMode))
   }
 
-  val submitContactEmail: Action[AnyContent] = Authorised.async { implicit user =>
+  def submitContactEmail(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       EmailForm.emailForm.bindFromRequest.fold(
-        formWithErrors => backUrl.map(backUrl => BadRequest(view(contactEmailForm = formWithErrors, backUrl = backUrl))),
+        formWithErrors => backUrl.map(backUrl => BadRequest(view(contactEmailForm = formWithErrors, backUrl = backUrl, isEditMode = isEditMode))),
         contactEmail => {
-          keystoreService.saveContactEmail(contactEmail) map (
-            _ => Redirect(controllers.routes.TermsController.showTerms()))
+          keystoreService.saveContactEmail(contactEmail) map (_ =>
+            if (isEditMode)
+              Redirect(controllers.routes.SummaryController.showSummary())
+            else
+              Redirect(controllers.routes.TermsController.showTerms()))
         }
       )
   }

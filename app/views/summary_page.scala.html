@@ -24,7 +24,7 @@
     val rowName = IncomeSourceId
     val rowQuestion = Messages("summary.income_source")
     val rowAnswer = incomeSourceText(source)
-    val rowUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+    val rowUrl = controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -33,7 +33,7 @@
     val rowQuestion = Messages("summary.accounting_period")
     val periodInMonth = period.startDate.diffInMonth(period.endDate)
     val rowAnswer = s"${period.startDate.toOutputDateFormat} to ${period.endDate.toOutputDateFormat}</p>${Messages("summary.accounting_period.month", periodInMonth)}"
-    val rowUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+    val rowUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -41,7 +41,7 @@
     val rowName = BusinessNameId
     val rowQuestion = Messages("summary.business_name")
     val rowAnswer = name.businessName
-    val rowUrl = controllers.business.routes.BusinessNameController.showBusinessName().url
+    val rowUrl = controllers.business.routes.BusinessNameController.showBusinessName(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -49,7 +49,7 @@
     val rowName = IncomeTypeId
     val rowQuestion = Messages("summary.income_type")
     val rowAnswer = incomeTypeText(income)
-    val rowUrl = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+    val rowUrl = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -57,7 +57,7 @@
     val rowName = ContactEmailId
     val rowQuestion = Messages("summary.contact_email")
     val rowAnswer = email.emailAddress
-    val rowUrl = controllers.routes.ContactEmailController.showContactEmail().url
+    val rowUrl = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

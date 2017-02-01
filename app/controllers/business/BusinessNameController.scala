@@ -35,27 +35,31 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        val keystoreService: KeystoreService
                                       ) extends BaseController {
 
-  def view(businessNameForm: Form[BusinessNameModel])(implicit request: Request[_]): Html =
+  def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.business.business_name(
       businessNameForm = businessNameForm,
-      postAction = controllers.business.routes.BusinessNameController.submitBusinessName(),
+      postAction = controllers.business.routes.BusinessNameController.submitBusinessName(editMode = isEditMode),
       backUrl = backUrl
     )
 
-  val showBusinessName: Action[AnyContent] = Authorised.async { implicit user =>
+  def showBusinessName(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchBusinessName() map {
-        businessName => Ok(view(BusinessNameForm.businessNameForm.fill(businessName)))
+        businessName => Ok(view(BusinessNameForm.businessNameForm.fill(businessName), isEditMode = isEditMode))
       }
   }
 
-  val submitBusinessName: Action[AnyContent] = Authorised.async { implicit user =>
+  def submitBusinessName(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         businessName => {
-          keystoreService.saveBusinessName(businessName) map (
-            _ => Redirect(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType()))
+          keystoreService.saveBusinessName(businessName) map (_ =>
+            if (isEditMode)
+              Redirect(controllers.routes.SummaryController.showSummary())
+            else
+              Redirect(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType())
+            )
         }
       )
   }

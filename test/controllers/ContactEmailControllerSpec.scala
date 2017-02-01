@@ -34,11 +34,11 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "ContactEmailControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showContactEmail" -> TestContactEmailController.showContactEmail,
-    "submitContactEmail" -> TestContactEmailController.submitContactEmail
+    "showContactEmail" -> TestContactEmailController.showContactEmail(isEditMode = false),
+    "submitContactEmail" -> TestContactEmailController.submitContactEmail(isEditMode = false)
   )
 
-  object TestContactEmailController extends ContactEmailController (
+  object TestContactEmailController extends ContactEmailController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService
@@ -46,7 +46,7 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
 
   "Calling the showContactEmail action of the ContactEmailController with an authorised user" should {
 
-    lazy val result = TestContactEmailController.showContactEmail(authenticatedFakeRequest())
+    lazy val result = TestContactEmailController.showContactEmail(isEditMode = false)(authenticatedFakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
 
 
@@ -69,34 +69,60 @@ class ContactEmailControllerSpec extends ControllerBaseSpec
 
   "Calling the submitContactEmail action of the ContactEmailController with an authorised user and valid submission" should {
 
-    def callShow = TestContactEmailController.submitContactEmail(authenticatedFakeRequest()
+    def callShow(isEditMode: Boolean) = TestContactEmailController.submitContactEmail(isEditMode = isEditMode)(authenticatedFakeRequest()
       .post(EmailForm.emailForm, EmailModel("test@example.com")))
 
-    "return a redirect status (SEE_OTHER - 303)" in {
-      // fetchIncomeSource is required for the back url
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+    "When it is not in edit mode" should {
+      "return a redirect status (SEE_OTHER - 303)" in {
+        // fetchIncomeSource is required for the back url
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
-      val goodRequest = callShow
-      status(goodRequest) must be(Status.SEE_OTHER)
+        val goodRequest = callShow(isEditMode = false)
+        status(goodRequest) must be(Status.SEE_OTHER)
 
-      await(goodRequest)
-      verifyKeystore(fetchContactEmail = 0, saveContactEmail = 1)
+        await(goodRequest)
+        verifyKeystore(fetchContactEmail = 0, saveContactEmail = 1)
+      }
+
+      s"redirect to '${controllers.routes.TermsController.showTerms().url}'" in {
+        // fetchIncomeSource is required for the back url
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+
+        val goodRequest = callShow(isEditMode = false)
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchContactEmail = 0, saveContactEmail = 1)
+      }
     }
 
-    s"redirect to '${controllers.routes.TermsController.showTerms().url}'" in {
-      // fetchIncomeSource is required for the back url
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+    "When it is in edit mode" should {
+      "return a redirect status (SEE_OTHER - 303)" in {
+        // fetchIncomeSource is required for the back url
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
-      val goodRequest = callShow
-      redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+        val goodRequest = callShow(isEditMode = true)
+        status(goodRequest) must be(Status.SEE_OTHER)
 
-      await(goodRequest)
-      verifyKeystore(fetchContactEmail = 0, saveContactEmail = 1)
+        await(goodRequest)
+        verifyKeystore(fetchContactEmail = 0, saveContactEmail = 1)
+      }
+
+      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+        // fetchIncomeSource is required for the back url
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+
+        val goodRequest = callShow(isEditMode = true)
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchContactEmail = 0, saveContactEmail = 1)
+      }
     }
   }
 
   "Calling the submitContactEmail action of the ContactEmailController with an authorised user and invalid submission" should {
-    lazy val badRequest = TestContactEmailController.submitContactEmail(authenticatedFakeRequest())
+    lazy val badRequest = TestContactEmailController.submitContactEmail(isEditMode = false)(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
       // fetchIncomeSource is required for the back url

@@ -32,8 +32,8 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "BusinessAccountingPeriodController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showSummary" -> TestBusinessAccountingPeriodController.showAccountingPeriod,
-    "submitSummary" -> TestBusinessAccountingPeriodController.submitAccountingPeriod
+    "showSummary" -> TestBusinessAccountingPeriodController.showAccountingPeriod(isEditMode = false),
+    "submitSummary" -> TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = false)
   )
 
   object TestBusinessAccountingPeriodController extends BusinessAccountingPeriodController(
@@ -44,7 +44,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
   "Calling the showAccountingPeriod action of the BusinessAccountingPeriod with an authorised user" should {
 
-    lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(authenticatedFakeRequest())
+    lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(isEditMode = false)(authenticatedFakeRequest())
 
     "return ok (200)" in {
       // required for backurl
@@ -62,36 +62,64 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user and a valid submission" should {
 
-    def callShow = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest()
+    def callShow(isEditMode:Boolean) = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = isEditMode)(authenticatedFakeRequest()
       .post(AccountingPeriodForm.accountingPeriodForm, AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))))
 
-    "return a redirect status (SEE_OTHER - 303)" in {
-      // required for backurl
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+    "When it is not in edit mode" should {
+      "return a redirect status (SEE_OTHER - 303)" in {
+        // required for backurl
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
 
-      val goodRequest = callShow
+        val goodRequest = callShow(isEditMode = false)
 
-      status(goodRequest) must be(Status.SEE_OTHER)
+        status(goodRequest) must be(Status.SEE_OTHER)
 
-      await(goodRequest)
-      verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 1)
+        await(goodRequest)
+        verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 1)
+      }
+
+      s"redirect to '${controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
+        // required for backurl
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+
+        val goodRequest = callShow(isEditMode = false)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.showBusinessName().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 1)
+      }
     }
 
-    s"redirect to '${controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
-      // required for backurl
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+    "When it is in edit mode" should {
+      "return a redirect status (SEE_OTHER - 303)" in {
+        // required for backurl
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
 
-      val goodRequest = callShow
+        val goodRequest = callShow(isEditMode = true)
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.showBusinessName().url)
+        status(goodRequest) must be(Status.SEE_OTHER)
 
-      await(goodRequest)
-      verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 1)
+        await(goodRequest)
+        verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 1)
+      }
+
+      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+        // required for backurl
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+
+        val goodRequest = callShow(isEditMode = true)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 1)
+      }
     }
   }
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user and invalid submission" should {
-    lazy val badrequest = TestBusinessAccountingPeriodController.submitAccountingPeriod(authenticatedFakeRequest())
+    lazy val badrequest = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = false)(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
       // required for backurl

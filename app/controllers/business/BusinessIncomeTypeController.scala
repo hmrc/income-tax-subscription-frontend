@@ -36,27 +36,30 @@ class BusinessIncomeTypeController @Inject()(val baseConfig: BaseControllerConfi
                                              val keystoreService: KeystoreService
                                             ) extends BaseController {
 
-  def view(incomeTypeForm: Form[IncomeTypeModel])(implicit request: Request[_]): Html =
+  def view(incomeTypeForm: Form[IncomeTypeModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.business.income_type(
       incomeTypeForm = incomeTypeForm,
-      postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType(),
+      postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType(editMode = isEditMode),
       backUrl = backUrl
     )
 
-  val showBusinessIncomeType: Action[AnyContent] = Authorised.async { implicit user =>
+  def showBusinessIncomeType(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchIncomeType() map {
-        incomeType => Ok(view(incomeTypeForm = IncomeTypeForm.incomeTypeForm.fill(incomeType)))
+        incomeType => Ok(view(incomeTypeForm = IncomeTypeForm.incomeTypeForm.fill(incomeType), isEditMode = isEditMode))
       }
   }
 
-  val submitBusinessIncomeType: Action[AnyContent] = Authorised.async { implicit user =>
+  def submitBusinessIncomeType(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       IncomeTypeForm.incomeTypeForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(incomeTypeForm = formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(view(incomeTypeForm = formWithErrors, isEditMode = isEditMode))),
         incomeType => {
-          keystoreService.saveIncomeType(incomeType) map (
-            _ => Redirect(controllers.routes.ContactEmailController.showContactEmail()))
+          keystoreService.saveIncomeType(incomeType) map (_ =>
+            if (isEditMode)
+              Redirect(controllers.routes.SummaryController.showSummary())
+            else
+              Redirect(controllers.routes.ContactEmailController.showContactEmail()))
         }
       )
   }

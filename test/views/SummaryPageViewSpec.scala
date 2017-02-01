@@ -136,7 +136,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
       val expectedQuestion = messages.accounting_period
       val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
       val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat} ${messages.accounting_period_month(periodInMonth)}"
-      val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+      val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -150,7 +150,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
       val sectionId = IncomeSourceId
       val expectedQuestion = messages.income_source
       val expectedAnswer = MessageLookup.Summary.IncomeSource.both
-      val expectedEditLink = controllers.routes.IncomeSourceController.showIncomeSource().url
+      val expectedEditLink = controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -164,7 +164,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
       val sectionId = BusinessNameId
       val expectedQuestion = messages.business_name
       val expectedAnswer = testBusinessName.businessName
-      val expectedEditLink = controllers.business.routes.BusinessNameController.showBusinessName().url
+      val expectedEditLink = controllers.business.routes.BusinessNameController.showBusinessName(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -178,7 +178,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
       val sectionId = IncomeTypeId
       val expectedQuestion = messages.income_type
       val expectedAnswer = messages.IncomeType.cash
-      val expectedEditLink = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+      val expectedEditLink = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -192,7 +192,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
       val sectionId = ContactEmailId
       val expectedQuestion = messages.contact_email
       val expectedAnswer = testContactEmail.emailAddress
-      val expectedEditLink = controllers.routes.ContactEmailController.showContactEmail().url
+      val expectedEditLink = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

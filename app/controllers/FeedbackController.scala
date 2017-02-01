@@ -35,16 +35,6 @@ import uk.gov.hmrc.play.partials._
 import views.html.feedback.feedback_thankyou
 
 import scala.concurrent.Future
-//
-//object FeedbackController extends FeedbackController {
-//
-//  override val httpPost = WSHttp
-//  override val httpGet = WSHttp
-//
-//  override val applicationConfig: AppConfig = FrontendAppConfig
-//
-//
-//}
 
 @Singleton
 class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
@@ -53,9 +43,6 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
                                   ) extends FrontendController with Actions with PartialRetriever with I18nSupport {
   override val httpGet = wsHttp
   val httpPost = wsHttp
-  //  def contactFormReferer(implicit request: Request[AnyContent]): String
-  //
-  //  def localSubmitUrl(implicit request: Request[AnyContent]): String
 
   private val TICKET_ID = "ticketId"
 

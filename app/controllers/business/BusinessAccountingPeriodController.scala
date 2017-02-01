@@ -35,14 +35,14 @@ class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControlle
                                                    val keystoreService: KeystoreService
                                                   ) extends BaseController {
 
-  def view(form: Form[AccountingPeriodModel], backUrl: String)(implicit request: Request[_]): Html =
+  def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.business.accounting_period(
       form,
-      controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(),
+      controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(editMode = isEditMode),
       backUrl = backUrl
     )
 
-  val showAccountingPeriod: Action[AnyContent] = Authorised.async { implicit user =>
+  def showAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       for {
         accountingPeriod <- keystoreService.fetchAccountingPeriod()
@@ -50,18 +50,22 @@ class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControlle
       } yield
         Ok(view(
           AccountingPeriodForm.accountingPeriodForm.fill(accountingPeriod),
-          backUrl = backUrl
+          backUrl = backUrl,
+          isEditMode = isEditMode
         ))
   }
 
-  val submitAccountingPeriod: Action[AnyContent] = Authorised.async { implicit user =>
+  def submitAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       AccountingPeriodForm.accountingPeriodForm.bindFromRequest().fold(
-        formWithErrors => backUrl.map(backUrl => BadRequest(view(form = formWithErrors, backUrl = backUrl))),
-        accountingPeriod => {
-          keystoreService.saveAccountingPeriod(accountingPeriod) map (
-            _ => Redirect(controllers.business.routes.BusinessNameController.showBusinessName()))
-        }
+        formWithErrors => backUrl.map(backUrl => BadRequest(view(form = formWithErrors, backUrl = backUrl, isEditMode = isEditMode))),
+        accountingPeriod =>
+          keystoreService.saveAccountingPeriod(accountingPeriod) map (_ =>
+            if (isEditMode)
+              Redirect(controllers.routes.SummaryController.showSummary())
+            else
+              Redirect(controllers.business.routes.BusinessNameController.showBusinessName())
+            )
       )
   }
 
