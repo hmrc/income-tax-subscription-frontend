@@ -74,6 +74,10 @@ timeout.title                                                   = Session closed
 timeout.heading                                                 = You''ve been signed out due to inactivity.
 timeout.returnToHome                                            = You can start again from the <a href="{0}">subscription</a> page.
 
+## Already enrolled page ##
+already-enrolled.title                                          = You already have a subscription
+already-enrolled.heading                                        = You already have a subscription
+
 ## Failure Messages ##
 notAuthorised.title                                             = Not Authorised
 notAuthorised.pageHeading                                       = We were unable to confirm your identity

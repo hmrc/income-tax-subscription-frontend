@@ -15,6 +15,9 @@ GET        /not-authorised     controllers.UnauthorisedController.showNotAuthori
 # Session Timeout Route
 GET        /session-timeout    controllers.SessionTimeoutController.timeout
 
+# Already enrolled
+GET        /already-enrolled   controllers.AlreadyEnrolledController.enrolled
+
 # Feedback Routes
 GET        /feedback           controllers.FeedbackController.show
 POST       /feedback           controllers.FeedbackController.submit
