@@ -14,21 +14,24 @@
  * limitations under the License.
  */
 
-package auth
+package controllers
 
+import javax.inject.Inject
+
+import config.AppConfig
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
-object AuthTestController extends AuthTestController {
-  override lazy val applicationConfig = mockConfig
-  override lazy val authConnector = mockAuthConnector
-  override lazy val enrolmentConnector = mockEnrolmentConnector
-  override lazy val postSignInRedirectUrl = controllers.routes.EligibleController.showEligible().url
-}
 
-trait AuthTestController extends FrontendController with AuthorisedForIncomeTaxSA {
-  val authorisedAsyncAction = Authorised.async {
-    implicit user =>  implicit request => Future.successful(Ok)
+class AlreadyEnrolledController @Inject()(implicit val applicationConfig: AppConfig,
+                                          val messagesApi: MessagesApi
+                                        ) extends FrontendController with I18nSupport {
+
+  val enrolled = Action.async { implicit request =>
+    Future.successful(Ok(views.html.enrolled.already_enrolled()))
   }
+
 }

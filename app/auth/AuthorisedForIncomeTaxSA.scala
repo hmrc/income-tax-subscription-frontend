@@ -16,17 +16,23 @@
 
 package auth
 
+import connectors.models.Enrolment.{Enrolled, NotEnrolled}
 import config.AppConfig
+import connectors.EnrolmentConnector
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.play.frontend.auth._
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import uk.gov.hmrc.play.http.HeaderCarrier
+
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait AuthorisedForIncomeTaxSA extends Actions {
 
+  val enrolmentConnector: EnrolmentConnector
   val applicationConfig: AppConfig
   val postSignInRedirectUrl: String
+  lazy val alreadyEnrolledUrl: String = applicationConfig.alreadyEnrolledUrl
 
   private type PlayRequest = Request[AnyContent] => Result
   private type UserRequest = IncomeTaxSAUser => PlayRequest
@@ -35,6 +41,7 @@ trait AuthorisedForIncomeTaxSA extends Actions {
 
   // $COVERAGE-OFF$
   implicit private def hc(implicit request: Request[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
+
   // $COVERAGE-ON$
 
   lazy val visibilityPredicate = new IncomeTaxSACompositePageVisibilityPredicate(
@@ -47,20 +54,32 @@ trait AuthorisedForIncomeTaxSA extends Actions {
   class AuthorisedBy(regime: TaxRegime) {
     val authedBy: AuthenticatedBy = AuthorisedFor(regime, visibilityPredicate)
 
-    def async(action: AsyncUserRequest): Action[AnyContent] = {
+    def async(action: AsyncUserRequest): Action[AnyContent] =
       authedBy.async {
-        authContext: AuthContext => implicit request =>
-          action(IncomeTaxSAUser(authContext))(request)
+        authContext: AuthContext =>
+          implicit request =>
+            checkEnrolment {
+              case NotEnrolled => action(IncomeTaxSAUser(authContext))(request)
+              case Enrolled => Future.successful(Redirect(alreadyEnrolledUrl))
+            }
       }
-    }
   }
+
+  def checkEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] =
+    for {
+      authority <- authConnector.currentAuthority
+      enrolment <- enrolmentConnector.getIncomeTaxSAEnrolment(authority.fold("")(_.uri))
+      result <- f(enrolment.isEnrolled)
+    } yield result
 
   trait IncomeTaxSARegime extends TaxRegime {
     override def isAuthorised(accounts: Accounts): Boolean = true
+
     override def authenticationType: AuthenticationProvider = new GovernmentGatewayProvider(postSignInRedirectUrl, applicationConfig.ggSignInUrl)
   }
 
   object IncomeTaxSARegime extends IncomeTaxSARegime
+
   object Authorised extends AuthorisedBy(IncomeTaxSARegime)
 
 }

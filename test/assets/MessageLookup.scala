@@ -141,6 +141,11 @@ object MessageLookup {
     val returnToHome = """You can start again from the <a href="{0}" rel="external">subscription</a> page."""
   }
 
+  object AlreadyEnrolled {
+    val title = "You already have a subscription"
+    val heading = "You already have a subscription"
+  }
+
   object Confirmation {
     val title = "Submitted"
     val heading: String = title

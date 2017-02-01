@@ -15,6 +15,7 @@
  */
 
 import java.net.{URI, URLEncoder}
+
 import config.AppConfig
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.mvc.AnyContentAsEmpty
@@ -23,6 +24,8 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, ConfidenceLevel, CredentialStrength}
 import uk.gov.hmrc.play.frontend.auth.connectors.{AuthConnector, domain}
 import java.util.UUID
+
+import connectors.{EnrolmentConnector, MockEnrolmentConnector}
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, AuthenticationProviderIds}
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.time.DateTimeUtils
@@ -31,6 +34,7 @@ package object auth {
 
   val mockConfig: AppConfig = MockConfig
   val mockAuthConnector: AuthConnector = MockAuthConnector
+  val mockEnrolmentConnector: EnrolmentConnector= MockEnrolmentConnector
   val nino = "AB124512C"
   val authorisedUserAccounts = domain.Accounts(paye = Some(domain.PayeAccount(link = "/paye/abc", nino = Nino(nino))))
   val noAuthorisedUserAccounts = domain.Accounts(paye = None)
@@ -62,6 +66,7 @@ package object auth {
   val mockUpliftUserIdCL50 = UserIdBuilder("mockUpliftUserIdCL50")
   val mockWeakUserId = UserIdBuilder("mockWeakUserId")
   val mockTimeout = UserIdBuilder("mockTimeout")
+  val mockEnrolled = UserIdBuilder("mockEnrolled")
 
   object ggUser {
 

@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package auth
+package connectors
 
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import config.WSHttp
+import connectors.models.Enrolment
+import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-object AuthTestController extends AuthTestController {
-  override lazy val applicationConfig = mockConfig
-  override lazy val authConnector = mockAuthConnector
-  override lazy val enrolmentConnector = mockEnrolmentConnector
-  override lazy val postSignInRedirectUrl = controllers.routes.EligibleController.showEligible().url
-}
 
-trait AuthTestController extends FrontendController with AuthorisedForIncomeTaxSA {
-  val authorisedAsyncAction = Authorised.async {
-    implicit user =>  implicit request => Future.successful(Ok)
-  }
+object MockEnrolmentConnector extends EnrolmentConnector(http = new WSHttp()) {
+  override def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] =
+    hc.userId.fold(Future.successful(None: Option[Enrolment]))(userId => userId.value match {
+      case auth.mockEnrolled => Future.successful(Some(Enrolment("", Seq(), "Activated")))
+      case _ => Future.successful(None)
+    })
 }
