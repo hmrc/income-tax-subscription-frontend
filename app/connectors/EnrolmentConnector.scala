@@ -39,8 +39,7 @@ class EnrolmentConnector @Inject()(val http: HttpGet) {
       response =>
         response.status match {
           case OK => response.json.as[Seq[Enrolment]].find(_.key == EnrolmentConnector.enrolmentOrgKey)
-            Some(Enrolment("",Seq(),"Activated"))
-          case status => None
+          case _ => None
         }
     }
   }
