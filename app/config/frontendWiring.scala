@@ -23,9 +23,12 @@ import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 
-object FrontendAuditConnector extends Auditing with AppName {
+@Singleton
+class FrontendAuditConnector extends Auditing with AppName {
   override lazy val auditingConfig = LoadAuditingConfig(s"auditing")
 }
+
+object FrontendAuditConnector extends FrontendAuditConnector
 
 @Singleton
 class WSHttp extends uk.gov.hmrc.play.http.ws.WSHttp with AppName with RunMode {
@@ -37,8 +40,6 @@ class FrontendAuthConnector extends AuthConnector with ServicesConfig {
   val serviceUrl = baseUrl("auth")
   lazy val http = new WSHttp()
 }
-
-object FrontendAuthConnector extends FrontendAuthConnector
 
 @Singleton
 class SessionCache @Inject()(val http: WSHttp) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {

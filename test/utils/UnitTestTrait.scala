@@ -49,8 +49,8 @@ trait UnitTestTrait extends PlaySpec with OneServerPerSuite with Implicits {
 
   object MockBaseControllerConfig extends BaseControllerConfig(
     applicationConfig = MockConfig,
-    enrolmentService = MockEnrolmentService) {
-    override lazy val authConnector = MockAuthConnector
+    enrolmentService = MockEnrolmentService,
+    authConnector = MockAuthConnector) {
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }
 

@@ -23,8 +23,8 @@ import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 
 @Singleton
 class BaseControllerConfig @Inject()(val applicationConfig: AppConfig,
-                                     val enrolmentService: EnrolmentService
+                                     val enrolmentService: EnrolmentService,
+                                     val authConnector: AuthConnector
                                     ) {
-  lazy val authConnector: AuthConnector = FrontendAuthConnector
   lazy val postSignInRedirectUrl: String = applicationConfig.ggSignInContinueUrl
 }

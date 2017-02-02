@@ -19,12 +19,12 @@ package services
 import auth.{authenticatedFakeRequest, mockAuthorisedUserIdCL200, mockEnrolled}
 import connectors.models.Enrolment.{Enrolled, NotEnrolled}
 import org.scalatest.Matchers._
-import play.api.mvc.{Request, Results}
+import play.api.mvc.Results
 import play.api.test.FakeRequest
-import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
-import utils.UnitTestTrait
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 import uk.gov.hmrc.play.http.HeaderCarrier
+import utils.UnitTestTrait
 
 import scala.concurrent.Future
 
