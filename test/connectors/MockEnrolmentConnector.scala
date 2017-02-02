@@ -24,21 +24,9 @@ import scala.concurrent.Future
 
 
 object MockEnrolmentConnector extends EnrolmentConnector(http = new WSHttp()) {
-  override def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] = {
-    println
-    println
-    println
-    println(s"uri: $uri")
-    println
-    println
-    println
+  override def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] =
     hc.userId.fold(Future.successful(None: Option[Enrolment]))(userId => userId.value match {
-      case auth.mockEnrolled =>
-        println("mockEnroled")
-        Future.successful(Some(Enrolment("", Seq(), "Activated")))
-      case _ =>
-        println("not enrolled")
-        Future.successful(None)
+      case auth.mockEnrolled => Future.successful(Some(Enrolment("", Seq(), "Activated")))
+      case _ => Future.successful(None)
     })
-  }
 }
