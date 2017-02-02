@@ -17,6 +17,7 @@
 import com.google.inject.AbstractModule
 import config.{AppConfig, FrontendAppConfig}
 import uk.gov.hmrc.http.cache.client.SessionCache
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.{HttpDelete, HttpGet, HttpPost, HttpPut}
 import uk.gov.hmrc.play.http.ws._
 
@@ -34,6 +35,8 @@ class Module extends AbstractModule {
     bind(classOf[HttpPut]).to(classOf[config.WSHttp]).asEagerSingleton()
     bind(classOf[WSHttp]).to(classOf[config.WSHttp]).asEagerSingleton()
     bind(classOf[AppConfig]).to(classOf[FrontendAppConfig]).asEagerSingleton()
+
+    bind(classOf[AuthConnector]).to(classOf[config.FrontendAuthConnector])
   }
 
 }

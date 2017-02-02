@@ -18,12 +18,12 @@ package utils
 
 import auth.{MockAuthConnector, MockConfig}
 import config.BaseControllerConfig
-import connectors.MockEnrolmentConnector
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
+import services.MockEnrolmentService
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
@@ -49,7 +49,7 @@ trait UnitTestTrait extends PlaySpec with OneServerPerSuite with Implicits {
 
   object MockBaseControllerConfig extends BaseControllerConfig(
     applicationConfig = MockConfig,
-    enrolmentConnector = MockEnrolmentConnector) {
+    enrolmentService = MockEnrolmentService) {
     override lazy val authConnector = MockAuthConnector
     override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
   }

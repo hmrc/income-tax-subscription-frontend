@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, Co
 import uk.gov.hmrc.play.frontend.auth.connectors.{AuthConnector, domain}
 import java.util.UUID
 
-import connectors.{EnrolmentConnector, MockEnrolmentConnector}
+import services.{EnrolmentService, MockEnrolmentService}
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, AuthenticationProviderIds}
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.time.DateTimeUtils
@@ -34,7 +34,7 @@ package object auth {
 
   val mockConfig: AppConfig = MockConfig
   val mockAuthConnector: AuthConnector = MockAuthConnector
-  val mockEnrolmentConnector: EnrolmentConnector= MockEnrolmentConnector
+  val mockEnrolmentService: EnrolmentService = MockEnrolmentService
   val nino = "AB124512C"
   val authorisedUserAccounts = domain.Accounts(paye = Some(domain.PayeAccount(link = "/paye/abc", nino = Nino(nino))))
   val noAuthorisedUserAccounts = domain.Accounts(paye = None)
@@ -195,12 +195,12 @@ package object auth {
   def authenticatedFakeRequest(provider: String = AuthenticationProviderIds.GovernmentGatewayId,
                                userId: String = mockAuthorisedUserIdCL200): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest().withSession(
-      SessionKeys.userId-> userId,
+      SessionKeys.userId -> userId,
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.lastRequestTimestamp -> DateTimeUtils.now.getMillis.toString,
       SessionKeys.token -> "ANYOLDTOKEN",
       SessionKeys.authProvider -> provider
-  )
+    )
 
   def timeoutFakeRequest(provider: String = AuthenticationProviderIds.GovernmentGatewayId,
                          userId: String = mockAuthorisedUserIdCL200): FakeRequest[AnyContentAsEmpty.type] =

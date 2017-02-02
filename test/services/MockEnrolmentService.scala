@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package config
+package services
 
-import javax.inject._
+import auth.MockAuthConnector
+import connectors.MockEnrolmentConnector
 
-import services.EnrolmentService
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 
-@Singleton
-class BaseControllerConfig @Inject()(val applicationConfig: AppConfig,
-                                     val enrolmentService: EnrolmentService
-                                    ) {
-  lazy val authConnector: AuthConnector = FrontendAuthConnector
-  lazy val postSignInRedirectUrl: String = applicationConfig.ggSignInContinueUrl
-}
+object MockEnrolmentService extends EnrolmentService(MockAuthConnector, MockEnrolmentConnector)

@@ -18,18 +18,17 @@ package auth
 
 import connectors.models.Enrolment.{Enrolled, NotEnrolled}
 import config.AppConfig
-import connectors.EnrolmentConnector
+import services.EnrolmentService
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.play.frontend.auth._
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait AuthorisedForIncomeTaxSA extends Actions {
 
-  val enrolmentConnector: EnrolmentConnector
+  val enrolmentService: EnrolmentService
   val applicationConfig: AppConfig
   val postSignInRedirectUrl: String
   lazy val alreadyEnrolledUrl: String = applicationConfig.alreadyEnrolledUrl
@@ -58,19 +57,12 @@ trait AuthorisedForIncomeTaxSA extends Actions {
       authedBy.async {
         authContext: AuthContext =>
           implicit request =>
-            checkEnrolment {
+            enrolmentService.checkEnrolment {
               case NotEnrolled => action(IncomeTaxSAUser(authContext))(request)
               case Enrolled => Future.successful(Redirect(alreadyEnrolledUrl))
             }
       }
   }
-
-  def checkEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] =
-    for {
-      authority <- authConnector.currentAuthority
-      enrolment <- enrolmentConnector.getIncomeTaxSAEnrolment(authority.fold("")(_.uri))
-      result <- f(enrolment.isEnrolled)
-    } yield result
 
   trait IncomeTaxSARegime extends TaxRegime {
     override def isAuthorised(accounts: Accounts): Boolean = true

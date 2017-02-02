@@ -32,11 +32,13 @@ class WSHttp extends uk.gov.hmrc.play.http.ws.WSHttp with AppName with RunMode {
   override val hooks = NoneRequired
 }
 
-object FrontendAuthConnector extends AuthConnector with ServicesConfig {
+@Singleton
+class FrontendAuthConnector extends AuthConnector with ServicesConfig {
   val serviceUrl = baseUrl("auth")
   lazy val http = new WSHttp()
 }
 
+object FrontendAuthConnector extends FrontendAuthConnector
 
 @Singleton
 class SessionCache @Inject()(val http: WSHttp) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
