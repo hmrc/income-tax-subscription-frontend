@@ -27,7 +27,7 @@ trait BaseController extends FrontendController with AuthorisedForIncomeTaxSA wi
   val baseConfig: BaseControllerConfig
   override lazy implicit val applicationConfig = baseConfig.applicationConfig
   override lazy val authConnector = baseConfig.authConnector
-  override lazy val enrolmentConnector = baseConfig.enrolmentConnector
+  override lazy val enrolmentService = baseConfig.enrolmentService
   override lazy val postSignInRedirectUrl = baseConfig.postSignInRedirectUrl
 
   implicit class FormUtil[T](form: Form[T]) {

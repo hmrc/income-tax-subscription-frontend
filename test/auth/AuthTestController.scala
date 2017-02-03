@@ -23,7 +23,7 @@ import scala.concurrent.Future
 object AuthTestController extends AuthTestController {
   override lazy val applicationConfig = mockConfig
   override lazy val authConnector = mockAuthConnector
-  override lazy val enrolmentConnector = mockEnrolmentConnector
+  override lazy val enrolmentService = mockEnrolmentService
   override lazy val postSignInRedirectUrl = controllers.routes.EligibleController.showEligible().url
 }
 
