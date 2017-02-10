@@ -16,21 +16,21 @@
 
 package utils
 
-import scala.concurrent.Future
+import play.api.libs.json._
+import uk.gov.hmrc.play.http.HttpResponse
 
+trait JsonUtils extends Implicits {
 
-trait Implicits {
+  implicit def toJsValue[T](data: T)(implicit writer: Writes[T]): JsValue = Json.toJson(data)
 
-  implicit def optionWrapperUtil[T, S <: T](data: S): Option[T] = Some(data)
+  implicit def toJsValue(str: String): JsValue = Json.parse(str)
 
-  implicit def FutureUtl[T, S <: T](fData: S): Future[T] = Future.successful(fData)
+  implicit def parseUtil[T](jsValue: JsValue)(implicit reader: Reads[T]): JsResult[T] = Json.fromJson[T](jsValue)
 
-  implicit def FutureUtl[T](err: Throwable): Future[T] = Future.failed(err)
+  implicit def parseUtil[T](str: String)(implicit reader: Reads[T]): JsResult[T] = str: JsValue
 
-  implicit def EitherUtilLeft[T, R <: T, L](left: L): Either[L, R] = Left(left)
-
-  implicit def EitherUtilRight[T, R <: T, L](right: R): Either[L, R] = Right(right)
+  implicit def parseUtil[T](response: HttpResponse)(implicit reader: Reads[T]): JsResult[T] = response.body
 
 }
 
-object Implicits extends Implicits
+object JsonUtils extends JsonUtils
