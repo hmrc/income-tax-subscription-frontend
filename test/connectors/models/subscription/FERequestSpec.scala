@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.subscription
+package connectors.models.subscription
 
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.test.UnitSpec

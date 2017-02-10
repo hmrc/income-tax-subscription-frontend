@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package models.subscription
+package services.mocks
 
-import play.api.libs.json.Json
+import connectors.mocks.MockMiddleServiceConnector
+import services.MiddleService
+import utils.MockTrait
 
-case class FERequest(nino: String,
-                     incomeSource: IncomeSourceType,
-                     isAgent: Boolean = false)
+trait MockMiddleService extends MockTrait with MockMiddleServiceConnector {
 
-object FERequest {
-  implicit val format = Json.format[FERequest]
+  object MockMiddleService extends MiddleService(TestMiddleServiceConnector)
+
 }

@@ -16,6 +16,7 @@
 
 package forms
 
+import connectors.models.subscription.IncomeSourceType
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
@@ -27,9 +28,9 @@ import play.api.data.validation.{Constraint, Valid}
 object IncomeSourceForm {
 
   val incomeSource = "incomeSource"
-  val option_business = "Business"
-  val option_property = "Property"
-  val option_both = "Both"
+  val option_business = IncomeSourceType.business
+  val option_property = IncomeSourceType.property
+  val option_both = IncomeSourceType.both
 
   val sourceEmpty: Constraint[String] = constraint[String](
     source => {

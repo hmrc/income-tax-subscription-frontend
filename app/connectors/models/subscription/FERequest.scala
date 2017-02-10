@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package utils
+package connectors.models.subscription
 
-import uk.gov.hmrc.domain.Generator
+import play.api.libs.json.Json
 
-object TestConstants {
-  lazy val testNino = new Generator().nextNino.nino
-  lazy val testMTDID = "XE0001234567890"
+case class FERequest(nino: String,
+                     incomeSource: IncomeSourceType,
+                     isAgent: Boolean = false)
+
+object FERequest {
+  implicit val format = Json.format[FERequest]
 }

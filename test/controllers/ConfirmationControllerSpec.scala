@@ -16,13 +16,19 @@
 
 package controllers
 
+import auth.authenticatedFakeRequest
+import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.Helpers._
+import services.mocks.MockKeystoreService
 
-class ConfirmationControllerSpec extends ControllerBaseSpec {
+class ConfirmationControllerSpec extends ControllerBaseSpec
+  with MockKeystoreService {
 
   object TestConfirmationController extends ConfirmationController(
     MockBaseControllerConfig,
-    messagesApi
+    messagesApi,
+    MockKeystoreService
   )
 
   override val controllerName: String = "ConfirmationControllerSpec"
@@ -31,5 +37,17 @@ class ConfirmationControllerSpec extends ControllerBaseSpec {
   )
 
   authorisationTests
+
+  "ConfirmationController" should {
+    "Get the ID from keystore" in {
+      setupMockKeystore(fetchId = "testId")
+
+      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
+      status(result) shouldBe OK
+
+      await(result)
+      verifyKeystore(fetchId = 1)
+    }
+  }
 
 }

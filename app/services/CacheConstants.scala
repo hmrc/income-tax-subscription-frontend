@@ -26,4 +26,5 @@ object CacheConstants {
   val IncomeType = "IncomeType"
   val Terms = "Terms"
   val NotEligible = "NotEligible"
+  val ID = "ID"
 }

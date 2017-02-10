@@ -22,21 +22,23 @@ import javax.inject.Inject
 import config.BaseControllerConfig
 import models.DateModel.dateConvert
 import play.api.i18n.MessagesApi
-
-import scala.concurrent.Future
+import play.api.mvc.{Action, AnyContent}
+import services.KeystoreService
 
 
 class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
-                                       val messagesApi: MessagesApi
+                                       val messagesApi: MessagesApi,
+                                       val keystoreService: KeystoreService
                                       ) extends BaseController {
 
-  val showConfirmation = Authorised.async { implicit user =>
+  val showConfirmation: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      // The view accepts a dummy reference number this will be replaced with
-      // and actual value returned from DES once we have the service/connector implemented
-      Future.successful(Ok(views.html.confirmation(
-        submissionReference = "000-032407",
-        submissionDate = dateConvert(LocalDate.now())
-      )))
+      keystoreService.fetchId.map {
+        case Some(id) => Ok(views.html.confirmation(
+          submissionReference = id,
+          submissionDate = dateConvert(LocalDate.now())
+        ))
+      }
   }
+
 }
