@@ -115,7 +115,7 @@ summary.terms.agreed                                            = I agree
 ## Confirmation page ##
 confirmation.title                                              = Submitted
 confirmation.heading                                            = Submitted
-confirmation.submissionReference.label                          = Submission number:
+confirmation.subscriptionId.label                               = Subscription number:
 confirmation.submissionDate.label                               = Date:
 confirmation.emailConfirmation                                  = You''ll receive an email confirming that your application has been received.
 confirmation.whatHappensNext.heading                            = What happens next

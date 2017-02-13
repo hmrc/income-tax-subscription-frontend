@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package utils
+package connectors.models.subscription
 
-import scala.concurrent.Future
+import play.api.libs.json.Json
 
 
-trait Implicits {
+sealed trait FEResponse
 
-  implicit def optionWrapperUtil[T, S <: T](data: S): Option[T] = Some(data)
+case class FESuccessResponse(mtditId: String) extends FEResponse
 
-  implicit def FutureUtl[T, S <: T](fData: S): Future[T] = Future.successful(fData)
+case class FEFailureResponse(reason: String) extends FEResponse
 
-  implicit def FutureUtl[T](err: Throwable): Future[T] = Future.failed(err)
-
-  implicit def EitherUtilLeft[T, R <: T, L](left: L): Either[L, R] = Left(left)
-
-  implicit def EitherUtilRight[T, R <: T, L](right: R): Either[L, R] = Right(right)
-
+object FESuccessResponse{
+  implicit val format = Json.format[FESuccessResponse]
 }
 
-object Implicits extends Implicits
+object FEFailureResponse {
+  implicit val format = Json.format[FEFailureResponse]
+}

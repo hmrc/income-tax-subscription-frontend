@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package utils
+package services.mocks
 
-import scala.concurrent.Future
+import connectors.mocks.MockProtectedMicroserviceConnector
+import services.SubscriptionService
+import utils.MockTrait
 
+trait MockProtectedMicroservice extends MockTrait with MockProtectedMicroserviceConnector {
 
-trait Implicits {
-
-  implicit def optionWrapperUtil[T, S <: T](data: S): Option[T] = Some(data)
-
-  implicit def FutureUtl[T, S <: T](fData: S): Future[T] = Future.successful(fData)
-
-  implicit def FutureUtl[T](err: Throwable): Future[T] = Future.failed(err)
-
-  implicit def EitherUtilLeft[T, R <: T, L](left: L): Either[L, R] = Left(left)
-
-  implicit def EitherUtilRight[T, R <: T, L](right: R): Either[L, R] = Right(right)
+  object MockSubscriptionService extends SubscriptionService(TestProtectedMicroserviceConnector)
 
 }
-
-object Implicits extends Implicits

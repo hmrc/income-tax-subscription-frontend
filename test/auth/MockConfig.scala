@@ -33,4 +33,5 @@ object MockConfig extends AppConfig {
   override val contactFormServiceIdentifier: String = "/contact"
   override val contactFrontendPartialBaseUrl: String = "/contact/partial"
   override val alreadyEnrolledUrl: String = "/already-enrolled"
+  override val subscriptionUrl: String ="/income-tax-subscription/subscription"
 }

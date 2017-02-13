@@ -25,11 +25,11 @@ import utils.UnitTestTrait
 
 class ConfirmationViewSpec extends UnitTestTrait {
 
-  val submissionReferenceValue = "000-032407"
+  val subscriptionIdValue = "000-032407"
   val submissionDateValue = DateModel("1", "1", "2016")
 
   lazy val page = views.html.confirmation(
-    submissionReference = submissionReferenceValue,
+    subscriptionId = subscriptionIdValue,
     submissionDate = submissionDateValue
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
@@ -59,12 +59,12 @@ class ConfirmationViewSpec extends UnitTestTrait {
         }
       }
 
-      s"has a submission reference label '${MessageLookup.Confirmation.submissionReferenceLabel}'" in {
-        document.select("#submission-reference-label").text() mustBe MessageLookup.Confirmation.submissionReferenceLabel
+      s"has a subscription id label '${MessageLookup.Confirmation.subscriptionIdLabel}'" in {
+        document.select("#subscription-id-label").text() mustBe MessageLookup.Confirmation.subscriptionIdLabel
       }
 
-      s"has a submission reference value '$submissionReferenceValue'" in {
-        document.select("#submission-reference-value").text() mustBe submissionReferenceValue
+      s"has a subscription id value '$subscriptionIdValue'" in {
+        document.select("#subscription-id-value").text() mustBe subscriptionIdValue
       }
 
       s"has a submission date label '${MessageLookup.Confirmation.submissionDateLabel}'" in {

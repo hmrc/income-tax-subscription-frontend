@@ -19,14 +19,16 @@ package controllers
 import javax.inject.Inject
 
 import config.BaseControllerConfig
+import connectors.models.subscription.{FESuccessResponse, IncomeSourceType}
 import play.api.i18n.MessagesApi
-import services.KeystoreService
+import services.{KeystoreService, SubscriptionService}
 
 import scala.concurrent.Future
 
 class SummaryController @Inject()(val baseConfig: BaseControllerConfig,
                                   val messagesApi: MessagesApi,
-                                  val keystoreService: KeystoreService
+                                  val keystoreService: KeystoreService,
+                                  val middleService: SubscriptionService
                                  ) extends BaseController {
 
   import services.CacheUtil._
@@ -44,7 +46,17 @@ class SummaryController @Inject()(val baseConfig: BaseControllerConfig,
 
   val submitSummary = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Redirect(controllers.routes.ConfirmationController.showConfirmation()))
+      keystoreService.fetchIncomeSource() flatMap {
+        case Some(source) =>
+          val nino = user.nino.fold("")(x => x)
+          val incomeSource = IncomeSourceType(source.source)
+          middleService.submitSubscription(nino, incomeSource).flatMap {
+            case Some(FESuccessResponse(id)) =>
+              keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.routes.ConfirmationController.showConfirmation()))
+            case _ =>
+              Future.successful(InternalServerError("Submission failed"))
+          }
+      }
   }
 
   lazy val backUrl: String = controllers.routes.TermsController.showTerms().url

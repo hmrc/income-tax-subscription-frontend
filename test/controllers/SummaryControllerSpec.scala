@@ -20,11 +20,12 @@ import auth._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
+import services.mocks.{MockKeystoreService, MockProtectedMicroservice}
 import utils.TestModels
 
 class SummaryControllerSpec extends ControllerBaseSpec
-  with MockKeystoreService {
+  with MockKeystoreService
+  with MockProtectedMicroservice {
 
   override val controllerName: String = "SummaryController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -32,10 +33,11 @@ class SummaryControllerSpec extends ControllerBaseSpec
     "submitSummary" -> TestSummaryController.submitSummary
   )
 
-  object TestSummaryController extends SummaryController (
+  object TestSummaryController extends SummaryController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    middleService = MockSubscriptionService
   )
 
   "Calling the showSummary action of the SummaryController with an authorised user" should {
@@ -51,14 +53,34 @@ class SummaryControllerSpec extends ControllerBaseSpec
 
   "Calling the submitSummary action of the SummaryController with an authorised user" should {
 
-    lazy val result = TestSummaryController.submitSummary(authenticatedFakeRequest())
+    def call = TestSummaryController.submitSummary(authenticatedFakeRequest())
 
-    "return a redirect status (SEE_OTHER - 303)" in {
-      status(result) must be(Status.SEE_OTHER)
+    "When the submission is successful" should {
+      lazy val result = call
+
+      "return a redirect status (SEE_OTHER - 303)" in {
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+        setupSubscribe(subScribeSuccess)
+        status(result) must be(Status.SEE_OTHER)
+        await(result)
+        verifyKeystore(fetchIncomeSource = 1, saveSubscriptionId = 1)
+      }
+
+      s"redirect to '${controllers.routes.ConfirmationController.showConfirmation().url}'" in {
+        redirectLocation(result) mustBe Some(controllers.routes.ConfirmationController.showConfirmation().url)
+      }
     }
+    "When the submission is unsuccessful" should {
+      lazy val result = call
 
-    s"redirect to '${controllers.routes.ConfirmationController.showConfirmation().url}'" in {
-      redirectLocation(result) mustBe Some(controllers.routes.ConfirmationController.showConfirmation().url)
+      "return a internalServer error" in {
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+        setupSubscribe(subScribeBadRequest)
+        status(result) must be(Status.INTERNAL_SERVER_ERROR)
+        await(result)
+        verifyKeystore(fetchIncomeSource = 1, saveSubscriptionId = 0)
+      }
+
     }
   }
 
