@@ -18,9 +18,9 @@ package connectors.subscription
 
 import javax.inject.{Inject, Singleton}
 
+import config.AppConfig
 import connectors.models.subscription.{FERequest, FEResponse, FESuccessResponse}
 import play.api.http.Status.OK
-import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 import utils.Implicits._
 
@@ -28,16 +28,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class ProtectedMicroserviceConnector @Inject()(val http: HttpPost) {
+class ProtectedMicroserviceConnector @Inject()(val appConfig: AppConfig,
+                                                val http: HttpPost) {
 
-  private lazy val serviceUrl: String = ProtectedMicroserviceConnector.serviceUrl
-
-  private lazy val subscriptionUri: String = ProtectedMicroserviceConnector.subscriptionUri
-
-  lazy val postUrl = s"$serviceUrl$subscriptionUri"
+  lazy val subscriptionUrl = appConfig.subscriptionUrl
 
   def subscribe(request: FERequest)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
-    http.POST[FERequest, HttpResponse](postUrl, request).map {
+    http.POST[FERequest, HttpResponse](subscriptionUrl, request).map {
       response =>
         response.status match {
           case OK => response.json.as[FESuccessResponse]
@@ -45,9 +42,5 @@ class ProtectedMicroserviceConnector @Inject()(val http: HttpPost) {
         }
     }
   }
-}
 
-object ProtectedMicroserviceConnector extends ServicesConfig {
-  lazy val serviceUrl = baseUrl("subscription-service")
-  val subscriptionUri = "/income-tax-subscription/subscription"
 }

@@ -35,7 +35,8 @@ trait AppConfig {
   val twoFactorUrl: String
   val ggSignInUrl: String
   val ggSignInContinueUrl: String
-  val alreadyEnrolledUrl : String
+  val alreadyEnrolledUrl: String
+  val subscriptionUrl: String
 }
 
 @Singleton
@@ -65,5 +66,9 @@ class FrontendAppConfig @Inject()(configuration: Configuration) extends AppConfi
   override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
   override lazy val reportAProblemPartialUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
+  // protected microservice
+  private lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
+  override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
 }
 

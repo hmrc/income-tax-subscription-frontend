@@ -30,7 +30,7 @@ class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnec
   "MiddleServiceConnector.subscribe" should {
 
     "Post to the correct url" in {
-      TestProtectedMicroserviceConnector.postUrl should endWith(s"/income-tax-subscription/subscription")
+      TestProtectedMicroserviceConnector.subscriptionUrl should endWith(s"/income-tax-subscription/subscription")
     }
 
     def call = await(TestProtectedMicroserviceConnector.subscribe(request = testRequest))
