@@ -40,13 +40,13 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   "ConfirmationController" should {
     "Get the ID from keystore" in {
-      setupMockKeystore(fetchId = "testId")
+      setupMockKeystore(fetchSubscriptionId = "testId")
 
       val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
       status(result) shouldBe OK
 
       await(result)
-      verifyKeystore(fetchId = 1)
+      verifyKeystore(fetchSubscriptionId = 1)
     }
   }
 

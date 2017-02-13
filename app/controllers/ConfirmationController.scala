@@ -33,9 +33,9 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
 
   val showConfirmation: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      keystoreService.fetchId.map {
+      keystoreService.fetchSubscriptionId.map {
         case Some(id) => Ok(views.html.confirmation(
-          submissionReference = id,
+          subscriptionId = id,
           submissionDate = dateConvert(LocalDate.now())
         ))
       }

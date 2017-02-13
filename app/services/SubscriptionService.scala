@@ -18,7 +18,7 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
-import connectors.subscription.MiddleServiceConnector
+import connectors.subscription.ProtectedMicroserviceConnector
 import connectors.models.subscription.{FERequest, FEResponse, IncomeSourceType}
 import uk.gov.hmrc.play.http.HeaderCarrier
 
@@ -26,7 +26,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class MiddleService @Inject()(middleServiceConnector: MiddleServiceConnector) {
+class SubscriptionService @Inject()(middleServiceConnector: ProtectedMicroserviceConnector) {
 
   def submitSubscription(nino: String, incomeSourceType: IncomeSourceType)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
     val request = FERequest(nino = nino, incomeSource = incomeSourceType)

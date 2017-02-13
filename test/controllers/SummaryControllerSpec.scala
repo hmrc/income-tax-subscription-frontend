@@ -20,12 +20,12 @@ import auth._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.{MockKeystoreService, MockMiddleService}
+import services.mocks.{MockKeystoreService, MockProtectedMicroservice}
 import utils.TestModels
 
 class SummaryControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
-  with MockMiddleService {
+  with MockProtectedMicroservice {
 
   override val controllerName: String = "SummaryController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -37,7 +37,7 @@ class SummaryControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    middleService = MockMiddleService
+    middleService = MockSubscriptionService
   )
 
   "Calling the showSummary action of the SummaryController with an authorised user" should {
@@ -63,7 +63,7 @@ class SummaryControllerSpec extends ControllerBaseSpec
         setupSubscribe(subScribeSuccess)
         status(result) must be(Status.SEE_OTHER)
         await(result)
-        verifyKeystore(fetchIncomeSource = 1, saveId = 1)
+        verifyKeystore(fetchIncomeSource = 1, saveSubscriptionId = 1)
       }
 
       s"redirect to '${controllers.routes.ConfirmationController.showConfirmation().url}'" in {
@@ -78,7 +78,7 @@ class SummaryControllerSpec extends ControllerBaseSpec
         setupSubscribe(subScribeBadRequest)
         status(result) must be(Status.INTERNAL_SERVER_ERROR)
         await(result)
-        verifyKeystore(fetchIncomeSource = 1, saveId = 0)
+        verifyKeystore(fetchIncomeSource = 1, saveSubscriptionId = 0)
       }
 
     }

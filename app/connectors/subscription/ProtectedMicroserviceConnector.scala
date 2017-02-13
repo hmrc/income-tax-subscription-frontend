@@ -28,11 +28,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class MiddleServiceConnector @Inject()(val http: HttpPost) {
+class ProtectedMicroserviceConnector @Inject()(val http: HttpPost) {
 
-  private lazy val serviceUrl: String = MiddleServiceConnector.serviceUrl
+  private lazy val serviceUrl: String = ProtectedMicroserviceConnector.serviceUrl
 
-  private lazy val subscriptionUri: String = MiddleServiceConnector.subscriptionUri
+  private lazy val subscriptionUri: String = ProtectedMicroserviceConnector.subscriptionUri
 
   lazy val postUrl = s"$serviceUrl$subscriptionUri"
 
@@ -47,7 +47,7 @@ class MiddleServiceConnector @Inject()(val http: HttpPost) {
   }
 }
 
-object MiddleServiceConnector extends ServicesConfig {
-  lazy val serviceUrl = baseUrl("middle-service")
+object ProtectedMicroserviceConnector extends ServicesConfig {
+  lazy val serviceUrl = baseUrl("subscription-service")
   val subscriptionUri = "/income-tax-subscription/subscription"
 }

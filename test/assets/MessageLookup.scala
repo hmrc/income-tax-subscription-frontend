@@ -149,7 +149,7 @@ object MessageLookup {
   object Confirmation {
     val title = "Submitted"
     val heading: String = title
-    val submissionReferenceLabel = "Submission number:"
+    val subscriptionIdLabel = "Subscription number:"
     val submissionDateLabel = "Date:"
     val emailConfirmation = "You'll receive an email confirming that your application has been received."
 

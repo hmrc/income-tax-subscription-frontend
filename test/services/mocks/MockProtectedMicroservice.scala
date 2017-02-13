@@ -16,12 +16,12 @@
 
 package services.mocks
 
-import connectors.mocks.MockMiddleServiceConnector
-import services.MiddleService
+import connectors.mocks.MockProtectedMicroserviceConnector
+import services.SubscriptionService
 import utils.MockTrait
 
-trait MockMiddleService extends MockTrait with MockMiddleServiceConnector {
+trait MockProtectedMicroservice extends MockTrait with MockProtectedMicroserviceConnector {
 
-  object MockMiddleService extends MiddleService(TestMiddleServiceConnector)
+  object MockSubscriptionService extends SubscriptionService(TestProtectedMicroserviceConnector)
 
 }

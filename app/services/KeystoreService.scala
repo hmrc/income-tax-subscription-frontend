@@ -96,8 +96,8 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveNotEligible(choice: NotEligibleModel)(implicit hc: HeaderCarrier, reads: Reads[NotEligibleModel]): FC =
     save[NotEligibleModel](NotEligible, choice)
 
-  def fetchId()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = fetch[String](ID)
+  def fetchSubscriptionId()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = fetch[String](MtditId)
 
-  def saveId(id: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC = save[String](ID, id)
+  def saveSubscriptionId(mtditId: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC = save[String](MtditId, mtditId)
 }
 

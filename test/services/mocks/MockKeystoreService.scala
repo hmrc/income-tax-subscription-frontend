@@ -63,7 +63,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchIncomeType: MFO[IncomeTypeModel] = DoNotConfigure,
                                          fetchTerms: MFO[TermModel] = DoNotConfigure,
                                          fetchNotEligible: MFO[NotEligibleModel] = DoNotConfigure,
-                                         fetchId: MFO[String] = DoNotConfigure,
+                                         fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
@@ -76,7 +76,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[IncomeTypeModel](IncomeType, fetchIncomeType)
     mockFetchFromKeyStore[TermModel](Terms, fetchTerms)
     mockFetchFromKeyStore[NotEligibleModel](NotEligible, fetchNotEligible)
-    mockFetchFromKeyStore[String](ID, fetchId)
+    mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
 
     setupMockKeystoreSaveFunctions()
 
@@ -103,8 +103,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveTerms: Option[Int] = None,
                                       fetchNotEligible: Option[Int] = None,
                                       saveNotEligible: Option[Int] = None,
-                                      fetchId: Option[Int] = None,
-                                      saveId: Option[Int] = None,
+                                      fetchSubscriptionId: Option[Int] = None,
+                                      saveSubscriptionId: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
@@ -126,8 +126,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(Terms, saveTerms)
     verifyKeystoreFetch(NotEligible, fetchNotEligible)
     verifyKeystoreSave(NotEligible, saveNotEligible)
-    verifyKeystoreFetch(ID, fetchId)
-    verifyKeystoreSave(ID, saveId)
+    verifyKeystoreFetch(MtditId, fetchSubscriptionId)
+    verifyKeystoreSave(MtditId, saveSubscriptionId)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(Matchers.any()))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(Matchers.any()))

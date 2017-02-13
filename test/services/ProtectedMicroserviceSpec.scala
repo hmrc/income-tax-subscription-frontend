@@ -19,19 +19,19 @@ package services
 import connectors.models.subscription.FESuccessResponse
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
-import services.mocks.MockMiddleService
+import services.mocks.MockProtectedMicroservice
 
 
-class MiddleServiceSpec extends MockMiddleService {
+class ProtectedMicroserviceSpec extends MockProtectedMicroservice {
 
-  def call = await(TestMiddleServiceConnector.subscribe(request = testRequest))
+  def call = await(TestProtectedMicroserviceConnector.subscribe(request = testRequest))
 
   "RegistrationService" should {
     "return the safeId when the subscription is successful" in {
       setupSubscribe(subScribeSuccess)
       val response = call.get
       response.isInstanceOf[FESuccessResponse] shouldBe true
-      response.asInstanceOf[FESuccessResponse].id shouldBe testId
+      response.asInstanceOf[FESuccessResponse].mtditId shouldBe testId
     }
 
     "return the error if subscription fails on bad request" in {

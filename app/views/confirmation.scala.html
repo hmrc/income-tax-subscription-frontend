@@ -1,7 +1,7 @@
 @import models.DateModel
 @import config.AppConfig
 
-@(submissionReference: String, submissionDate: DateModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(subscriptionId: String, submissionDate: DateModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None) {
 
@@ -9,8 +9,8 @@
         <section id="confirmation-heading" class="transaction-banner--complete">
             <h1 class="transaction-banner__heading" style="color:#fff">@Messages("confirmation.heading")</h1>
             <p>
-                <span id="submission-reference-label" class="h3-heading">@Messages("confirmation.submissionReference.label")</span>
-                <span id="submission-reference-value" class="h3-heading">@submissionReference</span>
+                <span id="subscription-id-label" class="h3-heading">@Messages("confirmation.subscriptionId.label")</span>
+                <span id="subscription-id-value" class="h3-heading">@subscriptionId</span>
             </p>
             <p>
                 <span id="submission-date-label" class="h3-heading">@Messages("confirmation.submissionDate.label")</span>
