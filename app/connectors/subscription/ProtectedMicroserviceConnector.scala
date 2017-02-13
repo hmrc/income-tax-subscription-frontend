@@ -29,12 +29,12 @@ import scala.concurrent.Future
 
 @Singleton
 class ProtectedMicroserviceConnector @Inject()(val appConfig: AppConfig,
-                                                val http: HttpPost) {
+                                               val http: HttpPost) {
 
-  lazy val subscriptionUrl = appConfig.subscriptionUrl
+  lazy val subscriptionUrl = (nino: String) => s"${appConfig.subscriptionUrl}/$nino"
 
   def subscribe(request: FERequest)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
-    http.POST[FERequest, HttpResponse](subscriptionUrl, request).map {
+    http.POST[FERequest, HttpResponse](subscriptionUrl(request.nino), request).map {
       response =>
         response.status match {
           case OK => response.json.as[FESuccessResponse]
