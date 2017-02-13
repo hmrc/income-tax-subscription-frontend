@@ -16,11 +16,18 @@
 
 package connectors.models.subscription
 
+import java.time.LocalDate
+
+import models.DateModel
 import play.api.libs.json.Json
 
 case class FERequest(nino: String,
                      incomeSource: IncomeSourceType,
-                     isAgent: Boolean = false)
+                     isAgent: Boolean = false,
+                     accountingPeriodStart: Option[DateModel] = None,
+                     accountingPeriodEnd: Option[DateModel] = None,
+                     tradingName: Option[String] = None,
+                     cashOrAccruals: Option[String] = None)
 
 object FERequest {
   implicit val format = Json.format[FERequest]

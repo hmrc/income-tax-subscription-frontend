@@ -16,11 +16,14 @@
 
 package services
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
 import connectors.subscription.ProtectedMicroserviceConnector
 import connectors.models.subscription.{FERequest, FEResponse, IncomeSourceType}
+import models.{DateModel, SummaryModel}
 import uk.gov.hmrc.play.http.HeaderCarrier
+import utils.Implicits._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -28,8 +31,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @Singleton
 class SubscriptionService @Inject()(middleServiceConnector: ProtectedMicroserviceConnector) {
 
-  def submitSubscription(nino: String, incomeSourceType: IncomeSourceType)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
-    val request = FERequest(nino = nino, incomeSource = incomeSourceType)
+  type OS = Option[String]
+
+  def submitSubscription(nino: String, summaryData: SummaryModel)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
+    val request = FERequest(
+      nino = nino,
+      incomeSource = IncomeSourceType(summaryData.incomeSource.get.source),
+      accountingPeriodStart = summaryData.accountingPeriod.fold[Option[DateModel]](None)(_.startDate),
+      accountingPeriodEnd = summaryData.accountingPeriod.fold[Option[DateModel]](None)(_.endDate),
+      cashOrAccruals = summaryData.incomeType.fold[OS](None)(_.incomeType),
+      tradingName = summaryData.businessName.fold[OS](None)(_.businessName)
+    )
     middleServiceConnector.subscribe(request)
   }
 

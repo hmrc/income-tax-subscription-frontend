@@ -39,7 +39,14 @@ trait MockProtectedMicroserviceConnector extends MockHttp {
 
   val setupSubscribe = (setupMockSubscribe() _).tupled
 
-  val testRequest = FERequest(TestConstants.testNino, Both)
+  val testRequest = FERequest(
+    nino = TestConstants.testNino,
+    incomeSource = Both,
+    accountingPeriodStart = TestConstants.startDate,
+    accountingPeriodEnd = TestConstants.endDate,
+    cashOrAccruals = "Cash",
+    tradingName = "ABC"
+  )
   val testId = TestConstants.testMTDID
   val badRequestReason = "Bad request"
   val internalServerErrorReason = "Internal server error"

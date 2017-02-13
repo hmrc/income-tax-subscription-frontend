@@ -59,11 +59,11 @@ class SummaryControllerSpec extends ControllerBaseSpec
       lazy val result = call
 
       "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+        setupMockKeystore(fetchAll = TestModels.testCacheMap)
         setupSubscribe(subScribeSuccess)
         status(result) must be(Status.SEE_OTHER)
         await(result)
-        verifyKeystore(fetchIncomeSource = 1, saveSubscriptionId = 1)
+        verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
       }
 
       s"redirect to '${controllers.routes.ConfirmationController.showConfirmation().url}'" in {
@@ -74,11 +74,11 @@ class SummaryControllerSpec extends ControllerBaseSpec
       lazy val result = call
 
       "return a internalServer error" in {
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+        setupMockKeystore(fetchAll = TestModels.testCacheMap)
         setupSubscribe(subScribeBadRequest)
         status(result) must be(Status.INTERNAL_SERVER_ERROR)
         await(result)
-        verifyKeystore(fetchIncomeSource = 1, saveSubscriptionId = 0)
+        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
 
     }
