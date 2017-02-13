@@ -16,9 +16,12 @@
 
 package utils
 
+import models.DateModel
 import uk.gov.hmrc.domain.Generator
 
 object TestConstants {
   lazy val testNino = new Generator().nextNino.nino
   lazy val testMTDID = "XE0001234567890"
+  lazy val startDate = DateModel("05", "04", "2017")
+  lazy val endDate = DateModel("04", "04", "2018")
 }

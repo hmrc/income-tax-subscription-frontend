@@ -46,11 +46,11 @@ class SummaryController @Inject()(val baseConfig: BaseControllerConfig,
 
   val submitSummary = Authorised.async { implicit user =>
     implicit request =>
-      keystoreService.fetchIncomeSource() flatMap {
+//        keystoreService.fetchIncomeSource() flatMap {
+        keystoreService.fetchAll() flatMap {
         case Some(source) =>
           val nino = user.nino.fold("")(x => x)
-          val incomeSource = IncomeSourceType(source.source)
-          middleService.submitSubscription(nino, incomeSource).flatMap {
+          middleService.submitSubscription(nino, source.getSummary()).flatMap {
             case Some(FESuccessResponse(id)) =>
               keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.routes.ConfirmationController.showConfirmation()))
             case _ =>
