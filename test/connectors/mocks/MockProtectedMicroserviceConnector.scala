@@ -35,7 +35,7 @@ trait MockProtectedMicroserviceConnector extends MockHttp {
   )
 
   def setupMockSubscribe()(status: Int, response: JsValue): Unit =
-    setupMockHttpPost(url = TestProtectedMicroserviceConnector.subscriptionUrl)(status, response)
+    setupMockHttpPost(url = TestProtectedMicroserviceConnector.subscriptionUrl(""))(status, response)
 
   val setupSubscribe = (setupMockSubscribe() _).tupled
 
