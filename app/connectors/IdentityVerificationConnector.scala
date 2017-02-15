@@ -19,7 +19,7 @@ package connectors
 import javax.inject.{Inject, Singleton}
 
 import enums.IdentityVerificationResult.IdentityVerificationResult
-import play.api.Logger
+import play.api.{Application, Logger}
 import play.api.data.validation.ValidationError
 import play.api.libs.json.{JsPath, Json}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -29,7 +29,8 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpResponse}
 import scala.concurrent.Future
 
 @Singleton
-class IdentityVerificationConnector @Inject()(val http: HttpGet) extends ServicesConfig {
+class IdentityVerificationConnector @Inject()(override val app: Application,
+                                              val http: HttpGet) extends ServicesConfig {
   val serviceUrl: String = baseUrl("identity-verification")
 
   private def url(journeyId: String) = s"$serviceUrl/mdtp/journey/journeyId/$journeyId"

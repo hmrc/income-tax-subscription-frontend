@@ -19,9 +19,9 @@ package auth
 import play.api.http.Status
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import org.scalatest.Matchers._
 
-class AuthorisedForIncomeTaxSASpec extends UnitSpec with WithFakeApplication {
+class AuthorisedForIncomeTaxSASpec extends MockAuthTestController {
 
   "Calling authenticated async action with no logged in session" should {
     "result in a redirect to login" in {

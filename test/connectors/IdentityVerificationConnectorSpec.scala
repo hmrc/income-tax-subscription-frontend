@@ -16,7 +16,6 @@
 
 package connectors
 
-import config.WSHttp
 import enums.IdentityVerificationResult
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mock.MockitoSugar
