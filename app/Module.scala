@@ -19,7 +19,7 @@ import config.{AppConfig, FrontendAppConfig}
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.http.{HttpDelete, HttpGet, HttpPost, HttpPut}
+import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.ws._
 
 class Module extends AbstractModule {
@@ -34,6 +34,7 @@ class Module extends AbstractModule {
     bind(classOf[HttpDelete]).to(classOf[config.WSHttp]).asEagerSingleton()
     bind(classOf[WSPut]).to(classOf[config.WSHttp]).asEagerSingleton()
     bind(classOf[HttpPut]).to(classOf[config.WSHttp]).asEagerSingleton()
+    bind(classOf[HttpPatch]).to(classOf[config.WSHttp]).asEagerSingleton()
     bind(classOf[WSHttp]).to(classOf[config.WSHttp]).asEagerSingleton()
     bind(classOf[AppConfig]).to(classOf[FrontendAppConfig]).asEagerSingleton()
 
