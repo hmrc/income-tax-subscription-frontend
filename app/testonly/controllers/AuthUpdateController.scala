@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+//$COVERAGE-OFF$Disabling scoverage on this test only controller as it is only required by our acceptance test
+
 package testonly.controllers
 
 import javax.inject.Inject
@@ -61,3 +63,5 @@ class AuthUpdateController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
 }
+
+// $COVERAGE-ON$
