@@ -16,9 +16,9 @@
 
 package auth
 
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import org.scalatest.Matchers._
 
-class IncomeTaxSARegimeSpec extends UnitSpec with WithFakeApplication {
+class IncomeTaxSARegimeSpec extends MockAuthTestController {
 
   "IncomeTaxSARegime" should {
     "ensure user is authorised if PAYE account exists in session" in {

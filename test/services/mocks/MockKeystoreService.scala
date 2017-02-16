@@ -17,7 +17,7 @@
 package services.mocks
 
 import models._
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.KeystoreService
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
@@ -41,17 +41,17 @@ trait MockKeystoreService extends MockTrait {
   }
 
   private final def mockFetchFromKeyStore[T](key: String, config: MFO[T]): Unit =
-    config ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.fetchAndGetEntry[T](Matchers.eq(key))(Matchers.any(), Matchers.any())).thenReturn(dataToReturn))
+    config ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.fetchAndGetEntry[T](ArgumentMatchers.eq(key))(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(dataToReturn))
 
   private final def verifyKeystoreFetch[T](key: String, someCount: Option[Int]): Unit =
-    someCount ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetchAndGetEntry[T](Matchers.eq(key))(Matchers.any(), Matchers.any()))
+    someCount ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetchAndGetEntry[T](ArgumentMatchers.eq(key))(ArgumentMatchers.any(), ArgumentMatchers.any()))
 
   private final def verifyKeystoreSave[T](key: String, someCount: Option[Int]): Unit =
-    someCount ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).cache[T](Matchers.eq(key), Matchers.any())(Matchers.any(), Matchers.any()))
+    someCount ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).cache[T](ArgumentMatchers.eq(key), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
 
 
   protected final def setupMockKeystoreSaveFunctions(): Unit =
-    when(MockKeystoreService.session.cache(Matchers.any(), Matchers.any())(Matchers.any(), Matchers.any())).thenReturn(Future.successful(returnedCacheMap))
+    when(MockKeystoreService.session.cache(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(returnedCacheMap))
 
   protected final def setupMockKeystore(
                                          fetchIncomeSource: MFO[IncomeSourceModel] = DoNotConfigure,
@@ -80,8 +80,8 @@ trait MockKeystoreService extends MockTrait {
 
     setupMockKeystoreSaveFunctions()
 
-    fetchAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.fetch()(Matchers.any())).thenReturn(dataToReturn))
-    deleteAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.remove()(Matchers.any())).thenReturn(dataToReturn))
+    fetchAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.fetch()(ArgumentMatchers.any())).thenReturn(dataToReturn))
+    deleteAll ifConfiguredThen (dataToReturn => when(MockKeystoreService.session.remove()(ArgumentMatchers.any())).thenReturn(dataToReturn))
   }
 
   protected final def verifyKeystore(
@@ -129,8 +129,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreFetch(MtditId, fetchSubscriptionId)
     verifyKeystoreSave(MtditId, saveSubscriptionId)
 
-    fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(Matchers.any()))
-    deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(Matchers.any()))
+    fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any()))
+    deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any()))
   }
 
 }

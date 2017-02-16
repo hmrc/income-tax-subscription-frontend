@@ -16,19 +16,26 @@
 
 package auth
 
+import services.MockEnrolmentService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import utils.UnitTestTrait
 
 import scala.concurrent.Future
 
-object AuthTestController extends AuthTestController {
-  override lazy val applicationConfig = mockConfig
-  override lazy val authConnector = mockAuthConnector
-  override lazy val enrolmentService = mockEnrolmentService
-  override lazy val postSignInRedirectUrl = controllers.routes.EligibleController.showEligible().url
-}
+trait MockAuthTestController extends UnitTestTrait
+  with MockAuthConnector
+  with MockEnrolmentService {
 
-trait AuthTestController extends FrontendController with AuthorisedForIncomeTaxSA {
-  val authorisedAsyncAction = Authorised.async {
-    implicit user =>  implicit request => Future.successful(Ok)
+  object AuthTestController extends FrontendController with AuthorisedForIncomeTaxSA {
+    override lazy val applicationConfig = mockConfig
+    override lazy val authConnector = TestAuthConnector
+    override lazy val enrolmentService = TestEnrolmentService
+    override lazy val postSignInRedirectUrl = controllers.routes.EligibleController.showEligible().url
+
+    val authorisedAsyncAction = Authorised.async {
+      implicit user => implicit request => Future.successful(Ok)
+    }
+
   }
+
 }

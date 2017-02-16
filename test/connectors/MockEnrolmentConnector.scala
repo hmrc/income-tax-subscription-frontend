@@ -16,17 +16,22 @@
 
 package connectors
 
-import config.WSHttp
+import connectors.mocks.MockHttp
 import connectors.models.Enrolment
 import uk.gov.hmrc.play.http.HeaderCarrier
+import utils.UnitTestTrait
 
 import scala.concurrent.Future
 
+trait MockEnrolmentConnector extends UnitTestTrait
+  with MockHttp {
 
-object MockEnrolmentConnector extends EnrolmentConnector(http = new WSHttp()) {
-  override def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] =
-    hc.userId.fold(Future.successful(None: Option[Enrolment]))(userId => userId.value match {
-      case auth.mockEnrolled => Future.successful(Some(Enrolment("", Seq(), "Activated")))
-      case _ => Future.successful(None)
-    })
+  object TestEnrolmentConnector extends EnrolmentConnector(app, http = mockHttpGet) {
+    override def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] =
+      hc.userId.fold(Future.successful(None: Option[Enrolment]))(userId => userId.value match {
+        case auth.mockEnrolled => Future.successful(Some(Enrolment("", Seq(), "Activated")))
+        case _ => Future.successful(None)
+      })
+  }
+
 }

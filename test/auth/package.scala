@@ -32,12 +32,10 @@ import uk.gov.hmrc.time.DateTimeUtils
 
 package object auth {
 
-  val mockConfig: AppConfig = MockConfig
-  val mockAuthConnector: AuthConnector = MockAuthConnector
-  val mockEnrolmentService: EnrolmentService = MockEnrolmentService
+  lazy val mockConfig: AppConfig = MockConfig
   val nino = "AB124512C"
-  val authorisedUserAccounts = domain.Accounts(paye = Some(domain.PayeAccount(link = "/paye/abc", nino = Nino(nino))))
-  val noAuthorisedUserAccounts = domain.Accounts(paye = None)
+  lazy val authorisedUserAccounts = domain.Accounts(paye = Some(domain.PayeAccount(link = "/paye/abc", nino = Nino(nino))))
+  lazy val noAuthorisedUserAccounts = domain.Accounts(paye = None)
 
   val ivUpliftURI: URI =
     new URI(s"${mockConfig.ivUpliftUrl}?origin=SABR&" +

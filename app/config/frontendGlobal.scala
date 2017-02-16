@@ -34,7 +34,7 @@ import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
 object FrontendGlobal
   extends DefaultFrontendGlobal {
 
-  override val auditConnector = FrontendAuditConnector
+  override lazy val auditConnector = new FrontendAuditConnector(Play.current)
   override val loggingFilter = LoggingFilter
   override val frontendAuditFilter = AuditFilter
 
@@ -49,7 +49,7 @@ object FrontendGlobal
   }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
-    views.html.templates.error_template(pageTitle, heading, message)(implicitly, implicitly, new FrontendAppConfig(Play.current.configuration))
+    views.html.templates.error_template(pageTitle, heading, message)(implicitly, implicitly, new FrontendAppConfig(Play.current))
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"microservice.metrics")
 }
@@ -63,12 +63,13 @@ object LoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSuppor
 }
 
 object AuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport {
+  override def app = Play.current
 
   override lazy val maskedFormFields = Seq("password")
 
   override lazy val applicationPort = None
 
-  override lazy val auditConnector = FrontendAuditConnector
+  override lazy val auditConnector = new FrontendAuditConnector(app)
 
   override def controllerNeedsAuditing(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsAuditing
 }

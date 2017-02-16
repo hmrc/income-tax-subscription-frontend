@@ -19,6 +19,7 @@ package connectors
 import javax.inject.{Inject, Singleton}
 
 import connectors.models.Enrolment
+import play.api.Application
 import play.api.http.Status._
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, _}
@@ -27,9 +28,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class EnrolmentConnector @Inject()(val http: HttpGet) {
+class EnrolmentConnector @Inject()(override val app: Application,
+                                   val http: HttpGet) extends ServicesConfig {
 
-  lazy val serviceUrl: String = EnrolmentConnector.serviceUrl
+  lazy val serviceUrl: String = baseUrl("auth")
 
   lazy val authorityUri: String = EnrolmentConnector.authorityUri
 
@@ -46,8 +48,8 @@ class EnrolmentConnector @Inject()(val http: HttpGet) {
 
 }
 
-object EnrolmentConnector extends ServicesConfig {
-  lazy val serviceUrl = baseUrl("auth")
+object EnrolmentConnector {
+
   val authorityUri = "auth/authority"
 
   //TODO update once constant is confirmed
