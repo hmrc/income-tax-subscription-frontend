@@ -18,31 +18,32 @@ package config
 
 import javax.inject._
 
+import play.api.Application
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 
 @Singleton
-class FrontendAuditConnector extends Auditing with AppName {
+class FrontendAuditConnector @Inject()(override val app: Application) extends Auditing with AppName {
+
   override lazy val auditingConfig = LoadAuditingConfig(s"auditing")
 }
 
-object FrontendAuditConnector extends FrontendAuditConnector
-
 @Singleton
-class WSHttp extends uk.gov.hmrc.play.http.ws.WSHttp with AppName with RunMode {
+class WSHttp @Inject()(override val app: Application) extends uk.gov.hmrc.play.http.ws.WSHttp with AppName with RunMode {
   override val hooks = NoneRequired
 }
 
 @Singleton
-class FrontendAuthConnector extends AuthConnector with ServicesConfig {
+class FrontendAuthConnector @Inject()(override val app: Application) extends AuthConnector with ServicesConfig {
   val serviceUrl = baseUrl("auth")
-  lazy val http = new WSHttp()
+  lazy val http = new WSHttp(app)
 }
 
 @Singleton
-class SessionCache @Inject()(val http: WSHttp) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
+class SessionCache @Inject()(override val app: Application,
+                             val http: WSHttp) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
   override lazy val defaultSource: String = getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
 
   override lazy val baseUri = baseUrl("session-cache")

@@ -16,7 +16,7 @@
 
 package connectors.mocks
 
-import org.mockito.Matchers
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.play.http.{HttpGet, HttpPost, HttpResponse}
@@ -37,26 +37,26 @@ trait MockHttp extends MockTrait {
   }
 
   def setupMockHttpPost[I](url: Option[String] = None, body: Option[I] = None)(status: Int, response: JsValue): Unit = {
-    lazy val urlMatcher = url.fold(Matchers.any[String]())(x => Matchers.startsWith(x))
-    lazy val bodyMatcher = body.fold(Matchers.any[I]())(x => Matchers.eq(x))
-    when(mockHttpPost.POST[I, HttpResponse](urlMatcher, bodyMatcher, Matchers.any()
-    )(Matchers.any(), Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(status, Some(response))))
+    lazy val urlMatcher = url.fold(ArgumentMatchers.any[String]())(x => ArgumentMatchers.startsWith(x))
+    lazy val bodyMatcher = body.fold(ArgumentMatchers.any[I]())(x => ArgumentMatchers.eq(x))
+    when(mockHttpPost.POST[I, HttpResponse](urlMatcher, bodyMatcher, ArgumentMatchers.any()
+    )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(HttpResponse(status, Some(response))))
   }
 
   def setupMockHttpPostEmpty(url: Option[String] = None)(status: Int, response: JsValue): Unit = {
-    lazy val urlMatcher = url.fold(Matchers.any[String]())(x => Matchers.eq(x))
-    when(mockHttpPost.POSTEmpty[HttpResponse](urlMatcher)(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(status, Some(response))))
+    lazy val urlMatcher = url.fold(ArgumentMatchers.any[String]())(x => ArgumentMatchers.eq(x))
+    when(mockHttpPost.POSTEmpty[HttpResponse](urlMatcher)(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(HttpResponse(status, Some(response))))
   }
 
   def setupMockHttpGet(url: Option[String] = None)(status: Int, response: JsValue): Unit = {
-    lazy val urlMatcher = url.fold(Matchers.any[String]())(x => Matchers.eq(x))
+    lazy val urlMatcher = url.fold(ArgumentMatchers.any[String]())(x => ArgumentMatchers.eq(x))
 
-    when(mockHttpGet.GET[HttpResponse](urlMatcher)(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(status, Some(response))))
+    when(mockHttpGet.GET[HttpResponse](urlMatcher)(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(HttpResponse(status, Some(response))))
   }
 
   def setupMockHttpGetWithParams(url: Option[String], params: Option[Seq[(String, String)]])(status: Int, response: JsValue): Unit = {
-    lazy val urlMatcher = url.fold(Matchers.any[String]())(x => Matchers.eq(x))
-    lazy val paramsMatcher = params.fold(Matchers.any[Seq[(String, String)]]())(x => Matchers.eq(x))
-    when(mockHttpGet.GET[HttpResponse](urlMatcher, paramsMatcher)(Matchers.any(), Matchers.any())).thenReturn(Future.successful(HttpResponse(status, Some(response))))
+    lazy val urlMatcher = url.fold(ArgumentMatchers.any[String]())(x => ArgumentMatchers.eq(x))
+    lazy val paramsMatcher = params.fold(ArgumentMatchers.any[Seq[(String, String)]]())(x => ArgumentMatchers.eq(x))
+    when(mockHttpGet.GET[HttpResponse](urlMatcher, paramsMatcher)(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(HttpResponse(status, Some(response))))
   }
 }

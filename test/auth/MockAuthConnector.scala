@@ -17,26 +17,31 @@
 package auth
 
 import auth.ggUser._
-import config.WSHttp
+import connectors.mocks.MockHttp
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
+import utils.UnitTestTrait
 
 import scala.concurrent.Future
 
-object MockAuthConnector extends AuthConnector {
-  override val http: HttpGet = new WSHttp()
-  override val serviceUrl: String = ""
+trait MockAuthConnector extends UnitTestTrait with MockHttp {
 
-  override def currentAuthority(implicit hc: HeaderCarrier): Future[Option[Authority]] = {
-    hc.userId.fold[Future[Option[Authority]]](Future.successful(None))(userId => userId.value match {
-      case auth.mockAuthorisedUserIdCL500 => Future.successful(Some(userCL500))
-      case auth.mockAuthorisedUserIdCL200 => Future.successful(Some(userCL200))
-      case auth.mockUpliftUserIdCL200NoAccounts => Future.successful(Some(userCL200NoAccounts))
-      case auth.mockUpliftUserIdCL100 => Future.successful(Some(userCL100))
-      case auth.mockUpliftUserIdCL50 => Future.successful(Some(userCL50))
-      case auth.mockWeakUserId => Future.successful(Some(weakStrengthUser))
-      case auth.mockEnrolled => Future.successful(Some(userCL200.copy(uri = auth.mockEnrolled)))
-    })
+  object TestAuthConnector extends AuthConnector {
+    override lazy val http: HttpGet = mockHttpGet
+    override val serviceUrl: String = ""
+
+    override def currentAuthority(implicit hc: HeaderCarrier): Future[Option[Authority]] = {
+      hc.userId.fold[Future[Option[Authority]]](Future.successful(None))(userId => userId.value match {
+        case auth.mockAuthorisedUserIdCL500 => Future.successful(Some(userCL500))
+        case auth.mockAuthorisedUserIdCL200 => Future.successful(Some(userCL200))
+        case auth.mockUpliftUserIdCL200NoAccounts => Future.successful(Some(userCL200NoAccounts))
+        case auth.mockUpliftUserIdCL100 => Future.successful(Some(userCL100))
+        case auth.mockUpliftUserIdCL50 => Future.successful(Some(userCL50))
+        case auth.mockWeakUserId => Future.successful(Some(weakStrengthUser))
+        case auth.mockEnrolled => Future.successful(Some(userCL200.copy(uri = auth.mockEnrolled)))
+      })
+    }
   }
+
 }

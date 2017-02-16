@@ -25,7 +25,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import utils.UnitTestTrait
 
-trait ControllerBaseSpec extends UnitTestTrait {
+trait ControllerBaseSpec extends ControllerBaseTrait {
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()

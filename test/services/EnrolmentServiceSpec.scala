@@ -29,7 +29,8 @@ import utils.UnitTestTrait
 import scala.concurrent.Future
 
 
-class EnrolmentServiceSpec extends UnitTestTrait {
+class EnrolmentServiceSpec extends UnitTestTrait
+  with MockEnrolmentService {
 
   val isEnrolled = (e: Enrolled) => e match {
     case x =>
@@ -48,12 +49,12 @@ class EnrolmentServiceSpec extends UnitTestTrait {
   "EnrolmentService" should {
     "return is enrolled for an enrolled user" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled)
-      await(MockEnrolmentService.checkEnrolment(isEnrolled)(hcUtil(request)))
+      await(TestEnrolmentService.checkEnrolment(isEnrolled)(hcUtil(request)))
     }
 
     "return not enrolled for a user without enrolment" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
-      await(MockEnrolmentService.checkEnrolment(isNotEnrolled)(hcUtil(request)))
+      await(TestEnrolmentService.checkEnrolment(isNotEnrolled)(hcUtil(request)))
     }
   }
 

@@ -16,12 +16,12 @@ private object AppDependencies {
 
   private val playHealthVersion = "2.0.0"
   private val logbackJsonLoggerVersion = "3.1.0"
-  private val frontendBootstrapVersion = "7.10.0"
+  private val frontendBootstrapVersion = "7.11.0"
   private val govukTemplateVersion = "5.0.0"
-  private val playUiVersion = "5.3.0"
+  private val playUiVersion = "6.0.0"
   private val playPartialsVersion = "5.2.0"
   private val playAuthorisedFrontendVersion = "6.2.0"
-  private val playConfigVersion = "3.0.0"
+  private val playConfigVersion = "4.0.0"
   private val hmrcTestVersion = "2.2.0"
   private val scalaTestVersion = "2.2.6"
   private val pegdownVersion = "1.6.0"
@@ -53,9 +53,9 @@ private object AppDependencies {
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
         "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % scope,
         "org.pegdown" % "pegdown" % pegdownVersion % scope,
-        "org.jsoup" % "jsoup" % "1.8.1" % scope,
+        "org.jsoup" % "jsoup" % "1.10.2" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "org.mockito" % "mockito-core" % "1.9.5" %scope
+        "org.mockito" % "mockito-core" % "2.7.6" %scope
       )
     }.test
   }
