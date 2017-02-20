@@ -62,6 +62,16 @@ trait AuthorisedForIncomeTaxSA extends Actions {
               case Enrolled => Future.successful(Redirect(alreadyEnrolledUrl))
             }
       }
+
+    def asyncForEnrolled(action: AsyncUserRequest): Action[AnyContent] =
+      authedBy.async {
+        authContext: AuthContext =>
+          implicit request =>
+            enrolmentService.checkEnrolment {
+              case Enrolled => action(IncomeTaxSAUser(authContext))(request)
+              case NotEnrolled => Future.successful(BadRequest)
+            }
+      }
   }
 
   trait IncomeTaxSARegime extends TaxRegime {

@@ -16,11 +16,12 @@
 
 package controllers
 
-import auth.authenticatedFakeRequest
+import auth.{authenticatedFakeRequest, mockEnrolled}
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 
 class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -39,14 +40,22 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   authorisationTests
 
   "ConfirmationController" should {
-    "Get the ID from keystore" in {
+    "If the user is enrolled then get the ID from keystore" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
-
-      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
+      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled))
       status(result) shouldBe OK
 
       await(result)
       verifyKeystore(fetchSubscriptionId = 1)
+    }
+
+    "If the user is not enrolled then return bad request" in {
+      setupMockKeystore(fetchSubscriptionId = "testId")
+      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
+      status(result) shouldBe BAD_REQUEST
+
+      await(result)
+      verifyKeystore(fetchSubscriptionId = 0)
     }
   }
 
