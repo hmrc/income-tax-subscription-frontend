@@ -37,6 +37,7 @@ trait AppConfig {
   val ggSignInContinueUrl: String
   val alreadyEnrolledUrl: String
   val subscriptionUrl: String
+  val authUrl: String
 }
 
 @Singleton
@@ -72,5 +73,8 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
   // protected microservice
   private lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
+
+  override val authUrl: String = baseUrl("auth")
+
 }
 

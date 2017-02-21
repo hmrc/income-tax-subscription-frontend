@@ -16,14 +16,12 @@
 
 package utils
 
-import auth.{MockAuthConnector, MockConfig}
-import config.BaseControllerConfig
+import auth.MockConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import services.MockEnrolmentService
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContextExecutor, Future}

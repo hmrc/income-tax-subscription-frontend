@@ -55,10 +55,11 @@ class AuthUpdateController @Inject()(val baseConfig: BaseControllerConfig,
   lazy val noAction = Future.successful("no actions taken")
   lazy val updated = Future.successful(Ok("updated"))
 
+  lazy val updateURL = s"${baseConfig.applicationConfig.authUrl}/auth/authority"
 
   def update = Authorised.async { implicit user =>
     implicit request =>
-      val confidencePatch = http.PATCH("http://localhost:8500/auth/authority", Json.obj("confidenceLevel" -> 200))
+      val confidencePatch = http.PATCH(updateURL, Json.obj("confidenceLevel" -> 200))
       confidencePatch.flatMap(_ => updated)
   }
 
