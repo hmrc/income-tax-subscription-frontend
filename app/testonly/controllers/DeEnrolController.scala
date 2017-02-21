@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+//$COVERAGE-OFF$Disabling scoverage on this test only controller as it is only required by our acceptance test
+
 package testonly.controllers
 
 import com.google.inject.{Inject, Singleton}
@@ -36,3 +38,5 @@ class DeEnrolController @Inject()(deEnrolmentConnector: DeEnrolmentConnector,
   }
 
 }
+
+// $COVERAGE-ON$

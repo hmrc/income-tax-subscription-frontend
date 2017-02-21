@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+//$COVERAGE-OFF$Disabling scoverage on this test only trait as it is only required by our acceptance test
+
 package testonly.connectors
 
 import uk.gov.hmrc.play.http.{HttpReads, HttpResponse}
@@ -25,3 +27,5 @@ trait RawResponseReads {
   }
 
 }
+
+// $COVERAGE-ON$

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+//$COVERAGE-OFF$Disabling scoverage on this test only class as it is only required by our acceptance test
+
 package testonly
 
 import javax.inject.{Inject, Singleton}
@@ -29,3 +31,5 @@ class TestOnlyAppConfig @Inject()(app: Application) extends FrontendAppConfig(ap
   lazy val authenticatorURL: String = baseUrl("authenticator")
 
 }
+
+// $COVERAGE-ON$

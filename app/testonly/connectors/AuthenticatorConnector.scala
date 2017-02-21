@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+//$COVERAGE-OFF$Disabling scoverage on this test only connector as it is only required by our acceptance test
+
 package testonly.connectors
 
 import com.google.inject.{Inject, Singleton}
-import play.api.Application
 import testonly.TestOnlyAppConfig
-import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
@@ -36,4 +36,4 @@ class AuthenticatorConnector @Inject()(appConfig: TestOnlyAppConfig,
 
 }
 
-
+// $COVERAGE-ON$
