@@ -45,8 +45,7 @@ class EnrolmentConnector @Inject()(appConfig: AppConfig,
 
 object EnrolmentConnector {
 
-  //TODO update once constant is confirmed
   val enrolmentKey = "HMRC-MTD"
-  //TODO update once constant is confirmed
   val enrolmentIdentifier = "MTDITID"
+
 }
