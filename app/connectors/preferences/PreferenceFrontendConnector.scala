@@ -23,7 +23,7 @@ import config.AppConfig
 import connectors.RawResponseReads
 import connectors.models.preferences.PaperlessState
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.twirl.api.Html
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.partials.HeaderCarrierForPartials
@@ -38,23 +38,22 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
                                             val messagesApi: MessagesApi) extends I18nSupport with RawResponseReads {
 
   //TODO wire the return link URL once it's been decided
-  lazy val returnUrl: String = encryptAndEncode(controllers.routes.ContactEmailController.showContactEmail().url)
+  private[preferences] def returnUrl(implicit request: Request[AnyContent]): String = encryptAndEncode(controllers.preferences.routes.CheckPreferencesController.checkPreference().absoluteURL)
 
   // TODO confirm the return link text
-  lazy val returnLinkText: String = encryptAndEncode(Messages("preferences.returnLinkText"))
+  private[preferences] lazy val returnLinkText: String = encryptAndEncode(Messages("preferences.returnLinkText"))
 
-  lazy val checkPaperlessUrl =
+  def checkPaperlessUrl(implicit request: Request[AnyContent]): String =
     s"""${appConfig.preferencesUrl}/paperless/activate?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
-  lazy val choosePaperlessUrl =
+  def choosePaperlessUrl(implicit request: Request[AnyContent]): String =
     s"""${appConfig.preferencesUrl}/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
-
 
   private[preferences] def urlEncode(text: String) = URLEncoder.encode(text, "UTF-8")
 
   private[preferences] def encryptAndEncode(s: String) = urlEncode(ApplicationCrypto.QueryParameterCrypto.encrypt(PlainText(s)).value)
 
-  def checkPaperless(implicit hcp: HeaderCarrierForPartials): Future[PaperlessState] = {
+  def checkPaperless(implicit request: Request[AnyContent], hcp: HeaderCarrierForPartials): Future[PaperlessState] = {
     // the HeaderCarrierForPartials builds the hc with the user session, as this is required for authentication on preferences-frontend
     implicit val hc: HeaderCarrier = hcp.toHeaderCarrier
     httpPut.PUT[String, HttpResponse](checkPaperlessUrl, "").flatMap { response =>
@@ -64,12 +63,6 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
           new InternalServerException(s"PreferenceFrontendConnector.checkPaperless: unknown status returned ($unknownStatus)")
       }
     }
-  }
-
-
-  def choosePaperless(implicit hcp: HeaderCarrierForPartials): Future[Html] = {
-    implicit val hc: HeaderCarrier = hcp.toHeaderCarrier
-    httpGet.GET[Html](choosePaperlessUrl)
   }
 
 

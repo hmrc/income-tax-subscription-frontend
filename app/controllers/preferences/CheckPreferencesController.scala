@@ -18,11 +18,14 @@ package controllers.preferences
 
 import javax.inject.Inject
 
-import config.{BaseControllerConfig, YtaHeaderCarrierForPartialsConverter}
-import YtaHeaderCarrierForPartialsConverter._
+import auth.IncomeTaxSAUser
+import config.BaseControllerConfig
+import config.YtaHeaderCarrierForPartialsConverter._
+import connectors.models.preferences.Activated
 import connectors.preferences.PreferenceFrontendConnector
 import controllers.BaseController
 import play.api.i18n.MessagesApi
+import play.api.mvc.{AnyContent, Request}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -33,8 +36,12 @@ class CheckPreferencesController @Inject()(val baseConfig: BaseControllerConfig,
   def checkPreference = Authorised.async { implicit user =>
     implicit request =>
       preferenceConnector.checkPaperless.map {
-        case x => Ok(x.toString+" "+preferenceConnector.checkPaperlessUrl)
+        case Activated => Ok(Activated.toString)
+        case _ => gotoPreference
       }
   }
+
+  def gotoPreference(implicit user: IncomeTaxSAUser, request: Request[AnyContent]) = Redirect(preferenceConnector.choosePaperlessUrl)
+
 
 }
