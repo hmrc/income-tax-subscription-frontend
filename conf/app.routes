@@ -31,6 +31,9 @@ POST        /terms                   controllers.TermsController.submitTerms
 GET         /contact-email           controllers.ContactEmailController.showContactEmail(editMode: Boolean ?= false)
 POST        /contact-email           controllers.ContactEmailController.submitContactEmail(editMode: Boolean ?= false)
 
+# Preferences routes
+GET         /preferences             controllers.preferences.CheckPreferencesController.checkPreference
+
 # Eligible Routes
 GET         /eligible                controllers.EligibleController.showEligible
 POST        /eligible                controllers.EligibleController.submitEligible

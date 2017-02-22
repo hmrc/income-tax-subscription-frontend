@@ -19,7 +19,7 @@ package connectors.mocks
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.play.http.{HttpGet, HttpPost, HttpResponse}
+import uk.gov.hmrc.play.http.{HttpGet, HttpPost, HttpPut, HttpResponse}
 import utils.MockTrait
 
 import scala.concurrent.Future
@@ -27,13 +27,15 @@ import scala.concurrent.Future
 
 trait MockHttp extends MockTrait {
 
-  val mockHttpPost = mock[HttpPost]
   val mockHttpGet = mock[HttpGet]
+  val mockHttpPost = mock[HttpPost]
+  val mockHttpPut = mock[HttpPut]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockHttpPost)
     reset(mockHttpGet)
+    reset(mockHttpPut)
   }
 
   def setupMockHttpPost[I](url: Option[String] = None, body: Option[I] = None)(status: Int, response: JsValue): Unit = {
@@ -59,4 +61,12 @@ trait MockHttp extends MockTrait {
     lazy val paramsMatcher = params.fold(ArgumentMatchers.any[Seq[(String, String)]]())(x => ArgumentMatchers.eq(x))
     when(mockHttpGet.GET[HttpResponse](urlMatcher, paramsMatcher)(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(HttpResponse(status, Some(response))))
   }
+
+  def setupMockHttpPut[I](url: Option[String] = None, body: Option[I] = None)(status: Int, response: JsValue): Unit = {
+    lazy val urlMatcher = url.fold(ArgumentMatchers.any[String]())(x => ArgumentMatchers.startsWith(x))
+    lazy val bodyMatcher = body.fold(ArgumentMatchers.any[I]())(x => ArgumentMatchers.eq(x))
+    when(mockHttpPut.PUT[I, HttpResponse](urlMatcher, bodyMatcher
+    )(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(HttpResponse(status, Some(response))))
+  }
+
 }

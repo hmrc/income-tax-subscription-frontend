@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-//$COVERAGE-OFF$Disabling scoverage on this test only trait as it is only required by our acceptance test
+package connectors.preferences
 
-package testonly.connectors
+import connectors.mocks.MockPreferenceFrontendConnector
+import utils.UnitTestTrait
+import org.scalatest.Matchers._
 
-import uk.gov.hmrc.play.http.{HttpReads, HttpResponse}
+class PreferenceFrontendConnectorSpec extends UnitTestTrait
+  with MockPreferenceFrontendConnector {
 
-trait RawResponseReads {
+  "PreferenceFrontendConnector" should {
+    "call the correct URL" in {
+      TestPreferenceFrontendConnector.checkPaperlessUrl should include regex """^.*\/paperless\/activate\?returnUrl=(.*)&returnLinkText=(.*)$"""
+    }
 
-  implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
-    override def read(method: String, url: String, response: HttpResponse) = response
+    "checkPaperless" in {
+
+    }
   }
 
 }
-
-// $COVERAGE-ON$
