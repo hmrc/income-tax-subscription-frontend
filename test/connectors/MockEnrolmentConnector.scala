@@ -26,7 +26,7 @@ import scala.concurrent.Future
 trait MockEnrolmentConnector extends UnitTestTrait
   with MockHttp {
 
-  object TestEnrolmentConnector extends EnrolmentConnector(app, http = mockHttpGet) {
+  object TestEnrolmentConnector extends EnrolmentConnector(appConfig, http = mockHttpGet) {
     override def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] =
       hc.userId.fold(Future.successful(None: Option[Enrolment]))(userId => userId.value match {
         case auth.mockEnrolled => Future.successful(Some(Enrolment("", Seq(), "Activated")))

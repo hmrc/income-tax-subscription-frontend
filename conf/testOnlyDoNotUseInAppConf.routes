@@ -9,6 +9,7 @@
 
 
 GET        /income-tax-subscription-frontend/test-only/auth-update        testonly.controllers.AuthUpdateController.update
+GET        /income-tax-subscription-frontend/test-only/de-enrol           testonly.controllers.DeEnrolController.deEnrol
 
 
 # Add all the application routes to the prod.routes file

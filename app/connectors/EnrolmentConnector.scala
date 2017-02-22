@@ -18,29 +18,24 @@ package connectors
 
 import javax.inject.{Inject, Singleton}
 
+import config.AppConfig
 import connectors.models.Enrolment
-import play.api.Application
 import play.api.http.Status._
-import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, _}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class EnrolmentConnector @Inject()(override val app: Application,
-                                   val http: HttpGet) extends ServicesConfig {
-
-  lazy val serviceUrl: String = baseUrl("auth")
-
-  lazy val authorityUri: String = EnrolmentConnector.authorityUri
+class EnrolmentConnector @Inject()(appConfig: AppConfig,
+                                   val http: HttpGet) {
 
   def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] = {
-    val getUrl = s"$serviceUrl$uri/enrolments"
+    val getUrl = s"${appConfig.authUrl}$uri/enrolments"
     http.GET[HttpResponse](getUrl).map {
       response =>
         response.status match {
-          case OK => response.json.as[Seq[Enrolment]].find(_.key == EnrolmentConnector.enrolmentOrgKey)
+          case OK => response.json.as[Seq[Enrolment]].find(_.key == EnrolmentConnector.enrolmentKey)
           case _ => None
         }
     }
@@ -50,10 +45,7 @@ class EnrolmentConnector @Inject()(override val app: Application,
 
 object EnrolmentConnector {
 
-  val authorityUri = "auth/authority"
+  val enrolmentKey = "HMRC-MTD"
+  val enrolmentIdentifier = "MTDITID"
 
-  //TODO update once constant is confirmed
-  val enrolmentOrgKey = "SABR"
-  //TODO update once constant is confirmed
-  val enrolmentIncomeTaxSARefKey = "IncomeTaxSAReference"
 }
