@@ -16,20 +16,18 @@
 
 package services
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
-import connectors.subscription.ProtectedMicroserviceConnector
 import connectors.models.subscription.{FERequest, FEResponse, IncomeSourceType}
+import connectors.subscription.ProtectedMicroserviceConnector
 import models.{DateModel, SummaryModel}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.Implicits._
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class SubscriptionService @Inject()(middleServiceConnector: ProtectedMicroserviceConnector) {
+class SubscriptionService @Inject()(protectedMicroserviceConnector: ProtectedMicroserviceConnector) {
 
   type OS = Option[String]
 
@@ -42,7 +40,7 @@ class SubscriptionService @Inject()(middleServiceConnector: ProtectedMicroservic
       cashOrAccruals = summaryData.incomeType.fold[OS](None)(_.incomeType),
       tradingName = summaryData.businessName.fold[OS](None)(_.businessName)
     )
-    middleServiceConnector.subscribe(request)
+    protectedMicroserviceConnector.subscribe(request)
   }
 
 }

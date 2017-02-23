@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package services.mocks
 
-import auth.{MockAuthConnector, MockConfig}
-import config.BaseControllerConfig
-import services.mocks.MockEnrolmentService
+import connectors.mocks.MockPreferenceFrontendConnector
+import services.PreferencesService
 import utils.UnitTestTrait
 
+trait MockPreferencesService extends UnitTestTrait
+  with MockPreferenceFrontendConnector {
 
-trait ControllerBaseTrait extends UnitTestTrait
-  with MockEnrolmentService
-  with MockAuthConnector {
-
-  object MockBaseControllerConfig extends BaseControllerConfig(
-    applicationConfig = MockConfig,
-    enrolmentService = TestEnrolmentService,
-    authConnector = TestAuthConnector) {
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-  }
+  object TestPreferencesService extends PreferencesService(TestPreferenceFrontendConnector)
 
 }
