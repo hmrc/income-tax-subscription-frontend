@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package services
+package services.mocks
 
 import auth.MockAuthConnector
 import connectors.mocks.MockEnrolmentConnector
+import services.EnrolmentService
 import utils.UnitTestTrait
 
 trait MockEnrolmentService extends UnitTestTrait

@@ -16,7 +16,7 @@
 
 package auth
 
-import services.MockEnrolmentService
+import services.mocks.MockEnrolmentService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.UnitTestTrait
 

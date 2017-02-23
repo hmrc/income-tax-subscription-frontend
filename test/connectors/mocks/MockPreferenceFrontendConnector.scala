@@ -43,15 +43,14 @@ trait MockPreferenceFrontendConnector extends UnitTestTrait
     setupMockHttpPut[String](url = TestPreferenceFrontendConnector.checkPaperlessUrl, "")(status, response)
 
 
-  private final val okResponseJson = (paperless: Boolean) => s"""{
-                                                               |    "${PaperlessState.Paperless}": $paperless
-                                                               |}""".stripMargin: JsValue
+  private final val okResponseJson: Boolean => JsValue =
+    (paperless: Boolean) => s"""{ "${PaperlessState.Paperless}": $paperless }""".stripMargin
 
 
-  val subScribeActivated: ((Int, Option[JsValue])) = (OK, okResponseJson(true))
+  val paperlessActivated: ((Int, Option[JsValue])) = (OK, okResponseJson(true))
 
-  val subScribeDeclined: ((Int, Option[JsValue])) = (OK, okResponseJson(false))
+  val paperlessDeclined: ((Int, Option[JsValue])) = (OK, okResponseJson(false))
 
-  val subScribePreconditionFailed: ((Int, Option[JsValue])) = (PRECONDITION_FAILED, None)
+  val paperlessPreconditionFailed: ((Int, Option[JsValue])) = (PRECONDITION_FAILED, None)
 
 }

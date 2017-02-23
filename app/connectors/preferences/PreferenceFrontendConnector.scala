@@ -26,8 +26,8 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.http._
-import uk.gov.hmrc.play.partials.HeaderCarrierForPartials
 import utils.Implicits.FutureUtl
+import config.ITSAHeaderCarrierForPartialsConverter._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -38,7 +38,8 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
                                             val messagesApi: MessagesApi) extends I18nSupport with RawResponseReads {
 
   //TODO wire the return link URL once it's been decided
-  private[preferences] def returnUrl(implicit request: Request[AnyContent]): String = encryptAndEncode(controllers.preferences.routes.CheckPreferencesController.checkPreference().absoluteURL)
+  private[preferences] def returnUrl(implicit request: Request[AnyContent]): String =
+    encryptAndEncode(controllers.preferences.routes.PreferencesController.checkPreference().absoluteURL)
 
   // TODO confirm the return link text
   private[preferences] lazy val returnLinkText: String = encryptAndEncode(Messages("preferences.returnLinkText"))
@@ -53,9 +54,10 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
 
   private[preferences] def encryptAndEncode(s: String) = urlEncode(ApplicationCrypto.QueryParameterCrypto.encrypt(PlainText(s)).value)
 
-  def checkPaperless(implicit request: Request[AnyContent], hcp: HeaderCarrierForPartials): Future[PaperlessState] = {
-    // the HeaderCarrierForPartials builds the hc with the user session, as this is required for authentication on preferences-frontend
-    implicit val hc: HeaderCarrier = hcp.toHeaderCarrier
+  def checkPaperless(implicit request: Request[AnyContent]): Future[PaperlessState] = {
+    // The header carrier must include the current user's session in order to be authenticated by the preferences-frontend service
+    // this header is converted implicitly by functions in config.ITSAHeaderCarrierForPartialsConverter which implements
+    // uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
     httpPut.PUT[String, HttpResponse](checkPaperlessUrl, "").flatMap { response =>
       PaperlessState(response) match {
         case Right(state) => state
@@ -66,6 +68,5 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
       }
     }
   }
-
 
 }

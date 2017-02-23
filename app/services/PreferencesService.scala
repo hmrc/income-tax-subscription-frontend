@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package controllers
+package services
 
-import auth.{MockAuthConnector, MockConfig}
-import config.BaseControllerConfig
-import services.mocks.MockEnrolmentService
-import utils.UnitTestTrait
+import javax.inject.Inject
+
+import connectors.models.preferences.PaperlessState
+import connectors.preferences.PreferenceFrontendConnector
+import play.api.mvc.{AnyContent, Request}
+
+import scala.concurrent.Future
 
 
-trait ControllerBaseTrait extends UnitTestTrait
-  with MockEnrolmentService
-  with MockAuthConnector {
+class PreferencesService @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector) {
 
-  object MockBaseControllerConfig extends BaseControllerConfig(
-    applicationConfig = MockConfig,
-    enrolmentService = TestEnrolmentService,
-    authConnector = TestAuthConnector) {
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-  }
+  @inline def checkPaperless(implicit request: Request[AnyContent]): Future[PaperlessState] =
+    preferenceFrontendConnector.checkPaperless
+
+  @inline def choosePaperlessUrl(implicit request: Request[AnyContent]): String = preferenceFrontendConnector.choosePaperlessUrl
 
 }

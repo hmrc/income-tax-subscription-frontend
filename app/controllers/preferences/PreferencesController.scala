@@ -18,30 +18,27 @@ package controllers.preferences
 
 import javax.inject.Inject
 
-import auth.IncomeTaxSAUser
 import config.BaseControllerConfig
-import config.ITSAHeaderCarrierForPartialsConverter._
 import connectors.models.preferences.Activated
-import connectors.preferences.PreferenceFrontendConnector
 import controllers.BaseController
 import play.api.i18n.MessagesApi
-import play.api.mvc.{AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, Request, Result}
+import services.PreferencesService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CheckPreferencesController @Inject()(val baseConfig: BaseControllerConfig,
-                                           val messagesApi: MessagesApi,
-                                           val preferenceConnector: PreferenceFrontendConnector) extends BaseController {
+class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
+                                      val messagesApi: MessagesApi,
+                                      val preferencesService: PreferencesService) extends BaseController {
 
-  def checkPreference = Authorised.async { implicit user =>
+  def checkPreference: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      preferenceConnector.checkPaperless.map {
+      preferencesService.checkPaperless.map {
         case Activated => Ok(Activated.toString)
         case _ => gotoPreference
       }
   }
 
-  def gotoPreference(implicit user: IncomeTaxSAUser, request: Request[AnyContent]) = Redirect(preferenceConnector.choosePaperlessUrl)
-
+  @inline def gotoPreference(implicit request: Request[AnyContent]): Result = Redirect(preferencesService.choosePaperlessUrl)
 
 }

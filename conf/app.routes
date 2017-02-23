@@ -32,7 +32,7 @@ GET         /contact-email           controllers.ContactEmailController.showCont
 POST        /contact-email           controllers.ContactEmailController.submitContactEmail(editMode: Boolean ?= false)
 
 # Preferences routes
-GET         /preferences             controllers.preferences.CheckPreferencesController.checkPreference
+GET         /preferences             controllers.preferences.PreferencesController.checkPreference
 
 # Eligible Routes
 GET         /eligible                controllers.EligibleController.showEligible

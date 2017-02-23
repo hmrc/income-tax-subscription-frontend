@@ -14,40 +14,36 @@
  * limitations under the License.
  */
 
-package connectors.preferences
+package services
 
-import config.ITSAHeaderCarrierForPartialsConverter._
-import connectors.mocks.MockPreferenceFrontendConnector
-import connectors.models.preferences._
+import connectors.models.preferences.{Activated, Declined, Unset}
 import org.scalatest.Matchers._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.mocks.MockPreferencesService
 import utils.UnitTestTrait
 
-class PreferenceFrontendConnectorSpec extends UnitTestTrait
-  with MockPreferenceFrontendConnector {
+
+class PreferencesServiceSpec extends UnitTestTrait
+  with MockPreferencesService {
 
   implicit val fakeRequest = FakeRequest()
 
-  "PreferenceFrontendConnector" should {
-
-    "Provide the correct checkPaperless URL" in {
-      TestPreferenceFrontendConnector.checkPaperlessUrl should include regex """^.*\/paperless\/activate\?returnUrl=(.*)&returnLinkText=(.*)$"""
-    }
+  "TestPreferencesService" should {
 
     "Provide the correct choosePaperlessUrl URL" in {
-      TestPreferenceFrontendConnector.choosePaperlessUrl should include regex """^.*\/paperless\/choose\?returnUrl=(.*)&returnLinkText=(.*)$"""
+      TestPreferencesService.choosePaperlessUrl should include regex """^.*\/paperless\/choose\?returnUrl=(.*)&returnLinkText=(.*)$"""
     }
 
   }
 
-  "PreferenceFrontendConnector.checkPaperless" should {
+  "TestPreferencesService.checkPaperless" should {
 
     "return Activated if checkPaperless returns a 200 and indicated activation is true" in {
       val expected = Activated
 
       setupCheckPaperless(paperlessActivated)
-      val actual = TestPreferenceFrontendConnector.checkPaperless
+      val actual = TestPreferencesService.checkPaperless
 
       await(actual) shouldBe expected
     }
@@ -56,7 +52,7 @@ class PreferenceFrontendConnectorSpec extends UnitTestTrait
       val expected = Declined
 
       setupCheckPaperless(paperlessDeclined)
-      val actual = TestPreferenceFrontendConnector.checkPaperless
+      val actual = TestPreferencesService.checkPaperless
 
       await(actual) shouldBe expected
     }
@@ -65,7 +61,7 @@ class PreferenceFrontendConnectorSpec extends UnitTestTrait
       val expected = Unset
 
       setupCheckPaperless(paperlessPreconditionFailed)
-      val actual = TestPreferenceFrontendConnector.checkPaperless
+      val actual = TestPreferencesService.checkPaperless
 
       await(actual) shouldBe expected
     }
