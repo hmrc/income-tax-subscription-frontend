@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 import auth.IncomeTaxSAUser
 import config.BaseControllerConfig
-import config.YtaHeaderCarrierForPartialsConverter._
+import config.ITSAHeaderCarrierForPartialsConverter._
 import connectors.models.preferences.Activated
 import connectors.preferences.PreferenceFrontendConnector
 import controllers.BaseController

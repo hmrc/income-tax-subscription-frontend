@@ -16,21 +16,60 @@
 
 package connectors.preferences
 
+import config.ITSAHeaderCarrierForPartialsConverter._
 import connectors.mocks.MockPreferenceFrontendConnector
-import utils.UnitTestTrait
+import connectors.models.preferences._
 import org.scalatest.Matchers._
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import utils.UnitTestTrait
 
 class PreferenceFrontendConnectorSpec extends UnitTestTrait
   with MockPreferenceFrontendConnector {
 
+  implicit val fakeRequest = FakeRequest()
+
   "PreferenceFrontendConnector" should {
-    "call the correct URL" in {
+
+    "Provide the correct checkPaperless URL" in {
       TestPreferenceFrontendConnector.checkPaperlessUrl should include regex """^.*\/paperless\/activate\?returnUrl=(.*)&returnLinkText=(.*)$"""
     }
 
-    "checkPaperless" in {
-
+    "Provide the correct choosePaperlessUrl URL" in {
+      TestPreferenceFrontendConnector.choosePaperlessUrl should include regex """^.*\/paperless\/choose\?returnUrl=(.*)&returnLinkText=(.*)$"""
     }
+
+  }
+
+  "PreferenceFrontendConnector.checkPaperless" should {
+
+    "return Activated if checkPaperless returns a 200 and indicated activation is true" in {
+      val expected = Activated
+
+      setupCheckPaperless(subScribeActivated)
+      val actual = TestPreferenceFrontendConnector.checkPaperless
+
+      await(actual) shouldBe expected
+    }
+
+    "return Declined if checkPaperless returns a 200 and indicated activation is false" in {
+      val expected = Declined
+
+      setupCheckPaperless(subScribeDeclined)
+      val actual = TestPreferenceFrontendConnector.checkPaperless
+
+      await(actual) shouldBe expected
+    }
+
+    "return Unset if checkPaperless returns a 412" in {
+      val expected = Unset
+
+      setupCheckPaperless(subScribePreconditionFailed)
+      val actual = TestPreferenceFrontendConnector.checkPaperless
+
+      await(actual) shouldBe expected
+    }
+
   }
 
 }

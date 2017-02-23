@@ -59,8 +59,10 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
     httpPut.PUT[String, HttpResponse](checkPaperlessUrl, "").flatMap { response =>
       PaperlessState(response) match {
         case Right(state) => state
-        case Left(unknownStatus) =>
-          new InternalServerException(s"PreferenceFrontendConnector.checkPaperless: unknown status returned ($unknownStatus)")
+        case Left((unknownStatus, body)) =>
+          new InternalServerException(s"PreferenceFrontendConnector.checkPaperless: unknown status returned ($unknownStatus)${
+            if(!body.isEmpty) s" $body"
+          }")
       }
     }
   }

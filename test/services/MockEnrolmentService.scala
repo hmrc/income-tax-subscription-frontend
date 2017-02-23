@@ -17,7 +17,7 @@
 package services
 
 import auth.MockAuthConnector
-import connectors.MockEnrolmentConnector
+import connectors.mocks.MockEnrolmentConnector
 import utils.UnitTestTrait
 
 trait MockEnrolmentService extends UnitTestTrait

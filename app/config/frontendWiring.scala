@@ -59,7 +59,7 @@ trait SessionCookieCryptoFilterWrapper {
   }
 }
 
-object YtaHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsConverter with SessionCookieCryptoFilterWrapper {
+object ITSAHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsConverter with SessionCookieCryptoFilterWrapper {
   override val crypto = encryptCookieString _
 }
 

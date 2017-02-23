@@ -25,15 +25,17 @@ sealed trait PaperlessState {
 
 object PaperlessState {
 
-  import utils.Implicits.{EitherUtilLeft, EitherUtilRight, optionWrapperUtil}
+  import utils.Implicits.{EitherUtilLeft, EitherUtilRight}
 
-  val parseResponse: HttpResponse => String = (response: HttpResponse) => (response.json \ "redirectUserTo").get.as[String]
+  val Paperless = "paperless"
 
-  def apply(response: HttpResponse): Either[Int, PaperlessState] = response.status match {
-    case OK => Activated //200
-    case CONFLICT => Declined //409
+  val parseResponse: HttpResponse => Boolean = (response: HttpResponse) => (response.json \ Paperless).get.as[Boolean]
+
+  def apply(response: HttpResponse): Either[(Int, String), PaperlessState] = response.status match {
+    case OK if parseResponse(response) => Activated //200 & { "paperless" : true }
+    case OK if !parseResponse(response) => Declined //200 & { "paperless" : false }
     case PRECONDITION_FAILED => Unset //412
-    case x => x
+    case x => (x, response.body)
   }
 
 }

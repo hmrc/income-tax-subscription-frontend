@@ -17,11 +17,14 @@
 package connectors.mocks
 
 import config.AppConfig
+import connectors.models.preferences.PaperlessState
 import connectors.preferences.PreferenceFrontendConnector
+import play.api.http.Status._
 import play.api.i18n.MessagesApi
 import play.api.libs.json.JsValue
+import play.api.mvc.{AnyContent, Request}
+import utils.JsonUtils._
 import utils.UnitTestTrait
-
 
 trait MockPreferenceFrontendConnector extends UnitTestTrait
   with MockHttp {
@@ -33,8 +36,22 @@ trait MockPreferenceFrontendConnector extends UnitTestTrait
     app.injector.instanceOf[MessagesApi]
   )
 
-  def setupMockCheckPaperless[T](body: T)(status: Int, response: JsValue): Unit =
-    setupMockHttpPut[T](url = TestPreferenceFrontendConnector.checkPaperlessUrl, body)(status, response)
+  def setupCheckPaperless(tuple: (Int, Option[JsValue]))(implicit request: Request[AnyContent]): Unit =
+    setupMockCheckPaperless(tuple._1, tuple._2)
 
+  def setupMockCheckPaperless(status: Int, response: Option[JsValue])(implicit request: Request[AnyContent]): Unit =
+    setupMockHttpPut[String](url = TestPreferenceFrontendConnector.checkPaperlessUrl, "")(status, response)
+
+
+  private final val okResponseJson = (paperless: Boolean) => s"""{
+                                                               |    "${PaperlessState.Paperless}": $paperless
+                                                               |}""".stripMargin: JsValue
+
+
+  val subScribeActivated: ((Int, Option[JsValue])) = (OK, okResponseJson(true))
+
+  val subScribeDeclined: ((Int, Option[JsValue])) = (OK, okResponseJson(false))
+
+  val subScribePreconditionFailed: ((Int, Option[JsValue])) = (PRECONDITION_FAILED, None)
 
 }
