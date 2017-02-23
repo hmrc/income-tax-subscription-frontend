@@ -11,6 +11,14 @@ base.year                                                       = Year
 base.error_heading                                              = Error Summary
 base.change                                                     = Change
 
+## Preferences call back page
+preferences_callback.title                                      = Do you want to continue with your registration?
+preferences_callback.heading                                    = Do you want to continue with your registration?
+preferences_callback.line_1                                     = In order to continue with your registration, you must set up a contact email address and agree to go paperless with HMRC.
+preferences_callback.legend                                     = Do you want to continue with your registration?
+preferences_callback.yes                                        = Yes - sign up to go paperless
+preferences_callback.no                                         = No - sign me out
+
 ## Income source page
 income_source.title                                             = Where does your income come from?
 income_source.heading                                           = Where does your income come from?
@@ -137,6 +145,8 @@ confirmation.giveUsFeedback.link1                               = What did you t
 confirmation.giveUsFeedback.feedbackDuration                    = (takes 30 seconds)
 
 ## Errors ##
+error.back_to_preferences.empty                                = Please select an option
+
 error.income_source.empty                                       = Please select an income source
 error.income_source.invalid                                     = Please select an income source
 

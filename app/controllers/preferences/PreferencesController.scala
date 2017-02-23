@@ -21,9 +21,14 @@ import javax.inject.Inject
 import config.BaseControllerConfig
 import connectors.models.preferences.Activated
 import controllers.BaseController
+import forms.preferences.BackToPreferencesForm._
+import models.preferences.BackToPreferencesModel
+import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.twirl.api.Html
 import services.PreferencesService
+import utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -31,14 +36,46 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val preferencesService: PreferencesService) extends BaseController {
 
-  def checkPreference: Action[AnyContent] = Authorised.async { implicit user =>
+  def view(backToPreferencesForm: Form[BackToPreferencesModel])(implicit request: Request[AnyContent]): Html = {
+    views.html.preferences.continue_registration(
+      backToPreferencesForm,
+      postAction = controllers.preferences.routes.PreferencesController.submitGoBackToPreferences
+    )
+  }
+
+  def checkPreferences: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       preferencesService.checkPaperless.map {
         case Activated => Ok(Activated.toString)
-        case _ => gotoPreference
+        case _ => gotoPreferences
       }
   }
 
-  @inline def gotoPreference(implicit request: Request[AnyContent]): Result = Redirect(preferencesService.choosePaperlessUrl)
+  def callback: Action[AnyContent] = Authorised.async { implicit user =>
+    implicit request =>
+      preferencesService.checkPaperless.map {
+        case Activated => Ok(Activated.toString)
+        case _ => Redirect(controllers.preferences.routes.PreferencesController.showGoBackToPreferences())
+      }
+  }
+
+  def showGoBackToPreferences: Action[AnyContent] = Authorised.async { implicit user =>
+    implicit request => Ok(view(backToPreferencesForm))
+  }
+
+  def submitGoBackToPreferences: Action[AnyContent] = Authorised.async { implicit user =>
+    implicit request =>
+      backToPreferencesForm.bindFromRequest.fold(
+        formWithErrors => BadRequest(view(backToPreferencesForm = formWithErrors)),
+        choice => choice.choice match {
+          case `option_yes` => gotoPreferences
+          case `option_no` => signOut
+        }
+      )
+  }
+
+  @inline def gotoPreferences(implicit request: Request[AnyContent]): Result = Redirect(preferencesService.choosePaperlessUrl)
+
+  def signOut(implicit request: Request[_]): Result = NotImplemented
 
 }

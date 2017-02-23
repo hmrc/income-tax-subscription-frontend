@@ -39,7 +39,7 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
 
   //TODO wire the return link URL once it's been decided
   private[preferences] def returnUrl(implicit request: Request[AnyContent]): String =
-    encryptAndEncode(controllers.preferences.routes.PreferencesController.checkPreference().absoluteURL)
+    encryptAndEncode(controllers.preferences.routes.PreferencesController.callback().absoluteURL)
 
   // TODO confirm the return link text
   private[preferences] lazy val returnLinkText: String = encryptAndEncode(Messages("preferences.returnLinkText"))

@@ -23,7 +23,6 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import utils.UnitTestTrait
 
 trait ControllerBaseSpec extends ControllerBaseTrait {
 
