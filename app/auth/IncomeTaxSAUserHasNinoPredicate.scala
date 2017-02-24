@@ -16,20 +16,18 @@
 
 package auth
 
-import java.net.URI
-
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.play.frontend.auth._
 
 import scala.concurrent.Future
 
-class IncomeTaxSAUserHasNinoPredicate(ivUpliftURI: URI) extends PageVisibilityPredicate {
+class IncomeTaxSAUserHasNinoPredicate extends PageVisibilityPredicate {
   override def apply(authContext: AuthContext, request: Request[AnyContent]): Future[PageVisibilityResult] =
     Future.successful(authContext.principal.accounts.paye match {
       case Some(x) => PageIsVisible
-      case _ => PageBlocked(ivUplift)
-  })
+      case _ => PageBlocked(notEligible)
+    })
 
-  private val ivUplift = Future.successful(Redirect(ivUpliftURI.toString))
+  private val notEligible = Future.successful(Redirect(controllers.routes.NotEligibleController.showNotEligible()))
 }

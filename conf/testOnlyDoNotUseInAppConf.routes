@@ -8,7 +8,6 @@
 # Failing to follow this rule may result in test routes deployed in production.
 
 
-GET        /income-tax-subscription-frontend/test-only/auth-update        testonly.controllers.AuthUpdateController.update
 GET        /income-tax-subscription-frontend/test-only/de-enrol           testonly.controllers.DeEnrolController.deEnrol
 
 

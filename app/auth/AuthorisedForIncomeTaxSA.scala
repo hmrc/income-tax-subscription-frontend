@@ -16,10 +16,10 @@
 
 package auth
 
-import connectors.models.Enrolment.{Enrolled, NotEnrolled}
 import config.AppConfig
-import services.EnrolmentService
+import connectors.models.Enrolment.{Enrolled, NotEnrolled}
 import play.api.mvc.{Action, AnyContent, Request, Result}
+import services.EnrolmentService
 import uk.gov.hmrc.play.frontend.auth._
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -43,12 +43,7 @@ trait AuthorisedForIncomeTaxSA extends Actions {
 
   // $COVERAGE-ON$
 
-  lazy val visibilityPredicate = new IncomeTaxSACompositePageVisibilityPredicate(
-    postSignInRedirectUrl,
-    applicationConfig.notAuthorisedRedirectUrl,
-    applicationConfig.ivUpliftUrl,
-    applicationConfig.twoFactorUrl
-  )
+  lazy val visibilityPredicate = new IncomeTaxSACompositePageVisibilityPredicate
 
   class AuthorisedBy(regime: TaxRegime) {
     val authedBy: AuthenticatedBy = AuthorisedFor(regime, visibilityPredicate)

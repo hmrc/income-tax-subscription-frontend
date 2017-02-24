@@ -31,8 +31,6 @@ trait AppConfig {
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
   val notAuthorisedRedirectUrl: String
-  val ivUpliftUrl: String
-  val twoFactorUrl: String
   val ggSignInUrl: String
   val ggSignInContinueUrl: String
   val alreadyEnrolledUrl: String
@@ -52,8 +50,6 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
   //Authentication/Authorisation Config
   override lazy val ggSignInUrl = loadConfig("government-gateway.sign-in.url")
   override lazy val ggSignInContinueUrl = loadConfig("government-gateway.continue.url")
-  override lazy val twoFactorUrl = loadConfig("two-factor.url")
-  override lazy val ivUpliftUrl = loadConfig("identity-verification.uplift.url")
   override lazy val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
   override lazy val alreadyEnrolledUrl = loadConfig("already-enrolled.url")
 

@@ -37,17 +37,6 @@ package object auth {
   lazy val authorisedUserAccounts = domain.Accounts(paye = Some(domain.PayeAccount(link = "/paye/abc", nino = Nino(nino))))
   lazy val noAuthorisedUserAccounts = domain.Accounts(paye = None)
 
-  val ivUpliftURI: URI =
-    new URI(s"${mockConfig.ivUpliftUrl}?origin=SABR&" +
-      s"completionURL=${URLEncoder.encode("/income-tax-subscription-frontend/eligible", "UTF-8")}&" +
-      s"failureURL=${URLEncoder.encode(mockConfig.notAuthorisedRedirectUrl, "UTF-8")}" +
-      s"&confidenceLevel=200")
-
-  val twoFactorURI: URI =
-    new URI(s"${mockConfig.twoFactorUrl}?" +
-      s"continue=${URLEncoder.encode("/income-tax-subscription-frontend/eligible", "UTF-8")}&" +
-      s"failure=${URLEncoder.encode(mockConfig.notAuthorisedRedirectUrl, "UTF-8")}")
-
   object ggSession {
     val userId = "/auth/oid/1234567890"
     val oid = "1234567890"
@@ -171,11 +160,11 @@ package object auth {
 
     val weakStrengthUser: Authority =
       Authority(mockWeakUserId,
-        Accounts(),
+        authorisedUserAccounts,
         loggedInAt,
         previouslyLoggedInAt,
         CredentialStrength.Weak,
-        ConfidenceLevel.L200,
+        ConfidenceLevel.L50,
         None,
         None,
         None,

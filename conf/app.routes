@@ -10,7 +10,7 @@ POST        /summary                 controllers.SummaryController.submitSummary
 GET         /confirmation            controllers.ConfirmationController.showConfirmation
 
 # Unauthorised Routes
-GET         /not-authorised          controllers.UnauthorisedController.showNotAuthorised(journeyId: Option[String])
+GET         /not-authorised          controllers.UnauthorisedController.showNotAuthorised
 
 # Session Timeout Route
 GET         /session-timeout         controllers.SessionTimeoutController.timeout

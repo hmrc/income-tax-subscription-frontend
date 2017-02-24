@@ -19,8 +19,6 @@ package controllers
 import javax.inject.Inject
 
 import config.AppConfig
-import connectors.IdentityVerificationConnector
-import enums.IdentityVerificationResult
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
@@ -29,29 +27,10 @@ import views.html.ivFailure._
 import scala.concurrent.Future
 
 class UnauthorisedController @Inject()(implicit val applicationConfig: AppConfig,
-                                       val identityVerificationConnector: IdentityVerificationConnector,
                                        val messagesApi: MessagesApi
                                       ) extends FrontendController with I18nSupport {
 
-  def showNotAuthorised(journeyId: Option[String]): Action[AnyContent] = UnauthorisedAction.async { implicit request =>
-    val result = journeyId map { id =>
-      val identityVerificationResult = identityVerificationConnector.identityVerificationResponse(id)
-      identityVerificationResult map {
-        case IdentityVerificationResult.FailedMatching => unauthorised()
-        case IdentityVerificationResult.InsufficientEvidence => unauthorised()
-        case IdentityVerificationResult.TechnicalIssue => technicalIssue()
-        case IdentityVerificationResult.LockedOut => lockedOut()
-        case IdentityVerificationResult.Timeout => views.html.timeout.timeout()
-        case IdentityVerificationResult.Incomplete => unauthorised()
-        case IdentityVerificationResult.PreconditionFailed => unauthorised()
-        case IdentityVerificationResult.UserAborted => unauthorised()
-        case IdentityVerificationResult.FailedIV => unauthorised()
-        case IdentityVerificationResult.UnknownOutcome => unauthorised()
-      }
-    } getOrElse Future.successful(unauthorised()) // 2FA returns no journeyId
-
-    result.map {
-      Ok(_).withNewSession
-    }
+  def showNotAuthorised(): Action[AnyContent] = UnauthorisedAction.async { implicit request =>
+    Future.successful(Ok(unauthorised()).withNewSession)
   }
 }
