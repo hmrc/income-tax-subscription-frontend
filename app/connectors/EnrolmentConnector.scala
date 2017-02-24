@@ -22,6 +22,7 @@ import config.AppConfig
 import connectors.models.Enrolment
 import play.api.http.Status._
 import uk.gov.hmrc.play.http.{HeaderCarrier, _}
+import common.Constants._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -35,17 +36,9 @@ class EnrolmentConnector @Inject()(appConfig: AppConfig,
     http.GET[HttpResponse](getUrl).map {
       response =>
         response.status match {
-          case OK => response.json.as[Seq[Enrolment]].find(_.key == EnrolmentConnector.enrolmentKey)
+          case OK => response.json.as[Seq[Enrolment]].find(_.key == ggServiceName)
           case _ => None
         }
     }
   }
-
-}
-
-object EnrolmentConnector {
-
-  val enrolmentKey = "HMRC-MTD-IT"
-  val enrolmentIdentifier = "MTDITID"
-
 }

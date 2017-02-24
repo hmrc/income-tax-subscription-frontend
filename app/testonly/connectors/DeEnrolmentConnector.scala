@@ -22,6 +22,7 @@ import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.ws.WSHttp
+import common.Constants._
 
 import scala.concurrent.Future
 
@@ -29,7 +30,7 @@ import scala.concurrent.Future
 class DeEnrolmentConnector @Inject()(appConfig: TestOnlyAppConfig,
                                      http: WSHttp) extends RawResponseReads {
 
-  lazy val deEnrolURI = s"${appConfig.taxEnrolmentsURL}/tax-enrolments/de-enrol/HMRC-MTD"
+  lazy val deEnrolURI = s"${appConfig.taxEnrolmentsURL}/tax-enrolments/de-enrol/$ggServiceName"
 
   def deEnrol()(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](deEnrolURI, Json.parse("""{"keepAgentAllocations": true}"""))
