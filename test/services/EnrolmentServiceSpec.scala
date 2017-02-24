@@ -22,6 +22,7 @@ import org.scalatest.Matchers._
 import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.mocks.MockEnrolmentService
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.UnitTestTrait

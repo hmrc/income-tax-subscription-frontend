@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-//$COVERAGE-OFF$Disabling scoverage on this test only trait as it is only required by our acceptance test
+package services
 
-package testonly.connectors
+import javax.inject.Inject
 
-import uk.gov.hmrc.play.http.{HttpReads, HttpResponse}
+import connectors.models.preferences.PaperlessState
+import connectors.preferences.PreferenceFrontendConnector
+import play.api.mvc.{AnyContent, Request}
 
-trait RawResponseReads {
+import scala.concurrent.Future
 
-  implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
-    override def read(method: String, url: String, response: HttpResponse) = response
-  }
+
+class PreferencesService @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector) {
+
+  @inline def checkPaperless(implicit request: Request[AnyContent]): Future[PaperlessState] =
+    preferenceFrontendConnector.checkPaperless
+
+  @inline def choosePaperlessUrl(implicit request: Request[AnyContent]): String = preferenceFrontendConnector.choosePaperlessUrl
 
 }
-
-// $COVERAGE-ON$

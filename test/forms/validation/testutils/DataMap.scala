@@ -31,6 +31,7 @@ object DataMap {
   import forms.NotEligibleForm._
   import forms.submapping.DateMapping._
   import forms.PropertyIncomeForm
+  import forms.preferences.BackToPreferencesForm
 
 
   type DataMap = Map[String, String]
@@ -61,6 +62,8 @@ object DataMap {
   def terms(acceptedTerms: String): DataMap = Map(hasAcceptedTerms -> acceptedTerms)
 
   def terms(acceptedTerms: Boolean): DataMap = terms(acceptedTerms.toString)
+
+  def acceptPaperlessDataMap(accept: String): DataMap = Map(BackToPreferencesForm.backToPreferences -> accept)
 
   val alwaysFailInvalid: Invalid = ErrorMessageFactory.error("always fail")
 

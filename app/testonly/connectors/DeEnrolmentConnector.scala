@@ -18,6 +18,7 @@
 package testonly.connectors
 
 import com.google.inject.{Inject, Singleton}
+import connectors.RawResponseReads
 import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.play.http._

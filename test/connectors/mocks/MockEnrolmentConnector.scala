@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package connectors
+package connectors.mocks
 
-import connectors.mocks.MockHttp
+import connectors.EnrolmentConnector
 import connectors.models.Enrolment
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.UnitTestTrait
