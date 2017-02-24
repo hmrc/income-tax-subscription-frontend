@@ -21,6 +21,7 @@ object MessageLookup {
   object Base {
     val continue = "Continue"
     val submit = "Submit"
+    val signout = "Sign Out"
     val startDate = "Start date"
     val endDate = "End date"
     val day = "Day"
@@ -263,6 +264,11 @@ object MessageLookup {
     val signUp = "I want to sign up"
     val signOut = "I don't want to sign up - sign me out"
     val question = "Choose what you would like to do next"
+  }
+
+  object NoNino {
+    val title = "You can't send digital updates yet"
+    val heading = title
   }
 
 }

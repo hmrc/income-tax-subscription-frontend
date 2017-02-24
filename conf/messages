@@ -1,6 +1,7 @@
 ## Base ##
 base.back                                                       = Back
 base.continue                                                   = Continue
+base.sign-out                                                   = Sign Out
 base.submit                                                     = Submit
 base.startDate                                                  = Start date
 base.endDate                                                    = End date

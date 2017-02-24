@@ -29,5 +29,5 @@ class IncomeTaxSAUserHasNinoPredicate extends PageVisibilityPredicate {
       case _ => PageBlocked(notEligible)
     })
 
-  private val notEligible = Future.successful(Redirect(controllers.routes.NotEligibleController.showNotEligible()))
+  private val notEligible = Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
 }
