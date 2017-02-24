@@ -45,7 +45,7 @@ class EnrolmentConnector @Inject()(appConfig: AppConfig,
 
 object EnrolmentConnector {
 
-  val enrolmentKey = "HMRC-MTD"
+  val enrolmentKey = "HMRC-MTD-IT"
   val enrolmentIdentifier = "MTDITID"
 
 }
