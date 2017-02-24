@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package controllers
+package models.preferences
 
-import auth.{MockAuthConnector, MockConfig}
-import config.BaseControllerConfig
-import services.mocks.MockEnrolmentService
-import utils.UnitTestTrait
+import play.api.libs.json.Json
 
+case class BackToPreferencesModel(choice: String)
 
-trait ControllerBaseTrait extends UnitTestTrait
-  with MockEnrolmentService
-  with MockAuthConnector {
-
-  object MockBaseControllerConfig extends BaseControllerConfig(
-    applicationConfig = MockConfig,
-    enrolmentService = TestEnrolmentService,
-    authConnector = TestAuthConnector) {
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
-  }
-
+object BackToPreferencesModel {
+  val format = Json.format[BackToPreferencesModel]
 }

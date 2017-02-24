@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, Co
 import uk.gov.hmrc.play.frontend.auth.connectors.{AuthConnector, domain}
 import java.util.UUID
 
-import services.{EnrolmentService, MockEnrolmentService}
+import services.EnrolmentService
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, AuthenticationProviderIds}
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.time.DateTimeUtils

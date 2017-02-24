@@ -1,0 +1,30 @@
+@import forms.preferences.BackToPreferencesForm._
+@import helpers._
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import config.AppConfig
+
+@import models.preferences.BackToPreferencesModel
+
+@(backToPreferencesForm: Form[BackToPreferencesModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@views.html.templates.main_template(title = Messages("preferences_callback.title"), bodyClasses = None) {
+
+    @summaryErrorHelper(backToPreferencesForm)
+
+    <h1 class="heading-xlarge">@Messages("preferences_callback.heading")</h1>
+
+    <p>@Messages("preferences_callback.line_1")</p>
+
+    @form(action = postAction) {
+
+        @radioHelper(
+            field = backToPreferencesForm(backToPreferences),
+            legend = Messages("preferences_callback.legend"),
+            options = Seq(RadioOption(option_yes, Messages("preferences_callback.yes")), RadioOption(option_no, Messages("preferences_callback.no"))),
+            parentForm = backToPreferencesForm
+        )
+
+        @continueButton()
+
+    }
+}

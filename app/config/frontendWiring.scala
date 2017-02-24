@@ -23,6 +23,8 @@ import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
+import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 
 @Singleton
 class FrontendAuditConnector @Inject()(override val app: Application) extends Auditing with AppName {
@@ -48,5 +50,16 @@ class SessionCache @Inject()(override val app: Application,
 
   override lazy val baseUri = baseUrl("session-cache")
   override lazy val domain = getConfString("session-cache.domain", throw new Exception(s"Could not find config 'session-cache.domain'"))
+}
+
+trait SessionCookieCryptoFilterWrapper {
+
+  def encryptCookieString(cookie: String) : String = {
+    SessionCookieCryptoFilter.encrypt(cookie)
+  }
+}
+
+object ITSAHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsConverter with SessionCookieCryptoFilterWrapper {
+  override val crypto = encryptCookieString _
 }
 

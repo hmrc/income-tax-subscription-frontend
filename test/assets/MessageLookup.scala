@@ -31,6 +31,15 @@ object MessageLookup {
     val where_can_i_get_this_information = "Where can I get this information"
   }
 
+  object PreferencesCallBack {
+    val title = "Do you want to continue with your registration?"
+    val heading: String = title
+    val line_1: String = "In order to continue with your registration, you must set up a contact email address and agree to go paperless with HMRC."
+    val legend: String = title
+    val yes: String = "Yes - sign up to go paperless"
+    val no: String = "No - sign me out"
+  }
+
   object IncomeSource {
     val title = "Where does your income come from?"
     val heading: String = title
@@ -182,6 +191,10 @@ object MessageLookup {
   }
 
   object Error {
+
+    object BackToPreferences {
+      val empty = "Please select an option"
+    }
 
     object Business {
 
