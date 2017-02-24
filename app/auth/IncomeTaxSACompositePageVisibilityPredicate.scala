@@ -17,27 +17,11 @@
 package auth
 
 import java.net.{URI, URLEncoder}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.ConfidenceLevel.L200
-import uk.gov.hmrc.play.frontend.auth.{CompositePageVisibilityPredicate, PageVisibilityPredicate, UpliftingIdentityConfidencePredicate}
 
-class IncomeTaxSACompositePageVisibilityPredicate(postSignInRedirectUrl: String,
-                                                  notAuthorisedRedirectUrl: String,
-                                                  ivUpliftUrl: String,
-                                                  twoFactorUrl: String) extends CompositePageVisibilityPredicate {
-  override def children: Seq[PageVisibilityPredicate] = Seq (
-    new IncomeTaxSAStrongCredentialPredicate(twoFactorURI),
-    new IncomeTaxSAUserHasNinoPredicate(ivUpliftURI),
-    new UpliftingIdentityConfidencePredicate(L200, ivUpliftURI)
+import uk.gov.hmrc.play.frontend.auth.{CompositePageVisibilityPredicate, PageVisibilityPredicate}
+
+class IncomeTaxSACompositePageVisibilityPredicate extends CompositePageVisibilityPredicate {
+  override def children: Seq[PageVisibilityPredicate] = Seq(
+    new IncomeTaxSAUserHasNinoPredicate
   )
-
-  private val ivUpliftURI: URI =
-    new URI(s"$ivUpliftUrl?origin=SABR&" +
-      s"completionURL=${URLEncoder.encode(postSignInRedirectUrl, "UTF-8")}&" +
-      s"failureURL=${URLEncoder.encode(notAuthorisedRedirectUrl, "UTF-8")}" +
-      s"&confidenceLevel=200")
-
-  private val twoFactorURI: URI =
-    new URI(s"$twoFactorUrl?" +
-      s"continue=${URLEncoder.encode(postSignInRedirectUrl, "UTF-8")}&" +
-      s"failure=${URLEncoder.encode(notAuthorisedRedirectUrl, "UTF-8")}")
 }

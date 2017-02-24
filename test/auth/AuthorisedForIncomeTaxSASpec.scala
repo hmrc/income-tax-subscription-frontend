@@ -51,22 +51,14 @@ class AuthorisedForIncomeTaxSASpec extends MockAuthTestController {
     "result in a status SEE_OTHER (303) redirect" in {
       status(result) shouldBe Status.SEE_OTHER
     }
-
-    "redirect to the IV uplift journey" in {
-      redirectLocation(result) shouldBe Some(ivUpliftURI.toString)
-    }
   }
 
   "Calling authenticated async action with a logged in user with Confidence Level 100" should {
 
     lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockUpliftUserIdCL100))
 
-    "result in a status SEE_OTHER (303) redirect" in {
-      status(result) shouldBe Status.SEE_OTHER
-    }
-
-    "redirect to the IV uplift journey" in {
-      redirectLocation(result) shouldBe Some(ivUpliftURI.toString)
+    "result in a status OK (200) redirect" in {
+      status(result) shouldBe Status.OK
     }
   }
 
@@ -74,12 +66,8 @@ class AuthorisedForIncomeTaxSASpec extends MockAuthTestController {
 
     lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockUpliftUserIdCL50))
 
-    "result in a status SEE_OTHER (303) redirect" in {
-      status(result) shouldBe Status.SEE_OTHER
-    }
-
-    "redirect to the IV uplift journey" in {
-      redirectLocation(result) shouldBe Some(ivUpliftURI.toString)
+    "result in a status OK (200) redirect" in {
+      status(result) shouldBe Status.OK
     }
   }
 
@@ -87,12 +75,8 @@ class AuthorisedForIncomeTaxSASpec extends MockAuthTestController {
 
     lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockWeakUserId))
 
-    "result in a redirect status" in {
-      status(result) shouldBe Status.SEE_OTHER
-    }
-
-    "redirect to 2FA service" in {
-      redirectLocation(result) shouldBe Some(twoFactorURI.toString)
+    "result in a OK status (200)" in {
+      status(result) shouldBe Status.OK
     }
   }
 
