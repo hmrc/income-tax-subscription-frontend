@@ -26,7 +26,7 @@ import utils.UnitTestTrait
 
 class TermsViewSpec extends UnitTestTrait {
 
-  lazy val backUrl = controllers.routes.ContactEmailController.showContactEmail().url
+  lazy val backUrl = controllers.preferences.routes.PreferencesController.checkPreferences().url
   lazy val page = views.html.terms(
     termsForm = TermForm.termForm,
     postAction = controllers.routes.TermsController.submitTerms(),

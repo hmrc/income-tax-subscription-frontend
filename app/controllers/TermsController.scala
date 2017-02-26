@@ -59,6 +59,6 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  lazy val backUrl: String = controllers.routes.ContactEmailController.showContactEmail().url
+  lazy val backUrl: String = controllers.preferences.routes.PreferencesController.checkPreferences().url
 
 }

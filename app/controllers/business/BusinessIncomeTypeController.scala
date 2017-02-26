@@ -59,7 +59,7 @@ class BusinessIncomeTypeController @Inject()(val baseConfig: BaseControllerConfi
             if (isEditMode)
               Redirect(controllers.routes.SummaryController.showSummary())
             else
-              Redirect(controllers.routes.ContactEmailController.showContactEmail()))
+              Redirect(controllers.preferences.routes.PreferencesController.checkPreferences()))
         }
       )
   }

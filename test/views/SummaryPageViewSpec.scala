@@ -188,19 +188,20 @@ class SummaryPageViewSpec extends UnitTestTrait {
       )
     }
 
-    "display the correct info for the contact email" in {
-      val sectionId = ContactEmailId
-      val expectedQuestion = messages.contact_email
-      val expectedAnswer = testContactEmail.emailAddress
-      val expectedEditLink = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )
-    }
+//    TODO - Change required following design around what will be displayed for digital preference decision
+//    "display the correct info for the contact email" in {
+//      val sectionId = ContactEmailId
+//      val expectedQuestion = messages.contact_email
+//      val expectedAnswer = testContactEmail.emailAddress
+//      val expectedEditLink = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
+//
+//      sectionTest(
+//        sectionId = sectionId,
+//        expectedQuestion = expectedQuestion,
+//        expectedAnswer = expectedAnswer,
+//        expectedEditLink = expectedEditLink
+//      )
+//    }
 
     "display the correct info for the terms" in {
       val sectionId = TermsId

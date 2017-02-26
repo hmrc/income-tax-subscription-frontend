@@ -71,12 +71,12 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
       }
 
-      s"redirect to '${controllers.routes.ContactEmailController.showContactEmail().url}'" in {
+      s"redirect to '${controllers.preferences.routes.PreferencesController.checkPreferences().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.ContactEmailController.showContactEmail().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.preferences.routes.PreferencesController.checkPreferences().url)
 
         await(goodRequest)
         verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)

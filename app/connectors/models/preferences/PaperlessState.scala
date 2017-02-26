@@ -27,7 +27,7 @@ object PaperlessState {
 
   import utils.Implicits.{EitherUtilLeft, EitherUtilRight}
 
-  val Paperless = "paperless"
+  val Paperless = "optedIn"
 
   val parseResponse: HttpResponse => Boolean = (response: HttpResponse) => (response.json \ Paperless).get.as[Boolean]
 

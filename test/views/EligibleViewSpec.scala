@@ -25,7 +25,7 @@ import utils.UnitTestTrait
 
 class EligibleViewSpec extends UnitTestTrait {
 
-  lazy val backUrl = controllers.routes.ContactEmailController.showContactEmail().url
+  lazy val backUrl = controllers.preferences.routes.PreferencesController.checkPreferences().url
   lazy val page = views.html.eligible(
     postAction = controllers.routes.EligibleController.submitEligible(),
     backUrl = backUrl

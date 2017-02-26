@@ -73,7 +73,7 @@ class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,
           case IncomeSourceForm.option_business | IncomeSourceForm.option_both =>
             Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
           case IncomeSourceForm.option_property =>
-            Redirect(controllers.routes.ContactEmailController.showContactEmail())
+            Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())
         }
       case _ => throw new InternalServerException("NotEligibleController: fetchIncomeSource failed")
     }
