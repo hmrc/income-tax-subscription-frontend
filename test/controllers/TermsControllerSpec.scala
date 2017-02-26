@@ -92,11 +92,5 @@ class TermsControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "The back url" should {
-    s"point to ${controllers.preferences.routes.PreferencesController.checkPreferences().url}" in {
-      TestTermsController.backUrl mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
-    }
-  }
-
   authorisationTests
 }
