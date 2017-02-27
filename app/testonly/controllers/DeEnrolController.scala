@@ -32,8 +32,8 @@ class DeEnrolController @Inject()(deEnrolmentConnector: DeEnrolmentConnector,
       ggStubResponse <- deEnrolmentConnector.resetUsers()
       authRefreshed <- authenticatorConnector.refreshProfile()
     } yield (authRefreshed.status, ggStubResponse.status) match {
-      case (NO_CONTENT, OK) => Ok("Successfully Reset")
-      case _ => BadRequest(s"Failed to De-enrol: ggStubResponse=${ggStubResponse.status}, authRefreshed=${authRefreshed.status}")
+      case (NO_CONTENT, OK) => Ok("Successfully Reset GG stubbed user")
+      case _ => BadRequest(s"Failed to Reset GG stubbed user: ggStubResponse=${ggStubResponse.status}, authRefreshed=${authRefreshed.status}")
     }
   }
 
