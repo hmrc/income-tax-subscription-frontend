@@ -38,7 +38,7 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
                                             val messagesApi: MessagesApi) extends I18nSupport with RawResponseReads {
 
   private[preferences] def returnUrl(implicit request: Request[AnyContent]): String =
-    encryptAndEncode(controllers.preferences.routes.PreferencesController.callback().absoluteURL)
+    encryptAndEncode(controllers.preferences.routes.PreferencesController.callback().url)
 
   private[preferences] lazy val returnLinkText: String = encryptAndEncode(Messages("preferences.returnLinkText"))
 
