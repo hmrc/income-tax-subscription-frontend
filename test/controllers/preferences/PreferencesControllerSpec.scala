@@ -48,10 +48,11 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
     def result = TestPreferencesController.checkPreferences(request)
 
-    "Return status (200) if paperless is activated" in {
+    "Redirect to Terms and Conditions if paperless is activiated" in {
       setupCheckPaperless(paperlessActivated)
 
-      status(result) must be(Status.OK)
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result).get must be(controllers.routes.TermsController.showTerms().url)
     }
 
     "Redirect to preferences service if paperless is deactivated" in {
@@ -76,10 +77,11 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
     def result = TestPreferencesController.callback(request)
 
-    "Return status (200) if paperless is activated" in {
+    "Redirect to Terms and Conditions if paperless is activiated" in {
       setupCheckPaperless(paperlessActivated)
 
-      status(result) must be(Status.OK)
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result).get must be(controllers.routes.TermsController.showTerms().url)
     }
 
     "Redirect to do you still want to continue page if paperless deactivated" in {

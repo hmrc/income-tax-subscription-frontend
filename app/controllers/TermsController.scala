@@ -37,8 +37,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
   def view(termsForm: Form[TermModel])(implicit request: Request[_]): Html =
     views.html.terms(
       termsForm = termsForm,
-      postAction = controllers.routes.TermsController.submitTerms(),
-      backUrl = backUrl
+      postAction = controllers.routes.TermsController.submitTerms()
     )
 
   val showTerms: Action[AnyContent] = Authorised.async { implicit user =>
@@ -58,7 +57,4 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         }
       )
   }
-
-  lazy val backUrl: String = controllers.routes.ContactEmailController.showContactEmail().url
-
 }

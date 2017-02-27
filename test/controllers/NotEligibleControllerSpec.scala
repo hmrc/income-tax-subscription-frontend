@@ -81,7 +81,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest).get mustBe controllers.routes.ContactEmailController.showContactEmail().url
+      redirectLocation(goodRequest).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
 
       await(goodRequest)
       verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)

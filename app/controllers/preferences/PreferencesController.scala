@@ -39,14 +39,14 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
   def view(backToPreferencesForm: Form[BackToPreferencesModel])(implicit request: Request[AnyContent]): Html = {
     views.html.preferences.continue_registration(
       backToPreferencesForm,
-      postAction = controllers.preferences.routes.PreferencesController.submitGoBackToPreferences
+      postAction = controllers.preferences.routes.PreferencesController.submitGoBackToPreferences()
     )
   }
 
   def checkPreferences: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       preferencesService.checkPaperless.map {
-        case Activated => Ok(Activated.toString)
+        case Activated => Redirect(controllers.routes.TermsController.showTerms())
         case _ => gotoPreferences
       }
   }
@@ -54,7 +54,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
   def callback: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       preferencesService.checkPaperless.map {
-        case Activated => Ok(Activated.toString)
+        case Activated => Redirect(controllers.routes.TermsController.showTerms())
         case _ => Redirect(controllers.preferences.routes.PreferencesController.showGoBackToPreferences())
       }
   }

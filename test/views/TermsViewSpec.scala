@@ -26,21 +26,14 @@ import utils.UnitTestTrait
 
 class TermsViewSpec extends UnitTestTrait {
 
-  lazy val backUrl = controllers.routes.ContactEmailController.showContactEmail().url
+  lazy val backUrl = controllers.preferences.routes.PreferencesController.checkPreferences().url
   lazy val page = views.html.terms(
     termsForm = TermForm.termForm,
-    postAction = controllers.routes.TermsController.submitTerms(),
-    backUrl = backUrl
+    postAction = controllers.routes.TermsController.submitTerms()
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Terms view" should {
-
-    s"have a back buttong pointed to $backUrl" in {
-      val backLink = document.select("#back")
-      backLink.isEmpty mustBe false
-      backLink.attr("href") mustBe backUrl
-    }
 
     s"have the title '${messages.title}'" in {
       document.title() must be(messages.title)
