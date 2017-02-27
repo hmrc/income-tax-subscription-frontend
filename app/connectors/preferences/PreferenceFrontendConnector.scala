@@ -37,18 +37,16 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
                                             httpPut: HttpPut,
                                             val messagesApi: MessagesApi) extends I18nSupport with RawResponseReads {
 
-  //TODO wire the return link URL once it's been decided
   private[preferences] def returnUrl(implicit request: Request[AnyContent]): String =
     encryptAndEncode(controllers.preferences.routes.PreferencesController.callback().absoluteURL)
 
-  // TODO confirm the return link text
   private[preferences] lazy val returnLinkText: String = encryptAndEncode(Messages("preferences.returnLinkText"))
 
   def checkPaperlessUrl(implicit request: Request[AnyContent]): String =
     s"""${appConfig.preferencesUrl}/paperless/activate?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
   def choosePaperlessUrl(implicit request: Request[AnyContent]): String =
-    s"""${appConfig.preferencesUrl}/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
+    s"""/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
   private[preferences] def urlEncode(text: String) = URLEncoder.encode(text, "UTF-8")
 
