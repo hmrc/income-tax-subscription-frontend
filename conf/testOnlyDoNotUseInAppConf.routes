@@ -8,7 +8,7 @@
 # Failing to follow this rule may result in test routes deployed in production.
 
 
-GET        /income-tax-subscription-frontend/test-only/de-enrol           testonly.controllers.DeEnrolController.deEnrol
+GET        /income-tax-subscription-frontend/test-only/reset-user         testonly.controllers.DeEnrolController.resetUsers
 
 
 # Add all the application routes to the prod.routes file
