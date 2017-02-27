@@ -26,7 +26,7 @@ import play.api.Application
 @Singleton
 class TestOnlyAppConfig @Inject()(app: Application) extends FrontendAppConfig(app) {
 
-  lazy val taxEnrolmentsURL: String = baseUrl("tax-enrolments")
+  lazy val ggStubsURL: String = baseUrl("gg-stubs")
 
   lazy val authenticatorURL: String = baseUrl("authenticator")
 

@@ -27,13 +27,13 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 class DeEnrolController @Inject()(deEnrolmentConnector: DeEnrolmentConnector,
                                   authenticatorConnector: AuthenticatorConnector) extends FrontendController {
 
-  def deEnrol: Action[AnyContent] = Action.async { implicit request =>
+  def resetUsers : Action[AnyContent] = Action.async { implicit request =>
     for {
-      ggStubResponse <- deEnrolmentConnector.deEnrol()
+      ggStubResponse <- deEnrolmentConnector.resetUsers()
       authRefreshed <- authenticatorConnector.refreshProfile()
-    } yield ggStubResponse.status match {
-      case OK => Ok("Successfully De-enrolled")
-      case _ => BadRequest("Failed to De-enrol")
+    } yield (authRefreshed.status, ggStubResponse.status) match {
+      case (NO_CONTENT, OK) => Ok("Successfully Reset")
+      case _ => BadRequest(s"Failed to De-enrol: ggStubResponse=${ggStubResponse.status}, authRefreshed=${authRefreshed.status}")
     }
   }
 

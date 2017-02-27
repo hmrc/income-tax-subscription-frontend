@@ -31,12 +31,11 @@ import scala.concurrent.Future
 class DeEnrolmentConnector @Inject()(appConfig: TestOnlyAppConfig,
                                      http: WSHttp) extends RawResponseReads {
 
-  lazy val deEnrolURI = s"${appConfig.taxEnrolmentsURL}/tax-enrolments/de-enrol/$ggServiceName"
+  lazy val resetURI = s"${appConfig.ggStubsURL}/test-only/with-refreshed-enrolments/false"
 
-  def deEnrol()(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](deEnrolURI, Json.parse("""{"keepAgentAllocations": true}"""))
+  def resetUsers()(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    http.POSTEmpty[HttpResponse](resetURI)
   }
-
 }
 
 // $COVERAGE-ON$
