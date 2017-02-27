@@ -30,20 +30,18 @@ class ClearPreferencesConnector @Inject()(appConfig: TestOnlyAppConfig,
                                           httpGet: HttpGet,
                                           http: HttpDelete) extends RawResponseReads {
 
-  val getEntityId = (nino: String) => appConfig.entityResolverURL + s"/entity-resolver/paye/$nino"
+  val getEntityId: String => String = (nino: String) => appConfig.entityResolverURL + s"/entity-resolver/paye/$nino"
 
-  val clearPreferencesURL = (entityId: String) => appConfig.preferencesURL + s"/preferences-admin/$entityId"
+  val clearPreferencesURL: String => String = (entityId: String) => appConfig.preferencesURL + s"/preferences-admin/$entityId"
 
-  def clear(nino: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+  def clear(nino: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     httpGet.GET(getEntityId(nino)).flatMap { response =>
       response.status match {
         case OK =>
-          val entityId = (response.json \ "_id").get.toString.replace("\"","")
+          val entityId = (response.json \ "_id").as[String]
           http.DELETE(clearPreferencesURL(entityId))
         case failure => response
-
       }
     }
-  }
 
 }
