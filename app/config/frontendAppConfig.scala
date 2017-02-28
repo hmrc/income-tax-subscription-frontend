@@ -36,6 +36,7 @@ trait AppConfig {
   val alreadyEnrolledUrl: String
   val subscriptionUrl: String
   val authUrl: String
+  val preferencesService: String
   val preferencesUrl: String
   val baseUrl: String
 }
@@ -47,6 +48,8 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
+  // Frontend Config
+  override lazy val baseUrl: String = loadConfig("base.url")
   private val contextRoute = "income-tax-subscription-frontend"
 
   //Authentication/Authorisation Config
@@ -54,6 +57,7 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
   override lazy val ggSignInContinueUrl = loadConfig("government-gateway.continue.url")
   override lazy val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
   override lazy val alreadyEnrolledUrl = loadConfig("already-enrolled.url")
+  override val authUrl: String = baseUrl("auth")
 
   //GA Config
   override lazy val analyticsToken: String = loadConfig(s"google-analytics.token")
@@ -61,22 +65,21 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
 
   //Contact Frontend Config
   private lazy val contactFrontendService = baseUrl("contact-frontend")
+  private lazy val contactHost = loadConfig("contact-frontend.host")
   override lazy val betaFeedbackUrl = s"$contextRoute/feedback"
   override lazy val betaFeedbackUnauthenticatedUrl = betaFeedbackUrl
-  override lazy val contactFormServiceIdentifier = "IRS"
+  override lazy val contactFormServiceIdentifier = "MTDIT"
   override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
-  override lazy val reportAProblemPartialUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   // protected microservice
   private lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
 
-  override lazy val preferencesUrl: String = loadConfig("preferences.url")
-
-  override lazy val baseUrl: String = loadConfig("base.url")
-
-  override val authUrl: String = baseUrl("auth")
+  // Digital Preferences
+  override lazy val preferencesService = baseUrl("preferences-frontend")
+  override lazy val preferencesUrl = loadConfig("preferences.url")
 
 }
 

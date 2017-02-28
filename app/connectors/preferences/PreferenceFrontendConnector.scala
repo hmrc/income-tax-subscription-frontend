@@ -43,7 +43,7 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
   private[preferences] lazy val returnLinkText: String = encryptAndEncode(Messages("preferences.returnLinkText"))
 
   lazy val checkPaperlessUrl: String =
-    s"""${appConfig.preferencesUrl}/paperless/activate?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
+    s"""${appConfig.preferencesService}/paperless/activate?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
   lazy val choosePaperlessUrl: String =
     s"""${appConfig.preferencesUrl}/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
