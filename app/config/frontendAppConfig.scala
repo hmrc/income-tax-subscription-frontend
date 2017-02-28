@@ -37,6 +37,7 @@ trait AppConfig {
   val subscriptionUrl: String
   val authUrl: String
   val preferencesUrl: String
+  val baseUrl: String
 }
 
 @Singleton
@@ -46,7 +47,7 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
-  private val baseUrl = "income-tax-subscription-frontend"
+  private val contextRoute = "income-tax-subscription-frontend"
 
   //Authentication/Authorisation Config
   override lazy val ggSignInUrl = loadConfig("government-gateway.sign-in.url")
@@ -60,7 +61,7 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
 
   //Contact Frontend Config
   private lazy val contactFrontendService = baseUrl("contact-frontend")
-  override lazy val betaFeedbackUrl = s"$baseUrl/feedback"
+  override lazy val betaFeedbackUrl = s"$contextRoute/feedback"
   override lazy val betaFeedbackUnauthenticatedUrl = betaFeedbackUrl
   override lazy val contactFormServiceIdentifier = "IRS"
   override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
@@ -71,7 +72,9 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
   private lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
 
-  override lazy val preferencesUrl: String = baseUrl("preferences-frontend")
+  override lazy val preferencesUrl: String = loadConfig("preferences.url")
+
+  override lazy val baseUrl: String = loadConfig("base.url")
 
   override val authUrl: String = baseUrl("auth")
 

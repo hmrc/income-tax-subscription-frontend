@@ -37,16 +37,16 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
                                             httpPut: HttpPut,
                                             val messagesApi: MessagesApi) extends I18nSupport with RawResponseReads {
 
-  private[preferences] def returnUrl(implicit request: Request[AnyContent]): String =
-    encryptAndEncode(controllers.preferences.routes.PreferencesController.callback().url)
+  private[preferences] lazy val returnUrl: String =
+    encryptAndEncode(appConfig.baseUrl + controllers.preferences.routes.PreferencesController.callback().url)
 
   private[preferences] lazy val returnLinkText: String = encryptAndEncode(Messages("preferences.returnLinkText"))
 
-  def checkPaperlessUrl(implicit request: Request[AnyContent]): String =
+  lazy val checkPaperlessUrl: String =
     s"""${appConfig.preferencesUrl}/paperless/activate?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
-  def choosePaperlessUrl(implicit request: Request[AnyContent]): String =
-    s"""/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
+  lazy val choosePaperlessUrl: String =
+    s"""${appConfig.preferencesUrl}/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
   private[preferences] def urlEncode(text: String) = URLEncoder.encode(text, "UTF-8")
 
@@ -61,7 +61,7 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
         case Right(state) => state
         case Left((unknownStatus, body)) =>
           new InternalServerException(s"PreferenceFrontendConnector.checkPaperless: unknown status returned ($unknownStatus)${
-            if(!body.isEmpty) s" $body"
+            if (!body.isEmpty) s" $body"
           }")
       }
     }
