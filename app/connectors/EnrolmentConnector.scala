@@ -18,6 +18,7 @@ package connectors
 
 import javax.inject.{Inject, Singleton}
 
+import audit.Logging
 import config.AppConfig
 import connectors.models.Enrolment
 import play.api.http.Status._
@@ -29,15 +30,20 @@ import scala.concurrent.Future
 
 @Singleton
 class EnrolmentConnector @Inject()(appConfig: AppConfig,
-                                   val http: HttpGet) {
+                                   val http: HttpGet,
+                                   logging: Logging) {
 
   def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] = {
     val getUrl = s"${appConfig.authUrl}$uri/enrolments"
+    lazy val requestDetails: Map[String, String] = Map("uri" -> uri)
+    logging.debug(s"Request:\n$requestDetails")
     http.GET[HttpResponse](getUrl).map {
       response =>
         response.status match {
           case OK => response.json.as[Seq[Enrolment]].find(_.key == ggServiceName)
-          case _ => None
+          case _ =>
+            logging.warn("Get Income Tax enrolment responded with a unexpected error")
+            None
         }
     }
   }

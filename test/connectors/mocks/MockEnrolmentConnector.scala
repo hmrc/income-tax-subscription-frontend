@@ -16,17 +16,19 @@
 
 package connectors.mocks
 
+import audit.Logging
 import connectors.EnrolmentConnector
 import connectors.models.Enrolment
+import play.api.libs.json.JsValue
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.UnitTestTrait
 
 import scala.concurrent.Future
 
-trait MockEnrolmentConnector extends UnitTestTrait
-  with MockHttp {
+trait MockEnrolmentConnector extends UnitTestTrait with MockHttp {
 
-  object TestEnrolmentConnector extends EnrolmentConnector(appConfig, http = mockHttpGet) {
+  object TestEnrolmentConnector extends EnrolmentConnector(appConfig, mockHttpGet, app.injector.instanceOf[Logging]) {
     override def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] =
       hc.userId.fold(Future.successful(None: Option[Enrolment]))(userId => userId.value match {
         case auth.mockEnrolled => Future.successful(Some(Enrolment("", Seq(), "Activated")))
@@ -34,4 +36,6 @@ trait MockEnrolmentConnector extends UnitTestTrait
       })
   }
 
+  def setupMockEnrolmentGet(status: Int, response: JsValue)(implicit request: Request[AnyContent]): Unit =
+    setupMockHttpGet("enrol/enrolments")(status, response)
 }
