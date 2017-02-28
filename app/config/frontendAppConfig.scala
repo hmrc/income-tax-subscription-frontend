@@ -57,11 +57,11 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
   override lazy val ggSignInContinueUrl = loadConfig("government-gateway.continue.url")
   override lazy val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
   override lazy val alreadyEnrolledUrl = loadConfig("already-enrolled.url")
-  override val authUrl: String = baseUrl("auth")
+  override lazy val authUrl = baseUrl("auth")
 
   //GA Config
-  override lazy val analyticsToken: String = loadConfig(s"google-analytics.token")
-  override lazy val analyticsHost: String = loadConfig(s"google-analytics.host")
+  override lazy val analyticsToken = loadConfig(s"google-analytics.token")
+  override lazy val analyticsHost = loadConfig(s"google-analytics.host")
 
   //Contact Frontend Config
   private lazy val contactFrontendService = baseUrl("contact-frontend")
