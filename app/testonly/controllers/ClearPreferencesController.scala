@@ -18,15 +18,20 @@ package testonly.controllers
 
 import com.google.inject.Inject
 import config.BaseControllerConfig
+import connectors.models.preferences.Activated
+import connectors.preferences.PreferenceFrontendConnector
 import controllers.BaseController
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import testonly.connectors.ClearPreferencesConnector
+import uk.gov.hmrc.play.http.HttpGet
 import utils.Implicits._
 
-class ClearPreferencesController @Inject()(clearPreferencesConnector: ClearPreferencesConnector,
+class ClearPreferencesController @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector,
+                                           clearPreferencesConnector: ClearPreferencesConnector,
                                            val baseConfig: BaseControllerConfig,
-                                           val messagesApi: MessagesApi
+                                           val messagesApi: MessagesApi,
+                                           httpGet: HttpGet
                                           ) extends BaseController {
 
   def clear: Action[AnyContent] = Authorised.async { implicit user =>
@@ -34,14 +39,17 @@ class ClearPreferencesController @Inject()(clearPreferencesConnector: ClearPrefe
       user.nino match {
         case None => InternalServerError("no nino")
         case Some(nino) =>
-          clearPreferencesConnector.clear(nino).map { response =>
-            response.status match {
-              case OK => Ok("Preferences cleared")
-              case _ => InternalServerError("Unexpected error: status=" + response.status + ", body=" + response.body)
-            }
+          preferenceFrontendConnector.checkPaperless.flatMap {
+            case Activated =>
+              clearPreferencesConnector.clear(nino).map { response =>
+                response.status match {
+                  case OK => Ok("Preferences cleared")
+                  case _ => InternalServerError("Unexpected error: status=" + response.status + ", body=" + response.body)
+                }
+              }
+            case _ => Ok("No Preferences found")
           }
       }
-
   }
 
 }
