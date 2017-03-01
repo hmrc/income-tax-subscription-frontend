@@ -10,6 +10,7 @@
 
 GET        /income-tax-subscription-frontend/test-only/reset-users              testonly.controllers.DeEnrolController.resetUsers
 GET        /income-tax-subscription-frontend/test-only/clear-preferences        testonly.controllers.ClearPreferencesController.clear
+GET        /income-tax-subscription-frontend/test-only/auth-update              testonly.controllers.AuthUpdateController.update
 
 
 # Add all the application routes to the prod.routes file
