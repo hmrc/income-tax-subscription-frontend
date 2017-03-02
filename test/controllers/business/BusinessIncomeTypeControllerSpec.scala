@@ -76,7 +76,7 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
 
         await(goodRequest)
         verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
@@ -100,7 +100,7 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
 
         await(goodRequest)
         verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
