@@ -4,8 +4,8 @@ GET         /                        controllers.HomeController.index
 # Preferences routes
 GET         /preferences             controllers.preferences.PreferencesController.checkPreferences
 GET         /callback                controllers.preferences.PreferencesController.callback
-GET         /email                   controllers.preferences.PreferencesController.showGoBackToPreferences
-POST        /email                   controllers.preferences.PreferencesController.submitGoBackToPreferences
+GET         /paperless-error         controllers.preferences.PreferencesController.showGoBackToPreferences
+POST        /paperless-error         controllers.preferences.PreferencesController.submitGoBackToPreferences
 
 # Income Source Routes
 GET         /income-source           controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)

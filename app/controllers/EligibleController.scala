@@ -43,7 +43,7 @@ class EligibleController @Inject()(val baseConfig: BaseControllerConfig,
 
   val submitEligible: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Redirect(controllers.preferences.routes.PreferencesController.checkPreferences()))
+      Future.successful(Redirect(controllers.routes.TermsController.showTerms()))
   }
 
   lazy val backUrl: String = controllers.property.routes.PropertyIncomeController.showPropertyIncome().url

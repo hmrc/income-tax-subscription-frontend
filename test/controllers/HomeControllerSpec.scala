@@ -43,7 +43,7 @@ class HomeControllerSpec extends ControllerBaseSpec {
 
       status(result) must be(Status.SEE_OTHER)
 
-      redirectLocation(result).get mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+      redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
     }
   }
 
