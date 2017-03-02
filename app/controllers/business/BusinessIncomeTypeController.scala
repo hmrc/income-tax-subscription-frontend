@@ -56,7 +56,7 @@ class BusinessIncomeTypeController @Inject()(val baseConfig: BaseControllerConfi
         formWithErrors => Future.successful(BadRequest(view(incomeTypeForm = formWithErrors, isEditMode = isEditMode))),
         incomeType => {
           keystoreService.saveIncomeType(incomeType) map (_ =>
-              Redirect(controllers.routes.SummaryController.showSummary()))
+              Redirect(controllers.routes.TermsController.showTerms()))
             }
       )
   }
