@@ -48,11 +48,11 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
     def result = TestPreferencesController.checkPreferences(request)
 
-    "Redirect to Terms and Conditions if paperless is activiated" in {
+    "Redirect to Income Source if paperless is activated" in {
       setupCheckPaperless(paperlessActivated)
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(controllers.routes.TermsController.showTerms().url)
+      redirectLocation(result).get must be(controllers.routes.IncomeSourceController.showIncomeSource().url)
     }
 
     "Redirect to preferences service if paperless is deactivated" in {
@@ -77,11 +77,11 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
     def result = TestPreferencesController.callback(request)
 
-    "Redirect to Terms and Conditions if paperless is activiated" in {
+    "Redirect to Terms and Conditions if paperless is activated" in {
       setupCheckPaperless(paperlessActivated)
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(controllers.routes.TermsController.showTerms().url)
+      redirectLocation(result).get must be(controllers.routes.IncomeSourceController.showIncomeSource().url)
     }
 
     "Redirect to do you still want to continue page if paperless deactivated" in {

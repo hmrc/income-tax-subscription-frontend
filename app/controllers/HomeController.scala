@@ -29,7 +29,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
   def index: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+      Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())
   }
 
 }

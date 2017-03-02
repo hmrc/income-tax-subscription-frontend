@@ -76,7 +76,7 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.preferences.routes.PreferencesController.checkPreferences().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
 
         await(goodRequest)
         verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)

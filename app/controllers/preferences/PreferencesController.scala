@@ -46,7 +46,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
   def checkPreferences: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       preferencesService.checkPaperless.map {
-        case Activated => Redirect(controllers.routes.TermsController.showTerms())
+        case Activated => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
         case _ => gotoPreferences
       }
   }
@@ -54,7 +54,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
   def callback: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       preferencesService.checkPaperless.map {
-        case Activated => Redirect(controllers.routes.TermsController.showTerms())
+        case Activated => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
         case _ => Redirect(controllers.preferences.routes.PreferencesController.showGoBackToPreferences())
       }
   }

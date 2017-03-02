@@ -50,7 +50,7 @@ class EligibleControllerSpec extends ControllerBaseSpec
 
     "return a SEE OTHER (303)" in {
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+      redirectLocation(goodRequest).get mustBe controllers.routes.TermsController.showTerms().url
     }
   }
 
