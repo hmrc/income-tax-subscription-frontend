@@ -21,8 +21,10 @@ import forms.TermForm
 import models.TermModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utils.TestModels
 
 class TermsControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -44,6 +46,8 @@ class TermsControllerSpec extends ControllerBaseSpec
     lazy val result = TestTermsController.showTerms(authenticatedFakeRequest())
 
     "return ok (200)" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+
       setupMockKeystore(fetchTerms = None)
 
       status(result) must be(Status.OK)
@@ -85,11 +89,34 @@ class TermsControllerSpec extends ControllerBaseSpec
     lazy val badRequest = TestTermsController.submitTerms(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
       verifyKeystore(fetchTerms = 0, saveTerms = 0)
     }
+  }
+
+  "The back url" should {
+    s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the business journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+      verifyKeystore(fetchIncomeSource = 1)
+    }
+
+    s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the both journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+      verifyKeystore(fetchIncomeSource = 1)
+    }
+
+    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on the property journey" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+      verifyKeystore(fetchIncomeSource = 1)
+    }
+
   }
 
   authorisationTests

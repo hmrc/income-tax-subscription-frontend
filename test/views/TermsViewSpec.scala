@@ -26,10 +26,11 @@ import utils.UnitTestTrait
 
 class TermsViewSpec extends UnitTestTrait {
 
-  lazy val backUrl = controllers.preferences.routes.PreferencesController.checkPreferences().url
+  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
   lazy val page = views.html.terms(
     termsForm = TermForm.termForm,
-    postAction = controllers.routes.TermsController.submitTerms()
+    postAction = controllers.routes.TermsController.submitTerms(),
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
