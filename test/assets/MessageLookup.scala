@@ -284,4 +284,14 @@ object MessageLookup {
     val heading = title
   }
 
+  object MainIncomeError {
+    val title = "Unable to register"
+    val heading = "You can't send digital updates yet"
+    val para1 = "At the moment, you can only register to send digital updates if you're either:"
+    val para2 = "You can register later in the year when this service is available to you."
+    val bullet1 = "a sole trader with income from one business"
+    val bullet2 = "someone who lets UK property"
+    val bullet3 = "a sole trader with income from one business and you let a UK property"
+  }
+
 }
