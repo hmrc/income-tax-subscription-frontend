@@ -5,11 +5,12 @@
 @import views.html.helpers._
 @import config.AppConfig
 
-@(termsForm: Form[TermModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(termsForm: Form[TermModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @termsHref = @{"https://www.gov.uk/help/terms-conditions"}
 
 @views.html.templates.main_template(title = Messages("terms.title"), bodyClasses = None) {
+    @back_link(backUrl)
 
     @summaryErrorHelper(termsForm)
 

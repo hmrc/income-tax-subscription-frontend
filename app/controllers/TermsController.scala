@@ -19,14 +19,15 @@ package controllers
 import javax.inject.Inject
 
 import config.BaseControllerConfig
-import forms.TermForm
+import forms.{IncomeSourceForm, TermForm}
 import models.TermModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.KeystoreService
-
+import uk.gov.hmrc.play.http.InternalServerException
+import utils.Implicits._
 import scala.concurrent.Future
 
 class TermsController @Inject()(val baseConfig: BaseControllerConfig,
@@ -34,27 +35,43 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
                                 val keystoreService: KeystoreService
                                ) extends BaseController {
 
-  def view(termsForm: Form[TermModel])(implicit request: Request[_]): Html =
+  def view(termsForm: Form[TermModel], backUrl: String)(implicit request: Request[_]): Html =
     views.html.terms(
       termsForm = termsForm,
-      postAction = controllers.routes.TermsController.submitTerms()
+      postAction = controllers.routes.TermsController.submitTerms(),
+      backUrl = backUrl
     )
 
   val showTerms: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      keystoreService.fetchTerms() map {
-        terms => Ok(view(TermForm.termForm.fill(terms)))
-      }
+      for {
+        terms <- keystoreService.fetchTerms()
+        backUrl <- backUrl
+      } yield Ok(view(TermForm.termForm.fill(terms), backUrl = backUrl))
   }
 
   val submitTerms: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       TermForm.termForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        formWithErrors => backUrl.map(backUrl => BadRequest(view(formWithErrors, backUrl = backUrl))),
         terms => {
           keystoreService.saveTerms(terms) map (
             _ => Redirect(controllers.routes.SummaryController.showSummary()))
         }
       )
   }
+
+  def backUrl(implicit request: Request[_]): Future[String] =
+    keystoreService.fetchIncomeSource() flatMap {
+      case Some(source) => source.source match {
+        case IncomeSourceForm.option_business =>
+          controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+        case IncomeSourceForm.option_both =>
+          controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+        case IncomeSourceForm.option_property =>
+          controllers.routes.IncomeSourceController.showIncomeSource().url
+        case _ => new InternalServerException("Internal Server Error")
+      }
+    }
+
 }
