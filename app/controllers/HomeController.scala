@@ -19,17 +19,28 @@ package controllers
 import javax.inject.Inject
 
 import config.BaseControllerConfig
+import connectors.models.throttling.CanAccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-
+import services.ThrottlingService
+import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
-                               override val messagesApi: MessagesApi) extends BaseController {
+                               override val messagesApi: MessagesApi,
+                               throttlingService: ThrottlingService
+                              ) extends BaseController {
 
-  def index: Action[AnyContent] = Authorised.async { implicit user =>
+  def index: Action[AnyContent] = Authorised.asyncForHomeController { implicit user =>
     implicit request =>
-      Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())
+      throttlingService.checkAccess.flatMap {
+        case Some(CanAccess) =>
+          Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())
+        case Some(_) =>
+          // TODO show the page
+          Ok("exceeds limit")
+        case _ => new InternalServerException("HomeController.index: unexpected error calling the throttling service")
+      }
   }
 
 }
