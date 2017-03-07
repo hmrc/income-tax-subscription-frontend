@@ -18,6 +18,7 @@ package connectors.throttling
 
 import javax.inject.{Inject, Singleton}
 
+import audit.Logging
 import config.AppConfig
 import connectors.RawResponseReads
 import connectors.models.throttling.{CanAccess, LimitReached, UserAccess}
@@ -30,7 +31,8 @@ import scala.concurrent.Future
 
 @Singleton
 class ThrottlingControlConnector @Inject()(val appConfig: AppConfig,
-                                           val http: HttpGet) extends RawResponseReads {
+                                           val http: HttpGet,
+                                           logging: Logging) extends RawResponseReads {
 
   lazy val throttleControlUrl = (nino: String) => s"${appConfig.throttleControlUrl}/$nino"
 
@@ -39,8 +41,12 @@ class ThrottlingControlConnector @Inject()(val appConfig: AppConfig,
       response =>
         response.status match {
           case OK => CanAccess
-          case TOO_MANY_REQUESTS => LimitReached
-          case _ => None
+          case TOO_MANY_REQUESTS =>
+            logging.info("ThrottlingControlConnector.checkAccess: TOO_MANY_REQUESTS")
+            LimitReached
+          case x =>
+            logging.warn(s"ThrottlingControlConnector.checkAccess: unexpected status=$x")
+            None
         }
     }
   }

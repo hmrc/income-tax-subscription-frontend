@@ -18,7 +18,7 @@ package auth
 
 import config.AppConfig
 
-object MockConfig extends AppConfig {
+trait MockConfig extends AppConfig {
   override val analyticsToken: String = ""
   override val analyticsHost: String = ""
   override val reportAProblemPartialUrl: String = ""
@@ -35,5 +35,9 @@ object MockConfig extends AppConfig {
   override val preferencesService: String = ""
   override val preferencesUrl: String = ""
   override val baseUrl: String = ""
-  override val authUrl = ""
+  override val authUrl: String = ""
+  override val throttleControlUrl: String = ""
+  override val enableThrottling: Boolean = true
 }
+
+object MockConfig extends MockConfig

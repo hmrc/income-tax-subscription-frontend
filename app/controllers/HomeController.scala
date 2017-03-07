@@ -33,14 +33,19 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
   def index: Action[AnyContent] = Authorised.asyncForHomeController { implicit user =>
     implicit request =>
-      throttlingService.checkAccess.flatMap {
-        case Some(CanAccess) =>
-          Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())
-        case Some(_) =>
-          // TODO show the page
-          Ok("exceeds limit")
-        case _ => new InternalServerException("HomeController.index: unexpected error calling the throttling service")
+      baseConfig.applicationConfig.enableThrottling match {
+        case true =>
+          throttlingService.checkAccess.flatMap {
+            case Some(CanAccess) =>
+              gotoPreferences
+            case Some(_) =>
+              // TODO show the page
+              Ok("exceeds limit")
+            case _ => new InternalServerException("HomeController.index: unexpected error calling the throttling service")
+          }
+        case false => gotoPreferences
       }
   }
 
+  lazy val gotoPreferences = Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())
 }

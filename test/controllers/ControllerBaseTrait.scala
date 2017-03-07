@@ -17,7 +17,7 @@
 package controllers
 
 import auth.{MockAuthConnector, MockConfig}
-import config.BaseControllerConfig
+import config.{AppConfig, BaseControllerConfig}
 import services.mocks.MockEnrolmentService
 import utils.UnitTestTrait
 
@@ -26,11 +26,13 @@ trait ControllerBaseTrait extends UnitTestTrait
   with MockEnrolmentService
   with MockAuthConnector {
 
-  object MockBaseControllerConfig extends BaseControllerConfig(
-    applicationConfig = MockConfig,
+  def mockBaseControllerConfig(appConfig: AppConfig): BaseControllerConfig = new BaseControllerConfig(
+    applicationConfig = appConfig,
     enrolmentService = TestEnrolmentService,
     authConnector = TestAuthConnector) {
-    override lazy val postSignInRedirectUrl = MockConfig.ggSignInContinueUrl
+    override lazy val postSignInRedirectUrl = appConfig.ggSignInContinueUrl
   }
+
+  lazy val MockBaseControllerConfig = mockBaseControllerConfig(MockConfig)
 
 }

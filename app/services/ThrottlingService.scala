@@ -18,19 +18,27 @@ package services
 
 import javax.inject.Inject
 
+import audit.Logging
 import auth.IncomeTaxSAUser
 import connectors.models.throttling.UserAccess
 import connectors.throttling.ThrottlingControlConnector
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 import utils.Implicits._
 
 import scala.concurrent.Future
 
 
-class ThrottlingService @Inject()(throttlingControlConnector: ThrottlingControlConnector) {
+class ThrottlingService @Inject()(throttlingControlConnector: ThrottlingControlConnector,
+                                  logging: Logging
+                                 ) {
 
-  def checkAccess(implicit user: IncomeTaxSAUser, hc: HeaderCarrier): Future[Option[UserAccess]] =
-    user.nino.fold(None: Future[Option[UserAccess]])(nino => throttlingControlConnector.checkAccess(nino))
+  def checkAccess(implicit user: IncomeTaxSAUser, hc: HeaderCarrier): Future[Option[UserAccess]] = {
+    user.nino match {
+      case Some(nino) => throttlingControlConnector.checkAccess(nino)
+      case None =>
+        logging.warn("ThrottlingService.checkAccess: unexpected error, no nino found")
+        new InternalServerException("ThrottlingService.checkAccess: unexpected error, no nino found")
+    }
+  }
 
 }

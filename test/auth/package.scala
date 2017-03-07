@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-import java.net.{URI, URLEncoder}
+import java.util.UUID
 
 import config.AppConfig
+import controllers.ITSASessionKey
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.play.frontend.auth.connectors.domain
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, ConfidenceLevel, CredentialStrength}
-import uk.gov.hmrc.play.frontend.auth.connectors.{AuthConnector, domain}
-import java.util.UUID
-
-import services.EnrolmentService
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, AuthenticationProviderIds}
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.time.DateTimeUtils
@@ -177,17 +175,29 @@ package object auth {
     )
   }
 
-  lazy val fakeRequest = FakeRequest()
+  val beenHomeSession: Boolean => List[(String, String)] = {
+    case true => List((ITSASessionKey.GoHome, "et"))
+    case false => List()
+  }
 
+  def fakeRequest(beenHome: Boolean): FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(beenHomeSession(beenHome): _*)
+
+  lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = fakeRequest(beenHome = true)
+
+  // @param beenHome is used to indicate whether the session passed through to the home controller already
   def authenticatedFakeRequest(provider: String = AuthenticationProviderIds.GovernmentGatewayId,
-                               userId: String = mockAuthorisedUserIdCL200): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest().withSession(
+                               userId: String = mockAuthorisedUserIdCL200,
+                               beenHome: Boolean = true): FakeRequest[AnyContentAsEmpty.type] = {
+    val sessionVariables = List(
       SessionKeys.userId -> userId,
       SessionKeys.sessionId -> s"session-${UUID.randomUUID()}",
       SessionKeys.lastRequestTimestamp -> DateTimeUtils.now.getMillis.toString,
       SessionKeys.token -> "ANYOLDTOKEN",
       SessionKeys.authProvider -> provider
-    )
+    ).++(beenHomeSession(beenHome))
+    FakeRequest().withSession(sessionVariables: _*)
+  }
+
 
   def timeoutFakeRequest(provider: String = AuthenticationProviderIds.GovernmentGatewayId,
                          userId: String = mockAuthorisedUserIdCL200): FakeRequest[AnyContentAsEmpty.type] =

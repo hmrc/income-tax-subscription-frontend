@@ -40,6 +40,7 @@ trait AppConfig {
   val preferencesService: String
   val preferencesUrl: String
   val baseUrl: String
+  val enableThrottling: Boolean
 }
 
 @Singleton
@@ -82,6 +83,9 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
   // Digital Preferences
   override lazy val preferencesService = baseUrl("preferences-frontend")
   override lazy val preferencesUrl = loadConfig("preferences.url")
+
+  // Enable or disable calling the throttling control in the middle service from the HomeController
+  override lazy val enableThrottling = loadConfig("feature-switch.enable-throttling").toBoolean
 
 }
 

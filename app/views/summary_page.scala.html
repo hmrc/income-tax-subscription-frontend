@@ -10,12 +10,8 @@
 @summaryRow(field: String, question: String, answer: String, changeUrl: String) = {
     <hr>
     <div class="tabular-data__entry" id="@field-row">
-        <div class="tabular-data__heading tabular-data__heading--label" id="@field-question">
-        @question
-        </div>
-        <div class="tabular-data__data-1" id="@field-answer">
-        @Html(answer)
-        </div>
+        <div class="tabular-data__heading tabular-data__heading--label" id="@field-question">@question</div>
+        <div class="tabular-data__data-1" id="@field-answer">@Html(answer)</div>
         <a class="tabular-data__data-2" href="@changeUrl" id="@field-edit">@Messages("base.change")</a>
     </div>
 }
