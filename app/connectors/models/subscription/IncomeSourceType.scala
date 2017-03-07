@@ -24,6 +24,8 @@ case object Property extends IncomeSourceType
 
 case object Both extends IncomeSourceType
 
+case object Other extends IncomeSourceType
+
 
 object IncomeSourceType {
 
@@ -32,11 +34,13 @@ object IncomeSourceType {
   val business = "Business"
   val property = "Property"
   val both = "Both"
+  val other = "Other"
 
   private val reader: Reads[IncomeSourceType] = __.read[String].map {
     case `business` => Business
     case `property` => Property
     case `both` => Both
+    case `other` => Other
   }
 
   private val writer: Writes[IncomeSourceType] = Writes[IncomeSourceType](incomeSourceType =>
@@ -44,6 +48,7 @@ object IncomeSourceType {
       case Business => business
       case Property => property
       case Both => both
+      case Other => other
     })
   )
 
@@ -53,12 +58,14 @@ object IncomeSourceType {
     case `business` => Business
     case `property` => Property
     case `both` => Both
+    case `other` => Other
   }
 
   def unapply(incomeSourceType: IncomeSourceType): Option[String] = incomeSourceType match {
     case Business => Some(business)
     case Property => Some(property)
     case Both => Some(both)
+    case Other => Some(other)
   }
 
 }

@@ -58,6 +58,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                 case IncomeSourceForm.option_business => business
                 case IncomeSourceForm.option_property => property
                 case IncomeSourceForm.option_both => both
+                case IncomeSourceForm.option_other => other
               }
             }
 
@@ -82,5 +83,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
   def property(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.property.routes.PropertyIncomeController.showPropertyIncome()))
 
   def both(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.property.routes.PropertyIncomeController.showPropertyIncome()))
+
+  def other(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.routes.MainIncomeErrorController.mainIncomeError()))
 
 }

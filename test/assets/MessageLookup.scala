@@ -42,11 +42,12 @@ object MessageLookup {
   }
 
   object IncomeSource {
-    val title = "Where does your income come from?"
+    val title = "What's your income type?"
     val heading: String = title
-    val business = "My business"
-    val property = "Property (for example, renting out a property)"
-    val both = "Both business and property"
+    val business = "Your sole trader business"
+    val property = "Letting a UK property"
+    val both = "Your sole trader business and letting a UK property"
+    val other = "Other"
   }
 
   object Property {
@@ -282,6 +283,16 @@ object MessageLookup {
   object NoNino {
     val title = "You can't send digital updates yet"
     val heading = title
+  }
+
+  object MainIncomeError {
+    val title = "Unable to register"
+    val heading = "You can't send digital updates yet"
+    val para1 = "At the moment, you can only register to send digital updates if you're either:"
+    val para2 = "You can register later in the year when this service is available to you."
+    val bullet1 = "a sole trader with income from one business"
+    val bullet2 = "someone who lets UK property"
+    val bullet3 = "a sole trader with income from one business and you let a UK property"
   }
 
 }
