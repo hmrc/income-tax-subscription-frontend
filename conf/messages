@@ -21,11 +21,12 @@ preferences_callback.yes                                        = Yes - sign up 
 preferences_callback.no                                         = No - sign me out
 
 ## Income source page
-income_source.title                                             = Where does your income come from?
-income_source.heading                                           = Where does your income come from?
-income_source.business                                          = My business
-income_source.property                                          = Property (for example, renting out a property)
-income_source.both                                              = Both business and property
+income_source.title                                             = What''s your income type?
+income_source.heading                                           = What''s your income type?
+income_source.business                                          = Your sole trader business
+income_source.property                                          = Letting a UK property
+income_source.both                                              = Your sole trader business and letting a UK property
+income_source.other                                             = Other
 
 # Property income page
 property.income.title                                           = How much was your income from property this year?
