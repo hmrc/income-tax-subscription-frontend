@@ -36,6 +36,15 @@ property.income.ge10k                                           = £10,000 or mo
 property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
 
 
+# Current Financial Period Prior page
+business.current_financial_period_prior.title                   = Did your current financial period start before 1 April 2017?
+business.current_financial_period_prior.heading                 = Did your current financial period start before 1 April 2017?
+business.current_financial_period_prior.line_1                  = This is the period that your latest income and expense records cover (also called your accounting period). Your financial period normally starts on 6 April, unless you’ve chosen to use your own dates.
+business.current_financial_period_prior.line_2                  = If you''re a new business, this is the date you started trading.
+business.current_financial_period_prior.hint                    = 1 April 2017 is when the Register for digital Income Tax updates services started.
+business.current_financial_period_prior.yes                     = Yes
+business.current_financial_period_prior.no                      = No
+
 ## Business Accounting Period page
 accounting_period.title                                         = Business accounting period
 accounting_period.heading                                       = Enter your accounting period dates

@@ -1,0 +1,50 @@
+@import models.CurrentFinancialPeriodPriorModel
+@import play.api.data.Form
+@import forms.CurrentFinancialPeriodPriorForm
+@import helpers.radioHelper
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import helpers._
+@import config.AppConfig
+
+@(currentFinancialPeriodPriorForm: Form[CurrentFinancialPeriodPriorModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@question = @{
+    Messages("business.current_financial_period_prior.heading")
+}
+
+@views.html.templates.main_template(title = Messages("business.current_financial_period_prior.title"), bodyClasses = None) {
+
+    @back_link(backUrl)
+
+    @summaryErrorHelper(currentFinancialPeriodPriorForm)
+
+    <h1>@question</h1>
+
+    <div class="form-group">
+
+        <p>@Messages("business.current_financial_period_prior.line_1")</p>
+
+        <p>@Messages("business.current_financial_period_prior.line_2")</p>
+
+        <p class="indent">@Messages("business.current_financial_period_prior.hint")</p>
+
+    </div>
+
+    @form(action = postAction) {
+
+        @radioHelper(
+            field = currentFinancialPeriodPriorForm(CurrentFinancialPeriodPriorForm.currentFinancialPeriodPrior),
+            legend = question,
+            options = Seq(
+                RadioOption(CurrentFinancialPeriodPriorForm.option_yes, Messages("business.current_financial_period_prior.yes")),
+                RadioOption(CurrentFinancialPeriodPriorForm.option_no, Messages("business.current_financial_period_prior.no"))
+            ),
+            parentForm = currentFinancialPeriodPriorForm,
+            inline = true
+        )
+
+        @continueButton()
+
+    }
+
+}
