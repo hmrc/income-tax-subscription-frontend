@@ -18,11 +18,14 @@ package auth
 
 import config.AppConfig
 import connectors.models.Enrolment.{Enrolled, NotEnrolled}
+import controllers.ITSASessionKey._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.EnrolmentService
 import uk.gov.hmrc.play.frontend.auth._
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import uk.gov.hmrc.play.http.HeaderCarrier
+import utils.Implicits._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -48,24 +51,42 @@ trait AuthorisedForIncomeTaxSA extends Actions {
   class AuthorisedBy(regime: TaxRegime) {
     val authedBy: AuthenticatedBy = AuthorisedFor(regime, visibilityPredicate)
 
+    def asyncCore(action: AsyncUserRequest): Action[AnyContent] =
+      authedBy.async { authContext: AuthContext =>
+        implicit request =>
+          request.session.get(GoHome) match {
+            case Some(_) =>
+              action(IncomeTaxSAUser(authContext))(request)
+            case None =>
+              Redirect(controllers.routes.HomeController.index())
+          }
+      }
+
     def async(action: AsyncUserRequest): Action[AnyContent] =
-      authedBy.async {
-        authContext: AuthContext =>
+      asyncCore {
+        authContext: IncomeTaxSAUser =>
           implicit request =>
             enrolmentService.checkEnrolment {
-              case NotEnrolled => action(IncomeTaxSAUser(authContext))(request)
+              case NotEnrolled => action(authContext)(request)
               case Enrolled => Future.successful(Redirect(alreadyEnrolledUrl))
             }
       }
 
     def asyncForEnrolled(action: AsyncUserRequest): Action[AnyContent] =
+      asyncCore {
+        authContext: IncomeTaxSAUser =>
+          implicit request =>
+            enrolmentService.checkEnrolment {
+              case Enrolled => action(authContext)(request)
+              case NotEnrolled => Future.successful(BadRequest)
+            }
+      }
+
+    def asyncForHomeController(action: AsyncUserRequest): Action[AnyContent] =
       authedBy.async {
         authContext: AuthContext =>
           implicit request =>
-            enrolmentService.checkEnrolment {
-              case Enrolled => action(IncomeTaxSAUser(authContext))(request)
-              case NotEnrolled => Future.successful(BadRequest)
-            }
+            action(IncomeTaxSAUser(authContext))(request).flatMap { x => x.withSession(x.session.+(GoHome, "et")) }
       }
   }
 

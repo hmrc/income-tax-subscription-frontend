@@ -30,8 +30,8 @@
         @fieldErrorHelper(field, parentForm)
     </label>
 
-    <input name = @field.name class="form-control" id=@field.name type="text"
+    <input name=@field.name class="form-control" id=@field.name type="text"
         @maxLength.fold(Html(""))(max => Html(s"maxlength=$max"))
-        @field.value.map(v => Html(s"""value="$v""""))
+        value="@field.value.fold("")(v => v)"
     >
 </div>

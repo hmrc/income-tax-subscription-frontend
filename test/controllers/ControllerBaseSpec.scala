@@ -32,7 +32,7 @@ trait ControllerBaseSpec extends ControllerBaseTrait {
   val controllerName: String
   val authorisedRoutes: Map[String, Action[AnyContent]]
 
-  final def authorisationTests = {
+  final def authorisationTests: Unit = {
     authorisedRoutes.foreach {
       case (name, call) =>
         s"Calling the $name action of the $controllerName with an unauthorised user" should {

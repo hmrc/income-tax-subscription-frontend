@@ -105,4 +105,19 @@ class AuthorisedForIncomeTaxSASpec extends MockAuthTestController {
     }
   }
 
+  "A controller without passing through the home controller" should {
+    lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(beenHome = false))
+    "be redirected to the home controller" in {
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.HomeController.index().url)
+    }
+  }
+
+  "A controller passed through the home controller" should {
+    lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest())
+    "be allowed to proceed normally" in {
+      status(result) shouldBe Status.OK // the OK is defined by authorisedAsyncAction
+    }
+  }
+
 }
