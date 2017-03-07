@@ -178,6 +178,9 @@ error.income_type.invalid                                       = Please select 
 error.not-eligible.empty                                        = Please select an option
 error.not-eligible.invalid                                      = Please select an option
 
+error.other-income.empty                                        = Please select an option
+error.other-income.invalid                                      = Please select an option
+
 error.terms.empty                                               = Please accept the terms and conditions
 
 ## Eligible page ##
@@ -197,10 +200,34 @@ not-eligible.signup                                             = I want to sign
 not-eligible.signout                                            = I don''t want to sign up - sign me out
 
 ## Main income error page ##
-main-income-error.title                                         = Unable to register
+main-income-error.title                                         = You can''t send digital updates yet
 main-income-error.heading                                       = You can''t send digital updates yet
 main-income-error.para1                                         = At the moment, you can only register to send digital updates if you''re either:
 main-income-error.para2                                         = You can register later in the year when this service is available to you.
 main-income-error.bullet1                                       = a sole trader with income from one business
 main-income-error.bullet2                                       = someone who lets UK property
 main-income-error.bullet3                                       = a sole trader with income from one business and you let a UK property
+
+## Other income error page ##
+other-income-error.title                                        = You can register, but can only send digital updates on part of your income
+other-income-error.heading                                      = You can register, but can only send digital updates on part of your income
+other-income-error.para1                                        = At the moment, you can only register to send digital updates if you''re either:
+other-income-error.para2                                        = You can send digital Income Tax updates for your other income later in the year.
+other-income-error.bullet1                                      = a sole trader with income from one business
+other-income-error.bullet2                                      = someone who lets UK property
+other-income-error.bullet3                                      = a sole trader with income from one business and you let a UK property
+
+## Other sources of income page ##
+income-other.title                                              = Do you have any other sources of income?
+income-other.heading                                            = Do you have any other sources of income?
+income-other.para1                                              = This includes:
+income-other.bullet1                                            = employment that isn’'t your sole trader business
+income-other.bullet2                                            = UK pensions or annuities
+income-other.bullet3                                            = state benefits
+income-other.bullet4                                            = student loans
+income-other.bullet5                                            = employment or investments from outside the UK
+income-other.bullet6                                            = capital gains
+income-other.bullet7                                            = the ‘Rent a Room Scheme’
+income-other.bullet8                                            = qualifying care relief
+income-other.yes                                                = Yes
+income-other.no                                                 = No

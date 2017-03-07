@@ -250,6 +250,11 @@ object MessageLookup {
       val invalid = "Please select an option"
     }
 
+    object OtherIncome {
+      val empty = "Please select an option"
+      val invalid = "Please select an option"
+    }
+
     object IncomeSource {
       val empty = "Please select an income source"
       val invalid = "Please select an income source"
@@ -285,13 +290,39 @@ object MessageLookup {
   }
 
   object MainIncomeError {
-    val title = "Unable to register"
+    val title = "You can't send digital updates yet"
     val heading = "You can't send digital updates yet"
     val para1 = "At the moment, you can only register to send digital updates if you're either:"
     val para2 = "You can register later in the year when this service is available to you."
     val bullet1 = "a sole trader with income from one business"
     val bullet2 = "someone who lets UK property"
     val bullet3 = "a sole trader with income from one business and you let a UK property"
+  }
+
+  object OtherIncomeError {
+    val title = "You can register, but can only send digital updates on part of your income"
+    val heading = "You can register, but can only send digital updates on part of your income"
+    val para1 = "At the moment, you can only register to send digital updates if you're either:"
+    val para2 = "You can send digital Income Tax updates for your other income later in the year."
+    val bullet1 = "a sole trader with income from one business"
+    val bullet2 = "someone who lets UK property"
+    val bullet3 = "a sole trader with income from one business and you let a UK property"
+  }
+
+  object OtherIncome {
+    val title = "Do you have any other sources of income?"
+    val heading = "Do you have any other sources of income?"
+    val para1 = "This includes:"
+    val bullet1 = "employment that isn’t your sole trader business"
+    val bullet2 = "UK pensions or annuities"
+    val bullet3 = "state benefits"
+    val bullet4 = "student loans"
+    val bullet5 = "employment or investments from outside the UK"
+    val bullet6 = "capital gains"
+    val bullet7 = "the ‘Rent a Room Scheme’"
+    val bullet8 = "qualifying care relief"
+    val yes = "Yes"
+    val no = "No"
   }
 
 }

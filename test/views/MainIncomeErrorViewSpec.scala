@@ -24,7 +24,8 @@ import utils.UnitTestTrait
 
 class MainIncomeErrorViewSpec extends UnitTestTrait {
 
-  lazy val page = views.html.main_income_error()(FakeRequest(), applicationMessages, appConfig)
+  lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url
+  lazy val page = views.html.main_income_error(backUrl = backUrl)(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Main Income Error view" should {

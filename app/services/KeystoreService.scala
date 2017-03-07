@@ -90,6 +90,12 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveTerms(terms: TermModel)(implicit hc: HeaderCarrier, reads: Reads[TermModel]): FC =
     save[TermModel](Terms, terms)
 
+  def fetchOtherIncome()(implicit hc: HeaderCarrier, reads: Reads[OtherIncomeModel]): FO[OtherIncomeModel] =
+    fetch[OtherIncomeModel](OtherIncome)
+
+  def saveOtherIncome(otherIncome: OtherIncomeModel)(implicit hc: HeaderCarrier, reads: Reads[OtherIncomeModel]): FC =
+    save[OtherIncomeModel](OtherIncome, otherIncome)
+
   def fetchNotEligible()(implicit hc: HeaderCarrier, reads: Reads[NotEligibleModel]): FO[NotEligibleModel] =
     fetch[NotEligibleModel](NotEligible)
 

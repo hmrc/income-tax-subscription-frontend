@@ -52,5 +52,14 @@ POST        /not-eligible            controllers.NotEligibleController.submitNot
 GET         /no-nino                 controllers.NoNinoController.showNoNino
 POST        /no-nino                 controllers.NoNinoController.submitNoNino
 
+# Other Income Sources Routes
+GET         /income-other            controllers.OtherIncomeController.showOtherIncome
+POST        /income-other            controllers.OtherIncomeController.submitOtherIncome
+
 # Main Income Error Routes
 GET         /main-income-error       controllers.MainIncomeErrorController.mainIncomeError
+
+# Other Income Error Routes
+GET         /other-income-error      controllers.OtherIncomeErrorController.showOtherIncomeError
+POST        /other-income-error      controllers.OtherIncomeErrorController.submitOtherIncomeError
+

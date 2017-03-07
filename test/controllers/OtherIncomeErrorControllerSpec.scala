@@ -22,18 +22,18 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-class MainIncomeErrorControllerSpec extends ControllerBaseSpec {
+class OtherIncomeErrorControllerSpec extends ControllerBaseSpec {
 
-  override val controllerName: String = "MainIncomeErrorController"
+  override val controllerName: String = "OtherIncomeErrorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestMainIncomeErrorController extends MainIncomeErrorController()(
-    MockBaseControllerConfig.applicationConfig,
+  object TestOtherIncomeErrorController extends OtherIncomeErrorController()(
+    MockBaseControllerConfig,
     messagesApi)
 
   "Calling the mainIncomeError action of the MainIncomeErrorController" should {
 
-    lazy val result = TestMainIncomeErrorController.mainIncomeError(FakeRequest())
+    lazy val result = TestOtherIncomeErrorController.showOtherIncomeError(FakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
