@@ -42,11 +42,12 @@ object MessageLookup {
   }
 
   object IncomeSource {
-    val title = "Where does your income come from?"
+    val title = "What's your income type?"
     val heading: String = title
-    val business = "My business"
-    val property = "Property (for example, renting out a property)"
-    val both = "Both business and property"
+    val business = "Your sole trader business"
+    val property = "Letting a UK property"
+    val both = "Your sole trader business and letting a UK property"
+    val other = "Other"
   }
 
   object Property {

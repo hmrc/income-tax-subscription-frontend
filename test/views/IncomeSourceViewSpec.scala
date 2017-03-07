@@ -80,6 +80,16 @@ class IncomeSourceViewSpec extends UnitTestTrait {
           label.size() mustBe 1
           label.get(0).text() mustBe messages.both
         }
+
+        s"has a radio option for '$fieldName-${IncomeSourceForm.option_other}'" in {
+          val cashRadio = document.select(s"#$fieldName-${IncomeSourceForm.option_other}")
+          cashRadio.attr("type") mustBe "radio"
+          cashRadio.attr("name") mustBe fieldName
+          cashRadio.attr("value") mustBe IncomeSourceForm.option_other
+          val label = document.getElementsByAttributeValue("for", s"$fieldName-${IncomeSourceForm.option_other}")
+          label.size() mustBe 1
+          label.get(0).text() mustBe messages.other
+        }
       }
 
       "has a continue button" in {

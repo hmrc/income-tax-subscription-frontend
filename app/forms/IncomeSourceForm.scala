@@ -31,6 +31,7 @@ object IncomeSourceForm {
   val option_business = IncomeSourceType.business
   val option_property = IncomeSourceType.property
   val option_both = IncomeSourceType.both
+  val option_other = IncomeSourceType.other
 
   val sourceEmpty: Constraint[String] = constraint[String](
     source => {
@@ -43,7 +44,7 @@ object IncomeSourceForm {
     source => {
       lazy val invalidSource = ErrorMessageFactory.error("error.income_source.invalid")
       source match {
-        case `option_business` | `option_property` | `option_both` => Valid
+        case `option_business` | `option_property` | `option_both` | `option_other` => Valid
         case _ => invalidSource
       }
     }

@@ -69,41 +69,53 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       .post(IncomeSourceForm.incomeSourceForm, IncomeSourceModel(option)))
 
     "When it is not edit mode" should {
-        s"return an SEE OTHER (303) for business and goto ${controllers.business.routes.SoleTraderController.showSoleTrader().url}" in {
-          setupMockKeystoreSaveFunctions()
+      s"return an SEE OTHER (303) for business and goto ${controllers.business.routes.SoleTraderController.showSoleTrader().url}" in {
+        setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callShow(IncomeSourceForm.option_business, isEditMode = false)
+        val goodRequest = callShow(IncomeSourceForm.option_business, isEditMode = false)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
 
-          await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
-        }
+        await(goodRequest)
+        verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+      }
 
-        s"return a SEE OTHER (303) for property and goto ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url}" in {
-          setupMockKeystoreSaveFunctions()
+      s"return a SEE OTHER (303) for property and goto ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url}" in {
+        setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = false)
+        val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = false)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
 
-          await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
-        }
+        await(goodRequest)
+        verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+      }
 
-        s"return a SEE OTHER (303) for both and goto ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url}" in {
-          setupMockKeystoreSaveFunctions()
+      s"return a SEE OTHER (303) for both and goto ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url}" in {
+        setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = false)
+        val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = false)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
 
-          await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
-        }
+        await(goodRequest)
+        verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+      }
+
+      s"return a SEE OTHER (303) for 'Other' and goto ${controllers.routes.MainIncomeErrorController.mainIncomeError().url}" in {
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callShow(IncomeSourceForm.option_other, isEditMode = false)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe controllers.routes.MainIncomeErrorController.mainIncomeError().url
+
+        await(goodRequest)
+        verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+      }
     }
 
     "When it is in edit mode and user's selection has not changed" should {
@@ -135,6 +147,18 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
         val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = true)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe controllers.routes.SummaryController.showSummary().url
+
+        await(goodRequest)
+        verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
+      }
+
+      s"return a SEE OTHER (303) for 'Other' and goto ${controllers.routes.SummaryController.showSummary().url}" in {
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceOther)
+
+        val goodRequest = callShow(IncomeSourceForm.option_other, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe controllers.routes.SummaryController.showSummary().url
@@ -176,6 +200,18 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+
+        await(goodRequest)
+        verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)
+      }
+
+      s"return a SEE OTHER (303) for 'Other' and goto ${controllers.routes.MainIncomeErrorController.mainIncomeError().url}" in {
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+
+        val goodRequest = callShow(IncomeSourceForm.option_other, isEditMode = true)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe controllers.routes.MainIncomeErrorController.mainIncomeError().url
 
         await(goodRequest)
         verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)
