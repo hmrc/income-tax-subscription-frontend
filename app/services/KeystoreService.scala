@@ -105,5 +105,12 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def fetchSubscriptionId()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = fetch[String](MtditId)
 
   def saveSubscriptionId(mtditId: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC = save[String](MtditId, mtditId)
+
+  def fetchCurrentFinancialPeriodPrior()(implicit hc: HeaderCarrier, reads: Reads[CurrentFinancialPeriodPriorModel]): FO[CurrentFinancialPeriodPriorModel] =
+    fetch[CurrentFinancialPeriodPriorModel](CurrentFinancialPeriodPrior)
+
+  def saveCurrentFinancialPeriodPrior(currentFinancialPeriodPrior: CurrentFinancialPeriodPriorModel)
+                                     (implicit hc: HeaderCarrier, reads: Reads[CurrentFinancialPeriodPriorModel]): FC =
+    save[CurrentFinancialPeriodPriorModel](CurrentFinancialPeriodPrior, currentFinancialPeriodPrior)
 }
 

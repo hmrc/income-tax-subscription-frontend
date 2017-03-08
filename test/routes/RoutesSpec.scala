@@ -22,6 +22,7 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
 
   val contextRoute: String = "/income-tax-subscription-frontend"
 
+  // Timeout routes
   "The URL for the timeout.timeout action" should {
     s"be equal to $contextRoute/session-timeout" in {
       controllers.routes.SessionTimeoutController.timeout().url must be (s"$contextRoute/session-timeout")
@@ -34,6 +35,8 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
+
+  // Summary routes
   "The URL for the SummaryController.submitSummary action" should {
     s"be equal to $contextRoute/summary" in {
       controllers.routes.SummaryController.submitSummary().url must be (s"$contextRoute/summary")
@@ -43,6 +46,20 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   "The URL for the ConfirmationController.showConfirmation action" should {
     s"be equal to $contextRoute/confirmation" in {
       controllers.routes.ConfirmationController.showConfirmation().url must be (s"$contextRoute/confirmation")
+    }
+  }
+
+
+  // Current Financial Period Prior to April 2017 routes
+  "The URL for the CurrentFinancialPeriodPrior.show action" should {
+    s"be equal to $contextRoute/business/current-financial-period-prior" in {
+      controllers.business.routes.CurrentFinancialPeriodPriorController.show().url must be (s"$contextRoute/business/current-financial-period-prior")
+    }
+  }
+
+  "The URL for the CurrentFinancialPeriodPrior.submimt action" should {
+    s"be equal to $contextRoute/business/current-financial-period-prior" in {
+      controllers.business.routes.CurrentFinancialPeriodPriorController.show().url must be (s"$contextRoute/business/current-financial-period-prior")
     }
   }
 

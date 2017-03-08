@@ -65,6 +65,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchNotEligible: MFO[NotEligibleModel] = DoNotConfigure,
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
+                                         fetchCurrentFinancialPeriodPrior: MFO[CurrentFinancialPeriodPriorModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
@@ -79,6 +80,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[NotEligibleModel](NotEligible, fetchNotEligible)
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
+    mockFetchFromKeyStore[CurrentFinancialPeriodPriorModel](CurrentFinancialPeriodPrior, fetchCurrentFinancialPeriodPrior)
 
     setupMockKeystoreSaveFunctions()
 
@@ -109,6 +111,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveOtherIncome: Option[Int] = None,
                                       fetchSubscriptionId: Option[Int] = None,
                                       saveSubscriptionId: Option[Int] = None,
+                                      fetchCurrentFinancialPeriodPrior: Option[Int] = None,
+                                      saveCurrentFinancialPeriodPrior: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
@@ -134,6 +138,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(OtherIncome, saveOtherIncome)
     verifyKeystoreFetch(MtditId, fetchSubscriptionId)
     verifyKeystoreSave(MtditId, saveSubscriptionId)
+    verifyKeystoreFetch(CurrentFinancialPeriodPrior, fetchCurrentFinancialPeriodPrior)
+    verifyKeystoreSave(CurrentFinancialPeriodPrior, saveCurrentFinancialPeriodPrior)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any()))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any()))
