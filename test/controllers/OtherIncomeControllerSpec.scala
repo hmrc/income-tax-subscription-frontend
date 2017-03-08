@@ -91,7 +91,6 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
 
     "return a redirect status (SEE_OTHER - 303)" in {
-      setupMockKeystoreSaveFunctions()
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
@@ -100,11 +99,10 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       status(goodRequest) must be(Status.SEE_OTHER)
 
       await(goodRequest)
-      verifyKeystore(fetchOtherIncome = 0, saveOtherIncome = 1)
+      verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
     }
 
     s"redirect to '${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}' on the business journey" in {
-      setupMockKeystoreSaveFunctions()
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
@@ -113,11 +111,10 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url)
 
       await(goodRequest)
-      verifyKeystore(fetchOtherIncome = 0, saveOtherIncome = 1)
+      verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
     }
 
     s"redirect to '${controllers.routes.TermsController.showTerms().url}' on the property journey" in {
-      setupMockKeystoreSaveFunctions()
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
 
@@ -126,11 +123,10 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
 
       await(goodRequest)
-      verifyKeystore(fetchOtherIncome = 0, saveOtherIncome = 1)
+      verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
     }
 
     s"redirect to '${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}' on the both journey" in {
-      setupMockKeystoreSaveFunctions()
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
@@ -139,7 +135,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url)
 
       await(goodRequest)
-      verifyKeystore(fetchOtherIncome = 0, saveOtherIncome = 1)
+      verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
     }
 
     "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and with an invalid choice" should {
