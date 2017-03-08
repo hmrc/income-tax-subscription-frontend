@@ -63,6 +63,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchIncomeType: MFO[IncomeTypeModel] = DoNotConfigure,
                                          fetchTerms: MFO[TermModel] = DoNotConfigure,
                                          fetchNotEligible: MFO[NotEligibleModel] = DoNotConfigure,
+                                         fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
@@ -76,6 +77,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[IncomeTypeModel](IncomeType, fetchIncomeType)
     mockFetchFromKeyStore[TermModel](Terms, fetchTerms)
     mockFetchFromKeyStore[NotEligibleModel](NotEligible, fetchNotEligible)
+    mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
 
     setupMockKeystoreSaveFunctions()
@@ -103,6 +105,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveTerms: Option[Int] = None,
                                       fetchNotEligible: Option[Int] = None,
                                       saveNotEligible: Option[Int] = None,
+                                      fetchOtherIncome: Option[Int] = None,
+                                      saveOtherIncome: Option[Int] = None,
                                       fetchSubscriptionId: Option[Int] = None,
                                       saveSubscriptionId: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
@@ -126,6 +130,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(Terms, saveTerms)
     verifyKeystoreFetch(NotEligible, fetchNotEligible)
     verifyKeystoreSave(NotEligible, saveNotEligible)
+    verifyKeystoreFetch(OtherIncome, fetchOtherIncome)
+    verifyKeystoreSave(OtherIncome, saveOtherIncome)
     verifyKeystoreFetch(MtditId, fetchSubscriptionId)
     verifyKeystoreSave(MtditId, saveSubscriptionId)
 
