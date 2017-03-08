@@ -41,7 +41,7 @@ class CurrentFinancialPeriodPriorController @Inject()(val baseConfig: BaseContro
     views.html.business.current_financial_period_prior(
       currentFinancialPeriodPriorForm = currentFinancialPeriodPriorForm,
       postAction = controllers.business.routes.CurrentFinancialPeriodPriorController.submit(),
-      backUrl = "TODO"
+      backUrl = controllers.routes.OtherIncomeController.showOtherIncome().url
     )
 
   val show: Action[AnyContent] = Authorised.async { implicit user =>

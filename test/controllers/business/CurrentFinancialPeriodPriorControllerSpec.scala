@@ -20,6 +20,7 @@ import auth._
 import controllers.ControllerBaseSpec
 import forms.CurrentFinancialPeriodPriorForm
 import models.CurrentFinancialPeriodPriorModel
+import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -56,6 +57,11 @@ class CurrentFinancialPeriodPriorControllerSpec extends ControllerBaseSpec with 
       await(result)
       verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 0)
     }
+
+    s"The back url should point to '${controllers.routes.OtherIncomeController.showOtherIncome().url}'" in {
+      val document = Jsoup.parse(contentAsString(result))
+      document.select("#back").attr("href") mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
+    }
   }
 
   "Calling the submit action of the CurrentFinancialPeriodPrior with an authorised user and valid submission" when {
@@ -70,6 +76,7 @@ class CurrentFinancialPeriodPriorControllerSpec extends ControllerBaseSpec with 
         callShow(CurrentFinancialPeriodPriorForm.option_yes)
       }
 
+      // TODO: Remove ignore when the redirect has been put in
       "return status SEE_OTHER (303)" ignore {
         status(goodRequest) mustBe Status.SEE_OTHER
       }
@@ -109,7 +116,7 @@ class CurrentFinancialPeriodPriorControllerSpec extends ControllerBaseSpec with 
 
   "Calling the submit action of the CurrentFinancialPeriodPrior with an authorised user and invalid submission" should {
 
-    lazy val badRequest = TestCurrentFinancialPeriodPriorController.submit(authenticatedFakeRequest())
+    def badRequest: Future[Result] = TestCurrentFinancialPeriodPriorController.submit(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)
@@ -118,12 +125,6 @@ class CurrentFinancialPeriodPriorControllerSpec extends ControllerBaseSpec with 
     "not update or retrieve anything from keystore" in {
       await(badRequest)
       verifyKeystore(fetchCurrentFinancialPeriodPrior = 0, saveCurrentFinancialPeriodPrior = 0)
-    }
-  }
-
-  "The back url" should {
-    s"point to ${}" ignore {
-      //TODO: Add Test for Back Url when Available
     }
   }
 
