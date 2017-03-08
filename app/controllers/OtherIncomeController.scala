@@ -19,7 +19,7 @@ package controllers
 import javax.inject.Inject
 
 import config.BaseControllerConfig
-import forms.OtherIncomeForm
+import forms.{IncomeSourceForm, IncomeTypeForm, OtherIncomeForm}
 import models.OtherIncomeModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -59,7 +59,16 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
               case OtherIncomeForm.option_yes =>
                 Redirect(controllers.routes.OtherIncomeErrorController.showOtherIncomeError())
               case OtherIncomeForm.option_no =>
-                Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
+                keystoreService.fetchIncomeSource() map {
+                  case Some(incomeSource) => incomeSource.source match {
+                    case IncomeSourceForm.option_business =>
+                      Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
+                    case IncomeSourceForm.option_property =>
+                      Redirect(controllers.routes.TermsController.showTerms())
+                    case IncomeSourceForm.option_both =>
+                      Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
+                  }
+                }
             }
           }
       )

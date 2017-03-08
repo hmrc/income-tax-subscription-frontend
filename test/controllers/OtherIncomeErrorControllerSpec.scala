@@ -16,22 +16,27 @@
 
 package controllers
 
+import auth.authenticatedFakeRequest
+import forms.OtherIncomeForm
+import models.OtherIncomeModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.{await, _}
+import services.mocks.MockKeystoreService
+import utils.TestModels
 
-class OtherIncomeErrorControllerSpec extends ControllerBaseSpec {
+class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystoreService {
 
   override val controllerName: String = "OtherIncomeErrorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestOtherIncomeErrorController extends OtherIncomeErrorController()(
     MockBaseControllerConfig,
-    messagesApi)
+    messagesApi, MockKeystoreService)
 
-  "Calling the mainIncomeError action of the MainIncomeErrorController" should {
+  "Calling the showOtherIncomeError action of the OtherIncomeErrorController" should {
 
     lazy val result = TestOtherIncomeErrorController.showOtherIncomeError(FakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
@@ -47,4 +52,58 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec {
 
   }
 
-}
+  "Calling the submitOtherIncomeError action of the OtherIncomeError controller with an authorised user" should {
+
+    def callSubmit = TestOtherIncomeErrorController.submitOtherIncomeError(authenticatedFakeRequest()
+      .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
+
+    "return a redirect status (SEE_OTHER - 303)" in {
+
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+
+      val goodRequest = callSubmit
+
+      status(goodRequest) must be(Status.SEE_OTHER)
+
+      await(goodRequest)
+      verifyKeystore(fetchIncomeSource = 1)
+    }
+
+    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}' on the business journey" in {
+
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+
+      val goodRequest = callSubmit
+
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url)
+
+      await(goodRequest)
+      verifyKeystore(fetchIncomeSource = 1)
+    }
+
+    s"redirect to '${controllers.routes.TermsController.showTerms().url}' on the property journey" in {
+
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+
+      val goodRequest = callSubmit
+
+      redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+
+      await(goodRequest)
+      verifyKeystore(fetchIncomeSource = 1)
+    }
+
+    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}' on the both journey" in {
+
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+
+      val goodRequest = callSubmit
+
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url)
+
+      await(goodRequest)
+      verifyKeystore(fetchIncomeSource = 1)
+    }
+
+
+  }}
