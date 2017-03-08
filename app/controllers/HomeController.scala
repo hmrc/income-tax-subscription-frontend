@@ -40,7 +40,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
               gotoPreferences
             case Some(_) =>
               // TODO show the page
-              Ok("exceeds limit")
+              Redirect(controllers.throttling.routes.ThrottlingController.show().url)
             case _ => new InternalServerException("HomeController.index: unexpected error calling the throttling service")
           }
         case false => gotoPreferences
