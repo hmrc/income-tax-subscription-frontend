@@ -67,6 +67,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
       status(goodRequest) must be(Status.SEE_OTHER)
 
       await(goodRequest)
+      verifyKeystore(saveOtherIncome = 0)
     }
 
     s"redirect to '${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}' on the business journey" in {
@@ -79,6 +80,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
       redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url)
 
       await(goodRequest)
+      verifyKeystore(saveOtherIncome = 0)
     }
 
     s"redirect to '${controllers.routes.TermsController.showTerms().url}' on the property journey" in {
@@ -91,6 +93,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
       redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
 
       await(goodRequest)
+      verifyKeystore(saveOtherIncome = 0)
     }
 
     s"redirect to '${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}' on the both journey" in {
@@ -103,6 +106,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
       redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url)
 
       await(goodRequest)
+      verifyKeystore(saveOtherIncome = 0)
     }
 
 
