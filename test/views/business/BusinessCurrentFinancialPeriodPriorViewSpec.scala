@@ -35,9 +35,9 @@ class BusinessCurrentFinancialPeriodPriorViewSpec extends UnitTestTrait {
 
   lazy val document = Jsoup.parse(page.body)
 
-  "The Sole trader view" should {
+  "The Current Financial Period Prior to April 17 view" should {
 
-    s"have a back buttong pointed to $backUrl" in {
+    s"have a back button pointed to $backUrl" in {
       val backLink = document.select("#back")
       backLink.isEmpty mustBe false
       backLink.attr("href") mustBe backUrl

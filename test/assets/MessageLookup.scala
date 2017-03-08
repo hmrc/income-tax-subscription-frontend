@@ -224,6 +224,16 @@ object MessageLookup {
         val invalid = "Please select an option"
       }
 
+      object CurrentFinancialPeriodPrior {
+        val empty = "Please select an option"
+        val invalid = "Please select an option"
+      }
+
+      object RegisterNextAccountingPeriod {
+        val empty = "Please select an option"
+        val invalid = "Please select an option"
+      }
+
     }
 
     object Property {
