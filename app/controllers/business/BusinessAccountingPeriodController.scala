@@ -20,15 +20,14 @@ import javax.inject.Inject
 
 import config.BaseControllerConfig
 import controllers.BaseController
-import forms.{AccountingPeriodForm, IncomeSourceForm, PropertyIncomeForm, SoleTraderForm}
+import forms.AccountingPeriodForm
 import models.AccountingPeriodModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.KeystoreService
-
-import scala.concurrent.Future
+import utils.Implicits._
 
 class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControllerConfig,
                                                    val messagesApi: MessagesApi,
@@ -46,11 +45,10 @@ class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControlle
     implicit request =>
       for {
         accountingPeriod <- keystoreService.fetchAccountingPeriod()
-        backUrl <- backUrl
       } yield
         Ok(view(
           AccountingPeriodForm.accountingPeriodForm.fill(accountingPeriod),
-          backUrl = backUrl,
+          backUrl,
           isEditMode = isEditMode
         ))
   }
@@ -58,7 +56,7 @@ class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControlle
   def submitAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       AccountingPeriodForm.accountingPeriodForm.bindFromRequest().fold(
-        formWithErrors => backUrl.map(backUrl => BadRequest(view(form = formWithErrors, backUrl = backUrl, isEditMode = isEditMode))),
+        formWithErrors => BadRequest(view(form = formWithErrors, backUrl = backUrl, isEditMode = isEditMode)),
         accountingPeriod =>
           keystoreService.saveAccountingPeriod(accountingPeriod) map (_ =>
             if (isEditMode)
@@ -69,34 +67,5 @@ class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControlle
       )
   }
 
-  def backUrl(implicit request: Request[_]): Future[String] = {
-    lazy val checkSoleTrader = keystoreService.fetchSoleTrader().map {
-      case Some(soleTrader) =>
-        soleTrader.isSoleTrader match {
-          case SoleTraderForm.option_yes =>
-            controllers.business.routes.SoleTraderController.showSoleTrader().url
-          case SoleTraderForm.option_no =>
-            controllers.routes.NotEligibleController.showNotEligible().url
-        }
-    }
-
-    lazy val checkPropertyIncome = keystoreService.fetchPropertyIncome() flatMap {
-      case Some(propertyIncome) => propertyIncome.incomeValue match {
-        case PropertyIncomeForm.option_LT10k =>
-          Future.successful(controllers.routes.NotEligibleController.showNotEligible().url)
-        case PropertyIncomeForm.option_GE10k =>
-          checkSoleTrader
-      }
-    }
-
-    keystoreService.fetchIncomeSource() flatMap {
-      case Some(incomeSource) => incomeSource.source match {
-        case IncomeSourceForm.option_business =>
-          checkSoleTrader
-        case IncomeSourceForm.option_both =>
-          checkPropertyIncome
-      }
-    }
-  }
-
+  lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url
 }

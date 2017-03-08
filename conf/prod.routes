@@ -1,7 +1,6 @@
 # Add all the application routes to the app.routes file
 ->         /income-tax-subscription-frontend            app.Routes
 ->         /income-tax-subscription-frontend/business/  business.Routes
-->         /income-tax-subscription-frontend/property/  property.Routes
 ->         /                                            health.Routes
 ->     	   /template                                    template.Routes
 

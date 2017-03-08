@@ -46,7 +46,7 @@ class TermsControllerSpec extends ControllerBaseSpec
     lazy val result = TestTermsController.showTerms(authenticatedFakeRequest())
 
     "return ok (200)" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       setupMockKeystore(fetchTerms = None)
 
@@ -89,7 +89,7 @@ class TermsControllerSpec extends ControllerBaseSpec
     lazy val badRequest = TestTermsController.submitTerms(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       status(badRequest) must be(Status.BAD_REQUEST)
 

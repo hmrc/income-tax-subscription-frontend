@@ -25,7 +25,7 @@ import utils.UnitTestTrait
 
 class NotEligibleViewSpec extends UnitTestTrait {
 
-  lazy val backUrl = controllers.business.routes.SoleTraderController.showSoleTrader().url
+  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
 
   lazy val page = views.html.not_eligible(
     notEligibleForm = NotEligibleForm.notEligibleForm,

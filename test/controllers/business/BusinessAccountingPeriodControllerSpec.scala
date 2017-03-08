@@ -48,7 +48,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
     "return ok (200)" in {
       // required for backurl
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       setupMockKeystore(fetchAccountingPeriod = None)
 
@@ -62,13 +62,13 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user and a valid submission" should {
 
-    def callShow(isEditMode:Boolean) = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = isEditMode)(authenticatedFakeRequest()
+    def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = isEditMode)(authenticatedFakeRequest()
       .post(AccountingPeriodForm.accountingPeriodForm, AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))))
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
         // required for backurl
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
         val goodRequest = callShow(isEditMode = false)
 
@@ -80,7 +80,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
       s"redirect to '${controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
         // required for backurl
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
         val goodRequest = callShow(isEditMode = false)
 
@@ -94,7 +94,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
         // required for backurl
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
         val goodRequest = callShow(isEditMode = true)
 
@@ -106,7 +106,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
       s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
         // required for backurl
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
         val goodRequest = callShow(isEditMode = true)
 
@@ -123,7 +123,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
     "return a bad request status (400)" in {
       // required for backurl
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       status(badrequest) must be(Status.BAD_REQUEST)
 
@@ -133,37 +133,10 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${controllers.business.routes.SoleTraderController.showSoleTrader().url} on the business journey if user answered yes to sole trader" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
-      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
-      verifyKeystore(fetchIncomeSource = 1, fetchSoleTrader = 1, fetchPropertyIncome = 0)
-    }
-
-    s"point to ${controllers.routes.NotEligibleController.showNotEligible().url} on the business journey if user answered no to sole trader" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsNotSoleTrader)
-      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.routes.NotEligibleController.showNotEligible().url
-      verifyKeystore(fetchIncomeSource = 1, fetchSoleTrader = 1, fetchPropertyIncome = 0)
-    }
-
-    s"point to ${controllers.business.routes.SoleTraderController.showSoleTrader().url} on the business and property journey if user answered GE10k for property income and yes to sole trader" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth, fetchSoleTrader = TestModels.testIsSoleTrader, fetchPropertyIncome = TestModels.testPropertyIncomeGE10k)
-      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
-      verifyKeystore(fetchIncomeSource = 1, fetchSoleTrader = 1, fetchPropertyIncome = 1)
-    }
-
-    s"point to ${controllers.routes.NotEligibleController.showNotEligible().url} on the business and property journey if user answered GE10k for property income and no to sole trader" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth, fetchSoleTrader = TestModels.testIsNotSoleTrader, fetchPropertyIncome = TestModels.testPropertyIncomeGE10k)
-      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.routes.NotEligibleController.showNotEligible().url
-      verifyKeystore(fetchIncomeSource = 1, fetchSoleTrader = 1, fetchPropertyIncome = 1)
-    }
-
-    s"point to ${controllers.routes.NotEligibleController.showNotEligible().url} on the business and property journey if user answered LT10k for property income" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth, fetchSoleTrader = TestModels.testIsNotSoleTrader, fetchPropertyIncome = TestModels.testPropertyIncomeLT10k)
-      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.routes.NotEligibleController.showNotEligible().url
-      verifyKeystore(fetchIncomeSource = 1, fetchSoleTrader = 0, fetchPropertyIncome = 1)
+    s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url}" in {
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+      TestBusinessAccountingPeriodController.backUrl mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
     }
   }
-
-  authorisationTests
-
-}
+    authorisationTests
+  }

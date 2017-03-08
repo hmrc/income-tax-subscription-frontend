@@ -89,8 +89,6 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
 
     "return a see other status (303) for SignUp on a business and property journey" in {
       // required for backurl
-      setupMockKeystore(fetchPropertyIncome = TestModels.testPropertyIncomeLT10k)
-
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callShow(NotEligibleForm.option_signup)
@@ -130,29 +128,29 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${controllers.business.routes.SoleTraderController.showSoleTrader().url} on business journey" in {
+    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
-      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 0)
+      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+      verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"point to ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url} on property journey" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
-      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
-      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 0)
-    }
-
-    s"point to ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url} if on business + property journey with property income LE10k" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth, fetchPropertyIncome = TestModels.testPropertyIncomeLT10k)
-      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
-      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
-    }
-
-    s"point to ${controllers.business.routes.SoleTraderController.showSoleTrader().url} if on business + property journey with property income GE10k" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth, fetchPropertyIncome = TestModels.testPropertyIncomeGE10k)
-      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
-      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
-    }
+//    s"point to ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url} on property journey" in {
+//      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+//      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+//      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 0)
+//    }
+//
+//    s"point to ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url} if on business + property journey with property income LE10k" in {
+//      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth, fetchPropertyIncome = TestModels.testPropertyIncomeLT10k)
+//      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+//      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
+//    }
+//
+//    s"point to ${controllers.business.routes.SoleTraderController.showSoleTrader().url} if on business + property journey with property income GE10k" in {
+//      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth, fetchPropertyIncome = TestModels.testPropertyIncomeGE10k)
+//      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
+//      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
+//    }
   }
 
   authorisationTests
