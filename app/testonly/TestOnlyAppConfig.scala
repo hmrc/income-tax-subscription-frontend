@@ -34,6 +34,8 @@ class TestOnlyAppConfig @Inject()(app: Application) extends FrontendAppConfig(ap
 
   lazy val entityResolverURL: String = baseUrl("entity-resolver")
 
+  lazy val protectedMicroServiceTestOnlyUrl = s"$protectedMicroServiceUrl/income-tax-subscription/test-only"
+
 }
 
 // $COVERAGE-ON$
