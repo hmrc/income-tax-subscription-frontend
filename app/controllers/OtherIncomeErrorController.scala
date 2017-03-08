@@ -19,13 +19,15 @@ package controllers
 import javax.inject.Inject
 
 import config.BaseControllerConfig
+import forms.IncomeSourceForm
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import services.KeystoreService
 
 import scala.concurrent.Future
 
 class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControllerConfig,
-                                           val messagesApi: MessagesApi) extends BaseController {
+                                           val messagesApi: MessagesApi, val keystoreService: KeystoreService) extends BaseController {
 
   val showOtherIncomeError = Action.async { implicit request =>
     Future.successful(Ok(views.html.other_income_error(postAction = controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(), backUrl)))
@@ -33,7 +35,16 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
 
   val submitOtherIncomeError: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod()))
+      keystoreService.fetchIncomeSource() map {
+        case Some(incomeSource) => incomeSource.source match {
+          case IncomeSourceForm.option_business =>
+            Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
+          case IncomeSourceForm.option_property =>
+            Redirect(controllers.routes.TermsController.showTerms())
+          case IncomeSourceForm.option_both =>
+            Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
+        }
+      }
   }
 
   lazy val backUrl: String = controllers.routes.OtherIncomeController.showOtherIncome().url

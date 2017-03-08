@@ -21,15 +21,16 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.mocks.MockKeystoreService
 
-class OtherIncomeErrorControllerSpec extends ControllerBaseSpec {
+class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystoreService {
 
   override val controllerName: String = "OtherIncomeErrorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestOtherIncomeErrorController extends OtherIncomeErrorController()(
     MockBaseControllerConfig,
-    messagesApi)
+    messagesApi, MockKeystoreService)
 
   "Calling the mainIncomeError action of the MainIncomeErrorController" should {
 

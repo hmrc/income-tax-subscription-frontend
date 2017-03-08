@@ -93,6 +93,8 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
     "return a redirect status (SEE_OTHER - 303)" in {
       setupMockKeystoreSaveFunctions()
 
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+
       val goodRequest = callSubmit
 
       status(goodRequest) must be(Status.SEE_OTHER)
@@ -101,8 +103,36 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       verifyKeystore(fetchOtherIncome = 0, saveOtherIncome = 1)
     }
 
-    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}'" in {
+    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}' on the business journey" in {
       setupMockKeystoreSaveFunctions()
+
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+
+      val goodRequest = callSubmit
+
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url)
+
+      await(goodRequest)
+      verifyKeystore(fetchOtherIncome = 0, saveOtherIncome = 1)
+    }
+
+    s"redirect to '${controllers.routes.TermsController.showTerms().url}' on the property journey" in {
+      setupMockKeystoreSaveFunctions()
+
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+
+      val goodRequest = callSubmit
+
+      redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+
+      await(goodRequest)
+      verifyKeystore(fetchOtherIncome = 0, saveOtherIncome = 1)
+    }
+
+    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}' on the both journey" in {
+      setupMockKeystoreSaveFunctions()
+
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callSubmit
 
