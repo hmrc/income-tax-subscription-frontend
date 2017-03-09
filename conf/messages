@@ -45,6 +45,14 @@ business.current_financial_period_prior.hint                    = 1 April 2017 i
 business.current_financial_period_prior.yes                     = Yes
 business.current_financial_period_prior.no                      = No
 
+# Current Financial Period Prior page
+business.register_next_accounting_period.title                   = Do you want to register for your next financial period?
+business.register_next_accounting_period.heading                 = Do you want to register for your next financial period?
+business.register_next_accounting_period.line_1                  = You can''t register for Income Tax updates on your current financial period, as it started before, 1 April 2017.
+business.register_next_accounting_period.line_2                  = You can register for your next financial period, but can''t send Income Tax updates until this begins.
+business.register_next_accounting_period.yes                     = Yes
+business.register_next_accounting_period.no                      = No - sign out
+
 ## Business Accounting Period page
 accounting_period.title                                         = Business accounting period
 accounting_period.heading                                       = Enter your accounting period dates
@@ -156,7 +164,7 @@ confirmation.giveUsFeedback.link1                               = What did you t
 confirmation.giveUsFeedback.feedbackDuration                    = (takes 30 seconds)
 
 ## Errors ##
-error.back_to_preferences.empty                                = Please select an option
+error.back_to_preferences.empty                                 = Please select an option
 
 error.income_source.empty                                       = Please select an income source
 error.income_source.invalid                                     = Please select an income source
@@ -170,6 +178,12 @@ error.property.income.invalid                                   = Please select 
 error.date.empty                                                = Please enter a date
 error.date.invalid                                              = Please enter a valid date
 error.end_date_violation                                        = The end date must be after the start date
+
+error.business.current_financial_period_prior.empty             = Please select an option
+error.business.current_financial_period_prior.invalid           = Please select an option
+
+error.business.register_next_accounting_period.empty            = Please select an option
+error.business.register_next_accounting_period.invalid          = Please select an option
 
 error.business_accounting_period.minStartDate                   = You can''t enter a start date that''s before 1 April 2017
 error.business_accounting_period.maxEndDate                     = The end date must be within {1} months of the start date, you can''t enter a date that''s after {0}
