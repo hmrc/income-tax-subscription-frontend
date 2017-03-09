@@ -51,14 +51,12 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
     "return ok (200)" in {
       // required for backurl
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
-
       setupMockKeystore(fetchAccountingPeriod = None, fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchAccountingPeriod = 1, saveAccountingPeriod = 0, fetchCurrentFinancialPeriodPrior = 1)
+      verifyKeystore(fetchAccountingPeriod = 1, saveAccountingPeriod = 0)
 
     }
 
@@ -74,14 +72,12 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
     "return ok (200)" in {
       // required for backurl
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
-
       setupMockKeystore(fetchAccountingPeriod = None, fetchCurrentFinancialPeriodPrior = TestModels.testIsNextPeriod)
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchAccountingPeriod = 1, saveAccountingPeriod = 0, fetchCurrentFinancialPeriodPrior = 1)
+      verifyKeystore(fetchAccountingPeriod = 1, saveAccountingPeriod = 0, fetchCurrentFinancialPeriodPrior = 2)
 
     }
 
@@ -99,7 +95,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
         // required for backurl
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader, fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
+        setupMockKeystore(fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
 
         val goodRequest = callShow(isEditMode = false)
 
@@ -111,7 +107,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
       s"redirect to '${controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
         // required for backurl
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader, fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
+        setupMockKeystore(fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
 
         val goodRequest = callShow(isEditMode = false)
 
@@ -125,7 +121,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
         // required for backurl
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader, fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
+        setupMockKeystore(fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
 
         val goodRequest = callShow(isEditMode = true)
 
@@ -137,7 +133,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
       s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
         // required for backurl
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader, fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
+        setupMockKeystore(fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
 
         val goodRequest = callShow(isEditMode = true)
 
@@ -163,11 +159,19 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "The back url" should {
-    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader)
-      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
-      verifyKeystore(fetchIncomeSource = 1, fetchSoleTrader = 1, fetchPropertyIncome = 0)
+  "The back url when the user is submitting details for current period" should {
+    s"point to ${controllers.business.routes.CurrentFinancialPeriodPriorController.show().url}" in {
+      setupMockKeystore(fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
+      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.business.routes.CurrentFinancialPeriodPriorController.show().url
+      verifyKeystore(fetchCurrentFinancialPeriodPrior = 1)
+    }
+  }
+
+  "The back url when the user is submitting details for next period" should {
+    s"point to ${controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in {
+      setupMockKeystore(fetchCurrentFinancialPeriodPrior = TestModels.testIsNextPeriod)
+      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+      verifyKeystore(fetchCurrentFinancialPeriodPrior = 1)
     }
   }
 
