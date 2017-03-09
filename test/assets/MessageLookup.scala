@@ -94,14 +94,9 @@ object MessageLookup {
 
   object AccountingPeriod {
     val title = "Business accounting period"
-    val heading = "Enter your accounting period dates"
-    val line_1 = "This is the period your business accounts cover."
-    val line_2 = "You will only be able to send digital updates to HMRC if your accounting period starts on or after 1 April 2017. If it starts before this date, you will still be able to register, but you will have to report your income and expenditure in a Self Assessment tax return."
-    val hint = "Help me find my accounting period dates"
-
-    object Hint {
-      val line_1 = "Your accounting period start date is usually the day after the end of your previous accounting period, or 'year end'. For example, if you made your accounts up to 5 April 2017, your next period will start on 6 April 2017."
-    }
+    val heading_current = "What are the dates of your current accounting period?"
+    val heading_next = "When is your next accounting period?"
+    val line_1 = "Your accounting period is normally 6 April to 5 April, unless you've chosen to use different dates."
 
   }
 
