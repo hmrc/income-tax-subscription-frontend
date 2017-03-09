@@ -4,24 +4,24 @@
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
+@import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 
-@(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
-@hintAnswer = {
-    @Messages("accounting_period.hint.line_1")
-}
+@(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, backUrl: String, viewType: AccountingPeriodViewType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @views.html.templates.main_template(title = Messages("accounting_period.title"), bodyClasses = None) {
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingPeriodForm)
 
-    <h1 class="heading-xlarge">@Messages("accounting_period.heading")</h1>
+    <h1 class="heading-xlarge">
+        @if(viewType == CurrentAccountingPeriodView) {
+            @Messages("accounting_period.heading.current")
+        } else {
+            @Messages("accounting_period.heading.next")
+        }
+    </h1>
 
     <p>@Messages("accounting_period.line_1")</p>
-    <p>@Messages("accounting_period.line_2")</p>
-
-    @accordionHelper(Messages("accounting_period.hint"), hintAnswer)
 
     @form(action = postAction) {
 
