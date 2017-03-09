@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-package services
+package models.enums
 
-object CacheConstants {
-  val IncomeSource = "IncomeSource"
-  val PropertyIncome = "PropertyIncome"
-  val SoleTrader = "SoleTrader"
-  val CurrentFinancialPeriodPrior = "CurrentFinancialPeriodPrior"
-  val RegisterNextAccountingPeriod = "RegisterNextAccountingPeriod"
-  val BusinessName = "BusinessName"
-  val AccountingPeriod = "AccountingPeriod"
-  val ContactEmail = "ContactEmail"
-  val IncomeType = "IncomeType"
-  val Terms = "Terms"
-  val OtherIncome = "OtherIncome"
-  val NotEligible = "NotEligible"
-  val MtditId = "MtditId"
-}
+sealed trait AccountingPeriodViewType
+
+case object CurrentAccountingPeriodView extends AccountingPeriodViewType
+case object NextAccountingPeriodView extends AccountingPeriodViewType

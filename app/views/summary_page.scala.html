@@ -7,11 +7,13 @@
 @import SummaryIdConstants._
 @import SummaryHelper._
 
-@summaryRow(field: String, question: String, answer: String, changeUrl: String) = {
+@summaryRow(field: String, question: String, answer: String, changeUrl: String, enableHtml: Boolean = false) = {
     <hr>
     <div class="tabular-data__entry" id="@field-row">
         <div class="tabular-data__heading tabular-data__heading--label" id="@field-question">@question</div>
-        <div class="tabular-data__data-1" id="@field-answer">@Html(answer)</div>
+        <div class="tabular-data__data-1" id="@field-answer">@if(enableHtml) {@Html(answer)} else {
+            @answer
+        }</div>
         <a class="tabular-data__data-2" href="@changeUrl" id="@field-edit">@Messages("base.change")</a>
     </div>
 }
@@ -30,7 +32,7 @@
     val periodInMonth = period.startDate.diffInMonth(period.endDate)
     val rowAnswer = s"${period.startDate.toOutputDateFormat} to ${period.endDate.toOutputDateFormat}</p>${Messages("summary.accounting_period.month", periodInMonth)}"
     val rowUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
 @businessName(name: BusinessNameModel) = @{
@@ -49,13 +51,13 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@*<!--@contactEmail(email: EmailModel) = @{*@
-    @*val rowName = ContactEmailId*@
-    @*val rowQuestion = Messages("summary.contact_email")*@
-    @*val rowAnswer = email.emailAddress*@
-    @*val rowUrl = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url*@
-    @*summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)*@
-@*}-->*@
+    <!--@contactEmail(email: EmailModel) = @{
+    val rowName = ContactEmailId
+    val rowQuestion = Messages("summary.contact_email")
+    val rowAnswer = email.emailAddress
+    val rowUrl = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}-->
 
 @terms(terms: TermModel) = @{
     if(terms.hasAcceptedTerms) {
@@ -73,7 +75,7 @@
     <h1 class="heading-xlarge">@Messages("summary.heading")</h1>
 
     <div class="form-group">
-    <p>@Html(Messages("summary.line_1"))</p>
+        <p>@Html(Messages("summary.line_1"))</p>
     </div>
 
     <div class="form-group">

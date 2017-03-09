@@ -64,6 +64,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchCurrentFinancialPeriodPrior: MFO[CurrentFinancialPeriodPriorModel] = DoNotConfigure,
+                                         fetchRegisterNextAccountingPeriod: MFO[RegisterNextAccountingPeriodModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
@@ -77,6 +78,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[CurrentFinancialPeriodPriorModel](CurrentFinancialPeriodPrior, fetchCurrentFinancialPeriodPrior)
+    mockFetchFromKeyStore[RegisterNextAccountingPeriodModel](RegisterNextAccountingPeriod, fetchRegisterNextAccountingPeriod)
 
     setupMockKeystoreSaveFunctions()
 
@@ -105,6 +107,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveSubscriptionId: Option[Int] = None,
                                       fetchCurrentFinancialPeriodPrior: Option[Int] = None,
                                       saveCurrentFinancialPeriodPrior: Option[Int] = None,
+                                      fetchRegisterNextAccountingPeriod: Option[Int] = None,
+                                      saveRegisterNextAccountingPeriod: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
@@ -128,6 +132,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(MtditId, saveSubscriptionId)
     verifyKeystoreFetch(CurrentFinancialPeriodPrior, fetchCurrentFinancialPeriodPrior)
     verifyKeystoreSave(CurrentFinancialPeriodPrior, saveCurrentFinancialPeriodPrior)
+    verifyKeystoreFetch(RegisterNextAccountingPeriod, fetchRegisterNextAccountingPeriod)
+    verifyKeystoreSave(RegisterNextAccountingPeriod, saveRegisterNextAccountingPeriod)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any()))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any()))

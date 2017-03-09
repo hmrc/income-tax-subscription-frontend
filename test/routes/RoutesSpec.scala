@@ -57,9 +57,22 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  "The URL for the CurrentFinancialPeriodPrior.submimt action" should {
+  "The URL for the CurrentFinancialPeriodPrior.submit action" should {
     s"be equal to $contextRoute/business/current-financial-period-prior" in {
       controllers.business.routes.CurrentFinancialPeriodPriorController.show().url must be (s"$contextRoute/business/current-financial-period-prior")
+    }
+  }
+
+  // Register Next Accounting Period routes
+  "The URL for the RegisterNextAccountingPeriod.show action" should {
+    s"be equal to $contextRoute/business/register-next-accounting-period" in {
+      controllers.business.routes.RegisterNextAccountingPeriodController.show().url must be (s"$contextRoute/business/register-next-accounting-period")
+    }
+  }
+
+  "The URL for the RegisterNextAccountingPeriod.submit action" should {
+    s"be equal to $contextRoute/business/register-next-accounting-period" in {
+      controllers.business.routes.RegisterNextAccountingPeriodController.show().url must be (s"$contextRoute/business/register-next-accounting-period")
     }
   }
 
