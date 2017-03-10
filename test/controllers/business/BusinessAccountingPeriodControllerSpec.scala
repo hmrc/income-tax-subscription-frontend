@@ -150,7 +150,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
     "return a bad request status (400)" in {
       // required for backurl
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader, fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
 
       status(badrequest) must be(Status.BAD_REQUEST)
 

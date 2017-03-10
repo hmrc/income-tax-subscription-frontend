@@ -51,14 +51,6 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-    <!--@contactEmail(email: EmailModel) = @{
-    val rowName = ContactEmailId
-    val rowQuestion = Messages("summary.contact_email")
-    val rowAnswer = email.emailAddress
-    val rowUrl = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
-}-->
-
 @terms(terms: TermModel) = @{
     if(terms.hasAcceptedTerms) {
         val rowName = TermsId
@@ -83,7 +75,6 @@
         @summaryModel.accountingPeriod.map(accountingPeriod)
         @summaryModel.businessName.map(businessName)
         @summaryModel.incomeType.map(incomeType)
-@*//        @summaryModel.contactEmail.map(contactEmail)*@
         @summaryModel.terms.map(terms)
         <hr>
     </div>

@@ -45,8 +45,6 @@ object DataMap {
 
   def busName(name: String): DataMap = Map(businessName -> name)
 
-  def soleTrader(isSoleTrader: String): DataMap = Map(SoleTraderForm.soleTrader -> isSoleTrader)
-
   def currentFinancialPeriodPrior(currentPeriodIsPrior: String): DataMap = Map(CurrentFinancialPeriodPriorForm.currentFinancialPeriodPrior -> currentPeriodIsPrior)
 
   def registerNextAccountingPeriod(isRegisteringForNextPeriod: String): DataMap = Map(RegisterNextAccountingPeriodForm.registerNextAccountingPeriod -> isRegisteringForNextPeriod)
