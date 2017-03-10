@@ -69,7 +69,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         case IncomeSourceForm.option_both =>
           controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
         case IncomeSourceForm.option_property =>
-          controllers.routes.IncomeSourceController.showIncomeSource().url
+          controllers.routes.OtherIncomeController.showOtherIncome().url
         case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
       }
     }
