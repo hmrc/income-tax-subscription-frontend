@@ -26,7 +26,7 @@ import utils.UnitTestTrait
 
 class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
 
-  lazy val backUrl = controllers.business.routes.SoleTraderController.showSoleTrader().url
+  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
 
   lazy val page = (viewType: AccountingPeriodViewType) => views.html.business.accounting_period(
     accountingPeriodForm = AccountingPeriodForm.accountingPeriodForm,

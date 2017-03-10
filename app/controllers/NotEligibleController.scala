@@ -19,7 +19,7 @@ package controllers
 import javax.inject.Inject
 
 import config.BaseControllerConfig
-import forms.{IncomeSourceForm, NotEligibleForm, PropertyIncomeForm}
+import forms.{IncomeSourceForm, NotEligibleForm}
 import models.NotEligibleModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -81,25 +81,26 @@ class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,
 
   def signOut(implicit request: Request[_]): Future[Result] = Future.successful(NotImplemented)
 
+  // Changed redirects from redundant routes to dummy income source route, and commented out old redirects, so they can be reverted to if required.
   def backUrl(implicit request: Request[_]): Future[String] = {
-    lazy val checkProperty = keystoreService.fetchPropertyIncome().map {
-      case Some(propertyIncome) =>
-        propertyIncome.incomeValue match {
-          case PropertyIncomeForm.option_LT10k =>
-            controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
-          case _ => controllers.business.routes.SoleTraderController.showSoleTrader().url
-        }
-    }
+//    lazy val checkProperty = keystoreService.fetchPropertyIncome().map {
+//      case Some(propertyIncome) =>
+//        propertyIncome.incomeValue match {
+//          case PropertyIncomeForm.option_LT10k =>
+//            controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
+//          case _ => controllers.business.routes.SoleTraderController.showSoleTrader().url
+//        }
+//    }
 
     keystoreService.fetchIncomeSource() flatMap {
       case Some(incomeSource) =>
         incomeSource.source match {
           case IncomeSourceForm.option_business =>
-            Future.successful(controllers.business.routes.SoleTraderController.showSoleTrader().url)
+            Future.successful(controllers.routes.IncomeSourceController.showIncomeSource().url)
           case IncomeSourceForm.option_property =>
-            Future.successful(controllers.property.routes.PropertyIncomeController.showPropertyIncome().url)
-          case IncomeSourceForm.option_both =>
-            checkProperty
+            Future.successful(controllers.routes.IncomeSourceController.showIncomeSource().url)
+//          case IncomeSourceForm.option_both =>
+//            checkProperty
         }
     }
   }

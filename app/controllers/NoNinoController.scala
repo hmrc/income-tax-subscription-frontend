@@ -18,16 +18,10 @@ package controllers
 
 import javax.inject.Inject
 
-import config.{AppConfig, BaseControllerConfig}
-import forms.{IncomeSourceForm, NotEligibleForm, PropertyIncomeForm}
-import models.NotEligibleModel
-import play.api.data.Form
+import config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request, Result}
-import play.twirl.api.Html
-import services.KeystoreService
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.Future
 

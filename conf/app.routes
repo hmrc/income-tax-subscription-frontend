@@ -36,15 +36,7 @@ GET         /thankyou                controllers.FeedbackController.thankyou
 GET         /terms                   controllers.TermsController.showTerms
 POST        /terms                   controllers.TermsController.submitTerms
 
-# Contact Email Routes
-GET         /contact-email           controllers.ContactEmailController.showContactEmail(editMode: Boolean ?= false)
-POST        /contact-email           controllers.ContactEmailController.submitContactEmail(editMode: Boolean ?= false)
-
-# Eligible Routes
-GET         /eligible                controllers.EligibleController.showEligible
-POST        /eligible                controllers.EligibleController.submitEligible
-
-# Not Eligible Routes
+# Not Eligible Routes - CURRENTLY NOT USED (but kept if required at a later date)
 GET         /not-eligible            controllers.NotEligibleController.showNotEligible
 POST        /not-eligible            controllers.NotEligibleController.submitNotEligible
 

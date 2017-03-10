@@ -89,7 +89,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriod with an authorised user and a valid submission" should {
 
-    def callShow(isEditMode:Boolean) = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = isEditMode)(authenticatedFakeRequest()
+    def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = isEditMode)(authenticatedFakeRequest()
       .post(AccountingPeriodForm.accountingPeriodForm, AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))))
 
     "When it is not in edit mode" should {
@@ -150,7 +150,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
 
     "return a bad request status (400)" in {
       // required for backurl
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchSoleTrader = TestModels.testIsSoleTrader, fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
 
       status(badrequest) must be(Status.BAD_REQUEST)
 
@@ -174,7 +174,5 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
       verifyKeystore(fetchCurrentFinancialPeriodPrior = 1)
     }
   }
-
-  authorisationTests
-
-}
+    authorisationTests
+  }
