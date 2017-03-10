@@ -27,14 +27,17 @@ class BusinessNameViewSpec extends UnitTestTrait {
 
   lazy val backUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
 
-  lazy val page = views.html.business.business_name(
+  def page(isEditMode: Boolean) = views.html.business.business_name(
     businessNameForm = BusinessNameForm.businessNameForm,
     postAction = controllers.business.routes.BusinessNameController.submitBusinessName(),
-    backUrl = backUrl
+    backUrl = backUrl,
+    isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
+  def documentCore(isEditMode: Boolean) = Jsoup.parse(page(isEditMode).body)
 
   "The Business Name view" should {
+
+    lazy val document = documentCore(isEditMode = false)
 
     s"have a back buttong pointed to $backUrl" in {
       val backLink = document.select("#back")
@@ -67,6 +70,11 @@ class BusinessNameViewSpec extends UnitTestTrait {
       s"has a post action to '${controllers.business.routes.BusinessNameController.submitBusinessName().url}'" in {
         document.select("form").attr("action") mustBe controllers.business.routes.BusinessNameController.submitBusinessName().url
         document.select("form").attr("method") mustBe "POST"
+      }
+
+      "say update" in {
+        lazy val documentEdit = documentCore(isEditMode = true)
+        documentEdit.select("#continue-button").text() mustBe "Update"
       }
 
     }

@@ -40,7 +40,8 @@ class BusinessIncomeTypeController @Inject()(val baseConfig: BaseControllerConfi
     views.html.business.income_type(
       incomeTypeForm = incomeTypeForm,
       postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType(editMode = isEditMode),
-      backUrl = backUrl
+      backUrl = backUrl,
+      isEditMode
     )
 
   def showBusinessIncomeType(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>

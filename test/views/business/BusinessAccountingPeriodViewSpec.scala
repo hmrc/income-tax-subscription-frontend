@@ -28,14 +28,15 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
 
   lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
 
-  lazy val page = (viewType: AccountingPeriodViewType) => views.html.business.accounting_period(
+  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean) = views.html.business.accounting_period(
     accountingPeriodForm = AccountingPeriodForm.accountingPeriodForm,
     postAction = controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(),
     backUrl = backUrl,
-    viewType = viewType
+    viewType = viewType,
+    isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
-  lazy val documentCore = (viewType: AccountingPeriodViewType) => Jsoup.parse(page(viewType).body)
+  def documentCore(viewType: AccountingPeriodViewType, isEditMode: Boolean = false) = Jsoup.parse(page(viewType, isEditMode).body)
 
   "The Business Accounting Period view" should {
     Seq(CurrentAccountingPeriodView, NextAccountingPeriodView).foreach {
@@ -87,7 +88,13 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
             document.select("form").attr("method") mustBe "POST"
           }
 
+          "say update" in {
+            lazy val documentEdit = documentCore(viewType, isEditMode = true)
+            documentEdit.select("#continue-button").text() mustBe "Update"
+          }
+
         }
+
 
     }
   }
