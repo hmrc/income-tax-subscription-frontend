@@ -65,7 +65,7 @@ class CurrentFinancialPeriodPriorController @Inject()(val baseConfig: BaseContro
       )
   }
 
-  def yes(implicit request: Request[_]): Future[Result] = NotImplemented //TODO: Needs to go to 'Next Accounting Period' Question page
+  def yes(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.RegisterNextAccountingPeriodController.show())
 
   def no(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
 }

@@ -102,13 +102,13 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}' on the business journey" in {
+    s"redirect to '${controllers.business.routes.CurrentFinancialPeriodPriorController.show().url}' on the business journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url)
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.CurrentFinancialPeriodPriorController.show().url)
 
       await(goodRequest)
       verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
@@ -126,13 +126,13 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}' on the both journey" in {
+    s"redirect to '${controllers.business.routes.CurrentFinancialPeriodPriorController.show().url}' on the both journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url)
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.CurrentFinancialPeriodPriorController.show().url)
 
       await(goodRequest)
       verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)

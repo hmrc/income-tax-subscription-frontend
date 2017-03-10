@@ -38,11 +38,11 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
       keystoreService.fetchIncomeSource() map {
         case Some(incomeSource) => incomeSource.source match {
           case IncomeSourceForm.option_business =>
-            Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
+            Redirect(controllers.business.routes.CurrentFinancialPeriodPriorController.show())
           case IncomeSourceForm.option_property =>
             Redirect(controllers.routes.TermsController.showTerms())
           case IncomeSourceForm.option_both =>
-            Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
+            Redirect(controllers.business.routes.CurrentFinancialPeriodPriorController.show())
         }
       }
   }
