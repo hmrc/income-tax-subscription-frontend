@@ -30,7 +30,7 @@ trait MockAuthTestController extends UnitTestTrait
     override lazy val applicationConfig = mockConfig
     override lazy val authConnector = TestAuthConnector
     override lazy val enrolmentService = TestEnrolmentService
-    override lazy val postSignInRedirectUrl = controllers.routes.EligibleController.showEligible().url
+    override lazy val postSignInRedirectUrl = "www.redirected.com"
 
     val authorisedAsyncAction = Authorised.async {
       implicit user => implicit request => Future.successful(Ok)

@@ -1,7 +1,3 @@
-#Are You a Sole Trader Routes
-GET        /sole-trader                              controllers.business.SoleTraderController.showSoleTrader
-POST       /sole-trader                              controllers.business.SoleTraderController.submitSoleTrader
-
 #Accounting Period Routes
 GET        /accounting-period                        controllers.business.BusinessAccountingPeriodController.showAccountingPeriod(editMode: Boolean ?= false)
 POST       /accounting-period                        controllers.business.BusinessAccountingPeriodController.submitAccountingPeriod(editMode: Boolean ?= false)
@@ -17,3 +13,7 @@ POST       /income-type                              controllers.business.Busine
 #Current Financial Period Prior Routes
 GET        /current-financial-period-prior           controllers.business.CurrentFinancialPeriodPriorController.show
 POST       /current-financial-period-prior           controllers.business.CurrentFinancialPeriodPriorController.submit
+
+#Register Next Accounting Period Routes
+GET        /register-next-accounting-period          controllers.business.RegisterNextAccountingPeriodController.show
+POST       /register-next-accounting-period          controllers.business.RegisterNextAccountingPeriodController.submit

@@ -19,27 +19,27 @@ package forms
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
-import models.SoleTraderModel
+import models.RegisterNextAccountingPeriodModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid}
 
-object SoleTraderForm {
+object RegisterNextAccountingPeriodForm {
 
-  val soleTrader = "soleTrader"
+  val registerNextAccountingPeriod = "registerNextAccountingPeriod"
   val option_yes = "Yes"
   val option_no = "No"
 
-  val soleTraderEmpty: Constraint[String] = constraint[String](
+  val nonEmpty: Constraint[String] = constraint[String](
     source => {
-      lazy val emptySource = ErrorMessageFactory.error("error.business.sole_trader.empty")
+      lazy val emptySource = ErrorMessageFactory.error("error.business.register_next_accounting_period.empty")
       if (source.isEmpty) emptySource else Valid
     }
   )
 
-  val soleTraderInvalid: Constraint[String] = constraint[String](
+  val validOption: Constraint[String] = constraint[String](
     source => {
-      lazy val invalidSource = ErrorMessageFactory.error("error.business.sole_trader.invalid")
+      lazy val invalidSource = ErrorMessageFactory.error("error.business.register_next_accounting_period.invalid")
       source match {
         case `option_yes` | `option_no` => Valid
         case _ => invalidSource
@@ -47,10 +47,10 @@ object SoleTraderForm {
     }
   )
 
-  val soleTraderForm = Form(
+  val registerNextAccountingPeriodForm = Form(
     mapping(
-      soleTrader -> oText.toText.verifying(soleTraderEmpty andThen soleTraderInvalid)
-    )(SoleTraderModel.apply)(SoleTraderModel.unapply)
+      registerNextAccountingPeriod -> oText.toText.verifying(nonEmpty andThen validOption)
+    )(RegisterNextAccountingPeriodModel.apply)(RegisterNextAccountingPeriodModel.unapply)
   )
 
 }

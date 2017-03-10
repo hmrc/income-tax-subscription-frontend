@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package models
+package models.enums
 
-import play.api.libs.json.Json
+sealed trait AccountingPeriodViewType
 
-
-case class PropertyIncomeModel(incomeValue: String)
-
-object PropertyIncomeModel {
-  implicit val format = Json.format[PropertyIncomeModel]
-}
+case object CurrentAccountingPeriodView extends AccountingPeriodViewType
+case object NextAccountingPeriodView extends AccountingPeriodViewType

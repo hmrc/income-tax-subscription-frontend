@@ -55,8 +55,6 @@ trait MockKeystoreService extends MockTrait {
 
   protected final def setupMockKeystore(
                                          fetchIncomeSource: MFO[IncomeSourceModel] = DoNotConfigure,
-                                         fetchPropertyIncome: MFO[PropertyIncomeModel] = DoNotConfigure,
-                                         fetchSoleTrader: MFO[SoleTraderModel] = DoNotConfigure,
                                          fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
                                          fetchAccountingPeriod: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchContactEmail: MFO[EmailModel] = DoNotConfigure,
@@ -66,12 +64,11 @@ trait MockKeystoreService extends MockTrait {
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchCurrentFinancialPeriodPrior: MFO[CurrentFinancialPeriodPriorModel] = DoNotConfigure,
+                                         fetchRegisterNextAccountingPeriod: MFO[RegisterNextAccountingPeriodModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
     mockFetchFromKeyStore[IncomeSourceModel](IncomeSource, fetchIncomeSource)
-    mockFetchFromKeyStore[SoleTraderModel](SoleTrader, fetchSoleTrader)
-    mockFetchFromKeyStore[PropertyIncomeModel](PropertyIncome, fetchPropertyIncome)
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriod, fetchAccountingPeriod)
     mockFetchFromKeyStore[EmailModel](ContactEmail, fetchContactEmail)
@@ -81,6 +78,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[CurrentFinancialPeriodPriorModel](CurrentFinancialPeriodPrior, fetchCurrentFinancialPeriodPrior)
+    mockFetchFromKeyStore[RegisterNextAccountingPeriodModel](RegisterNextAccountingPeriod, fetchRegisterNextAccountingPeriod)
 
     setupMockKeystoreSaveFunctions()
 
@@ -91,10 +89,6 @@ trait MockKeystoreService extends MockTrait {
   protected final def verifyKeystore(
                                       fetchIncomeSource: Option[Int] = None,
                                       saveIncomeSource: Option[Int] = None,
-                                      fetchSoleTrader: Option[Int] = None,
-                                      saveSoleTrader: Option[Int] = None,
-                                      fetchPropertyIncome: Option[Int] = None,
-                                      savePropertyIncome: Option[Int] = None,
                                       fetchBusinessName: Option[Int] = None,
                                       saveBusinessName: Option[Int] = None,
                                       fetchAccountingPeriod: Option[Int] = None,
@@ -113,15 +107,13 @@ trait MockKeystoreService extends MockTrait {
                                       saveSubscriptionId: Option[Int] = None,
                                       fetchCurrentFinancialPeriodPrior: Option[Int] = None,
                                       saveCurrentFinancialPeriodPrior: Option[Int] = None,
+                                      fetchRegisterNextAccountingPeriod: Option[Int] = None,
+                                      saveRegisterNextAccountingPeriod: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
     verifyKeystoreFetch(IncomeSource, fetchIncomeSource)
     verifyKeystoreSave(IncomeSource, saveIncomeSource)
-    verifyKeystoreFetch(SoleTrader, fetchSoleTrader)
-    verifyKeystoreSave(SoleTrader, saveSoleTrader)
-    verifyKeystoreFetch(PropertyIncome, fetchPropertyIncome)
-    verifyKeystoreSave(PropertyIncome, savePropertyIncome)
     verifyKeystoreFetch(BusinessName, fetchBusinessName)
     verifyKeystoreSave(BusinessName, saveBusinessName)
     verifyKeystoreFetch(AccountingPeriod, fetchAccountingPeriod)
@@ -140,6 +132,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(MtditId, saveSubscriptionId)
     verifyKeystoreFetch(CurrentFinancialPeriodPrior, fetchCurrentFinancialPeriodPrior)
     verifyKeystoreSave(CurrentFinancialPeriodPrior, saveCurrentFinancialPeriodPrior)
+    verifyKeystoreFetch(RegisterNextAccountingPeriod, fetchRegisterNextAccountingPeriod)
+    verifyKeystoreSave(RegisterNextAccountingPeriod, saveRegisterNextAccountingPeriod)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any()))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any()))

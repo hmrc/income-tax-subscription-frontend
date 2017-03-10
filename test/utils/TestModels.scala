@@ -16,7 +16,7 @@
 
 package utils
 
-import forms.{IncomeSourceForm, IncomeTypeForm, PropertyIncomeForm, SoleTraderForm}
+import forms._
 import models._
 import play.api.libs.json.JsValue
 import services.CacheConstants
@@ -79,12 +79,7 @@ object TestModels extends Implicits {
 
   lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
 
-  lazy val testPropertyIncomeLT10k = PropertyIncomeModel(PropertyIncomeForm.option_LT10k)
+  lazy val testIsCurrentPeriod = CurrentFinancialPeriodPriorModel(CurrentFinancialPeriodPriorForm.option_no)
 
-  lazy val testPropertyIncomeGE10k = PropertyIncomeModel(PropertyIncomeForm.option_GE10k)
-
-  lazy val testIsSoleTrader = SoleTraderModel(SoleTraderForm.option_yes)
-
-  lazy val testIsNotSoleTrader = SoleTraderModel(SoleTraderForm.option_no)
-
+  lazy val testIsNextPeriod = CurrentFinancialPeriodPriorModel(CurrentFinancialPeriodPriorForm.option_yes)
 }

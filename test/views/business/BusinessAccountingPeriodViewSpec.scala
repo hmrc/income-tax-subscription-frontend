@@ -18,6 +18,7 @@ package views.business
 
 import assets.MessageLookup.{AccountingPeriod => messages, Base => commonMessages}
 import forms.AccountingPeriodForm
+import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
@@ -25,65 +26,69 @@ import utils.UnitTestTrait
 
 class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
 
-  lazy val backUrl = controllers.business.routes.SoleTraderController.showSoleTrader().url
+  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
 
-  lazy val page = views.html.business.accounting_period(
+  lazy val page = (viewType: AccountingPeriodViewType) => views.html.business.accounting_period(
     accountingPeriodForm = AccountingPeriodForm.accountingPeriodForm,
     postAction = controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(),
-    backUrl = backUrl
+    backUrl = backUrl,
+    viewType = viewType
   )(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
+
+  lazy val documentCore = (viewType: AccountingPeriodViewType) => Jsoup.parse(page(viewType).body)
 
   "The Business Accounting Period view" should {
+    Seq(CurrentAccountingPeriodView, NextAccountingPeriodView).foreach {
+      viewType =>
 
-    s"have a back buttong pointed to $backUrl" in {
-      val backLink = document.select("#back")
-      backLink.isEmpty mustBe false
-      backLink.attr("href") mustBe backUrl
+        val prefix = s"When the viewtype=$viewType "
+
+        lazy val document = documentCore(viewType)
+
+        s"$prefix have a back button pointed to $backUrl" in {
+          val backLink = document.select("#back")
+          backLink.isEmpty mustBe false
+          backLink.attr("href") mustBe backUrl
+        }
+
+        s"$prefix have the title '${messages.title}'" in {
+          document.title() mustBe messages.title
+        }
+
+        val expectedHeading = viewType match {
+          case CurrentAccountingPeriodView => messages.heading_current
+          case NextAccountingPeriodView => messages.heading_next
+        }
+        s"$prefix have the heading (H1) '$expectedHeading'" in {
+
+          document.select("h1").text() mustBe expectedHeading
+        }
+
+        s"$prefix have the line_1 (P) '${messages.line_1}'" in {
+          document.select("p").text() must include(messages.line_1)
+        }
+
+        s"$prefix has a form" which {
+
+          s"Has a legend with the text '${commonMessages.startDate}'" in {
+            document.select("#startDate legend span.form-label-bold").text() mustBe commonMessages.startDate
+          }
+
+          s"Has a legend with the text '${commonMessages.endDate}'" in {
+            document.select("#endDate legend span.form-label-bold").text() mustBe commonMessages.endDate
+          }
+
+          "has a continue button" in {
+            document.select("#continue-button").isEmpty mustBe false
+          }
+
+          s"has a post action to '${controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod().url}'" in {
+            document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod().url
+            document.select("form").attr("method") mustBe "POST"
+          }
+
+        }
+
     }
-
-    s"have the title '${messages.title}'" in {
-      document.title() mustBe messages.title
-    }
-
-    s"have the heading (H1) '${messages.heading}'" in {
-      document.select("h1").text() mustBe messages.heading
-    }
-
-    s"have the line_1 (P) '${messages.line_1}'" in {
-      document.select("p").text() must include(messages.line_1)
-    }
-
-    s"have the line_2 (P) '${messages.line_2}'" in {
-      document.select("p").text() must include(messages.line_2)
-    }
-
-    "has a form" which {
-
-      s"Has a legend with the text '${commonMessages.startDate}'" in {
-        document.select("#startDate legend span.form-label-bold").text() mustBe commonMessages.startDate
-      }
-
-      s"Has a legend with the text '${commonMessages.endDate}'" in {
-        document.select("#endDate legend span.form-label-bold").text() mustBe commonMessages.endDate
-      }
-
-      "has a continue button" in {
-        document.select("#continue-button").isEmpty mustBe false
-      }
-
-      s"has a post action to '${controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod().url}'" in {
-        document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod().url
-        document.select("form").attr("method") mustBe "POST"
-      }
-
-    }
-
-    "has an accordion" in {
-      document.select("details").isEmpty mustBe false
-      document.select("details summary").text mustBe messages.hint
-      document.select("details div").text mustBe messages.Hint.line_1
-    }
-
   }
 }

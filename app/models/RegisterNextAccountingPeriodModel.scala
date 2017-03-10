@@ -18,9 +18,8 @@ package models
 
 import play.api.libs.json.Json
 
+case class RegisterNextAccountingPeriodModel(isRegisteringForNextPeriod: String)
 
-case class SoleTraderModel(isSoleTrader: String)
-
-object SoleTraderModel {
-  implicit val format = Json.format[SoleTraderModel]
+object RegisterNextAccountingPeriodModel {
+  implicit val format = Json.format[RegisterNextAccountingPeriodModel]
 }

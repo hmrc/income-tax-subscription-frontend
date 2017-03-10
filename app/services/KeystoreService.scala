@@ -48,18 +48,6 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
     save[IncomeSourceModel](IncomeSource, incomeSource)
 
-  def fetchSoleTrader()(implicit hc: HeaderCarrier, reads: Reads[SoleTraderModel]): FO[SoleTraderModel] =
-    fetch[SoleTraderModel](SoleTrader)
-
-  def saveSoleTrader(soleTrader: SoleTraderModel)(implicit hc: HeaderCarrier, reads: Reads[SoleTraderModel]): FC =
-    save[SoleTraderModel](SoleTrader, soleTrader)
-
-  def fetchPropertyIncome()(implicit hc: HeaderCarrier, reads: Reads[PropertyIncomeModel]): FO[PropertyIncomeModel] =
-    fetch[PropertyIncomeModel](PropertyIncome)
-
-  def savePropertyIncome(propertyIncome: PropertyIncomeModel)(implicit hc: HeaderCarrier, reads: Reads[PropertyIncomeModel]): FC =
-    save[PropertyIncomeModel](PropertyIncome, propertyIncome)
-
   def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =
     fetch[BusinessNameModel](BusinessName)
 
@@ -112,5 +100,12 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveCurrentFinancialPeriodPrior(currentFinancialPeriodPrior: CurrentFinancialPeriodPriorModel)
                                      (implicit hc: HeaderCarrier, reads: Reads[CurrentFinancialPeriodPriorModel]): FC =
     save[CurrentFinancialPeriodPriorModel](CurrentFinancialPeriodPrior, currentFinancialPeriodPrior)
+
+  def fetchRegisterNextAccountingPeriod()(implicit hc: HeaderCarrier, reads: Reads[RegisterNextAccountingPeriodModel]): FO[RegisterNextAccountingPeriodModel] =
+    fetch[RegisterNextAccountingPeriodModel](RegisterNextAccountingPeriod)
+
+  def saveRegisterNextAccountingPeriod(registerNextAccountingPeriod: RegisterNextAccountingPeriodModel)
+                                     (implicit hc: HeaderCarrier, reads: Reads[RegisterNextAccountingPeriodModel]): FC =
+    save[RegisterNextAccountingPeriodModel](RegisterNextAccountingPeriod, registerNextAccountingPeriod)
 }
 
