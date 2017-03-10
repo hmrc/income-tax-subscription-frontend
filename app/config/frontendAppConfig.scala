@@ -41,6 +41,8 @@ trait AppConfig {
   val preferencesUrl: String
   val baseUrl: String
   val enableThrottling: Boolean
+  val ggUrl: String
+  val ggSignOutUrl: String
 }
 
 @Singleton
@@ -60,6 +62,10 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
   override lazy val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
   override lazy val alreadyEnrolledUrl = loadConfig("already-enrolled.url")
   override lazy val authUrl = baseUrl("auth")
+
+  // sign out
+  override lazy val ggUrl = loadConfig(s"government-gateway.url")
+  override lazy val ggSignOutUrl = s"$ggUrl/gg/sign-out?continue=$ggSignInContinueUrl"
 
   //GA Config
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
@@ -86,6 +92,7 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
 
   // Enable or disable calling the throttling control in the middle service from the HomeController
   override lazy val enableThrottling = loadConfig("feature-switch.enable-throttling").toBoolean
+
 
 }
 

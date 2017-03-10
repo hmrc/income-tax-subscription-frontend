@@ -52,18 +52,17 @@ class NoNinoControllerSpec extends ControllerBaseSpec {
     }
   }
 
-  //TODO - This needs to change to be sign out when the functionality is availabilty
   "Calling the submitNoNino action of the NoNinoController" should {
 
     lazy val result = TestNoNinoController.submitNoNino(FakeRequest())
 
-    "return NOT IMPLEMENTED" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+    "return NOT SEE_OTHER" in {
+      status(result) must be(Status.SEE_OTHER)
     }
 
-    "return HTML" in {
-      contentType(result) must be(Some("text/html"))
-      charset(result) must be(Some("utf-8"))
+    s"redirect to ${controllers.routes.ApplicationController.signOut().url}" in {
+      redirectLocation(result).get mustBe controllers.routes.ApplicationController.signOut().url
     }
+
   }
 }

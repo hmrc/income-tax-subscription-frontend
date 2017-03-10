@@ -19,22 +19,17 @@ package controllers
 import javax.inject.Inject
 
 import config.AppConfig
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent}
+import play.api.Application
+import play.api.mvc.Action
+import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils.Implicits._
 
 
-class NoNinoController @Inject()(implicit val applicationConfig: AppConfig,
-                                 val messagesApi: MessagesApi
-                                ) extends FrontendController with I18nSupport {
+class ApplicationController @Inject()(override val app: Application,
+                                      val applicationConfig: AppConfig) extends FrontendController with RunMode {
 
-  val showNoNino: Action[AnyContent] = Action.async {
-    implicit request => Ok(views.html.no_nino(postAction = controllers.routes.NoNinoController.submitNoNino()))
-  }
-
-  val submitNoNino: Action[AnyContent] = Action.async {
-    implicit request => Redirect(controllers.routes.ApplicationController.signOut())
+  def signOut = Action { implicit request =>
+    Redirect(applicationConfig.ggSignOutUrl)
   }
 
 }

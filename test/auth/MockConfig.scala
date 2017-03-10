@@ -38,6 +38,8 @@ trait MockConfig extends AppConfig {
   override val authUrl: String = ""
   override val throttleControlUrl: String = ""
   override val enableThrottling: Boolean = true
+  override lazy val ggUrl = ""
+  override lazy val ggSignOutUrl = s"$ggUrl/gg/sign-out?continue=$ggSignInContinueUrl"
 }
 
 object MockConfig extends MockConfig

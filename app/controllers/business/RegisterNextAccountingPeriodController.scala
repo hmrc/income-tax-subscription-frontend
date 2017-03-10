@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseControllerConfig,
                                                        val messagesApi: MessagesApi,
                                                        val keystoreService: KeystoreService
-                                    ) extends BaseController {
+                                                      ) extends BaseController {
 
   def view(registerNextAccountingPeriodForm: Form[RegisterNextAccountingPeriodModel])(implicit request: Request[_]): Html =
     views.html.business.register_next_accounting_period(
@@ -67,5 +67,5 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
 
   def yes(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
 
-  def no(implicit request: Request[_]): Future[Result] = NotImplemented //TODO: Needs to have 'Sign Out' functionality
+  def no(implicit request: Request[_]): Future[Result] = Redirect(controllers.routes.ApplicationController.signOut())
 }
