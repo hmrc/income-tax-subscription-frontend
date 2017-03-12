@@ -315,6 +315,12 @@ object MessageLookup {
     val heading = title
   }
 
+  object ThrottleLimit {
+    val title = "This service is temporarily unavailable"
+    val heading = title
+    val line1 = "To register for digital updates, you'll have to try again after 24 hours."
+  }
+
   object MainIncomeError {
     val title = "You can't send digital updates yet"
     val heading = "You can't send digital updates yet"

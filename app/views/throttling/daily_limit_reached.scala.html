@@ -1,0 +1,18 @@
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import views.html.templates.main_template
+@import config.AppConfig
+@import views.html.helpers._
+
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@main_template(title = Messages("throttle_limit.title"), bodyClasses = None) {
+
+    <h1>@Messages("throttle_limit.heading")</h1>
+    <p>@Messages("throttle_limit.line_1")</p>
+
+    @form(action = postAction) {
+
+        @continueButton(Messages("base.sign-out"))
+
+    }
+}
