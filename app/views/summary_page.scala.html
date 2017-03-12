@@ -56,7 +56,7 @@
         val rowName = TermsId
         val rowQuestion = Messages("summary.terms")
         val rowAnswer = Messages("summary.terms.agreed")
-        val rowUrl = controllers.routes.TermsController.showTerms().url
+        val rowUrl = controllers.routes.TermsController.showTerms(editMode = true).url
         summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
     } else Html("")
 }

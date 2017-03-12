@@ -90,7 +90,7 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
 
           "say update" in {
             lazy val documentEdit = documentCore(viewType, isEditMode = true)
-            documentEdit.select("#continue-button").text() mustBe "Update"
+            documentEdit.select("#continue-button").text() mustBe commonMessages.update
           }
 
         }

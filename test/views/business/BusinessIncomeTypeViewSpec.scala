@@ -17,6 +17,7 @@
 package views.business
 
 import assets.MessageLookup.{BusinessIncomeType => messages}
+import assets.MessageLookup.Base
 import forms.IncomeTypeForm
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
@@ -96,7 +97,7 @@ class BusinessIncomeTypeViewSpec extends UnitTestTrait {
 
       "say update" in {
         lazy val documentEdit = documentCore(isEditMode = true)
-        documentEdit.select("#continue-button").text() mustBe "Update"
+        documentEdit.select("#continue-button").text() mustBe Base.update
       }
 
     }

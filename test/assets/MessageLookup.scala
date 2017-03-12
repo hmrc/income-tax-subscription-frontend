@@ -21,6 +21,7 @@ object MessageLookup {
   object Base {
     val continue = "Continue"
     val submit = "Submit"
+    val update = "Update"
     val signout = "Sign Out"
     val startDate = "Start date"
     val endDate = "End date"
@@ -28,7 +29,7 @@ object MessageLookup {
     val month = "Month"
     val year = "Year"
     val errorHeading = "Error Summary"
-    val chage = "Change"
+    val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
   }
 

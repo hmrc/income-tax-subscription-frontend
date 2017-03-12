@@ -16,7 +16,7 @@
 
 package views.business
 
-import assets.MessageLookup.{BusinessName => messages}
+import assets.MessageLookup.{Base, BusinessName => messages}
 import forms.BusinessNameForm
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
@@ -74,7 +74,7 @@ class BusinessNameViewSpec extends UnitTestTrait {
 
       "say update" in {
         lazy val documentEdit = documentCore(isEditMode = true)
-        documentEdit.select("#continue-button").text() mustBe "Update"
+        documentEdit.select("#continue-button").text() mustBe Base.update
       }
 
     }
