@@ -56,9 +56,11 @@ class BusinessIncomeTypeController @Inject()(val baseConfig: BaseControllerConfi
       IncomeTypeForm.incomeTypeForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(incomeTypeForm = formWithErrors, isEditMode = isEditMode))),
         incomeType => {
-          keystoreService.saveIncomeType(incomeType) map (_ =>
-              Redirect(controllers.routes.TermsController.showTerms()))
-            }
+          keystoreService.saveIncomeType(incomeType) map (_ => isEditMode match {
+            case true => Redirect(controllers.routes.SummaryController.showSummary())
+            case _ => Redirect(controllers.routes.TermsController.showTerms())
+          })
+        }
       )
   }
 
