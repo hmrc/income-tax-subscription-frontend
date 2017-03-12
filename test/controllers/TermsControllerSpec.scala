@@ -139,9 +139,9 @@ class TermsControllerSpec extends ControllerBaseSpec
       verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on the property journey" in {
+    s"point to ${controllers.routes.OtherIncomeController.showOtherIncome().url} on the property journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
-      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
       verifyKeystore(fetchIncomeSource = 1)
     }
 

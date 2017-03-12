@@ -78,11 +78,11 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  def business(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod()))
+  def business(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.routes.OtherIncomeController.showOtherIncome()))
 
-  def property(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.routes.TermsController.showTerms()))
+  def property(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.routes.OtherIncomeController.showOtherIncome()))
 
-  def both(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod()))
+  def both(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.routes.OtherIncomeController.showOtherIncome()))
 
   def other(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.routes.MainIncomeErrorController.mainIncomeError()))
 
