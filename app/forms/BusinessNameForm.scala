@@ -29,8 +29,7 @@ object BusinessNameForm {
 
   val businessName = "businessName"
 
-  //TODO refactor and confirm
-  val businessNameMaxLength = 140
+  val businessNameMaxLength = 105
 
   val nameEmpty: Constraint[String] = constraint[String](
     name => {
