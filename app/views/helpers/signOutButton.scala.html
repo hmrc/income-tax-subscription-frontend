@@ -1,0 +1,3 @@
+@(alternativeText: Option[String] = None)(implicit messages: Messages)
+
+<button class="button" type="submit" id="sign-out-button">@alternativeText.fold(Messages("base.sign-out"))(x => x)</button>
