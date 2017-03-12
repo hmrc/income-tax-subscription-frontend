@@ -128,7 +128,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
       question.text() shouldBe expectedQuestion
       answer.text() shouldBe expectedAnswer
       editLink.attr("href") shouldBe expectedEditLink
-      editLink.text() shouldBe MessageLookup.Base.chage
+      editLink.text() shouldBe MessageLookup.Base.change
     }
 
     "display the correct info for the accounting period" in {
@@ -207,7 +207,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
       val sectionId = TermsId
       val expectedQuestion = messages.terms
       val expectedAnswer = messages.terms_agreed
-      val expectedEditLink = controllers.routes.TermsController.showTerms().url
+      val expectedEditLink = controllers.routes.TermsController.showTerms(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

@@ -20,19 +20,21 @@ import auth._
 import forms.TermForm
 import models.TermModel
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import utils.TestModels
+
+import scala.concurrent.Future
 
 class TermsControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
 
   override val controllerName: String = "TermsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showTerms" -> TestTermsController.showTerms,
-    "submitTerms" -> TestTermsController.submitTerms
+    "showTerms" -> TestTermsController.showTerms(),
+    "submitTerms" -> TestTermsController.submitTerms()
   )
 
   object TestTermsController extends TermsController (
@@ -43,7 +45,7 @@ class TermsControllerSpec extends ControllerBaseSpec
 
   "Calling the showTerms action of the TermsController with an authorised user" should {
 
-    lazy val result = TestTermsController.showTerms(authenticatedFakeRequest())
+    lazy val result = TestTermsController.showTerms()(authenticatedFakeRequest())
 
     "return ok (200)" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
@@ -57,36 +59,62 @@ class TermsControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitTerms action of the TermsController with an authorised user and valid submission" should {
+  "Calling the submitTerms action of the TermsController with an authorised user and valid submission" when {
 
-    def callShow = TestTermsController.submitTerms(authenticatedFakeRequest()
-      .post(TermForm.termForm, TermModel(true)))
-
-    "return a redirect status (SEE_OTHER - 303)" in {
+    def callShow(isEditMode: Boolean = false): Future[Result] = {
       setupMockKeystoreSaveFunctions()
-
-      val goodResult = callShow
-
-      status(goodResult) must be(Status.SEE_OTHER)
-
-      await(goodResult)
-      verifyKeystore(fetchTerms = 0, saveTerms = 1)
+      TestTermsController.submitTerms(isEditMode)(authenticatedFakeRequest().post(TermForm.termForm, TermModel(true)))
     }
 
-    s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
-      setupMockKeystoreSaveFunctions()
+    "not in edit mode" should {
 
-      val goodResult = callShow
+      "return a redirect status (SEE_OTHER - 303)" in {
 
-      redirectLocation(goodResult) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+        val goodResult = callShow()
 
-      await(goodResult)
-      verifyKeystore(fetchTerms = 0, saveTerms = 1)
+        status(goodResult) must be(Status.SEE_OTHER)
+
+        await(goodResult)
+        verifyKeystore(fetchTerms = 0, saveTerms = 1)
+      }
+
+      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+        setupMockKeystoreSaveFunctions()
+
+        val goodResult = callShow()
+
+        redirectLocation(goodResult) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+
+        await(goodResult)
+        verifyKeystore(fetchTerms = 0, saveTerms = 1)
+      }
+    }
+
+    "When it is in edit mode" should {
+      "return a redirect status (SEE_OTHER - 303)" in {
+
+        val goodRequest = callShow(isEditMode = true)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+
+        await(goodRequest)
+        verifyKeystore(fetchTerms = 0, saveTerms = 1)
+      }
+
+      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+
+        val goodRequest = callShow(isEditMode = true)
+
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchTerms = 0, saveTerms = 1)
+      }
     }
   }
 
   "Calling the submitTerms action of the TermsController with an authorised user and invalid submission" should {
-    lazy val badRequest = TestTermsController.submitTerms(authenticatedFakeRequest())
+    lazy val badRequest = TestTermsController.submitTerms()(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)

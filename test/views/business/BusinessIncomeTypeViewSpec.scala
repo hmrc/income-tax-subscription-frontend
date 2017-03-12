@@ -17,6 +17,7 @@
 package views.business
 
 import assets.MessageLookup.{BusinessIncomeType => messages}
+import assets.MessageLookup.Base
 import forms.IncomeTypeForm
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
@@ -26,14 +27,17 @@ import utils.UnitTestTrait
 class BusinessIncomeTypeViewSpec extends UnitTestTrait {
   lazy val backUrl = controllers.business.routes.BusinessNameController.showBusinessName().url
 
-  lazy val page = views.html.business.income_type(
+  def page(isEditMode: Boolean) = views.html.business.income_type(
     incomeTypeForm = IncomeTypeForm.incomeTypeForm,
     postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType(),
-    backUrl = backUrl
+    backUrl = backUrl,
+    isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
+  def documentCore(isEditMode: Boolean) = Jsoup.parse(page(isEditMode).body)
 
   "The Business Income Type view" should {
+
+    lazy val document = documentCore(isEditMode = false)
 
     s"have a back buttong pointed to $backUrl" in {
       val backLink = document.select("#back")
@@ -89,6 +93,11 @@ class BusinessIncomeTypeViewSpec extends UnitTestTrait {
       s"has a post action to '${controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType().url}'" in {
         document.select("form").attr("action") mustBe controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType().url
         document.select("form").attr("method") mustBe "POST"
+      }
+
+      "say update" in {
+        lazy val documentEdit = documentCore(isEditMode = true)
+        documentEdit.select("#continue-button").text() mustBe Base.update
       }
 
     }

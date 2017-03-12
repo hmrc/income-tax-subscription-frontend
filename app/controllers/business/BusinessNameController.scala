@@ -39,7 +39,8 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
     views.html.business.business_name(
       businessNameForm = businessNameForm,
       postAction = controllers.business.routes.BusinessNameController.submitBusinessName(editMode = isEditMode),
-      backUrl = backUrl
+      backUrl = backUrl,
+      isEditMode
     )
 
   def showBusinessName(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>

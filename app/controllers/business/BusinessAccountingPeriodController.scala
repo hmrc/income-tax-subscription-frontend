@@ -27,7 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.KeystoreService
-import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
+import models.enums._
 import utils.Implicits._
 
 import scala.concurrent.Future
@@ -41,8 +41,9 @@ class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControlle
     views.html.business.accounting_period(
       form,
       controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(editMode = isEditMode),
-      backUrl = backUrl,
-      viewType = viewType
+      backUrl,
+      viewType,
+      isEditMode
     )
 
   def showAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
