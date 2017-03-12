@@ -76,4 +76,17 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
+  // Terms and Conditions routes
+  "The URL for the Terms.showTerms(true) action" should {
+    s"be equal to $contextRoute/terms?editMode=true" in {
+      controllers.routes.TermsController.showTerms(true).url must be (s"$contextRoute/terms?editMode=true")
+    }
+  }
+
+  "The URL for the Terms.submitTerms(true) action" should {
+    s"be equal to $contextRoute/terms?editMode=true" in {
+      controllers.routes.TermsController.submitTerms(true).url must be (s"$contextRoute/terms?editMode=true")
+    }
+  }
+
 }

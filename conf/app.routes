@@ -1,57 +1,61 @@
 # Home controller
-GET         /                        controllers.HomeController.index
+GET         /                          controllers.HomeController.index
 
 # Preferences routes
-GET         /preferences             controllers.preferences.PreferencesController.checkPreferences
-GET         /callback                controllers.preferences.PreferencesController.callback
-GET         /paperless-error         controllers.preferences.PreferencesController.showGoBackToPreferences
-POST        /paperless-error         controllers.preferences.PreferencesController.submitGoBackToPreferences
+GET         /preferences               controllers.preferences.PreferencesController.checkPreferences
+GET         /callback                  controllers.preferences.PreferencesController.callback
+GET         /paperless-error           controllers.preferences.PreferencesController.showGoBackToPreferences
+POST        /paperless-error           controllers.preferences.PreferencesController.submitGoBackToPreferences
 
 # Income Source Routes
-GET         /income-source           controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
-POST        /income-source           controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
+GET         /income-source             controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
+POST        /income-source             controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
 
 # Summary Routes
-GET         /summary                 controllers.SummaryController.showSummary
-POST        /summary                 controllers.SummaryController.submitSummary
+GET         /summary                   controllers.SummaryController.showSummary
+POST        /summary                   controllers.SummaryController.submitSummary
 
 # Confirmation Routes
-GET         /confirmation            controllers.ConfirmationController.showConfirmation
+GET         /confirmation              controllers.ConfirmationController.showConfirmation
 
 # Unauthorised Routes
-GET         /not-authorised          controllers.UnauthorisedController.showNotAuthorised
+GET         /not-authorised            controllers.UnauthorisedController.showNotAuthorised
 
 # Session Timeout Route
-GET         /session-timeout         controllers.SessionTimeoutController.timeout
+GET         /session-timeout           controllers.SessionTimeoutController.timeout
 
 # Already enrolled
-GET         /already-enrolled        controllers.AlreadyEnrolledController.enrolled
+GET         /already-enrolled          controllers.AlreadyEnrolledController.enrolled
 
 # Feedback Routes
-GET         /feedback                controllers.FeedbackController.show
-POST        /feedback                controllers.FeedbackController.submit
-GET         /thankyou                controllers.FeedbackController.thankyou
+GET         /feedback                  controllers.FeedbackController.show
+POST        /feedback                  controllers.FeedbackController.submit
+GET         /thankyou                  controllers.FeedbackController.thankyou
 
 # Terms Routes
-GET         /terms                   controllers.TermsController.showTerms
-POST        /terms                   controllers.TermsController.submitTerms
+GET         /terms                   controllers.TermsController.showTerms(editMode: Boolean ?= false)
+POST        /terms                   controllers.TermsController.submitTerms(editMode: Boolean ?= false)
 
 # Not Eligible Routes - CURRENTLY NOT USED (but kept if required at a later date)
-GET         /not-eligible            controllers.NotEligibleController.showNotEligible
-POST        /not-eligible            controllers.NotEligibleController.submitNotEligible
+GET         /not-eligible              controllers.NotEligibleController.showNotEligible
+POST        /not-eligible              controllers.NotEligibleController.submitNotEligible
 
 # No NINO Routes
-GET         /no-nino                 controllers.NoNinoController.showNoNino
-POST        /no-nino                 controllers.NoNinoController.submitNoNino
+GET         /no-nino                   controllers.NoNinoController.showNoNino
+POST        /no-nino                   controllers.NoNinoController.submitNoNino
+
+# Throttle limit reached routes
+GET         /error/throttling          controllers.throttling.ThrottlingController.show
+POST        /error/throttling          controllers.throttling.ThrottlingController.submit
 
 # Other Income Sources Routes
-GET         /income-other            controllers.OtherIncomeController.showOtherIncome
-POST        /income-other            controllers.OtherIncomeController.submitOtherIncome
+GET         /income-other              controllers.OtherIncomeController.showOtherIncome
+POST        /income-other              controllers.OtherIncomeController.submitOtherIncome
 
 # Main Income Error Routes
-GET         /main-income-error       controllers.MainIncomeErrorController.mainIncomeError
+GET         /main-income-error         controllers.MainIncomeErrorController.mainIncomeError
 
 # Other Income Error Routes
-GET         /other-income-error      controllers.OtherIncomeErrorController.showOtherIncomeError
-POST        /other-income-error      controllers.OtherIncomeErrorController.submitOtherIncomeError
+GET         /other-income-error        controllers.OtherIncomeErrorController.showOtherIncomeError
+POST        /other-income-error        controllers.OtherIncomeErrorController.submitOtherIncomeError
 

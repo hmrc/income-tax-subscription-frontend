@@ -1,6 +1,7 @@
 ## Base ##
 base.back                                                       = Back
 base.continue                                                   = Continue
+base.update                                                     = Update
 base.sign-out                                                   = Sign Out
 base.submit                                                     = Submit
 base.startDate                                                  = Start date
@@ -101,6 +102,12 @@ preferences.returnLinkText                                      = Continue
 timeout.title                                                   = Session closed due to inactivity
 timeout.heading                                                 = You''ve been signed out due to inactivity.
 timeout.returnToHome                                            = You can start again from the <a href="{0}">subscription</a> page.
+
+## Throttle limit reached page ##
+throttle_limit.title                                            = This service is temporarily unavailable
+throttle_limit.heading                                          = This service is temporarily unavailable
+throttle_limit.line_1                                           = To register for digital updates, you''ll have to try again after 24 hours.
+
 
 ## Already enrolled page ##
 already-enrolled.title                                          = You already have a subscription

@@ -40,7 +40,8 @@ class BusinessIncomeTypeController @Inject()(val baseConfig: BaseControllerConfi
     views.html.business.income_type(
       incomeTypeForm = incomeTypeForm,
       postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType(editMode = isEditMode),
-      backUrl = backUrl
+      backUrl = backUrl,
+      isEditMode
     )
 
   def showBusinessIncomeType(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
@@ -55,11 +56,10 @@ class BusinessIncomeTypeController @Inject()(val baseConfig: BaseControllerConfi
       IncomeTypeForm.incomeTypeForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(incomeTypeForm = formWithErrors, isEditMode = isEditMode))),
         incomeType => {
-          keystoreService.saveIncomeType(incomeType) map (_ =>
-            if (isEditMode)
-              Redirect(controllers.routes.SummaryController.showSummary())
-            else
-              Redirect(controllers.routes.TermsController.showTerms()))
+          keystoreService.saveIncomeType(incomeType) map (_ => isEditMode match {
+            case true => Redirect(controllers.routes.SummaryController.showSummary())
+            case _ => Redirect(controllers.routes.TermsController.showTerms())
+          })
         }
       )
   }
