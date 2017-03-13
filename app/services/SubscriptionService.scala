@@ -18,6 +18,7 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
+import audit.Logging
 import connectors.models.subscription.{FERequest, FEResponse, IncomeSourceType}
 import connectors.subscription.ProtectedMicroserviceConnector
 import models.{DateModel, SummaryModel}
@@ -27,7 +28,8 @@ import utils.Implicits._
 import scala.concurrent.Future
 
 @Singleton
-class SubscriptionService @Inject()(protectedMicroserviceConnector: ProtectedMicroserviceConnector) {
+class SubscriptionService @Inject()(logging: Logging,
+                                    protectedMicroserviceConnector: ProtectedMicroserviceConnector) {
 
   type OS = Option[String]
 
@@ -40,6 +42,7 @@ class SubscriptionService @Inject()(protectedMicroserviceConnector: ProtectedMic
       cashOrAccruals = summaryData.incomeType.fold[OS](None)(_.incomeType),
       tradingName = summaryData.businessName.fold[OS](None)(_.businessName)
     )
+    logging.debug(s"Submitting subscription with request: $request")
     protectedMicroserviceConnector.subscribe(request)
   }
 
