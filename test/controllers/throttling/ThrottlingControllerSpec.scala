@@ -46,13 +46,13 @@ class ThrottlingControllerSpec extends ControllerBaseSpec {
 
   }
 
-  //TODO - This needs to change to be sign out when the functionality is availabilty
   "Calling the submit action of the ThrottlingController" should {
 
     lazy val result = TestThrottlingController.submit(authenticatedFakeRequest())
 
-    "return NOT IMPLEMENTED" in {
-      status(result) must be(Status.NOT_IMPLEMENTED)
+    s"return SEE_OTHER and redirects to ${controllers.routes.ApplicationController.signOut().url}" in {
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result) mustBe Some(controllers.routes.ApplicationController.signOut().url)
     }
 
   }
