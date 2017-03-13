@@ -18,20 +18,23 @@ package controllers
 
 import javax.inject.Inject
 
-import config.AppConfig
+import config.{AppConfig, BaseControllerConfig}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
+import services.KeystoreService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
 
-class AlreadyEnrolledController @Inject()(implicit val applicationConfig: AppConfig,
-                                          val messagesApi: MessagesApi
-                                        ) extends FrontendController with I18nSupport {
+class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
+                                         val messagesApi: MessagesApi
+                                        ) extends BaseController {
 
-  val enrolled = Action.async { implicit request =>
-    Future.successful(Ok(views.html.enrolled.already_enrolled()))
+  val enrolled = Authorised.async {  implicit user =>
+    implicit request =>
+      //TODO: The call needs to be replaced with the real sign-out postAction call
+      Future.successful(Ok(views.html.enrolled.already_enrolled(postAction = Call("POST","sign-out-url"))))
   }
 
 }

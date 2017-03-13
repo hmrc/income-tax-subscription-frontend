@@ -38,7 +38,7 @@ class BusinessNameFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "validate business name correctly" in {
-      val maxLength = businessNameMaxLength
+      val maxLength = 105
 
       val empty = ErrorMessageFactory.error("error.business_name.empty")
       val maxLen = ErrorMessageFactory.error("error.business_name.maxLength")

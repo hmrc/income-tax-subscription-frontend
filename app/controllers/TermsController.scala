@@ -35,25 +35,26 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
                                 val keystoreService: KeystoreService
                                ) extends BaseController {
 
-  def view(termsForm: Form[TermModel], backUrl: String)(implicit request: Request[_]): Html =
+  def view(termsForm: Form[TermModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.terms(
-      termsForm = termsForm,
-      postAction = controllers.routes.TermsController.submitTerms(),
-      backUrl = backUrl
+      termsForm,
+      postAction = controllers.routes.TermsController.submitTerms(isEditMode),
+      backUrl,
+      isEditMode
     )
 
-  val showTerms: Action[AnyContent] = Authorised.async { implicit user =>
+  def showTerms(isEditMode: Boolean = false): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       for {
         terms <- keystoreService.fetchTerms()
         backUrl <- backUrl
-      } yield Ok(view(TermForm.termForm.fill(terms), backUrl = backUrl))
+      } yield Ok(view(TermForm.termForm.fill(terms), backUrl = backUrl, isEditMode))
   }
 
-  val submitTerms: Action[AnyContent] = Authorised.async { implicit user =>
+  def submitTerms(isEditMode: Boolean = false): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       TermForm.termForm.bindFromRequest.fold(
-        formWithErrors => backUrl.map(backUrl => BadRequest(view(formWithErrors, backUrl = backUrl))),
+        formWithErrors => backUrl.map(backUrl => BadRequest(view(formWithErrors, backUrl = backUrl, isEditMode))),
         terms => {
           keystoreService.saveTerms(terms) map (
             _ => Redirect(controllers.routes.SummaryController.showSummary()))
@@ -69,7 +70,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         case IncomeSourceForm.option_both =>
           controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
         case IncomeSourceForm.option_property =>
-          controllers.routes.IncomeSourceController.showIncomeSource().url
+          controllers.routes.OtherIncomeController.showOtherIncome().url
         case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
       }
     }

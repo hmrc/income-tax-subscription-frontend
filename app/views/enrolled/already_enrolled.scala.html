@@ -1,10 +1,20 @@
 @import views.html.templates.main_template
 @import config.AppConfig
+@import helpers._
+@import uk.gov.hmrc.play.views.html.helpers.form
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("already-enrolled.title"), bodyClasses = None) {
 
   <h1 class="heading-xlarge">@Messages("already-enrolled.heading")</h1>
+
+  <div class="form-group">
+    <p>@Messages("already-enrolled.para1")</p>
+  </div>
+
+  @form(action = postAction) {
+    @signOutButton()
+  }
 
 }

@@ -19,21 +19,25 @@ package controllers
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import auth._
+import assets.MessageLookup.{AlreadyEnrolled => messages}
 
 class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
 
   override val controllerName: String = "AlreadyEnrolledController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "enrolled" -> TestAlreadyEnrolledController.enrolled()
+  )
 
-  object TestSessionTimeoutController extends SessionTimeoutController()(
-    MockBaseControllerConfig.applicationConfig,
-    messagesApi)
+  object TestAlreadyEnrolledController extends AlreadyEnrolledController(
+    MockBaseControllerConfig,
+    messagesApi
+  )
 
-  "Calling the enrolled action of the AlreadyEnrolledController" should {
+  "Calling the enrolled action of the AlreadyEnrolledController with an Authenticated User" should {
 
-    lazy val result = TestSessionTimeoutController.timeout(FakeRequest())
+    lazy val result = TestAlreadyEnrolledController.enrolled(authenticatedFakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -45,5 +49,16 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
       charset(result) must be(Some("utf-8"))
     }
 
+    s"render the already enrolled page" in {
+      document.title mustBe messages.heading
+    }
+
+    //TODO: Update with the sign-out postAction test
+    "the post action of the page rendered should be 'TODO - sign out URL'" ignore {
+      document.select("form").attr("action") mustBe "TODO - sign out URL"
+    }
+
   }
+
+  authorisationTests()
 }

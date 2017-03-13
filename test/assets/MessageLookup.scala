@@ -21,6 +21,7 @@ object MessageLookup {
   object Base {
     val continue = "Continue"
     val submit = "Submit"
+    val update = "Update"
     val signout = "Sign Out"
     val startDate = "Start date"
     val endDate = "End date"
@@ -28,7 +29,7 @@ object MessageLookup {
     val month = "Month"
     val year = "Year"
     val errorHeading = "Error Summary"
-    val chage = "Change"
+    val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
   }
 
@@ -167,8 +168,9 @@ object MessageLookup {
   }
 
   object AlreadyEnrolled {
-    val title = "You already have a subscription"
-    val heading = "You already have a subscription"
+    val title = "You've already registered for digital tax updates"
+    val heading = "You've already registered for digital tax updates"
+    val para1 = "Your Government Gateway ID is already registered for digital tax updates."
   }
 
   object Confirmation {
@@ -312,6 +314,12 @@ object MessageLookup {
   object NoNino {
     val title = "You can't send digital updates yet"
     val heading = title
+  }
+
+  object ThrottleLimit {
+    val title = "This service is temporarily unavailable"
+    val heading = title
+    val line1 = "To register for digital updates, you'll have to try again after 24 hours."
   }
 
   object MainIncomeError {

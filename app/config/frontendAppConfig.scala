@@ -48,13 +48,13 @@ trait AppConfig {
 @Singleton
 class FrontendAppConfig @Inject()(override val app: Application) extends AppConfig with ServicesConfig {
 
-  private val configuration: Configuration = app.configuration
+  protected val configuration: Configuration = app.configuration
 
-  private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+  protected def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   // Frontend Config
   override lazy val baseUrl: String = loadConfig("base.url")
-  private val contextRoute = "income-tax-subscription-frontend"
+  protected val contextRoute = "income-tax-subscription-frontend"
 
   //Authentication/Authorisation Config
   override lazy val ggSignInUrl = loadConfig("government-gateway.sign-in.url")
@@ -72,8 +72,8 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
 
   //Contact Frontend Config
-  private lazy val contactFrontendService = baseUrl("contact-frontend")
-  private lazy val contactHost = loadConfig("contact-frontend.host")
+  protected lazy val contactFrontendService = baseUrl("contact-frontend")
+  protected lazy val contactHost = loadConfig("contact-frontend.host")
   override lazy val betaFeedbackUrl = s"$contextRoute/feedback"
   override lazy val betaFeedbackUnauthenticatedUrl = betaFeedbackUrl
   override lazy val contactFormServiceIdentifier = "MTDIT"
@@ -82,7 +82,7 @@ class FrontendAppConfig @Inject()(override val app: Application) extends AppConf
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   // protected microservice
-  private lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
+  protected lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
   override lazy val throttleControlUrl = s"$protectedMicroServiceUrl/income-tax-subscription/throttle"
 

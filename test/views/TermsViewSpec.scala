@@ -16,8 +16,7 @@
 
 package views
 
-import assets.MessageLookup
-import assets.MessageLookup.{Terms => messages}
+import assets.MessageLookup.{Base, Terms => messages}
 import forms.TermForm
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
@@ -30,7 +29,8 @@ class TermsViewSpec extends UnitTestTrait {
   lazy val page = views.html.terms(
     termsForm = TermForm.termForm,
     postAction = controllers.routes.TermsController.submitTerms(),
-    backUrl = backUrl
+    backUrl = backUrl,
+    isEditMode = false
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
@@ -78,9 +78,24 @@ class TermsViewSpec extends UnitTestTrait {
 
       "has a continue button" in {
         document.select("button").attr("type") mustBe "submit"
-        document.select("button").text() mustBe MessageLookup.Base.continue
+        document.select("button").text() mustBe Base.continue
       }
 
+    }
+  }
+
+  "When in edit mode, the terms view" should {
+    lazy val editPage = views.html.terms(
+      termsForm = TermForm.termForm,
+      postAction = controllers.routes.TermsController.submitTerms(),
+      backUrl = backUrl,
+      isEditMode = true
+    )(FakeRequest(), applicationMessages, appConfig)
+    lazy val editDocument = Jsoup.parse(editPage.body)
+
+    "have an 'Update' button" in {
+      editDocument.select("button").attr("type") mustBe "submit"
+      editDocument.select("button").text() mustBe Base.update
     }
   }
 }
