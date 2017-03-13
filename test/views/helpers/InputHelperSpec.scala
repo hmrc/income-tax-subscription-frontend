@@ -26,8 +26,14 @@ import forms.validation.utils.MappingUtil._
 
 class InputHelperSpec extends UnitTestTrait {
 
-  private def inputHelper(field: Field, label: Option[String], formHint: Option[String] = None, maxLength: Option[Int] = None)
-  = views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength)(applicationMessages)
+  private def inputHelper(
+                           field: Field,
+                           label: Option[String],
+                           formHint: Option[String] = None,
+                           maxLength: Option[Int] = None,
+                           labelClass: Option[String] = None
+                         )
+  = views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength, labelClass = labelClass)(applicationMessages)
 
   case class TestData(input: String)
 
@@ -77,6 +83,12 @@ class InputHelperSpec extends UnitTestTrait {
       val errDoc = inputHelper(errorField, testLabel).doc
       errDoc.getElementsByTag("div").hasClass("form-field--error") shouldBe true
       errDoc.getElementsByClass("error-notification").isEmpty shouldBe false
+    }
+
+    "if a labelClass is supplied, render the label with an additional class tag" in {
+      val testField = testForm.fill(TestData("My previous input"))(inputName)
+      val doc = inputHelper(testField, Some(testLabel), labelClass = "labelClass").doc
+      doc.getElementsByTag("label").hasClass("labelClass") shouldBe true
     }
   }
 
