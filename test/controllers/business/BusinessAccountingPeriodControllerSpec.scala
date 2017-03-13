@@ -174,5 +174,5 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec
       verifyKeystore(fetchCurrentFinancialPeriodPrior = 1)
     }
   }
-    authorisationTests
+    authorisationTests()
   }

@@ -158,6 +158,6 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
   }
 
-  authorisationTests
+  authorisationTests()
 
 }

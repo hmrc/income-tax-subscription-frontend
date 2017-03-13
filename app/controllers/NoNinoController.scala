@@ -22,8 +22,7 @@ import config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-
-import scala.concurrent.Future
+import utils.Implicits._
 
 
 class NoNinoController @Inject()(implicit val applicationConfig: AppConfig,
@@ -31,10 +30,11 @@ class NoNinoController @Inject()(implicit val applicationConfig: AppConfig,
                                 ) extends FrontendController with I18nSupport {
 
   val showNoNino: Action[AnyContent] = Action.async {
-    implicit request => Future.successful(Ok(views.html.no_nino(postAction = controllers.routes.NoNinoController.submitNoNino())))
+    implicit request => Ok(views.html.no_nino(postAction = controllers.routes.NoNinoController.submitNoNino()))
   }
 
-  //TODO Need to update for signout functionality
-  val submitNoNino: Action[AnyContent] = TODO
+  val submitNoNino: Action[AnyContent] = Action.async {
+    implicit request => Redirect(controllers.routes.SignOutController.signOut())
+  }
 
 }

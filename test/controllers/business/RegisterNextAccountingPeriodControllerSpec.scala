@@ -97,14 +97,12 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
         callShow(RegisterNextAccountingPeriodForm.option_no)
       }
 
-      // TODO: Remove ignore, when functionality to sign-out has been implemented, remove ignore.
-      "return status SEE_OTHER (303)" ignore {
+      "return status SEE_OTHER (303)" in {
         status(goodRequest) mustBe Status.SEE_OTHER
       }
 
-      // TODO: Update to redirect to the sign-out route once it has been implemented, remove ignore.
-      s"redirect to ${}" ignore {
-        redirectLocation(goodRequest).get mustBe "TODO - Sign-Out Route"
+      s"redirect to ${controllers.routes.SignOutController.signOut().url}" in {
+        redirectLocation(goodRequest).get mustBe controllers.routes.SignOutController.signOut().url
       }
 
       "save one value into keystore" in {
@@ -128,6 +126,6 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
     }
   }
 
-  authorisationTests
+  authorisationTests()
 
 }

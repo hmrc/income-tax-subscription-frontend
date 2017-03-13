@@ -18,20 +18,18 @@ package controllers
 
 import javax.inject.Inject
 
-import config.BaseControllerConfig
-import play.api.i18n.MessagesApi
-
-import scala.concurrent.Future
-
-class MainIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
-                                          val messagesApi: MessagesApi
-                                         ) extends BaseController {
+import config.AppConfig
+import play.api.Application
+import play.api.mvc.Action
+import uk.gov.hmrc.play.config.RunMode
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 
-  val mainIncomeError = Authorised.async { implicit user =>
-    implicit request =>
-      Future.successful(Ok(views.html.main_income_error(backUrl)))
+class SignOutController @Inject()(override val app: Application,
+                                  val applicationConfig: AppConfig) extends FrontendController with RunMode {
+
+  def signOut = Action { implicit request =>
+    Redirect(applicationConfig.ggSignOutUrl)
   }
 
-  lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url
 }

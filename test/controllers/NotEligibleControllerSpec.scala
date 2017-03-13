@@ -153,6 +153,6 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
 //    }
   }
 
-  authorisationTests
+  authorisationTests()
 
 }

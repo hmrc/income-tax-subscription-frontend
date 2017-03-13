@@ -147,5 +147,5 @@ class TermsControllerSpec extends ControllerBaseSpec
 
   }
 
-  authorisationTests
+  authorisationTests()
 }
