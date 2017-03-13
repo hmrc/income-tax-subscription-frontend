@@ -18,21 +18,19 @@ package controllers
 
 import javax.inject.Inject
 
-import config.AppConfig
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request}
-import play.twirl.api.Html
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import config.BaseControllerConfig
+import play.api.i18n.MessagesApi
 
 import scala.concurrent.Future
 
-class MainIncomeErrorController @Inject()(implicit val applicationConfig: AppConfig,
+class MainIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                           val messagesApi: MessagesApi
-                                         ) extends FrontendController with I18nSupport {
+                                         ) extends BaseController {
 
 
-  val mainIncomeError = Action.async { implicit request =>
-    Future.successful(Ok(views.html.main_income_error(backUrl)))
+  val mainIncomeError = Authorised.async { implicit user =>
+    implicit request =>
+      Future.successful(Ok(views.html.main_income_error(backUrl)))
   }
 
   lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url

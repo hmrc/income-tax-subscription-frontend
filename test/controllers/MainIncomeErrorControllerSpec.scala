@@ -16,24 +16,26 @@
 
 package controllers
 
+import auth.authenticatedFakeRequest
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 class MainIncomeErrorControllerSpec extends ControllerBaseSpec {
 
   override val controllerName: String = "MainIncomeErrorController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "mainIncomeError" -> TestMainIncomeErrorController.mainIncomeError
+  )
 
-  object TestMainIncomeErrorController extends MainIncomeErrorController()(
-    MockBaseControllerConfig.applicationConfig,
+  object TestMainIncomeErrorController extends MainIncomeErrorController(
+    MockBaseControllerConfig,
     messagesApi)
 
   "Calling the mainIncomeError action of the MainIncomeErrorController" should {
 
-    lazy val result = TestMainIncomeErrorController.mainIncomeError(FakeRequest())
+    lazy val result = TestMainIncomeErrorController.mainIncomeError(authenticatedFakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -46,5 +48,13 @@ class MainIncomeErrorControllerSpec extends ControllerBaseSpec {
     }
 
   }
+
+  "The back url" should {
+    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+      TestMainIncomeErrorController.backUrl mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+    }
+  }
+
+  authorisationTests()
 
 }
