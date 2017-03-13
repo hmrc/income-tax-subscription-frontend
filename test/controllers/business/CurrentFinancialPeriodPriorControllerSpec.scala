@@ -19,11 +19,12 @@ package controllers.business
 import auth._
 import controllers.ControllerBaseSpec
 import forms.CurrentFinancialPeriodPriorForm
-import models.CurrentFinancialPeriodPriorModel
+import forms.OtherIncomeForm._
+import models.{CurrentFinancialPeriodPriorModel, OtherIncomeModel}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.{contentAsString, _}
 import services.mocks.MockKeystoreService
 
 import scala.concurrent.Future
@@ -42,10 +43,16 @@ class CurrentFinancialPeriodPriorControllerSpec extends ControllerBaseSpec with 
     MockKeystoreService
   )
 
+  // answer to other income is only significant for testing the backurl.
+  val defaultOtherIncomeAnswer = OtherIncomeModel(option_no)
+
   "Calling the show action of the CurrentFinancialPeriodPrior with an authorised user" should {
 
     def result: Future[Result] = {
-      setupMockKeystore(fetchCurrentFinancialPeriodPrior = None)
+      setupMockKeystore(
+        fetchCurrentFinancialPeriodPrior = None,
+        fetchOtherIncome = defaultOtherIncomeAnswer
+      )
       TestCurrentFinancialPeriodPriorController.show(authenticatedFakeRequest())
     }
 
@@ -64,6 +71,28 @@ class CurrentFinancialPeriodPriorControllerSpec extends ControllerBaseSpec with 
     }
   }
 
+  "The back url" should {
+
+    def result(choice: String): Future[Result] = {
+      setupMockKeystore(
+        fetchCurrentFinancialPeriodPrior = None,
+        fetchOtherIncome = OtherIncomeModel(choice)
+      )
+      TestCurrentFinancialPeriodPriorController.show(authenticatedFakeRequest())
+    }
+
+    s"When the user previously answered yes to otherIncome, it should point to '${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
+      val document = Jsoup.parse(contentAsString(result(option_yes)))
+      document.select("#back").attr("href") mustBe controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+    }
+
+    s"When the user previously answered no to otherIncome, it should point to '${controllers.routes.OtherIncomeController.showOtherIncome().url}'" in {
+      val document = Jsoup.parse(contentAsString(result(option_no)))
+      document.select("#back").attr("href") mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
+    }
+
+  }
+
   "Calling the submit action of the CurrentFinancialPeriodPrior with an authorised user and valid submission" when {
 
     def callShow(answer: String): Future[Result] = TestCurrentFinancialPeriodPriorController.submit(authenticatedFakeRequest()
@@ -76,14 +105,12 @@ class CurrentFinancialPeriodPriorControllerSpec extends ControllerBaseSpec with 
         callShow(CurrentFinancialPeriodPriorForm.option_yes)
       }
 
-      // TODO: Remove ignore when the redirect has been put in
-      "return status SEE_OTHER (303)" ignore {
+      "return status SEE_OTHER (303)" in {
         status(goodRequest) mustBe Status.SEE_OTHER
       }
 
-      // TODO: Need to add test for 'Yes' route when route is available
-      s"redirect to ${}" ignore {
-        redirectLocation(goodRequest).get mustBe "TODO"
+      s"redirect to ${controllers.business.routes.RegisterNextAccountingPeriodController.show()}" in {
+        redirectLocation(goodRequest).get mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
       }
 
       "save one value into keystore" in {
@@ -116,7 +143,10 @@ class CurrentFinancialPeriodPriorControllerSpec extends ControllerBaseSpec with 
 
   "Calling the submit action of the CurrentFinancialPeriodPrior with an authorised user and invalid submission" should {
 
-    def badRequest: Future[Result] = TestCurrentFinancialPeriodPriorController.submit(authenticatedFakeRequest())
+    def badRequest: Future[Result] = {
+      setupMockKeystore(fetchOtherIncome = defaultOtherIncomeAnswer)
+      TestCurrentFinancialPeriodPriorController.submit(authenticatedFakeRequest())
+    }
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)
@@ -128,6 +158,6 @@ class CurrentFinancialPeriodPriorControllerSpec extends ControllerBaseSpec with 
     }
   }
 
-  authorisationTests
+  authorisationTests()
 
 }
