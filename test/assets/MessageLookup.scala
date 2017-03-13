@@ -168,8 +168,9 @@ object MessageLookup {
   }
 
   object AlreadyEnrolled {
-    val title = "You already have a subscription"
-    val heading = "You already have a subscription"
+    val title = "You've already registered for digital tax updates"
+    val heading = "You've already registered for digital tax updates"
+    val para1 = "Your Government Gateway ID is already registered for digital tax updates."
   }
 
   object Confirmation {
