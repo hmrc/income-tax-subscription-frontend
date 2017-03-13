@@ -33,8 +33,7 @@ class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
 
   val enrolled = Authorised.async {  implicit user =>
     implicit request =>
-      //TODO: The call needs to be replaced with the real sign-out postAction call
-      Future.successful(Ok(views.html.enrolled.already_enrolled(postAction = Call("POST","sign-out-url"))))
+      Future.successful(Ok(views.html.enrolled.already_enrolled(postAction = controllers.routes.ApplicationController.signOut())))
   }
 
 }

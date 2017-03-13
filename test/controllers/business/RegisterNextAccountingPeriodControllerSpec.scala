@@ -126,6 +126,6 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
     }
   }
 
-  authorisationTests
+  authorisationTests()
 
 }
