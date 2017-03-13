@@ -4,7 +4,8 @@
         label: Option[String] = None,
         parentForm: Option[Form[_]] = None,
         formHint: Option[String] = None,
-        maxLength: Option[Int] = None
+        maxLength: Option[Int] = None,
+        labelClass: Option[String] = None
 )(implicit messages: Messages)
 
 @import forms.validation.ErrorMessageHelper._
@@ -24,7 +25,7 @@
 }
 
 <div class="form-group form-field@if(hasError) { form-field--error}">
-    <label class="form-label" for=@field.name>
+    <label class='form-label @labelClass.fold("")(x => x)' for=@field.name>
         @label.fold(Html(""))(label => Html(label))
         @formHint.fold(Html(""))(hint => hintText(hint))
         @fieldErrorHelper(field, parentForm)

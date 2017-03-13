@@ -63,6 +63,17 @@ class BusinessNameViewSpec extends UnitTestTrait {
         document.select("input[name=BusinessName]").isEmpty mustBe false
       }
 
+      "has a label for the input field" which {
+
+        "has the correct text" in {
+          document.select("label[for=BusinessName]").text() mustBe messages.heading
+        }
+
+        "is visuallyhidden" in {
+          document.select("label[for=BusinessName]").hasClass("visuallyhidden") mustBe true
+        }
+      }
+
       "has a continue button" in {
         document.select("#continue-button").isEmpty mustBe false
       }
