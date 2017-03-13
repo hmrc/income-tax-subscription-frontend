@@ -56,7 +56,7 @@ class NoNinoControllerSpec extends ControllerBaseSpec {
 
     lazy val result = TestNoNinoController.submitNoNino(FakeRequest())
 
-    "return NOT SEE_OTHER" in {
+    "return SEE_OTHER" in {
       status(result) must be(Status.SEE_OTHER)
     }
 
