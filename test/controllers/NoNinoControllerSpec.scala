@@ -60,8 +60,8 @@ class NoNinoControllerSpec extends ControllerBaseSpec {
       status(result) must be(Status.SEE_OTHER)
     }
 
-    s"redirect to ${controllers.routes.ApplicationController.signOut().url}" in {
-      redirectLocation(result).get mustBe controllers.routes.ApplicationController.signOut().url
+    s"redirect to ${controllers.routes.SignOutController.signOut().url}" in {
+      redirectLocation(result).get mustBe controllers.routes.SignOutController.signOut().url
     }
 
   }

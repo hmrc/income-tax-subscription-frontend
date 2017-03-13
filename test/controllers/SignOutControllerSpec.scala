@@ -22,26 +22,26 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
 
-class ApplicationControllerSpec extends ControllerBaseSpec {
+class SignOutControllerSpec extends ControllerBaseSpec {
 
-  object TestApplicationController extends ApplicationController(
+  object TestSignOutController$ extends SignOutController(
     app,
     appConfig
   )
 
-  override val controllerName: String = "ApplicationController"
+  override val controllerName: String = "SignOutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "signOut" -> TestApplicationController.signOut
+    "signOut" -> TestSignOutController$.signOut
   )
 
   "Authorised users" should {
     "be redirected to the gg signOut" in {
-      val result = TestApplicationController.signOut(authenticatedFakeRequest())
+      val result = TestSignOutController$.signOut(authenticatedFakeRequest())
       status(result) shouldBe SEE_OTHER
       redirectLocation(result).get should be(appConfig.ggSignOutUrl)
     }
   }
 
-  authorisationTests
+  authorisationTests()
 
 }

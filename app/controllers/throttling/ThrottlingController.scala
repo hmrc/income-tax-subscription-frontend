@@ -34,7 +34,7 @@ class ThrottlingController @Inject()(override val baseConfig: BaseControllerConf
   }
 
   val submit: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request => Redirect(controllers.routes.ApplicationController.signOut())
+    implicit request => Redirect(controllers.routes.SignOutController.signOut())
   }
 
 }

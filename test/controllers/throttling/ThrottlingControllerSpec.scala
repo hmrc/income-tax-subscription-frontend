@@ -50,9 +50,9 @@ class ThrottlingControllerSpec extends ControllerBaseSpec {
 
     lazy val result = TestThrottlingController.submit(authenticatedFakeRequest())
 
-    s"return SEE_OTHER and redirects to ${controllers.routes.ApplicationController.signOut().url}" in {
+    s"return SEE_OTHER and redirects to ${controllers.routes.SignOutController.signOut().url}" in {
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result) mustBe Some(controllers.routes.ApplicationController.signOut().url)
+      redirectLocation(result) mustBe Some(controllers.routes.SignOutController.signOut().url)
     }
 
   }

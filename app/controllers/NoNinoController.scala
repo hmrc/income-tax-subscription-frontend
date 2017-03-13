@@ -34,7 +34,7 @@ class NoNinoController @Inject()(implicit val applicationConfig: AppConfig,
   }
 
   val submitNoNino: Action[AnyContent] = Action.async {
-    implicit request => Redirect(controllers.routes.ApplicationController.signOut())
+    implicit request => Redirect(controllers.routes.SignOutController.signOut())
   }
 
 }

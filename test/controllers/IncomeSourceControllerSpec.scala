@@ -230,6 +230,6 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     }
   }
 
-  authorisationTests
+  authorisationTests()
 
 }

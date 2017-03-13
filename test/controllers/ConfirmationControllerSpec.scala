@@ -37,8 +37,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "showConfirmation" -> TestConfirmationController.showConfirmation
   )
 
-  authorisationTests
-
   "ConfirmationController" should {
     "If the user is enrolled then get the ID from keystore" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
@@ -58,5 +56,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       verifyKeystore(fetchSubscriptionId = 0)
     }
   }
+
+  authorisationTests()
 
 }

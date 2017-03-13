@@ -105,5 +105,8 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
       verifyKeystore(fetchIncomeSource = 1)
     }
 
+  }
 
-  }}
+  authorisationTests()
+}
+

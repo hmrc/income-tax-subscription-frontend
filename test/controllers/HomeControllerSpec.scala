@@ -87,6 +87,6 @@ class HomeControllerSpec extends ControllerBaseSpec
     }
   }
 
-  authorisationTests
+  authorisationTests()
 
 }

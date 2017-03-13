@@ -163,5 +163,5 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
     }
   }
 
-
+  authorisationTests()
 }

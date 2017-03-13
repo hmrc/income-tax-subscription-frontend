@@ -125,6 +125,6 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
   }
 
-  authorisationTests
+  authorisationTests()
 
 }

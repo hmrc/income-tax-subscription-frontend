@@ -33,7 +33,7 @@ class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
 
   val enrolled = Authorised.async {  implicit user =>
     implicit request =>
-      Future.successful(Ok(views.html.enrolled.already_enrolled(postAction = controllers.routes.ApplicationController.signOut())))
+      Future.successful(Ok(views.html.enrolled.already_enrolled(postAction = controllers.routes.SignOutController.signOut())))
   }
 
 }

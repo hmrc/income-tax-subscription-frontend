@@ -86,7 +86,7 @@ trait AuthorisedForIncomeTaxSA extends Actions {
       authedBy.async {
         authContext: AuthContext =>
           implicit request =>
-            action(IncomeTaxSAUser(authContext))(request).flatMap { x => x.withSession(x.session.+(GoHome, "et")) }
+            action(IncomeTaxSAUser(authContext))(request).flatMap { x => x.withSession(x.session.+(GoHome -> "et")) }
       }
   }
 

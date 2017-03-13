@@ -125,6 +125,6 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
     }
   }
 
-  authorisationTests
+  authorisationTests()
 
 }

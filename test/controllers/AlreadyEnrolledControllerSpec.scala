@@ -53,8 +53,8 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
       document.title mustBe messages.heading
     }
 
-    s"the post action of the page rendered should be '${controllers.routes.ApplicationController.signOut().url}'" in {
-      document.select("form").attr("action") mustBe controllers.routes.ApplicationController.signOut().url
+    s"the post action of the page rendered should be '${controllers.routes.SignOutController.signOut().url}'" in {
+      document.select("form").attr("action") mustBe controllers.routes.SignOutController.signOut().url
     }
 
   }

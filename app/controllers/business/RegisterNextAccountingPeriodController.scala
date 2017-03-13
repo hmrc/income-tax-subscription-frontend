@@ -67,5 +67,5 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
 
   def yes(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
 
-  def no(implicit request: Request[_]): Future[Result] = Redirect(controllers.routes.ApplicationController.signOut())
+  def no(implicit request: Request[_]): Future[Result] = Redirect(controllers.routes.SignOutController.signOut())
 }

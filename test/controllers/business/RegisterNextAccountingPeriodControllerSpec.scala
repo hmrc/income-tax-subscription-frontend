@@ -101,8 +101,8 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
         status(goodRequest) mustBe Status.SEE_OTHER
       }
 
-      s"redirect to ${controllers.routes.ApplicationController.signOut().url}" in {
-        redirectLocation(goodRequest).get mustBe controllers.routes.ApplicationController.signOut().url
+      s"redirect to ${controllers.routes.SignOutController.signOut().url}" in {
+        redirectLocation(goodRequest).get mustBe controllers.routes.SignOutController.signOut().url
       }
 
       "save one value into keystore" in {

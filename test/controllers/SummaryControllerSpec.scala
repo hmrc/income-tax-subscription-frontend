@@ -90,6 +90,6 @@ class SummaryControllerSpec extends ControllerBaseSpec
     }
   }
 
-  authorisationTests
+  authorisationTests()
 
 }
