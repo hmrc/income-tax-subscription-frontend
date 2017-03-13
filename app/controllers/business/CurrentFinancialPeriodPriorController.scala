@@ -21,7 +21,7 @@ import javax.inject.Inject
 import config.BaseControllerConfig
 import controllers.BaseController
 import forms.CurrentFinancialPeriodPriorForm
-import models.CurrentFinancialPeriodPriorModel
+import models.{CurrentFinancialPeriodPriorModel, OtherIncomeModel}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -35,26 +35,28 @@ import scala.concurrent.Future
 class CurrentFinancialPeriodPriorController @Inject()(val baseConfig: BaseControllerConfig,
                                                       val messagesApi: MessagesApi,
                                                       val keystoreService: KeystoreService
-                                    ) extends BaseController {
+                                                     ) extends BaseController {
 
-  def view(currentFinancialPeriodPriorForm: Form[CurrentFinancialPeriodPriorModel])(implicit request: Request[_]): Html =
-    views.html.business.current_financial_period_prior(
-      currentFinancialPeriodPriorForm = currentFinancialPeriodPriorForm,
-      postAction = controllers.business.routes.CurrentFinancialPeriodPriorController.submit(),
-      backUrl = controllers.routes.OtherIncomeController.showOtherIncome().url
-    )
+  def view(currentFinancialPeriodPriorForm: Form[CurrentFinancialPeriodPriorModel])(implicit request: Request[_]): Future[Html] =
+    backUrl.map { backUrl =>
+      views.html.business.current_financial_period_prior(
+        currentFinancialPeriodPriorForm = currentFinancialPeriodPriorForm,
+        postAction = controllers.business.routes.CurrentFinancialPeriodPriorController.submit(),
+        backUrl = backUrl
+      )
+    }
 
   val show: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      keystoreService.fetchCurrentFinancialPeriodPrior().map { x =>
-        Ok(view(CurrentFinancialPeriodPriorForm.currentFinancialPeriodPriorForm.fill(x)))
+      keystoreService.fetchCurrentFinancialPeriodPrior().flatMap { x =>
+        view(CurrentFinancialPeriodPriorForm.currentFinancialPeriodPriorForm.fill(x)).flatMap(view => Ok(view))
       }
   }
 
   val submit: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       CurrentFinancialPeriodPriorForm.currentFinancialPeriodPriorForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(view(formWithErrors)),
+        formWithErrors => view(formWithErrors).flatMap(view => BadRequest(view)),
         currentFinancialPeriodPrior =>
           keystoreService.saveCurrentFinancialPeriodPrior(currentFinancialPeriodPrior) flatMap { _ =>
             currentFinancialPeriodPrior.currentPeriodIsPrior match {
@@ -68,4 +70,13 @@ class CurrentFinancialPeriodPriorController @Inject()(val baseConfig: BaseContro
   def yes(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.RegisterNextAccountingPeriodController.show())
 
   def no(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
+
+  def backUrl(implicit request: Request[_]): Future[String] = {
+    import forms.OtherIncomeForm._
+    keystoreService.fetchOtherIncome().map {
+      case Some(OtherIncomeModel(`option_yes`)) => controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+      case Some(OtherIncomeModel(`option_no`)) => controllers.routes.OtherIncomeController.showOtherIncome().url
+    }
+  }
+
 }
