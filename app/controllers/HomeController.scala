@@ -42,8 +42,8 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
               gotoPreferences
             case Some(_) =>
               Redirect(controllers.throttling.routes.ThrottlingController.show().url)
-            case _ =>
-              logging.warn("Unexpected response from throttling service, internal server exception")
+            case x =>
+              logging.debug(s"Unexpected response from throttling service, internal server exception")
               new InternalServerException("HomeController.index: unexpected error calling the throttling service")
           }
         case false => gotoPreferences
