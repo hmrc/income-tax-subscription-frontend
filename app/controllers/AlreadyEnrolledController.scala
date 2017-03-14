@@ -31,7 +31,7 @@ class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
                                          val messagesApi: MessagesApi
                                         ) extends BaseController {
 
-  val enrolled = Authorised.async {  implicit user =>
+  val enrolled = Authorised.asyncForEnrolled {  implicit user =>
     implicit request =>
       Future.successful(Ok(views.html.enrolled.already_enrolled(postAction = controllers.routes.SignOutController.signOut())))
   }

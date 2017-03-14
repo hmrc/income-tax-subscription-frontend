@@ -18,6 +18,7 @@ package auth
 
 import config.AppConfig
 import connectors.models.Enrolment.{Enrolled, NotEnrolled}
+import controllers.ErrorPageRenderer
 import controllers.ITSASessionKey._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.EnrolmentService
@@ -25,11 +26,11 @@ import uk.gov.hmrc.play.frontend.auth._
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.Implicits._
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait AuthorisedForIncomeTaxSA extends Actions {
+trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
 
   val enrolmentService: EnrolmentService
   val applicationConfig: AppConfig
@@ -78,7 +79,7 @@ trait AuthorisedForIncomeTaxSA extends Actions {
           implicit request =>
             enrolmentService.checkEnrolment {
               case Enrolled => action(authContext)(request)
-              case NotEnrolled => Future.successful(BadRequest)
+              case NotEnrolled => Future.successful(showNotFound)
             }
       }
 

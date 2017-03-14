@@ -16,6 +16,7 @@
 
 package auth
 
+import play.api.i18n.MessagesApi
 import services.mocks.MockEnrolmentService
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.UnitTestTrait
@@ -27,6 +28,7 @@ trait MockAuthTestController extends UnitTestTrait
   with MockEnrolmentService {
 
   object AuthTestController extends FrontendController with AuthorisedForIncomeTaxSA {
+    override val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
     override lazy val applicationConfig = mockConfig
     override lazy val authConnector = TestAuthConnector
     override lazy val enrolmentService = TestEnrolmentService
