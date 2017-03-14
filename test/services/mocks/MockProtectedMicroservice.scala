@@ -16,12 +16,13 @@
 
 package services.mocks
 
+import audit.Logging
 import connectors.mocks.MockProtectedMicroserviceConnector
 import services.SubscriptionService
 import utils.MockTrait
 
 trait MockProtectedMicroservice extends MockTrait with MockProtectedMicroserviceConnector {
 
-  object MockSubscriptionService extends SubscriptionService(TestProtectedMicroserviceConnector)
+  object MockSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestProtectedMicroserviceConnector)
 
 }
