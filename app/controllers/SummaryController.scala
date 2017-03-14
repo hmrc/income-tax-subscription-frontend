@@ -18,6 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
+import audit.Logging
 import config.BaseControllerConfig
 import connectors.models.subscription.{FESuccessResponse, IncomeSourceType}
 import play.api.i18n.MessagesApi
@@ -28,7 +29,8 @@ import scala.concurrent.Future
 class SummaryController @Inject()(val baseConfig: BaseControllerConfig,
                                   val messagesApi: MessagesApi,
                                   val keystoreService: KeystoreService,
-                                  val middleService: SubscriptionService
+                                  val middleService: SubscriptionService,
+                                  logging: Logging
                                  ) extends BaseController {
 
   import services.CacheUtil._
@@ -54,6 +56,7 @@ class SummaryController @Inject()(val baseConfig: BaseControllerConfig,
             case Some(FESuccessResponse(id)) =>
               keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.routes.ConfirmationController.showConfirmation()))
             case _ =>
+              logging.warn("Successful response not received from submission")
               Future.successful(InternalServerError("Submission failed"))
           }
       }

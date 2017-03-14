@@ -16,6 +16,7 @@
 
 package controllers
 
+import audit.Logging
 import auth._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -37,7 +38,8 @@ class SummaryControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    middleService = MockSubscriptionService
+    middleService = MockSubscriptionService,
+    app.injector.instanceOf[Logging]
   )
 
   "Calling the showSummary action of the SummaryController with an authorised user" should {

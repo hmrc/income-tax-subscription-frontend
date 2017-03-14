@@ -18,6 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
+import audit.Logging
 import config.BaseControllerConfig
 import connectors.models.throttling.CanAccess
 import play.api.i18n.MessagesApi
@@ -28,7 +29,8 @@ import utils.Implicits._
 
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                override val messagesApi: MessagesApi,
-                               throttlingService: ThrottlingService
+                               throttlingService: ThrottlingService,
+                               logging: Logging
                               ) extends BaseController {
 
   def index: Action[AnyContent] = Authorised.asyncForHomeController { implicit user =>
@@ -40,7 +42,9 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
               gotoPreferences
             case Some(_) =>
               Redirect(controllers.throttling.routes.ThrottlingController.show().url)
-            case _ => new InternalServerException("HomeController.index: unexpected error calling the throttling service")
+            case _ =>
+              logging.warn("Unexpected response from throttling service, internal server exception")
+              new InternalServerException("HomeController.index: unexpected error calling the throttling service")
           }
         case false => gotoPreferences
       }

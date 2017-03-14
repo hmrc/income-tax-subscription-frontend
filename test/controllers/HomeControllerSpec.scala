@@ -16,6 +16,7 @@
 
 package controllers
 
+import audit.Logging
 import auth.{MockConfig, authenticatedFakeRequest}
 import config.BaseControllerConfig
 import play.api.http.Status
@@ -44,7 +45,8 @@ class HomeControllerSpec extends ControllerBaseSpec
   def TestHomeController(enableThrottling: Boolean) = new HomeController(
     mockBaseControllerConfig(enableThrottling),
     messagesApi,
-    TestThrottlingService
+    TestThrottlingService,
+    app.injector.instanceOf[Logging]
   )
 
   "Calling the index action of the Home controller with an authorised user" should {
