@@ -1,3 +1,6 @@
+# Assets
+GET         /assets/*file              controllers.Assets.at(path="/public", file)
+
 # Home controller
 GET         /                          controllers.HomeController.index
 
