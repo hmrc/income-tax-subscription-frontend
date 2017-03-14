@@ -47,10 +47,10 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       verifyKeystore(fetchSubscriptionId = 1)
     }
 
-    "If the user is not enrolled then return bad request" in {
+    "If the user is not enrolled then return not found" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
       val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
-      status(result) shouldBe BAD_REQUEST
+      status(result) shouldBe NOT_FOUND
 
       await(result)
       verifyKeystore(fetchSubscriptionId = 0)

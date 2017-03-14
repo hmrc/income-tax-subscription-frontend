@@ -16,12 +16,13 @@
 
 package controllers
 
+import assets.MessageLookup.{AlreadyEnrolled => messages}
+import auth._
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import auth._
-import assets.MessageLookup.{AlreadyEnrolled => messages}
+import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 
 class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
 
@@ -35,9 +36,30 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
     messagesApi
   )
 
-  "Calling the enrolled action of the AlreadyEnrolledController with an Authenticated User" should {
+  "Calling the enrolled action of the AlreadyEnrolledController with a not enrolled Authenticated User" should {
 
     lazy val result = TestAlreadyEnrolledController.enrolled(authenticatedFakeRequest())
+    lazy val document = Jsoup.parse(contentAsString(result))
+
+    "return 404" in {
+      status(result) must be(Status.NOT_FOUND)
+    }
+
+    "return HTML" in {
+      contentType(result) must be(Some("text/html"))
+      charset(result) must be(Some("utf-8"))
+    }
+
+    "render the not found error page" in {
+      document.title mustBe "Page not found - 404"
+      document.getElementsByTag("h1").text() mustBe "This page can’t be found"
+    }
+
+  }
+
+  "Calling the enrolled action of the AlreadyEnrolledController with an enrolled Authenticated User" should {
+
+    lazy val result = TestAlreadyEnrolledController.enrolled(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled))
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
