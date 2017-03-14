@@ -37,7 +37,7 @@ class TermsControllerSpec extends ControllerBaseSpec
     "submitTerms" -> TestTermsController.submitTerms()
   )
 
-  object TestTermsController extends TermsController (
+  object TestTermsController extends TermsController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService
@@ -130,19 +130,31 @@ class TermsControllerSpec extends ControllerBaseSpec
     s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
       await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
     }
 
     s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the both journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
       await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
     }
 
-    s"point to ${controllers.routes.OtherIncomeController.showOtherIncome().url} on the property journey" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+    s"point to ${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url} on the property journey if they answered yes to other incomes" in {
+      setupMockKeystore(
+        fetchIncomeSource = TestModels.testIncomeSourceProperty,
+        fetchOtherIncome = TestModels.testOtherIncomeYes
+      )
+      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+      verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
+    }
+
+    s"point to ${controllers.routes.OtherIncomeController.showOtherIncome().url} on the property journey if they answered no to other incomes" in {
+      setupMockKeystore(
+        fetchIncomeSource = TestModels.testIncomeSourceProperty,
+        fetchOtherIncome = TestModels.testOtherIncomeNo
+      )
       await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
     }
 
   }

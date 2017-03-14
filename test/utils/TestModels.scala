@@ -16,6 +16,7 @@
 
 package utils
 
+
 import forms._
 import models._
 import play.api.libs.json.JsValue
@@ -82,4 +83,9 @@ object TestModels extends Implicits {
   lazy val testIsCurrentPeriod = CurrentFinancialPeriodPriorModel(CurrentFinancialPeriodPriorForm.option_no)
 
   lazy val testIsNextPeriod = CurrentFinancialPeriodPriorModel(CurrentFinancialPeriodPriorForm.option_yes)
+
+  lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
+
+  lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
+
 }

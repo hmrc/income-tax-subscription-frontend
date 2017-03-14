@@ -26,6 +26,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
 import services.mocks.MockKeystoreService
+import utils.TestModels
 
 import scala.concurrent.Future
 
@@ -44,7 +45,7 @@ class CurrentFinancialPeriodPriorControllerSpec extends ControllerBaseSpec with 
   )
 
   // answer to other income is only significant for testing the backurl.
-  val defaultOtherIncomeAnswer = OtherIncomeModel(option_no)
+  val defaultOtherIncomeAnswer: OtherIncomeModel = TestModels.testOtherIncomeNo
 
   "Calling the show action of the CurrentFinancialPeriodPrior with an authorised user" should {
 

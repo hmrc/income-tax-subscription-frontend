@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 import config.BaseControllerConfig
 import forms.{IncomeSourceForm, TermForm}
-import models.TermModel
+import models.{OtherIncomeModel, TermModel}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -28,6 +28,7 @@ import play.twirl.api.Html
 import services.KeystoreService
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
+
 import scala.concurrent.Future
 
 class TermsController @Inject()(val baseConfig: BaseControllerConfig,
@@ -70,7 +71,13 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         case IncomeSourceForm.option_both =>
           controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
         case IncomeSourceForm.option_property =>
-          controllers.routes.OtherIncomeController.showOtherIncome().url
+          import forms.OtherIncomeForm._
+          keystoreService.fetchOtherIncome() flatMap {
+            case Some(OtherIncomeModel(`option_yes`)) =>
+              controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+            case Some(OtherIncomeModel(`option_no`)) =>
+              controllers.routes.OtherIncomeController.showOtherIncome().url
+          }
         case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
       }
     }
