@@ -162,9 +162,9 @@ object MessageLookup {
   }
 
   object Timeout {
-    val title = "Session closed due to inactivity"
-    val heading = "You've been signed out due to inactivity."
-    val returnToHome = """You can start again from the <a href="{0}" rel="external">subscription</a> page."""
+    val title = "Your session has timed out"
+    val heading = "Your session has timed out"
+    val returnToHome = """To register to send digital tax updates, you'll have to <a href="{0}" rel="external">sign back in</a> using your Government Gateway ID."""
   }
 
   object AlreadyEnrolled {
