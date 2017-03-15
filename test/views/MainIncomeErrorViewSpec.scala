@@ -19,13 +19,15 @@ package views
 import assets.MessageLookup
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import utils.UnitTestTrait
 
 class MainIncomeErrorViewSpec extends UnitTestTrait {
 
   lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url
-  lazy val page = views.html.main_income_error(backUrl = backUrl)(FakeRequest(), applicationMessages, appConfig)
+  lazy val getAction: Call = controllers.routes.SignOutController.signOut()
+  lazy val page = views.html.main_income_error(backUrl, getAction)(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Main Income Error view" should {
@@ -56,6 +58,18 @@ class MainIncomeErrorViewSpec extends UnitTestTrait {
 
     s"have the paragraph (LI) '${MessageLookup.MainIncomeError.bullet3}'" in {
       document.getElementsByTag("LI").text() must include (MessageLookup.MainIncomeError.bullet3)
+    }
+
+    "has a form" which {
+
+      "has a 'Sign Out' button" in {
+        document.select("#sign-out-button").isEmpty mustBe false
+      }
+
+      s"has a GET action to '${getAction.url}'" in {
+        document.select("form").attr("action") mustBe getAction.url
+        document.select("form").attr("method") mustBe "GET"
+      }
     }
   }
 }
