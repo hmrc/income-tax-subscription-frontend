@@ -3,58 +3,50 @@ $(document).ready(function () {
         $month = $('input[name$="dateMonth"]'),
         $year = $('input[name$="dateYear"]');
     var BACKSPACE = 8;
+    var TAB = 9;
+    var SHIFT = 16;
+    var CTRL = 17;
+    var ALT = 18;
+    var LEFT_ARROW = 37;
+    var RIGHT_ARROW = 39;
+    var DELETE = 46;
     var ZERO = 48;
     var ZERO_NUMPAD = 96;
     var NINE = 57;
     var NINE_NUMPAD = 105;
+    var whiteList = [BACKSPACE, DELETE, TAB, SHIFT, LEFT_ARROW, RIGHT_ARROW];
+
+    function gotoNext(key, newValue, nextElement) {
+        // delete & backspace are used for editing,
+        // tab, shift + tab are combinations used for navigation
+        // so the should not affect focus
+        if (!whiteList.includes(key) && newValue.length == 2) {
+            nextElement.focus();
+            nextElement.select();
+        }
+    }
 
     function dayKeyUp(key, elem) {
         var name = elem.name;
         var newValue = $(elem).val();
         var month = name.replace("dateDay", "dateMonth");
 
-        if (key != BACKSPACE && newValue.length == 2) {
-            $(document.getElementById(month)).focus();
-        }
-    }
-
-    function monthKeyDown(key, elem) {
-        var name = elem.name;
-        var newValue = $(elem).val();
-        var day = name.replace("dateMonth", "dateDay");
-        var year = name.replace("dateMonth", "dateYear");
-
-        if (key == BACKSPACE && newValue.length == 0) {
-            $(document.getElementById(day)).focus();
-        }
+        gotoNext(key, newValue, $(document.getElementById(month)));
     }
 
     function monthKeyUp(key, elem) {
         var name = elem.name;
         var newValue = $(elem).val();
-        var day = name.replace("dateMonth", "dateDay");
         var year = name.replace("dateMonth", "dateYear");
 
-        if (key != BACKSPACE && newValue.length == 2) {
-            $(document.getElementById(year)).focus();
-        }
-    }
-
-    function yearKeyDown(key, elem) {
-        var name = elem.name;
-        var newValue = $(elem).val();
-        var month = name.replace("dateYear", "dateMonth");
-
-        if (key == BACKSPACE && newValue.length == 0) {
-            $(document.getElementById(month)).focus();
-        }
+        gotoNext(key, newValue, $(document.getElementById(year)));
     }
 
     function inputFilter(event) {
         var key = event.which;
-        if ((!modifier && key >= ZERO && key <= NINE) ||
-            (!modifier && key >= ZERO_NUMPAD && key <= NINE_NUMPAD) ||
-            key == BACKSPACE) {
+        if (whiteList.includes(key) ||
+            (!modifier && key >= ZERO && key <= NINE) ||
+            (!modifier && key >= ZERO_NUMPAD && key <= NINE_NUMPAD)) {
             return true
         }
         event.preventDefault();
@@ -71,10 +63,7 @@ $(document).ready(function () {
     });
 
     $month.on('keydown', function (e) {
-        if (inputFilter(e)) {
-            var key = e.which;
-            monthKeyDown(key, this);
-        }
+        inputFilter(e);
     });
 
     $month.on('keyup', function (e) {
@@ -83,20 +72,17 @@ $(document).ready(function () {
     });
 
     $year.on('keydown', function (e) {
-        if (inputFilter(e)) {
-            var key = e.which;
-            yearKeyDown(key, this);
-        }
+        inputFilter(e);
     });
 
     var modifier = false;
     window.onkeydown = function (e) {
-        if (e.which >= 16 && e.which <= 19) {
+        if (e.which >= SHIFT && e.which <= ALT) {
             modifier = true;
         }
     };
     window.onkeyup = function (e) {
-        if (e.which >= 16 && e.which <= 19) {
+        if (e.which >= SHIFT && e.which <= ALT) {
             modifier = false;
         }
     };
