@@ -16,6 +16,7 @@
 
 package services.mocks
 
+import audit.Logging
 import auth.MockAuthConnector
 import connectors.mocks.MockEnrolmentConnector
 import services.EnrolmentService
@@ -25,6 +26,6 @@ trait MockEnrolmentService extends UnitTestTrait
   with MockAuthConnector
   with MockEnrolmentConnector {
 
-  object TestEnrolmentService extends EnrolmentService(TestAuthConnector, TestEnrolmentConnector)
+  object TestEnrolmentService extends EnrolmentService(TestAuthConnector, TestEnrolmentConnector, app.injector.instanceOf[Logging])
 
 }

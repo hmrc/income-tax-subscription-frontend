@@ -99,9 +99,9 @@ contact_email.line_1                                            = We’ll use th
 preferences.returnLinkText                                      = Continue
 
 ## Timeout page ##
-timeout.title                                                   = Session closed due to inactivity
-timeout.heading                                                 = You''ve been signed out due to inactivity.
-timeout.returnToHome                                            = You can start again from the <a href="{0}">subscription</a> page.
+timeout.title                                                   = Your session has timed out
+timeout.heading                                                 = Your session has timed out
+timeout.returnToHome                                            = To register to send digital tax updates, you''ll have to <a href="{0}" rel="external">sign back in</a> using your Government Gateway ID.
 
 ## Throttle limit reached page ##
 throttle_limit.title                                            = This service is temporarily unavailable
