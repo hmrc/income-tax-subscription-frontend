@@ -5,8 +5,6 @@ $(document).ready(function () {
     var BACKSPACE = 8;
     var TAB = 9;
     var SHIFT = 16;
-    var CTRL = 17;
-    var ALT = 18;
     var LEFT_ARROW = 37;
     var RIGHT_ARROW = 39;
     var DELETE = 46;
@@ -44,11 +42,15 @@ $(document).ready(function () {
 
     function inputFilter(event) {
         var key = event.which;
+        var modifier = event.shiftKey || event.ctrlKey || event.altKey || event.metaKey;
         if (whiteList.includes(key) ||
-            (!modifier && key >= ZERO && key <= NINE) ||
+            ((event.metaKey || event.ctrlKey) && key == Z) || // undo/redo
+            ((event.metaKey || event.ctrlKey) && key == Y) || // redo
+            (!modifier && key >= ZERO && key <= NINE) || // only allows 0-9 but not when there's a modifier
             (!modifier && key >= ZERO_NUMPAD && key <= NINE_NUMPAD)) {
             return true
         }
+        // prevent input from any other key
         event.preventDefault();
         return false
     }
@@ -75,15 +77,5 @@ $(document).ready(function () {
         inputFilter(e);
     });
 
-    var modifier = false;
-    window.onkeydown = function (e) {
-        if (e.which >= SHIFT && e.which <= ALT) {
-            modifier = true;
-        }
-    };
-    window.onkeyup = function (e) {
-        if (e.which >= SHIFT && e.which <= ALT) {
-            modifier = false;
-        }
-    };
+
 });
