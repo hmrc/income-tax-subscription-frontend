@@ -19,28 +19,28 @@ package forms
 import assets.MessageLookup
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.{DataMap, _}
-import models.IncomeTypeModel
+import models.AccountingMethodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 
-class IncomeTypeFormSpec extends PlaySpec with OneAppPerTest {
+class AccountingMethodFormSpec extends PlaySpec with OneAppPerTest {
 
-  import IncomeTypeForm._
+  import AccountingMethodForm._
 
-  "The IncomeTypeForm" should {
+  "The AccountingMethodForm" should {
     "transform the request to the form case class" in {
       val testIncomeType = option_cash
-      val testInput = Map(incomeType -> testIncomeType)
-      val expected = IncomeTypeModel(testIncomeType)
-      val actual = incomeTypeForm.bind(testInput).value
+      val testInput = Map(accountingMethod -> testIncomeType)
+      val expected = AccountingMethodModel(testIncomeType)
+      val actual = accountingMethodForm.bind(testInput).value
 
       actual shouldBe Some(expected)
     }
 
     "validate income type correctly" in {
-      val empty = ErrorMessageFactory.error("error.income_type.empty")
-      val invalid = ErrorMessageFactory.error("error.income_type.invalid")
+      val empty = ErrorMessageFactory.error("error.accounting-method.empty")
+      val invalid = ErrorMessageFactory.error("error.accounting-method.invalid")
 
       empty fieldErrorIs MessageLookup.Error.IncomeType.empty
       empty summaryErrorIs MessageLookup.Error.IncomeType.empty
@@ -49,23 +49,23 @@ class IncomeTypeFormSpec extends PlaySpec with OneAppPerTest {
       invalid summaryErrorIs MessageLookup.Error.IncomeType.invalid
 
       val emptyInput0 = DataMap.EmptyMap
-      val emptyTest0 = incomeTypeForm.bind(emptyInput0)
-      emptyTest0 assert incomeType hasExpectedErrors empty
+      val emptyTest0 = accountingMethodForm.bind(emptyInput0)
+      emptyTest0 assert accountingMethod hasExpectedErrors empty
 
       val emptyInput = DataMap.incomeType("")
-      val emptyTest = incomeTypeForm.bind(emptyInput)
-      emptyTest assert incomeType hasExpectedErrors empty
+      val emptyTest = accountingMethodForm.bind(emptyInput)
+      emptyTest assert accountingMethod hasExpectedErrors empty
 
       val invalidInput = DataMap.incomeType("α")
-      val invalidTest = incomeTypeForm.bind(invalidInput)
-      invalidTest assert incomeType hasExpectedErrors invalid
+      val invalidTest = accountingMethodForm.bind(invalidInput)
+      invalidTest assert accountingMethod hasExpectedErrors invalid
     }
 
     "The following submission should be valid" in {
       val testCash = DataMap.incomeType(option_cash)
-      incomeTypeForm isValidFor testCash
+      accountingMethodForm isValidFor testCash
       val testAccruals = DataMap.incomeType(option_accruals)
-      incomeTypeForm isValidFor testAccruals
+      accountingMethodForm isValidFor testAccruals
     }
   }
 

@@ -14,39 +14,39 @@
  * limitations under the License.
  *@
 
-@import models.IncomeTypeModel
+@import models.AccountingMethodModel
 @import play.api.data.Form
-@import forms.IncomeTypeForm
+@import forms.AccountingMethodForm
 @import helpers.radioHelper
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import helpers._
 @import config.AppConfig
 
-@(incomeTypeForm: Form[IncomeTypeModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingMethodForm: Form[AccountingMethodModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
-    Messages("business.income_type.heading")
+    Messages("business.accounting_method.heading")
 }
 
-@views.html.templates.main_template(title = Messages("business.income_type.title"), bodyClasses = None) {
+@views.html.templates.main_template(title = Messages("business.accounting_method.title"), bodyClasses = None) {
     @back_link(backUrl)
 
-    @summaryErrorHelper(incomeTypeForm)
+    @summaryErrorHelper(accountingMethodForm)
 
     <h1>@question</h1>
 
-    <p>@Messages("business.income_type.line_1")</p>
+    <p>@Messages("business.accounting_method.line_1")</p>
 
     @form(action = postAction) {
 
         @radioHelper(
-            field = incomeTypeForm(IncomeTypeForm.incomeType),
+            field = accountingMethodForm(AccountingMethodForm.accountingMethod),
             legend = question,
             options = Seq(
-                RadioOption(IncomeTypeForm.option_accruals, Messages("business.income_type.accruals")),
-                RadioOption(IncomeTypeForm.option_cash, Messages("business.income_type.cash"))
+                RadioOption(AccountingMethodForm.option_accruals, Messages("business.accounting_method.accruals")),
+                RadioOption(AccountingMethodForm.option_cash, Messages("business.accounting_method.cash"))
             ),
-            parentForm = incomeTypeForm
+            parentForm = accountingMethodForm
         )
 
         @if(isEditMode) {

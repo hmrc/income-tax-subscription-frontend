@@ -66,11 +66,11 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveContactEmail(contactEmail: EmailModel)(implicit hc: HeaderCarrier, reads: Reads[EmailModel]): FC =
     save[EmailModel](ContactEmail, contactEmail)
 
-  def fetchIncomeType()(implicit hc: HeaderCarrier, reads: Reads[IncomeTypeModel]): FO[IncomeTypeModel] =
-    fetch[IncomeTypeModel](IncomeType)
+  def fetchIncomeType()(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FO[AccountingMethodModel] =
+    fetch[AccountingMethodModel](IncomeType)
 
-  def saveIncomeType(incomeType: IncomeTypeModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeTypeModel]): FC =
-    save[IncomeTypeModel](IncomeType, incomeType)
+  def saveIncomeType(incomeType: AccountingMethodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FC =
+    save[AccountingMethodModel](IncomeType, incomeType)
 
   def fetchTerms()(implicit hc: HeaderCarrier, reads: Reads[TermModel]): FO[TermModel] =
     fetch[TermModel](Terms)

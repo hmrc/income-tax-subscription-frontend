@@ -16,15 +16,15 @@
 
 package views.html.helpers
 
-import forms.{IncomeSourceForm, IncomeTypeForm}
-import models.{IncomeSourceModel, IncomeTypeModel}
+import forms.{IncomeSourceForm, AccountingMethodForm}
+import models.{IncomeSourceModel, AccountingMethodModel}
 import play.api.i18n.Messages
 
 object SummaryHelper {
 
-  def incomeTypeText(src: IncomeTypeModel)(implicit messages: Messages): String = src.incomeType match {
-    case IncomeTypeForm.option_cash => Messages("summary.income_type.cash")
-    case IncomeTypeForm.option_accruals => Messages("summary.income_type.accruals")
+  def incomeTypeText(src: AccountingMethodModel)(implicit messages: Messages): String = src.incomeType match {
+    case AccountingMethodForm.option_cash => Messages("summary.income_type.cash")
+    case AccountingMethodForm.option_accruals => Messages("summary.income_type.accruals")
   }
 
   def incomeSourceText(src: IncomeSourceModel)(implicit messages: Messages): String = src.source match {

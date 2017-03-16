@@ -70,11 +70,11 @@ business.sole_trader.yes                                        = Yes - I’m a 
 business.sole_trader.no                                         = No - I am a different type of business
 
 ## Business Income page
-business.income_type.title                                      = Accounting method
-business.income_type.heading                                    = Which accounting method do you use?
-business.income_type.line_1                                     = This is how you keep records of your business income and expenses for your tax return.
-business.income_type.cash                                       = <span class="heading-small">Cash basis accounting</span><br>You only record income or expenses when you receive money or pay a bill
-business.income_type.accruals                                   = <span class="heading-small">Traditional accounting (‘accruals basis’)</span><br>You record income and expenses by the date you invoiced or were billed
+business.accounting_method.title                                = Accounting method
+business.accounting_method.heading                              = Which accounting method do you use?
+business.accounting_method.line_1                               = This is how you keep records of your business income and expenses for your tax return.
+business.accounting_method.cash                                 = <span class="heading-small">Cash basis accounting</span><br>You only record income or expenses when you receive money or pay a bill
+business.accounting_method.accruals                             = <span class="heading-small">Traditional accounting (‘accruals basis’)</span><br>You record income and expenses by the date you invoiced or were billed
 
 
 ## Business Name
@@ -204,8 +204,8 @@ error.contact_email.empty                                       = Please enter a
 error.contact_email.maxLength                                   = The email is too long
 error.contact_email.invalid                                     = The email is invalid
 
-error.income_type.empty                                         = You must select an option to continue
-error.income_type.invalid                                       = You must select an option to continue
+error.accounting-method.empty                                   = You must select an option to continue
+error.accounting-method.invalid                                 = You must select an option to continue
 
 error.not-eligible.empty                                        = You must select an option to continue
 error.not-eligible.invalid                                      = You must select an option to continue

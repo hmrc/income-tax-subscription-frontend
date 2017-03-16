@@ -113,7 +113,7 @@ object MessageLookup {
     val line_1 = "This is the business name you used to register for Self Assessment. If your business doesn't have a name, enter your own name."
   }
 
-  object BusinessIncomeType {
+  object AccountingMethod {
     val title = "Accounting method"
     val heading: String = "Which accounting method do you use?"
     val line_1 = "This is how you keep records of your business income and expenses for your tax return."

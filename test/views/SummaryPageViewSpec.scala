@@ -32,7 +32,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
 
   val testAccountingPeriod = AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))
   val testBusinessName = BusinessNameModel("test business name")
-  val testIncomeType: IncomeTypeModel = TestModels.testIncomeType
+  val testIncomeType: AccountingMethodModel = TestModels.testIncomeType
   val testContactEmail = EmailModel("test@example.com")
   val testTerms = TermModel(true)
   val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
@@ -178,7 +178,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
       val sectionId = IncomeTypeId
       val expectedQuestion = messages.income_type
       val expectedAnswer = messages.IncomeType.cash
-      val expectedEditLink = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType(editMode = true).url
+      val expectedEditLink = controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -188,20 +188,20 @@ class SummaryPageViewSpec extends UnitTestTrait {
       )
     }
 
-//    TODO - Change required following design around what will be displayed for digital preference decision
-//    "display the correct info for the contact email" in {
-//      val sectionId = ContactEmailId
-//      val expectedQuestion = messages.contact_email
-//      val expectedAnswer = testContactEmail.emailAddress
-//      val expectedEditLink = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
-//
-//      sectionTest(
-//        sectionId = sectionId,
-//        expectedQuestion = expectedQuestion,
-//        expectedAnswer = expectedAnswer,
-//        expectedEditLink = expectedEditLink
-//      )
-//    }
+    //    TODO - Change required following design around what will be displayed for digital preference decision
+    //    "display the correct info for the contact email" in {
+    //      val sectionId = ContactEmailId
+    //      val expectedQuestion = messages.contact_email
+    //      val expectedAnswer = testContactEmail.emailAddress
+    //      val expectedEditLink = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
+    //
+    //      sectionTest(
+    //        sectionId = sectionId,
+    //        expectedQuestion = expectedQuestion,
+    //        expectedAnswer = expectedAnswer,
+    //        expectedEditLink = expectedEditLink
+    //      )
+    //    }
 
     "display the correct info for the terms" in {
       val sectionId = TermsId

@@ -16,26 +16,26 @@
 
 package views.business
 
-import assets.MessageLookup.{BusinessIncomeType => messages}
-import assets.MessageLookup.Base
-import forms.IncomeTypeForm
+import assets.MessageLookup.{Base, AccountingMethod => messages}
+import forms.AccountingMethodForm
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import utils.UnitTestTrait
 
-class BusinessIncomeTypeViewSpec extends UnitTestTrait {
+class BusinessAccountingMethodViewSpec extends UnitTestTrait {
   lazy val backUrl = controllers.business.routes.BusinessNameController.showBusinessName().url
 
-  def page(isEditMode: Boolean) = views.html.business.income_type(
-    incomeTypeForm = IncomeTypeForm.incomeTypeForm,
-    postAction = controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType(),
+  def page(isEditMode: Boolean) = views.html.business.accounting_method(
+    accountingMethodForm = AccountingMethodForm.accountingMethodForm,
+    postAction = controllers.business.routes.BusinessAccountingMethodController.submit(),
     backUrl = backUrl,
     isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
+
   def documentCore(isEditMode: Boolean) = Jsoup.parse(page(isEditMode).body)
 
-  "The Business Income Type view" should {
+  "The Business accounting method view" should {
 
     lazy val document = documentCore(isEditMode = false)
 
@@ -65,22 +65,22 @@ class BusinessIncomeTypeViewSpec extends UnitTestTrait {
           document.select("fieldset legend").text() mustBe messages.heading
         }
 
-        s"has a radio option for 'incomeType-${IncomeTypeForm.option_cash}'" in {
-          val cashRadio = document.select(s"#incomeType-${IncomeTypeForm.option_cash}")
+        s"has a radio option for 'accountingMethod-${AccountingMethodForm.option_cash}'" in {
+          val cashRadio = document.select(s"#accountingMethod-${AccountingMethodForm.option_cash}")
           cashRadio.attr("type") mustBe "radio"
-          cashRadio.attr("name") mustBe "incomeType"
-          cashRadio.attr("value") mustBe IncomeTypeForm.option_cash
-          val label = document.getElementsByAttributeValue("for", s"incomeType-${IncomeTypeForm.option_cash}")
+          cashRadio.attr("name") mustBe "accountingMethod"
+          cashRadio.attr("value") mustBe AccountingMethodForm.option_cash
+          val label = document.getElementsByAttributeValue("for", s"accountingMethod-${AccountingMethodForm.option_cash}")
           label.size() mustBe 1
           label.get(0).text() mustBe messages.cash
         }
 
-        s"has a radio option for 'incomeType-${IncomeTypeForm.option_accruals}'" in {
-          val cashRadio = document.select(s"#incomeType-${IncomeTypeForm.option_accruals}")
+        s"has a radio option for 'accountingMethod-${AccountingMethodForm.option_accruals}'" in {
+          val cashRadio = document.select(s"#accountingMethod-${AccountingMethodForm.option_accruals}")
           cashRadio.attr("type") mustBe "radio"
-          cashRadio.attr("name") mustBe "incomeType"
-          cashRadio.attr("value") mustBe IncomeTypeForm.option_accruals
-          val label = document.getElementsByAttributeValue("for", s"incomeType-${IncomeTypeForm.option_accruals}")
+          cashRadio.attr("name") mustBe "accountingMethod"
+          cashRadio.attr("value") mustBe AccountingMethodForm.option_accruals
+          val label = document.getElementsByAttributeValue("for", s"accountingMethod-${AccountingMethodForm.option_accruals}")
           label.size() mustBe 1
           label.get(0).text() mustBe messages.accruals
         }
@@ -90,8 +90,8 @@ class BusinessIncomeTypeViewSpec extends UnitTestTrait {
         document.select("#continue-button").isEmpty mustBe false
       }
 
-      s"has a post action to '${controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType().url}'" in {
-        document.select("form").attr("action") mustBe controllers.business.routes.BusinessIncomeTypeController.submitBusinessIncomeType().url
+      s"has a post action to '${controllers.business.routes.BusinessAccountingMethodController.submit().url}'" in {
+        document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingMethodController.submit().url
         document.select("form").attr("method") mustBe "POST"
       }
 

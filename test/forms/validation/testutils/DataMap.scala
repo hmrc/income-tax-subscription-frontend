@@ -25,7 +25,7 @@ object DataMap {
 
   import forms.BusinessNameForm._
   import forms.EmailForm._
-  import forms.{IncomeSourceForm, IncomeTypeForm}
+  import forms.{IncomeSourceForm, AccountingMethodForm}
   import forms.NotEligibleForm._
   import forms.TermForm._
   import forms.preferences.BackToPreferencesForm
@@ -49,7 +49,7 @@ object DataMap {
 
   def registerNextAccountingPeriod(isRegisteringForNextPeriod: String): DataMap = Map(RegisterNextAccountingPeriodForm.registerNextAccountingPeriod -> isRegisteringForNextPeriod)
 
-  def incomeType(iType: String): DataMap = Map(IncomeTypeForm.incomeType -> iType)
+  def incomeType(iType: String): DataMap = Map(AccountingMethodForm.accountingMethod -> iType)
 
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 

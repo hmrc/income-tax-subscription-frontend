@@ -7,8 +7,8 @@ GET         /name                                   controllers.business.Busines
 POST        /name                                   controllers.business.BusinessNameController.submitBusinessName(editMode: Boolean ?= false)
 
 #Income Type Routes
-GET         /income-type                            controllers.business.BusinessIncomeTypeController.showBusinessIncomeType(editMode: Boolean ?= false)
-POST        /income-type                            controllers.business.BusinessIncomeTypeController.submitBusinessIncomeType(editMode: Boolean ?= false)
+GET         /accounting-method                      controllers.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /accounting-method                      controllers.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
 
 #Current Financial Period Prior Routes
 GET         /accounting-period-prior                controllers.business.BusinessAccountingPeriodPriorController.show

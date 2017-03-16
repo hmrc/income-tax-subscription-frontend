@@ -59,11 +59,11 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@incomeType(income: IncomeTypeModel) = @{
+@incomeType(income: AccountingMethodModel) = @{
     val rowName = IncomeTypeId
     val rowQuestion = Messages("summary.income_type")
     val rowAnswer = incomeTypeText(income)
-    val rowUrl = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType(editMode = true).url
+    val rowUrl = controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

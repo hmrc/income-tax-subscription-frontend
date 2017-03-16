@@ -33,7 +33,7 @@ object CacheUtil {
 
     def getBusinessName()(implicit read: Reads[BusinessNameModel]): Option[BusinessNameModel] = cacheMap.getEntry(BusinessName)
 
-    def getIncomeType()(implicit read: Reads[IncomeTypeModel]): Option[IncomeTypeModel] = cacheMap.getEntry(IncomeType)
+    def getIncomeType()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(IncomeType)
 
     def getContactEmail()(implicit read: Reads[EmailModel]): Option[EmailModel] = cacheMap.getEntry(ContactEmail)
 
@@ -43,7 +43,7 @@ object CacheUtil {
                      isrc: Reads[IncomeSourceModel],
                      acc: Reads[AccountingPeriodModel],
                      bus: Reads[BusinessNameModel],
-                     inc: Reads[IncomeTypeModel],
+                     inc: Reads[AccountingMethodModel],
                      ema: Reads[EmailModel],
                      ter: Reads[TermModel]): SummaryModel = {
       val incomeSource = getIncomeSource()

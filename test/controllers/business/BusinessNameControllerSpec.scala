@@ -71,12 +71,12 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
       }
 
-      s"redirect to '${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url}'" in {
+      s"redirect to '${controllers.business.routes.BusinessAccountingMethodController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingMethodController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)

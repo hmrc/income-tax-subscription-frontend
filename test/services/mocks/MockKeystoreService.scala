@@ -58,7 +58,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
                                          fetchAccountingPeriod: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchContactEmail: MFO[EmailModel] = DoNotConfigure,
-                                         fetchIncomeType: MFO[IncomeTypeModel] = DoNotConfigure,
+                                         fetchIncomeType: MFO[AccountingMethodModel] = DoNotConfigure,
                                          fetchTerms: MFO[TermModel] = DoNotConfigure,
                                          fetchNotEligible: MFO[NotEligibleModel] = DoNotConfigure,
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
@@ -72,7 +72,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriod, fetchAccountingPeriod)
     mockFetchFromKeyStore[EmailModel](ContactEmail, fetchContactEmail)
-    mockFetchFromKeyStore[IncomeTypeModel](IncomeType, fetchIncomeType)
+    mockFetchFromKeyStore[AccountingMethodModel](IncomeType, fetchIncomeType)
     mockFetchFromKeyStore[TermModel](Terms, fetchTerms)
     mockFetchFromKeyStore[NotEligibleModel](NotEligible, fetchNotEligible)
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)

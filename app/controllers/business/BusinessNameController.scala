@@ -59,7 +59,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
             if (isEditMode)
               Redirect(controllers.routes.SummaryController.showSummary())
             else
-              Redirect(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType())
+              Redirect(controllers.business.routes.BusinessAccountingMethodController.show())
             )
         }
       )

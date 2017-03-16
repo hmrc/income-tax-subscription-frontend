@@ -19,7 +19,7 @@ package controllers
 import javax.inject.Inject
 
 import config.BaseControllerConfig
-import forms.{IncomeSourceForm, IncomeTypeForm, OtherIncomeForm}
+import forms.{IncomeSourceForm, AccountingMethodForm, OtherIncomeForm}
 import models.OtherIncomeModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
