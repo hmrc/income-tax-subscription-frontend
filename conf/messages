@@ -110,9 +110,9 @@ throttle_limit.line_1                                           = Please try aga
 
 
 ## Already enrolled page ##
-already-enrolled.title                                          = You''ve already registered for digital tax updates
-already-enrolled.heading                                        = You''ve already registered for digital tax updates
-already-enrolled.para1                                          = Your Government Gateway ID is already registered for digital tax updates.
+already-enrolled.title                                          = You''ve already signed up
+already-enrolled.heading                                        = You''ve already signed up
+already-enrolled.para1                                          = Your Government Gateway ID is already signed up for regular reporting.
 
 ## Failure Messages ##
 notAuthorised.title                                             = Not Authorised
@@ -244,13 +244,10 @@ main-income-error.bullet2                                       = someone who re
 main-income-error.bullet3                                       = a sole trader with income from one business and you rent out a UK property
 
 ## Other income error page ##
-other-income-error.title                                        = You can register, but can only send digital updates on part of your income
-other-income-error.heading                                      = You can register, but can only send digital updates on part of your income
-other-income-error.para1                                        = At the moment, you can only register to send digital updates if you''re either:
-other-income-error.para2                                        = You can send digital Income Tax updates for your other income later in the year.
-other-income-error.bullet1                                      = a sole trader with income from one business
-other-income-error.bullet2                                      = someone who lets UK property
-other-income-error.bullet3                                      = a sole trader with income from one business and you let a UK property
+other-income-error.title                                        = You can only send quarterly reports on part of your income
+other-income-error.heading                                      = You can only send quarterly reports on part of your income
+other-income-error.para1                                        = As this service is currently a trial, you can only send quarterly reports on income from your sole trader business, renting out a UK property, or both.
+other-income-error.para2                                        = You can send quarterly reports including your other income later in the year, when this service becomes available.
 
 ## Other sources of income page ##
 income-other.title                                              = Do you have any other sources of income?

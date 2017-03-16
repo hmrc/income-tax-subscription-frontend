@@ -168,9 +168,9 @@ object MessageLookup {
   }
 
   object AlreadyEnrolled {
-    val title = "You've already registered for digital tax updates"
-    val heading = "You've already registered for digital tax updates"
-    val para1 = "Your Government Gateway ID is already registered for digital tax updates."
+    val title = "You've already signed up"
+    val heading = "You've already signed up"
+    val para1 = "Your Government Gateway ID is already signed up for regular reporting."
   }
 
   object Confirmation {
@@ -334,13 +334,10 @@ object MessageLookup {
   }
 
   object OtherIncomeError {
-    val title = "You can register, but can only send digital updates on part of your income"
-    val heading = "You can register, but can only send digital updates on part of your income"
-    val para1 = "At the moment, you can only register to send digital updates if you're either:"
-    val para2 = "You can send digital Income Tax updates for your other income later in the year."
-    val bullet1 = "a sole trader with income from one business"
-    val bullet2 = "someone who lets UK property"
-    val bullet3 = "a sole trader with income from one business and you let a UK property"
+    val title = "You can only send quarterly reports on part of your income"
+    val heading: String = title
+    val para1 = "As this service is currently a trial, you can only send quarterly reports on income from your sole trader business, renting out a UK property, or both."
+    val para2 = "You can send quarterly reports including your other income later in the year, when this service becomes available."
   }
 
   object OtherIncome {
