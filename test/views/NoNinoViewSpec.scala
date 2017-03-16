@@ -16,8 +16,8 @@
 
 package views
 
-import assets.MessageLookup.NoNino._
 import assets.MessageLookup.Base
+import assets.MessageLookup.NoNino._
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
@@ -30,12 +30,16 @@ class NoNinoViewSpec extends UnitTestTrait {
 
   "The No Nino view" should {
 
-    s"have the title '${title}'" in {
-      document.title() must be (title)
+    s"have the title '$title'" in {
+      document.title() must be(title)
     }
 
-    s"have the heading (H1) '${heading}'" in {
-      document.getElementsByTag("H1").text() must be (heading)
+    s"have the heading (H1) '$heading'" in {
+      document.getElementsByTag("H1").text() must be(heading)
+    }
+
+    s"have the paragraph (P) '$line1'" in {
+      document.getElementsByTag("P").text() must include(line1)
     }
 
     "have a sign-out button" in {

@@ -229,6 +229,11 @@ not-eligible.question                                           = Choose what yo
 not-eligible.signup                                             = I want to sign up
 not-eligible.signout                                            = I don''t want to sign up - sign me out
 
+## No NINO page ##
+no-nino.title                                                   = You can''t sign up for quarterly reporting yet
+no-nino.heading                                                 = You can''t sign up for quarterly reporting yet
+no-nino.line_1                                                  = You can sign up later in the year when this service is available to you.
+
 ## Main income error page ##
 main-income-error.title                                         = You can''t send digital updates yet
 main-income-error.heading                                       = You can''t send digital updates yet

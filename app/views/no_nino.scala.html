@@ -4,11 +4,16 @@
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("not-eligible.title"), bodyClasses = None, showSignOutLink = false) {
+@views.html.templates.main_template(title = Messages("no-nino.title"), bodyClasses = None, showSignOutLink = false) {
 
-    <h1 class="heading-xlarge">@Messages("not-eligible.heading")</h1>
+    <h1 class="heading-large">@Messages("no-nino.heading")</h1>
+
+    <div class = "form-group">
+        <p>@Messages("no-nino.line_1")</p>
+    </div>
 
     @form(action = postAction) {
         @signOutButton()
     }
+
 }

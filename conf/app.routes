@@ -43,8 +43,8 @@ GET         /not-eligible              controllers.NotEligibleController.showNot
 POST        /not-eligible              controllers.NotEligibleController.submitNotEligible
 
 # No NINO Routes
-GET         /no-nino                   controllers.NoNinoController.showNoNino
-POST        /no-nino                   controllers.NoNinoController.submitNoNino
+GET         /error/no-nino             controllers.NoNinoController.showNoNino
+POST        /error/no-nino             controllers.NoNinoController.submitNoNino
 
 # Throttle limit reached routes
 GET         /error/maintenance         controllers.throttling.ThrottlingController.show
