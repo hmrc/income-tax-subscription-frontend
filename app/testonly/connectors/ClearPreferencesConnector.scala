@@ -16,15 +16,16 @@
 
 package testonly.connectors
 
-import com.google.inject.Inject
+import javax.inject.Inject
+
 import connectors.RawResponseReads
+import play.api.http.Status._
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpDelete, HttpGet, HttpResponse}
 import utils.Implicits._
-import play.api.http.Status._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ClearPreferencesConnector @Inject()(appConfig: TestOnlyAppConfig,
                                           httpGet: HttpGet,

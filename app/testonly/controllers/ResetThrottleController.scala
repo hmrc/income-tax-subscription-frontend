@@ -18,7 +18,8 @@
 
 package testonly.controllers
 
-import com.google.inject.{Inject, Singleton}
+import javax.inject.{Inject, Singleton}
+
 import play.api.mvc.{Action, AnyContent}
 import testonly.connectors.ResetThrottleConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController

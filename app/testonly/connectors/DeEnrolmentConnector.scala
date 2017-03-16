@@ -17,13 +17,12 @@
 //$COVERAGE-OFF$Disabling scoverage on this test only connector as it is only required by our acceptance test
 package testonly.connectors
 
-import com.google.inject.{Inject, Singleton}
+import javax.inject.{Inject, Singleton}
+
 import connectors.RawResponseReads
-import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.ws.WSHttp
-import common.Constants._
 
 import scala.concurrent.Future
 
