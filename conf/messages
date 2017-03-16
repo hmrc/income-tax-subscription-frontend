@@ -48,10 +48,10 @@ business.current_financial_period_prior.yes                     = Yes
 business.current_financial_period_prior.no                      = No
 
 # Current Financial Period Prior page
-business.register_next_accounting_period.title                   = Do you want to register for your next financial period?
-business.register_next_accounting_period.heading                 = Do you want to register for your next financial period?
-business.register_next_accounting_period.line_1                  = You can''t register for Income Tax updates on your current financial period, as it started before, 1 April 2017.
-business.register_next_accounting_period.line_2                  = You can register for your next financial period, but can''t send Income Tax updates until this begins.
+business.register_next_accounting_period.title                   = Do you want to sign up for your next accounting period?
+business.register_next_accounting_period.heading                 = Do you want to sign up for your next accounting period?
+business.register_next_accounting_period.line_1                  = You can''t send quarterly reports yet, as your current accounting period started before 1 April 2017.
+business.register_next_accounting_period.line_2                  = You can sign up for your next accounting period, but can''t send quarterly reports until this begins.
 business.register_next_accounting_period.yes                     = Yes
 business.register_next_accounting_period.no                      = No - sign out
 
