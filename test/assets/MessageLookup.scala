@@ -324,13 +324,13 @@ object MessageLookup {
   }
 
   object MainIncomeError {
-    val title = "You can't send digital updates yet"
-    val heading = "You can't send digital updates yet"
-    val para1 = "At the moment, you can only register to send digital updates if you're either:"
-    val para2 = "You can register later in the year when this service is available to you."
+    val title = "You can't sign up for quarterly reporting yet"
+    val heading = "You can't sign up for quarterly reporting yet"
+    val para1 = "At the moment, you can only sign up if you’re one of the following:"
+    val para2 = "You can sign up later in the year when this service is available to you."
     val bullet1 = "a sole trader with income from one business"
-    val bullet2 = "someone who lets UK property"
-    val bullet3 = "a sole trader with income from one business and you let a UK property"
+    val bullet2 = "someone who rents out a UK property"
+    val bullet3 = "a sole trader with income from one business and you rent out a UK property"
   }
 
   object OtherIncomeError {
