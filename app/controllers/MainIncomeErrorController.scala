@@ -20,6 +20,7 @@ import javax.inject.Inject
 
 import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
+import play.api.mvc.Call
 
 import scala.concurrent.Future
 
@@ -30,8 +31,9 @@ class MainIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
 
   val mainIncomeError = Authorised.async { implicit user =>
     implicit request =>
-      Future.successful(Ok(views.html.main_income_error(backUrl)))
+      Future.successful(Ok(views.html.main_income_error(backUrl, getAction)))
   }
 
   lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url
+  lazy val getAction: Call = controllers.routes.SignOutController.signOut()
 }
