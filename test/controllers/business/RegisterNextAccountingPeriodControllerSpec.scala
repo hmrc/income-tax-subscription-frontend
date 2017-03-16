@@ -58,9 +58,9 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
       verifyKeystore(fetchRegisterNextAccountingPeriod = 1, saveRegisterNextAccountingPeriod = 0)
     }
 
-    s"The back url should point to '${controllers.business.routes.BusinessAccountingPeriodController.show().url}'" in {
+    s"The back url should point to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}'" in {
       val document = Jsoup.parse(contentAsString(result))
-      document.select("#back").attr("href") mustBe controllers.business.routes.BusinessAccountingPeriodController.show().url
+      document.select("#back").attr("href") mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
     }
   }
 

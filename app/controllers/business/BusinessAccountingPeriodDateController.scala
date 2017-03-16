@@ -104,7 +104,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
         case AccountingPeriodPriorForm.option_yes =>
           controllers.business.routes.RegisterNextAccountingPeriodController.show().url
         case AccountingPeriodPriorForm.option_no =>
-          controllers.business.routes.BusinessAccountingPeriodController.show().url
+          controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
       }
     }
   }

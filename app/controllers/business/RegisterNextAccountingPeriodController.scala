@@ -41,7 +41,7 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
     views.html.business.register_next_accounting_period(
       registerNextAccountingPeriodForm = registerNextAccountingPeriodForm,
       postAction = controllers.business.routes.RegisterNextAccountingPeriodController.submit(),
-      backUrl = controllers.business.routes.BusinessAccountingPeriodController.show().url
+      backUrl = controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
     )
 
   val show: Action[AnyContent] = Authorised.async { implicit user =>

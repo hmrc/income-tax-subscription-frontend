@@ -32,16 +32,16 @@ import utils.Implicits._
 import scala.concurrent.Future
 
 
-class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControllerConfig,
-                                                   val messagesApi: MessagesApi,
-                                                   val keystoreService: KeystoreService
+class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseControllerConfig,
+                                                        val messagesApi: MessagesApi,
+                                                        val keystoreService: KeystoreService
                                                   ) extends BaseController {
 
-  def view(accoutingPeriodPriorModel: Form[AccoutingPeriodPriorModel])(implicit request: Request[_]): Future[Html] =
+  def view(accountingPeriodPriorForm: Form[AccoutingPeriodPriorModel])(implicit request: Request[_]): Future[Html] =
     backUrl.map { backUrl =>
-      views.html.business.accounting_period(
-        accoutingPeriodForm = accoutingPeriodPriorModel,
-        postAction = controllers.business.routes.BusinessAccountingPeriodController.submit(),
+      views.html.business.accounting_period_prior(
+        accountingPeriodPriorForm = accountingPeriodPriorForm,
+        postAction = controllers.business.routes.BusinessAccountingPeriodPriorController.submit(),
         backUrl = backUrl
       )
     }

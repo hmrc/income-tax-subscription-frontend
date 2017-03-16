@@ -160,9 +160,9 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   }
 
   "The back url when the user is submitting details for current period" should {
-    s"point to ${controllers.business.routes.BusinessAccountingPeriodController.show().url}" in {
+    s"point to ${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}" in {
       setupMockKeystore(fetchCurrentFinancialPeriodPrior = TestModels.testIsCurrentPeriod)
-      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessAccountingPeriodController.show().url
+      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
       verifyKeystore(fetchCurrentFinancialPeriodPrior = 1)
     }
   }

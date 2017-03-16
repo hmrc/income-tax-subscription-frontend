@@ -30,15 +30,15 @@ import utils.TestModels
 
 import scala.concurrent.Future
 
-class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec with MockKeystoreService {
+class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec with MockKeystoreService {
 
-  override val controllerName: String = "BusinessAccountingPeriodController"
+  override val controllerName: String = "BusinessAccountingPeriodPriorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestCurrentFinancialPeriodPriorController.show,
     "submit" -> TestCurrentFinancialPeriodPriorController.submit
   )
 
-  object TestCurrentFinancialPeriodPriorController extends BusinessAccountingPeriodController(
+  object TestCurrentFinancialPeriodPriorController extends BusinessAccountingPeriodPriorController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService
@@ -47,7 +47,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec with Moc
   // answer to other income is only significant for testing the backurl.
   val defaultOtherIncomeAnswer: OtherIncomeModel = TestModels.testOtherIncomeNo
 
-  "Calling the show action of the BusinessAccountingPeriod with an authorised user" should {
+  "Calling the show action of the BusinessAccountingPeriodPriorController with an authorised user" should {
 
     def result: Future[Result] = {
       setupMockKeystore(
@@ -94,7 +94,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec with Moc
 
   }
 
-  "Calling the submit action of the BusinessAccountingPeriod with an authorised user and valid submission" when {
+  "Calling the submit action of the BusinessAccountingPeriodPriorController with an authorised user and valid submission" when {
 
     def callShow(answer: String): Future[Result] = TestCurrentFinancialPeriodPriorController.submit(authenticatedFakeRequest()
       .post(AccountingPeriodPriorForm.accountingPeriodPriorForm, AccoutingPeriodPriorModel(answer)))
@@ -142,7 +142,7 @@ class BusinessAccountingPeriodControllerSpec extends ControllerBaseSpec with Moc
     }
   }
 
-  "Calling the submit action of the BusinessAccountingPeriod with an authorised user and invalid submission" should {
+  "Calling the submit action of the BusinessAccountingPeriodPriorController with an authorised user and invalid submission" should {
 
     def badRequest: Future[Result] = {
       setupMockKeystore(fetchOtherIncome = defaultOtherIncomeAnswer)

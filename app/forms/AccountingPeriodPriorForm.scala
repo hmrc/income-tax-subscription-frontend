@@ -26,7 +26,7 @@ import play.api.data.validation.{Constraint, Valid}
 
 object AccountingPeriodPriorForm {
 
-  val accountingPeriodPrior = "currentFinancialPeriodPrior"
+  val accountingPeriodPrior = "accountingPeriodPrior"
   val option_yes = "Yes"
   val option_no = "No"
 

@@ -27,9 +27,9 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
 
   lazy val backUrl = "BackUrl"
 
-  lazy val page = views.html.business.accounting_period(
-    accoutingPeriodForm = AccountingPeriodPriorForm.accountingPeriodPriorForm,
-    postAction = controllers.business.routes.BusinessAccountingPeriodController.submit(),
+  lazy val page = views.html.business.accounting_period_prior(
+    accountingPeriodPriorForm = AccountingPeriodPriorForm.accountingPeriodPriorForm,
+    postAction = controllers.business.routes.BusinessAccountingPeriodPriorController.submit(),
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -102,8 +102,8 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
         document.select("#continue-button").isEmpty mustBe false
       }
 
-      s"has a post action to '${controllers.business.routes.BusinessAccountingPeriodController.submit().url}'" in {
-        document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodController.submit().url
+      s"has a post action to '${controllers.business.routes.BusinessAccountingPeriodPriorController.submit().url}'" in {
+        document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.submit().url
         document.select("form").attr("method") mustBe "POST"
       }
 
