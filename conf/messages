@@ -79,8 +79,8 @@ business.income_type.accruals                                   = <span class="h
 
 ## Business Name
 business.name.title                                             = Business name
-business.name.heading                                           = What is your business name?
-business.name.line_1                                            = This is the business name you gave when you registered for Self Assessment.
+business.name.heading                                           = What''s the name of your business?
+business.name.line_1                                            = This is the business name you used to register for Self Assessment. If your business doesn''t have a name, enter your own name.
 
 ## Terms and Conditions Messages
 terms.title                                                     = Terms and conditions
