@@ -35,7 +35,7 @@
 
     @summaryErrorHelper(accountingPeriodForm)
 
-    <h1 class="heading-xlarge">
+    <h1 class="heading-large">
         @if(viewType == CurrentAccountingPeriodView) {
             @Messages("accounting_period.heading.current")
         } else {
@@ -51,14 +51,14 @@
             field = accountingPeriodForm(startDate),
             label = Messages("base.startDate"),
             parentForm = accountingPeriodForm,
-            hintText = Messages("base.exampleDate")
+            hintText = Messages("base.exampleStartDate")
         )
 
         @dateHelper(
             field = accountingPeriodForm(endDate),
             label = Messages("base.endDate"),
             parentForm = accountingPeriodForm,
-            hintText = Messages("base.exampleDate")
+            hintText = Messages("base.exampleEndDate")
         )
 
         @if(isEditMode) {

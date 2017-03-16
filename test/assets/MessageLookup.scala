@@ -98,8 +98,7 @@ object MessageLookup {
     val title = "Business accounting period"
     val heading_current = "What are the dates of your current accounting period?"
     val heading_next = "When is your next accounting period?"
-    val line_1 = "Your accounting period is normally 6 April to 5 April, unless you've chosen to use different dates."
-
+    val line_1 = "Your accounting period is usually 6 April to 5 April (the same as the tax year), unless you selected different dates when you registered for Self Assessment."
   }
 
   object ContactEmail {

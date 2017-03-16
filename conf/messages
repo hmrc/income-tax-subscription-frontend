@@ -6,7 +6,8 @@ base.sign-out                                                   = Sign Out
 base.submit                                                     = Submit
 base.startDate                                                  = Start date
 base.endDate                                                    = End date
-base.exampleDate                                                = For example, 31 3 1980
+base.exampleStartDate                                           = For example, 01 05 2017
+base.exampleEndDate                                             = For example, 30 04 2018
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
@@ -59,7 +60,7 @@ business.register_next_accounting_period.no                      = No - sign out
 accounting_period.title                                         = Business accounting period
 accounting_period.heading.current                               = What are the dates of your current accounting period?
 accounting_period.heading.next                                  = When is your next accounting period?
-accounting_period.line_1                                        = Your accounting period is normally 6 April to 5 April, unless you''ve chosen to use different dates.
+accounting_period.line_1                                        = Your accounting period is usually 6 April to 5 April (the same as the tax year), unless you selected different dates when you registered for Self Assessment.
 
 # Sole trader page
 business.sole_trader.title                                      = Are you a sole trader?
