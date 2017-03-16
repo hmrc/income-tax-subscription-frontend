@@ -27,29 +27,29 @@ import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 
 @Singleton
-class FrontendAuditConnector @Inject()(override val app: Application) extends Auditing with AppName {
+class FrontendAuditConnector @Inject()(val app: Application) extends Auditing with AppName {
 
   override lazy val auditingConfig = LoadAuditingConfig(s"auditing")
 }
 
 @Singleton
-class WSHttp @Inject()(override val app: Application) extends uk.gov.hmrc.play.http.ws.WSHttp with AppName with RunMode {
+class WSHttp @Inject()(val app: Application) extends uk.gov.hmrc.play.http.ws.WSHttp with AppName with RunMode {
   override val hooks = NoneRequired
 }
 
 @Singleton
-class FrontendAuthConnector @Inject()(override val app: Application) extends AuthConnector with ServicesConfig {
+class FrontendAuthConnector @Inject()(val app: Application) extends AuthConnector with ServicesConfig {
   val serviceUrl = baseUrl("auth")
   lazy val http = new WSHttp(app)
 }
 
 @Singleton
-class SessionCache @Inject()(override val app: Application,
+class SessionCache @Inject()(val app: Application,
                              val http: WSHttp) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
-  override lazy val defaultSource: String = getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
+  lazy val defaultSource: String = getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
 
-  override lazy val baseUri = baseUrl("session-cache")
-  override lazy val domain = getConfString("session-cache.domain", throw new Exception(s"Could not find config 'session-cache.domain'"))
+  lazy val baseUri = baseUrl("session-cache")
+  lazy val domain = getConfString("session-cache.domain", throw new Exception(s"Could not find config 'session-cache.domain'"))
 }
 
 trait SessionCookieCryptoFilterWrapper {

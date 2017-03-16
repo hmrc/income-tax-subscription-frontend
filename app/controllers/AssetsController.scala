@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@(alternativeText: Option[String] = None)(implicit messages: Messages)
+package controllers
 
-<button class="button" type="submit" id="continue-button">@alternativeText.fold(Messages("base.continue"))(x => x)</button>
+import com.google.inject.{Inject, Singleton}
+import play.api.http.HttpErrorHandler
+
+@Singleton
+class AssetsController @Inject()(errorHandler: HttpErrorHandler) extends AssetsBuilder(errorHandler)

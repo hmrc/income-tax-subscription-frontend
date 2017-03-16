@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 
-class SignOutController @Inject()(override val app: Application,
+class SignOutController @Inject()(val app: Application,
                                   val applicationConfig: AppConfig) extends FrontendController with RunMode {
 
   def signOut = Action { implicit request =>

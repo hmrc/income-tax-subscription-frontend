@@ -124,9 +124,9 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
         }
 
         "it is more than 24 months after the start date" in {
-          val violation = ErrorMessageFactory.error("error.business_accounting_period.maxEndDate", "28 June 2019", "24")
-          violation fieldErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate("24", "28 June 2019")
-          violation summaryErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate("24", "28 June 2019")
+          val violation = ErrorMessageFactory.error("error.business_accounting_period.maxEndDate")
+          violation fieldErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate
+          violation summaryErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate
 
           val endDateViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("29", "6", "2019")
           val violationTest = accountingPeriodForm.bind(endDateViolationInput)

@@ -16,7 +16,8 @@
 
 package testonly.controllers
 
-import com.google.inject.Inject
+import javax.inject.Inject
+
 import config.BaseControllerConfig
 import connectors.models.preferences.Activated
 import connectors.preferences.PreferenceFrontendConnector
