@@ -3,6 +3,7 @@ base.back                                                       = Back
 base.continue                                                   = Continue
 base.update                                                     = Update
 base.sign-out                                                   = Sign Out
+base.sign-up                                                    = Sign up
 base.submit                                                     = Submit
 base.startDate                                                  = Start date
 base.endDate                                                    = End date
@@ -12,6 +13,11 @@ base.month                                                      = Month
 base.year                                                       = Year
 base.error_heading                                              = Error Summary
 base.change                                                     = Change
+
+## Front page
+frontpage.title                                                 = Start page
+frontpage.heading                                               = Sign up to report your income and expenses regularly
+
 
 ## Preferences call back page
 preferences_callback.title                                      = Do you want to continue with your registration?
