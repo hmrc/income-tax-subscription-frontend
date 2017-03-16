@@ -10,8 +10,8 @@ GET         /paperless-error                  controllers.preferences.Preference
 POST        /paperless-error                  controllers.preferences.PreferencesController.submitGoBackToPreferences
 
 # Income Source Routes
-GET         /income-source                    controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
-POST        /income-source                    controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
+GET         /income                           controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
+POST        /income                           controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
 
 # Summary Routes
 GET         /summary                          controllers.SummaryController.showSummary
