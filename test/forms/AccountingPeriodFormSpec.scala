@@ -27,7 +27,7 @@ import play.api.i18n.Messages.Implicits._
 
 class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
 
-  "The CurrentFinancialPeriodPriorForm" should {
+  "The AccountingPeriodForm" should {
     "transform the request to the form case class" in {
       val testIncomeSource = option_yes
       val testInput = Map(accountingPeriodPrior -> testIncomeSource)

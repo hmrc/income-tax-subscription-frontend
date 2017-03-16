@@ -30,7 +30,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
   import AccountingPeriodDateForm._
   import DateMapping._
 
-  "The DateForm" should {
+  "The AccountingPeriodDateForm" should {
     "transform a valid request to the date form case class" in {
       val testDateDay = "31"
       val testDateMonth = "05"

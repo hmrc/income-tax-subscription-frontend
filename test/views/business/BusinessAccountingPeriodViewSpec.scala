@@ -35,7 +35,7 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
 
   lazy val document = Jsoup.parse(page.body)
 
-  "The Current Financial Period Prior to April 17 view" should {
+  "The Business Accounting Period view" should {
 
     s"have a back button pointed to $backUrl" in {
       val backLink = document.select("#back")

@@ -38,7 +38,7 @@ class BusinessAccountingPeriodDateViewSpec extends UnitTestTrait {
 
   def documentCore(viewType: AccountingPeriodViewType, isEditMode: Boolean = false) = Jsoup.parse(page(viewType, isEditMode).body)
 
-  "The Business Accounting Period view" should {
+  "The Business Accounting Period Date view" should {
     Seq(CurrentAccountingPeriodView, NextAccountingPeriodView).foreach {
       viewType =>
 
