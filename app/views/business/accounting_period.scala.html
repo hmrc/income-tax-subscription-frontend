@@ -14,7 +14,7 @@
     <script type="text/javascript" src="@routes.Assets.at("javascripts/date-helper.js")"></script>
 }
 
-@views.html.templates.main_template(title = Messages("accounting_period.title"), bodyClasses = None, scriptElem = scriptElem) {
+@views.html.templates.main_template(title = Messages("accounting_period.title"), bodyClasses = None, scriptElem = None) {
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingPeriodForm)
