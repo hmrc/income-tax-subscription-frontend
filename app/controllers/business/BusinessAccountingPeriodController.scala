@@ -20,92 +20,62 @@ import javax.inject.Inject
 
 import config.BaseControllerConfig
 import controllers.BaseController
-import forms._
-import models.{AccountingPeriodModel, CurrentFinancialPeriodPriorModel}
+import forms.AccountingPeriodPriorForm
+import models.{AccoutingPeriodPriorModel, OtherIncomeModel}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.KeystoreService
-import models.enums._
 import utils.Implicits._
 
 import scala.concurrent.Future
+
 
 class BusinessAccountingPeriodController @Inject()(val baseConfig: BaseControllerConfig,
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService
                                                   ) extends BaseController {
 
-  def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, viewType: AccountingPeriodViewType)(implicit request: Request[_]): Html =
-    views.html.business.accounting_period(
-      form,
-      controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(editMode = isEditMode),
-      backUrl,
-      viewType,
-      isEditMode
-    )
+  def view(accoutingPeriodPriorModel: Form[AccoutingPeriodPriorModel])(implicit request: Request[_]): Future[Html] =
+    backUrl.map { backUrl =>
+      views.html.business.accounting_period(
+        accoutingPeriodForm = accoutingPeriodPriorModel,
+        postAction = controllers.business.routes.BusinessAccountingPeriodController.submit(),
+        backUrl = backUrl
+      )
+    }
 
-  def showAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
+  val show: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      for {
-        accountingPeriod <- keystoreService.fetchAccountingPeriod()
-        backUrl <- backUrl
-        viewType <- whichView
-      } yield
-        Ok(view(
-          AccountingPeriodForm.accountingPeriodForm.fill(accountingPeriod),
-          backUrl = backUrl,
-          isEditMode = isEditMode,
-          viewType = viewType
-        ))
-  }
-
-  def submitAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request => {
-      whichView.flatMap {
-        viewType =>
-          AccountingPeriodForm.accountingPeriodForm.bindFromRequest().fold(
-            formWithErrors => backUrl.map(backUrl => BadRequest(view(
-              form = formWithErrors,
-              backUrl = backUrl,
-              isEditMode = isEditMode,
-              viewType = viewType
-            ))),
-            accountingPeriod =>
-              keystoreService.saveAccountingPeriod(accountingPeriod) map (_ =>
-                if (isEditMode)
-                  Redirect(controllers.routes.SummaryController.showSummary())
-                else
-                  Redirect(controllers.business.routes.BusinessNameController.showBusinessName())
-                )
-          )
+      keystoreService.fetchCurrentFinancialPeriodPrior().flatMap { x =>
+        view(AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(x)).flatMap(view => Ok(view))
       }
-    }
   }
 
-  def whichView(implicit request: Request[_]): Future[AccountingPeriodViewType] = {
-
-    keystoreService.fetchCurrentFinancialPeriodPrior().flatMap {
-      case Some(currentPeriodPrior) =>
-        currentPeriodPrior.currentPeriodIsPrior match {
-          case CurrentFinancialPeriodPriorForm.option_yes =>
-            NextAccountingPeriodView
-          case CurrentFinancialPeriodPriorForm.option_no =>
-            CurrentAccountingPeriodView
-        }
-    }
+  val submit: Action[AnyContent] = Authorised.async { implicit user =>
+    implicit request =>
+      AccountingPeriodPriorForm.accountingPeriodPriorForm.bindFromRequest.fold(
+        formWithErrors => view(formWithErrors).flatMap(view => BadRequest(view)),
+        currentFinancialPeriodPrior =>
+          keystoreService.saveCurrentFinancialPeriodPrior(currentFinancialPeriodPrior) flatMap { _ =>
+            currentFinancialPeriodPrior.currentPeriodIsPrior match {
+              case AccountingPeriodPriorForm.option_yes => yes
+              case AccountingPeriodPriorForm.option_no => no
+            }
+          }
+      )
   }
+
+  def yes(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.RegisterNextAccountingPeriodController.show())
+
+  def no(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod())
 
   def backUrl(implicit request: Request[_]): Future[String] = {
-
-    keystoreService.fetchCurrentFinancialPeriodPrior() flatMap {
-      case Some(currentPeriodPrior) => currentPeriodPrior.currentPeriodIsPrior match {
-        case CurrentFinancialPeriodPriorForm.option_yes =>
-          controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-        case CurrentFinancialPeriodPriorForm.option_no =>
-          controllers.business.routes.CurrentFinancialPeriodPriorController.show().url
-      }
+    import forms.OtherIncomeForm._
+    keystoreService.fetchOtherIncome().map {
+      case Some(OtherIncomeModel(`option_yes`)) => controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+      case Some(OtherIncomeModel(`option_no`)) => controllers.routes.OtherIncomeController.showOtherIncome().url
     }
   }
 

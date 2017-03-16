@@ -29,7 +29,7 @@ import play.api.data.validation.{Constraint, Valid, ValidationResult}
 
 import scala.util.Try
 
-object AccountingPeriodForm {
+object AccountingPeriodDateForm {
 
   val minStartDate: LocalDate = DateModel("01","04","2017").toLocalDate
   val maxMonths: Int = 24
@@ -78,7 +78,7 @@ object AccountingPeriodForm {
     }
   )
 
-  val accountingPeriodForm = Form(
+  val accountingPeriodDateForm = Form(
     mapping(
       startDate -> dateMapping.verifying(dateEmpty andThen dateValidation andThen startDateBeforeApr17),
       endDate -> dateMapping.verifying(dateEmpty andThen dateValidation)

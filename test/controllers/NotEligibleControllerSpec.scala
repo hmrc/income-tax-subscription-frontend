@@ -69,7 +69,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
 
       await(goodRequest)
       verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)
@@ -94,7 +94,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
 
       await(goodRequest)
       verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)

@@ -14,58 +14,55 @@
  * limitations under the License.
  *@
 
+@import models.AccoutingPeriodPriorModel$
 @import play.api.data.Form
-@import models._
-@import forms.AccountingPeriodForm._
-@import helpers._
+@import forms.AccountingPeriodPriorForm
+@import helpers.radioHelper
 @import uk.gov.hmrc.play.views.html.helpers.form
+@import helpers._
 @import config.AppConfig
-@import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 
-@(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, backUrl: String, viewType: AccountingPeriodViewType, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accoutingPeriodForm: Form[AccoutingPeriodPriorModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@scriptElem = {
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.min.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery-ui.min.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/date-helper.js")"></script>
+@question = @{
+    Messages("business.current_financial_period_prior.heading")
 }
 
-@views.html.templates.main_template(title = Messages("accounting_period.title"), bodyClasses = None, scriptElem = None) {
+@accordionInfo = {
+    <p>@Messages("business.current_financial_period_prior.accordion.line1")</p>
+    <p>@Messages("business.current_financial_period_prior.accordion.line2")</p>
+}
+
+@views.html.templates.main_template(title = Messages("business.current_financial_period_prior.title"), bodyClasses = None) {
+
     @back_link(backUrl)
 
-    @summaryErrorHelper(accountingPeriodForm)
+    @summaryErrorHelper(accoutingPeriodForm)
 
-    <h1 class="heading-xlarge">
-        @if(viewType == CurrentAccountingPeriodView) {
-            @Messages("accounting_period.heading.current")
-        } else {
-            @Messages("accounting_period.heading.next")
-        }
-    </h1>
+    <h1>@question</h1>
 
-    <p>@Messages("accounting_period.line_1")</p>
+    <div class="form-group">
+
+        <p>@Messages("business.current_financial_period_prior.line_1")</p>
+
+        @accordionHelper(Messages("business.current_financial_period_prior.accordion"), accordionInfo)
+    </div>
 
     @form(action = postAction) {
 
-        @dateHelper(
-            field = accountingPeriodForm(startDate),
-            label = Messages("base.startDate"),
-            parentForm = accountingPeriodForm,
-            hintText = Messages("base.exampleDate")
+        @radioHelper(
+            field = accoutingPeriodForm(AccountingPeriodPriorForm.accountingPeriodPrior),
+            legend = question,
+            options = Seq(
+                RadioOption(AccountingPeriodPriorForm.option_yes, Messages("business.current_financial_period_prior.yes")),
+                RadioOption(AccountingPeriodPriorForm.option_no, Messages("business.current_financial_period_prior.no"))
+            ),
+            parentForm = accoutingPeriodForm,
+            inline = true
         )
 
-        @dateHelper(
-            field = accountingPeriodForm(endDate),
-            label = Messages("base.endDate"),
-            parentForm = accountingPeriodForm,
-            hintText = Messages("base.exampleDate")
-        )
-
-        @if(isEditMode) {
-            @continueButton(Messages("base.update"))
-        } else {
-            @continueButton()
-        }
+        @continueButton()
 
     }
+
 }

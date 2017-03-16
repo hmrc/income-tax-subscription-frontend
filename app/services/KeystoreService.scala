@@ -94,12 +94,12 @@ class KeystoreService @Inject()(val session: SessionCache) {
 
   def saveSubscriptionId(mtditId: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC = save[String](MtditId, mtditId)
 
-  def fetchCurrentFinancialPeriodPrior()(implicit hc: HeaderCarrier, reads: Reads[CurrentFinancialPeriodPriorModel]): FO[CurrentFinancialPeriodPriorModel] =
-    fetch[CurrentFinancialPeriodPriorModel](CurrentFinancialPeriodPrior)
+  def fetchCurrentFinancialPeriodPrior()(implicit hc: HeaderCarrier, reads: Reads[AccoutingPeriodPriorModel]): FO[AccoutingPeriodPriorModel] =
+    fetch[AccoutingPeriodPriorModel](CurrentFinancialPeriodPrior)
 
-  def saveCurrentFinancialPeriodPrior(currentFinancialPeriodPrior: CurrentFinancialPeriodPriorModel)
-                                     (implicit hc: HeaderCarrier, reads: Reads[CurrentFinancialPeriodPriorModel]): FC =
-    save[CurrentFinancialPeriodPriorModel](CurrentFinancialPeriodPrior, currentFinancialPeriodPrior)
+  def saveCurrentFinancialPeriodPrior(currentFinancialPeriodPrior: AccoutingPeriodPriorModel)
+                                     (implicit hc: HeaderCarrier, reads: Reads[AccoutingPeriodPriorModel]): FC =
+    save[AccoutingPeriodPriorModel](CurrentFinancialPeriodPrior, currentFinancialPeriodPrior)
 
   def fetchRegisterNextAccountingPeriod()(implicit hc: HeaderCarrier, reads: Reads[RegisterNextAccountingPeriodModel]): FO[RegisterNextAccountingPeriodModel] =
     fetch[RegisterNextAccountingPeriodModel](RegisterNextAccountingPeriod)

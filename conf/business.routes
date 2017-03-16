@@ -1,19 +1,19 @@
 #Accounting Period Routes
-GET        /accounting-period                        controllers.business.BusinessAccountingPeriodController.showAccountingPeriod(editMode: Boolean ?= false)
-POST       /accounting-period                        controllers.business.BusinessAccountingPeriodController.submitAccountingPeriod(editMode: Boolean ?= false)
+GET         /accounting-period-dates                controllers.business.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode: Boolean ?= false)
+POST        /accounting-period-dates                controllers.business.BusinessAccountingPeriodDateController.submitAccountingPeriod(editMode: Boolean ?= false)
 
 #Name Routes
-GET        /name                                     controllers.business.BusinessNameController.showBusinessName(editMode: Boolean ?= false)
-POST       /name                                     controllers.business.BusinessNameController.submitBusinessName(editMode: Boolean ?= false)
+GET         /name                                   controllers.business.BusinessNameController.showBusinessName(editMode: Boolean ?= false)
+POST        /name                                   controllers.business.BusinessNameController.submitBusinessName(editMode: Boolean ?= false)
 
 #Income Type Routes
-GET        /income-type                              controllers.business.BusinessIncomeTypeController.showBusinessIncomeType(editMode: Boolean ?= false)
-POST       /income-type                              controllers.business.BusinessIncomeTypeController.submitBusinessIncomeType(editMode: Boolean ?= false)
+GET         /income-type                            controllers.business.BusinessIncomeTypeController.showBusinessIncomeType(editMode: Boolean ?= false)
+POST        /income-type                            controllers.business.BusinessIncomeTypeController.submitBusinessIncomeType(editMode: Boolean ?= false)
 
 #Current Financial Period Prior Routes
-GET        /current-financial-period-prior           controllers.business.CurrentFinancialPeriodPriorController.show
-POST       /current-financial-period-prior           controllers.business.CurrentFinancialPeriodPriorController.submit
+GET         /accounting-period                      controllers.business.BusinessAccountingPeriodController.show
+POST        /accounting-period                      controllers.business.BusinessAccountingPeriodController.submit
 
 #Register Next Accounting Period Routes
-GET        /register-next-accounting-period          controllers.business.RegisterNextAccountingPeriodController.show
-POST       /register-next-accounting-period          controllers.business.RegisterNextAccountingPeriodController.submit
+GET         /register-next-accounting-period        controllers.business.RegisterNextAccountingPeriodController.show
+POST        /register-next-accounting-period        controllers.business.RegisterNextAccountingPeriodController.submit

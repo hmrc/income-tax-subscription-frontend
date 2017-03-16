@@ -136,7 +136,7 @@ class SummaryPageViewSpec extends UnitTestTrait {
       val expectedQuestion = messages.accounting_period
       val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
       val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat} ${messages.accounting_period_month(periodInMonth)}"
-      val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod(editMode = true).url
+      val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

@@ -63,7 +63,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchNotEligible: MFO[NotEligibleModel] = DoNotConfigure,
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
-                                         fetchCurrentFinancialPeriodPrior: MFO[CurrentFinancialPeriodPriorModel] = DoNotConfigure,
+                                         fetchCurrentFinancialPeriodPrior: MFO[AccoutingPeriodPriorModel] = DoNotConfigure,
                                          fetchRegisterNextAccountingPeriod: MFO[RegisterNextAccountingPeriodModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
@@ -77,7 +77,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[NotEligibleModel](NotEligible, fetchNotEligible)
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
-    mockFetchFromKeyStore[CurrentFinancialPeriodPriorModel](CurrentFinancialPeriodPrior, fetchCurrentFinancialPeriodPrior)
+    mockFetchFromKeyStore[AccoutingPeriodPriorModel](CurrentFinancialPeriodPrior, fetchCurrentFinancialPeriodPrior)
     mockFetchFromKeyStore[RegisterNextAccountingPeriodModel](RegisterNextAccountingPeriod, fetchRegisterNextAccountingPeriod)
 
     setupMockKeystoreSaveFunctions()

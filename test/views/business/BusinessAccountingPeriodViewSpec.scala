@@ -16,9 +16,8 @@
 
 package views.business
 
-import assets.MessageLookup.{AccountingPeriod => messages, Base => commonMessages}
-import forms.AccountingPeriodForm
-import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
+import assets.MessageLookup.Business.{CurrentFinancialPeriodPrior => messages}
+import forms.AccountingPeriodPriorForm
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
@@ -26,76 +25,89 @@ import utils.UnitTestTrait
 
 class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
 
-  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+  lazy val backUrl = "BackUrl"
 
-  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean) = views.html.business.accounting_period(
-    accountingPeriodForm = AccountingPeriodForm.accountingPeriodForm,
-    postAction = controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(),
-    backUrl = backUrl,
-    viewType = viewType,
-    isEditMode
+  lazy val page = views.html.business.accounting_period(
+    accoutingPeriodForm = AccountingPeriodPriorForm.accountingPeriodPriorForm,
+    postAction = controllers.business.routes.BusinessAccountingPeriodController.submit(),
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(viewType: AccountingPeriodViewType, isEditMode: Boolean = false) = Jsoup.parse(page(viewType, isEditMode).body)
+  lazy val document = Jsoup.parse(page.body)
 
-  "The Business Accounting Period view" should {
-    Seq(CurrentAccountingPeriodView, NextAccountingPeriodView).foreach {
-      viewType =>
+  "The Current Financial Period Prior to April 17 view" should {
 
-        val prefix = s"When the viewtype=$viewType "
+    s"have a back button pointed to $backUrl" in {
+      val backLink = document.select("#back")
+      backLink.isEmpty mustBe false
+      backLink.attr("href") mustBe backUrl
+    }
 
-        lazy val document = documentCore(viewType)
+    s"have the title '${messages.title}'" in {
+      document.title() mustBe messages.title
+    }
 
-        s"$prefix have a back button pointed to $backUrl" in {
-          val backLink = document.select("#back")
-          backLink.isEmpty mustBe false
-          backLink.attr("href") mustBe backUrl
+    s"have the heading (H1) '${messages.heading}'" in {
+      document.select("h1").text() mustBe messages.heading
+    }
+
+    s"have the line 1 (P) '${messages.line_1}'" in {
+      document.select("p").text() must include(messages.line_1)
+    }
+
+    s"have the accordion (details) '${messages.accordion}'" in {
+      document.select("details").text() must include(messages.accordion)
+    }
+
+    s"have the accordion line 1 (details P) '${messages.accordion_line1}'" in {
+      document.select("details p").text() must include(messages.accordion_line1)
+    }
+
+    s"have the accordion line 2 (details P) '${messages.accordion_line2}'" in {
+      document.select("details p").text() must include(messages.accordion_line2)
+    }
+
+    "has a form" which {
+
+      s"has a fieldset for yes and no" which {
+
+        val fieldName = AccountingPeriodPriorForm.accountingPeriodPrior
+
+        s"has a legend which is visually hidden with the text '${messages.heading}'" in {
+          document.select("fieldset legend").text() mustBe messages.heading
         }
 
-        s"$prefix have the title '${messages.title}'" in {
-          document.title() mustBe messages.title
+        s"has a radio option for '$fieldName-${AccountingPeriodPriorForm.option_yes}'" in {
+          val selectedRadio = document.select(s"#$fieldName-${AccountingPeriodPriorForm.option_yes}")
+          selectedRadio.attr("type") mustBe "radio"
+          selectedRadio.attr("name") mustBe fieldName
+          selectedRadio.attr("value") mustBe AccountingPeriodPriorForm.option_yes
+          val label = document.getElementsByAttributeValue("for", s"$fieldName-${AccountingPeriodPriorForm.option_yes}")
+          label.size() mustBe 1
+          label.get(0).text() mustBe messages.yes
         }
 
-        val expectedHeading = viewType match {
-          case CurrentAccountingPeriodView => messages.heading_current
-          case NextAccountingPeriodView => messages.heading_next
+        s"has a radio option for '$fieldName-${AccountingPeriodPriorForm.option_no}'" in {
+          val selectedRadio = document.select(s"#$fieldName-${AccountingPeriodPriorForm.option_no}")
+          selectedRadio.attr("type") mustBe "radio"
+          selectedRadio.attr("name") mustBe fieldName
+          selectedRadio.attr("value") mustBe AccountingPeriodPriorForm.option_no
+          val label = document.getElementsByAttributeValue("for", s"$fieldName-${AccountingPeriodPriorForm.option_no}")
+          label.size() mustBe 1
+          label.get(0).text() mustBe messages.no
         }
-        s"$prefix have the heading (H1) '$expectedHeading'" in {
+      }
 
-          document.select("h1").text() mustBe expectedHeading
-        }
+      "has a continue button" in {
+        document.select("#continue-button").isEmpty mustBe false
+      }
 
-        s"$prefix have the line_1 (P) '${messages.line_1}'" in {
-          document.select("p").text() must include(messages.line_1)
-        }
-
-        s"$prefix has a form" which {
-
-          s"Has a legend with the text '${commonMessages.startDate}'" in {
-            document.select("#startDate legend span.form-label-bold").text() mustBe commonMessages.startDate
-          }
-
-          s"Has a legend with the text '${commonMessages.endDate}'" in {
-            document.select("#endDate legend span.form-label-bold").text() mustBe commonMessages.endDate
-          }
-
-          "has a continue button" in {
-            document.select("#continue-button").isEmpty mustBe false
-          }
-
-          s"has a post action to '${controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod().url}'" in {
-            document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod().url
-            document.select("form").attr("method") mustBe "POST"
-          }
-
-          "say update" in {
-            lazy val documentEdit = documentCore(viewType, isEditMode = true)
-            documentEdit.select("#continue-button").text() mustBe commonMessages.update
-          }
-
-        }
-
+      s"has a post action to '${controllers.business.routes.BusinessAccountingPeriodController.submit().url}'" in {
+        document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodController.submit().url
+        document.select("form").attr("method") mustBe "POST"
+      }
 
     }
+
   }
 }

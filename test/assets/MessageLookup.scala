@@ -73,11 +73,12 @@ object MessageLookup {
     }
 
     object CurrentFinancialPeriodPrior {
-      val title = "Did your current financial period start before 1 April 2017?"
+      val title = "Did your current accounting period start before 1 April 2017?"
       val heading: String = title
-      val line_1 = "This is the period that your latest income and expense records cover (also called your accounting period). Your financial period normally starts on 6 April, unless you’ve chosen to use your own dates."
-      val line_2 = "If you're a new business, this is the date you started trading."
-      val hint = "1 April 2017 is when the Register for digital Income Tax updates services started."
+      val line_1 = "1 April 2017 is the date this service started."
+      val accordion = "What is an accounting period?"
+      val accordion_line1 = "This is the period that your latest income and expense records cover for Self Assessment."
+      val accordion_line2 = "Your start date is usually 6 April (the same as the tax year), unless you selected a different date when you registered for Self Assessment."
       val yes = "Yes"
       val no = "No"
     }
