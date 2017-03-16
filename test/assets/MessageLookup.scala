@@ -211,24 +211,24 @@ object MessageLookup {
   object Error {
 
     object BackToPreferences {
-      val empty = "Please select an option"
+      val empty = "You must select an option to continue"
     }
 
     object Business {
 
       object SoleTrader {
-        val empty = "Please select an option"
-        val invalid = "Please select an option"
+        val empty = "You must select an option to continue"
+        val invalid = "You must select an option to continue"
       }
 
       object CurrentFinancialPeriodPrior {
-        val empty = "Please select an option"
-        val invalid = "Please select an option"
+        val empty = "You must select an option to continue"
+        val invalid = "You must select an option to continue"
       }
 
       object RegisterNextAccountingPeriod {
-        val empty = "Please select an option"
-        val invalid = "Please select an option"
+        val empty = "You must select an option to continue"
+        val invalid = "You must select an option to continue"
       }
 
     }
@@ -236,28 +236,26 @@ object MessageLookup {
     object Property {
 
       object Income {
-        val empty = "Please select an option"
-        val invalid = "Please select an option"
+        val empty = "You must select an option to continue"
+        val invalid = "You must select an option to continue"
       }
 
     }
 
     object Date {
-      val empty = "Please enter a date"
-      val invalid = "Please enter a valid date"
-      val end_violation = "The end date must be after the start date"
+      val empty = "You must enter a date"
+      val invalid = "You must enter a valid date"
+      val end_violation = "You must enter a date greater than the start date"
     }
 
     object BusinessAccountingPeriod {
-      val minStartDate = "You can't enter a start date that's before 1 April 2017"
-
-      def maxEndDate(months: String, date: String): String =
-        s"The end date must be within $months months of the start date, you can't enter a date that's after $date"
+      val minStartDate = "You can't enter a start date before 1 April 2017"
+      val maxEndDate = "You must provide an end date that is not more than 24 months after your start date"
     }
 
     object BusinessName {
-      val empty = "Please enter a business name"
-      val maxLength = "The business name is too long"
+      val empty = "You must enter your Business name"
+      val maxLength = "You can't enter more than 105 characters for your Business name"
       val invalid = "The business name contains invalid characters"
     }
 
@@ -268,27 +266,27 @@ object MessageLookup {
     }
 
     object IncomeType {
-      val empty = "Please select an income type"
-      val invalid = "Please select an income type"
+      val empty = "You must select an option to continue"
+      val invalid = "You must select an option to continue"
     }
 
     object NotEligible {
-      val empty = "Please select an option"
-      val invalid = "Please select an option"
+      val empty = "You must select an option to continue"
+      val invalid = "You must select an option to continue"
     }
 
     object OtherIncome {
-      val empty = "Please select an option"
-      val invalid = "Please select an option"
+      val empty = "You must select an option to continue"
+      val invalid = "You must select an option to continue"
     }
 
     object IncomeSource {
-      val empty = "Please select an income source"
-      val invalid = "Please select an income source"
+      val empty = "You must select an option to continue"
+      val invalid = "You must select an option to continue"
     }
 
     object Terms {
-      val empty = "Please accept the terms and conditions"
+      val empty = "You must confirm T&C's to continue"
     }
 
   }

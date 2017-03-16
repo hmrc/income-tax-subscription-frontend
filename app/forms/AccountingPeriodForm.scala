@@ -72,9 +72,7 @@ object AccountingPeriodForm {
       lazy val maxEndDate = accountingPeriod.startDate.plusMonths(maxMonths)
       lazy val invalid = ErrorMessageFactory.error(
         TargetIds(endDate),
-        "error.business_accounting_period.maxEndDate",
-        DateModel.dateConvert(maxEndDate).toOutputDateFormat,
-        maxMonths.toString
+        "error.business_accounting_period.maxEndDate"
       )
       if (accountingPeriod.endDate.isAfter(maxEndDate)) invalid else Valid
     }
