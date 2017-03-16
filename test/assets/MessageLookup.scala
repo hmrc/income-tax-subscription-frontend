@@ -317,9 +317,9 @@ object MessageLookup {
   }
 
   object ThrottleLimit {
-    val title = "This service is temporarily unavailable"
+    val title = "Service is unavailable due to maintenance"
     val heading = title
-    val line1 = "To register for digital updates, you'll have to try again after 24 hours."
+    val line1 = "Please try again later."
   }
 
   object MainIncomeError {

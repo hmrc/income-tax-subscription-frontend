@@ -104,9 +104,9 @@ timeout.heading                                                 = Your session h
 timeout.returnToHome                                            = To register to send digital tax updates, you''ll have to <a href="{0}" rel="external">sign back in</a> using your Government Gateway ID.
 
 ## Throttle limit reached page ##
-throttle_limit.title                                            = This service is temporarily unavailable
-throttle_limit.heading                                          = This service is temporarily unavailable
-throttle_limit.line_1                                           = To register for digital updates, you''ll have to try again after 24 hours.
+throttle_limit.title                                            = Service is unavailable due to maintenance
+throttle_limit.heading                                          = Service is unavailable due to maintenance
+throttle_limit.line_1                                           = Please try again later.
 
 
 ## Already enrolled page ##

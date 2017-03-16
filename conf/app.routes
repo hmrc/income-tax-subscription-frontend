@@ -47,8 +47,8 @@ GET         /no-nino                   controllers.NoNinoController.showNoNino
 POST        /no-nino                   controllers.NoNinoController.submitNoNino
 
 # Throttle limit reached routes
-GET         /error/throttling          controllers.throttling.ThrottlingController.show
-POST        /error/throttling          controllers.throttling.ThrottlingController.submit
+GET         /error/maintenance         controllers.throttling.ThrottlingController.show
+POST        /error/maintenance         controllers.throttling.ThrottlingController.submit
 
 # Other Income Sources Routes
 GET         /income-other              controllers.OtherIncomeController.showOtherIncome
