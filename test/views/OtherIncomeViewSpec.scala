@@ -79,14 +79,6 @@ class OtherIncomeViewSpec extends UnitTestTrait {
       document.getElementsByTag("LI").text() must include (messages.bullet6)
     }
 
-    s"have the paragraph (LI) '${messages.bullet7}'" in {
-      document.getElementsByTag("LI").text() must include (messages.bullet7)
-    }
-
-    s"have the paragraph (LI) '${messages.bullet8}'" in {
-      document.getElementsByTag("LI").text() must include (messages.bullet8)
-    }
-
     "have a form" which {
 
       val radioName = "choice"
