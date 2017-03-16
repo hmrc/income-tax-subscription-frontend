@@ -46,7 +46,7 @@ trait AppConfig {
 }
 
 @Singleton
-class FrontendAppConfig @Inject()(override val app: Application) extends AppConfig with ServicesConfig {
+class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with ServicesConfig {
 
   protected val configuration: Configuration = app.configuration
 

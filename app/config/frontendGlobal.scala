@@ -63,7 +63,7 @@ object LoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSuppor
 }
 
 object AuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport {
-  override def app = Play.current
+  def app = Play.current
 
   override lazy val maskedFormFields = Seq("password")
 

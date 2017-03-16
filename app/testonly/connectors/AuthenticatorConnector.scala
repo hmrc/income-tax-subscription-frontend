@@ -18,7 +18,8 @@
 
 package testonly.connectors
 
-import com.google.inject.{Inject, Singleton}
+import javax.inject.{Inject, Singleton}
+
 import connectors.RawResponseReads
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.play.http.ws.WSHttp
