@@ -16,12 +16,21 @@
 
 @import views.html.templates.main_template
 @import config.AppConfig
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import helpers._
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("timeout.title"), bodyClasses = None, showSignOutLink = false) {
 
-<h1>@Messages("timeout.title")</h1>
-<p>@Html(Messages("timeout.returnToHome", controllers.routes.HomeController.index().url))</p>
+    <h1>@Messages("mike.title")</h1>
+
+    <p>@Html(Messages("timeout.returnToHome", controllers.routes.HomeController.index().url))</p>
+
+    @form(action = postAction) {
+        @continueButton()
+    }
 
 }
+
+
