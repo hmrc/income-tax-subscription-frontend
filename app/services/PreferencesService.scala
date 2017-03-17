@@ -16,7 +16,7 @@
 
 package services
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import connectors.models.preferences.PaperlessState
 import connectors.preferences.PreferenceFrontendConnector
@@ -24,7 +24,7 @@ import play.api.mvc.{AnyContent, Request}
 
 import scala.concurrent.Future
 
-
+@Singleton
 class PreferencesService @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector) {
 
   @inline def checkPaperless(implicit request: Request[AnyContent]): Future[PaperlessState] =

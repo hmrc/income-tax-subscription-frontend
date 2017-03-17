@@ -16,7 +16,7 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import config.BaseControllerConfig
@@ -27,6 +27,7 @@ import services.ThrottlingService
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 
+@Singleton
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                override val messagesApi: MessagesApi,
                                throttlingService: ThrottlingService,

@@ -17,7 +17,7 @@
 package controllers
 
 import java.time.LocalDate
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import models.DateModel.dateConvert
@@ -25,7 +25,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.KeystoreService
 
-
+@Singleton
 class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService

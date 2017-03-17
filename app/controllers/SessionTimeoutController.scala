@@ -16,7 +16,7 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
-
+@Singleton
 class SessionTimeoutController @Inject()(implicit val applicationConfig: AppConfig,
                                          val messagesApi: MessagesApi
                                         ) extends FrontendController with I18nSupport {

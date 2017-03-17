@@ -28,7 +28,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 class DeEnrolController @Inject()(deEnrolmentConnector: DeEnrolmentConnector,
                                   authenticatorConnector: AuthenticatorConnector) extends FrontendController {
 
-  def resetUsers : Action[AnyContent] = Action.async { implicit request =>
+  val resetUsers = Action.async { implicit request =>
     for {
       ggStubResponse <- deEnrolmentConnector.resetUsers()
       authRefreshed <- authenticatorConnector.refreshProfile()

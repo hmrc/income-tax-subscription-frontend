@@ -16,7 +16,7 @@
 
 package controllers.business
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import controllers.BaseController
@@ -30,6 +30,7 @@ import services.KeystoreService
 
 import scala.concurrent.Future
 
+@Singleton
 class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService

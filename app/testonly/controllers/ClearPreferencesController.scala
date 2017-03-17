@@ -16,7 +16,7 @@
 
 package testonly.controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import connectors.models.preferences.Activated
@@ -28,6 +28,7 @@ import testonly.connectors.ClearPreferencesConnector
 import uk.gov.hmrc.play.http.HttpGet
 import utils.Implicits._
 
+@Singleton
 class ClearPreferencesController @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector,
                                            clearPreferencesConnector: ClearPreferencesConnector,
                                            val baseConfig: BaseControllerConfig,
@@ -35,7 +36,7 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
                                            httpGet: HttpGet
                                           ) extends BaseController {
 
-  def clear: Action[AnyContent] = Authorised.async { implicit user =>
+  val clear = Authorised.async { implicit user =>
     implicit request =>
       user.nino match {
         case None => InternalServerError("no nino")

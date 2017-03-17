@@ -16,7 +16,7 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.{AppConfig, BaseControllerConfig}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
-
+@Singleton
 class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
                                          val messagesApi: MessagesApi
                                         ) extends BaseController {

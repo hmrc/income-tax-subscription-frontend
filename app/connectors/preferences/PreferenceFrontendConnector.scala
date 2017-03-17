@@ -17,7 +17,7 @@
 package connectors.preferences
 
 import java.net.URLEncoder
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
 import connectors.RawResponseReads
@@ -32,6 +32,7 @@ import config.ITSAHeaderCarrierForPartialsConverter._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@Singleton
 class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
                                             httpGet: HttpGet,
                                             httpPut: HttpPut,

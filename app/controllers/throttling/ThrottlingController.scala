@@ -16,7 +16,7 @@
 
 package controllers.throttling
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import controllers.BaseController
@@ -24,6 +24,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import utils.Implicits._
 
+@Singleton
 class ThrottlingController @Inject()(override val baseConfig: BaseControllerConfig,
                                      val messagesApi: MessagesApi
                                     ) extends BaseController {
