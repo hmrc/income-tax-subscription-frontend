@@ -144,9 +144,8 @@ object MessageLookup {
       val both = "Business and property"
     }
 
-    val accounting_period: String => String = currentOrNext => s"Your $currentOrNext accounting period dates:"
-    val accounting_period_current = "current"
-    val accounting_period_next = "next"
+    val accounting_period_prior = "Did your current accounting period start before 1 April 2017?"
+    val accounting_period =  s"Your accounting period dates:"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "What's the name of your business?"
     val income_type = "What method do you use for your accounting?"

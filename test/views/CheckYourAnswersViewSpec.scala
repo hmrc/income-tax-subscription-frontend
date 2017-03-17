@@ -50,8 +50,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Html = views.html.check_your_answers(
     summaryModel = testSummary,
     postAction = postAction,
-    backUrl = backUrl,
-    accountingPeriodViewType = accountingPeriodViewType
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
   def document(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Document = page(accountingPeriodViewType).doc
@@ -125,9 +124,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       }
     }
 
-    "display the correct info for the accounting period" in {
+    "display the correct info for the accounting period date" in {
       val sectionId = AccountingPeriodDateId
-      val expectedQuestion = messages.accounting_period(messages.accounting_period_current)
+      val expectedQuestion = messages.accounting_period
       val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
       val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
       val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url

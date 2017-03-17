@@ -58,6 +58,7 @@ business.register_next_accounting_period.no                      = No - sign out
 
 ## Business Accounting Period page
 accounting_period.title                                         = Business accounting period
+accounting_period.heading                                       = What are the dates of your accounting period?
 accounting_period.heading.current                               = What are the dates of your current accounting period?
 accounting_period.heading.next                                  = When is your next accounting period?
 accounting_period.line_1                                        = Your accounting period is usually 6 April to 5 April (the same as the tax year), unless you selected different dates when you registered for Self Assessment.
@@ -141,9 +142,7 @@ summary.income_source.business                                  = Business
 summary.income_source.property                                  = Property
 summary.income_source.both                                      = Business and property
 summary.accounting_period_prior                                 = Did your current accounting period start before 1 April 2017?
-summary.accounting_period                                       = Your {0} accounting period dates:
-summary.accounting_period.current                               = current
-summary.accounting_period.next                                  = next
+summary.accounting_period                                       = Your accounting period dates:
 summary.business_name                                           = What''s the name of your business?
 summary.income_type                                             = What method do you use for your accounting?
 summary.income_type.cash                                        = Cash basis

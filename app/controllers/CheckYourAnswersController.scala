@@ -41,8 +41,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         case Some(cache) =>
           Ok(views.html.check_your_answers(cache.getSummary,
             controllers.routes.CheckYourAnswersController.submit(),
-            backUrl = backUrl,
-            accountingPeriodViewType = cache.getAccountingPeriodPrior.get
+            backUrl = backUrl
           ))
       }
   }
