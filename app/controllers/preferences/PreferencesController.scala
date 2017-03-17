@@ -16,7 +16,7 @@
 
 package controllers.preferences
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import connectors.models.preferences.Activated
@@ -32,6 +32,7 @@ import utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
+@Singleton
 class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val preferencesService: PreferencesService) extends BaseController {

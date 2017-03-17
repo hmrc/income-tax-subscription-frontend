@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 @Singleton
 class ResetThrottleController @Inject()(resetThrottleConnector: ResetThrottleConnector) extends FrontendController {
 
-  def resetThrottle: Action[AnyContent] = Action.async { implicit request =>
+  val resetThrottle = Action.async { implicit request =>
     resetThrottleConnector.reset.map {
       response =>
         response.status match {

@@ -16,7 +16,7 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import forms.{IncomeSourceForm, NotEligibleForm}
@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.Future
 
-
+@Singleton
 class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val keystoreService: KeystoreService

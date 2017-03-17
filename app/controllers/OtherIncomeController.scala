@@ -16,7 +16,7 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import forms.{IncomeSourceForm, IncomeTypeForm, OtherIncomeForm}
@@ -30,6 +30,7 @@ import utils.Implicits._
 
 import scala.concurrent.Future
 
+@Singleton
 class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val keystoreService: KeystoreService

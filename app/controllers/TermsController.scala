@@ -16,7 +16,7 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import forms.{IncomeSourceForm, TermForm}
@@ -31,6 +31,7 @@ import utils.Implicits._
 
 import scala.concurrent.Future
 
+@Singleton
 class TermsController @Inject()(val baseConfig: BaseControllerConfig,
                                 val messagesApi: MessagesApi,
                                 val keystoreService: KeystoreService

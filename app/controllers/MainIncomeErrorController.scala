@@ -16,7 +16,7 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
@@ -24,6 +24,7 @@ import play.api.mvc.Call
 
 import scala.concurrent.Future
 
+@Singleton
 class MainIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                           val messagesApi: MessagesApi
                                          ) extends BaseController {

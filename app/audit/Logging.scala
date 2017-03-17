@@ -55,6 +55,3 @@ class Logging @Inject()(application: Application,
   @inline def err(msg: String)(implicit config: Option[LoggingConfig] = None): Unit = Logger.error(config.addHeading(msg))
 
 }
-
-object Logging {}
-

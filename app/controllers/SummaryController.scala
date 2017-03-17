@@ -16,7 +16,7 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import config.BaseControllerConfig
@@ -26,6 +26,7 @@ import services.{KeystoreService, SubscriptionService}
 
 import scala.concurrent.Future
 
+@Singleton
 class SummaryController @Inject()(val baseConfig: BaseControllerConfig,
                                   val messagesApi: MessagesApi,
                                   val keystoreService: KeystoreService,
