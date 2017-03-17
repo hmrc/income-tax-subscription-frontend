@@ -19,7 +19,7 @@ package forms
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
-import models.AccoutingPeriodPriorModel
+import models.AccountingPeriodPriorModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid}
@@ -50,7 +50,7 @@ object AccountingPeriodPriorForm {
   val accountingPeriodPriorForm = Form(
     mapping(
       accountingPeriodPrior -> oText.toText.verifying(nonEmpty andThen validOption)
-    )(AccoutingPeriodPriorModel.apply)(AccoutingPeriodPriorModel.unapply)
+    )(AccountingPeriodPriorModel.apply)(AccountingPeriodPriorModel.unapply)
   )
 
 }

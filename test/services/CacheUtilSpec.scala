@@ -30,8 +30,8 @@ class CacheUtilSpec extends UnitTestTrait {
     "In the respective get calls, return None if they are not in the cachemap" in {
       emptyCacheMap.getIncomeSource() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
-      emptyCacheMap.getAccountingPeriod() shouldBe None
-      emptyCacheMap.getContactEmail() shouldBe None
+      emptyCacheMap.getAccountingPeriodPrior() shouldBe None
+      emptyCacheMap.getAccountingPeriodDate() shouldBe None
       emptyCacheMap.getIncomeType() shouldBe None
       emptyCacheMap.getTerms() shouldBe None
     }
@@ -39,8 +39,8 @@ class CacheUtilSpec extends UnitTestTrait {
     "In the respective get calls, return the models if they are in the cachemap" in {
       testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
-      testCacheMap.getAccountingPeriod() shouldBe Some(testAccountingPeriod)
-      testCacheMap.getContactEmail() shouldBe Some(testContactEmail)
+      testCacheMap.getAccountingPeriodPrior() shouldBe Some(testAccountingPeriodPriorCurrent)
+      testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
       testCacheMap.getIncomeType() shouldBe Some(testIncomeType)
       testCacheMap.getTerms() shouldBe Some(testTerms)
     }
@@ -49,28 +49,25 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceBoth,
+          testAccountingPeriodPriorCurrent,
           testAccountingPeriod,
           testBusinessName,
           testIncomeType,
-          testContactEmail,
           testTerms
         )
 
       // for the property only journey, this should only populate the subset of views
       // relevant to the journey
       val overPopulatedPropertyCacheMap =
-        testCacheMap(
-          testIncomeSourceProperty,
+        testCacheMap(testIncomeSourceProperty,
+          testAccountingPeriodPriorCurrent,
           testAccountingPeriod,
           testBusinessName,
           testIncomeType,
-          testContactEmail,
-          testTerms
-        )
+          testTerms)
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceProperty,
-          contactEmail = testContactEmail,
           terms = testTerms
         )
 

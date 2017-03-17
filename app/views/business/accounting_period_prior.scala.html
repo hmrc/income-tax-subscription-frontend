@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.AccoutingPeriodPriorModel
+@import models.AccountingPeriodPriorModel
 @import play.api.data.Form
 @import forms.AccountingPeriodPriorForm
 @import helpers.radioHelper
@@ -22,7 +22,7 @@
 @import helpers._
 @import config.AppConfig
 
-@(accountingPeriodPriorForm: Form[AccoutingPeriodPriorModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingPeriodPriorForm: Form[AccountingPeriodPriorModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     Messages("business.current_financial_period_prior.heading")
@@ -61,7 +61,11 @@
             inline = true
         )
 
-        @continueButton()
+        @if(isEditMode) {
+            @continueButton(Messages("base.update"))
+        } else {
+            @continueButton()
+        }
 
     }
 

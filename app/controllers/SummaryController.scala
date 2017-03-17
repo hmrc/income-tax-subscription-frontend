@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 import audit.Logging
 import config.BaseControllerConfig
-import connectors.models.subscription.{FESuccessResponse, IncomeSourceType}
+import connectors.models.subscription.FESuccessResponse
 import play.api.i18n.MessagesApi
 import services.{KeystoreService, SubscriptionService}
 
@@ -41,15 +41,16 @@ class SummaryController @Inject()(val baseConfig: BaseControllerConfig,
         case Some(cache) =>
           Ok(views.html.summary_page(cache.getSummary,
             controllers.routes.SummaryController.submitSummary(),
-            backUrl = backUrl
+            backUrl = backUrl,
+            accountingPeriodViewType = cache.getAccountingPeriodPrior.get
           ))
       }
   }
 
   val submitSummary = Authorised.async { implicit user =>
     implicit request =>
-//        keystoreService.fetchIncomeSource() flatMap {
-        keystoreService.fetchAll() flatMap {
+      //        keystoreService.fetchIncomeSource() flatMap {
+      keystoreService.fetchAll() flatMap {
         case Some(source) =>
           val nino = user.nino.fold("")(x => x)
           middleService.submitSubscription(nino, source.getSummary()).flatMap {

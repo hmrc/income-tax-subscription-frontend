@@ -29,22 +29,22 @@ object CacheUtil {
 
     def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
 
-    def getAccountingPeriod()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriod)
+    def getAccountingPeriodPrior()(implicit read: Reads[AccountingPeriodPriorModel]): Option[AccountingPeriodPriorModel] = cacheMap.getEntry(CurrentFinancialPeriodPrior)
+
+    def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriod)
 
     def getBusinessName()(implicit read: Reads[BusinessNameModel]): Option[BusinessNameModel] = cacheMap.getEntry(BusinessName)
 
     def getIncomeType()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(IncomeType)
 
-    def getContactEmail()(implicit read: Reads[EmailModel]): Option[EmailModel] = cacheMap.getEntry(ContactEmail)
-
     def getTerms()(implicit read: Reads[TermModel]): Option[TermModel] = cacheMap.getEntry(Terms)
 
     def getSummary()(implicit
                      isrc: Reads[IncomeSourceModel],
-                     acc: Reads[AccountingPeriodModel],
+                     accp: Reads[AccountingPeriodPriorModel],
+                     accd: Reads[AccountingPeriodModel],
                      bus: Reads[BusinessNameModel],
                      inc: Reads[AccountingMethodModel],
-                     ema: Reads[EmailModel],
                      ter: Reads[TermModel]): SummaryModel = {
       val incomeSource = getIncomeSource()
       incomeSource match {
@@ -53,16 +53,15 @@ object CacheUtil {
             case IncomeSourceForm.option_property =>
               SummaryModel(
                 incomeSource,
-                contactEmail = getContactEmail(),
                 terms = getTerms()
               )
             case _ =>
               SummaryModel(
                 incomeSource,
-                getAccountingPeriod(),
+                getAccountingPeriodPrior(),
+                getAccountingPeriodDate(),
                 getBusinessName(),
                 getIncomeType(),
-                getContactEmail(),
                 getTerms()
               )
           }

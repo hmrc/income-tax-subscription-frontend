@@ -20,7 +20,7 @@ import assets.MessageLookup
 import forms.AccountingPeriodPriorForm._
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.{DataMap, _}
-import models.AccoutingPeriodPriorModel
+import models.AccountingPeriodPriorModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
@@ -31,7 +31,7 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
     "transform the request to the form case class" in {
       val testIncomeSource = option_yes
       val testInput = Map(accountingPeriodPrior -> testIncomeSource)
-      val expected = AccoutingPeriodPriorModel(testIncomeSource)
+      val expected = AccountingPeriodPriorModel(testIncomeSource)
       val actual = accountingPeriodPriorForm.bind(testInput).value
 
       actual shouldBe Some(expected)

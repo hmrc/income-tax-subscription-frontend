@@ -21,13 +21,13 @@ import javax.inject.Inject
 import config.BaseControllerConfig
 import controllers.BaseController
 import forms._
-import models.{AccountingPeriodModel, AccoutingPeriodPriorModel$}
+import models.AccountingPeriodModel
+import models.enums._
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.KeystoreService
-import models.enums._
 import utils.Implicits._
 
 import scala.concurrent.Future
@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseControllerConfig,
                                                        val messagesApi: MessagesApi,
                                                        val keystoreService: KeystoreService
-                                                  ) extends BaseController {
+                                                      ) extends BaseController {
 
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, viewType: AccountingPeriodViewType)(implicit request: Request[_]): Html =
     views.html.business.accounting_period_date(

@@ -18,8 +18,8 @@ package models
 
 
 case class SummaryModel(incomeSource: Option[IncomeSourceModel] = None,
+                        accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                         accountingPeriod: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         incomeType: Option[AccountingMethodModel] = None,
-                        contactEmail: Option[EmailModel] = None,
                         terms: Option[TermModel] = None)

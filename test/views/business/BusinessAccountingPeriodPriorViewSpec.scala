@@ -23,48 +23,49 @@ import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import utils.UnitTestTrait
 
-class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
+class BusinessAccountingPeriodPriorViewSpec extends UnitTestTrait {
 
   lazy val backUrl = "BackUrl"
 
-  lazy val page = views.html.business.accounting_period_prior(
+  private def page(isEditMode: Boolean) = views.html.business.accounting_period_prior(
     accountingPeriodPriorForm = AccountingPeriodPriorForm.accountingPeriodPriorForm,
     postAction = controllers.business.routes.BusinessAccountingPeriodPriorController.submit(),
-    backUrl = backUrl
+    backUrl = backUrl,
+    isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
-  lazy val document = Jsoup.parse(page.body)
+  private def document(isEditMode: Boolean = false) = Jsoup.parse(page(isEditMode).body)
 
   "The Business Accounting Period view" should {
 
     s"have a back button pointed to $backUrl" in {
-      val backLink = document.select("#back")
+      val backLink = document().select("#back")
       backLink.isEmpty mustBe false
       backLink.attr("href") mustBe backUrl
     }
 
     s"have the title '${messages.title}'" in {
-      document.title() mustBe messages.title
+      document().title() mustBe messages.title
     }
 
     s"have the heading (H1) '${messages.heading}'" in {
-      document.select("h1").text() mustBe messages.heading
+      document().select("h1").text() mustBe messages.heading
     }
 
     s"have the line 1 (P) '${messages.line_1}'" in {
-      document.select("p").text() must include(messages.line_1)
+      document().select("p").text() must include(messages.line_1)
     }
 
     s"have the accordion (details) '${messages.accordion}'" in {
-      document.select("details").text() must include(messages.accordion)
+      document().select("details").text() must include(messages.accordion)
     }
 
     s"have the accordion line 1 (details P) '${messages.accordion_line1}'" in {
-      document.select("details p").text() must include(messages.accordion_line1)
+      document().select("details p").text() must include(messages.accordion_line1)
     }
 
     s"have the accordion line 2 (details P) '${messages.accordion_line2}'" in {
-      document.select("details p").text() must include(messages.accordion_line2)
+      document().select("details p").text() must include(messages.accordion_line2)
     }
 
     "has a form" which {
@@ -74,37 +75,37 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
         val fieldName = AccountingPeriodPriorForm.accountingPeriodPrior
 
         s"has a legend which is visually hidden with the text '${messages.heading}'" in {
-          document.select("fieldset legend").text() mustBe messages.heading
+          document().select("fieldset legend").text() mustBe messages.heading
         }
 
         s"has a radio option for '$fieldName-${AccountingPeriodPriorForm.option_yes}'" in {
-          val selectedRadio = document.select(s"#$fieldName-${AccountingPeriodPriorForm.option_yes}")
+          val selectedRadio = document().select(s"#$fieldName-${AccountingPeriodPriorForm.option_yes}")
           selectedRadio.attr("type") mustBe "radio"
           selectedRadio.attr("name") mustBe fieldName
           selectedRadio.attr("value") mustBe AccountingPeriodPriorForm.option_yes
-          val label = document.getElementsByAttributeValue("for", s"$fieldName-${AccountingPeriodPriorForm.option_yes}")
+          val label = document().getElementsByAttributeValue("for", s"$fieldName-${AccountingPeriodPriorForm.option_yes}")
           label.size() mustBe 1
           label.get(0).text() mustBe messages.yes
         }
 
         s"has a radio option for '$fieldName-${AccountingPeriodPriorForm.option_no}'" in {
-          val selectedRadio = document.select(s"#$fieldName-${AccountingPeriodPriorForm.option_no}")
+          val selectedRadio = document().select(s"#$fieldName-${AccountingPeriodPriorForm.option_no}")
           selectedRadio.attr("type") mustBe "radio"
           selectedRadio.attr("name") mustBe fieldName
           selectedRadio.attr("value") mustBe AccountingPeriodPriorForm.option_no
-          val label = document.getElementsByAttributeValue("for", s"$fieldName-${AccountingPeriodPriorForm.option_no}")
+          val label = document().getElementsByAttributeValue("for", s"$fieldName-${AccountingPeriodPriorForm.option_no}")
           label.size() mustBe 1
           label.get(0).text() mustBe messages.no
         }
       }
 
       "has a continue button" in {
-        document.select("#continue-button").isEmpty mustBe false
+        document().select("#continue-button").isEmpty mustBe false
       }
 
       s"has a post action to '${controllers.business.routes.BusinessAccountingPeriodPriorController.submit().url}'" in {
-        document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.submit().url
-        document.select("form").attr("method") mustBe "POST"
+        document().select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.submit().url
+        document().select("form").attr("method") mustBe "POST"
       }
 
     }

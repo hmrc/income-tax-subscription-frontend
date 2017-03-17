@@ -18,11 +18,12 @@ package views.html.helpers
 
 object SummaryIdConstants {
 
+  val ReceiveEmail = "receiveEmail"
   val IncomeSourceId = "incomeSource"
-  val AccountingPeriodId = "accountingPeriod"
+  val AccountingPeriodPriorId = "accountingPeriodPrior"
+  val AccountingPeriodDateId = "accountingPeriodDate"
   val BusinessNameId = "businessName"
   val IncomeTypeId = "incomeType"
-  val ContactEmailId = "contactEmail"
   val TermsId = "terms"
 
 }

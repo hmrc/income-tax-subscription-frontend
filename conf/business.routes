@@ -11,8 +11,8 @@ GET         /accounting-method                      controllers.business.Busines
 POST        /accounting-method                      controllers.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
 
 #Current Financial Period Prior Routes
-GET         /accounting-period-prior                controllers.business.BusinessAccountingPeriodPriorController.show
-POST        /accounting-period-prior                controllers.business.BusinessAccountingPeriodPriorController.submit
+GET         /accounting-period-prior                controllers.business.BusinessAccountingPeriodPriorController.show(editMode: Boolean ?= false)
+POST        /accounting-period-prior                controllers.business.BusinessAccountingPeriodPriorController.submit(editMode: Boolean ?= false)
 
 #Register Next Accounting Period Routes
 GET         /register-next-accounting-period        controllers.business.RegisterNextAccountingPeriodController.show

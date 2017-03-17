@@ -135,10 +135,8 @@ object MessageLookup {
   object Summary {
     val title = "Check your answers"
     val heading: String = title
-    val line_1 = "You can edit your answers if you need to. When you're ready, submit your answers to sign up to send HMRC digital income and expenditure updates."
-    val h2 = "Now send your application"
-    val line_2 = "By submitting this notification you are confirming that, to the best of your knowledge, the details you are providing are correct."
-    val income_source = "Income type"
+    val h2 = "You've told us"
+    val income_source = "Where does your income come from?"
 
     object IncomeSource {
       val business = "Business"
@@ -146,18 +144,20 @@ object MessageLookup {
       val both = "Business and property"
     }
 
-    val accounting_period = "Accounting period"
+    val accounting_period: String => String = currentOrNext => s"Your $currentOrNext accounting period dates:"
+    val accounting_period_current = "current"
+    val accounting_period_next = "next"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
-    val business_name = "Business name"
-    val income_type = "Accounting type"
+    val business_name = "What's the name of your business?"
+    val income_type = "What method do you use for your accounting?"
 
     object IncomeType {
       val cash = "Cash basis"
       val accruals = "Accruals basis"
     }
 
-    val contact_email = "Email"
-    val terms = "Terms and conditions"
+    val contact_email = "Do you want to receive electronic communications from HMRC?"
+    val terms = "Terms of participation"
     val terms_agreed = "I agree"
   }
 

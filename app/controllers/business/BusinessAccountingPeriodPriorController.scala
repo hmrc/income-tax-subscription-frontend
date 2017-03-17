@@ -21,7 +21,7 @@ import javax.inject.Inject
 import config.BaseControllerConfig
 import controllers.BaseController
 import forms.AccountingPeriodPriorForm
-import models.{AccoutingPeriodPriorModel, OtherIncomeModel}
+import models.{AccountingPeriodPriorModel, OtherIncomeModel}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -35,34 +35,41 @@ import scala.concurrent.Future
 class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseControllerConfig,
                                                         val messagesApi: MessagesApi,
                                                         val keystoreService: KeystoreService
-                                                  ) extends BaseController {
+                                                       ) extends BaseController {
 
-  def view(accountingPeriodPriorForm: Form[AccoutingPeriodPriorModel])(implicit request: Request[_]): Future[Html] =
+  def view(accountingPeriodPriorForm: Form[AccountingPeriodPriorModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] =
     backUrl.map { backUrl =>
       views.html.business.accounting_period_prior(
         accountingPeriodPriorForm = accountingPeriodPriorForm,
-        postAction = controllers.business.routes.BusinessAccountingPeriodPriorController.submit(),
-        backUrl = backUrl
+        postAction = controllers.business.routes.BusinessAccountingPeriodPriorController.submit(editMode = isEditMode),
+        backUrl = backUrl,
+        isEditMode = isEditMode
       )
     }
 
-  val show: Action[AnyContent] = Authorised.async { implicit user =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchCurrentFinancialPeriodPrior().flatMap { x =>
-        view(AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(x)).flatMap(view => Ok(view))
+        view(AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(x), isEditMode = isEditMode).flatMap(view => Ok(view))
       }
   }
 
-  val submit: Action[AnyContent] = Authorised.async { implicit user =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       AccountingPeriodPriorForm.accountingPeriodPriorForm.bindFromRequest.fold(
-        formWithErrors => view(formWithErrors).flatMap(view => BadRequest(view)),
+        formWithErrors => view(formWithErrors, isEditMode = isEditMode).flatMap(view => BadRequest(view)),
         currentFinancialPeriodPrior =>
-          keystoreService.saveCurrentFinancialPeriodPrior(currentFinancialPeriodPrior) flatMap { _ =>
-            currentFinancialPeriodPrior.currentPeriodIsPrior match {
-              case AccountingPeriodPriorForm.option_yes => yes
-              case AccountingPeriodPriorForm.option_no => no
-            }
+          keystoreService.fetchCurrentFinancialPeriodPrior().flatMap {
+            somePreviousAnswer =>
+              keystoreService.saveCurrentFinancialPeriodPrior(currentFinancialPeriodPrior) flatMap { _ =>
+                if (somePreviousAnswer.fold(false)(previousAnswer => previousAnswer.equals(currentFinancialPeriodPrior)) && isEditMode)
+                  Redirect(controllers.routes.SummaryController.showSummary())
+                else
+                  currentFinancialPeriodPrior.currentPeriodIsPrior match {
+                    case AccountingPeriodPriorForm.option_yes => yes
+                    case AccountingPeriodPriorForm.option_no => no
+                  }
+              }
           }
       )
   }
