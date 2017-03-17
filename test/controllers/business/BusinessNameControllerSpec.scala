@@ -95,12 +95,12 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
       }
 
-      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)

@@ -78,12 +78,12 @@ class TermsControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchTerms = 0, saveTerms = 1)
       }
 
-      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodResult = callShow()
 
-        redirectLocation(goodResult) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+        redirectLocation(goodResult) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodResult)
         verifyKeystore(fetchTerms = 0, saveTerms = 1)
@@ -101,11 +101,11 @@ class TermsControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchTerms = 0, saveTerms = 1)
       }
 
-      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
 
         val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchTerms = 0, saveTerms = 1)

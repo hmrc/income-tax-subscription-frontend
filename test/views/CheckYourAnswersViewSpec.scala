@@ -29,7 +29,7 @@ import play.twirl.api.Html
 import utils.{TestModels, UnitTestTrait}
 import views.html.helpers.SummaryIdConstants._
 
-class SummaryPageViewSpec extends UnitTestTrait {
+class CheckYourAnswersViewSpec extends UnitTestTrait {
 
   val testAccountingPeriod = AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))
   val testBusinessName = BusinessNameModel("test business name")
@@ -44,10 +44,10 @@ class SummaryPageViewSpec extends UnitTestTrait {
     terms = testTerms
   )
 
-  lazy val postAction: Call = controllers.routes.SummaryController.submitSummary()
+  lazy val postAction: Call = controllers.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.routes.TermsController.showTerms().url
 
-  def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Html = views.html.summary_page(
+  def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Html = views.html.check_your_answers(
     summaryModel = testSummary,
     postAction = postAction,
     backUrl = backUrl,

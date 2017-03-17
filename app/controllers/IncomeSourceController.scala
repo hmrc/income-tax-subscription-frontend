@@ -70,7 +70,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
             } yield {
               // if what was persisted is the same as the new value then go straight back to summary
               if (oldIncomeSource.fold(false)(i => i.source.equals(incomeSource.source)))
-                Future.successful(Redirect(controllers.routes.SummaryController.submitSummary()))
+                Future.successful(Redirect(controllers.routes.CheckYourAnswersController.submit()))
               else // otherwise go back to the linear journey
                 linearJourney
             }).flatMap(x => x)

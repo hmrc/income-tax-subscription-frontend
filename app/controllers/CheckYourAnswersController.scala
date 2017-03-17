@@ -26,30 +26,29 @@ import services.{KeystoreService, SubscriptionService}
 
 import scala.concurrent.Future
 
-class SummaryController @Inject()(val baseConfig: BaseControllerConfig,
-                                  val messagesApi: MessagesApi,
-                                  val keystoreService: KeystoreService,
-                                  val middleService: SubscriptionService,
-                                  logging: Logging
+class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
+                                           val messagesApi: MessagesApi,
+                                           val keystoreService: KeystoreService,
+                                           val middleService: SubscriptionService,
+                                           logging: Logging
                                  ) extends BaseController {
 
   import services.CacheUtil._
 
-  val showSummary = Authorised.async { implicit user =>
+  val show = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchAll() map {
         case Some(cache) =>
-          Ok(views.html.summary_page(cache.getSummary,
-            controllers.routes.SummaryController.submitSummary(),
+          Ok(views.html.check_your_answers(cache.getSummary,
+            controllers.routes.CheckYourAnswersController.submit(),
             backUrl = backUrl,
             accountingPeriodViewType = cache.getAccountingPeriodPrior.get
           ))
       }
   }
 
-  val submitSummary = Authorised.async { implicit user =>
+  val submit = Authorised.async { implicit user =>
     implicit request =>
-      //        keystoreService.fetchIncomeSource() flatMap {
       keystoreService.fetchAll() flatMap {
         case Some(source) =>
           val nino = user.nino.fold("")(x => x)

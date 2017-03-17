@@ -17,8 +17,8 @@ GET         /income                           controllers.IncomeSourceController
 POST        /income                           controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
 
 # Summary Routes
-GET         /summary                          controllers.SummaryController.showSummary
-POST        /summary                          controllers.SummaryController.submitSummary
+GET         /check-your-answers               controllers.CheckYourAnswersController.show
+POST        /check-your-answers               controllers.CheckYourAnswersController.submit
 
 # Confirmation Routes
 GET         /confirmation                     controllers.ConfirmationController.showConfirmation

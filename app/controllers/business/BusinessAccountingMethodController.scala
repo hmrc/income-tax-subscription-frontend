@@ -57,7 +57,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
         formWithErrors => Future.successful(BadRequest(view(accountingMethodForm = formWithErrors, isEditMode = isEditMode))),
         incomeType => {
           keystoreService.saveIncomeType(incomeType) map (_ => isEditMode match {
-            case true => Redirect(controllers.routes.SummaryController.showSummary())
+            case true => Redirect(controllers.routes.CheckYourAnswersController.show())
             case _ => Redirect(controllers.routes.TermsController.showTerms())
           })
         }

@@ -58,7 +58,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         formWithErrors => backUrl.map(backUrl => BadRequest(view(formWithErrors, backUrl = backUrl, isEditMode))),
         terms => {
           keystoreService.saveTerms(terms) map (
-            _ => Redirect(controllers.routes.SummaryController.showSummary()))
+            _ => Redirect(controllers.routes.CheckYourAnswersController.show()))
         }
       )
   }

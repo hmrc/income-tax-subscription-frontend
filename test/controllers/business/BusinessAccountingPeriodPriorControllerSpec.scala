@@ -153,7 +153,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         setupMockKeystore(fetchCurrentFinancialPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe controllers.routes.SummaryController.showSummary().url
+        redirectLocation(goodRequest).get mustBe controllers.routes.CheckYourAnswersController.show().url
         verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
       }
 
@@ -179,7 +179,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         setupMockKeystore(fetchCurrentFinancialPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe controllers.routes.SummaryController.showSummary().url
+        redirectLocation(goodRequest).get mustBe controllers.routes.CheckYourAnswersController.show().url
         await(goodRequest)
         verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
       }

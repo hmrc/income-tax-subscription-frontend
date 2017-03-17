@@ -75,7 +75,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
             accountingPeriod =>
               keystoreService.saveAccountingPeriod(accountingPeriod) map (_ =>
                 if (isEditMode)
-                  Redirect(controllers.routes.SummaryController.showSummary())
+                  Redirect(controllers.routes.CheckYourAnswersController.show())
                 else
                   Redirect(controllers.business.routes.BusinessNameController.showBusinessName())
                 )
