@@ -60,12 +60,6 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveAccountingPeriodDate(accountingPeriod: AccountingPeriodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FC =
     save[AccountingPeriodModel](AccountingPeriodDate, accountingPeriod)
 
-  def fetchContactEmail()(implicit hc: HeaderCarrier, reads: Reads[EmailModel]): FO[EmailModel] =
-    fetch[EmailModel](ContactEmail)
-
-  def saveContactEmail(contactEmail: EmailModel)(implicit hc: HeaderCarrier, reads: Reads[EmailModel]): FC =
-    save[EmailModel](ContactEmail, contactEmail)
-
   def fetchAccountingMethod()(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FO[AccountingMethodModel] =
     fetch[AccountingMethodModel](AccountingMethod)
 
