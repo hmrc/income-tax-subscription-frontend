@@ -5,6 +5,10 @@ GET         /assets/*file                     controllers.Assets.at(path="/publi
 GET         /                                 controllers.HomeController.home
 GET         /index                            controllers.HomeController.index
 
+# Front Page (start) Routes
+GET         /start                            controllers.FrontPageController.show
+POST        /start                            controllers.FrontPageController.submit
+
 # SignOut Controller
 GET         /logout                           controllers.SignOutController.signOut
 
@@ -66,7 +70,3 @@ GET         /error/main-income                controllers.MainIncomeErrorControl
 GET         /error/other-income               controllers.OtherIncomeErrorController.showOtherIncomeError
 POST        /error/other-income               controllers.OtherIncomeErrorController.submitOtherIncomeError
 
-# Start Routes
-# GET         /start                   controllers.FrontPageController.showFrontPage
-# POST        /start                   controllers.FrontPageController.submitFrontPage
-GET           /joe                     controllers.FrontPageController.joe
