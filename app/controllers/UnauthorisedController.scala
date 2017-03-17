@@ -16,7 +16,7 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -26,6 +26,7 @@ import views.html.ivFailure._
 
 import scala.concurrent.Future
 
+@Singleton
 class UnauthorisedController @Inject()(implicit val applicationConfig: AppConfig,
                                        val messagesApi: MessagesApi
                                       ) extends FrontendController with I18nSupport {
