@@ -22,7 +22,7 @@ import play.api.i18n.Messages
 
 object SummaryHelper {
 
-  def incomeTypeText(src: AccountingMethodModel)(implicit messages: Messages): String = src.incomeType match {
+  def accountingMethodText(src: AccountingMethodModel)(implicit messages: Messages): String = src.accountingMethod match {
     case AccountingMethodForm.option_cash => Messages("summary.income_type.cash")
     case AccountingMethodForm.option_accruals => Messages("summary.income_type.accruals")
   }

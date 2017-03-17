@@ -150,7 +150,7 @@ object MessageLookup {
     val business_name = "What's the name of your business?"
     val income_type = "What method do you use for your accounting?"
 
-    object IncomeType {
+    object AccountingMethod {
       val cash = "Cash basis"
       val accruals = "Accruals basis"
     }
@@ -248,7 +248,7 @@ object MessageLookup {
       val invalid = "The email is invalid"
     }
 
-    object IncomeType {
+    object AccountingMethod {
       val empty = "You must select an option to continue"
       val invalid = "You must select an option to continue"
     }

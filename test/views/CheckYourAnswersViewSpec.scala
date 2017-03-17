@@ -33,14 +33,14 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
   val testAccountingPeriod = AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))
   val testBusinessName = BusinessNameModel("test business name")
-  val testIncomeType: AccountingMethodModel = TestModels.testIncomeType
+  val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testTerms = TermModel(true)
   val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
   val testSummary = SummaryModel(
     incomeSource = testIncomeSource,
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
-    incomeType = testIncomeType,
+    accountingMethod = testAccountingMethod,
     terms = testTerms
   )
 
@@ -170,7 +170,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     "display the correct info for the income type" in {
       val sectionId = AccountingMethodId
       val expectedQuestion = messages.income_type
-      val expectedAnswer = messages.IncomeType.cash
+      val expectedAnswer = messages.AccountingMethod.cash
       val expectedEditLink = controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
 
       sectionTest(

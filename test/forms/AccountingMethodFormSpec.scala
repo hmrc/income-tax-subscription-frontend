@@ -30,9 +30,9 @@ class AccountingMethodFormSpec extends PlaySpec with OneAppPerTest {
 
   "The AccountingMethodForm" should {
     "transform the request to the form case class" in {
-      val testIncomeType = option_cash
-      val testInput = Map(accountingMethod -> testIncomeType)
-      val expected = AccountingMethodModel(testIncomeType)
+      val testAccountingMethod = option_cash
+      val testInput = Map(accountingMethod -> testAccountingMethod)
+      val expected = AccountingMethodModel(testAccountingMethod)
       val actual = accountingMethodForm.bind(testInput).value
 
       actual shouldBe Some(expected)
@@ -42,29 +42,29 @@ class AccountingMethodFormSpec extends PlaySpec with OneAppPerTest {
       val empty = ErrorMessageFactory.error("error.accounting-method.empty")
       val invalid = ErrorMessageFactory.error("error.accounting-method.invalid")
 
-      empty fieldErrorIs MessageLookup.Error.IncomeType.empty
-      empty summaryErrorIs MessageLookup.Error.IncomeType.empty
+      empty fieldErrorIs MessageLookup.Error.AccountingMethod.empty
+      empty summaryErrorIs MessageLookup.Error.AccountingMethod.empty
 
-      invalid fieldErrorIs MessageLookup.Error.IncomeType.invalid
-      invalid summaryErrorIs MessageLookup.Error.IncomeType.invalid
+      invalid fieldErrorIs MessageLookup.Error.AccountingMethod.invalid
+      invalid summaryErrorIs MessageLookup.Error.AccountingMethod.invalid
 
       val emptyInput0 = DataMap.EmptyMap
       val emptyTest0 = accountingMethodForm.bind(emptyInput0)
       emptyTest0 assert accountingMethod hasExpectedErrors empty
 
-      val emptyInput = DataMap.incomeType("")
+      val emptyInput = DataMap.accountingMethod("")
       val emptyTest = accountingMethodForm.bind(emptyInput)
       emptyTest assert accountingMethod hasExpectedErrors empty
 
-      val invalidInput = DataMap.incomeType("α")
+      val invalidInput = DataMap.accountingMethod("α")
       val invalidTest = accountingMethodForm.bind(invalidInput)
       invalidTest assert accountingMethod hasExpectedErrors invalid
     }
 
     "The following submission should be valid" in {
-      val testCash = DataMap.incomeType(option_cash)
+      val testCash = DataMap.accountingMethod(option_cash)
       accountingMethodForm isValidFor testCash
-      val testAccruals = DataMap.incomeType(option_accruals)
+      val testAccruals = DataMap.accountingMethod(option_accruals)
       accountingMethodForm isValidFor testAccruals
     }
   }

@@ -28,10 +28,10 @@ import services.mocks.MockKeystoreService
 class BusinessNameControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
 
-  override val controllerName: String = "BusinessIncomeTypeController"
+  override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showBusinessIncomeType" -> TestBusinessNameController.showBusinessName(isEditMode = false),
-    "submitBusinessIncomeType" -> TestBusinessNameController.submitBusinessName(isEditMode = false)
+    "showBusinessName" -> TestBusinessNameController.showBusinessName(isEditMode = false),
+    "submitBusinessName" -> TestBusinessNameController.submitBusinessName(isEditMode = false)
   )
 
   object TestBusinessNameController extends BusinessNameController(

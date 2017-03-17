@@ -41,7 +41,7 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
       testCacheMap.getAccountingPeriodPrior() shouldBe Some(testAccountingPeriodPriorCurrent)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
-      testCacheMap.getAccountingMethod() shouldBe Some(testIncomeType)
+      testCacheMap.getAccountingMethod() shouldBe Some(testAccountingMethod)
       testCacheMap.getTerms() shouldBe Some(testTerms)
     }
 
@@ -52,7 +52,7 @@ class CacheUtilSpec extends UnitTestTrait {
           testAccountingPeriodPriorCurrent,
           testAccountingPeriod,
           testBusinessName,
-          testIncomeType,
+          testAccountingMethod,
           testTerms
         )
 
@@ -63,7 +63,7 @@ class CacheUtilSpec extends UnitTestTrait {
           testAccountingPeriodPriorCurrent,
           testAccountingPeriod,
           testBusinessName,
-          testIncomeType,
+          testAccountingMethod,
           testTerms)
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         SummaryModel(

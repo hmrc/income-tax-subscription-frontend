@@ -47,7 +47,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
   def show(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchAccountingMethod() map {
-        incomeType => Ok(view(accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(incomeType), isEditMode = isEditMode))
+        accountingMethod => Ok(view(accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(accountingMethod), isEditMode = isEditMode))
       }
   }
 
@@ -55,8 +55,8 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
     implicit request =>
       AccountingMethodForm.accountingMethodForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(accountingMethodForm = formWithErrors, isEditMode = isEditMode))),
-        incomeType => {
-          keystoreService.saveAccountingMethod(incomeType) map (_ => isEditMode match {
+        accountingMethod => {
+          keystoreService.saveAccountingMethod(accountingMethod) map (_ => isEditMode match {
             case true => Redirect(controllers.routes.CheckYourAnswersController.show())
             case _ => Redirect(controllers.routes.TermsController.showTerms())
           })
