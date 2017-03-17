@@ -151,25 +151,18 @@ summary.terms                                                   = Terms of parti
 summary.terms.agreed                                            = I agree
 
 ## Confirmation page ##
-confirmation.title                                              = Submitted
-confirmation.heading                                            = Submitted
-confirmation.subscriptionId.label                               = Subscription number:
-confirmation.submissionDate.label                               = Date:
-confirmation.emailConfirmation                                  = You''ll receive an email confirming that your application has been received.
+confirmation.title                                              = Confirmation page
+confirmation.heading                                            = Success
+confirmation.banner.line_1                                      = You''ve successfully signed up for quarterly reporting.
+confirmation.banner.line_2                                      = Your reference number is:
 confirmation.whatHappensNext.heading                            = What happens next
-confirmation.whatHappensNext.para1                              = Your process for HMRC.
-confirmation.whatHappensNext.bullet1                            = What correspondence user will expect to receive and within what time period
-confirmation.whatHappensNext.bullet2                            = What implications and obligations on the user as a result of this subscription if any
-confirmation.registerForMoreTax.heading                         = Register for more tax
-confirmation.registerForMoreTax.link1                           = PAYE (Pay as you earn)
-confirmation.registerForMoreTax.link2                           = VAT (Value added tax)
-confirmation.guidanceSection.heading                            = Guidance
-confirmation.guidanceSection.link1                              = Quarterly filing instructions
-confirmation.guidanceSection.link2                              = Downloading software
-confirmation.guidanceSection.link3                              = Further reading
-confirmation.giveUsFeedback.heading                             = Give us feedback
-confirmation.giveUsFeedback.link1                               = What did you think of this service?
-confirmation.giveUsFeedback.feedbackDuration                    = (takes 30 seconds)
+confirmation.whatHappensNext.para1                              = Now that you''ve signed up to trial this service, you must:
+confirmation.whatHappensNext.bullet1                            = make a note of your reference number. If you forget your Government Gateway account details, we can use this reference number to help you retrieve them
+confirmation.whatHappensNext.bullet2                            = download accounting software. You’ll need to use this software to send HMRC reports about your income and expenditure
+confirmation.whatHappensNext.bullet3                            = activate your <a href="{0}">Business Tax Account</a>
+confirmation.whatHappensNext.bullet4                            = report at least once every 3 months from the start of your accounting period
+confirmation.whatHappensNext.bullet5                            = report any outstanding records you may have for your current accounting period
+confirmation.whatHappensNext.para2                              = After you send a report, HMRC will calculate an estimate of your Income Tax. You can see these estimates from your accounting software after your first report, or through your Business Tax Account from July 2017
 
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue

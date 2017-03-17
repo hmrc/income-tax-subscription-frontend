@@ -36,7 +36,8 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       keystoreService.fetchSubscriptionId.map {
         case Some(id) => Ok(views.html.confirmation(
           subscriptionId = id,
-          submissionDate = dateConvert(LocalDate.now())
+          submissionDate = dateConvert(LocalDate.now()),
+          controllers.routes.SignOutController.signOut()
         ))
       }
   }

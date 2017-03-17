@@ -173,36 +173,20 @@ object MessageLookup {
   }
 
   object Confirmation {
-    val title = "Submitted"
-    val heading: String = title
-    val subscriptionIdLabel = "Subscription number:"
-    val submissionDateLabel = "Date:"
-    val emailConfirmation = "You'll receive an email confirming that your application has been received."
+    val title = "Confirmation page"
+    val heading = "Success"
+    val banner_line1_1 = "You've successfully signed up for quarterly reporting."
+    val banner_line1_2 = "Your reference number is:"
 
     object whatHappensNext {
       val heading = "What happens next"
-      val para1 = "Your process for HMRC."
-      val bullet1 = "What correspondence user will expect to receive and within what time period"
-      val bullet2 = "What implications and obligations on the user as a result of this subscription if any"
-    }
-
-    object registerForMoreTax {
-      val heading = "Register for more tax"
-      val link1 = "PAYE (Pay as you earn)"
-      val link2 = "VAT (Value added tax)"
-    }
-
-    object guidanceSection {
-      val heading = "Guidance"
-      val link1 = "Quarterly filing instructions"
-      val link2 = "Downloading software"
-      val link3 = "Further reading"
-    }
-
-    object giveUsFeedback {
-      val heading = "Give us feedback"
-      val link1 = "What did you think of this service?"
-      val feedbackDuration = "(takes 30 seconds)"
+      val para1 = "Now that you've signed up to trial this service, you must:"
+      val bullet1 = "make a note of your reference number. If you forget your Government Gateway account details, we can use this reference number to help you retrieve them"
+      val bullet2 = "download accounting software. You’ll need to use this software to send HMRC reports about your income and expenditure"
+      val bullet3 = "activate your Business Tax Account"
+      val bullet4 = "report at least once every 3 months from the start of your accounting period"
+      val bullet5 = "report any outstanding records you may have for your current accounting period"
+      val para2 = "After you send a report, HMRC will calculate an estimate of your Income Tax. You can see these estimates from your accounting software after your first report, or through your Business Tax Account from July 2017"
     }
 
   }

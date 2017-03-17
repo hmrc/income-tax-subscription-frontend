@@ -40,6 +40,7 @@ trait MockConfig extends AppConfig {
   override val enableThrottling: Boolean = true
   override lazy val ggUrl = ""
   override lazy val ggSignOutUrl = s"$ggUrl/gg/sign-out?continue=$ggSignInContinueUrl"
+  override lazy val btaUrl = "https://www.tax.service.gov.uk/business-account"
 }
 
 object MockConfig extends MockConfig
