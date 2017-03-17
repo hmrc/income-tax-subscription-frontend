@@ -18,7 +18,7 @@ private object AppDependencies {
   private val logbackJsonLoggerVersion = "3.1.0"
   private val frontendBootstrapVersion = "7.17.0"
   private val govukTemplateVersion = "5.2.0"
-  private val playUiVersion = "7.1.0"
+  private val playUiVersion = "7.1.1"
   private val playPartialsVersion = "5.3.0"
   private val playAuthorisedFrontendVersion = "6.3.0"
   private val playConfigVersion = "4.3.0"
