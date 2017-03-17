@@ -27,6 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.KeystoreService
+import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 
 import scala.concurrent.Future
@@ -82,7 +83,7 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
     import forms.OtherIncomeForm._
     keystoreService.fetchOtherIncome().map {
       case Some(OtherIncomeModel(`option_yes`)) => controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
-      case Some(OtherIncomeModel(`option_no`)) => controllers.routes.OtherIncomeController.showOtherIncome().url
+      case _ => controllers.routes.OtherIncomeController.showOtherIncome().url
     }
   }
 

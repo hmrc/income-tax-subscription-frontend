@@ -28,6 +28,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.KeystoreService
+import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 
 import scala.concurrent.Future
@@ -95,6 +96,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
           case AccountingPeriodPriorForm.option_no =>
             CurrentAccountingPeriodView
         }
+      case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")
     }
   }
 
@@ -107,6 +109,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
         case AccountingPeriodPriorForm.option_no =>
           controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
       }
+      case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")
     }
   }
 

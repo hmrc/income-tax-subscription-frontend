@@ -44,6 +44,9 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
             controllers.routes.CheckYourAnswersController.submit(),
             backUrl = backUrl
           ))
+        case _ =>
+          logging.info("User attempted to view 'Check Your Answers' without any keystore cached data")
+          InternalServerError
       }
   }
 
@@ -59,6 +62,9 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
               logging.warn("Successful response not received from submission")
               Future.successful(InternalServerError("Submission failed"))
           }
+        case _ =>
+          logging.info("User attempted to submit 'Check Your Answers' without any keystore cached data")
+          Future.successful(InternalServerError)
       }
   }
 

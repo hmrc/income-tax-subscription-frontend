@@ -16,6 +16,7 @@
 
 package controllers
 
+import audit.Logging
 import auth.authenticatedFakeRequest
 import forms.OtherIncomeForm
 import models.OtherIncomeModel
@@ -34,7 +35,10 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
 
   object TestOtherIncomeErrorController extends OtherIncomeErrorController()(
     MockBaseControllerConfig,
-    messagesApi, MockKeystoreService)
+    messagesApi,
+    MockKeystoreService,
+    app.injector.instanceOf[Logging]
+  )
 
   "Calling the showOtherIncomeError action of the OtherIncomeErrorController" should {
 

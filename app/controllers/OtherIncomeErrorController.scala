@@ -18,6 +18,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
+import audit.Logging
 import config.BaseControllerConfig
 import forms.IncomeSourceForm
 import play.api.i18n.MessagesApi
@@ -28,7 +29,10 @@ import scala.concurrent.Future
 
 @Singleton
 class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControllerConfig,
-                                           val messagesApi: MessagesApi, val keystoreService: KeystoreService) extends BaseController {
+                                           val messagesApi: MessagesApi,
+                                           val keystoreService: KeystoreService,
+                                           val logging: Logging
+) extends BaseController {
 
   val showOtherIncomeError = Action.async { implicit request =>
     Future.successful(Ok(views.html.other_income_error(postAction = controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(), backUrl)))
@@ -45,6 +49,9 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
           case IncomeSourceForm.option_both =>
             Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
         }
+        case _ =>
+          logging.info("Tried to submit 'other income error' when no data found in Keystore for 'income source'")
+          InternalServerError
       }
   }
 

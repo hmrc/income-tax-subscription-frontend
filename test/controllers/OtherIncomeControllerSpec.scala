@@ -16,6 +16,7 @@
 
 package controllers
 
+import audit.Logging
 import auth._
 import forms.OtherIncomeForm
 import models.OtherIncomeModel
@@ -37,7 +38,8 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
   object TestOtherIncomeController extends OtherIncomeController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    app.injector.instanceOf[Logging]
   )
 
   "Calling the showOtherIncome action of the OtherIncome controller with an authorised user" should {

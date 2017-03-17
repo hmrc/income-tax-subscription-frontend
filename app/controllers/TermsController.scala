@@ -78,9 +78,11 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
               controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
             case Some(OtherIncomeModel(`option_no`)) =>
               controllers.routes.OtherIncomeController.showOtherIncome().url
+            case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
           }
         case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
       }
+      case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no income source retrieve from Keystore")
     }
 
 }
