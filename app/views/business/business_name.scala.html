@@ -33,13 +33,15 @@
 
     @form(action = postAction) {
 
-        @inputHelper(
-            field = businessNameForm(businessName),
-            label = Messages("business.name.heading"),
-            labelClass = "visuallyhidden",
-            maxLength = businessNameMaxLength,
-            parentForm = businessNameForm
-        )
+        <div class="form-group">
+            @inputHelper(
+                field = businessNameForm(businessName),
+                label = Messages("business.name.heading"),
+                labelClass = "visuallyhidden",
+                maxLength = businessNameMaxLength,
+                parentForm = businessNameForm
+            )
+        </div>
 
         @if(isEditMode) {
             @continueButton(Messages("base.update"))

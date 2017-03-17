@@ -25,12 +25,13 @@
 @import SummaryHelper._
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
-    <hr>
-    <div class="tabular-data__entry" id="@field-row">
-        <div class="tabular-data__heading tabular-data__heading--label" id="@field-question">@question</div>
-        <div class="tabular-data__data-1" id="@field-answer">@if(enableHtml) {@Html(answer)} else {
-            @answer
-        }</div>
+    <div class="tabular-data__entry divider--top--thick" id="@field-row">
+        <span class="tabular-data__heading tabular-data__heading--label" id="@field-question">
+            @question
+        </span>
+        <div class="tabular-data__data-1" id="@field-answer">
+            @if(enableHtml) {@Html(answer)} else {@answer}
+        </div>
         @changeUrl match {
             case Some(url) => {
                 <a class="tabular-data__data-2" href="@url" id="@field-edit">@Messages("base.change")</a>
@@ -91,31 +92,26 @@
     } else Html("")
 }
 
-@scriptElem = {
-    <link rel="stylesheet" href=@routes.Assets.at("stylesheets/mtd-itsa-summary.css")>
-}
+@views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None, articleLayout = false) {
 
-@views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None, articleLayout = false, scriptElem = scriptElem) {
     @back_link(backUrl)
 
     <h1 class="heading-large">@Messages("summary.heading")</h1>
-    <div class="check-your-answers">
-        <h2 class="heading-medium">@Html(Messages("summary.h2"))</h2>
-        <div class="form-group">
-            @emailPreferences
-            @summaryModel.incomeSource.map(incomeSource)
-            @summaryModel.accountingPeriod.map(accountingPeriodDate)
-            @summaryModel.businessName.map(businessName)
-            @summaryModel.accountingMethod.map(accountingMethod)
-            @summaryModel.terms.map(terms)
-            <hr>
-        </div>
-    </div>
+
+    <h2 class="heading-medium">@Html(Messages("summary.h2"))</h2>
 
     <div class="form-group">
+        @emailPreferences
+        @summaryModel.incomeSource.map(incomeSource)
+        @summaryModel.accountingPeriod.map(accountingPeriodDate)
+        @summaryModel.businessName.map(businessName)
+        @summaryModel.accountingMethod.map(accountingMethod)
+        @summaryModel.terms.map(terms)
+        <div class="divider--top--thick"></div>
+    </div>
+
     @form(action = postAction) {
         @continueButton(Messages("base.submit"))
     }
-    </div>
 
 }
