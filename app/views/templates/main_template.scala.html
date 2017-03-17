@@ -33,6 +33,14 @@
         @layouts.sidebar(sidebarLinks.get, Some("sidebar"))
     }
 }
+@*
+* put all all default assets for this service here
+*@
+@defaultScriptElem = {
+    <link rel="stylesheet" href=@routes.Assets.at("stylesheets/mtd-itsa-custom.css")>
+    @* append custom scripts *@
+    @scriptElem.fold(HtmlFormat.empty)(x => x)
+}
 
 
 @govuk_wrapper(appConfig = appConfig,
@@ -43,6 +51,6 @@
                contentHeader = contentHeader,
                mainContent = layouts.article(mainContent),
                serviceInfoContent = serviceInfoContent,
-               scriptElem = scriptElem,
+               scriptElem = Some(defaultScriptElem),
                showSignOutLink = showSignOutLink
 )
