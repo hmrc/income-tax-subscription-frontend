@@ -28,6 +28,15 @@
     Messages("business.accounting_method.heading")
 }
 
+@accordionInfo = {
+    <p>@Messages("business.accounting_method.accordion.line_1")</p>
+    <p>@Messages("business.accounting_method.accordion.line_2")</p>
+    <ul class="bullets">
+        <li>@Messages("business.accounting_method.accordion.bullet_1")</li>
+        <li>@Messages("business.accounting_method.accordion.bullet_2")</li>
+    </ul>
+}
+
 @views.html.templates.main_template(title = Messages("business.accounting_method.title"), bodyClasses = None) {
     @back_link(backUrl)
 
@@ -35,7 +44,7 @@
 
     <h1>@question</h1>
 
-    <p>@Messages("business.accounting_method.line_1")</p>
+    @accordionHelper(Messages("business.accounting_method.accordion"), accordionInfo)
 
     @form(action = postAction) {
 
@@ -43,8 +52,8 @@
             field = accountingMethodForm(AccountingMethodForm.accountingMethod),
             legend = question,
             options = Seq(
-                RadioOption(AccountingMethodForm.option_accruals, Messages("business.accounting_method.accruals")),
-                RadioOption(AccountingMethodForm.option_cash, Messages("business.accounting_method.cash"))
+                RadioOption(AccountingMethodForm.option_cash, Messages("business.accounting_method.cash")),
+                RadioOption(AccountingMethodForm.option_accruals, Messages("business.accounting_method.accruals"))
             ),
             parentForm = accountingMethodForm
         )

@@ -53,8 +53,12 @@ class BusinessAccountingMethodViewSpec extends UnitTestTrait {
       document.select("h1").text() mustBe messages.heading
     }
 
-    s"have the line_1 (P) '${messages.line_1}'" in {
-      document.select("p").text() must include(messages.line_1)
+    s"have the accordion (details) '${messages.accordion}'" in {
+      document.select("details span.summary").text() must include(messages.accordion)
+      document.select("details div p").text() must include(messages.accordion_line_1)
+      document.select("details div p").text() must include(messages.accordion_line_2)
+      document.select("details div ul li").text() must include(messages.accordion_bullet_1)
+      document.select("details div ul li").text() must include(messages.accordion_bullet_2)
     }
 
     "has a form" which {
