@@ -21,7 +21,7 @@
 
 @main_template(title = Messages("timeout.title"), bodyClasses = None, showSignOutLink = false) {
 
-    <h1>@Messages("timeout.heading")</h1>
+<h1>@Messages("timeout.title")</h1>
+<p>@Html(Messages("timeout.returnToHome", controllers.routes.HomeController.index().url))</p>
 
-    <p>@Html(Messages("timeout.returnToHome", controllers.routes.HomeController.index().url))</p>
 }

@@ -2,8 +2,8 @@
 GET         /assets/*file              controllers.Assets.at(path="/public", file)
 
 # Home controller
-GET         /                          controllers.HomeController.index
-
+GET         /                          controllers.HomeController.home
+GET         /index                     controllers.HomeController.index
 GET         /logout                    controllers.SignOutController.signOut
 
 # Preferences routes
@@ -63,4 +63,3 @@ GET         /main-income-error         controllers.MainIncomeErrorController.mai
 # Other Income Error Routes
 GET         /other-income-error        controllers.OtherIncomeErrorController.showOtherIncomeError
 POST        /other-income-error        controllers.OtherIncomeErrorController.submitOtherIncomeError
-
