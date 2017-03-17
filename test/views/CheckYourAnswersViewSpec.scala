@@ -168,7 +168,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     }
 
     "display the correct info for the income type" in {
-      val sectionId = IncomeTypeId
+      val sectionId = AccountingMethodId
       val expectedQuestion = messages.income_type
       val expectedAnswer = messages.IncomeType.cash
       val expectedEditLink = controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url

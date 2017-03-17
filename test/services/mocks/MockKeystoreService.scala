@@ -56,28 +56,28 @@ trait MockKeystoreService extends MockTrait {
   protected final def setupMockKeystore(
                                          fetchIncomeSource: MFO[IncomeSourceModel] = DoNotConfigure,
                                          fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
-                                         fetchAccountingPeriod: MFO[AccountingPeriodModel] = DoNotConfigure,
+                                         fetchAccountingPeriodDate: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchContactEmail: MFO[EmailModel] = DoNotConfigure,
-                                         fetchIncomeType: MFO[AccountingMethodModel] = DoNotConfigure,
+                                         fetchAccountingMethod: MFO[AccountingMethodModel] = DoNotConfigure,
                                          fetchTerms: MFO[TermModel] = DoNotConfigure,
                                          fetchNotEligible: MFO[NotEligibleModel] = DoNotConfigure,
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
-                                         fetchCurrentFinancialPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
+                                         fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
                                          fetchRegisterNextAccountingPeriod: MFO[RegisterNextAccountingPeriodModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
     mockFetchFromKeyStore[IncomeSourceModel](IncomeSource, fetchIncomeSource)
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
-    mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriod, fetchAccountingPeriod)
+    mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
     mockFetchFromKeyStore[EmailModel](ContactEmail, fetchContactEmail)
-    mockFetchFromKeyStore[AccountingMethodModel](IncomeType, fetchIncomeType)
+    mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
     mockFetchFromKeyStore[TermModel](Terms, fetchTerms)
     mockFetchFromKeyStore[NotEligibleModel](NotEligible, fetchNotEligible)
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
-    mockFetchFromKeyStore[AccountingPeriodPriorModel](CurrentFinancialPeriodPrior, fetchCurrentFinancialPeriodPrior)
+    mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
     mockFetchFromKeyStore[RegisterNextAccountingPeriodModel](RegisterNextAccountingPeriod, fetchRegisterNextAccountingPeriod)
 
     setupMockKeystoreSaveFunctions()
@@ -91,12 +91,12 @@ trait MockKeystoreService extends MockTrait {
                                       saveIncomeSource: Option[Int] = None,
                                       fetchBusinessName: Option[Int] = None,
                                       saveBusinessName: Option[Int] = None,
-                                      fetchAccountingPeriod: Option[Int] = None,
-                                      saveAccountingPeriod: Option[Int] = None,
+                                      fetchAccountingPeriodDate: Option[Int] = None,
+                                      saveAccountingPeriodDate: Option[Int] = None,
                                       fetchContactEmail: Option[Int] = None,
                                       saveContactEmail: Option[Int] = None,
-                                      fetchIncomeType: Option[Int] = None,
-                                      saveIncomeType: Option[Int] = None,
+                                      fetchAccountingMethod: Option[Int] = None,
+                                      saveAccountingMethod: Option[Int] = None,
                                       fetchTerms: Option[Int] = None,
                                       saveTerms: Option[Int] = None,
                                       fetchNotEligible: Option[Int] = None,
@@ -105,8 +105,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveOtherIncome: Option[Int] = None,
                                       fetchSubscriptionId: Option[Int] = None,
                                       saveSubscriptionId: Option[Int] = None,
-                                      fetchCurrentFinancialPeriodPrior: Option[Int] = None,
-                                      saveCurrentFinancialPeriodPrior: Option[Int] = None,
+                                      fetchAccountingPeriodPrior: Option[Int] = None,
+                                      saveAccountingPeriodPrior: Option[Int] = None,
                                       fetchRegisterNextAccountingPeriod: Option[Int] = None,
                                       saveRegisterNextAccountingPeriod: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
@@ -116,12 +116,12 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(IncomeSource, saveIncomeSource)
     verifyKeystoreFetch(BusinessName, fetchBusinessName)
     verifyKeystoreSave(BusinessName, saveBusinessName)
-    verifyKeystoreFetch(AccountingPeriod, fetchAccountingPeriod)
-    verifyKeystoreSave(AccountingPeriod, saveAccountingPeriod)
+    verifyKeystoreFetch(AccountingPeriodDate, fetchAccountingPeriodDate)
+    verifyKeystoreSave(AccountingPeriodDate, saveAccountingPeriodDate)
     verifyKeystoreFetch(ContactEmail, fetchContactEmail)
     verifyKeystoreSave(ContactEmail, saveContactEmail)
-    verifyKeystoreFetch(IncomeType, fetchIncomeType)
-    verifyKeystoreSave(IncomeType, saveIncomeType)
+    verifyKeystoreFetch(AccountingMethod, fetchAccountingMethod)
+    verifyKeystoreSave(AccountingMethod, saveAccountingMethod)
     verifyKeystoreFetch(Terms, fetchTerms)
     verifyKeystoreSave(Terms, saveTerms)
     verifyKeystoreFetch(NotEligible, fetchNotEligible)
@@ -130,8 +130,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(OtherIncome, saveOtherIncome)
     verifyKeystoreFetch(MtditId, fetchSubscriptionId)
     verifyKeystoreSave(MtditId, saveSubscriptionId)
-    verifyKeystoreFetch(CurrentFinancialPeriodPrior, fetchCurrentFinancialPeriodPrior)
-    verifyKeystoreSave(CurrentFinancialPeriodPrior, saveCurrentFinancialPeriodPrior)
+    verifyKeystoreFetch(AccountingPeriodPrior, fetchAccountingPeriodPrior)
+    verifyKeystoreSave(AccountingPeriodPrior, saveAccountingPeriodPrior)
     verifyKeystoreFetch(RegisterNextAccountingPeriod, fetchRegisterNextAccountingPeriod)
     verifyKeystoreSave(RegisterNextAccountingPeriod, saveRegisterNextAccountingPeriod)
 

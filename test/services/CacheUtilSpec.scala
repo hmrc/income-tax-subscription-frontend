@@ -32,7 +32,7 @@ class CacheUtilSpec extends UnitTestTrait {
       emptyCacheMap.getBusinessName() shouldBe None
       emptyCacheMap.getAccountingPeriodPrior() shouldBe None
       emptyCacheMap.getAccountingPeriodDate() shouldBe None
-      emptyCacheMap.getIncomeType() shouldBe None
+      emptyCacheMap.getAccountingMethod() shouldBe None
       emptyCacheMap.getTerms() shouldBe None
     }
 
@@ -41,7 +41,7 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
       testCacheMap.getAccountingPeriodPrior() shouldBe Some(testAccountingPeriodPriorCurrent)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
-      testCacheMap.getIncomeType() shouldBe Some(testIncomeType)
+      testCacheMap.getAccountingMethod() shouldBe Some(testIncomeType)
       testCacheMap.getTerms() shouldBe Some(testTerms)
     }
 

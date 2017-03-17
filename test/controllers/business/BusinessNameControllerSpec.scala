@@ -115,7 +115,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 0)
+      verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 0)
     }
   }
 

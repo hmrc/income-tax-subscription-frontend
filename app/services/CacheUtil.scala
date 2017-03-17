@@ -29,22 +29,22 @@ object CacheUtil {
 
     def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
 
-    def getAccountingPeriodPrior()(implicit read: Reads[AccountingPeriodPriorModel]): Option[AccountingPeriodPriorModel] = cacheMap.getEntry(CurrentFinancialPeriodPrior)
+    def getAccountingPeriodPrior()(implicit read: Reads[AccountingPeriodPriorModel]): Option[AccountingPeriodPriorModel] = cacheMap.getEntry(AccountingPeriodPrior)
 
-    def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriod)
+    def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriodDate)
 
     def getBusinessName()(implicit read: Reads[BusinessNameModel]): Option[BusinessNameModel] = cacheMap.getEntry(BusinessName)
 
-    def getIncomeType()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(IncomeType)
+    def getAccountingMethod()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
 
     def getTerms()(implicit read: Reads[TermModel]): Option[TermModel] = cacheMap.getEntry(Terms)
 
     def getSummary()(implicit
                      isrc: Reads[IncomeSourceModel],
-                     accp: Reads[AccountingPeriodPriorModel],
-                     accd: Reads[AccountingPeriodModel],
+                     accP: Reads[AccountingPeriodPriorModel],
+                     accD: Reads[AccountingPeriodModel],
                      bus: Reads[BusinessNameModel],
-                     inc: Reads[AccountingMethodModel],
+                     accM: Reads[AccountingMethodModel],
                      ter: Reads[TermModel]): SummaryModel = {
       val incomeSource = getIncomeSource()
       incomeSource match {
@@ -61,7 +61,7 @@ object CacheUtil {
                 getAccountingPeriodPrior(),
                 getAccountingPeriodDate(),
                 getBusinessName(),
-                getIncomeType(),
+                getAccountingMethod(),
                 getTerms()
               )
           }

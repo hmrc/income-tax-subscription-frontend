@@ -49,7 +49,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
   def showAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       for {
-        accountingPeriod <- keystoreService.fetchAccountingPeriod()
+        accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
         backUrl <- backUrl
         viewType <- whichView
       } yield
@@ -73,7 +73,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
               viewType = viewType
             ))),
             accountingPeriod =>
-              keystoreService.saveAccountingPeriod(accountingPeriod) map (_ =>
+              keystoreService.saveAccountingPeriodDate(accountingPeriod) map (_ =>
                 if (isEditMode)
                   Redirect(controllers.routes.CheckYourAnswersController.show())
                 else
@@ -86,7 +86,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
 
   def whichView(implicit request: Request[_]): Future[AccountingPeriodViewType] = {
 
-    keystoreService.fetchCurrentFinancialPeriodPrior().flatMap {
+    keystoreService.fetchAccountingPeriodPrior().flatMap {
       case Some(currentPeriodPrior) =>
         currentPeriodPrior.currentPeriodIsPrior match {
           case AccountingPeriodPriorForm.option_yes =>
@@ -99,7 +99,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
 
   def backUrl(implicit request: Request[_]): Future[String] = {
 
-    keystoreService.fetchCurrentFinancialPeriodPrior() flatMap {
+    keystoreService.fetchAccountingPeriodPrior() flatMap {
       case Some(currentPeriodPrior) => currentPeriodPrior.currentPeriodIsPrior match {
         case AccountingPeriodPriorForm.option_yes =>
           controllers.business.routes.RegisterNextAccountingPeriodController.show().url

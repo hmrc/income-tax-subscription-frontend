@@ -75,7 +75,7 @@
 }
 
 @incomeType(income: AccountingMethodModel) = @{
-    val rowName = IncomeTypeId
+    val rowName = AccountingMethodId
     val rowQuestion = Messages("summary.income_type")
     val rowAnswer = incomeTypeText(income)
     val rowUrl = controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url

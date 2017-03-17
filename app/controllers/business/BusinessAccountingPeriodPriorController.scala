@@ -49,7 +49,7 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      keystoreService.fetchCurrentFinancialPeriodPrior().flatMap { x =>
+      keystoreService.fetchAccountingPeriodPrior().flatMap { x =>
         view(AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(x), isEditMode = isEditMode).flatMap(view => Ok(view))
       }
   }
@@ -59,9 +59,9 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
       AccountingPeriodPriorForm.accountingPeriodPriorForm.bindFromRequest.fold(
         formWithErrors => view(formWithErrors, isEditMode = isEditMode).flatMap(view => BadRequest(view)),
         currentFinancialPeriodPrior =>
-          keystoreService.fetchCurrentFinancialPeriodPrior().flatMap {
+          keystoreService.fetchAccountingPeriodPrior().flatMap {
             somePreviousAnswer =>
-              keystoreService.saveCurrentFinancialPeriodPrior(currentFinancialPeriodPrior) flatMap { _ =>
+              keystoreService.saveAccountingPeriodPrior(currentFinancialPeriodPrior) flatMap { _ =>
                 if (somePreviousAnswer.fold(false)(previousAnswer => previousAnswer.equals(currentFinancialPeriodPrior)) && isEditMode)
                   Redirect(controllers.routes.CheckYourAnswersController.show())
                 else

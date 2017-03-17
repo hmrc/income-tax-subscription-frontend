@@ -62,10 +62,10 @@ object TestModels extends Implicits {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
-      accountingPeriodPrior.fold(emptyMap)(model => Map(CurrentFinancialPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
-      accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriod -> AccountingPeriodModel.format.writes(model))) ++
+      accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
+      accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
-      incomeType.fold(emptyMap)(model => Map(IncomeType -> AccountingMethodModel.format.writes(model))) ++
+      incomeType.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
       terms.fold(emptyMap)(model => Map(Terms -> TermModel.format.writes(model)))
     CacheMap("", map)
   }

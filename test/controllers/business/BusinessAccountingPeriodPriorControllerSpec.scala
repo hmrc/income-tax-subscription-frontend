@@ -51,7 +51,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
     def result: Future[Result] = {
       setupMockKeystore(
-        fetchCurrentFinancialPeriodPrior = None,
+        fetchAccountingPeriodPrior = None,
         fetchOtherIncome = defaultOtherIncomeAnswer
       )
       TestCurrentFinancialPeriodPriorController.show(isEditMode = true)(authenticatedFakeRequest())
@@ -63,7 +63,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
     "retrieve one value from keystore" in {
       await(result)
-      verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 0)
+      verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 0)
     }
 
     s"The back url should point to '${controllers.routes.OtherIncomeController.showOtherIncome().url}'" in {
@@ -76,7 +76,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
     def result(choice: String): Future[Result] = {
       setupMockKeystore(
-        fetchCurrentFinancialPeriodPrior = None,
+        fetchAccountingPeriodPrior = None,
         fetchOtherIncome = OtherIncomeModel(choice)
       )
       TestCurrentFinancialPeriodPriorController.show(isEditMode = false)(authenticatedFakeRequest())
@@ -103,37 +103,37 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
       def callShow(answer: String): Future[Result] = callShowCore(answer, isEditMode = false)
 
       "Option 'Yes' is selected and there were no previous entries" in {
-        setupMockKeystore(fetchCurrentFinancialPeriodPrior = None)
+        setupMockKeystore(fetchAccountingPeriodPrior = None)
         val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-        verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
+        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
       "Option 'Yes' is selected and there is previous entry" in {
-        setupMockKeystore(fetchCurrentFinancialPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-        verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
+        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
       "Option 'No' is selected and there were no previous entries" in {
-        setupMockKeystore(fetchCurrentFinancialPeriodPrior = None)
+        setupMockKeystore(fetchAccountingPeriodPrior = None)
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
         await(goodRequest)
-        verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
+        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
       "Option 'No' is selected and there there is previous entry" in {
-        setupMockKeystore(fetchCurrentFinancialPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
         await(goodRequest)
-        verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
+        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
     }
 
@@ -142,55 +142,55 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
       "Option 'Yes' is selected and there were no previous entries" in {
         // this condition shouldn't happen, but no reason to break the journey, just proceed through the journey normally
-        setupMockKeystore(fetchCurrentFinancialPeriodPrior = None)
+        setupMockKeystore(fetchAccountingPeriodPrior = None)
         val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-        verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
+        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
       "Option 'Yes' is selected and there is previous entry and it is the same as the current answer" in {
-        setupMockKeystore(fetchCurrentFinancialPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.routes.CheckYourAnswersController.show().url
-        verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
+        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
       "Option 'Yes' is selected and there is previous entry and it is the different from the current answer" in {
-        setupMockKeystore(fetchCurrentFinancialPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no))
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe  controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-        verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
+        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
       "Option 'No' is selected and there were no previous entries" in {
         // this condition shouldn't happen, but no reason to break the journey, just proceed through the journey normally
-        setupMockKeystore(fetchCurrentFinancialPeriodPrior = None)
+        setupMockKeystore(fetchAccountingPeriodPrior = None)
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
         await(goodRequest)
-        verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
+        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
       "Option 'No' is selected and there there is previous entry and it is the same as the current answer" in {
-        setupMockKeystore(fetchCurrentFinancialPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no))
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.routes.CheckYourAnswersController.show().url
         await(goodRequest)
-        verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
+        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
       "Option 'No' is selected and there there is previous entry and it is the different from the current answer" in {
-        setupMockKeystore(fetchCurrentFinancialPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
         await(goodRequest)
-        verifyKeystore(fetchCurrentFinancialPeriodPrior = 1, saveCurrentFinancialPeriodPrior = 1)
+        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
     }
   }
@@ -208,7 +208,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
     "not update or retrieve anything from keystore" in {
       await(badRequest)
-      verifyKeystore(fetchCurrentFinancialPeriodPrior = 0, saveCurrentFinancialPeriodPrior = 0)
+      verifyKeystore(fetchAccountingPeriodPrior = 0, saveAccountingPeriodPrior = 0)
     }
   }
 

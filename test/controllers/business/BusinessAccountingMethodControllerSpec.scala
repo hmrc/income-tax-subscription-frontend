@@ -45,12 +45,12 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     lazy val result = TestBusinessAccountingMethodController$.show(isEditMode = false)(authenticatedFakeRequest())
 
     "return ok (200)" in {
-      setupMockKeystore(fetchIncomeType = None)
+      setupMockKeystore(fetchAccountingMethod = None)
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchIncomeType = 1, saveIncomeType = 0)
+      verifyKeystore(fetchAccountingMethod = 1, saveAccountingMethod = 0)
     }
   }
 
@@ -68,7 +68,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
+        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
 
       s"redirect to '${controllers.preferences.routes.PreferencesController.checkPreferences().url}'" in {
@@ -79,7 +79,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
 
         await(goodRequest)
-        verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
+        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
     }
 
@@ -92,7 +92,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
+        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
 
       s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
@@ -103,7 +103,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
+        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
     }
   }
@@ -115,7 +115,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchIncomeType = 0, saveIncomeType = 0)
+      verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 0)
     }
   }
 
