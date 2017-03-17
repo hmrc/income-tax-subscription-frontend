@@ -41,29 +41,29 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
       val empty = ErrorMessageFactory.error("error.business.current_financial_period_prior.empty")
       val invalid = ErrorMessageFactory.error("error.business.current_financial_period_prior.invalid")
 
-      empty fieldErrorIs MessageLookup.Error.Business.CurrentFinancialPeriodPrior.empty
-      empty summaryErrorIs MessageLookup.Error.Business.CurrentFinancialPeriodPrior.empty
+      empty fieldErrorIs MessageLookup.Error.Business.AccountingPeriodPrior.empty
+      empty summaryErrorIs MessageLookup.Error.Business.AccountingPeriodPrior.empty
 
-      invalid fieldErrorIs MessageLookup.Error.Business.CurrentFinancialPeriodPrior.invalid
-      invalid summaryErrorIs MessageLookup.Error.Business.CurrentFinancialPeriodPrior.invalid
+      invalid fieldErrorIs MessageLookup.Error.Business.AccountingPeriodPrior.invalid
+      invalid summaryErrorIs MessageLookup.Error.Business.AccountingPeriodPrior.invalid
 
       val emptyInput0 = DataMap.EmptyMap
       val emptyTest0 = accountingPeriodPriorForm.bind(emptyInput0)
       emptyTest0 assert accountingPeriodPrior hasExpectedErrors empty
 
-      val emptyInput = DataMap.currentFinancialPeriodPrior("")
+      val emptyInput = DataMap.accountingPeriodPrior("")
       val emptyTest = accountingPeriodPriorForm.bind(emptyInput)
       emptyTest assert accountingPeriodPrior hasExpectedErrors empty
 
-      val invalidInput = DataMap.currentFinancialPeriodPrior("α")
+      val invalidInput = DataMap.accountingPeriodPrior("α")
       val invalidTest = accountingPeriodPriorForm.bind(invalidInput)
       invalidTest assert accountingPeriodPrior hasExpectedErrors invalid
     }
 
     "The following submission should be valid" in {
-      val testYes = DataMap.currentFinancialPeriodPrior(option_yes)
+      val testYes = DataMap.accountingPeriodPrior(option_yes)
       accountingPeriodPriorForm isValidFor testYes
-      val testNo = DataMap.currentFinancialPeriodPrior(option_no)
+      val testNo = DataMap.accountingPeriodPrior(option_no)
       accountingPeriodPriorForm isValidFor testNo
     }
   }

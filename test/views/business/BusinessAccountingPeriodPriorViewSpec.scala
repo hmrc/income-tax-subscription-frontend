@@ -16,7 +16,7 @@
 
 package views.business
 
-import assets.MessageLookup.Business.{CurrentFinancialPeriodPrior => messages}
+import assets.MessageLookup.Business.{AccountingPeriodPrior => messages}
 import forms.AccountingPeriodPriorForm
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._

@@ -34,11 +34,11 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
   override val controllerName: String = "BusinessAccountingPeriodPriorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestCurrentFinancialPeriodPriorController.show(isEditMode = false),
-    "submit" -> TestCurrentFinancialPeriodPriorController.submit(isEditMode = false)
+    "show" -> TestAccountingPeriodPriorController.show(isEditMode = false),
+    "submit" -> TestAccountingPeriodPriorController.submit(isEditMode = false)
   )
 
-  object TestCurrentFinancialPeriodPriorController extends BusinessAccountingPeriodPriorController(
+  object TestAccountingPeriodPriorController extends BusinessAccountingPeriodPriorController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService
@@ -54,7 +54,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         fetchAccountingPeriodPrior = None,
         fetchOtherIncome = defaultOtherIncomeAnswer
       )
-      TestCurrentFinancialPeriodPriorController.show(isEditMode = true)(authenticatedFakeRequest())
+      TestAccountingPeriodPriorController.show(isEditMode = true)(authenticatedFakeRequest())
     }
 
     "return ok (200)" in {
@@ -79,7 +79,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         fetchAccountingPeriodPrior = None,
         fetchOtherIncome = OtherIncomeModel(choice)
       )
-      TestCurrentFinancialPeriodPriorController.show(isEditMode = false)(authenticatedFakeRequest())
+      TestAccountingPeriodPriorController.show(isEditMode = false)(authenticatedFakeRequest())
     }
 
     s"When the user previously answered yes to otherIncome, it should point to '${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
@@ -96,7 +96,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
   "Calling the submit action of the BusinessAccountingPeriodPriorController with an authorised user and valid submission" when {
 
-    def callShowCore(answer: String, isEditMode: Boolean): Future[Result] = TestCurrentFinancialPeriodPriorController.submit(isEditMode)(authenticatedFakeRequest()
+    def callShowCore(answer: String, isEditMode: Boolean): Future[Result] = TestAccountingPeriodPriorController.submit(isEditMode)(authenticatedFakeRequest()
       .post(AccountingPeriodPriorForm.accountingPeriodPriorForm, AccountingPeriodPriorModel(answer)))
 
     "Not in edit mode and " when {
@@ -199,7 +199,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
     def badRequest: Future[Result] = {
       setupMockKeystore(fetchOtherIncome = defaultOtherIncomeAnswer)
-      TestCurrentFinancialPeriodPriorController.submit(isEditMode = false)(authenticatedFakeRequest())
+      TestAccountingPeriodPriorController.submit(isEditMode = false)(authenticatedFakeRequest())
     }
 
     "return a bad request status (400)" in {

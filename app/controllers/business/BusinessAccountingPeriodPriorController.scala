@@ -58,14 +58,14 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
     implicit request =>
       AccountingPeriodPriorForm.accountingPeriodPriorForm.bindFromRequest.fold(
         formWithErrors => view(formWithErrors, isEditMode = isEditMode).flatMap(view => BadRequest(view)),
-        currentFinancialPeriodPrior =>
+        accountingPeriodPrior =>
           keystoreService.fetchAccountingPeriodPrior().flatMap {
             somePreviousAnswer =>
-              keystoreService.saveAccountingPeriodPrior(currentFinancialPeriodPrior) flatMap { _ =>
-                if (somePreviousAnswer.fold(false)(previousAnswer => previousAnswer.equals(currentFinancialPeriodPrior)) && isEditMode)
+              keystoreService.saveAccountingPeriodPrior(accountingPeriodPrior) flatMap { _ =>
+                if (somePreviousAnswer.fold(false)(previousAnswer => previousAnswer.equals(accountingPeriodPrior)) && isEditMode)
                   Redirect(controllers.routes.CheckYourAnswersController.show())
                 else
-                  currentFinancialPeriodPrior.currentPeriodIsPrior match {
+                  accountingPeriodPrior.currentPeriodIsPrior match {
                     case AccountingPeriodPriorForm.option_yes => yes
                     case AccountingPeriodPriorForm.option_no => no
                   }

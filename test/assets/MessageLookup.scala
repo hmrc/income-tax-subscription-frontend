@@ -72,7 +72,7 @@ object MessageLookup {
       val no = "No - I am a different type of business"
     }
 
-    object CurrentFinancialPeriodPrior {
+    object AccountingPeriodPrior {
       val title = "Did your current accounting period start before 1 April 2017?"
       val heading: String = title
       val line_1 = "1 April 2017 is the date this service started."
@@ -204,7 +204,7 @@ object MessageLookup {
         val invalid = "You must select an option to continue"
       }
 
-      object CurrentFinancialPeriodPrior {
+      object AccountingPeriodPrior {
         val empty = "You must select an option to continue"
         val invalid = "You must select an option to continue"
       }
