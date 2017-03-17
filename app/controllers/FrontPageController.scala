@@ -31,7 +31,7 @@ class FrontPageController @Inject()(implicit val applicationConfig: AppConfig,
                               val messagesApi: MessagesApi
                              ) extends FrontendController with I18nSupport {
 
-  val joe = Action.async { implicit request =>
+  val showFrontPage = Action.async { implicit request =>
     Future.successful(Ok(views.html.frontpage(controllers.routes.HomeController.index)))
   }
 
