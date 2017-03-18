@@ -158,6 +158,7 @@ object MessageLookup {
     val contact_email = "Do you want to receive electronic communications from HMRC?"
     val terms = "Terms of participation"
     val terms_agreed = "I agree"
+    val confirm_and_send = "Confirm and send"
   }
 
   object Timeout {
