@@ -96,7 +96,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       "has a submit button" in {
         val submit = document().getElementById("continue-button")
         submit.isEmpty mustBe false
-        submit.text shouldBe MessageLookup.Base.submit
+        submit.text shouldBe MessageLookup.Summary.confirm_and_send
       }
 
       s"has a post action to '${postAction.url}'" in {
