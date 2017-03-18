@@ -31,9 +31,10 @@ class InputHelperSpec extends UnitTestTrait {
                            label: Option[String],
                            formHint: Option[String] = None,
                            maxLength: Option[Int] = None,
-                           labelClass: Option[String] = None
+                           labelClass: Option[String] = None,
+                           isNumeric: Boolean = false
                          )
-  = views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength, labelClass = labelClass)(applicationMessages)
+  = views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength, labelClass = labelClass, isNumeric = isNumeric)(applicationMessages)
 
   case class TestData(input: String)
 
@@ -90,7 +91,18 @@ class InputHelperSpec extends UnitTestTrait {
       val doc = inputHelper(testField, Some(testLabel), labelClass = "labelClass").doc
       doc.getElementsByTag("label").hasClass("labelClass") shouldBe true
     }
+
+    "if the type is numeric then the input" should {
+      val testField = testForm.fill(TestData("My previous input"))(inputName)
+      val input = inputHelper(testField, Some(testLabel), isNumeric = true).doc.getElementsByTag("input")
+
+      "have an additional attribue for pattern=[0-9*]" in {
+        input.attr("pattern") shouldBe "[0-9]*"
+      }
+
+      "have an additional attribute for inputmode=numeric" in {
+        input.attr("inputmode") shouldBe "numeric"
+      }
+    }
   }
-
-
 }
