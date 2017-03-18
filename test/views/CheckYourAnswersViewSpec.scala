@@ -120,7 +120,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       answer.text() shouldBe expectedAnswer
       if (expectedEditLink.nonEmpty) {
         editLink.attr("href") shouldBe expectedEditLink.get
-        editLink.text() shouldBe MessageLookup.Base.change
+        editLink.text() should include (MessageLookup.Base.change)
+        editLink.select("span").text() shouldBe expectedQuestion
+        editLink.select("span").hasClass("visuallyhidden") shouldBe true
       }
     }
 
