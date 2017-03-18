@@ -1,66 +1,66 @@
 # Assets
-GET         /assets/*file              controllers.Assets.at(path="/public", file)
+GET         /assets/*file                     controllers.Assets.at(path="/public", file)
 
 # Home controller
-GET         /                          controllers.HomeController.index
+GET         /                                 controllers.HomeController.index
 
-GET         /logout                    controllers.SignOutController.signOut
+GET         /logout                           controllers.SignOutController.signOut
 
 # Preferences routes
-GET         /preferences               controllers.preferences.PreferencesController.checkPreferences
-GET         /callback                  controllers.preferences.PreferencesController.callback
-GET         /paperless-error           controllers.preferences.PreferencesController.showGoBackToPreferences
-POST        /paperless-error           controllers.preferences.PreferencesController.submitGoBackToPreferences
+GET         /preferences                      controllers.preferences.PreferencesController.checkPreferences
+GET         /callback                         controllers.preferences.PreferencesController.callback
+GET         /paperless-error                  controllers.preferences.PreferencesController.showGoBackToPreferences
+POST        /paperless-error                  controllers.preferences.PreferencesController.submitGoBackToPreferences
 
 # Income Source Routes
-GET         /income-source             controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
-POST        /income-source             controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
+GET         /income                           controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
+POST        /income                           controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
 
 # Summary Routes
-GET         /summary                   controllers.SummaryController.showSummary
-POST        /summary                   controllers.SummaryController.submitSummary
+GET         /check-your-answers               controllers.CheckYourAnswersController.show
+POST        /check-your-answers               controllers.CheckYourAnswersController.submit
 
 # Confirmation Routes
-GET         /confirmation              controllers.ConfirmationController.showConfirmation
+GET         /confirmation                     controllers.ConfirmationController.showConfirmation
 
 # Unauthorised Routes
-GET         /not-authorised            controllers.UnauthorisedController.showNotAuthorised
+GET         /not-authorised                   controllers.UnauthorisedController.showNotAuthorised
 
 # Session Timeout Route
-GET         /session-timeout           controllers.SessionTimeoutController.timeout
-
-# Already enrolled
-GET         /already-enrolled          controllers.AlreadyEnrolledController.enrolled
+GET         /session-timeout                  controllers.SessionTimeoutController.timeout
 
 # Feedback Routes
-GET         /feedback                  controllers.FeedbackController.show
-POST        /feedback                  controllers.FeedbackController.submit
-GET         /thankyou                  controllers.FeedbackController.thankyou
+GET         /feedback                         controllers.FeedbackController.show
+POST        /feedback                         controllers.FeedbackController.submit
+GET         /thankyou                         controllers.FeedbackController.thankyou
 
 # Terms Routes
-GET         /terms                     controllers.TermsController.showTerms(editMode: Boolean ?= false)
-POST        /terms                     controllers.TermsController.submitTerms(editMode: Boolean ?= false)
+GET         /terms                            controllers.TermsController.showTerms(editMode: Boolean ?= false)
+POST        /terms                            controllers.TermsController.submitTerms(editMode: Boolean ?= false)
 
 # Not Eligible Routes - CURRENTLY NOT USED (but kept if required at a later date)
-GET         /not-eligible              controllers.NotEligibleController.showNotEligible
-POST        /not-eligible              controllers.NotEligibleController.submitNotEligible
-
-# No NINO Routes
-GET         /no-nino                   controllers.NoNinoController.showNoNino
-POST        /no-nino                   controllers.NoNinoController.submitNoNino
-
-# Throttle limit reached routes
-GET         /error/throttling          controllers.throttling.ThrottlingController.show
-POST        /error/throttling          controllers.throttling.ThrottlingController.submit
+GET         /not-eligible                     controllers.NotEligibleController.showNotEligible
+POST        /not-eligible                     controllers.NotEligibleController.submitNotEligible
 
 # Other Income Sources Routes
-GET         /income-other              controllers.OtherIncomeController.showOtherIncome
-POST        /income-other              controllers.OtherIncomeController.submitOtherIncome
+GET         /income-other                     controllers.OtherIncomeController.showOtherIncome
+POST        /income-other                     controllers.OtherIncomeController.submitOtherIncome
+
+# Already enrolled
+GET         /error/subscription-status        controllers.AlreadyEnrolledController.enrolled
+
+# No NINO Routes
+GET         /error/no-nino                    controllers.NoNinoController.showNoNino
+POST        /error/no-nino                    controllers.NoNinoController.submitNoNino
+
+# Throttle limit reached routes
+GET         /error/maintenance                controllers.throttling.ThrottlingController.show
+POST        /error/maintenance                controllers.throttling.ThrottlingController.submit
 
 # Main Income Error Routes
-GET         /main-income-error         controllers.MainIncomeErrorController.mainIncomeError
+GET         /error/main-income                controllers.MainIncomeErrorController.mainIncomeError
 
 # Other Income Error Routes
-GET         /other-income-error        controllers.OtherIncomeErrorController.showOtherIncomeError
-POST        /other-income-error        controllers.OtherIncomeErrorController.submitOtherIncomeError
+GET         /error/other-income               controllers.OtherIncomeErrorController.showOtherIncomeError
+POST        /error/other-income               controllers.OtherIncomeErrorController.submitOtherIncomeError
 

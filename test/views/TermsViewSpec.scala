@@ -48,22 +48,6 @@ class TermsViewSpec extends UnitTestTrait {
       document.getElementsByTag("p").text() must include(messages.line_1)
     }
 
-    s"have the line_2 (P) '${messages.line_2}'" in {
-      document.getElementsByTag("p").text() must include(messages.line_2)
-    }
-
-    s"have the li_1 (li) '${messages.li_1}'" in {
-      document.getElementsByTag("li").text() must include(messages.li_1)
-    }
-
-    s"have the li_2 (li) '${messages.li_2}'" in {
-      document.getElementsByTag("li").text() must include(messages.li_2)
-    }
-
-    s"have the li_3 (li) '${messages.li_3}'" in {
-      document.getElementsByTag("li").text() must include(messages.li_3)
-    }
-
     "have a form" which {
 
       s"has a post action to '${controllers.routes.TermsController.submitTerms().url}'" in {

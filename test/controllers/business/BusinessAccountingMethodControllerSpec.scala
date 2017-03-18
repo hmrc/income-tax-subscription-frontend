@@ -18,46 +18,46 @@ package controllers.business
 
 import auth._
 import controllers.ControllerBaseSpec
-import forms.IncomeTypeForm
-import models.IncomeTypeModel
+import forms.AccountingMethodForm
+import models.AccountingMethodModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 
-class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
+class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
 
-  override val controllerName: String = "BusinessIncomeTypeController"
+  override val controllerName: String = "BusinessAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showBusinessIncomeType" -> TestBusinessIncomeTypeController.showBusinessIncomeType(isEditMode = false),
-    "submitBusinessIncomeType" -> TestBusinessIncomeTypeController.submitBusinessIncomeType(isEditMode = false)
+    "show" -> TestBusinessAccountingMethodController$.show(isEditMode = false),
+    "submit" -> TestBusinessAccountingMethodController$.submit(isEditMode = false)
   )
 
-  object TestBusinessIncomeTypeController extends BusinessIncomeTypeController(
+  object TestBusinessAccountingMethodController$ extends BusinessAccountingMethodController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService
   )
 
-  "Calling the showBusinessIncomeType action of the BusinessIncomeType with an authorised user" should {
+  "Calling the show action of the BusinessAccountingMethod with an authorised user" should {
 
-    lazy val result = TestBusinessIncomeTypeController.showBusinessIncomeType(isEditMode = false)(authenticatedFakeRequest())
+    lazy val result = TestBusinessAccountingMethodController$.show(isEditMode = false)(authenticatedFakeRequest())
 
     "return ok (200)" in {
-      setupMockKeystore(fetchIncomeType = None)
+      setupMockKeystore(fetchAccountingMethod = None)
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchIncomeType = 1, saveIncomeType = 0)
+      verifyKeystore(fetchAccountingMethod = 1, saveAccountingMethod = 0)
     }
   }
 
-  "Calling the submitBusinessIncomeType action of the BusinessIncomeType with an authorised user and valid submission" should {
+  "Calling the submit action of the BusinessAccountingMethod with an authorised user and valid submission" should {
 
-    def callShow(isEditMode: Boolean) = TestBusinessIncomeTypeController.submitBusinessIncomeType(isEditMode = isEditMode)(authenticatedFakeRequest()
-      .post(IncomeTypeForm.incomeTypeForm, IncomeTypeModel(IncomeTypeForm.option_cash)))
+    def callShow(isEditMode: Boolean) = TestBusinessAccountingMethodController$.submit(isEditMode = isEditMode)(authenticatedFakeRequest()
+      .post(AccountingMethodForm.accountingMethodForm, AccountingMethodModel(AccountingMethodForm.option_cash)))
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
@@ -68,7 +68,7 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
+        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
 
       s"redirect to '${controllers.preferences.routes.PreferencesController.checkPreferences().url}'" in {
@@ -79,7 +79,7 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
 
         await(goodRequest)
-        verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
+        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
     }
 
@@ -92,36 +92,36 @@ class BusinessIncomeTypeControllerSpec extends ControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
+        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
 
-      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchIncomeType = 0, saveIncomeType = 1)
+        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
     }
   }
 
-  "Calling the submitBusinessIncomeType action of the BusinessIncomeType with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessIncomeTypeController.submitBusinessIncomeType(isEditMode = false)(authenticatedFakeRequest())
+  "Calling the submit action of the BusinessAccountingMethod with an authorised user and invalid submission" should {
+    lazy val badRequest = TestBusinessAccountingMethodController$.submit(isEditMode = false)(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchIncomeType = 0, saveIncomeType = 0)
+      verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 0)
     }
   }
 
   "The back url" should {
     s"point to ${controllers.business.routes.BusinessNameController.showBusinessName().url}" in {
-      TestBusinessIncomeTypeController.backUrl mustBe controllers.business.routes.BusinessNameController.showBusinessName().url
+      TestBusinessAccountingMethodController$.backUrl mustBe controllers.business.routes.BusinessNameController.showBusinessName().url
     }
   }
 

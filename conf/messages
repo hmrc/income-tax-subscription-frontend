@@ -6,12 +6,15 @@ base.sign-out                                                   = Sign Out
 base.submit                                                     = Submit
 base.startDate                                                  = Start date
 base.endDate                                                    = End date
-base.exampleDate                                                = For example, 31 3 1980
+base.exampleStartDate                                           = For example, 01 05 2017
+base.exampleEndDate                                             = For example, 30 04 2018
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
 base.error_heading                                              = Error Summary
 base.change                                                     = Change
+base.yes                                                        = Yes
+base.no                                                         = No
 
 ## Preferences call back page
 preferences_callback.title                                      = Do you want to continue with your registration?
@@ -22,43 +25,43 @@ preferences_callback.yes                                        = Yes - sign up 
 preferences_callback.no                                         = No - sign me out
 
 ## Income source page
-income_source.title                                             = What''s your income type?
-income_source.heading                                           = What''s your income type?
+income_source.title                                             = Where does your income come from?
+income_source.heading                                           = Where does your income come from?
 income_source.business                                          = Your sole trader business
-income_source.property                                          = Letting a UK property
-income_source.both                                              = Your sole trader business and letting a UK property
+income_source.property                                          = Renting out a UK property
+income_source.both                                              = Your sole trader business and renting out a UK property
 income_source.other                                             = Other
 
 # Property income page
 property.income.title                                           = How much was your income from property this year?
 property.income.heading                                         = How much was your income from property this year?
-property.income.lt10k                                           = Less than £10,000
-property.income.ge10k                                           = £10,000 or more
 property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
 
 
 # Current Financial Period Prior page
-business.current_financial_period_prior.title                   = Did your current financial period start before 1 April 2017?
-business.current_financial_period_prior.heading                 = Did your current financial period start before 1 April 2017?
-business.current_financial_period_prior.line_1                  = This is the period that your latest income and expense records cover (also called your accounting period). Your financial period normally starts on 6 April, unless you’ve chosen to use your own dates.
-business.current_financial_period_prior.line_2                  = If you''re a new business, this is the date you started trading.
-business.current_financial_period_prior.hint                    = 1 April 2017 is when the Register for digital Income Tax updates services started.
+business.current_financial_period_prior.title                   = Did your current accounting period start before 1 April 2017?
+business.current_financial_period_prior.heading                 = Did your current accounting period start before 1 April 2017?
+business.current_financial_period_prior.line_1                  = 1 April 2017 is the date this service started.
+business.current_financial_period_prior.accordion               = What is an accounting period?
+business.current_financial_period_prior.accordion.line1         = This is the period that your latest income and expense records cover for Self Assessment.
+business.current_financial_period_prior.accordion.line2         = Your start date is usually 6 April (the same as the tax year), unless you selected a different date when you registered for Self Assessment.
 business.current_financial_period_prior.yes                     = Yes
 business.current_financial_period_prior.no                      = No
 
 # Current Financial Period Prior page
-business.register_next_accounting_period.title                   = Do you want to register for your next financial period?
-business.register_next_accounting_period.heading                 = Do you want to register for your next financial period?
-business.register_next_accounting_period.line_1                  = You can''t register for Income Tax updates on your current financial period, as it started before, 1 April 2017.
-business.register_next_accounting_period.line_2                  = You can register for your next financial period, but can''t send Income Tax updates until this begins.
+business.register_next_accounting_period.title                   = Do you want to sign up for your next accounting period?
+business.register_next_accounting_period.heading                 = Do you want to sign up for your next accounting period?
+business.register_next_accounting_period.line_1                  = You can''t send quarterly reports yet, as your current accounting period started before 1 April 2017.
+business.register_next_accounting_period.line_2                  = You can sign up for your next accounting period, but can''t send quarterly reports until this begins.
 business.register_next_accounting_period.yes                     = Yes
 business.register_next_accounting_period.no                      = No - sign out
 
 ## Business Accounting Period page
 accounting_period.title                                         = Business accounting period
+accounting_period.heading                                       = What are the dates of your accounting period?
 accounting_period.heading.current                               = What are the dates of your current accounting period?
 accounting_period.heading.next                                  = When is your next accounting period?
-accounting_period.line_1                                        = Your accounting period is normally 6 April to 5 April, unless you''ve chosen to use different dates.
+accounting_period.line_1                                        = Your accounting period is usually 6 April to 5 April (the same as the tax year), unless you selected different dates when you registered for Self Assessment.
 
 # Sole trader page
 business.sole_trader.title                                      = Are you a sole trader?
@@ -68,27 +71,27 @@ business.sole_trader.yes                                        = Yes - I’m a 
 business.sole_trader.no                                         = No - I am a different type of business
 
 ## Business Income page
-business.income_type.title                                      = Accounting method
-business.income_type.heading                                    = Which accounting method do you use?
-business.income_type.line_1                                     = This is how you keep records of your business income and expenses for your tax return.
-business.income_type.cash                                       = <span class="heading-small">Cash basis accounting</span><br>You only record income or expenses when you receive money or pay a bill
-business.income_type.accruals                                   = <span class="heading-small">Traditional accounting (‘accruals basis’)</span><br>You record income and expenses by the date you invoiced or were billed
+business.accounting_method.title                                = Accounting method
+business.accounting_method.heading                              = What method do you use for your accounting?
+business.accounting_method.accordion                            = Show me an example
+business.accounting_method.accordion.line_1                     = Your accounting period is 6 April 2016 to 5 April 2017. You invoiced someone in March 2017 but didn''t receive the money until May 2017.
+business.accounting_method.accordion.line_2                     = If you would record this income in:
+business.accounting_method.accordion.bullet_1                   = May 2017, then the method you use is ‘cash basis’ accounting
+business.accounting_method.accordion.bullet_2                   = March 2017, then the method you use is ‘accruals basis’ accounting
+business.accounting_method.cash                                 = <span class="heading-small">Cash basis</span><br>Your end-of-year records show the money you''ve received or paid out in the tax year. Most sole traders and small businesses use this method.
+business.accounting_method.accruals                             = <span class="heading-small">Accruals basis</span><br>Your end-of-year accounts record income and expenses in the tax year that they occur, regardless of when you receive or make a payment.
 
 
 ## Business Name
 business.name.title                                             = Business name
-business.name.heading                                           = What is your business name?
-business.name.line_1                                            = This is the business name you gave when you registered for Self Assessment.
+business.name.heading                                           = What''s the name of your business?
+business.name.line_1                                            = This is the business name you used to register for Self Assessment. If your business doesn''t have a name, enter your own name.
 
 ## Terms and Conditions Messages
-terms.title                                                     = Terms and conditions
-terms.heading                                                   = Terms and conditions
-terms.line_1                                                    = To use this service you must accept the <a href="{0}">terms and conditions</a>.
-terms.line_2                                                    = By accepting the terms and conditions, you agree:
-terms.li_1                                                      = that HMRC can use the email address you have provided to contact you about your digital tax updates
-terms.li_2                                                      = to use accounting software to send digital income and expenditure updates to HMRC at least every 3 months from the start of your accounting period
-terms.li_3                                                      = to contact HMRC immediately if you start a new business or sell or close down your current business
-terms.checkbox                                                  = I accept the <a href="{0}">terms and conditions</a>
+terms.title                                                     = Terms of participation
+terms.heading                                                   = Terms of participation
+terms.line_1                                                    = By accepting the terms of participation, you confirm that you''ve read and understood the terms of the trial. You''ll have been sent these terms separately.
+terms.checkbox                                                  = I accept the terms of participation
 
 ## Contact Email Address page ##
 contact_email.title                                             = Enter your email address
@@ -104,15 +107,15 @@ timeout.heading                                                 = Your session h
 timeout.returnToHome                                            = To register to send digital tax updates, you''ll have to <a href="{0}" rel="external">sign back in</a> using your Government Gateway ID.
 
 ## Throttle limit reached page ##
-throttle_limit.title                                            = This service is temporarily unavailable
-throttle_limit.heading                                          = This service is temporarily unavailable
-throttle_limit.line_1                                           = To register for digital updates, you''ll have to try again after 24 hours.
+throttle_limit.title                                            = Service is unavailable due to maintenance
+throttle_limit.heading                                          = Service is unavailable due to maintenance
+throttle_limit.line_1                                           = Please try again later.
 
 
 ## Already enrolled page ##
-already-enrolled.title                                          = You''ve already registered for digital tax updates
-already-enrolled.heading                                        = You''ve already registered for digital tax updates
-already-enrolled.para1                                          = Your Government Gateway ID is already registered for digital tax updates.
+already-enrolled.title                                          = You''ve already signed up
+already-enrolled.heading                                        = You''ve already signed up
+already-enrolled.para1                                          = Your Government Gateway ID is already signed up for regular reporting.
 
 ## Failure Messages ##
 notAuthorised.title                                             = Not Authorised
@@ -132,42 +135,34 @@ technicalIssue.paraTwo                                          = Please try aga
 summary.title                                                   = Check your answers
 summary.heading                                                 = Check your answers
 summary.line_1                                                  = You can edit your answers if you need to.<br>When you''re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
-summary.h2                                                      = Now send your application
-summary.line_2                                                  = By submitting this notification you are confirming that, to the best of your knowledge, the details you are providing are correct.
-summary.income_source                                           = Income type
+summary.h2                                                      = You''ve told us
+summary.email                                                   = Do you want to receive electronic communications from HMRC?
+summary.income_source                                           = Where does your income come from?
 summary.income_source.business                                  = Business
 summary.income_source.property                                  = Property
 summary.income_source.both                                      = Business and property
-summary.accounting_period                                       = Accounting period
-summary.accounting_period.month                                 = {0} month period
-summary.business_name                                           = Business name
-summary.income_type                                             = Accounting type
+summary.accounting_period_prior                                 = Did your current accounting period start before 1 April 2017?
+summary.accounting_period                                       = Your accounting period dates:
+summary.business_name                                           = What''s the name of your business?
+summary.income_type                                             = What method do you use for your accounting?
 summary.income_type.cash                                        = Cash basis
 summary.income_type.accruals                                    = Accruals basis
-summary.contact_email                                           = Email
-summary.terms                                                   = Terms and conditions
+summary.terms                                                   = Terms of participation
 summary.terms.agreed                                            = I agree
 
 ## Confirmation page ##
-confirmation.title                                              = Submitted
-confirmation.heading                                            = Submitted
-confirmation.subscriptionId.label                               = Subscription number:
-confirmation.submissionDate.label                               = Date:
-confirmation.emailConfirmation                                  = You''ll receive an email confirming that your application has been received.
+confirmation.title                                              = Confirmation page
+confirmation.heading                                            = Success
+confirmation.banner.line_1                                      = You''ve successfully signed up for quarterly reporting.
+confirmation.banner.line_2                                      = Your reference number is:
 confirmation.whatHappensNext.heading                            = What happens next
-confirmation.whatHappensNext.para1                              = Your process for HMRC.
-confirmation.whatHappensNext.bullet1                            = What correspondence user will expect to receive and within what time period
-confirmation.whatHappensNext.bullet2                            = What implications and obligations on the user as a result of this subscription if any
-confirmation.registerForMoreTax.heading                         = Register for more tax
-confirmation.registerForMoreTax.link1                           = PAYE (Pay as you earn)
-confirmation.registerForMoreTax.link2                           = VAT (Value added tax)
-confirmation.guidanceSection.heading                            = Guidance
-confirmation.guidanceSection.link1                              = Quarterly filing instructions
-confirmation.guidanceSection.link2                              = Downloading software
-confirmation.guidanceSection.link3                              = Further reading
-confirmation.giveUsFeedback.heading                             = Give us feedback
-confirmation.giveUsFeedback.link1                               = What did you think of this service?
-confirmation.giveUsFeedback.feedbackDuration                    = (takes 30 seconds)
+confirmation.whatHappensNext.para1                              = Now that you''ve signed up to trial this service, you must:
+confirmation.whatHappensNext.bullet1                            = make a note of your reference number. If you forget your Government Gateway account details, we can use this reference number to help you retrieve them
+confirmation.whatHappensNext.bullet2                            = download accounting software. You’ll need to use this software to send HMRC reports about your income and expenditure
+confirmation.whatHappensNext.bullet3                            = activate your <a href="{0}">Business Tax Account</a>
+confirmation.whatHappensNext.bullet4                            = report at least once every 3 months from the start of your accounting period
+confirmation.whatHappensNext.bullet5                            = report any outstanding records you may have for your current accounting period
+confirmation.whatHappensNext.para2                              = After you send a report, HMRC will calculate an estimate of your Income Tax. You can see these estimates from your accounting software after your first report, or through your Business Tax Account from July 2017
 
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue
@@ -202,8 +197,8 @@ error.contact_email.empty                                       = Please enter a
 error.contact_email.maxLength                                   = The email is too long
 error.contact_email.invalid                                     = The email is invalid
 
-error.income_type.empty                                         = You must select an option to continue
-error.income_type.invalid                                       = You must select an option to continue
+error.accounting-method.empty                                   = You must select an option to continue
+error.accounting-method.invalid                                 = You must select an option to continue
 
 error.not-eligible.empty                                        = You must select an option to continue
 error.not-eligible.invalid                                      = You must select an option to continue
@@ -229,35 +224,35 @@ not-eligible.question                                           = Choose what yo
 not-eligible.signup                                             = I want to sign up
 not-eligible.signout                                            = I don''t want to sign up - sign me out
 
+## No NINO page ##
+no-nino.title                                                   = You can''t sign up for quarterly reporting yet
+no-nino.heading                                                 = You can''t sign up for quarterly reporting yet
+no-nino.line_1                                                  = You can sign up later in the year when this service is available to you.
+
 ## Main income error page ##
-main-income-error.title                                         = You can''t send digital updates yet
-main-income-error.heading                                       = You can''t send digital updates yet
-main-income-error.para1                                         = At the moment, you can only register to send digital updates if you''re either:
-main-income-error.para2                                         = You can register later in the year when this service is available to you.
+main-income-error.title                                         = You can''t sign up for quarterly reporting yet
+main-income-error.heading                                       = You can''t sign up for quarterly reporting yet
+main-income-error.para1                                         = At the moment, you can only sign up if you’re one of the following:
+main-income-error.para2                                         = You can sign up later in the year when this service is available to you.
 main-income-error.bullet1                                       = a sole trader with income from one business
-main-income-error.bullet2                                       = someone who lets UK property
-main-income-error.bullet3                                       = a sole trader with income from one business and you let a UK property
+main-income-error.bullet2                                       = someone who rents out a UK property
+main-income-error.bullet3                                       = a sole trader with income from one business and you rent out a UK property
 
 ## Other income error page ##
-other-income-error.title                                        = You can register, but can only send digital updates on part of your income
-other-income-error.heading                                      = You can register, but can only send digital updates on part of your income
-other-income-error.para1                                        = At the moment, you can only register to send digital updates if you''re either:
-other-income-error.para2                                        = You can send digital Income Tax updates for your other income later in the year.
-other-income-error.bullet1                                      = a sole trader with income from one business
-other-income-error.bullet2                                      = someone who lets UK property
-other-income-error.bullet3                                      = a sole trader with income from one business and you let a UK property
+other-income-error.title                                        = You can only send quarterly reports on part of your income
+other-income-error.heading                                      = You can only send quarterly reports on part of your income
+other-income-error.para1                                        = As this service is currently a trial, you can only send quarterly reports on income from your sole trader business, renting out a UK property, or both.
+other-income-error.para2                                        = You can send quarterly reports including your other income later in the year, when this service becomes available.
 
 ## Other sources of income page ##
 income-other.title                                              = Do you have any other sources of income?
 income-other.heading                                            = Do you have any other sources of income?
-income-other.para1                                              = This includes:
+income-other.para1                                              = This could include:
 income-other.bullet1                                            = employment that isn''t your sole trader business
 income-other.bullet2                                            = UK pensions or annuities
 income-other.bullet3                                            = state benefits
-income-other.bullet4                                            = student loans
-income-other.bullet5                                            = employment or investments from outside the UK
-income-other.bullet6                                            = capital gains
-income-other.bullet7                                            = the ''Rent a Room Scheme''
-income-other.bullet8                                            = qualifying care relief
+income-other.bullet4                                            = employment or investments from outside the UK
+income-other.bullet5                                            = capital gains
+income-other.bullet6                                            = the ''Rent a Room Scheme''
 income-other.yes                                                = Yes
 income-other.no                                                 = No

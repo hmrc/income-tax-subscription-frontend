@@ -30,7 +30,8 @@ class ConfirmationViewSpec extends UnitTestTrait {
 
   lazy val page = views.html.confirmation(
     subscriptionId = subscriptionIdValue,
-    submissionDate = submissionDateValue
+    submissionDate = submissionDateValue,
+    postAction = controllers.routes.SignOutController.signOut()
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
@@ -59,25 +60,17 @@ class ConfirmationViewSpec extends UnitTestTrait {
         }
       }
 
-      s"has a subscription id label '${MessageLookup.Confirmation.subscriptionIdLabel}'" in {
-        document.select("#subscription-id-label").text() mustBe MessageLookup.Confirmation.subscriptionIdLabel
-      }
-
       s"has a subscription id value '$subscriptionIdValue'" in {
         document.select("#subscription-id-value").text() mustBe subscriptionIdValue
       }
 
-      s"has a submission date label '${MessageLookup.Confirmation.submissionDateLabel}'" in {
-        document.select("#submission-date-label").text() mustBe MessageLookup.Confirmation.submissionDateLabel
+      s"has in the banner a paragraph of '${MessageLookup.Confirmation.banner_line1_1}'" in {
+        document.select("#confirmation-heading p").text() must include(MessageLookup.Confirmation.banner_line1_1)
       }
 
-      s"has a submission date value '$submissionDateValue'" in {
-        document.select("#submission-date-value").text() mustBe submissionDateValue.toOutputDateFormat
+      s"has in the banner a paragraph of '${MessageLookup.Confirmation.banner_line1_2}'" in {
+        document.select("#confirmation-heading p").text() must include(MessageLookup.Confirmation.banner_line1_2)
       }
-    }
-
-    "have a message which states an email confirmation has been sent" in {
-      document.select("#emailConfirmation").text() mustBe MessageLookup.Confirmation.emailConfirmation
     }
 
     "have a 'What happens next' section" which {
@@ -87,7 +80,7 @@ class ConfirmationViewSpec extends UnitTestTrait {
       }
 
       s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
-        document.select("#whatHappensNext p").text() mustBe MessageLookup.Confirmation.whatHappensNext.para1
+        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para1)
       }
 
       s"has a bullet point relating to correspondence '${MessageLookup.Confirmation.whatHappensNext.bullet1}'" in {
@@ -98,56 +91,22 @@ class ConfirmationViewSpec extends UnitTestTrait {
         document.select("#whatHappensNext li:nth-child(2)").text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet2
       }
 
-    }
-    "have a 'Register for more tax' section" which {
-
-      s"has the section heading '${MessageLookup.Confirmation.registerForMoreTax.heading}'" in {
-        document.select("#registerForMoreTax h2").text() mustBe MessageLookup.Confirmation.registerForMoreTax.heading
+      s"has a bullet point relating to correspondence '${MessageLookup.Confirmation.whatHappensNext.bullet3}'" in {
+        document.select("#whatHappensNext li:nth-child(3)").text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet3
       }
 
-      s"has a link stating PAYE '${MessageLookup.Confirmation.registerForMoreTax.link1}'" in {
-        document.select("#registerForMoreTax a:nth-child(1)").text() mustBe MessageLookup.Confirmation.registerForMoreTax.link1
+      s"has a bullet point relating to implications and obligations '${MessageLookup.Confirmation.whatHappensNext.bullet4}'" in {
+        document.select("#whatHappensNext li:nth-child(4)").text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet4
       }
 
-      s"has a link stating VAT '${MessageLookup.Confirmation.registerForMoreTax.link2}'" in {
-        document.select("#registerForMoreTax a:nth-child(2)").text() mustBe MessageLookup.Confirmation.registerForMoreTax.link2
+      s"has a bullet point relating to implications and obligations '${MessageLookup.Confirmation.whatHappensNext.bullet5}'" in {
+        document.select("#whatHappensNext li:nth-child(5)").text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet5
       }
 
-    }
-
-    "have a 'Guidance' section" which {
-
-      s"has the section heading '${MessageLookup.Confirmation.guidanceSection.heading}'" in {
-        document.select("#guidanceSection h2").text() mustBe MessageLookup.Confirmation.guidanceSection.heading
+      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para2)
       }
 
-      s"has a link stating Quarterly filing '${MessageLookup.Confirmation.guidanceSection.link1}'" in {
-        document.select("#guidanceSection a:nth-child(1)").text() mustBe MessageLookup.Confirmation.guidanceSection.link1
-      }
-
-      s"has a link stating Downloading software '${MessageLookup.Confirmation.guidanceSection.link2}'" in {
-        document.select("#guidanceSection a:nth-child(2)").text() mustBe MessageLookup.Confirmation.guidanceSection.link2
-      }
-
-      s"has a link stating Further reading '${MessageLookup.Confirmation.guidanceSection.link3}'" in {
-        document.select("#guidanceSection a:nth-child(3)").text() mustBe MessageLookup.Confirmation.guidanceSection.link3
-      }
-
-    }
-
-    "have a 'Give us feedback' section" which {
-
-      s"has the section heading '${MessageLookup.Confirmation.giveUsFeedback.heading}'" in {
-        document.select("#giveUsFeedback h2").text() mustBe MessageLookup.Confirmation.giveUsFeedback.heading
-      }
-
-      s"has a link stating service question '${MessageLookup.Confirmation.giveUsFeedback.link1}'" in {
-        document.select("#giveUsFeedback a").text() mustBe MessageLookup.Confirmation.giveUsFeedback.link1
-      }
-
-      s"has the text stating feedback duration '${MessageLookup.Confirmation.giveUsFeedback.feedbackDuration}'" in {
-        document.select("#giveUsFeedback span").text() mustBe MessageLookup.Confirmation.giveUsFeedback.feedbackDuration
-      }
     }
 
   }

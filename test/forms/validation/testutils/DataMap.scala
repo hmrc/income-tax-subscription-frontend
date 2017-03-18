@@ -16,7 +16,7 @@
 
 package forms.validation.testutils
 
-import forms.{CurrentFinancialPeriodPriorForm, RegisterNextAccountingPeriodForm}
+import forms.{AccountingPeriodPriorForm, RegisterNextAccountingPeriodForm}
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil.constraint
 import play.api.data.validation.{Constraint, Invalid}
@@ -25,7 +25,7 @@ object DataMap {
 
   import forms.BusinessNameForm._
   import forms.EmailForm._
-  import forms.{IncomeSourceForm, IncomeTypeForm}
+  import forms.{IncomeSourceForm, AccountingMethodForm}
   import forms.NotEligibleForm._
   import forms.TermForm._
   import forms.preferences.BackToPreferencesForm
@@ -45,11 +45,11 @@ object DataMap {
 
   def busName(name: String): DataMap = Map(businessName -> name)
 
-  def currentFinancialPeriodPrior(currentPeriodIsPrior: String): DataMap = Map(CurrentFinancialPeriodPriorForm.currentFinancialPeriodPrior -> currentPeriodIsPrior)
+  def accountingPeriodPrior(currentPeriodIsPrior: String): DataMap = Map(AccountingPeriodPriorForm.accountingPeriodPrior -> currentPeriodIsPrior)
 
   def registerNextAccountingPeriod(isRegisteringForNextPeriod: String): DataMap = Map(RegisterNextAccountingPeriodForm.registerNextAccountingPeriod -> isRegisteringForNextPeriod)
 
-  def incomeType(iType: String): DataMap = Map(IncomeTypeForm.incomeType -> iType)
+  def accountingMethod(iType: String): DataMap = Map(AccountingMethodForm.accountingMethod -> iType)
 
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 

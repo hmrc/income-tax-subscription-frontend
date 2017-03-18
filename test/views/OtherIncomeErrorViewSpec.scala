@@ -46,17 +46,6 @@ class OtherIncomeErrorViewSpec extends UnitTestTrait {
       document.getElementsByTag("P").text() must include(MessageLookup.OtherIncomeError.para2)
     }
 
-    s"have the paragraph (LI) '${MessageLookup.OtherIncomeError.bullet1}'" in {
-      document.getElementsByTag("LI").text() must include (MessageLookup.OtherIncomeError.bullet1)
-    }
-
-    s"have the paragraph (LI) '${MessageLookup.OtherIncomeError.bullet2}'" in {
-      document.getElementsByTag("LI").text() must include (MessageLookup.OtherIncomeError.bullet2)
-    }
-
-    s"have the paragraph (LI) '${MessageLookup.OtherIncomeError.bullet3}'" in {
-      document.getElementsByTag("LI").text() must include (MessageLookup.OtherIncomeError.bullet3)
-    }
   }
 }
 

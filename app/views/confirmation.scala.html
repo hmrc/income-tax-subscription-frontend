@@ -14,27 +14,24 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.helpers.form
 @import models.DateModel
+@import views.html.helpers._
 @import config.AppConfig
 
-@(subscriptionId: String, submissionDate: DateModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(subscriptionId: String, submissionDate: DateModel, postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None) {
 
     <div class="form-group">
         <section id="confirmation-heading" class="transaction-banner--complete">
-            <h1 class="transaction-banner__heading" style="color:#fff">@Messages("confirmation.heading")</h1>
+            <h1 class="transaction-banner__heading" style="color: #fff">@Messages("confirmation.heading")</h1>
+            <p>@Messages("confirmation.banner.line_1")</p>
+            <p>@Messages("confirmation.banner.line_2")</p>
             <p>
-                <span id="subscription-id-label" class="h3-heading">@Messages("confirmation.subscriptionId.label")</span>
                 <span id="subscription-id-value" class="h3-heading">@subscriptionId</span>
             </p>
-            <p>
-                <span id="submission-date-label" class="h3-heading">@Messages("confirmation.submissionDate.label")</span>
-                <span id="submission-date-value" class="h3-heading">@submissionDate.toOutputDateFormat</span>
-            </p>
         </section>
-
-        <p id="emailConfirmation">@Messages("confirmation.emailConfirmation")</p>
     </div>
 
     <section class="form-group" id="whatHappensNext">
@@ -43,33 +40,14 @@
         <ul class="bullets">
             <li>@Messages("confirmation.whatHappensNext.bullet1")</li>
             <li>@Messages("confirmation.whatHappensNext.bullet2")</li>
+            <li>@Html(Messages("confirmation.whatHappensNext.bullet3", appConfig.btaUrl))</li>
+            <li>@Messages("confirmation.whatHappensNext.bullet4")</li>
+            <li>@Messages("confirmation.whatHappensNext.bullet5")</li>
         </ul>
+        <p>@Messages("confirmation.whatHappensNext.para2")</p>
     </section>
 
-    <section id="registerForMoreTax">
-        <h2>@Messages("confirmation.registerForMoreTax.heading")</h2>
-        <div class="link-list">
-            <a class="link-list__item" href="#">@Messages("confirmation.registerForMoreTax.link1")</a>
-            <a class="link-list__item" href="#">@Messages("confirmation.registerForMoreTax.link2")</a>
-        </div>
-    </section>
-
-    <section id="guidanceSection">
-        <h2>@Messages("confirmation.guidanceSection.heading")</h2>
-        <div class="link-list">
-            <a class="link-list__item" href="#">@Messages("confirmation.guidanceSection.link1")</a>
-            <a class="link-list__item" href="#">@Messages("confirmation.guidanceSection.link2")</a>
-            <a class="link-list__item" href="#">@Messages("confirmation.guidanceSection.link3")</a>
-        </div>
-    </section>
-
-    <section id="giveUsFeedback">
-        <h2>@Messages("confirmation.giveUsFeedback.heading")</h2>
-        <a href="#">@Messages("confirmation.giveUsFeedback.link1")</a>
-        <span>@Messages("confirmation.giveUsFeedback.feedbackDuration")</span>
-    </section>
-
-
-
-
+    @form(action = postAction) {
+        @signOutButton()
+    }
 }

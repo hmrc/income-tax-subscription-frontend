@@ -16,7 +16,7 @@
 
 @import play.api.data.Form
 @import models._
-@import forms.AccountingPeriodForm._
+@import forms.AccountingPeriodDateForm._
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
@@ -24,26 +24,27 @@
 
 @(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, backUrl: String, viewType: AccountingPeriodViewType, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@scriptElem = {
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.min.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery-ui.min.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/date-helper.js")"></script>
-}
-
 @views.html.templates.main_template(title = Messages("accounting_period.title"), bodyClasses = None, scriptElem = None) {
+
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingPeriodForm)
 
-    <h1 class="heading-xlarge">
+    <h1 class="heading-large">
+    @if(isEditMode) {
+        @Messages("accounting_period.heading")
+    } else {
         @if(viewType == CurrentAccountingPeriodView) {
             @Messages("accounting_period.heading.current")
         } else {
             @Messages("accounting_period.heading.next")
         }
+    }
     </h1>
 
-    <p>@Messages("accounting_period.line_1")</p>
+    <div class="form-group">
+        <p>@Messages("accounting_period.line_1")</p>
+    </div>
 
     @form(action = postAction) {
 
@@ -51,14 +52,14 @@
             field = accountingPeriodForm(startDate),
             label = Messages("base.startDate"),
             parentForm = accountingPeriodForm,
-            hintText = Messages("base.exampleDate")
+            hintText = Messages("base.exampleStartDate")
         )
 
         @dateHelper(
             field = accountingPeriodForm(endDate),
             label = Messages("base.endDate"),
             parentForm = accountingPeriodForm,
-            hintText = Messages("base.exampleDate")
+            hintText = Messages("base.exampleEndDate")
         )
 
         @if(isEditMode) {

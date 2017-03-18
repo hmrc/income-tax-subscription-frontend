@@ -54,7 +54,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchNotEligible = 1, saveNotEligible = 0, fetchIncomeSource = 1)
+      verifyKeystore(fetchNotEligible = 1, saveNotEligible = 0)
     }
   }
 
@@ -69,10 +69,10 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
 
       await(goodRequest)
-      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)
+      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1)
     }
 
     "return a see other status (303) for SignUp on a property journey" in {
@@ -84,7 +84,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
 
       await(goodRequest)
-      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)
+      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1)
     }
 
     "return a see other status (303) for SignUp on a business and property journey" in {
@@ -94,10 +94,10 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
 
       await(goodRequest)
-      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 1)
+      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1)
     }
 
     "return a not implemented status (501) for SignOut" in {
@@ -108,7 +108,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       status(goodRequest) must be(Status.NOT_IMPLEMENTED)
 
       await(goodRequest)
-      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1, fetchIncomeSource = 0)
+      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1)
     }
 
   }
@@ -123,7 +123,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 0, fetchIncomeSource = 1)
+      verifyKeystore(fetchNotEligible = 0, saveNotEligible = 0)
     }
   }
 
@@ -131,26 +131,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
     s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
       await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
-      verifyKeystore(fetchIncomeSource = 1)
     }
-
-//    s"point to ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url} on property journey" in {
-//      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
-//      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
-//      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 0)
-//    }
-//
-//    s"point to ${controllers.property.routes.PropertyIncomeController.showPropertyIncome().url} if on business + property journey with property income LE10k" in {
-//      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth, fetchPropertyIncome = TestModels.testPropertyIncomeLT10k)
-//      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
-//      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
-//    }
-//
-//    s"point to ${controllers.business.routes.SoleTraderController.showSoleTrader().url} if on business + property journey with property income GE10k" in {
-//      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth, fetchPropertyIncome = TestModels.testPropertyIncomeGE10k)
-//      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.business.routes.SoleTraderController.showSoleTrader().url
-//      verifyKeystore(fetchIncomeSource = 1, fetchPropertyIncome = 1)
-//    }
   }
 
   authorisationTests()

@@ -79,14 +79,6 @@ class OtherIncomeViewSpec extends UnitTestTrait {
       document.getElementsByTag("LI").text() must include (messages.bullet6)
     }
 
-    s"have the paragraph (LI) '${messages.bullet7}'" in {
-      document.getElementsByTag("LI").text() must include (messages.bullet7)
-    }
-
-    s"have the paragraph (LI) '${messages.bullet8}'" in {
-      document.getElementsByTag("LI").text() must include (messages.bullet8)
-    }
-
     "have a form" which {
 
       val radioName = "choice"
@@ -96,7 +88,7 @@ class OtherIncomeViewSpec extends UnitTestTrait {
           document.select("fieldset legend").text() mustBe messages.heading
         }
 
-        s"has a radio option for 'incomeType-${OtherIncomeForm.option_yes}'" in {
+        s"has a radio option for '$radioName-${OtherIncomeForm.option_yes}'" in {
           val cashRadio = document.select(s"#$radioName-${OtherIncomeForm.option_yes}")
           cashRadio.attr("type") mustBe "radio"
           cashRadio.attr("name") mustBe s"$radioName"
@@ -106,7 +98,7 @@ class OtherIncomeViewSpec extends UnitTestTrait {
           label.get(0).text() mustBe messages.yes
         }
 
-        s"has a radio option for 'incomeType-${OtherIncomeForm.option_no}'" in {
+        s"has a radio option for '$radioName-${OtherIncomeForm.option_no}'" in {
           val cashRadio = document.select(s"#$radioName-${OtherIncomeForm.option_no}")
           cashRadio.attr("type") mustBe "radio"
           cashRadio.attr("name") mustBe s"$radioName"

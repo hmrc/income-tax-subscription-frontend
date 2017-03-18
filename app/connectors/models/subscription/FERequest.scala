@@ -16,8 +16,6 @@
 
 package connectors.models.subscription
 
-import java.time.LocalDate
-
 import models.DateModel
 import play.api.libs.json.Json
 

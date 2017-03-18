@@ -64,13 +64,14 @@ class RadioHelperSpec extends UnitTestTrait {
         case _ => fail()
       }
 
-      op1.productArity shouldBe 2
+      op1.productArity shouldBe 3
       op1.productElement(0) shouldBe "a"
       op1.productElement(1) shouldBe "msg"
+      op1.productElement(2) shouldBe None
       val productElementThrown = intercept[IndexOutOfBoundsException] {
-        op1.productElement(2)
+        op1.productElement(3)
       }
-      productElementThrown.getMessage shouldBe "The parameter for RadioName.productElement cannot exceed 1. {2}"
+      productElementThrown.getMessage shouldBe "The parameter for RadioName.productElement cannot exceed 2. {3}"
 
       val illegalArgumentExceptionThrown = intercept[IllegalArgumentException] {
         RadioOption("a a", "b")

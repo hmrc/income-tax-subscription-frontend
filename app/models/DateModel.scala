@@ -24,9 +24,13 @@ import play.api.libs.json.Json
 case class DateModel(day: String, month: String, year: String) {
   val outputFormat = DateTimeFormatter.ofPattern("d MMMM uuuu").withResolverStyle(ResolverStyle.STRICT)
 
+  val checkYourAnswersFormat = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT)
+
   def toLocalDate: LocalDate = LocalDate.of(year.toInt, month.toInt, day.toInt)
 
   def toOutputDateFormat: String = toLocalDate.format(outputFormat)
+
+  def toCheckYourAnswersDateFormat: String = toLocalDate.format(outputFormat)
 
   def diffInMonth(that: DateModel): Int = {
     import java.time.temporal.ChronoUnit

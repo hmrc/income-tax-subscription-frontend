@@ -59,7 +59,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         formWithErrors => backUrl.map(backUrl => BadRequest(view(formWithErrors, backUrl = backUrl, isEditMode))),
         terms => {
           keystoreService.saveTerms(terms) map (
-            _ => Redirect(controllers.routes.SummaryController.showSummary()))
+            _ => Redirect(controllers.routes.CheckYourAnswersController.show()))
         }
       )
   }
@@ -68,9 +68,9 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
     keystoreService.fetchIncomeSource() flatMap {
       case Some(source) => source.source match {
         case IncomeSourceForm.option_business =>
-          controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+          controllers.business.routes.BusinessAccountingMethodController.show().url
         case IncomeSourceForm.option_both =>
-          controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+          controllers.business.routes.BusinessAccountingMethodController.show().url
         case IncomeSourceForm.option_property =>
           import forms.OtherIncomeForm._
           keystoreService.fetchOtherIncome() flatMap {
@@ -78,9 +78,11 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
               controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
             case Some(OtherIncomeModel(`option_no`)) =>
               controllers.routes.OtherIncomeController.showOtherIncome().url
+            case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
           }
         case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
       }
+      case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no income source retrieve from Keystore")
     }
 
 }

@@ -18,20 +18,36 @@
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
+@import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
 
 @(summaryModel: SummaryModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @import SummaryIdConstants._
 @import SummaryHelper._
 
-@summaryRow(field: String, question: String, answer: String, changeUrl: String, enableHtml: Boolean = false) = {
-    <hr>
-    <div class="tabular-data__entry" id="@field-row">
-        <div class="tabular-data__heading tabular-data__heading--label" id="@field-question">@question</div>
-        <div class="tabular-data__data-1" id="@field-answer">@if(enableHtml) {@Html(answer)} else {
-            @answer
-        }</div>
-        <a class="tabular-data__data-2" href="@changeUrl" id="@field-edit">@Messages("base.change")</a>
+@summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
+    <div class="tabular-data__entry divider--top--thick" id="@field-row">
+        <span class="tabular-data__heading tabular-data__heading--label" id="@field-question">
+            @question
+        </span>
+        <div class="tabular-data__data-1" id="@field-answer">
+            @if(enableHtml) {@Html(answer)} else {@answer}
+        </div>
+        @changeUrl match {
+            case Some(url) => {
+                <a class="tabular-data__data-2" href="@url" id="@field-edit">@Messages("base.change")</a>
+            }
+            case _ => {
+                <div class="tabular-data__data-2"></div>
+            }
+        }
     </div>
+}
+
+@emailPreferences = @{
+    val rowName = ReceiveEmail
+    val rowQuestion = Messages("summary.email")
+    val rowAnswer = Messages("base.yes")
+    summaryRow(rowName, rowQuestion, rowAnswer)
 }
 
 @incomeSource(source: IncomeSourceModel) = @{
@@ -42,12 +58,12 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@accountingPeriod(period: AccountingPeriodModel) = @{
-    val rowName = AccountingPeriodId
+@accountingPeriodDate(period: AccountingPeriodModel) = @{
+    val rowName = AccountingPeriodDateId
     val rowQuestion = Messages("summary.accounting_period")
     val periodInMonth = period.startDate.diffInMonth(period.endDate)
-    val rowAnswer = s"${period.startDate.toOutputDateFormat} to ${period.endDate.toOutputDateFormat}</p>${Messages("summary.accounting_period.month", periodInMonth)}"
-    val rowUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod(editMode = true).url
+    val rowAnswer = s"${period.startDate.toCheckYourAnswersDateFormat} to ${period.endDate.toCheckYourAnswersDateFormat}"
+    val rowUrl = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
@@ -59,11 +75,11 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@incomeType(income: IncomeTypeModel) = @{
-    val rowName = IncomeTypeId
+@accountingMethod(income: AccountingMethodModel) = @{
+    val rowName = AccountingMethodId
     val rowQuestion = Messages("summary.income_type")
-    val rowAnswer = incomeTypeText(income)
-    val rowUrl = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType(editMode = true).url
+    val rowAnswer = accountingMethodText(income)
+    val rowUrl = controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -72,36 +88,30 @@
         val rowName = TermsId
         val rowQuestion = Messages("summary.terms")
         val rowAnswer = Messages("summary.terms.agreed")
-        val rowUrl = controllers.routes.TermsController.showTerms(editMode = true).url
-        summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+        summaryRow(rowName, rowQuestion, rowAnswer)
     } else Html("")
 }
 
-@views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None) {
+@views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None, articleLayout = false) {
+
     @back_link(backUrl)
 
-    <h1 class="heading-xlarge">@Messages("summary.heading")</h1>
+    <h1 class="heading-large">@Messages("summary.heading")</h1>
+
+    <h2 class="heading-medium">@Html(Messages("summary.h2"))</h2>
 
     <div class="form-group">
-        <p>@Html(Messages("summary.line_1"))</p>
-    </div>
-
-    <div class="form-group">
+        @emailPreferences
         @summaryModel.incomeSource.map(incomeSource)
-        @summaryModel.accountingPeriod.map(accountingPeriod)
+        @summaryModel.accountingPeriod.map(accountingPeriodDate)
         @summaryModel.businessName.map(businessName)
-        @summaryModel.incomeType.map(incomeType)
+        @summaryModel.accountingMethod.map(accountingMethod)
         @summaryModel.terms.map(terms)
-        <hr>
+        <div class="divider--top--thick"></div>
     </div>
 
-    <h2 class="heading-medium">@Messages("summary.h2")</h2>
-    <p>@Messages("summary.line_2")</p>
-
-    <div class="form-group">
     @form(action = postAction) {
         @continueButton(Messages("base.submit"))
     }
-    </div>
 
 }

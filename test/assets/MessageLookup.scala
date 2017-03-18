@@ -43,11 +43,11 @@ object MessageLookup {
   }
 
   object IncomeSource {
-    val title = "What's your income type?"
+    val title = "Where does your income come from?"
     val heading: String = title
     val business = "Your sole trader business"
-    val property = "Letting a UK property"
-    val both = "Your sole trader business and letting a UK property"
+    val property = "Renting out a UK property"
+    val both = "Your sole trader business and renting out a UK property"
     val other = "Other"
   }
 
@@ -72,21 +72,22 @@ object MessageLookup {
       val no = "No - I am a different type of business"
     }
 
-    object CurrentFinancialPeriodPrior {
-      val title = "Did your current financial period start before 1 April 2017?"
+    object AccountingPeriodPrior {
+      val title = "Did your current accounting period start before 1 April 2017?"
       val heading: String = title
-      val line_1 = "This is the period that your latest income and expense records cover (also called your accounting period). Your financial period normally starts on 6 April, unless you’ve chosen to use your own dates."
-      val line_2 = "If you're a new business, this is the date you started trading."
-      val hint = "1 April 2017 is when the Register for digital Income Tax updates services started."
+      val line_1 = "1 April 2017 is the date this service started."
+      val accordion = "What is an accounting period?"
+      val accordion_line1 = "This is the period that your latest income and expense records cover for Self Assessment."
+      val accordion_line2 = "Your start date is usually 6 April (the same as the tax year), unless you selected a different date when you registered for Self Assessment."
       val yes = "Yes"
       val no = "No"
     }
 
     object RegisterNextAccountingPeriod {
-      val title = "Do you want to register for your next financial period?"
+      val title = "Do you want to sign up for your next accounting period?"
       val heading = title
-      val line_1 = "You can't register for Income Tax updates on your current financial period, as it started before, 1 April 2017."
-      val line_2 = "You can register for your next financial period, but can't send Income Tax updates until this begins."
+      val line_1 = "You can't send quarterly reports yet, as your current accounting period started before 1 April 2017."
+      val line_2 = "You can sign up for your next accounting period, but can't send quarterly reports until this begins."
       val yes = "Yes"
       val no = "No - sign out"
     }
@@ -97,8 +98,7 @@ object MessageLookup {
     val title = "Business accounting period"
     val heading_current = "What are the dates of your current accounting period?"
     val heading_next = "When is your next accounting period?"
-    val line_1 = "Your accounting period is normally 6 April to 5 April, unless you've chosen to use different dates."
-
+    val line_1 = "Your accounting period is usually 6 April to 5 April (the same as the tax year), unless you selected different dates when you registered for Self Assessment."
   }
 
   object ContactEmail {
@@ -109,36 +109,34 @@ object MessageLookup {
 
   object BusinessName {
     val title = "Business name"
-    val heading: String = "What is your business name?"
-    val line_1 = "This is the business name you gave when you registered for Self Assessment."
+    val heading: String = "What's the name of your business?"
+    val line_1 = "This is the business name you used to register for Self Assessment. If your business doesn't have a name, enter your own name."
   }
 
-  object BusinessIncomeType {
+  object AccountingMethod {
     val title = "Accounting method"
-    val heading: String = "Which accounting method do you use?"
-    val line_1 = "This is how you keep records of your business income and expenses for your tax return."
-    val cash = "Cash basis accounting You only record income or expenses when you receive money or pay a bill"
-    val accruals = "Traditional accounting (‘accruals basis’) You record income and expenses by the date you invoiced or were billed"
+    val heading: String = "What method do you use for your accounting?"
+    val accordion = "Show me an example"
+    val accordion_line_1 = "Your accounting period is 6 April 2016 to 5 April 2017. You invoiced someone in March 2017 but didn't receive the money until May 2017."
+    val accordion_line_2 = "If you would record this income in:"
+    val accordion_bullet_1 = "May 2017, then the method you use is ‘cash basis’ accounting"
+    val accordion_bullet_2 = "March 2017, then the method you use is ‘accruals basis’ accounting"
+    val cash = "Cash basis Your end-of-year records show the money you've received or paid out in the tax year. Most sole traders and small businesses use this method."
+    val accruals = "Accruals basis Your end-of-year accounts record income and expenses in the tax year that they occur, regardless of when you receive or make a payment."
   }
 
   object Terms {
-    val title = "Terms and conditions"
+    val title = "Terms of participation"
     val heading: String = title
-    val line_1 = "To use this service you must accept the terms and conditions."
-    val line_2 = "By accepting the terms and conditions, you agree:"
-    val li_1 = "that HMRC can use the email address you have provided to contact you about your digital tax updates"
-    val li_2 = "to use accounting software to send digital income and expenditure updates to HMRC at least every 3 months from the start of your accounting period"
-    val li_3 = "to contact HMRC immediately if you start a new business or sell or close down your current business"
-    val checkbox = "I accept the terms and conditions"
+    val line_1 = "By accepting the terms of participation, you confirm that you've read and understood the terms of the trial. You'll have been sent these terms separately."
+    val checkbox = "I accept the terms of participation"
   }
 
   object Summary {
     val title = "Check your answers"
     val heading: String = title
-    val line_1 = "You can edit your answers if you need to. When you're ready, submit your answers to sign up to send HMRC digital income and expenditure updates."
-    val h2 = "Now send your application"
-    val line_2 = "By submitting this notification you are confirming that, to the best of your knowledge, the details you are providing are correct."
-    val income_source = "Income type"
+    val h2 = "You've told us"
+    val income_source = "Where does your income come from?"
 
     object IncomeSource {
       val business = "Business"
@@ -146,18 +144,19 @@ object MessageLookup {
       val both = "Business and property"
     }
 
-    val accounting_period = "Accounting period"
+    val accounting_period_prior = "Did your current accounting period start before 1 April 2017?"
+    val accounting_period =  s"Your accounting period dates:"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
-    val business_name = "Business name"
-    val income_type = "Accounting type"
+    val business_name = "What's the name of your business?"
+    val income_type = "What method do you use for your accounting?"
 
-    object IncomeType {
+    object AccountingMethod {
       val cash = "Cash basis"
       val accruals = "Accruals basis"
     }
 
-    val contact_email = "Email"
-    val terms = "Terms and conditions"
+    val contact_email = "Do you want to receive electronic communications from HMRC?"
+    val terms = "Terms of participation"
     val terms_agreed = "I agree"
   }
 
@@ -168,42 +167,26 @@ object MessageLookup {
   }
 
   object AlreadyEnrolled {
-    val title = "You've already registered for digital tax updates"
-    val heading = "You've already registered for digital tax updates"
-    val para1 = "Your Government Gateway ID is already registered for digital tax updates."
+    val title = "You've already signed up"
+    val heading = "You've already signed up"
+    val para1 = "Your Government Gateway ID is already signed up for regular reporting."
   }
 
   object Confirmation {
-    val title = "Submitted"
-    val heading: String = title
-    val subscriptionIdLabel = "Subscription number:"
-    val submissionDateLabel = "Date:"
-    val emailConfirmation = "You'll receive an email confirming that your application has been received."
+    val title = "Confirmation page"
+    val heading = "Success"
+    val banner_line1_1 = "You've successfully signed up for quarterly reporting."
+    val banner_line1_2 = "Your reference number is:"
 
     object whatHappensNext {
       val heading = "What happens next"
-      val para1 = "Your process for HMRC."
-      val bullet1 = "What correspondence user will expect to receive and within what time period"
-      val bullet2 = "What implications and obligations on the user as a result of this subscription if any"
-    }
-
-    object registerForMoreTax {
-      val heading = "Register for more tax"
-      val link1 = "PAYE (Pay as you earn)"
-      val link2 = "VAT (Value added tax)"
-    }
-
-    object guidanceSection {
-      val heading = "Guidance"
-      val link1 = "Quarterly filing instructions"
-      val link2 = "Downloading software"
-      val link3 = "Further reading"
-    }
-
-    object giveUsFeedback {
-      val heading = "Give us feedback"
-      val link1 = "What did you think of this service?"
-      val feedbackDuration = "(takes 30 seconds)"
+      val para1 = "Now that you've signed up to trial this service, you must:"
+      val bullet1 = "make a note of your reference number. If you forget your Government Gateway account details, we can use this reference number to help you retrieve them"
+      val bullet2 = "download accounting software. You’ll need to use this software to send HMRC reports about your income and expenditure"
+      val bullet3 = "activate your Business Tax Account"
+      val bullet4 = "report at least once every 3 months from the start of your accounting period"
+      val bullet5 = "report any outstanding records you may have for your current accounting period"
+      val para2 = "After you send a report, HMRC will calculate an estimate of your Income Tax. You can see these estimates from your accounting software after your first report, or through your Business Tax Account from July 2017"
     }
 
   }
@@ -221,7 +204,7 @@ object MessageLookup {
         val invalid = "You must select an option to continue"
       }
 
-      object CurrentFinancialPeriodPrior {
+      object AccountingPeriodPrior {
         val empty = "You must select an option to continue"
         val invalid = "You must select an option to continue"
       }
@@ -265,7 +248,7 @@ object MessageLookup {
       val invalid = "The email is invalid"
     }
 
-    object IncomeType {
+    object AccountingMethod {
       val empty = "You must select an option to continue"
       val invalid = "You must select an option to continue"
     }
@@ -310,48 +293,44 @@ object MessageLookup {
   }
 
   object NoNino {
-    val title = "You can't send digital updates yet"
+    val title = "You can't sign up for quarterly reporting yet"
     val heading = title
+    val line1 = "You can sign up later in the year when this service is available to you."
   }
 
   object ThrottleLimit {
-    val title = "This service is temporarily unavailable"
+    val title = "Service is unavailable due to maintenance"
     val heading = title
-    val line1 = "To register for digital updates, you'll have to try again after 24 hours."
+    val line1 = "Please try again later."
   }
 
   object MainIncomeError {
-    val title = "You can't send digital updates yet"
-    val heading = "You can't send digital updates yet"
-    val para1 = "At the moment, you can only register to send digital updates if you're either:"
-    val para2 = "You can register later in the year when this service is available to you."
+    val title = "You can't sign up for quarterly reporting yet"
+    val heading = "You can't sign up for quarterly reporting yet"
+    val para1 = "At the moment, you can only sign up if you’re one of the following:"
+    val para2 = "You can sign up later in the year when this service is available to you."
     val bullet1 = "a sole trader with income from one business"
-    val bullet2 = "someone who lets UK property"
-    val bullet3 = "a sole trader with income from one business and you let a UK property"
+    val bullet2 = "someone who rents out a UK property"
+    val bullet3 = "a sole trader with income from one business and you rent out a UK property"
   }
 
   object OtherIncomeError {
-    val title = "You can register, but can only send digital updates on part of your income"
-    val heading = "You can register, but can only send digital updates on part of your income"
-    val para1 = "At the moment, you can only register to send digital updates if you're either:"
-    val para2 = "You can send digital Income Tax updates for your other income later in the year."
-    val bullet1 = "a sole trader with income from one business"
-    val bullet2 = "someone who lets UK property"
-    val bullet3 = "a sole trader with income from one business and you let a UK property"
+    val title = "You can only send quarterly reports on part of your income"
+    val heading: String = title
+    val para1 = "As this service is currently a trial, you can only send quarterly reports on income from your sole trader business, renting out a UK property, or both."
+    val para2 = "You can send quarterly reports including your other income later in the year, when this service becomes available."
   }
 
   object OtherIncome {
     val title = "Do you have any other sources of income?"
     val heading = "Do you have any other sources of income?"
-    val para1 = "This includes:"
+    val para1 = "This could include:"
     val bullet1 = "employment that isn't your sole trader business"
     val bullet2 = "UK pensions or annuities"
     val bullet3 = "state benefits"
-    val bullet4 = "student loans"
-    val bullet5 = "employment or investments from outside the UK"
-    val bullet6 = "capital gains"
-    val bullet7 = "the 'Rent a Room Scheme'"
-    val bullet8 = "qualifying care relief"
+    val bullet4 = "employment or investments from outside the UK"
+    val bullet5 = "capital gains"
+    val bullet6 = "the 'Rent a Room Scheme'"
     val yes = "Yes"
     val no = "No"
   }

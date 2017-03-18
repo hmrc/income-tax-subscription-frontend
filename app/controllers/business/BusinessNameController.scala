@@ -58,14 +58,14 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
         businessName => {
           keystoreService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
-              Redirect(controllers.routes.SummaryController.showSummary())
+              Redirect(controllers.routes.CheckYourAnswersController.show())
             else
-              Redirect(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType())
+              Redirect(controllers.business.routes.BusinessAccountingMethodController.show())
             )
         }
       )
   }
 
-  lazy val backUrl: String = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+  lazy val backUrl: String = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
 
 }

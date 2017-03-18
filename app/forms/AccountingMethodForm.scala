@@ -19,27 +19,27 @@ package forms
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
-import models.IncomeTypeModel
+import models.AccountingMethodModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid}
 
-object IncomeTypeForm {
+object AccountingMethodForm {
 
-  val incomeType = "incomeType"
+  val accountingMethod = "accountingMethod"
   val option_cash = "Cash"
   val option_accruals = "Accruals"
 
   val incomeEmpty: Constraint[String] = constraint[String](
     income => {
-      lazy val emptyIncome = ErrorMessageFactory.error("error.income_type.empty")
+      lazy val emptyIncome = ErrorMessageFactory.error("error.accounting-method.empty")
       if (income.isEmpty) emptyIncome else Valid
     }
   )
 
   val incomeInvalid: Constraint[String] = constraint[String](
     income => {
-      lazy val invalidIncome = ErrorMessageFactory.error("error.income_type.invalid")
+      lazy val invalidIncome = ErrorMessageFactory.error("error.accounting-method.invalid")
       income match {
         case `option_cash` | `option_accruals` => Valid
         case _ => invalidIncome
@@ -47,10 +47,10 @@ object IncomeTypeForm {
     }
   )
 
-  val incomeTypeForm = Form(
+  val accountingMethodForm = Form(
     mapping(
-      incomeType -> oText.toText.verifying(incomeEmpty andThen incomeInvalid)
-    )(IncomeTypeModel.apply)(IncomeTypeModel.unapply)
+      accountingMethod -> oText.toText.verifying(incomeEmpty andThen incomeInvalid)
+    )(AccountingMethodModel.apply)(AccountingMethodModel.unapply)
   )
 
 }

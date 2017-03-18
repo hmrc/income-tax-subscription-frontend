@@ -16,6 +16,7 @@
 
 package controllers
 
+import audit.Logging
 import auth.{authenticatedFakeRequest, mockEnrolled}
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
@@ -29,7 +30,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   object TestConfirmationController extends ConfirmationController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    app.injector.instanceOf[Logging]
   )
 
   override val controllerName: String = "ConfirmationControllerSpec"

@@ -17,20 +17,20 @@
 package views.business
 
 import assets.MessageLookup.{AccountingPeriod => messages, Base => commonMessages}
-import forms.AccountingPeriodForm
+import forms.AccountingPeriodDateForm
 import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import utils.UnitTestTrait
 
-class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
+class BusinessAccountingPeriodDateViewSpec extends UnitTestTrait {
 
   lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
 
-  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean) = views.html.business.accounting_period(
-    accountingPeriodForm = AccountingPeriodForm.accountingPeriodForm,
-    postAction = controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod(),
+  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean) = views.html.business.accounting_period_date(
+    accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm,
+    postAction = controllers.business.routes.BusinessAccountingPeriodDateController.submitAccountingPeriod(),
     backUrl = backUrl,
     viewType = viewType,
     isEditMode
@@ -38,7 +38,7 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
 
   def documentCore(viewType: AccountingPeriodViewType, isEditMode: Boolean = false) = Jsoup.parse(page(viewType, isEditMode).body)
 
-  "The Business Accounting Period view" should {
+  "The Business Accounting Period Date view" should {
     Seq(CurrentAccountingPeriodView, NextAccountingPeriodView).foreach {
       viewType =>
 
@@ -83,8 +83,8 @@ class BusinessAccountingPeriodViewSpec extends UnitTestTrait {
             document.select("#continue-button").isEmpty mustBe false
           }
 
-          s"has a post action to '${controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod().url}'" in {
-            document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodController.submitAccountingPeriod().url
+          s"has a post action to '${controllers.business.routes.BusinessAccountingPeriodDateController.submitAccountingPeriod().url}'" in {
+            document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodDateController.submitAccountingPeriod().url
             document.select("form").attr("method") mustBe "POST"
           }
 

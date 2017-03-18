@@ -28,6 +28,7 @@
   @summaryErrorHelper(otherIncomeForm)
 
   <h1 class="heading-large">@Messages("income-other.heading")</h1>
+
   <div class="form-group">
     <p>@Messages("income-other.para1")</p>
       <ul class="bullets">
@@ -37,14 +38,11 @@
           <li>@Messages("income-other.bullet4")</li>
           <li>@Messages("income-other.bullet5")</li>
           <li>@Messages("income-other.bullet6")</li>
-          <li>@Messages("income-other.bullet7")</li>
-          <li>@Messages("income-other.bullet8")</li>
       </ul>
   </div>
 
   @form(action = postAction) {
 
-    <div class="form-group">
     @radioHelper(
       field = otherIncomeForm(OtherIncomeForm.choice),
       legend = Messages("income-other.heading"),
@@ -55,7 +53,6 @@
       ),
       parentForm = otherIncomeForm
     )
-    </div>
 
     @continueButton()
 

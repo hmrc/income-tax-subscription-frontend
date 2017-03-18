@@ -28,10 +28,10 @@ import services.mocks.MockKeystoreService
 class BusinessNameControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
 
-  override val controllerName: String = "BusinessIncomeTypeController"
+  override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showBusinessIncomeType" -> TestBusinessNameController.showBusinessName(isEditMode = false),
-    "submitBusinessIncomeType" -> TestBusinessNameController.submitBusinessName(isEditMode = false)
+    "showBusinessName" -> TestBusinessNameController.showBusinessName(isEditMode = false),
+    "submitBusinessName" -> TestBusinessNameController.submitBusinessName(isEditMode = false)
   )
 
   object TestBusinessNameController extends BusinessNameController(
@@ -71,12 +71,12 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
       }
 
-      s"redirect to '${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url}'" in {
+      s"redirect to '${controllers.business.routes.BusinessAccountingMethodController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingMethodController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
@@ -95,12 +95,12 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
       }
 
-      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
@@ -115,13 +115,13 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchAccountingPeriod = 0, saveAccountingPeriod = 0)
+      verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 0)
     }
   }
 
   "The back url" should {
-    s"point to ${controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url}" in {
-      TestBusinessNameController.backUrl mustBe controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+    s"point to ${controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url}" in {
+      TestBusinessNameController.backUrl mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
     }
   }
 

@@ -25,7 +25,7 @@ import utils.UnitTestTrait
 
 class BusinessNameViewSpec extends UnitTestTrait {
 
-  lazy val backUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+  lazy val backUrl = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
 
   def page(isEditMode: Boolean) = views.html.business.business_name(
     businessNameForm = BusinessNameForm.businessNameForm,

@@ -72,7 +72,7 @@ class NotEligibleViewSpec extends UnitTestTrait {
           document.select("fieldset legend").text() mustBe messages.question
         }
 
-        s"has a radio option for 'incomeType-${NotEligibleForm.option_signup}'" in {
+        s"has a radio option for '$radioName-${NotEligibleForm.option_signup}'" in {
           val cashRadio = document.select(s"#$radioName-${NotEligibleForm.option_signup}")
           cashRadio.attr("type") mustBe "radio"
           cashRadio.attr("name") mustBe s"$radioName"
@@ -82,7 +82,7 @@ class NotEligibleViewSpec extends UnitTestTrait {
           label.get(0).text() mustBe messages.signUp
         }
 
-        s"has a radio option for 'incomeType-${NotEligibleForm.option_signout}'" in {
+        s"has a radio option for '$radioName-${NotEligibleForm.option_signout}'" in {
           val cashRadio = document.select(s"#$radioName-${NotEligibleForm.option_signout}")
           cashRadio.attr("type") mustBe "radio"
           cashRadio.attr("name") mustBe s"$radioName"
