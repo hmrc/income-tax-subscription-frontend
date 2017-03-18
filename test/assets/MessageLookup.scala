@@ -133,7 +133,7 @@ object MessageLookup {
   }
 
   object Summary {
-    val title = "Check your answers"
+    val title = "Check your answers before sending"
     val heading: String = title
     val h2 = "You've told us"
     val income_source = "Where does your income come from?"
