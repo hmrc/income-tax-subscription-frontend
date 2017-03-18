@@ -132,8 +132,9 @@ technicalIssue.paraOne                                          = This online se
 technicalIssue.paraTwo                                          = Please try again in 5 minutes.
 
 ## Summary page ##
-summary.title                                                   = Check your answers
-summary.heading                                                 = Check your answers
+summary.title                                                   = Check your answers before sending
+summary.heading                                                 = Check your answers before sending
+summary.confirm_and_send                                        = Confirm and send
 summary.line_1                                                  = You can edit your answers if you need to.<br>When you''re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
 summary.h2                                                      = You''ve told us
 summary.email                                                   = Do you want to receive electronic communications from HMRC?
