@@ -67,7 +67,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   // sign out
   override lazy val ggUrl = loadConfig(s"government-gateway.url")
-  override lazy val ggSignOutUrl = s"$ggUrl/gg/sign-out?continue=${baseUrl+controllers.routes.HomeController.home().url}"
+  override lazy val ggSignOutUrl = s"$ggUrl/gg/sign-out?continue=$ggSignInContinueUrl"
 
   // BTA link
   override lazy val btaUrl = loadConfig(s"bta.url")
