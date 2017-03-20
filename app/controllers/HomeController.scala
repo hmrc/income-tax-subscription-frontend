@@ -39,7 +39,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
   def home: Action[AnyContent] = Action.async { implicit request =>
     showGuidance match {
       case true =>
-        Ok(views.html.frontpage(controllers.routes.HomeController.index))
+        Ok(views.html.frontpage(controllers.routes.HomeController.index()))
       case _ =>
         Redirect(controllers.routes.HomeController.index())
     }

@@ -19,7 +19,7 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import helpers._
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(getAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("frontpage.title"), bodyClasses = None, showSignOutLink = false) {
 
@@ -49,7 +49,7 @@
 <p>@Html(Messages("frontpage.line_7"))</p>
 
 <div class="form-group">
-    @form(action = postAction) {
+    @form(action = getAction) {
         @startButton(Messages("base.sign-up"))
     }
 </div>

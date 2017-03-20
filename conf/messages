@@ -19,7 +19,7 @@ base.yes                                                        = Yes
 base.no                                                         = No
 
 ## Front page
-frontpage.title                                                 = Start page
+frontpage.title                                                 = Sign up to report your income and expenses quarterly
 frontpage.heading                                               = Sign up to report your income and expenses quarterly
 frontpage.line_1                                                = Thank you for agreeing to take part in this HM Revenue and Customs pilot.
 frontpage.line_2                                                = By signing up you’re helping us to test a new way of working out your tax. You’ll do this by:

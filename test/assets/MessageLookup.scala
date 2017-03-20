@@ -31,6 +31,12 @@ object MessageLookup {
     val errorHeading = "Error Summary"
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
+    val signUp = "Sign up"
+  }
+
+  object FrontPage {
+    val title = "Sign up to report your income and expenses quarterly"
+    val heading: String = title
   }
 
   object PreferencesCallBack {
