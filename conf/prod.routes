@@ -1,7 +1,7 @@
 # Add all the application routes to the app.routes file
-->         /income-tax-subscription-frontend            app.Routes
-->         /income-tax-subscription-frontend/business/  business.Routes
-->         /                                            health.Routes
-->     	   /template                                    template.Routes
+->         /report-quarterly/income-and-expenses/sign-up            app.Routes
+->         /report-quarterly/income-and-expenses/sign-up/business   business.Routes
+->         /                                                        health.Routes
+->     	   /template                                                template.Routes
 
-GET        /admin/metrics                               @com.kenshoo.play.metrics.MetricsController.metrics
+GET        /admin/metrics                                           @com.kenshoo.play.metrics.MetricsController.metrics

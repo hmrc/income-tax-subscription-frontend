@@ -1,4 +1,5 @@
 ## Base ##
+base.service_name                                               = Report your Income and Expenses Quarterly
 base.back                                                       = Back
 base.continue                                                   = Continue
 base.update                                                     = Update
