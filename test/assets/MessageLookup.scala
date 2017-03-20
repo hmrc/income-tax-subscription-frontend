@@ -31,6 +31,37 @@ object MessageLookup {
     val errorHeading = "Error Summary"
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
+    val signUp = "Sign up"
+  }
+
+  object FrontPage {
+    val title = "Sign up to report your income and expenses quarterly"
+    val heading = title
+    val h2 = "What happens next"
+    val bullet_1 = "using your accounting software to record your income and expenses"
+    val bullet_2 = "sending details to us regularly from May 2017"
+    val bullet_3 = "you're a sole trader"
+    val bullet_4 = "you rent out a UK property"
+    val bullet_5 = "you're a sole trader and rent out a UK property"
+    val bullet_6 = "you're willing to go paperless"
+    val bullet_7 = "your current accounting period starts on or after 1 April 2017"
+    val bullet_8 = "keep using accounting software to keep your records and send regular reports"
+    val bullet_9 = "send your summary report for the tax year 2017 to 2018 by 31 January 2019 at the latest"
+    val bullet_10 = "a reference number to you may need if you contact us"
+    val bullet_11 = "an estimate of what you owe every time you send a report"
+    val bullet_12 = "use your business tax account to look at your reports from June 2017"
+    val bullet_13 = "choose to pay as you go"
+    val line_1 = "Thank you for agreeing to take part in this HM Revenue and Customs pilot."
+    val line_2 = "By signing up you're helping us to test a new way of working out your tax. You'll do this by:"
+    val line_3 = "Soon this will replace your annual tax return but you'll still need to send us your 2016 to 2017 tax return and pay any tax you owe by 31 January 2018."
+    val line_4 = "Your information will be secure. You'll need to go through security checks first to make sure no one else can access your personal details."
+    val line_5 = "If at any time during the pilot you decide not to take part you can stop but you may need to start using this way of working out your tax from April 2018."
+    val line_6 = "You can sign up if:"
+    val line_7 = "Use the user ID and password you got when you signed up to the Self Assessment online service."
+    val line_8 = "You'll need to:"
+    val line_9 = "You'll get:"
+    val line_10 = "You can"
+
   }
 
   object PreferencesCallBack {
@@ -68,7 +99,7 @@ object MessageLookup {
       val title = "Are you a sole trader?"
       val heading: String = title
       val line_1 = "As a sole trader, you run your own business as an individual. You can keep all your business's profits after you've paid tax on them. 'Sole trader' means you're responsible for the business, not that you have to work alone."
-      val yes = "Yes - I’m a sole trader"
+      val yes = "Yes - I'm a sole trader"
       val no = "No - I am a different type of business"
     }
 
@@ -104,7 +135,7 @@ object MessageLookup {
   object ContactEmail {
     val title = "Enter your email address"
     val heading: String = title
-    val line_1 = "We’ll use this to get in touch with updates about your estimated Income Tax calculations."
+    val line_1 = "We'll use this to get in touch with updates about your estimated Income Tax calculations."
   }
 
   object BusinessName {
@@ -119,8 +150,8 @@ object MessageLookup {
     val accordion = "Show me an example"
     val accordion_line_1 = "Your accounting period is 6 April 2016 to 5 April 2017. You invoiced someone in March 2017 but didn't receive the money until May 2017."
     val accordion_line_2 = "If you would record this income in:"
-    val accordion_bullet_1 = "May 2017, then the method you use is ‘cash basis’ accounting"
-    val accordion_bullet_2 = "March 2017, then the method you use is ‘accruals basis’ accounting"
+    val accordion_bullet_1 = "May 2017, then the method you use is ‘cash basis' accounting"
+    val accordion_bullet_2 = "March 2017, then the method you use is ‘accruals basis' accounting"
     val cash = "Cash basis Your end-of-year records show the money you've received or paid out in the tax year. Most sole traders and small businesses use this method."
     val accruals = "Accruals basis Your end-of-year accounts record income and expenses in the tax year that they occur, regardless of when you receive or make a payment."
   }
@@ -182,7 +213,7 @@ object MessageLookup {
       val heading = "What happens next"
       val para1 = "Now that you've signed up to trial this service, you must:"
       val bullet1 = "make a note of your reference number. If you forget your Government Gateway account details, we can use this reference number to help you retrieve them"
-      val bullet2 = "download accounting software. You’ll need to use this software to send HMRC reports about your income and expenditure"
+      val bullet2 = "download accounting software. You'll need to use this software to send HMRC reports about your income and expenditure"
       val bullet3 = "activate your Business Tax Account"
       val bullet4 = "report at least once every 3 months from the start of your accounting period"
       val bullet5 = "report any outstanding records you may have for your current accounting period"
@@ -307,7 +338,7 @@ object MessageLookup {
   object MainIncomeError {
     val title = "You can't sign up for quarterly reporting yet"
     val heading = "You can't sign up for quarterly reporting yet"
-    val para1 = "At the moment, you can only sign up if you’re one of the following:"
+    val para1 = "At the moment, you can only sign up if you're one of the following:"
     val para2 = "You can sign up later in the year when this service is available to you."
     val bullet1 = "a sole trader with income from one business"
     val bullet2 = "someone who rents out a UK property"

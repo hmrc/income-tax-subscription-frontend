@@ -14,14 +14,6 @@
  * limitations under the License.
  *@
 
-@import views.html.templates.main_template
-@import config.AppConfig
+@(alternativeText: Option[String] = None)(implicit messages: Messages)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
-@main_template(title = Messages("timeout.title"), bodyClasses = None, showSignOutLink = false) {
-
-<h1>@Messages("timeout.title")</h1>
-<p>@Html(Messages("timeout.returnToHome", controllers.routes.HomeController.index().url))</p>
-
-}
+<button class="button button--get-started" type="submit" id="start-button">@alternativeText.fold(Messages("base.start-now"))(x => x)</button>

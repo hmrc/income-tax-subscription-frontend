@@ -44,6 +44,7 @@ trait AppConfig {
   val ggUrl: String
   val ggSignOutUrl: String
   val btaUrl: String
+  val showGuidance: Boolean
 }
 
 @Singleton
@@ -97,6 +98,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   // Enable or disable calling the throttling control in the middle service from the HomeController
   override lazy val enableThrottling = loadConfig("feature-switch.enable-throttling").toBoolean
 
-
+  // Enable or disable showing the guidance page or go straight to sign ups
+  override lazy val showGuidance: Boolean = loadConfig("feature-switch.show-guidance").toBoolean
 }
 

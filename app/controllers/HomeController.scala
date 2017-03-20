@@ -34,6 +34,17 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                logging: Logging
                               ) extends BaseController {
 
+  lazy val showGuidance: Boolean = baseConfig.applicationConfig.showGuidance
+
+  def home: Action[AnyContent] = Action.async { implicit request =>
+    showGuidance match {
+      case true =>
+        Ok(views.html.frontpage(controllers.routes.HomeController.index()))
+      case _ =>
+        Redirect(controllers.routes.HomeController.index())
+    }
+  }
+
   def index: Action[AnyContent] = Authorised.asyncForHomeController { implicit user =>
     implicit request =>
       baseConfig.applicationConfig.enableThrottling match {

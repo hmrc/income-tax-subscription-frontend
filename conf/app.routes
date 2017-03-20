@@ -2,8 +2,10 @@
 GET         /assets/*file                     controllers.Assets.at(path="/public", file)
 
 # Home controller
-GET         /                                 controllers.HomeController.index
+GET         /                                 controllers.HomeController.home
+GET         /index                            controllers.HomeController.index
 
+# SignOut Controller
 GET         /logout                           controllers.SignOutController.signOut
 
 # Preferences routes

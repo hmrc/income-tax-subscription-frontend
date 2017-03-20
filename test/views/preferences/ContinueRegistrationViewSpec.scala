@@ -28,7 +28,7 @@ import utils.UnitTestTrait
 class ContinueRegistrationViewSpec extends UnitTestTrait {
   lazy val page = views.html.preferences.continue_registration(
     backToPreferencesForm,
-    postAction = controllers.preferences.routes.PreferencesController.submitGoBackToPreferences
+    postAction = controllers.preferences.routes.PreferencesController.submitGoBackToPreferences()
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
