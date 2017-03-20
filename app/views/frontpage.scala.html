@@ -23,59 +23,60 @@
 
 @main_template(title = Messages("frontpage.title"), bodyClasses = None, showSignOutLink = false) {
 
-<h1>@Messages("frontpage.heading")</h1>
+    <header class="page-header">
+        <h1>@Messages("frontpage.heading")</h1>
+    </header>
 
-<p>@Html(Messages("frontpage.line_1"))</p>
-<p>@Html(Messages("frontpage.line_2"))</p>
+    <p>@Html(Messages("frontpage.line_1"))</p>
+    <p>@Html(Messages("frontpage.line_2"))</p>
 
-<ul class="list list-bullet">
-    <li>@Messages("frontpage.bullet_1")</li>
-    <li>@Messages("frontpage.bullet_2")</li>
-</ul>
+    <ul class="list list-bullet">
+        <li>@Messages("frontpage.bullet_1")</li>
+        <li>@Messages("frontpage.bullet_2")</li>
+    </ul>
 
-<p>@Html(Messages("frontpage.line_3"))</p>
-<p>@Html(Messages("frontpage.line_4"))</p>
-<p>@Html(Messages("frontpage.line_5"))</p>
-<p>@Html(Messages("frontpage.line_6"))</p>
+    <p>@Html(Messages("frontpage.line_3"))</p>
+    <p>@Html(Messages("frontpage.line_4"))</p>
+    <p>@Html(Messages("frontpage.line_5"))</p>
+    <p>@Html(Messages("frontpage.line_6"))</p>
 
-<ul class="list list-bullet">
-    <li>@Messages("frontpage.bullet_3")</li>
-    <li>@Messages("frontpage.bullet_4")</li>
-    <li>@Messages("frontpage.bullet_5")</li>
-    <li>@Messages("frontpage.bullet_6")</li>
-    <li>@Messages("frontpage.bullet_7")</li>
-</ul>
+    <ul class="list list-bullet">
+        <li>@Messages("frontpage.bullet_3")</li>
+        <li>@Messages("frontpage.bullet_4")</li>
+        <li>@Messages("frontpage.bullet_5")</li>
+        <li>@Messages("frontpage.bullet_6")</li>
+        <li>@Messages("frontpage.bullet_7")</li>
+    </ul>
 
-<p>@Html(Messages("frontpage.line_7"))</p>
+    <p>@Html(Messages("frontpage.line_7"))</p>
 
-<div class="form-group">
-    @form(action = getAction) {
-        @startButton(Messages("base.sign-up"))
-    }
-</div>
+    <div class="form-group">
+        @form(action = getAction) {
+            @startButton(Messages("base.sign-up"))
+        }
+    </div>
 
-<h2 class="h2-heading">@Messages("frontpage.second.heading")</h2>
+    <h2 class="h2-heading">@Messages("frontpage.second.heading")</h2>
 
-<p>@Html(Messages("frontpage.line_8"))</p>
+    <p>@Html(Messages("frontpage.line_8"))</p>
 
-<ul class="list list-bullet">
-    <li>@Messages("frontpage.bullet_8")</li>
-    <li>@Messages("frontpage.bullet_9")</li>
-</ul>
+    <ul class="list list-bullet">
+        <li>@Messages("frontpage.bullet_8")</li>
+        <li>@Messages("frontpage.bullet_9")</li>
+    </ul>
 
-<p>@Html(Messages("frontpage.line_9"))</p>
+    <p>@Html(Messages("frontpage.line_9"))</p>
 
-<ul class="list list-bullet">
-    <li>@Messages("frontpage.bullet_10")</li>
-    <li>@Messages("frontpage.bullet_11")</li>
-</ul>
+    <ul class="list list-bullet">
+        <li>@Messages("frontpage.bullet_10")</li>
+        <li>@Messages("frontpage.bullet_11")</li>
+    </ul>
 
-<p>@Html(Messages("frontpage.line_10"))</p>
+    <p>@Html(Messages("frontpage.line_10"))</p>
 
-<ul class="list list-bullet">
-    <li>@Messages("frontpage.bullet_12")</li>
-    <li>@Messages("frontpage.bullet_13")</li>
-</ul>
-
+    <ul class="list list-bullet">
+        <li>@Messages("frontpage.bullet_12")</li>
+        <li>@Messages("frontpage.bullet_13")</li>
+    </ul>
 
 }
