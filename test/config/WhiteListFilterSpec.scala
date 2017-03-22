@@ -16,23 +16,19 @@
 
 package config
 
-import config.filters.WhitelistFilter
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{Action, Call}
 import play.api.mvc.Results._
+import play.api.mvc.{Action, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, Configuration}
-import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 import utils.UnitTestTrait
-import play.api.inject._
 
 class WhiteListFilterSpec extends UnitTestTrait {
 
   val testString = "success"
 
   override def fakeApplication(): Application = new GuiceApplicationBuilder()
-    .bindings(bind(classOf[AkamaiWhitelistFilter]).to(classOf[WhitelistFilter]))
     .configure(Configuration("feature-switch.enable-ip-whitelisting" -> true,
       "ip-whitelist.urls" -> Seq("127.0.0.1")
     )).routes({
@@ -40,6 +36,7 @@ class WhiteListFilterSpec extends UnitTestTrait {
     case _ => Action(Ok("failure"))
   }).build()
 
+  override implicit lazy val app = fakeApplication()
 
   "WhiteListFilter" should {
 
