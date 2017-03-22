@@ -21,7 +21,8 @@
         parentForm: Option[Form[_]] = None,
         formHint: Option[String] = None,
         maxLength: Option[Int] = None,
-        labelClass: Option[String] = None
+        labelClass: Option[String] = None,
+        isNumeric: Boolean = false
 )(implicit messages: Messages)
 
 @import forms.validation.ErrorMessageHelper._
@@ -49,5 +50,6 @@
     <input name=@field.name class="form-control" id=@field.name type="text"
         @maxLength.fold(Html(""))(max => Html(s"maxlength=$max"))
         value="@field.value.fold("")(v => v)"
+        @if(isNumeric){pattern="[0-9]*" inputmode="numeric"}
     >
 </div>

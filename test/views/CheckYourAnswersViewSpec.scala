@@ -84,7 +84,11 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     }
 
     s"have the heading (H1) '${messages.heading}'" in {
-      document().select("h1").text() mustBe messages.heading
+      document().select("h1").text() must include (messages.heading)
+    }
+
+    s"have visually hidden text as part of the (H1) '${messages.heading_hidden}'" in {
+      document().select("h1 span").text() must include (messages.heading_hidden)
     }
 
     s"have the secondary heading (H2) '${messages.h2}'" in {
@@ -96,7 +100,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       "has a submit button" in {
         val submit = document().getElementById("continue-button")
         submit.isEmpty mustBe false
-        submit.text shouldBe MessageLookup.Base.submit
+        submit.text shouldBe MessageLookup.Summary.confirm_and_sign_up
       }
 
       s"has a post action to '${postAction.url}'" in {
@@ -120,7 +124,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       answer.text() shouldBe expectedAnswer
       if (expectedEditLink.nonEmpty) {
         editLink.attr("href") shouldBe expectedEditLink.get
-        editLink.text() shouldBe MessageLookup.Base.change
+        editLink.text() should include (MessageLookup.Base.change)
+        editLink.select("span").text() shouldBe expectedQuestion
+        editLink.select("span").hasClass("visuallyhidden") shouldBe true
       }
     }
 

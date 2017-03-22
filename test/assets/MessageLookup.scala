@@ -166,6 +166,7 @@ object MessageLookup {
   object Summary {
     val title = "Check your answers"
     val heading: String = title
+    val heading_hidden = "before signing up"
     val h2 = "You've told us"
     val income_source = "Where does your income come from?"
 
@@ -189,6 +190,7 @@ object MessageLookup {
     val contact_email = "Do you want to receive electronic communications from HMRC?"
     val terms = "Terms of participation"
     val terms_agreed = "I agree"
+    val confirm_and_sign_up = "Confirm and sign up"
   }
 
   object Timeout {
