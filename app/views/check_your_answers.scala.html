@@ -96,7 +96,7 @@
 
     @back_link(backUrl)
 
-    <h1 class="heading-large">@Messages("summary.heading")</h1>
+    <h1 class="heading-large">@Messages("summary.heading") <span class="visuallyhidden">@Messages("summary.heading_hidden")</span></h1>
 
     <h2 class="heading-medium">@Html(Messages("summary.h2"))</h2>
 
@@ -111,7 +111,7 @@
     </div>
 
     @form(action = postAction) {
-        @continueButton(Messages("summary.confirm_and_send"))
+        @continueButton(Messages("summary.confirm_and_sign_up"))
     }
 
 }
