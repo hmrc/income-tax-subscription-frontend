@@ -20,20 +20,16 @@ import javax.inject.{Inject, Singleton}
 
 import akka.stream.Materializer
 import config.AppConfig
-import play.api.{Application, Environment}
+import play.api.Application
 import play.api.mvc.Results.{Forbidden, Redirect}
 import play.api.mvc.{Call, RequestHeader, Result}
-import uk.gov.hmrc.play.config.inject.RunMode
-import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
 import scala.concurrent.Future
 
 @Singleton
 class WhitelistFilter @Inject()(app: Application
-                               ) extends AkamaiWhitelistFilter with MicroserviceFilterSupport with RunMode {
-  override val environment: Environment = app.injector.instanceOf[Environment]
-
+                               ) extends AkamaiWhitelistFilter {
   // START of crazy section
   // this code is copied exactly as they are from AkamaiWhitelistFilter,
   // for some reason if we do not do this then it cannot find the play.api.mvc.Call method
@@ -69,5 +65,6 @@ class WhitelistFilter @Inject()(app: Application
   override lazy val whitelist: Seq[String] = appConfig.whitelistIps
   override lazy val destination: Call = Call("GET", appConfig.shutterPage)
   override lazy val excludedPaths: Seq[Call] = appConfig.ipExclusionList
+
 }
 
