@@ -45,6 +45,8 @@ trait AppConfig {
   val ggSignOutUrl: String
   val btaUrl: String
   val showGuidance: Boolean
+  val whitelistIps: Seq[String]
+  val shutterPage: String
 }
 
 @Singleton
@@ -100,5 +102,10 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   // Enable or disable showing the guidance page or go straight to sign ups
   override lazy val showGuidance: Boolean = loadConfig("feature-switch.show-guidance").toBoolean
+
+  override lazy val shutterPage: String = loadConfig("shutter-page.url")
+
+  override lazy val whitelistIps: Seq[String] = configuration.getStringSeq("ip-whitelist.urls").fold(Nil: Seq[String])(x => x)
+
 }
 

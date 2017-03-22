@@ -17,6 +17,7 @@
 package config
 
 import com.typesafe.config.Config
+import config.filters.WhitelistFilter
 import net.ceedubs.ficus.Ficus._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
@@ -40,8 +41,15 @@ object FrontendGlobal
 
   // this override removes the RecoveryFilter as the filter auto handles all status Not Found.
   // when upgrading bootstrap please ensure this is up to date without RecoveryFilter.
-  override protected lazy val defaultFrontendFilters: Seq[EssentialFilter] =
-  super.defaultFrontendFilters.filterNot(f => f.equals(RecoveryFilter))
+  override protected lazy val defaultFrontendFilters: Seq[EssentialFilter] = {
+    val coreFilters = super.defaultFrontendFilters.filterNot(f => f.equals(RecoveryFilter))
+    // this adds the whitelisting filter if it's enabled
+    Play.current.configuration.getBoolean("feature-switch.enable-ip-whitelisting")
+      .fold(coreFilters) {
+        case true => coreFilters.:+(WhitelistFilter)
+        case _ => coreFilters
+      }
+  }
 
   override def onStart(app: Application) {
     super.onStart(app)
