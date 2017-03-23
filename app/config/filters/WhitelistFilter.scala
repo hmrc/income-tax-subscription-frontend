@@ -23,45 +23,17 @@ import config.AppConfig
 import play.api.Application
 import play.api.mvc.Results.{Forbidden, Redirect}
 import play.api.mvc.{Call, RequestHeader, Result}
+import uk.gov.hmrc.play.config.RunMode
+import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
 import scala.concurrent.Future
 
 @Singleton
 class WhitelistFilter @Inject()(app: Application
-                               ) extends AkamaiWhitelistFilter {
-  // START of crazy section
-  // this code is copied exactly as they are from AkamaiWhitelistFilter,
-  // for some reason if we do not do this then it cannot find the play.api.mvc.Call method
-  private def isCircularDestination(requestHeader: RequestHeader): Boolean =
-  requestHeader.uri == destination.url
-
-  private def toCall(rh: RequestHeader): Call =
-    Call(rh.method, rh.uri)
-
-  override def apply
-  (f: (RequestHeader) => Future[Result])
-  (rh: RequestHeader): Future[Result] =
-    if (excludedPaths contains toCall(rh)) {
-      f(rh)
-    } else {
-      rh.headers.get(trueClient) map {
-        ip =>
-          if (whitelist.contains(ip))
-            f(rh)
-          else if (isCircularDestination(rh))
-            Future.successful(Forbidden)
-          else
-            Future.successful(Redirect(destination))
-      } getOrElse Future.successful(Redirect(destination))
-    }
-
-  // END of crazy section
+                               ) extends AkamaiWhitelistFilter with RunMode with MicroserviceFilterSupport {
 
   private lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-
-  override implicit lazy val mat: Materializer = app.injector.instanceOf[Materializer]
-
   override lazy val whitelist: Seq[String] = appConfig.whitelistIps
   override lazy val destination: Call = Call("GET", appConfig.shutterPage)
   override lazy val excludedPaths: Seq[Call] = appConfig.ipExclusionList

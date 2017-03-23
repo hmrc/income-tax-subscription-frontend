@@ -28,7 +28,7 @@ private object AppDependencies {
   private val scalaTestPlusVersion = "2.0.0"
   private val pegdownVersion = "1.6.0"
   private val httpCachingCleintVersion = "6.1.0"
-  private val playWhitelistFilterVersion = "1.1.0"
+  private val playWhitelistFilterVersion = "2.0.0"
 
   val compile = Seq(
     ws,
