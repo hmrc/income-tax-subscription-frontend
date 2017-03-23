@@ -36,7 +36,7 @@ package object prevalidation {
     val trules = trimRules
     val crules = caseRules
     new PrevalidationAPI[T] {
-      override val validationForm: Form[T] = validation
+      override val form: Form[T] = validation
       override val trimRules: Map[String, TrimOption] = trules
       override val caseRules: Map[String, CaseOption] = crules
     }

@@ -60,7 +60,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     def callShow(isEditMode: Boolean) =
       TestBusinessNameController.submitBusinessName(isEditMode = isEditMode)(
         authenticatedFakeRequest()
-          .post(BusinessNameForm.businessNameForm.validationForm, BusinessNameModel("Test business"))
+          .post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
       )
 
     "When it is not in edit mode" should {

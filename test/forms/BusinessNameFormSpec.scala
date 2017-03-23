@@ -78,7 +78,7 @@ class BusinessNameFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
     "The following submission should be valid" in {
       val valid = DataMap.busName("Test business")
-      businessNameForm.validationForm isValidFor valid
+      businessNameForm.form isValidFor valid
     }
   }
 

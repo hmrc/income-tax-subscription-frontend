@@ -38,7 +38,7 @@ trait PrevalidationAPI[T] {
 
   type PreprocessFunction = Map[String, String] => Map[String, String]
 
-  val validationForm: Form[T]
+  val form: Form[T]
   val trimRules: Map[String, TrimOption]
   val caseRules: Map[String, CaseOption]
 
@@ -51,14 +51,14 @@ trait PrevalidationAPI[T] {
     }
 
   def addNewPreprocessFunction(preprocessFunction: PreprocessFunction): PrevalidationAPI[T] = {
-    val fValidation = validationForm
+    val fValidation = form
     val trules = trimRules
     val crules = caseRules
     val newPreprocessFunctions = preprocessFunctions :+ preprocessFunction
     new PrevalidationAPI[T] {
-      val validationForm: Form[T] = fValidation
-      val trimRules: Map[String, TrimOption] = trules
-      val caseRules: Map[String, CaseOption] = crules
+      override val form: Form[T] = fValidation
+      override val trimRules: Map[String, TrimOption] = trules
+      override val caseRules: Map[String, CaseOption] = crules
       override val preprocessFunctions: Seq[PreprocessFunction] = newPreprocessFunctions
     }
   }
@@ -91,10 +91,12 @@ trait PrevalidationAPI[T] {
     data.map { case (key, value) => (key, preprocess(key, value)) }
 
   def bind(data: Map[String, String]): Form[T] =
-    validationForm.bind(preProcessFormData(cleanForm(data)))
+    form.bind(preProcessFormData(cleanForm(data)))
 
   private def bindFromRequest(data: Map[String, Seq[String]]): Form[T] =
-    validationForm.bind(preProcessFormData(cleanRequestForm(data)))
+    form.bind(preProcessFormData(cleanRequestForm(data)))
+
+  //$COVERAGE-OFF$Disabling scoverage on these methods since they are copied from play's source
 
   // copied the source from play 2.5
   // https://github.com/playframework/playframework/blob/master/framework/src/play/src/main/scala/play/api/data/Form.scala
@@ -124,9 +126,10 @@ trait PrevalidationAPI[T] {
     case (s, (key, values)) => s + (key -> values.headOption.getOrElse(""))
   }
 
-  def form: play.api.data.Form[T] = validationForm
-
+  // $COVERAGE-ON$
 }
+
+//$COVERAGE-OFF$Disabling scoverage on this since it is copied from play's source
 
 // copied the source from play 2.5
 // https://github.com/playframework/playframework/blob/master/framework/src/play/src/main/scala/play/api/data/Form.scala
@@ -151,4 +154,4 @@ private object FormUtils {
 
 }
 
-
+// $COVERAGE-ON$
