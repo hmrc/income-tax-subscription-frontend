@@ -30,7 +30,7 @@ class WhiteListFilterSpec extends UnitTestTrait {
 
   override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .configure(Configuration("feature-switch.enable-ip-whitelisting" -> true,
-      "ip-whitelist.urls" -> Seq("127.0.0.1")
+      "ip-whitelist.urls" -> "127.0.0.1"
     )).routes({
     case ("GET", "/index") => Action(Ok("success"))
     case _ => Action(Ok("failure"))
