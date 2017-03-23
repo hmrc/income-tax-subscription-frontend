@@ -32,6 +32,7 @@ package object testutils {
     }
   }
 
+
   implicit class ErrorValidationUtil[T](testForm: Form[T]) {
     implicit def assert(testFieldName: String): FormValidationTrait[T] = new FormValidationTrait[T] {
       override val form: Form[T] = testForm

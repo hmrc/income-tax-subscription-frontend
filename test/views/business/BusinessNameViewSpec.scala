@@ -28,11 +28,12 @@ class BusinessNameViewSpec extends UnitTestTrait {
   lazy val backUrl = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
 
   def page(isEditMode: Boolean) = views.html.business.business_name(
-    businessNameForm = BusinessNameForm.businessNameForm,
+    businessNameForm = BusinessNameForm.businessNameForm.validationForm,
     postAction = controllers.business.routes.BusinessNameController.submitBusinessName(),
     backUrl = backUrl,
     isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
+
   def documentCore(isEditMode: Boolean) = Jsoup.parse(page(isEditMode).body)
 
   "The Business Name view" should {
