@@ -34,9 +34,15 @@ class WhitelistFilter @Inject()(app: Application
                                ) extends AkamaiWhitelistFilter with RunMode with MicroserviceFilterSupport {
 
   private lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-  override lazy val whitelist: Seq[String] = appConfig.whitelistIps
+  override lazy val whitelist: Seq[String] = {
+    println("Whitelisted IPs:\n" + appConfig.whitelistIps)
+    appConfig.whitelistIps
+  }
   override lazy val destination: Call = Call("GET", appConfig.shutterPage)
-  override lazy val excludedPaths: Seq[Call] = appConfig.ipExclusionList
+  override lazy val excludedPaths: Seq[Call] = {
+    println("Excluded IPs:\n" + appConfig.ipExclusionList)
+    appConfig.ipExclusionList
+  }
 
 }
 
