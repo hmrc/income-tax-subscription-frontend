@@ -18,6 +18,7 @@ package config
 
 import javax.inject.{Inject, Singleton}
 
+import play.api.mvc.Call
 import play.api.{Application, Configuration}
 import uk.gov.hmrc.play.config.ServicesConfig
 
@@ -45,6 +46,9 @@ trait AppConfig {
   val ggSignOutUrl: String
   val btaUrl: String
   val showGuidance: Boolean
+  val whitelistIps: Seq[String]
+  val ipExclusionList: Seq[Call]
+  val shutterPage: String
 }
 
 @Singleton
@@ -100,5 +104,21 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   // Enable or disable showing the guidance page or go straight to sign ups
   override lazy val showGuidance: Boolean = loadConfig("feature-switch.show-guidance").toBoolean
+
+  override lazy val shutterPage: String = loadConfig("shutter-page.url")
+
+  override lazy val whitelistIps: Seq[String] = configuration.getStringSeq("ip-whitelist.urls").fold(Nil: Seq[String])(x => x)
+
+  import collection.JavaConversions._
+
+  override lazy val ipExclusionList: Seq[Call] = configuration.getConfigList("ip-whitelist.excludeCalls").fold(Nil: Seq[Call])(list =>
+    list.zipWithIndex.map { case (configObj: Configuration, index: Int) =>
+      val method = configObj.getString("method").getOrElse(throw new Exception(s"Invalid ip-whitelist.excludeCalls: item $index missing method"))
+      val path = configObj.getString("path").getOrElse(throw new Exception(s"Invalid ip-whitelist.excludeCalls: item $index missing path"))
+      Call(method, path)
+    }
+  )
+
+
 }
 

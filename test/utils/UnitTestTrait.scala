@@ -19,7 +19,8 @@ package utils
 import auth.MockConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -27,7 +28,7 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
 
-trait UnitTestTrait extends PlaySpec with OneServerPerSuite with Implicits {
+trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits {
 
   implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
 
