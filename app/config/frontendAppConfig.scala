@@ -58,6 +58,8 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   protected def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
+  protected def splitString(value: String, separator: String): Seq[String] = value.split(separator).toSeq
+
   // Frontend Config
   override lazy val baseUrl: String = loadConfig("base.url")
   protected val contextRoute = "income-tax-subscription-frontend"
@@ -107,18 +109,11 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val shutterPage: String = loadConfig("shutter-page.url")
 
-  override lazy val whitelistIps: Seq[String] = configuration.getStringSeq("ip-whitelist.urls").fold(Nil: Seq[String])(x => x)
+  private def whitelistConfig(key: String): Seq[String] = configuration.getString(key).fold(Seq[String]())(ips => ips.split(",").toSeq)
 
-  import collection.JavaConversions._
+  override lazy val whitelistIps: Seq[String] = whitelistConfig("ip-whitelist.urls")
 
-  override lazy val ipExclusionList: Seq[Call] = configuration.getConfigList("ip-whitelist.excludeCalls").fold(Nil: Seq[Call])(list =>
-    list.zipWithIndex.map { case (configObj: Configuration, index: Int) =>
-      val method = configObj.getString("method").getOrElse(throw new Exception(s"Invalid ip-whitelist.excludeCalls: item $index missing method"))
-      val path = configObj.getString("path").getOrElse(throw new Exception(s"Invalid ip-whitelist.excludeCalls: item $index missing path"))
-      Call(method, path)
-    }
-  )
-
+  override lazy val ipExclusionList: Seq[Call] = whitelistConfig("ip-whitelist.excludeCalls").map(ip => Call("GET",ip))
 
 }
 
