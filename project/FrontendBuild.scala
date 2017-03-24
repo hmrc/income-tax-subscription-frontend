@@ -11,6 +11,7 @@ object FrontendBuild extends Build with MicroService {
 }
 
 private object AppDependencies {
+
   import play.sbt.PlayImport._
   import play.core.PlayVersion
 
@@ -27,6 +28,7 @@ private object AppDependencies {
   private val scalaTestPlusVersion = "2.0.0"
   private val pegdownVersion = "1.6.0"
   private val httpCachingCleintVersion = "6.1.0"
+  private val playWhitelistFilterVersion = "2.0.0"
 
   val compile = Seq(
     ws,
@@ -38,13 +40,13 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
-    "uk.gov.hmrc" %% "http-caching-client" % httpCachingCleintVersion
-
+    "uk.gov.hmrc" %% "http-caching-client" % httpCachingCleintVersion,
+    "uk.gov.hmrc" %% "play-whitelist-filter" % playWhitelistFilterVersion
   )
 
   trait TestDependencies {
     lazy val scope: String = "test"
-    lazy val test : Seq[ModuleID] = ???
+    lazy val test: Seq[ModuleID] = ???
   }
 
   object Test {
@@ -56,7 +58,7 @@ private object AppDependencies {
         "org.pegdown" % "pegdown" % pegdownVersion % scope,
         "org.jsoup" % "jsoup" % "1.10.2" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "org.mockito" % "mockito-core" % "2.7.6" %scope
+        "org.mockito" % "mockito-core" % "2.7.6" % scope
       )
     }.test
   }

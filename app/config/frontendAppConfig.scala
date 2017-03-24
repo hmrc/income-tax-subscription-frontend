@@ -18,6 +18,7 @@ package config
 
 import javax.inject.{Inject, Singleton}
 
+import play.api.mvc.Call
 import play.api.{Application, Configuration}
 import uk.gov.hmrc.play.config.ServicesConfig
 
@@ -45,6 +46,9 @@ trait AppConfig {
   val ggSignOutUrl: String
   val btaUrl: String
   val showGuidance: Boolean
+  val whitelistIps: Seq[String]
+  val ipExclusionList: Seq[Call]
+  val shutterPage: String
 }
 
 @Singleton
@@ -53,6 +57,8 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   protected val configuration: Configuration = app.configuration
 
   protected def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+
+  protected def splitString(value: String, separator: String): Seq[String] = value.split(separator).toSeq
 
   // Frontend Config
   override lazy val baseUrl: String = loadConfig("base.url")
@@ -100,5 +106,14 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   // Enable or disable showing the guidance page or go straight to sign ups
   override lazy val showGuidance: Boolean = loadConfig("feature-switch.show-guidance").toBoolean
+
+  override lazy val shutterPage: String = loadConfig("shutter-page.url")
+
+  private def whitelistConfig(key: String): Seq[String] = configuration.getString(key).fold(Seq[String]())(ips => ips.split(",").toSeq)
+
+  override lazy val whitelistIps: Seq[String] = whitelistConfig("ip-whitelist.urls")
+
+  override lazy val ipExclusionList: Seq[Call] = whitelistConfig("ip-whitelist.excludeCalls").map(ip => Call("GET",ip))
+
 }
 

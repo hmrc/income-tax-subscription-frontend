@@ -17,7 +17,7 @@
 package utils
 
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 
 import scala.concurrent.Future
 

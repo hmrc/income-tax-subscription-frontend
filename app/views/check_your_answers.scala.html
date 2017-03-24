@@ -34,7 +34,7 @@
         </div>
         @changeUrl match {
             case Some(url) => {
-                <a class="tabular-data__data-2" href="@url" id="@field-edit">@Messages("base.change")</a>
+                <a class="tabular-data__data-2" href="@url" id="@field-edit">@Messages("base.change") <span class="visuallyhidden">@question</span> </a>
             }
             case _ => {
                 <div class="tabular-data__data-2"></div>
@@ -96,7 +96,7 @@
 
     @back_link(backUrl)
 
-    <h1 class="heading-large">@Messages("summary.heading")</h1>
+    <h1 class="heading-large">@Messages("summary.heading") <span class="visuallyhidden">@Messages("summary.heading_hidden")</span></h1>
 
     <h2 class="heading-medium">@Html(Messages("summary.h2"))</h2>
 
@@ -111,7 +111,7 @@
     </div>
 
     @form(action = postAction) {
-        @continueButton(Messages("base.submit"))
+        @continueButton(Messages("summary.confirm_and_sign_up"))
     }
 
 }
