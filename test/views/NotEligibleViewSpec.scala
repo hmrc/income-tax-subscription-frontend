@@ -16,7 +16,7 @@
 
 package views
 
-import assets.MessageLookup.{Base => common, Not_Eligible => messages}
+import assets.MessageLookup.{Not_Eligible => messages}
 import forms.NotEligibleForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
@@ -25,9 +25,11 @@ class NotEligibleViewSpec extends ViewSpecTrait {
 
   lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
 
+  lazy val postAction = controllers.routes.NotEligibleController.submitNotEligible()
+
   lazy val page = views.html.not_eligible(
     notEligibleForm = NotEligibleForm.notEligibleForm,
-    postAction = controllers.routes.NotEligibleController.submitNotEligible(),
+    postAction = postAction,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -48,7 +50,7 @@ class NotEligibleViewSpec extends ViewSpecTrait {
       messages.line_3
     )
 
-    val form = testPage.getForm("Not Eligible form")(method = "POST", action = controllers.routes.NotEligibleController.submitNotEligible().url)
+    val form = testPage.getForm("Not Eligible form")(postAction = postAction)
 
     form.mustHaveRadioSet(
       legend = messages.question,

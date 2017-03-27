@@ -20,6 +20,7 @@ import assets.MessageLookup.Base
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import play.api.mvc.Call
 import play.twirl.api.Html
 import utils.UnitTestTrait
 
@@ -148,6 +149,46 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     }
 
+    def mustHaveTextField(name: String, label: String, showLabel: Boolean = true) = {
+
+      s"${this.name} must have an input field '$name'" which {
+
+        s"is a text field" in {
+          import collection.JavaConversions._
+          val eles = element.select(s"""input[name=$name]""")
+          if (eles.isEmpty) fail(s"$name does not have an input field with name=$name\ncurrent list of inputs:\n[${element.select("input")}]")
+          if (eles.size() > 1) fail(s"$name have multiple input fields with name=$name")
+          val ele = eles.head
+          ele.attr("type") mustBe "text"
+        }
+
+        lazy val labelField = element.select(s"label[for=$name]")
+
+        s"with the expected label label '$label'" in {
+          labelField.text() mustBe label
+        }
+
+        if (!showLabel)
+          s"and the label must be visuallyhidden" in
+            withClue(s"$name does not have the class 'visuallyhidden'\n") {
+              labelField.hasClass("visuallyhidden") mustBe true
+            }
+
+      }
+
+    }
+
+    def mustHaveHiddenInputField(name: String) =
+      s"$name must have input field $name" in {
+        import collection.JavaConversions._
+        val eles = element.select(s"""input[name="$name"]""")
+        if (eles.isEmpty) fail(s"$name does not have an input field with name=$name\ncurrent list of inputs:\n[${element.select("input")}]")
+        if (eles.size() > 1) fail(s"$name have multiple input fields with name=$name")
+        val ele = eles.head
+        ele.tag() mustBe "input"
+        ele.attr("type") mustBe "hidden"
+      }
+
     def mustHaveSubmitButton(text: String) =
       s"$name must have the a submit button (Button) '$text'" in {
         import collection.JavaConversions._
@@ -160,19 +201,13 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     def mustHaveUpdateButton() = mustHaveSubmitButton(Base.update)
 
-    def mustHaveCheckbox(id: String, message: String) =
-      s"$name must have a checkbox to $message" in {
-        val checkbox = getById(id)
-        checkbox.attr("type") mustBe "checkbox"
-        checkbox.parents().get(0).text() mustBe message
-      }
-
-    def mustHaveCheckbox(message: String) =
-      s"$name must have a checkbox to $message" in {
+    def mustHaveCheckbox(name: String, message: String) =
+      s"${this.name} must have a checkbox for '$name' with label '$message'" in {
         import collection.JavaConversions._
         val checkbox: Elements = new Elements(element.select("input").filter(x => x.attr("type").equals("checkbox")))
-        if (checkbox.size() == 0) fail(s"""Unable to locate any checkboxes in "$name""""")
+        if (checkbox.size() == 0) fail(s"""Unable to locate any checkboxes in "${this.name}""""")
         if (checkbox.size() > 1) fail(s"""Multiple checkboxes located in "$name", please specify an id""")
+        checkbox.attr("name") mustBe name
         checkbox.parents().get(0).text() mustBe message
       }
 
@@ -200,12 +235,12 @@ trait ViewSpecTrait extends UnitTestTrait {
                  title: String,
                  heading: String,
                  page: => Html,
-                 signOutInBanner: Boolean = true) extends ElementTest {
+                 showSignOutInBanner: Boolean = true) extends ElementTest {
 
     lazy val document = Jsoup.parse(page.body)
     override lazy val element = document.getElementById("content")
 
-    if (signOutInBanner) {
+    if (showSignOutInBanner) {
       s"$name must have a sign out link in the banner" in {
         val signOut = document.getElementById("logOutNavHref")
         if (signOut == null) fail("Signout link was not located in the banner\nIf this is the expected behaviour then please set 'signOutInBanner' to true when creating the TestView object")
@@ -236,26 +271,31 @@ trait ViewSpecTrait extends UnitTestTrait {
         backLink.attr("href") mustBe backUrl
       }
 
-
     // this method returns either the first form in the document or one specified by id
+    // @param formName the name used to reference the form by the unit tests in its print statements.
     // @param method expected method used by the form, e.g. "GET", "POST"
     // @oaram action expected action used by the form, i.e. the destination url
     // n.b. action must be call-by-name otherwise if the parameter is generated from a call
     // it could be evaluated with the wrong context root
-    def getForm(name: String, id: Option[String] = None)(method: String, action: => String): ElementTest = {
+    def getForm(formName: String, id: Option[String] = None)(postAction: => Call): ElementTest = {
       val selector =
         id match {
           case Some(i) => s"#$i"
           case _ => "form"
         }
 
+      lazy val method = postAction.method
+      lazy val action = postAction.url
       // this test is put in here because it doesn't make sense for it to be called on anything
       // other than a form
-      s"$name has a $method action to '$action'" in {
-        document.select(selector).attr("method") mustBe method.toUpperCase
-        document.select(selector).attr("action") mustBe action
+      s"$formName must must a $method action to '$action'" in {
+        val formSelector = element.select(selector)
+        formSelector.attr("method") mustBe method.toUpperCase
+        formSelector.attr("action") mustBe action
       }
-      selectHead(name, selector)
+
+      // csrf token is not tested here because it is only added if the correct headers are set in the request
+      selectHead(formName, selector)
     }
 
   }
@@ -266,7 +306,7 @@ trait ViewSpecTrait extends UnitTestTrait {
               title: String,
               heading: String,
               page: => Html,
-              signOutInBanner: Boolean = true): TestView = new TestView(name, title, heading, page, signOutInBanner)
+              showSignOutInBanner: Boolean = true): TestView = new TestView(name, title, heading, page, showSignOutInBanner)
   }
 
 }

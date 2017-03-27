@@ -20,16 +20,16 @@ import assets.MessageLookup.{Terms => messages}
 import forms.TermForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
 
-class TermsViewSpec extends UnitTestTrait
-  with ViewSpecTrait {
+class TermsViewSpec extends ViewSpecTrait {
 
   lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
 
+  lazy val postAction = controllers.routes.TermsController.submitTerms()
+
   def page(isEditMode: Boolean) = views.html.terms(
     termsForm = TermForm.termForm,
-    postAction = controllers.routes.TermsController.submitTerms(),
+    postAction = postAction,
     backUrl = backUrl,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
@@ -45,12 +45,11 @@ class TermsViewSpec extends UnitTestTrait
 
     testPage.mustHavePara(messages.line_1)
 
-    val form = testPage.getForm("terms form")(method = "POST", action = controllers.routes.TermsController.submitTerms().url)
+    val form = testPage.getForm("terms form")(postAction = postAction)
 
-    form.mustHaveCheckbox(messages.checkbox)
+    form.mustHaveCheckbox(TermForm.hasAcceptedTerms, messages.checkbox)
 
     form.mustHaveContinueButton()
-
   }
 
   "When in edit mode, the terms view" should {

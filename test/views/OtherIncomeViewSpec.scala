@@ -25,9 +25,11 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
 
   lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
 
+  lazy val postAction = controllers.routes.OtherIncomeController.submitOtherIncome()
+
   lazy val page = views.html.other_income(
     otherIncomeForm = OtherIncomeForm.otherIncomeForm,
-    postAction = controllers.routes.OtherIncomeController.submitOtherIncome(),
+    postAction = postAction,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -52,7 +54,7 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       messages.bullet6
     )
 
-    val form = testPage.getForm("Other Income form")(method = "POST", action = controllers.routes.OtherIncomeController.submitOtherIncome().url)
+    val form = testPage.getForm("Other Income form")(postAction = postAction)
 
     form.mustHaveRadioSet(
       legend = messages.heading,
