@@ -158,7 +158,12 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     }
 
-    def mustHaveTextField(name: String, label: String, showLabel: Boolean = true) = {
+    def mustHaveTextField(name: String,
+                          label: String,
+                          showLabel: Boolean = true,
+                          maxLength: Option[Int] = None,
+                          pattern: Option[String] = None,
+                          inputMode: Option[String] = None) = {
 
       s"${this.name} must have an input field '$name'" which {
 
@@ -169,6 +174,15 @@ trait ViewSpecTrait extends UnitTestTrait {
           if (eles.size() > 1) fail(s"$name have multiple input fields with name=$name")
           val ele = eles.head
           ele.attr("type") mustBe "text"
+          maxLength.map {
+            l => ele.attr("maxLength") mustBe l.toString
+          }
+          pattern.map {
+            p => ele.attr("pattern") mustBe p
+          }
+          inputMode.map {
+            m => ele.attr("inputMode") mustBe m
+          }
         }
 
         lazy val labelField = element.select(s"label[for=$name]")
@@ -228,7 +242,7 @@ trait ViewSpecTrait extends UnitTestTrait {
       selectHead(accordionName, "details div")
     }
 
-    def mustHaveDateFields(id: String, legend: String, exampleDate:String) = {
+    def mustHaveDateFields(id: String, legend: String, exampleDate: String) = {
       val selector = s"#$id"
       s"${this.name} have a fieldset with id '$id' with the legend '$legend'" in {
         val ele = element.getElementById(id)
@@ -237,9 +251,11 @@ trait ViewSpecTrait extends UnitTestTrait {
         ele.tag().toString mustBe "fieldset"
       }
       val date = selectHead(id, selector)
-      date.mustHaveTextField(s"$id.dateDay", common.day)
-      date.mustHaveTextField(s"$id.dateMonth", common.month)
-      date.mustHaveTextField(s"$id.dateYear", common.year)
+      val numericPattern = "[0-9]*"
+      val inputMode = "numeric"
+      date.mustHaveTextField(s"$id.dateDay", common.day, maxLength = 2, pattern = numericPattern, inputMode = inputMode)
+      date.mustHaveTextField(s"$id.dateMonth", common.month, maxLength = 2, pattern = numericPattern, inputMode = inputMode)
+      date.mustHaveTextField(s"$id.dateYear", common.year, maxLength = 4, pattern = numericPattern, inputMode = inputMode)
     }
   }
 
