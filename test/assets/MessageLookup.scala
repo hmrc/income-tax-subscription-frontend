@@ -196,7 +196,7 @@ object MessageLookup {
   object Timeout {
     val title = "Your session has timed out"
     val heading = "Your session has timed out"
-    val returnToHome = """To register to send digital tax updates, you'll have to <a href="{0}" rel="external">sign back in</a> using your Government Gateway ID."""
+    val returnToHome = """To register to send digital tax updates, you'll have to sign back in using your Government Gateway ID."""
   }
 
   object AlreadyEnrolled {

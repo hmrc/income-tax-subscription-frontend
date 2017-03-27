@@ -37,6 +37,8 @@ class TermsViewSpec extends UnitTestTrait
   "The Terms view" should {
     val testPage = TestView("Terms view", page(isEditMode = false))
 
+    testPage.mustHaveBackTo(backUrl)
+
     testPage.mustHaveTitle(messages.title)
 
     testPage.mustHaveH1(messages.heading)
@@ -47,13 +49,14 @@ class TermsViewSpec extends UnitTestTrait
 
     form.mustHaveCheckbox(messages.checkbox)
 
-    form.mustHaveContinueButton
+    form.mustHaveContinueButton()
+
   }
 
   "When in edit mode, the terms view" should {
     val editModePage = TestView("Terms view", page(isEditMode = true))
 
-    editModePage.mustHaveUpdateButton
+    editModePage.mustHaveUpdateButton()
   }
 
 }

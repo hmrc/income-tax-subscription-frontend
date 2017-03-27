@@ -33,11 +33,42 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     val element: Element
 
+    // n.b. should not be made public since it is not a test nor does it return an ElementTest
     protected def getById(id: String): Element = {
       val ele = element.getElementById(id)
       if (ele == null) fail(s"unable to locate: $id")
       ele
     }
+
+    def getById(name: String, id: String): ElementTest = {
+      lazy val n = s"""${this.name}."$name""""
+      ElementTest(name, () => element.getElementById(id))
+    }
+
+    def selectHead(name: String, cssQuery: String): ElementTest = {
+      lazy val n = s"""${this.name}."$name""""
+      ElementTest(name, () => element.select(cssQuery).get(0))
+    }
+
+    // n.b. href must be call-by-name otherwise it may not be evaluated with the correct context-root
+    def mustHaveALink(text: String, href: => String) =
+      s"$name have a link with text '$text' pointed to '$href'" in {
+        val link = element.select("a")
+        if (link == null) fail(s"Unable to locate any links in $name\n$element\n")
+        if (link.size() > 1) fail(s"Multiple links located in $name, please specify an id")
+        link.attr("href") mustBe href
+        link.text() mustBe text
+      }
+
+    // n.b. href must be call-by-name otherwise it may not be evaluated with the correct context-root
+    def mustHaveALink(id: String, text: String, href: => String) =
+      s"$name have a link with text '$text' pointed to '$href'" in {
+        val link = element.getElementById(id)
+        if (link == null) fail(s"Unable to locate $id")
+        if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
+        link.attr("href") mustBe href
+        link.text() mustBe text
+      }
 
     def mustHavePara(paragraph: String) =
       s"$name must have the paragraph (P) '$paragraph'" in {
@@ -45,10 +76,61 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
 
     def mustHaveSeqParas(paragraphs: String*) = {
+      if (paragraphs.isEmpty) fail("Must provide at least 1 paragraph for this test")
       val ps = paragraphs.mkString(" ")
-      s"$name must have the paragraphs (P) '$ps'" in {
+      s"$name must have the paragraphs (P) [${paragraphs.mkString("], [")}]" in {
         element.getElementsByTag("p").text() must include(ps)
       }
+    }
+
+    def mustNotHaveParas(paragraphs: String*) =
+      for (p <- paragraphs) {
+        s"$name must not have the paragraph '$p'" in {
+          element.getElementsByTag("p").text() must not include p
+        }
+      }
+
+    def mustHaveSeqBullets(bullets: String*) = {
+      if (bullets.isEmpty) fail("Must provide at least 1 bullet point for this test")
+      val bs = bullets.mkString(" ")
+      s"$name must have the bulletPoints (LI) [${bullets.mkString("], [")}]" in {
+        element.getElementsByTag("LI").text() must include(bs)
+      }
+    }
+
+    def mustNotHaveBullets(bullets: String*) =
+      for (b <- bullets) {
+        s"$name must not have the bullet point '$b'" in {
+          element.getElementsByTag("LI").text() must not include b
+        }
+      }
+
+    def mustHaveRadioSet(legend: String, radioName: String)(options: String*) = {
+      if (legend.isEmpty) fail("Legend cannot be none empty, this would cause an accessibility issue")
+      if (radioName.isEmpty) fail("Must provide the field name which groups all the buttons in this test")
+      if (options.isEmpty) fail("Must provide at least 1 radio button for this test")
+      if (options.size == 1) fail("It does not make sense to have a radio button fieldset with only a single option")
+
+      s"$name must have a radio fieldset for $legend" which {
+
+        s"has a legend with the text '$legend'" in {
+          element.select("fieldset legend").text() mustBe legend
+        }
+
+        for (o <- options) {
+          s"has a radio option for '$radioName-$o'" in {
+            val cashRadio = element.select(s"#$radioName-$o")
+            cashRadio.attr("type") mustBe "radio"
+            cashRadio.attr("name") mustBe s"$radioName"
+            cashRadio.attr("value") mustBe o
+            val label = element.getElementsByAttributeValue("for", s"$radioName-$o")
+            label.size() mustBe 1
+            label.get(0).text() mustBe o
+          }
+        }
+
+      }
+
     }
 
     def mustHaveSubmitButton(text: String) =
@@ -59,9 +141,9 @@ trait ViewSpecTrait extends UnitTestTrait {
         submitButtons.head.text() mustBe text
       }
 
-    def mustHaveContinueButton = mustHaveSubmitButton(Base.continue)
+    def mustHaveContinueButton() = mustHaveSubmitButton(Base.continue)
 
-    def mustHaveUpdateButton = mustHaveSubmitButton(Base.update)
+    def mustHaveUpdateButton() = mustHaveSubmitButton(Base.update)
 
     def mustHaveCheckbox(id: String, message: String) =
       s"$name must have a checkbox to $message" in {
@@ -78,11 +160,6 @@ trait ViewSpecTrait extends UnitTestTrait {
         if (checkbox.size() > 1) fail(s"""Multiple checkboxes located in "$name", please specify an id""")
         checkbox.parents().get(0).text() mustBe message
       }
-
-    def selectHead(name: String, cssQuery: String): ElementTest = {
-      lazy val n = s"""${this.name}."$name""""
-      ElementTest(name, () => element.select(cssQuery).get(0))
-    }
 
   }
 
@@ -104,10 +181,31 @@ trait ViewSpecTrait extends UnitTestTrait {
   }
 
   // n.b. page must be call-by-name otherwise it would be evaluated before the fake application could start
-  class TestView(override val name: String, page: => Html) extends ElementTest {
+  class TestView(override val name: String, page: => Html, signOutInBanner: Boolean = true) extends ElementTest {
 
     lazy val document = Jsoup.parse(page.body)
-    override lazy val element = document
+    override lazy val element = document.getElementById("content")
+
+    if (signOutInBanner) {
+      s"$name must have a sign out link in the banner" in {
+        val signOut = document.getElementById("logOutNavHref")
+        if (signOut == null) fail("Signout link was not located in the banner\nIf this is the expected behaviour then please set 'signOutInBanner' to true when creating the TestView object")
+        signOut.text() mustBe Base.signout
+        signOut.attr("href") mustBe controllers.routes.SignOutController.signOut().url
+      }
+    } else {
+      s"$name must not have a sign out link in the banner" in {
+        val signOut = document.getElementById("logOutNavHref")
+        signOut mustBe null
+      }
+    }
+
+    def mustHaveBackTo(backUrl: String) =
+      s"$name must have a back link pointed to '$backUrl'" in {
+        val backLink = element.select("#back")
+        backLink.isEmpty mustBe false
+        backLink.attr("href") mustBe backUrl
+      }
 
     def mustHaveTitle(title: String) =
       s"$name must have the title '$title'" in {
@@ -133,6 +231,8 @@ trait ViewSpecTrait extends UnitTestTrait {
           case _ => "form"
         }
 
+      // this test is put in here because it doesn't make sense for it to be called on anything
+      // other than a form
       s"$name has a $method action to '$action'" in {
         document.select(selector).attr("method") mustBe method.toUpperCase
         document.select(selector).attr("action") mustBe action
@@ -144,8 +244,7 @@ trait ViewSpecTrait extends UnitTestTrait {
 
   object TestView {
     // n.b. page must be call-by-name otherwise it would be evaluated before the fake application could start
-    def apply(name: String, page: => Html): TestView = new TestView(name, page)
+    def apply(name: String, page: => Html, signOutInBanner: Boolean = true): TestView = new TestView(name, page, signOutInBanner)
   }
-
 
 }

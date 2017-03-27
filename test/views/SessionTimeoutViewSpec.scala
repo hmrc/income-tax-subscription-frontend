@@ -16,25 +16,27 @@
 
 package views
 
-import assets.MessageLookup
-import org.jsoup.Jsoup
+import assets.MessageLookup.{Timeout => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
 
-class SessionTimeoutViewSpec extends UnitTestTrait {
+class SessionTimeoutViewSpec extends ViewSpecTrait {
 
   lazy val page = views.html.timeout.timeout()(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
 
   "The Session timeout view" should {
 
-    s"have the title '${MessageLookup.Timeout.title}'" in {
-      document.title() must be (MessageLookup.Timeout.title)
-    }
+    val testPage = TestView("Session timeout view", page, signOutInBanner = false)
 
-    s"have the heading (H1) '${MessageLookup.Timeout.heading}'" in {
-      document.getElementsByTag("H1").text() must be (MessageLookup.Timeout.heading)
-    }
+    testPage.mustHaveTitle(messages.title)
+
+    testPage.mustHaveH1(messages.heading)
+
+    testPage.mustHavePara(messages.returnToHome)
+
+    val para = testPage.selectHead("return home paragraph", "p")
+
+    para.mustHaveALink("sign back in", controllers.routes.HomeController.index().url)
   }
+
 }

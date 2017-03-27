@@ -16,36 +16,32 @@
 
 package views
 
-import assets.MessageLookup
-import org.jsoup.Jsoup
+import assets.MessageLookup.{OtherIncomeError => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
 
-class OtherIncomeErrorViewSpec extends UnitTestTrait {
+class OtherIncomeErrorViewSpec extends ViewSpecTrait {
 
   lazy val backUrl: String = controllers.routes.OtherIncomeController.showOtherIncome().url
+
   lazy val page = views.html.other_income_error(postAction = controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(), backUrl = backUrl)(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
 
   "The Main Income Error view" should {
 
-    s"have the title '${MessageLookup.OtherIncomeError.title}'" in {
-      document.title() must be(MessageLookup.OtherIncomeError.title)
-    }
+    val testPage = TestView("Main Income Error View", page)
 
-    s"have the heading (H1) '${MessageLookup.OtherIncomeError.heading}'" in {
-      document.getElementsByTag("H1").text() must be(MessageLookup.OtherIncomeError.heading)
-    }
+    testPage.mustHaveBackTo(backUrl)
 
-    s"have the paragraph (P) '${MessageLookup.OtherIncomeError.para1}'" in {
-      document.getElementsByTag("P").text() must include(MessageLookup.OtherIncomeError.para1)
-    }
+    testPage.mustHaveTitle(messages.title)
 
-    s"have the paragraph (P) '${MessageLookup.OtherIncomeError.para2}'" in {
-      document.getElementsByTag("P").text() must include(MessageLookup.OtherIncomeError.para2)
-    }
+    testPage.mustHaveH1(messages.heading)
+
+    testPage.mustHaveSeqParas(
+      messages.para1,
+      messages.para2
+    )
 
   }
+
 }
 
