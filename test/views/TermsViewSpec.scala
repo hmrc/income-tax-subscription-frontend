@@ -16,9 +16,8 @@
 
 package views
 
-import assets.MessageLookup.{Base, Terms => messages}
+import assets.MessageLookup.{Terms => messages}
 import forms.TermForm
-import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import utils.UnitTestTrait
@@ -27,64 +26,34 @@ class TermsViewSpec extends UnitTestTrait
   with ViewSpecTrait {
 
   lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
-  lazy val page = views.html.terms(
+
+  def page(isEditMode: Boolean) = views.html.terms(
     termsForm = TermForm.termForm,
     postAction = controllers.routes.TermsController.submitTerms(),
     backUrl = backUrl,
-    isEditMode = false
+    isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
-  val testPage = TestView("Terms view", page)
-
   "The Terms view" should {
+    val testPage = TestView("Terms view", page(isEditMode = false))
 
-    testPage.mustHaveTheTitle(messages.title)
+    testPage.mustHaveTitle(messages.title)
 
-    testPage.mustHaveTheHeading(messages.heading)
+    testPage.mustHaveH1(messages.heading)
 
-    testPage.mustHaveTheFollowingParagaphs(messages.line_1)
+    testPage.mustHavePara(messages.line_1)
 
     val form = testPage.getForm("terms form")(method = "POST", action = controllers.routes.TermsController.submitTerms().url)
 
+    form.mustHaveCheckbox(messages.checkbox)
+
     form.mustHaveContinueButton
-
-    //    "have a form" which {
-    //
-    //      s"has a post action to '${controllers.routes.TermsController.submitTerms().url}'" in {
-    //        document.select("form").attr("method") mustBe "POST"
-    //        document.select("form").attr("action") mustBe controllers.routes.TermsController.submitTerms().url
-    //      }
-    //
-    //      "has a checkbox to agree to the terms and conditions" in {
-    //        document.select("input").attr("type") mustBe "checkbox"
-    //        document.select("input").parents().get(0).text() mustBe messages.checkbox
-    //      }
-    //
-    //      "has a continue button" in {
-    //        document.select("button").attr("type") mustBe "submit"
-    //        document.select("button").text() mustBe Base.continue
-    //      }
-    //
-    //    }
-
   }
 
   "When in edit mode, the terms view" should {
-    lazy val editPage = views.html.terms(
-      termsForm = TermForm.termForm,
-      postAction = controllers.routes.TermsController.submitTerms(),
-      backUrl = backUrl,
-      isEditMode = true
-    )(FakeRequest(), applicationMessages, appConfig)
-//    lazy val editDocument = Jsoup.parse(editPage.body)
-
-    val editModePage = TestView("Terms view", editPage)
+    val editModePage = TestView("Terms view", page(isEditMode = true))
 
     editModePage.mustHaveUpdateButton
-
-//    "have an 'Update' button" in {
-//      editDocument.select("button").attr("type") mustBe "submit"
-//      editDocument.select("button").text() mustBe Base.update
-//    }
   }
+
 }

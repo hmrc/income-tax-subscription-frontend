@@ -19,6 +19,7 @@ package views
 import assets.MessageLookup.Base
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 import play.twirl.api.Html
 import utils.UnitTestTrait
 
@@ -32,10 +33,23 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     val element: Element
 
-    def mustHaveTheFollowingParagaphs(paragraph: String) =
+    protected def getById(id: String): Element = {
+      val ele = element.getElementById(id)
+      if (ele == null) fail(s"unable to locate: $id")
+      ele
+    }
+
+    def mustHavePara(paragraph: String) =
       s"$name must have the paragraph (P) '$paragraph'" in {
         element.getElementsByTag("p").text() must include(paragraph)
       }
+
+    def mustHaveSeqParas(paragraphs: String*) = {
+      val ps = paragraphs.mkString(" ")
+      s"$name must have the paragraphs (P) '$ps'" in {
+        element.getElementsByTag("p").text() must include(ps)
+      }
+    }
 
     def mustHaveSubmitButton(text: String) =
       s"$name must have the a submit button (Button) '$text'" in {
@@ -48,6 +62,22 @@ trait ViewSpecTrait extends UnitTestTrait {
     def mustHaveContinueButton = mustHaveSubmitButton(Base.continue)
 
     def mustHaveUpdateButton = mustHaveSubmitButton(Base.update)
+
+    def mustHaveCheckbox(id: String, message: String) =
+      s"$name must have a checkbox to $message" in {
+        val checkbox = getById(id)
+        checkbox.attr("type") mustBe "checkbox"
+        checkbox.parents().get(0).text() mustBe message
+      }
+
+    def mustHaveCheckbox(message: String) =
+      s"$name must have a checkbox to $message" in {
+        import collection.JavaConversions._
+        val checkbox: Elements = new Elements(element.select("input").filter(x => x.attr("type").equals("checkbox")))
+        if (checkbox.size() == 0) fail(s"""Unable to locate any checkboxes in "$name""""")
+        if (checkbox.size() > 1) fail(s"""Multiple checkboxes located in "$name", please specify an id""")
+        checkbox.parents().get(0).text() mustBe message
+      }
 
     def selectHead(name: String, cssQuery: String): ElementTest = {
       lazy val n = s"""${this.name}."$name""""
@@ -79,12 +109,12 @@ trait ViewSpecTrait extends UnitTestTrait {
     lazy val document = Jsoup.parse(page.body)
     override lazy val element = document
 
-    def mustHaveTheTitle(title: String) =
+    def mustHaveTitle(title: String) =
       s"$name must have the title '$title'" in {
         document.title() mustBe title
       }
 
-    def mustHaveTheHeading(heading: String) =
+    def mustHaveH1(heading: String) =
       s"$name must have the heading (H1) '$heading'" in {
         val h1 = document.getElementsByTag("H1")
         h1.size() mustBe 1
@@ -92,6 +122,8 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
 
     // this method returns either the first form in the document or one specified by id
+    // @param method expected method used by the form, e.g. "GET", "POST"
+    // @oaram action expected action used by the form, i.e. the destination url
     // n.b. action must be call-by-name otherwise if the parameter is generated from a call
     // it could be evaluated with the wrong context root
     def getForm(name: String, id: Option[String] = None)(method: String, action: => String): ElementTest = {
