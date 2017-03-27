@@ -16,6 +16,7 @@
 
 package forms
 
+import forms.prevalidation.PreprocessedForm
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
@@ -52,10 +53,11 @@ object BusinessNameForm {
     }
   )
 
-  val businessNameForm = Form(
+  val businessNameValidationForm = Form(
     mapping(
       businessName -> oText.toText.verifying(nameEmpty andThen nameTooLong andThen nameInvalid)
     )(BusinessNameModel.apply)(BusinessNameModel.unapply)
   )
 
+  val businessNameForm = PreprocessedForm(businessNameValidationForm)
 }

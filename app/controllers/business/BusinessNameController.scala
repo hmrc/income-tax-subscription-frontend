@@ -47,7 +47,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
   def showBusinessName(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchBusinessName() map {
-        businessName => Ok(view(BusinessNameForm.businessNameForm.fill(businessName), isEditMode = isEditMode))
+        businessName => Ok(view(BusinessNameForm.businessNameForm.form.fill(businessName), isEditMode = isEditMode))
       }
   }
 

@@ -21,10 +21,11 @@ import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.{DataMap, _}
 import models.BusinessNameModel
 import org.scalatest.Matchers._
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.Messages.Implicits._
 
-class BusinessNameFormSpec extends PlaySpec with OneAppPerTest {
+class BusinessNameFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   import BusinessNameForm._
 
@@ -77,7 +78,7 @@ class BusinessNameFormSpec extends PlaySpec with OneAppPerTest {
 
     "The following submission should be valid" in {
       val valid = DataMap.busName("Test business")
-      businessNameForm isValidFor valid
+      businessNameForm.form isValidFor valid
     }
   }
 
