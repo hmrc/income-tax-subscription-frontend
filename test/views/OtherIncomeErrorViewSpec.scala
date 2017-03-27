@@ -28,13 +28,14 @@ class OtherIncomeErrorViewSpec extends ViewSpecTrait {
 
   "The Main Income Error view" should {
 
-    val testPage = TestView("Main Income Error View", page)
+    val testPage = TestView(
+      name = "Main Income Error View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page
+    )
 
     testPage.mustHaveBackTo(backUrl)
-
-    testPage.mustHaveTitle(messages.title)
-
-    testPage.mustHaveH1(messages.heading)
 
     testPage.mustHaveSeqParas(
       messages.para1,

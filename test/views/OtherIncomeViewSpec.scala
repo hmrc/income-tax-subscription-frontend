@@ -33,13 +33,13 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
 
   "The Other Income View" should {
 
-    val testPage = TestView("Other Income View", page)
+    val testPage = TestView(
+      name = "Other Income View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page)
 
     testPage.mustHaveBackTo(backUrl)
-
-    testPage.mustHaveTitle(messages.title)
-
-    testPage.mustHaveH1(messages.heading)
 
     testPage.mustHavePara(messages.para1)
 

@@ -18,7 +18,6 @@ package views
 
 import assets.MessageLookup.{Base => common, Not_Eligible => messages}
 import forms.NotEligibleForm
-import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
@@ -34,13 +33,14 @@ class NotEligibleViewSpec extends ViewSpecTrait {
 
   "The Not Eligible view" should {
 
-    val testPage = TestView("Not Eligible View", page)
+    val testPage = TestView(
+      name = "Not Eligible View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page
+    )
 
     testPage.mustHaveBackTo(backUrl)
-
-    testPage.mustHaveTitle(messages.title)
-
-    testPage.mustHaveH1(messages.heading)
 
     testPage.mustHaveSeqParas(
       messages.line_1,

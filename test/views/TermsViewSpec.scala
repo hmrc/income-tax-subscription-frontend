@@ -35,13 +35,13 @@ class TermsViewSpec extends UnitTestTrait
   )(FakeRequest(), applicationMessages, appConfig)
 
   "The Terms view" should {
-    val testPage = TestView("Terms view", page(isEditMode = false))
+    val testPage = TestView(
+      name = "Terms view",
+      title = messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false))
 
     testPage.mustHaveBackTo(backUrl)
-
-    testPage.mustHaveTitle(messages.title)
-
-    testPage.mustHaveH1(messages.heading)
 
     testPage.mustHavePara(messages.line_1)
 
@@ -54,7 +54,11 @@ class TermsViewSpec extends UnitTestTrait
   }
 
   "When in edit mode, the terms view" should {
-    val editModePage = TestView("Terms view", page(isEditMode = true))
+    val editModePage = TestView(
+      name = "Terms view",
+      title = messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = true))
 
     editModePage.mustHaveUpdateButton()
   }

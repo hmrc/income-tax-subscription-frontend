@@ -26,11 +26,12 @@ class SessionTimeoutViewSpec extends ViewSpecTrait {
 
   "The Session timeout view" should {
 
-    val testPage = TestView("Session timeout view", page, signOutInBanner = false)
-
-    testPage.mustHaveTitle(messages.title)
-
-    testPage.mustHaveH1(messages.heading)
+    val testPage = TestView(
+      name = "Session timeout view",
+      title = messages.title,
+      heading = messages.heading,
+      page = page,
+      signOutInBanner = false)
 
     testPage.mustHavePara(messages.returnToHome)
 

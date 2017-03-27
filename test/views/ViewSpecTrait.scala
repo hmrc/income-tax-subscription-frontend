@@ -196,7 +196,11 @@ trait ViewSpecTrait extends UnitTestTrait {
   }
 
   // n.b. page must be call-by-name otherwise it would be evaluated before the fake application could start
-  class TestView(override val name: String, page: => Html, signOutInBanner: Boolean = true) extends ElementTest {
+  class TestView(override val name: String,
+                 title: String,
+                 heading: String,
+                 page: => Html,
+                 signOutInBanner: Boolean = true) extends ElementTest {
 
     lazy val document = Jsoup.parse(page.body)
     override lazy val element = document.getElementById("content")
@@ -215,6 +219,16 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
     }
 
+    s"$name must have the title '$title'" in {
+      document.title() mustBe title
+    }
+
+    s"$name must have the heading (H1) '$heading'" in {
+      val h1 = document.getElementsByTag("H1")
+      h1.size() mustBe 1
+      h1.text() mustBe heading
+    }
+
     def mustHaveBackTo(backUrl: String) =
       s"$name must have a back link pointed to '$backUrl'" in {
         val backLink = element.select("#back")
@@ -222,17 +236,6 @@ trait ViewSpecTrait extends UnitTestTrait {
         backLink.attr("href") mustBe backUrl
       }
 
-    def mustHaveTitle(title: String) =
-      s"$name must have the title '$title'" in {
-        document.title() mustBe title
-      }
-
-    def mustHaveH1(heading: String) =
-      s"$name must have the heading (H1) '$heading'" in {
-        val h1 = document.getElementsByTag("H1")
-        h1.size() mustBe 1
-        h1.text() mustBe heading
-      }
 
     // this method returns either the first form in the document or one specified by id
     // @param method expected method used by the form, e.g. "GET", "POST"
@@ -259,7 +262,11 @@ trait ViewSpecTrait extends UnitTestTrait {
 
   object TestView {
     // n.b. page must be call-by-name otherwise it would be evaluated before the fake application could start
-    def apply(name: String, page: => Html, signOutInBanner: Boolean = true): TestView = new TestView(name, page, signOutInBanner)
+    def apply(name: String,
+              title: String,
+              heading: String,
+              page: => Html,
+              signOutInBanner: Boolean = true): TestView = new TestView(name, title, heading, page, signOutInBanner)
   }
 
 }
