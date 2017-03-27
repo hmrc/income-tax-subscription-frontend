@@ -16,7 +16,7 @@
 
 package views
 
-import assets.MessageLookup.Base
+import assets.MessageLookup.{Base => common}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
@@ -206,9 +206,9 @@ trait ViewSpecTrait extends UnitTestTrait {
         submitButtons.head.text() mustBe text
       }
 
-    def mustHaveContinueButton() = mustHaveSubmitButton(Base.continue)
+    def mustHaveContinueButton() = mustHaveSubmitButton(common.continue)
 
-    def mustHaveUpdateButton() = mustHaveSubmitButton(Base.update)
+    def mustHaveUpdateButton() = mustHaveSubmitButton(common.update)
 
     def mustHaveCheckbox(name: String, message: String) =
       s"${this.name} must have a checkbox for '$name' with label '$message'" in {
@@ -228,6 +228,19 @@ trait ViewSpecTrait extends UnitTestTrait {
       selectHead(accordionName, "details div")
     }
 
+    def mustHaveDateFields(id: String, legend: String, exampleDate:String) = {
+      val selector = s"#$id"
+      s"${this.name} have a fieldset with id '$id' with the legend '$legend'" in {
+        val ele = element.getElementById(id)
+        ele.select("span.form-label-bold").text() mustBe legend
+        ele.select("span.form-hint").text() mustBe exampleDate
+        ele.tag().toString mustBe "fieldset"
+      }
+      val date = selectHead(id, selector)
+      date.mustHaveTextField(s"$id.dateDay", common.day)
+      date.mustHaveTextField(s"$id.dateMonth", common.month)
+      date.mustHaveTextField(s"$id.dateYear", common.year)
+    }
   }
 
   object ElementTest {
@@ -261,7 +274,7 @@ trait ViewSpecTrait extends UnitTestTrait {
       s"$name must have a sign out link in the banner" in {
         val signOut = document.getElementById("logOutNavHref")
         if (signOut == null) fail("Signout link was not located in the banner\nIf this is the expected behaviour then please set 'signOutInBanner' to true when creating the TestView object")
-        signOut.text() mustBe Base.signOut
+        signOut.text() mustBe common.signOut
         signOut.attr("href") mustBe controllers.routes.SignOutController.signOut().url
       }
     } else {
