@@ -32,7 +32,7 @@ class BusinessNameViewSpec extends ViewSpecTrait {
     businessNameForm = BusinessNameForm.businessNameForm,
     postAction = postAction,
     backUrl = backUrl,
-    isEditMode
+    isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
   def documentCore(isEditMode: Boolean) = TestView(
@@ -46,11 +46,11 @@ class BusinessNameViewSpec extends ViewSpecTrait {
 
     val testPage = documentCore(isEditMode = false)
 
-    testPage.mustHaveBackTo(backUrl)
+    testPage.mustHaveBackLinkTo(backUrl)
 
     testPage.mustHavePara(messages.line_1)
 
-    val form = testPage.getForm("Business Name form")(postAction = postAction)
+    val form = testPage.getForm("Business Name form")(actionCall = postAction)
 
     form.mustHaveTextField(
       name = BusinessNameForm.businessName,

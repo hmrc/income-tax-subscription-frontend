@@ -37,7 +37,7 @@ class OtherIncomeErrorViewSpec extends ViewSpecTrait {
       page = page
     )
 
-    testPage.mustHaveBackTo(backUrl)
+    testPage.mustHaveBackLinkTo(backUrl)
 
     testPage.mustHaveSeqParas(
       messages.para1,

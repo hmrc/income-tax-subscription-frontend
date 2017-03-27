@@ -16,43 +16,32 @@
 
 package views
 
-import assets.MessageLookup
-import org.jsoup.Jsoup
+import assets.MessageLookup.{AlreadyEnrolled => messages, Base => common}
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
 
-class AlreadyEnrolledViewSpec extends UnitTestTrait {
+class AlreadyEnrolledViewSpec extends ViewSpecTrait {
 
   lazy val testPostRoute = "testPostUrl"
-  lazy val page = views.html.enrolled.already_enrolled(Call("POST",testPostRoute))(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
+  lazy val postAction = Call("POST", testPostRoute)
+  lazy val page = views.html.enrolled.already_enrolled(postAction)(FakeRequest(), applicationMessages, appConfig)
 
   "The Already Enrolled view" should {
+    val testPage = TestView(
+      name = "Already Enrolled View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page
+    )
 
-    s"have the title '${MessageLookup.AlreadyEnrolled.title}'" in {
-      document.title() must be(MessageLookup.AlreadyEnrolled.title)
-    }
+    testPage.mustHavePara(
+      messages.para1
+    )
 
-    s"have the heading (H1) '${MessageLookup.AlreadyEnrolled.heading}'" in {
-      document.getElementsByTag("H1").text() must be(MessageLookup.AlreadyEnrolled.heading)
-    }
+    val form = testPage.getForm("Already Enrolled form")(actionCall = postAction)
 
-    s"have the paragraph (p) '${MessageLookup.AlreadyEnrolled.para1}'" in {
-      document.getElementsByTag("p").text() must include(MessageLookup.AlreadyEnrolled.para1)
-    }
+    form.mustHaveSubmitButton(common.signOut)
 
-    "has a form" which {
-
-      "has a 'Sign Out' button" in {
-        document.select("#sign-out-button").isEmpty mustBe false
-      }
-
-      s"has a post action to '$testPostRoute'" in {
-        document.select("form").attr("action") mustBe testPostRoute
-        document.select("form").attr("method") mustBe "POST"
-      }
-    }
   }
 }

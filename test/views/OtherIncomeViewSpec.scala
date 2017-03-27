@@ -41,7 +41,7 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       heading = messages.heading,
       page = page)
 
-    testPage.mustHaveBackTo(backUrl)
+    testPage.mustHaveBackLinkTo(backUrl)
 
     testPage.mustHavePara(messages.para1)
 
@@ -54,7 +54,7 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       messages.bullet6
     )
 
-    val form = testPage.getForm("Other Income form")(postAction = postAction)
+    val form = testPage.getForm("Other Income form")(actionCall = postAction)
 
     form.mustHaveRadioSet(
       legend = messages.heading,

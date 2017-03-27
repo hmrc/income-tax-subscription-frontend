@@ -38,8 +38,8 @@ class NoNinoViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line1)
 
-    val form = testPage.getForm("Not Nino form")(postAction = postAction)
+    val form = testPage.getForm("Not Nino form")(actionCall = postAction)
 
-    form.mustHaveSubmitButton(Base.signout)
+    form.mustHaveSubmitButton(Base.signOut)
   }
 }

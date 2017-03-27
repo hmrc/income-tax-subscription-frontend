@@ -41,11 +41,11 @@ class TermsViewSpec extends ViewSpecTrait {
       heading = messages.heading,
       page = page(isEditMode = false))
 
-    testPage.mustHaveBackTo(backUrl)
+    testPage.mustHaveBackLinkTo(backUrl)
 
     testPage.mustHavePara(messages.line_1)
 
-    val form = testPage.getForm("terms form")(postAction = postAction)
+    val form = testPage.getForm("terms form")(actionCall = postAction)
 
     form.mustHaveCheckbox(TermForm.hasAcceptedTerms, messages.checkbox)
 

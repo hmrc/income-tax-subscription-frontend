@@ -42,7 +42,7 @@ class NotEligibleViewSpec extends ViewSpecTrait {
       page = page
     )
 
-    testPage.mustHaveBackTo(backUrl)
+    testPage.mustHaveBackLinkTo(backUrl)
 
     testPage.mustHaveSeqParas(
       messages.line_1,
@@ -50,7 +50,7 @@ class NotEligibleViewSpec extends ViewSpecTrait {
       messages.line_3
     )
 
-    val form = testPage.getForm("Not Eligible form")(postAction = postAction)
+    val form = testPage.getForm("Not Eligible form")(actionCall = postAction)
 
     form.mustHaveRadioSet(
       legend = messages.question,

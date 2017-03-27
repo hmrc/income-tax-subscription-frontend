@@ -22,7 +22,7 @@ object MessageLookup {
     val continue = "Continue"
     val submit = "Submit"
     val update = "Update"
-    val signout = "Sign Out"
+    val signOut = "Sign Out"
     val startDate = "Start date"
     val endDate = "End date"
     val day = "Day"

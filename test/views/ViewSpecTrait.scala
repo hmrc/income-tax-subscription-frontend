@@ -48,8 +48,17 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     def selectHead(name: String, cssQuery: String): ElementTest = {
       lazy val n = s"""${this.name}."$name""""
-      ElementTest(name, () => element.select(cssQuery).get(0))
+      ElementTest(n, () => {
+        val selector = element.select(cssQuery)
+        if (selector.isEmpty) fail(s"Unable to locate $cssQuery in\n$element")
+        selector.get(0)
+      })
     }
+
+    def mustHaveH2(text: String) =
+      s"$name have a Heading 2 (H2) for '$text'" in {
+        element.getElementsByTag("h2").text() must include(text)
+      }
 
     // n.b. href must be call-by-name otherwise it may not be evaluated with the correct context-root
     def mustHaveALink(text: String, href: => String) =
@@ -211,6 +220,14 @@ trait ViewSpecTrait extends UnitTestTrait {
         checkbox.parents().get(0).text() mustBe message
       }
 
+    def getAccordion(accordionName: String, summary: String): ElementTest = {
+      s"$name have the accordion '$accordionName' (details) '$summary'" in {
+        element.select("details summary span.summary").text() mustBe summary
+      }
+
+      selectHead(accordionName, "details div")
+    }
+
   }
 
   object ElementTest {
@@ -244,7 +261,7 @@ trait ViewSpecTrait extends UnitTestTrait {
       s"$name must have a sign out link in the banner" in {
         val signOut = document.getElementById("logOutNavHref")
         if (signOut == null) fail("Signout link was not located in the banner\nIf this is the expected behaviour then please set 'signOutInBanner' to true when creating the TestView object")
-        signOut.text() mustBe Base.signout
+        signOut.text() mustBe Base.signOut
         signOut.attr("href") mustBe controllers.routes.SignOutController.signOut().url
       }
     } else {
@@ -264,7 +281,7 @@ trait ViewSpecTrait extends UnitTestTrait {
       h1.text() mustBe heading
     }
 
-    def mustHaveBackTo(backUrl: String) =
+    def mustHaveBackLinkTo(backUrl: String) =
       s"$name must have a back link pointed to '$backUrl'" in {
         val backLink = element.select("#back")
         backLink.isEmpty mustBe false
@@ -277,21 +294,21 @@ trait ViewSpecTrait extends UnitTestTrait {
     // @oaram action expected action used by the form, i.e. the destination url
     // n.b. action must be call-by-name otherwise if the parameter is generated from a call
     // it could be evaluated with the wrong context root
-    def getForm(formName: String, id: Option[String] = None)(postAction: => Call): ElementTest = {
+    def getForm(formName: String, id: Option[String] = None)(actionCall: => Call): ElementTest = {
       val selector =
         id match {
           case Some(i) => s"#$i"
           case _ => "form"
         }
 
-      lazy val method = postAction.method
-      lazy val action = postAction.url
+      lazy val method = actionCall.method
+      lazy val url = actionCall.url
       // this test is put in here because it doesn't make sense for it to be called on anything
       // other than a form
-      s"$formName must must a $method action to '$action'" in {
+      s"$formName must must a $method action to '$url'" in {
         val formSelector = element.select(selector)
         formSelector.attr("method") mustBe method.toUpperCase
-        formSelector.attr("action") mustBe action
+        formSelector.attr("action") mustBe url
       }
 
       // csrf token is not tested here because it is only added if the correct headers are set in the request

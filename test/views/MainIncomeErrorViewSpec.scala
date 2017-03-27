@@ -16,60 +16,39 @@
 
 package views
 
-import assets.MessageLookup
-import org.jsoup.Jsoup
+import assets.MessageLookup.{Base, MainIncomeError => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
 
-class MainIncomeErrorViewSpec extends UnitTestTrait {
+class MainIncomeErrorViewSpec extends ViewSpecTrait {
 
   lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url
   lazy val getAction: Call = controllers.routes.SignOutController.signOut()
   lazy val page = views.html.main_income_error(backUrl, getAction)(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
 
   "The Main Income Error view" should {
+    val testPage = TestView(
+      name = "Main Income Error View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page
+    )
 
-    s"have the title '${MessageLookup.MainIncomeError.title}'" in {
-      document.title() must be(MessageLookup.MainIncomeError.title)
-    }
+    testPage.mustHaveSeqParas(
+      messages.para1,
+      messages.para2
+    )
 
-    s"have the heading (H1) '${MessageLookup.MainIncomeError.heading}'" in {
-      document.getElementsByTag("H1").text() must be(MessageLookup.MainIncomeError.heading)
-    }
+    testPage.mustHaveSeqBullets(
+      messages.bullet1,
+      messages.bullet2,
+      messages.bullet3
+    )
 
-    s"have the paragraph (P) '${MessageLookup.MainIncomeError.para1}'" in {
-      document.getElementsByTag("P").text() must include(MessageLookup.MainIncomeError.para1)
-    }
+    val form = testPage.getForm("Main Income Error form")(actionCall = getAction)
 
-    s"have the paragraph (P) '${MessageLookup.MainIncomeError.para2}'" in {
-      document.getElementsByTag("P").text() must include(MessageLookup.MainIncomeError.para2)
-    }
-
-    s"have the paragraph (LI) '${MessageLookup.MainIncomeError.bullet1}'" in {
-      document.getElementsByTag("LI").text() must include (MessageLookup.MainIncomeError.bullet1)
-    }
-
-    s"have the paragraph (LI) '${MessageLookup.MainIncomeError.bullet2}'" in {
-      document.getElementsByTag("LI").text() must include (MessageLookup.MainIncomeError.bullet2)
-    }
-
-    s"have the paragraph (LI) '${MessageLookup.MainIncomeError.bullet3}'" in {
-      document.getElementsByTag("LI").text() must include (MessageLookup.MainIncomeError.bullet3)
-    }
-
-    "has a form" which {
-
-      "has a 'Sign Out' button" in {
-        document.select("#sign-out-button").isEmpty mustBe false
-      }
-
-      s"has a GET action to '${getAction.url}'" in {
-        document.select("form").attr("action") mustBe getAction.url
-        document.select("form").attr("method") mustBe "GET"
-      }
-    }
+    form.mustHaveSubmitButton(Base.signOut)
   }
+
 }
