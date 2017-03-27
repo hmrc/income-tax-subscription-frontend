@@ -105,7 +105,22 @@ trait ViewSpecTrait extends UnitTestTrait {
         }
       }
 
-    def mustHaveRadioSet(legend: String, radioName: String)(options: String*) = {
+    case class RadioOption(name: String, text: String)
+
+    object RadioOption {
+      implicit def conv(radioOption: RadioOption): (String, String) = (radioOption.name, radioOption.text)
+
+      implicit def conv(radioOption: Seq[RadioOption]): Seq[(String, String)] = radioOption.map(x => x: (String, String))
+
+      implicit def conv(radioOption: (String, String)): RadioOption = RadioOption(radioOption._1, radioOption._2)
+
+      implicit class RadioOptionSeqUtil(radioOption: Seq[RadioOption]) {
+        def toTuples: Seq[(String, String)] = radioOption: Seq[(String, String)]
+      }
+
+    }
+
+    def mustHaveRadioSet(legend: String, radioName: String)(options: RadioOption*) = {
       if (legend.isEmpty) fail("Legend cannot be none empty, this would cause an accessibility issue")
       if (radioName.isEmpty) fail("Must provide the field name which groups all the buttons in this test")
       if (options.isEmpty) fail("Must provide at least 1 radio button for this test")
@@ -117,7 +132,7 @@ trait ViewSpecTrait extends UnitTestTrait {
           element.select("fieldset legend").text() mustBe legend
         }
 
-        for (o <- options) {
+        for ((o, text) <- options.toTuples) {
           s"has a radio option for '$radioName-$o'" in {
             val cashRadio = element.select(s"#$radioName-$o")
             cashRadio.attr("type") mustBe "radio"
@@ -125,7 +140,7 @@ trait ViewSpecTrait extends UnitTestTrait {
             cashRadio.attr("value") mustBe o
             val label = element.getElementsByAttributeValue("for", s"$radioName-$o")
             label.size() mustBe 1
-            label.get(0).text() mustBe o
+            label.get(0).text() mustBe text
           }
         }
 

@@ -58,8 +58,8 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       legend = messages.heading,
       radioName = OtherIncomeForm.choice
     )(
-      OtherIncomeForm.option_yes,
-      OtherIncomeForm.option_no
+      OtherIncomeForm.option_yes -> messages.yes,
+      OtherIncomeForm.option_no -> messages.no
     )
 
     form.mustHaveContinueButton()
