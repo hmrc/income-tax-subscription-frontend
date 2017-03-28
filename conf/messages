@@ -188,6 +188,7 @@ confirmation.whatHappensNext.heading                            = What happens n
 confirmation.whatHappensNext.para2                              = You must report to HMRC once every quarter from the start of your accounting period.
 confirmation.whatHappensNext.para3                              = HMRC will calculate an estimate of your Income Tax after you send a report. You can see these estimates from your accounting software after your first report, or through your business tax account from August 2017.
 confirmation.whatHappensNext.para4                              = Activate your <a href="{0}">business tax account</a>, you can use this to see a summary of all your business taxes.
+confirmation.sign_out                                           = Finish
 
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue

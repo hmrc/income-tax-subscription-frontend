@@ -44,6 +44,8 @@
 
     <h1 class="heading-large">@question</h1>
 
+    @accordionHelper(Messages("business.accounting_method.accordion"), accordionInfo)
+
     @form(action = postAction) {
 
         @radioHelper(
@@ -55,8 +57,6 @@
             ),
             parentForm = accountingMethodForm
         )
-
-        @accordionHelper(Messages("business.accounting_method.accordion"), accordionInfo)
 
         @if(isEditMode) {
             @continueButton(Messages("base.update"))

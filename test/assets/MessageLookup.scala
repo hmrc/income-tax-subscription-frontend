@@ -206,6 +206,7 @@ object MessageLookup {
     val heading = "Success"
     val banner_line1_1 = "Sign up complete."
     val banner_line1_2 = "Your reference number is:"
+    val signOut = "Finish"
 
     object whatHappensNext {
       val para1 = "Make a note of your reference number. If you forget your Government Gateway login details, we can use it to help you retrieve them."

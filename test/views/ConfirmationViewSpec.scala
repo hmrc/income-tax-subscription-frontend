@@ -97,5 +97,10 @@ class ConfirmationViewSpec extends UnitTestTrait {
 
     }
 
+    "have a sign out button" in {
+      val b = document.getElementById("sign-out-button")
+      b.text() mustBe MessageLookup.Confirmation.signOut
+    }
+
   }
 }
