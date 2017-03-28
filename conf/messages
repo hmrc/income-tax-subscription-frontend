@@ -168,6 +168,7 @@ summary.income_source                                           = Where does you
 summary.income_source.business                                  = Business
 summary.income_source.property                                  = Property
 summary.income_source.both                                      = Business and property
+summary.other_income                                            = Do you have any other sources of income?
 summary.accounting_period_prior                                 = Did your current accounting period start before 1 April 2017?
 summary.accounting_period                                       = Your accounting period dates:
 summary.business_name                                           = What''s the name of your business?

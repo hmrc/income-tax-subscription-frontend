@@ -51,6 +51,14 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
+@otherIncome(source: OtherIncomeModel) = @{
+    val rowName = OtherIncomeId
+    val rowQuestion = Messages("summary.other_income")
+    val rowAnswer = source.choice
+    val rowUrl = controllers.routes.OtherIncomeController.showOtherIncome().url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
 @accountingPeriodDate(period: AccountingPeriodModel) = @{
     val rowName = AccountingPeriodDateId
     val rowQuestion = Messages("summary.accounting_period")
@@ -95,6 +103,7 @@
 
     <div class="form-group">
         @summaryModel.incomeSource.map(incomeSource)
+        @summaryModel.otherIncome.map(otherIncome)
         @summaryModel.accountingPeriod.map(accountingPeriodDate)
         @summaryModel.businessName.map(businessName)
         @summaryModel.accountingMethod.map(accountingMethod)

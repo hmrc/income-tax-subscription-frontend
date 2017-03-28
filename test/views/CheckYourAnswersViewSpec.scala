@@ -36,8 +36,10 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testTerms = TermModel(true)
   val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
+  val testOtherIncome: OtherIncomeModel = TestModels.testOtherIncomeNo
   val testSummary = SummaryModel(
     incomeSource = testIncomeSource,
+    otherIncome = testOtherIncome,
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
     accountingMethod = testAccountingMethod,
@@ -159,6 +161,20 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       )
     }
 
+    "display the correct info for other income" in {
+      val sectionId = OtherIncomeId
+      val expectedQuestion = messages.other_income
+      val expectedAnswer = MessageLookup.OtherIncome.no
+      val expectedEditLink = controllers.routes.OtherIncomeController.showOtherIncome().url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )
+    }
+
     "display the correct info for the business name" in {
       val sectionId = BusinessNameId
       val expectedQuestion = messages.business_name
@@ -173,7 +189,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       )
     }
 
-    "display the correct info for the income type" in {
+    "display the correct info for the accounting method" in {
       val sectionId = AccountingMethodId
       val expectedQuestion = messages.income_type
       val expectedAnswer = messages.AccountingMethod.cash
