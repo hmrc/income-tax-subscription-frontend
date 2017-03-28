@@ -56,14 +56,24 @@
             field = accountingPeriodForm(startDate),
             label = Messages("base.startDate"),
             parentForm = accountingPeriodForm,
-            hintText = Messages("base.exampleStartDate")
+            hintText =
+                    if(viewType == CurrentAccountingPeriodView) {
+                        Messages("accounting_period.exampleStartDate.current")
+                    } else {
+                        Messages("accounting_period.exampleStartDate.next")
+                    }
         )
 
         @dateHelper(
             field = accountingPeriodForm(endDate),
             label = Messages("base.endDate"),
             parentForm = accountingPeriodForm,
-            hintText = Messages("base.exampleEndDate")
+            hintText =
+                    if(viewType == CurrentAccountingPeriodView) {
+                        Messages("accounting_period.exampleEndDate.current")
+                    } else {
+                        Messages("accounting_period.exampleEndDate.next")
+                    }
         )
 
         @if(isEditMode) {

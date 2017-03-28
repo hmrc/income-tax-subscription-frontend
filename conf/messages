@@ -9,8 +9,6 @@ base.start-now                                                  = Start now
 base.submit                                                     = Submit
 base.startDate                                                  = Start date
 base.endDate                                                    = End date
-base.exampleStartDate                                           = For example, 06 04 2017
-base.exampleEndDate                                             = For example, 05 04 2018
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
@@ -87,6 +85,10 @@ accounting_period.heading.current                               = What are the d
 accounting_period.heading.next                                  = When is your next accounting period?
 accounting_period.line_1.current                                = Your accounting period is usually 6 April to 5 April (the same as the tax year), unless you selected different dates when you registered for Self Assessment.
 accounting_period.line_1.next                                   = Your accounting period is usually 12 months. For example, 1 May 2017 to 30 April 2018.
+accounting_period.exampleStartDate.current                      = For example, 6 4 2017
+accounting_period.exampleEndDate.current                        = For example, 5 4 2018
+accounting_period.exampleStartDate.next                         = For example, 1 4 2018
+accounting_period.exampleEndDate.next                           = For example, 31 3 2019
 
 # Sole trader page
 business.sole_trader.title                                      = Are you a sole trader?
@@ -129,7 +131,7 @@ preferences.returnLinkText                                      = Continue
 ## Timeout page ##
 timeout.title                                                   = Your session has timed out
 timeout.heading                                                 = Your session has timed out
-timeout.returnToHome                                            = To register to send digital tax updates, you''ll have to <a href="{0}" rel="external">sign back in</a> using your Government Gateway ID.
+timeout.returnToHome                                            = To sign up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Throttle limit reached page ##
 throttle_limit.title                                            = Service is unavailable due to maintenance
@@ -163,13 +165,11 @@ summary.heading_hidden                                          = before signing
 summary.confirm_and_sign_up                                     = Confirm and sign up
 summary.line_1                                                  = You can edit your answers if you need to.<br>When you''re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
 summary.h2                                                      = You''ve told us
-summary.email                                                   = Do you want to receive electronic communications from HMRC?
 summary.income_source                                           = Where does your income come from?
-summary.income_source.business                                  = Business
+summary.income_source.business                                  = Sole trader business
 summary.income_source.property                                  = Property
-summary.income_source.both                                      = Business and property
+summary.income_source.both                                      = Sole trader business and property
 summary.other_income                                            = Do you have any other sources of income?
-summary.accounting_period_prior                                 = Did your current accounting period start before 1 April 2017?
 summary.accounting_period                                       = Your accounting period dates:
 summary.business_name                                           = What''s the name of your business?
 summary.income_type                                             = What method do you use for your accounting?

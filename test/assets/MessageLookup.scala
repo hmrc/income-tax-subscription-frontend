@@ -123,8 +123,10 @@ object MessageLookup {
     val heading_editMode = "What are the dates of your accounting period?"
     val line_1_current = "Your accounting period is usually 6 April to 5 April (the same as the tax year), unless you selected different dates when you registered for Self Assessment."
     val line_1_next = "Your accounting period is usually 12 months. For example, 1 May 2017 to 30 April 2018."
-    val exampleStartDate = "For example, 06 04 2017"
-    val exampleEndDate = "For example, 05 04 2018"
+    val exampleStartDate_current = "For example, 6 4 2017"
+    val exampleEndDate_current = "For example, 5 4 2018"
+    val exampleStartDate_next = "For example, 1 4 2018"
+    val exampleEndDate_next = "For example, 31 3 2019"
   }
 
   object ContactEmail {
@@ -166,9 +168,9 @@ object MessageLookup {
     val income_source = "Where does your income come from?"
 
     object IncomeSource {
-      val business = "Business"
+      val business = "Sole trader business"
       val property = "Property"
-      val both = "Business and property"
+      val both = "Sole trader business and property"
     }
 
     val accounting_period_prior = "Did your current accounting period start before 1 April 2017?"
@@ -192,7 +194,7 @@ object MessageLookup {
   object Timeout {
     val title = "Your session has timed out"
     val heading = "Your session has timed out"
-    val returnToHome = """To register to send digital tax updates, you'll have to sign back in using your Government Gateway ID."""
+    val returnToHome = """To sign up for quarterly reporting, you'll have to sign in using your Government Gateway ID."""
   }
 
   object AlreadyEnrolled {

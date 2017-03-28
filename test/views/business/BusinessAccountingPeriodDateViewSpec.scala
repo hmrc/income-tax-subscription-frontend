@@ -71,13 +71,21 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
         form.mustHaveDateField(
           id = "startDate",
           legend = common.startDate,
-          exampleDate = messages.exampleStartDate
+          exampleDate =
+            viewType match {
+              case CurrentAccountingPeriodView => messages.exampleStartDate_current
+              case _ => messages.exampleStartDate_next
+            }
         )
 
         form.mustHaveDateField(
           id = "endDate",
           legend = common.endDate,
-          exampleDate = messages.exampleEndDate
+          exampleDate =
+            viewType match {
+            case CurrentAccountingPeriodView => messages.exampleEndDate_current
+            case _ => messages.exampleEndDate_next
+          }
         )
 
         val editModePage = documentCore(
