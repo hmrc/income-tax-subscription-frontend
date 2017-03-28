@@ -154,7 +154,7 @@ object MessageLookup {
   object Terms {
     val title = "Terms of participation"
     val heading: String = title
-    val line_1 = "By accepting the terms of participation, you confirm that you've read and understood the terms of the trial. You'll have been sent these terms separately."
+    val line_1 = "By accepting the terms of participation, you confirm that you've read and understood the terms of the trial. Your accounting software provider will have sent you these terms separately."
     val checkbox = "I accept the terms of participation"
   }
 
@@ -345,8 +345,8 @@ object MessageLookup {
   object OtherIncomeError {
     val title = "You can only send quarterly reports on part of your income"
     val heading: String = title
-    val para1 = "As this service is currently a trial, you can only send quarterly reports on income from your sole trader business, renting out a UK property, or both."
-    val para2 = "You can send quarterly reports including your other income later in the year, when this service becomes available."
+    val para1 = "As this service is currently a trial, you can only send quarterly reports on income from your sole trader business, renting out a UK property or both."
+    val para2 = "You'll be able to send quarterly reports including your other income later in the year."
   }
 
   object OtherIncome {
