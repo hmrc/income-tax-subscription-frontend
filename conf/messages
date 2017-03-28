@@ -43,12 +43,11 @@ frontpage.bullet_10                                             = choose to pay 
 
 
 ## Preferences call back page
-preferences_callback.title                                      = Do you want to continue with your registration?
-preferences_callback.heading                                    = Do you want to continue with your registration?
-preferences_callback.line_1                                     = In order to continue with your registration, you must set up a contact email address and agree to go paperless with HMRC.
-preferences_callback.legend                                     = Do you want to continue with your registration?
-preferences_callback.yes                                        = Yes - sign up to go paperless
-preferences_callback.no                                         = No - sign me out
+preferences_callback.title                                      = Do you want to continue?
+preferences_callback.heading                                    = To sign up, you must allow HMRC to send you electronic communications
+preferences_callback.legend                                     = To sign up for quarterly reporting, you must allow HMRC to send you electronic communications
+preferences_callback.yes                                        = Continue to sign up
+preferences_callback.no                                         = Sign out
 
 ## Income source page
 income_source.title                                             = Where does your income come from?

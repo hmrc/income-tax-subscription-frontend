@@ -58,12 +58,11 @@ object MessageLookup {
   }
 
   object PreferencesCallBack {
-    val title = "Do you want to continue with your registration?"
-    val heading: String = title
-    val line_1: String = "In order to continue with your registration, you must set up a contact email address and agree to go paperless with HMRC."
-    val legend: String = title
-    val yes: String = "Yes - sign up to go paperless"
-    val no: String = "No - sign me out"
+    val title = "Do you want to continue?"
+    val heading: String = "To sign up, you must allow HMRC to send you electronic communications"
+    val legend: String = "To sign up for quarterly reporting, you must allow HMRC to send you electronic communications"
+    val yes: String = "Continue to sign up"
+    val no: String = "Sign out"
   }
 
   object IncomeSource {

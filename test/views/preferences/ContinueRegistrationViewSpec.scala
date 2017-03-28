@@ -43,10 +43,6 @@ class ContinueRegistrationViewSpec extends ViewSpecTrait {
       page = page
     )
 
-    testPage.mustHavePara(
-      messages.line_1
-    )
-
     val form = testPage.getForm("Continue Registration form")(actionCall = action)
 
     form.mustHaveRadioSet(
