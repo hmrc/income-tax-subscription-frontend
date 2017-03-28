@@ -43,7 +43,11 @@
     </h1>
 
     <div class="form-group">
-        <p>@Messages("accounting_period.line_1")</p>
+        @if(viewType == CurrentAccountingPeriodView) {
+            <p>@Messages("accounting_period.line_1.current")</p>
+        } else {
+            <p>@Messages("accounting_period.line_1.next")</p>
+        }
     </div>
 
     @form(action = postAction) {
