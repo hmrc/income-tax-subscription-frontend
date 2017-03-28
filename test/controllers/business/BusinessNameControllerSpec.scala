@@ -57,7 +57,11 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
 
   "Calling the submitBusinessName action of the BusinessNameController with an authorised user and valid submission" should {
 
-    def callShow(isEditMode: Boolean) = TestBusinessNameController.submitBusinessName(isEditMode = isEditMode)(authenticatedFakeRequest().post(BusinessNameForm.businessNameForm, BusinessNameModel("Test business")))
+    def callShow(isEditMode: Boolean) =
+      TestBusinessNameController.submitBusinessName(isEditMode = isEditMode)(
+        authenticatedFakeRequest()
+          .post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
+      )
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {

@@ -28,7 +28,7 @@ class BusinessNameViewSpec extends ViewSpecTrait {
   val action = ViewSpecTrait.testCall
 
   def page(isEditMode: Boolean) = views.html.business.business_name(
-    businessNameForm = BusinessNameForm.businessNameForm,
+    businessNameForm = BusinessNameForm.businessNameForm.form,
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
