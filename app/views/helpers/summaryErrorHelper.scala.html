@@ -27,7 +27,7 @@
 }
 
 @errMsg(err: (String, SummaryError)) = {
-    <li role="tooltip"><a href="#@err._1">@err._2.toText</a></li>
+    <li role="tooltip" data-metrics="itsa:error:@err._2.toText"><a href="#@err._1">@err._2.toText</a></li>
 }
 
 @if(form.hasErrors) {
