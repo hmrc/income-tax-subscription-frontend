@@ -16,6 +16,7 @@
 
 package views.helpers
 
+import assets.MessageLookup.{Base => common}
 import forms.validation.ErrorMessageFactory
 import forms.validation.models.SummaryError
 import forms.validation.testutils.DataMap
@@ -86,7 +87,7 @@ class SummaryErrorHelperSpec extends UnitTestTrait {
       aField2.attr("href") shouldBe "#field3"
       aField2.text shouldBe summaryErrorMessage.toText
       val summaryHeading = doc.getElementsByTag("h2")
-      summaryHeading.text shouldBe "Error Summary"
+      summaryHeading.text shouldBe common.errorHeading
     }
   }
 

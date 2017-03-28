@@ -47,6 +47,7 @@ object TestModels extends Implicits {
 
   val testCacheMap: CacheMap =
     testCacheMap(incomeSource = testIncomeSourceBoth,
+      otherIncome = testOtherIncomeNo,
       accountingPeriodPrior = testAccountingPeriodPriorCurrent,
       accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
@@ -54,6 +55,7 @@ object TestModels extends Implicits {
       terms = testTerms)
 
   def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
+                   otherIncome: Option[OtherIncomeModel] = None,
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
@@ -62,6 +64,7 @@ object TestModels extends Implicits {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
+      otherIncome.fold(emptyMap)(model => Map(OtherIncome -> OtherIncomeModel.format.writes(model))) ++
       accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++

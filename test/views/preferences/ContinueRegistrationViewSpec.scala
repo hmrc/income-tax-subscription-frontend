@@ -18,72 +18,42 @@ package views.preferences
 
 import assets.MessageLookup
 import assets.MessageLookup.{PreferencesCallBack => messages}
+import forms.preferences.BackToPreferencesForm
 import forms.preferences.BackToPreferencesForm._
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
+import views.ViewSpecTrait
 
 
-class ContinueRegistrationViewSpec extends UnitTestTrait {
+class ContinueRegistrationViewSpec extends ViewSpecTrait {
+
+  val action = ViewSpecTrait.testCall
+
   lazy val page = views.html.preferences.continue_registration(
     backToPreferencesForm,
-    postAction = controllers.preferences.routes.PreferencesController.submitGoBackToPreferences()
+    postAction = action
   )(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
 
   "The Continue Registration view" should {
+    val testPage = TestView(
+      name = "Continue Registration View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page
+    )
 
-    s"have the title '${messages.title}'" in {
-      document.title() must be(messages.title)
-    }
+    val form = testPage.getForm("Continue Registration form")(actionCall = action)
 
-    s"have the heading (H1) '${messages.heading}'" in {
-      document.getElementsByTag("H1").text() must be(messages.heading)
-    }
+    form.mustHaveRadioSet(
+      legend = messages.legend,
+      radioName = BackToPreferencesForm.backToPreferences
+    )(
+      BackToPreferencesForm.option_yes ->messages.yes,
+      BackToPreferencesForm.option_no ->messages.no
+    )
 
-    s"have the line_1 (P) '${messages.line_1}'" in {
-      document.getElementsByTag("p").text() must include(messages.line_1)
-    }
+    form.mustHaveContinueButton()
 
-    "have a form" which {
-
-      s"has a post action to '${controllers.preferences.routes.PreferencesController.submitGoBackToPreferences().url}'" in {
-        document.select("form").attr("method") mustBe "POST"
-        document.select("form").attr("action") mustBe controllers.preferences.routes.PreferencesController.submitGoBackToPreferences().url
-      }
-
-      val fieldName = backToPreferences
-
-      s"has a legend which is visually hidden with the text '${messages.legend}'" in {
-        document.select("fieldset legend").text() mustBe messages.legend
-      }
-
-      s"has a radio option for '$fieldName-$option_yes'" in {
-        val cashRadio = document.select(s"#$fieldName-$option_yes")
-        cashRadio.attr("type") mustBe "radio"
-        cashRadio.attr("name") mustBe fieldName
-        cashRadio.attr("value") mustBe option_yes
-        val label = document.getElementsByAttributeValue("for", s"$fieldName-$option_yes")
-        label.size() mustBe 1
-        label.get(0).text() mustBe messages.yes
-      }
-
-      s"has a radio option for '$fieldName-$option_no'" in {
-        val cashRadio = document.select(s"#$fieldName-$option_no")
-        cashRadio.attr("type") mustBe "radio"
-        cashRadio.attr("name") mustBe fieldName
-        cashRadio.attr("value") mustBe option_no
-        val label = document.getElementsByAttributeValue("for", s"$fieldName-$option_no")
-        label.size() mustBe 1
-        label.get(0).text() mustBe messages.no
-      }
-
-      "has a continue button" in {
-        document.select("button").attr("type") mustBe "submit"
-        document.select("button").text() mustBe MessageLookup.Base.continue
-      }
-
-    }
   }
 }

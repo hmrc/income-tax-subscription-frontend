@@ -29,6 +29,8 @@ object CacheUtil {
 
     def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
 
+    def getOtherIncome()(implicit read: Reads[OtherIncomeModel]): Option[OtherIncomeModel] = cacheMap.getEntry(OtherIncome)
+
     def getAccountingPeriodPrior()(implicit read: Reads[AccountingPeriodPriorModel]): Option[AccountingPeriodPriorModel] = cacheMap.getEntry(AccountingPeriodPrior)
 
     def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriodDate)
@@ -41,6 +43,7 @@ object CacheUtil {
 
     def getSummary()(implicit
                      isrc: Reads[IncomeSourceModel],
+                     oirc: Reads[OtherIncomeModel],
                      accP: Reads[AccountingPeriodPriorModel],
                      accD: Reads[AccountingPeriodModel],
                      bus: Reads[BusinessNameModel],
@@ -58,6 +61,7 @@ object CacheUtil {
             case _ =>
               SummaryModel(
                 incomeSource,
+                getOtherIncome(),
                 getAccountingPeriodPrior(),
                 getAccountingPeriodDate(),
                 getBusinessName(),

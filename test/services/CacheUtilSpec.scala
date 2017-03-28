@@ -29,6 +29,7 @@ class CacheUtilSpec extends UnitTestTrait {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
       emptyCacheMap.getIncomeSource() shouldBe None
+      emptyCacheMap.getOtherIncome() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
       emptyCacheMap.getAccountingPeriodPrior() shouldBe None
       emptyCacheMap.getAccountingPeriodDate() shouldBe None
@@ -38,6 +39,7 @@ class CacheUtilSpec extends UnitTestTrait {
 
     "In the respective get calls, return the models if they are in the cachemap" in {
       testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
+      testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
       testCacheMap.getAccountingPeriodPrior() shouldBe Some(testAccountingPeriodPriorCurrent)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
@@ -49,6 +51,7 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceBoth,
+          testOtherIncomeNo,
           testAccountingPeriodPriorCurrent,
           testAccountingPeriod,
           testBusinessName,
@@ -60,6 +63,7 @@ class CacheUtilSpec extends UnitTestTrait {
       // relevant to the journey
       val overPopulatedPropertyCacheMap =
         testCacheMap(testIncomeSourceProperty,
+          testOtherIncomeNo,
           testAccountingPeriodPriorCurrent,
           testAccountingPeriod,
           testBusinessName,

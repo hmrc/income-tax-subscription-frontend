@@ -43,18 +43,19 @@
     </div>
 }
 
-@emailPreferences = @{
-    val rowName = ReceiveEmail
-    val rowQuestion = Messages("summary.email")
-    val rowAnswer = Messages("base.yes")
-    summaryRow(rowName, rowQuestion, rowAnswer)
-}
-
 @incomeSource(source: IncomeSourceModel) = @{
     val rowName = IncomeSourceId
     val rowQuestion = Messages("summary.income_source")
     val rowAnswer = incomeSourceText(source)
     val rowUrl = controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@otherIncome(source: OtherIncomeModel) = @{
+    val rowName = OtherIncomeId
+    val rowQuestion = Messages("summary.other_income")
+    val rowAnswer = source.choice
+    val rowUrl = controllers.routes.OtherIncomeController.showOtherIncome().url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -101,8 +102,8 @@
     <h2 class="heading-medium">@Html(Messages("summary.h2"))</h2>
 
     <div class="form-group" data-metrics="itsa:incomeSource:@summaryModel.incomeSource.map(_.source)">
-        @emailPreferences
         @summaryModel.incomeSource.map(incomeSource)
+        @summaryModel.otherIncome.map(otherIncome)
         @summaryModel.accountingPeriod.map(accountingPeriodDate)
         @summaryModel.businessName.map(businessName)
         @summaryModel.accountingMethod.map(accountingMethod)

@@ -16,108 +16,54 @@
 
 package views
 
-import assets.MessageLookup.{Base => common, OtherIncome => messages}
+import assets.MessageLookup.{OtherIncome => messages}
 import forms.OtherIncomeForm
-import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
 
-class OtherIncomeViewSpec extends UnitTestTrait {
+class OtherIncomeViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+  val backUrl = ViewSpecTrait.testBackUrl
+
+  val action = ViewSpecTrait.testCall
 
   lazy val page = views.html.other_income(
     otherIncomeForm = OtherIncomeForm.otherIncomeForm,
-    postAction = controllers.routes.OtherIncomeController.submitOtherIncome(),
+    postAction = action,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
-  lazy val document = Jsoup.parse(page.body)
-
   "The Other Income View" should {
 
-    s"have a back button pointed to $backUrl" in {
-      val backLink = document.select("#back")
-      backLink.isEmpty mustBe false
-      backLink.attr("href") mustBe backUrl
-    }
+    val testPage = TestView(
+      name = "Other Income View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page)
 
-    s"have the title '${messages.title}'" in {
-      document.title() must be(messages.title)
-    }
+    testPage.mustHaveBackLinkTo(backUrl)
 
-    s"have the heading (H1) '${messages.heading}'" in {
-      document.getElementsByTag("H1").text() must be(messages.heading)
-    }
+    testPage.mustHavePara(messages.para1)
 
-    s"have the paragraph 1 (P) '${messages.para1}'" in {
-      document.getElementsByTag("P").text() must include(messages.para1)
-    }
+    testPage.mustHaveBulletSeq(
+      messages.bullet1,
+      messages.bullet2,
+      messages.bullet3,
+      messages.bullet4,
+      messages.bullet5
+    )
 
-    s"have the paragraph (LI) '${messages.bullet1}'" in {
-      document.getElementsByTag("LI").text() must include (messages.bullet1)
-    }
+    val form = testPage.getForm("Other Income form")(actionCall = action)
 
-    s"have the paragraph (LI) '${messages.bullet2}'" in {
-      document.getElementsByTag("LI").text() must include (messages.bullet2)
-    }
+    form.mustHaveRadioSet(
+      legend = messages.heading,
+      radioName = OtherIncomeForm.choice
+    )(
+      OtherIncomeForm.option_yes -> messages.yes,
+      OtherIncomeForm.option_no -> messages.no
+    )
 
-    s"have the paragraph (LI) '${messages.bullet3}'" in {
-      document.getElementsByTag("LI").text() must include (messages.bullet3)
-    }
+    form.mustHaveContinueButton()
 
-    s"have the paragraph (LI) '${messages.bullet4}'" in {
-      document.getElementsByTag("LI").text() must include (messages.bullet4)
-    }
-
-    s"have the paragraph (LI) '${messages.bullet5}'" in {
-      document.getElementsByTag("LI").text() must include (messages.bullet5)
-    }
-
-    s"have the paragraph (LI) '${messages.bullet6}'" in {
-      document.getElementsByTag("LI").text() must include (messages.bullet6)
-    }
-
-    "have a form" which {
-
-      val radioName = "choice"
-
-      s"has a fieldset for yes and no" which {
-        s"has a legend which is visually hidden with the text '${messages.heading}'" in {
-          document.select("fieldset legend").text() mustBe messages.heading
-        }
-
-        s"has a radio option for '$radioName-${OtherIncomeForm.option_yes}'" in {
-          val cashRadio = document.select(s"#$radioName-${OtherIncomeForm.option_yes}")
-          cashRadio.attr("type") mustBe "radio"
-          cashRadio.attr("name") mustBe s"$radioName"
-          cashRadio.attr("value") mustBe OtherIncomeForm.option_yes
-          val label = document.getElementsByAttributeValue("for", s"$radioName-${OtherIncomeForm.option_yes}")
-          label.size() mustBe 1
-          label.get(0).text() mustBe messages.yes
-        }
-
-        s"has a radio option for '$radioName-${OtherIncomeForm.option_no}'" in {
-          val cashRadio = document.select(s"#$radioName-${OtherIncomeForm.option_no}")
-          cashRadio.attr("type") mustBe "radio"
-          cashRadio.attr("name") mustBe s"$radioName"
-          cashRadio.attr("value") mustBe OtherIncomeForm.option_no
-          val label = document.getElementsByAttributeValue("for", s"$radioName-${OtherIncomeForm.option_no}")
-          label.size() mustBe 1
-          label.get(0).text() mustBe messages.no
-
-        }
-
-        s"has a post action to '${controllers.routes.OtherIncomeController.submitOtherIncome().url}'" in {
-          document.select("form").attr("method") mustBe "POST"
-          document.select("form").attr("action") mustBe controllers.routes.OtherIncomeController.submitOtherIncome().url
-        }
-
-        "has a continue button" in {
-          document.select("button").attr("type") mustBe "submit"
-          document.select("button").text() mustBe common.continue
-        }
-      }
-    }
-}}
+  }
+}

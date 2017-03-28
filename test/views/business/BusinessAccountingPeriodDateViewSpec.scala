@@ -16,85 +16,86 @@
 
 package views.business
 
-import assets.MessageLookup.{AccountingPeriod => messages, Base => commonMessages}
+import assets.MessageLookup.{AccountingPeriod => messages, Base => common}
 import forms.AccountingPeriodDateForm
 import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
-import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
+import views.ViewSpecTrait
 
-class BusinessAccountingPeriodDateViewSpec extends UnitTestTrait {
+class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+  val backUrl = ViewSpecTrait.testBackUrl
+  val action = ViewSpecTrait.testCall
 
   def page(viewType: AccountingPeriodViewType, isEditMode: Boolean) = views.html.business.accounting_period_date(
     accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm,
-    postAction = controllers.business.routes.BusinessAccountingPeriodDateController.submitAccountingPeriod(),
+    postAction = action,
     backUrl = backUrl,
     viewType = viewType,
-    isEditMode
+    isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(viewType: AccountingPeriodViewType, isEditMode: Boolean = false) = Jsoup.parse(page(viewType, isEditMode).body)
+  def documentCore(prefix: String, suffix: Option[String] = None, viewType: AccountingPeriodViewType, isEditMode: Boolean) = TestView(
+    name = s"$prefix Business Accounting Period Date View${suffix.fold("")(x => x)}",
+    title = messages.title,
+    heading = (isEditMode, viewType) match {
+      case (true, _) => messages.heading_editMode
+      case (_, CurrentAccountingPeriodView) => messages.heading_current
+      case (_, NextAccountingPeriodView) => messages.heading_next
+    },
+    page = page(viewType = viewType, isEditMode = isEditMode)
+  )
 
   "The Business Accounting Period Date view" should {
     Seq(CurrentAccountingPeriodView, NextAccountingPeriodView).foreach {
       viewType =>
 
-        val prefix = s"When the viewtype=$viewType "
+        val prefix = s"When the viewtype=$viewType"
 
-        lazy val document = documentCore(viewType)
+        val testPage = documentCore(
+          prefix = prefix,
+          viewType = viewType,
+          isEditMode = false
+        )
 
-        s"$prefix have a back button pointed to $backUrl" in {
-          val backLink = document.select("#back")
-          backLink.isEmpty mustBe false
-          backLink.attr("href") mustBe backUrl
+        testPage.mustHaveBackLinkTo(backUrl)
+
+        viewType match {
+          case CurrentAccountingPeriodView => testPage.mustHavePara(messages.line_1_current)
+          case _ => testPage.mustHavePara(messages.line_1_next)
         }
 
-        s"$prefix have the title '${messages.title}'" in {
-          document.title() mustBe messages.title
-        }
+        val form = testPage.getForm(s"$prefix Business Accounting Period Date form")(actionCall = action)
 
-        val expectedHeading = viewType match {
-          case CurrentAccountingPeriodView => messages.heading_current
-          case NextAccountingPeriodView => messages.heading_next
-        }
-        s"$prefix have the heading (H1) '$expectedHeading'" in {
+        form.mustHaveDateField(
+          id = "startDate",
+          legend = common.startDate,
+          exampleDate =
+            viewType match {
+              case CurrentAccountingPeriodView => messages.exampleStartDate_current
+              case _ => messages.exampleStartDate_next
+            }
+        )
 
-          document.select("h1").text() mustBe expectedHeading
-        }
-
-        s"$prefix have the line_1 (P) '${messages.line_1}'" in {
-          document.select("p").text() must include(messages.line_1)
-        }
-
-        s"$prefix has a form" which {
-
-          s"Has a legend with the text '${commonMessages.startDate}'" in {
-            document.select("#startDate legend span.form-label-bold").text() mustBe commonMessages.startDate
+        form.mustHaveDateField(
+          id = "endDate",
+          legend = common.endDate,
+          exampleDate =
+            viewType match {
+            case CurrentAccountingPeriodView => messages.exampleEndDate_current
+            case _ => messages.exampleEndDate_next
           }
+        )
 
-          s"Has a legend with the text '${commonMessages.endDate}'" in {
-            document.select("#endDate legend span.form-label-bold").text() mustBe commonMessages.endDate
-          }
+        val editModePage = documentCore(
+          prefix = prefix,
+          suffix = " and it is in edit mode",
+          viewType = viewType,
+          isEditMode = true
+        )
 
-          "has a continue button" in {
-            document.select("#continue-button").isEmpty mustBe false
-          }
-
-          s"has a post action to '${controllers.business.routes.BusinessAccountingPeriodDateController.submitAccountingPeriod().url}'" in {
-            document.select("form").attr("action") mustBe controllers.business.routes.BusinessAccountingPeriodDateController.submitAccountingPeriod().url
-            document.select("form").attr("method") mustBe "POST"
-          }
-
-          "say update" in {
-            lazy val documentEdit = documentCore(viewType, isEditMode = true)
-            documentEdit.select("#continue-button").text() mustBe commonMessages.update
-          }
-
-        }
-
+        editModePage.mustHaveUpdateButton()
 
     }
   }

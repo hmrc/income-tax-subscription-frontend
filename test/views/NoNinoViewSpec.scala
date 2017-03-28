@@ -16,35 +16,30 @@
 
 package views
 
-import assets.MessageLookup.Base
-import assets.MessageLookup.NoNino._
-import org.jsoup.Jsoup
+import assets.MessageLookup.{Base, NoNino => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
 
-class NoNinoViewSpec extends UnitTestTrait {
+class NoNinoViewSpec extends ViewSpecTrait {
 
-  lazy val page = views.html.no_nino(postAction = controllers.routes.NoNinoController.submitNoNino())(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
+  val action = ViewSpecTrait.testCall
+
+  lazy val page = views.html.no_nino(postAction = action)(FakeRequest(), applicationMessages, appConfig)
 
   "The No Nino view" should {
 
-    s"have the title '$title'" in {
-      document.title() must be(title)
-    }
+    val testPage = TestView(
+      name = "No Nino View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page,
+      showSignOutInBanner = false
+    )
 
-    s"have the heading (H1) '$heading'" in {
-      document.getElementsByTag("H1").text() must be(heading)
-    }
+    testPage.mustHavePara(messages.line1)
 
-    s"have the paragraph (P) '$line1'" in {
-      document.getElementsByTag("P").text() must include(line1)
-    }
+    val form = testPage.getForm("Not Nino form")(actionCall = action)
 
-    "have a sign-out button" in {
-      document.select("button").attr("type") mustBe "submit"
-      document.select("button").text() mustBe Base.signout
-    }
+    form.mustHaveSubmitButton(Base.signOut)
   }
 }

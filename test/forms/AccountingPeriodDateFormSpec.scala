@@ -76,13 +76,16 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           invalidTest assert startDate hasExpectedErrors invalid
         }
 
-        "it is before the 1 April 2017" in {
+        "it is before the 6 April 2017" in {
           val beforeMin = ErrorMessageFactory.error("error.business_accounting_period.minStartDate")
           beforeMin fieldErrorIs MessageLookup.Error.BusinessAccountingPeriod.minStartDate
           beforeMin summaryErrorIs MessageLookup.Error.BusinessAccountingPeriod.minStartDate
 
-          val beforeMinTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("01", "2", "2017"))
+          val beforeMinTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("05", "4", "2017"))
           beforeMinTest assert startDate hasExpectedErrors beforeMin
+
+          val minTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("06", "4", "2017"))
+          minTest assert startDate doesNotHaveSpecifiedErrors beforeMin
         }
       }
 
