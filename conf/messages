@@ -1,9 +1,9 @@
 ## Base ##
-base.service_name                                               = Report your Income and Expenses Quarterly
+base.service_name                                               = Report your income and expenses quarterly
 base.back                                                       = Back
 base.continue                                                   = Continue
 base.update                                                     = Update
-base.sign-out                                                   = Sign Out
+base.sign-out                                                   = Sign out
 base.sign-up                                                    = Sign up
 base.start-now                                                  = Start now
 base.submit                                                     = Submit
@@ -14,7 +14,7 @@ base.exampleEndDate                                             = For example, 0
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
-base.error_heading                                              = Error Summary
+base.error_heading                                              = There''s a problem
 base.change                                                     = Change
 base.yes                                                        = Yes
 base.no                                                         = No
