@@ -90,7 +90,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
 
     def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = isEditMode)(authenticatedFakeRequest()
-      .post(AccountingPeriodDateForm.accountingPeriodDateForm, AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))))
+      .post(AccountingPeriodDateForm.accountingPeriodDateForm, AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("1", "4", "2018"))))
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
