@@ -34,7 +34,7 @@
         </div>
         @changeUrl match {
             case Some(url) => {
-                <a class="tabular-data__data-2" href="@url" id="@field-edit">@Messages("base.change") <span class="visuallyhidden">@question</span> </a>
+                <a class="tabular-data__data-2" data-journey-click="itsa:changeLink:@field" href="@url" id="@field-edit">@Messages("base.change") <span class="visuallyhidden">@question</span> </a>
             }
             case _ => {
                 <div class="tabular-data__data-2"></div>
@@ -100,7 +100,7 @@
 
     <h2 class="heading-medium">@Html(Messages("summary.h2"))</h2>
 
-    <div class="form-group">
+    <div class="form-group" data-metrics="itsa:incomeSource:@summaryModel.incomeSource.map(_.source)">
         @emailPreferences
         @summaryModel.incomeSource.map(incomeSource)
         @summaryModel.accountingPeriod.map(accountingPeriodDate)
