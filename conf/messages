@@ -140,7 +140,7 @@ throttle_limit.line_1                                           = Please try aga
 ## Already enrolled page ##
 already-enrolled.title                                          = You''ve already signed up
 already-enrolled.heading                                        = You''ve already signed up
-already-enrolled.para1                                          = Your Government Gateway ID is already signed up for regular reporting.
+already-enrolled.para1                                          = Your Government Gateway ID is already in use.
 
 ## Failure Messages ##
 notAuthorised.title                                             = Not Authorised
