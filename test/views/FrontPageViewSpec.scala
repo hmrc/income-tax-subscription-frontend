@@ -44,11 +44,7 @@ class FrontPageViewSpec extends ViewSpecTrait {
       messages.line_3,
       messages.line_4,
       messages.line_5,
-      messages.line_6,
-      messages.line_7,
-      messages.line_8,
-      messages.line_9,
-      messages.line_10
+      messages.line_6
     )
 
     testPage.mustHaveBulletSeq(
@@ -61,13 +57,12 @@ class FrontPageViewSpec extends ViewSpecTrait {
       messages.bullet_7,
       messages.bullet_8,
       messages.bullet_9,
-      messages.bullet_10,
-      messages.bullet_11,
-      messages.bullet_12,
-      messages.bullet_13
+      messages.bullet_10
     )
 
-    testPage.mustHaveH2(messages.h2)
+    testPage.mustHaveH2(messages.subHeading_1)
+
+    testPage.mustHaveH2(messages.subHeading_2)
 
     val form = testPage.getForm("Main Income Error form")(actionCall = action)
 
