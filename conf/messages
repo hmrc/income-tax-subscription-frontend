@@ -274,10 +274,9 @@ income-other.heading                                            = Do you have an
 income-other.para1                                              = This could include:
 income-other.bullet1                                            = employment that isn''t your sole trader business
 income-other.bullet2                                            = UK pensions or annuities
-income-other.bullet3                                            = state benefits
+income-other.bullet3                                            = taxable state benefits
 income-other.bullet4                                            = employment or investments from outside the UK
 income-other.bullet5                                            = capital gains
-income-other.bullet6                                            = the ''Rent a Room Scheme''
 income-other.yes                                                = Yes
 income-other.no                                                 = No
 

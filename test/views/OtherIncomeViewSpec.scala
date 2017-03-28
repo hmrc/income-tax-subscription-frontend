@@ -50,8 +50,7 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       messages.bullet2,
       messages.bullet3,
       messages.bullet4,
-      messages.bullet5,
-      messages.bullet6
+      messages.bullet5
     )
 
     val form = testPage.getForm("Other Income form")(actionCall = action)

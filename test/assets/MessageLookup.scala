@@ -352,10 +352,9 @@ object MessageLookup {
     val para1 = "This could include:"
     val bullet1 = "employment that isn't your sole trader business"
     val bullet2 = "UK pensions or annuities"
-    val bullet3 = "state benefits"
+    val bullet3 = "taxable state benefits"
     val bullet4 = "employment or investments from outside the UK"
     val bullet5 = "capital gains"
-    val bullet6 = "the 'Rent a Room Scheme'"
     val yes = "Yes"
     val no = "No"
   }
