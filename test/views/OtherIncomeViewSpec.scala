@@ -45,7 +45,7 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.para1)
 
-    testPage.mustHaveSeqBullets(
+    testPage.mustHaveBulletSeq(
       messages.bullet1,
       messages.bullet2,
       messages.bullet3,

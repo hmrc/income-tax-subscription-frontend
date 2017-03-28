@@ -38,7 +38,7 @@ class FrontPageViewSpec extends ViewSpecTrait {
       showSignOutInBanner = false
     )
 
-    testPage.mustHaveSeqParas(
+    testPage.mustHaveParaSeq(
       messages.line_1,
       messages.line_2,
       messages.line_3,
@@ -51,7 +51,7 @@ class FrontPageViewSpec extends ViewSpecTrait {
       messages.line_10
     )
 
-    testPage.mustHaveSeqBullets(
+    testPage.mustHaveBulletSeq(
       messages.bullet_1,
       messages.bullet_2,
       messages.bullet_3,

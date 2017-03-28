@@ -43,7 +43,7 @@ class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
 
     testPage.mustHaveBackLinkTo(backUrl)
 
-    testPage.mustHaveSeqParas(
+    testPage.mustHaveParaSeq(
       messages.line_1,
       messages.line_2
     )

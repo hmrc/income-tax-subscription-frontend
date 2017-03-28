@@ -49,12 +49,12 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
 
     val accordion = testPage.getAccordion("Business Accounting Method accordion", messages.accordion)
 
-    accordion.mustHaveSeqParas(
+    accordion.mustHaveParaSeq(
       messages.accordion_line_1,
       messages.accordion_line_2
     )
 
-    accordion.mustHaveSeqBullets(
+    accordion.mustHaveBulletSeq(
       messages.accordion_bullet_1,
       messages.accordion_bullet_2
     )

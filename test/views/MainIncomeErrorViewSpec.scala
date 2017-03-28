@@ -35,12 +35,12 @@ class MainIncomeErrorViewSpec extends ViewSpecTrait {
       page = page
     )
 
-    testPage.mustHaveSeqParas(
+    testPage.mustHaveParaSeq(
       messages.para1,
       messages.para2
     )
 
-    testPage.mustHaveSeqBullets(
+    testPage.mustHaveBulletSeq(
       messages.bullet1,
       messages.bullet2,
       messages.bullet3

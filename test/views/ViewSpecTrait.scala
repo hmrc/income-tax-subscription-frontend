@@ -18,7 +18,7 @@ package views
 
 import assets.MessageLookup.{Base => common}
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
+import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import play.api.mvc.Call
 import play.twirl.api.Html
@@ -55,13 +55,13 @@ trait ViewSpecTrait extends UnitTestTrait {
       })
     }
 
-    def mustHaveH2(text: String) =
+    def mustHaveH2(text: String): Unit =
       s"$name have a Heading 2 (H2) for '$text'" in {
         element.getElementsByTag("h2").text() must include(text)
       }
 
     // n.b. href must be call-by-name otherwise it may not be evaluated with the correct context-root
-    def mustHaveALink(text: String, href: => String) =
+    def mustHaveALink(text: String, href: => String): Unit =
       s"$name have a link with text '$text' pointed to '$href'" in {
         val link = element.select("a")
         if (link == null) fail(s"Unable to locate any links in $name\n$element\n")
@@ -71,7 +71,7 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
 
     // n.b. href must be call-by-name otherwise it may not be evaluated with the correct context-root
-    def mustHaveALink(id: String, text: String, href: => String) =
+    def mustHaveALink(id: String, text: String, href: => String): Unit =
       s"$name have a link with text '$text' pointed to '$href'" in {
         val link = element.getElementById(id)
         if (link == null) fail(s"Unable to locate $id")
@@ -80,12 +80,12 @@ trait ViewSpecTrait extends UnitTestTrait {
         link.text() mustBe text
       }
 
-    def mustHavePara(paragraph: String) =
+    def mustHavePara(paragraph: String): Unit =
       s"$name must have the paragraph (P) '$paragraph'" in {
         element.getElementsByTag("p").text() must include(paragraph)
       }
 
-    def mustHaveSeqParas(paragraphs: String*) = {
+    def mustHaveParaSeq(paragraphs: String*): Unit = {
       if (paragraphs.isEmpty) fail("Must provide at least 1 paragraph for this test")
       val ps = paragraphs.mkString(" ")
       s"$name must have the paragraphs (P) [${paragraphs.mkString("], [")}]" in {
@@ -93,14 +93,14 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
     }
 
-    def mustNotHaveParas(paragraphs: String*) =
+    def mustNotHaveParas(paragraphs: String*): Unit =
       for (p <- paragraphs) {
         s"$name must not have the paragraph '$p'" in {
           element.getElementsByTag("p").text() must not include p
         }
       }
 
-    def mustHaveSeqBullets(bullets: String*) = {
+    def mustHaveBulletSeq(bullets: String*): Unit = {
       if (bullets.isEmpty) fail("Must provide at least 1 bullet point for this test")
       val bs = bullets.mkString(" ")
       s"$name must have the bulletPoints (LI) [${bullets.mkString("], [")}]" in {
@@ -108,7 +108,7 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
     }
 
-    def mustNotHaveBullets(bullets: String*) =
+    def mustNotHaveBullets(bullets: String*): Unit =
       for (b <- bullets) {
         s"$name must not have the bullet point '$b'" in {
           element.getElementsByTag("LI").text() must not include b
@@ -130,7 +130,7 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     }
 
-    def mustHaveRadioSet(legend: String, radioName: String)(options: RadioOption*) = {
+    def mustHaveRadioSet(legend: String, radioName: String)(options: RadioOption*): Unit = {
       if (legend.isEmpty) fail("Legend cannot be none empty, this would cause an accessibility issue")
       if (radioName.isEmpty) fail("Must provide the field name which groups all the buttons in this test")
       if (options.isEmpty) fail("Must provide at least 1 radio button for this test")
@@ -163,7 +163,7 @@ trait ViewSpecTrait extends UnitTestTrait {
                           showLabel: Boolean = true,
                           maxLength: Option[Int] = None,
                           pattern: Option[String] = None,
-                          inputMode: Option[String] = None) = {
+                          inputMode: Option[String] = None): Unit = {
 
       s"${this.name} must have an input field '$name'" which {
 
@@ -201,7 +201,7 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     }
 
-    def mustHaveHiddenInputField(name: String) =
+    def mustHaveHiddenInputField(name: String): Unit =
       s"$name must have input field $name" in {
         import collection.JavaConversions._
         val eles = element.select(s"""input[name="$name"]""")
@@ -212,19 +212,19 @@ trait ViewSpecTrait extends UnitTestTrait {
         ele.attr("type") mustBe "hidden"
       }
 
-    def mustHaveSubmitButton(text: String) =
+    def mustHaveSubmitButton(text: String): Unit =
       s"$name must have the a submit button (Button) '$text'" in {
         import collection.JavaConversions._
-        val submitButtons = element.select("button").filter(_.attr("type").equals("submit"))
+        val submitButtons = element.select("button").filter(_.attr("type") == "submit")
         submitButtons.size mustBe 1
         submitButtons.head.text() mustBe text
       }
 
-    def mustHaveContinueButton() = mustHaveSubmitButton(common.continue)
+    def mustHaveContinueButton(): Unit = mustHaveSubmitButton(common.continue)
 
-    def mustHaveUpdateButton() = mustHaveSubmitButton(common.update)
+    def mustHaveUpdateButton(): Unit = mustHaveSubmitButton(common.update)
 
-    def mustHaveCheckbox(name: String, message: String) =
+    def mustHaveCheckbox(name: String, message: String): Unit =
       s"${this.name} must have a checkbox for '$name' with label '$message'" in {
         import collection.JavaConversions._
         val checkbox: Elements = new Elements(element.select("input").filter(x => x.attr("type").equals("checkbox")))
@@ -242,7 +242,7 @@ trait ViewSpecTrait extends UnitTestTrait {
       selectHead(accordionName, "details div")
     }
 
-    def mustHaveDateFields(id: String, legend: String, exampleDate: String) = {
+    def mustHaveDateField(id: String, legend: String, exampleDate: String): Unit = {
       val selector = s"#$id"
       s"${this.name} have a fieldset with id '$id' with the legend '$legend'" in {
         val ele = element.getElementById(id)
@@ -265,13 +265,14 @@ trait ViewSpecTrait extends UnitTestTrait {
     def apply(name: String, element: () => Element): ElementTest = {
       val n = name
       val ele = element
-      element match {
-        case null => throw new IllegalArgumentException("creation of name failed: element is null")
-        case _ => new ElementTest {
-          override lazy val name: String = n
-          override lazy val element: Element = ele()
-        }
+      if (ele == null) {
+        throw new IllegalArgumentException("creation of name failed: element is null")
       }
+      new ElementTest {
+        override lazy val name: String = n
+        override lazy val element: Element = ele()
+      }
+
     }
 
   }
@@ -283,8 +284,8 @@ trait ViewSpecTrait extends UnitTestTrait {
                  page: => Html,
                  showSignOutInBanner: Boolean = true) extends ElementTest {
 
-    lazy val document = Jsoup.parse(page.body)
-    override lazy val element = document.getElementById("content")
+    lazy val document: Document = Jsoup.parse(page.body)
+    override lazy val element: Element = document.getElementById("content")
 
     if (showSignOutInBanner) {
       s"$name must have a sign out link in the banner" in {
@@ -310,7 +311,7 @@ trait ViewSpecTrait extends UnitTestTrait {
       h1.text() mustBe heading
     }
 
-    def mustHaveBackLinkTo(backUrl: String) =
+    def mustHaveBackLinkTo(backUrl: String): Unit =
       s"$name must have a back link pointed to '$backUrl'" in {
         val backLink = element.select("#back")
         backLink.isEmpty mustBe false
@@ -319,10 +320,8 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     // this method returns either the first form in the document or one specified by id
     // @param formName the name used to reference the form by the unit tests in its print statements.
-    // @param method expected method used by the form, e.g. "GET", "POST"
-    // @oaram action expected action used by the form, i.e. the destination url
-    // n.b. action must be call-by-name otherwise if the parameter is generated from a call
-    // it could be evaluated with the wrong context root
+    // n.b. the param actionCall must be call-by-name otherwise it could be evaluated with the wrong
+    // context root
     def getForm(formName: String, id: Option[String] = None)(actionCall: => Call): ElementTest = {
       val selector =
         id match {

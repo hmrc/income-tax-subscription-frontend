@@ -66,13 +66,13 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 
         val form = testPage.getForm(s"$prefix Business Accounting Period Date form")(actionCall = postAction)
 
-        form.mustHaveDateFields(
+        form.mustHaveDateField(
           id = "startDate",
           legend = common.startDate,
           exampleDate = messages.exampleStartDate
         )
 
-        form.mustHaveDateFields(
+        form.mustHaveDateField(
           id = "endDate",
           legend = common.endDate,
           exampleDate = messages.exampleEndDate

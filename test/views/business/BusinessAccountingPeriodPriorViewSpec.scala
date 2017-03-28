@@ -52,7 +52,7 @@ class BusinessAccountingPeriodPriorViewSpec extends ViewSpecTrait {
 
     val accordion = testPage.getAccordion("Business Accounting Period accordion", messages.accordion)
 
-    accordion.mustHaveSeqParas(
+    accordion.mustHaveParaSeq(
       messages.accordion_line1,
       messages.accordion_line2
     )
