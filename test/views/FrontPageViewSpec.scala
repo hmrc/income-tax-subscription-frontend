@@ -22,10 +22,10 @@ import play.api.test.FakeRequest
 
 class FrontPageViewSpec extends ViewSpecTrait {
 
-  lazy val getAction = controllers.routes.HomeController.index()
+  val action = ViewSpecTrait.testCall
 
   lazy val page = views.html.frontpage(
-    getAction = getAction
+    getAction = action
   )(FakeRequest(), applicationMessages, appConfig)
 
   "The 'Front/Start Page view" should {
@@ -69,7 +69,7 @@ class FrontPageViewSpec extends ViewSpecTrait {
 
     testPage.mustHaveH2(messages.h2)
 
-    val form = testPage.getForm("Main Income Error form")(actionCall = getAction)
+    val form = testPage.getForm("Main Income Error form")(actionCall = action)
 
     form.mustHaveSubmitButton(common.signUp)
 

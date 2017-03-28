@@ -23,13 +23,13 @@ import play.api.test.FakeRequest
 
 class OtherIncomeViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+  val backUrl = ViewSpecTrait.testBackUrl
 
-  lazy val postAction = controllers.routes.OtherIncomeController.submitOtherIncome()
+  val action = ViewSpecTrait.testCall
 
   lazy val page = views.html.other_income(
     otherIncomeForm = OtherIncomeForm.otherIncomeForm,
-    postAction = postAction,
+    postAction = action,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -54,7 +54,7 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       messages.bullet6
     )
 
-    val form = testPage.getForm("Other Income form")(actionCall = postAction)
+    val form = testPage.getForm("Other Income form")(actionCall = action)
 
     form.mustHaveRadioSet(
       legend = messages.heading,

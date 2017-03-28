@@ -20,18 +20,17 @@ import assets.MessageLookup.{AccountingPeriod => messages, Base => common}
 import forms.AccountingPeriodDateForm
 import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
 
 class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
-  lazy val postAction = Call("POST", "testurl")
+  val backUrl = ViewSpecTrait.testBackUrl
+  val action = ViewSpecTrait.testCall
 
   def page(viewType: AccountingPeriodViewType, isEditMode: Boolean) = views.html.business.accounting_period_date(
     accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm,
-    postAction = postAction,
+    postAction = action,
     backUrl = backUrl,
     viewType = viewType,
     isEditMode = isEditMode
@@ -64,7 +63,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 
         testPage.mustHavePara(messages.line_1)
 
-        val form = testPage.getForm(s"$prefix Business Accounting Period Date form")(actionCall = postAction)
+        val form = testPage.getForm(s"$prefix Business Accounting Period Date form")(actionCall = action)
 
         form.mustHaveDateField(
           id = "startDate",

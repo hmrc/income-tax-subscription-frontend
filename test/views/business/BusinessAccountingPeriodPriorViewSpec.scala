@@ -24,12 +24,12 @@ import views.ViewSpecTrait
 
 class BusinessAccountingPeriodPriorViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = "BackUrl"
-  lazy val postAction = controllers.business.routes.BusinessAccountingPeriodPriorController.submit()
+  val backUrl = ViewSpecTrait.testBackUrl
+  val action = ViewSpecTrait.testCall
 
   private def page(isEditMode: Boolean) = views.html.business.accounting_period_prior(
     accountingPeriodPriorForm = AccountingPeriodPriorForm.accountingPeriodPriorForm,
-    postAction = postAction,
+    postAction = action,
     backUrl = backUrl,
     isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
@@ -57,7 +57,7 @@ class BusinessAccountingPeriodPriorViewSpec extends ViewSpecTrait {
       messages.accordion_line2
     )
 
-    val form = testPage.getForm("Business Accounting Period form")(actionCall = postAction)
+    val form = testPage.getForm("Business Accounting Period form")(actionCall = action)
 
     form.mustHaveRadioSet(
       legend = messages.heading,

@@ -18,14 +18,15 @@ package views
 
 import assets.MessageLookup.{Base, MainIncomeError => messages}
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 
 class MainIncomeErrorViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url
-  lazy val getAction: Call = controllers.routes.SignOutController.signOut()
-  lazy val page = views.html.main_income_error(backUrl, getAction)(FakeRequest(), applicationMessages, appConfig)
+  val backUrl = ViewSpecTrait.testBackUrl
+
+  val action = ViewSpecTrait.testCall
+
+  lazy val page = views.html.main_income_error(backUrl, action)(FakeRequest(), applicationMessages, appConfig)
 
   "The Main Income Error view" should {
     val testPage = TestView(
@@ -46,7 +47,7 @@ class MainIncomeErrorViewSpec extends ViewSpecTrait {
       messages.bullet3
     )
 
-    val form = testPage.getForm("Main Income Error form")(actionCall = getAction)
+    val form = testPage.getForm("Main Income Error form")(actionCall = action)
 
     form.mustHaveSubmitButton(Base.signOut)
   }

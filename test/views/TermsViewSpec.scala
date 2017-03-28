@@ -23,13 +23,13 @@ import play.api.test.FakeRequest
 
 class TermsViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+  val backUrl = ViewSpecTrait.testBackUrl
 
-  lazy val postAction = controllers.routes.TermsController.submitTerms()
+  val action = ViewSpecTrait.testCall
 
   def page(isEditMode: Boolean) = views.html.terms(
     termsForm = TermForm.termForm,
-    postAction = postAction,
+    postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
@@ -45,7 +45,7 @@ class TermsViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line_1)
 
-    val form = testPage.getForm("terms form")(actionCall = postAction)
+    val form = testPage.getForm("terms form")(actionCall = action)
 
     form.mustHaveCheckbox(TermForm.hasAcceptedTerms, messages.checkbox)
 

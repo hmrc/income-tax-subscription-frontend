@@ -28,10 +28,11 @@ import views.ViewSpecTrait
 
 class ContinueRegistrationViewSpec extends ViewSpecTrait {
 
-  lazy val postAction = controllers.preferences.routes.PreferencesController.submitGoBackToPreferences()
+  val action = ViewSpecTrait.testCall
+
   lazy val page = views.html.preferences.continue_registration(
     backToPreferencesForm,
-    postAction = postAction
+    postAction = action
   )(FakeRequest(), applicationMessages, appConfig)
 
   "The Continue Registration view" should {
@@ -46,7 +47,7 @@ class ContinueRegistrationViewSpec extends ViewSpecTrait {
       messages.line_1
     )
 
-    val form = testPage.getForm("Continue Registration form")(actionCall = postAction)
+    val form = testPage.getForm("Continue Registration form")(actionCall = action)
 
     form.mustHaveRadioSet(
       legend = messages.legend,

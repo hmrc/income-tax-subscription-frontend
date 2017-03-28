@@ -23,13 +23,13 @@ import play.api.test.FakeRequest
 
 class NotEligibleViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+  val backUrl = ViewSpecTrait.testBackUrl
 
-  lazy val postAction = controllers.routes.NotEligibleController.submitNotEligible()
+  val action = ViewSpecTrait.testCall
 
   lazy val page = views.html.not_eligible(
     notEligibleForm = NotEligibleForm.notEligibleForm,
-    postAction = postAction,
+    postAction = action,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -50,7 +50,7 @@ class NotEligibleViewSpec extends ViewSpecTrait {
       messages.line_3
     )
 
-    val form = testPage.getForm("Not Eligible form")(actionCall = postAction)
+    val form = testPage.getForm("Not Eligible form")(actionCall = action)
 
     form.mustHaveRadioSet(
       legend = messages.question,

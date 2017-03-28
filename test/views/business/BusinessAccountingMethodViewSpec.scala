@@ -23,12 +23,12 @@ import play.api.test.FakeRequest
 import views.ViewSpecTrait
 
 class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
-  lazy val backUrl = controllers.business.routes.BusinessNameController.showBusinessName().url
-  lazy val postAction = controllers.business.routes.BusinessAccountingMethodController.submit()
+  val backUrl = ViewSpecTrait.testBackUrl
+  val action = ViewSpecTrait.testCall
 
   def page(isEditMode: Boolean) = views.html.business.accounting_method(
     accountingMethodForm = AccountingMethodForm.accountingMethodForm,
-    postAction = postAction,
+    postAction = action,
     backUrl = backUrl,
     isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
@@ -59,7 +59,7 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
       messages.accordion_bullet_2
     )
 
-    val form = testPage.getForm("Business Accounting Method form")(actionCall = postAction)
+    val form = testPage.getForm("Business Accounting Method form")(actionCall = action)
 
     form.mustHaveRadioSet(
       legend = messages.heading,

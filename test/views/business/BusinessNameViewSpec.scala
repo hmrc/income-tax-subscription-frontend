@@ -24,13 +24,12 @@ import views.ViewSpecTrait
 
 class BusinessNameViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
-
-  lazy val postAction = controllers.business.routes.BusinessNameController.submitBusinessName()
+  val backUrl = ViewSpecTrait.testBackUrl
+  val action = ViewSpecTrait.testCall
 
   def page(isEditMode: Boolean) = views.html.business.business_name(
     businessNameForm = BusinessNameForm.businessNameForm,
-    postAction = postAction,
+    postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
@@ -50,7 +49,7 @@ class BusinessNameViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line_1)
 
-    val form = testPage.getForm("Business Name form")(actionCall = postAction)
+    val form = testPage.getForm("Business Name form")(actionCall = action)
 
     form.mustHaveTextField(
       name = BusinessNameForm.businessName,

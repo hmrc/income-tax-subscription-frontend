@@ -355,3 +355,10 @@ trait ViewSpecTrait extends UnitTestTrait {
   }
 
 }
+
+
+object ViewSpecTrait{
+  // these two constants are used for testing the views
+  val testBackUrl = "/test-back-url"
+  val testCall = Call("POST", "/test-url")
+}

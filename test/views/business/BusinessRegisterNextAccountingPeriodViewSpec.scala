@@ -24,12 +24,12 @@ import views.ViewSpecTrait
 
 class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = "BackUrl"
+  val backUrl = ViewSpecTrait.testBackUrl
+  val action = ViewSpecTrait.testCall
 
-  lazy val postAction = controllers.business.routes.RegisterNextAccountingPeriodController.submit()
   lazy val page = views.html.business.register_next_accounting_period(
     registerNextAccountingPeriodForm = RegisterNextAccountingPeriodForm.registerNextAccountingPeriodForm,
-    postAction = postAction,
+    postAction = action,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -48,7 +48,7 @@ class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
       messages.line_2
     )
 
-    val form = testPage.getForm("Register Next Accounting Period form")(actionCall = postAction)
+    val form = testPage.getForm("Register Next Accounting Period form")(actionCall = action)
 
     form.mustHaveRadioSet(
       legend = messages.heading,

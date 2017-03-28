@@ -17,16 +17,15 @@
 package views.throttling
 
 import assets.MessageLookup.{Base => common, ThrottleLimit => messages}
-import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
 
 class ThrottleLimitViewSpec extends ViewSpecTrait {
 
-  lazy val postAction = controllers.throttling.routes.ThrottlingController.submit()
-  lazy val page = views.html.throttling.daily_limit_reached(postAction = postAction)(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
+  val action = ViewSpecTrait.testCall
+
+  lazy val page = views.html.throttling.daily_limit_reached(postAction = action)(FakeRequest(), applicationMessages, appConfig)
 
   "The Throttle Limit view" should {
     val testPage = TestView(
@@ -40,7 +39,7 @@ class ThrottleLimitViewSpec extends ViewSpecTrait {
       messages.line1
     )
 
-    val form = testPage.getForm("Already Enrolled form")(actionCall = postAction)
+    val form = testPage.getForm("Already Enrolled form")(actionCall = action)
 
     form.mustHaveSubmitButton(common.signOut)
 

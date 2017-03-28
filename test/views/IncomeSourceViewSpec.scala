@@ -23,10 +23,11 @@ import play.api.test.FakeRequest
 
 class IncomeSourceViewSpec extends ViewSpecTrait {
 
-  lazy val postAction = controllers.routes.IncomeSourceController.submitIncomeSource()
+  val action = ViewSpecTrait.testCall
+
   lazy val page = views.html.income_source(
     incomeSourceForm = IncomeSourceForm.incomeSourceForm,
-    postAction = postAction
+    postAction = action
   )(FakeRequest(), applicationMessages, appConfig)
 
   "The Income source view" should {
@@ -37,7 +38,7 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
       page = page
     )
 
-    val form = testPage.getForm("Income source form")(actionCall = postAction)
+    val form = testPage.getForm("Income source form")(actionCall = action)
     form.mustHaveRadioSet(
       legend = messages.heading,
       radioName = IncomeSourceForm.incomeSource

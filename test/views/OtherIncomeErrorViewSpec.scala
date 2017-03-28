@@ -22,11 +22,11 @@ import play.api.test.FakeRequest
 
 class OtherIncomeErrorViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl: String = controllers.routes.OtherIncomeController.showOtherIncome().url
+  val backUrl = ViewSpecTrait.testBackUrl
 
-  lazy val postAction = controllers.routes.OtherIncomeErrorController.submitOtherIncomeError()
+  val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.other_income_error(postAction = postAction, backUrl = backUrl)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = views.html.other_income_error(postAction = action, backUrl = backUrl)(FakeRequest(), applicationMessages, appConfig)
 
   "The Main Income Error view" should {
 

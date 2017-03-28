@@ -18,14 +18,13 @@ package views
 
 import assets.MessageLookup.{AlreadyEnrolled => messages, Base => common}
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 
 class AlreadyEnrolledViewSpec extends ViewSpecTrait {
 
-  lazy val testPostRoute = "testPostUrl"
-  lazy val postAction = Call("POST", testPostRoute)
-  lazy val page = views.html.enrolled.already_enrolled(postAction)(FakeRequest(), applicationMessages, appConfig)
+  val action = ViewSpecTrait.testCall
+
+  lazy val page = views.html.enrolled.already_enrolled(action)(FakeRequest(), applicationMessages, appConfig)
 
   "The Already Enrolled view" should {
     val testPage = TestView(
@@ -39,7 +38,7 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
       messages.para1
     )
 
-    val form = testPage.getForm("Already Enrolled form")(actionCall = postAction)
+    val form = testPage.getForm("Already Enrolled form")(actionCall = action)
 
     form.mustHaveSubmitButton(common.signOut)
 

@@ -22,9 +22,9 @@ import play.api.test.FakeRequest
 
 class NoNinoViewSpec extends ViewSpecTrait {
 
-  lazy val postAction = controllers.routes.NoNinoController.submitNoNino()
+  val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.no_nino(postAction = postAction)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = views.html.no_nino(postAction = action)(FakeRequest(), applicationMessages, appConfig)
 
   "The No Nino view" should {
 
@@ -38,7 +38,7 @@ class NoNinoViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line1)
 
-    val form = testPage.getForm("Not Nino form")(actionCall = postAction)
+    val form = testPage.getForm("Not Nino form")(actionCall = action)
 
     form.mustHaveSubmitButton(Base.signOut)
   }
