@@ -43,13 +43,6 @@
     </div>
 }
 
-@emailPreferences = @{
-    val rowName = ReceiveEmail
-    val rowQuestion = Messages("summary.email")
-    val rowAnswer = Messages("base.yes")
-    summaryRow(rowName, rowQuestion, rowAnswer)
-}
-
 @incomeSource(source: IncomeSourceModel) = @{
     val rowName = IncomeSourceId
     val rowQuestion = Messages("summary.income_source")
@@ -101,7 +94,6 @@
     <h2 class="heading-medium">@Html(Messages("summary.h2"))</h2>
 
     <div class="form-group">
-        @emailPreferences
         @summaryModel.incomeSource.map(incomeSource)
         @summaryModel.accountingPeriod.map(accountingPeriodDate)
         @summaryModel.businessName.map(businessName)
