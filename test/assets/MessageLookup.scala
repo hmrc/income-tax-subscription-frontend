@@ -107,12 +107,12 @@ object MessageLookup {
     }
 
     object RegisterNextAccountingPeriod {
-      val title = "Do you want to sign up for your next accounting period?"
+      val title = "You can't send quarterly reports yet"
       val heading = title
-      val line_1 = "You can't send quarterly reports yet, as your current accounting period started before 1 April 2017."
-      val line_2 = "You can sign up for your next accounting period, but can't send quarterly reports until this begins."
-      val yes = "Yes"
-      val no = "No - sign out"
+      val line_1 = "You can only use this service if your current accounting period started after 5 April 2017"
+      val line_2 = "You can sign up now, but you won't be able to send any reports until your next accounting period begins."
+      val yes = "Continue to sign up"
+      val no = "Sign out"
     }
 
   }
