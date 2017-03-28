@@ -180,16 +180,13 @@ summary.terms.agreed                                            = I agree
 ## Confirmation page ##
 confirmation.title                                              = Confirmation page
 confirmation.heading                                            = Success
-confirmation.banner.line_1                                      = You''ve successfully signed up for quarterly reporting.
+confirmation.banner.line_1                                      = Sign up complete.
 confirmation.banner.line_2                                      = Your reference number is:
+confirmation.whatHappensNext.para1                              = Make a note of your reference number. If you forget your Government Gateway login details, we can use it to help you retrieve them.
 confirmation.whatHappensNext.heading                            = What happens next
-confirmation.whatHappensNext.para1                              = Now that you''ve signed up to trial this service, you must:
-confirmation.whatHappensNext.bullet1                            = make a note of your reference number. If you forget your Government Gateway account details, we can use this reference number to help you retrieve them
-confirmation.whatHappensNext.bullet2                            = download accounting software. You''ll need to use this software to send HMRC reports about your income and expenditure
-confirmation.whatHappensNext.bullet3                            = activate your <a href="{0}">Business Tax Account</a>
-confirmation.whatHappensNext.bullet4                            = report at least once every 3 months from the start of your accounting period
-confirmation.whatHappensNext.bullet5                            = report any outstanding records you may have for your current accounting period
-confirmation.whatHappensNext.para2                              = After you send a report, HMRC will calculate an estimate of your Income Tax. You can see these estimates from your accounting software after your first report, or through your Business Tax Account from July 2017
+confirmation.whatHappensNext.para2                              = You must report to HMRC once every quarter from the start of your accounting period.
+confirmation.whatHappensNext.para3                              = HMRC will calculate an estimate of your Income Tax after you send a report. You can see these estimates from your accounting software after your first report, or through your business tax account from August 2017.
+confirmation.whatHappensNext.para4                              = Activate your <a href="{0}">business tax account</a>, you can use this to see a summary of all your business taxes.
 
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue

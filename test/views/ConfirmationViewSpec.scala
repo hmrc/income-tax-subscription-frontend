@@ -75,36 +75,24 @@ class ConfirmationViewSpec extends UnitTestTrait {
 
     "have a 'What happens next' section" which {
 
-      s"has the section heading '${MessageLookup.Confirmation.whatHappensNext.heading}'" in {
-        document.select("#whatHappensNext h2").text() mustBe MessageLookup.Confirmation.whatHappensNext.heading
-      }
-
       s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
         document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para1)
       }
 
-      s"has a bullet point relating to correspondence '${MessageLookup.Confirmation.whatHappensNext.bullet1}'" in {
-        document.select("#whatHappensNext li:nth-child(1)").text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet1
-      }
-
-      s"has a bullet point relating to implications and obligations '${MessageLookup.Confirmation.whatHappensNext.bullet2}'" in {
-        document.select("#whatHappensNext li:nth-child(2)").text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet2
-      }
-
-      s"has a bullet point relating to correspondence '${MessageLookup.Confirmation.whatHappensNext.bullet3}'" in {
-        document.select("#whatHappensNext li:nth-child(3)").text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet3
-      }
-
-      s"has a bullet point relating to implications and obligations '${MessageLookup.Confirmation.whatHappensNext.bullet4}'" in {
-        document.select("#whatHappensNext li:nth-child(4)").text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet4
-      }
-
-      s"has a bullet point relating to implications and obligations '${MessageLookup.Confirmation.whatHappensNext.bullet5}'" in {
-        document.select("#whatHappensNext li:nth-child(5)").text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet5
+      s"has the section heading '${MessageLookup.Confirmation.whatHappensNext.heading}'" in {
+        document.select("#whatHappensNext h2").text() mustBe MessageLookup.Confirmation.whatHappensNext.heading
       }
 
       s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
         document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para2)
+      }
+
+      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para3}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para3)
+      }
+
+      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para4}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para4)
       }
 
     }

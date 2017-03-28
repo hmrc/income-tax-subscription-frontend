@@ -203,18 +203,15 @@ object MessageLookup {
   object Confirmation {
     val title = "Confirmation page"
     val heading = "Success"
-    val banner_line1_1 = "You've successfully signed up for quarterly reporting."
+    val banner_line1_1 = "Sign up complete."
     val banner_line1_2 = "Your reference number is:"
 
     object whatHappensNext {
+      val para1 = "Make a note of your reference number. If you forget your Government Gateway login details, we can use it to help you retrieve them."
       val heading = "What happens next"
-      val para1 = "Now that you've signed up to trial this service, you must:"
-      val bullet1 = "make a note of your reference number. If you forget your Government Gateway account details, we can use this reference number to help you retrieve them"
-      val bullet2 = "download accounting software. You'll need to use this software to send HMRC reports about your income and expenditure"
-      val bullet3 = "activate your Business Tax Account"
-      val bullet4 = "report at least once every 3 months from the start of your accounting period"
-      val bullet5 = "report any outstanding records you may have for your current accounting period"
-      val para2 = "After you send a report, HMRC will calculate an estimate of your Income Tax. You can see these estimates from your accounting software after your first report, or through your Business Tax Account from July 2017"
+      val para2 = "You must report to HMRC once every quarter from the start of your accounting period."
+      val para3 = "HMRC will calculate an estimate of your Income Tax after you send a report. You can see these estimates from your accounting software after your first report, or through your business tax account from August 2017."
+      val para4 = "Activate your business tax account, you can use this to see a summary of all your business taxes."
     }
 
   }
