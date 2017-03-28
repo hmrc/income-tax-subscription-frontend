@@ -64,10 +64,9 @@ property.income.line_1                                          = This is the am
 
 
 # Current Financial Period Prior page
-business.current_financial_period_prior.title                   = Did your current accounting period start before 1 April 2017?
-business.current_financial_period_prior.heading                 = Did your current accounting period start before 1 April 2017?
-business.current_financial_period_prior.line_1                  = 1 April 2017 is the date this service started.
-business.current_financial_period_prior.accordion               = What is an accounting period?
+business.current_financial_period_prior.title                   = Business accounting period
+business.current_financial_period_prior.heading                 = Did your current accounting period start before 6 April 2017?
+business.current_financial_period_prior.accordion               = What''s an accounting period?
 business.current_financial_period_prior.accordion.line1         = This is the period that your latest income and expense records cover for Self Assessment.
 business.current_financial_period_prior.accordion.line2         = Your start date is usually 6 April (the same as the tax year), unless you selected a different date when you registered for Self Assessment.
 business.current_financial_period_prior.yes                     = Yes
