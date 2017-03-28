@@ -16,36 +16,33 @@
 
 package views.throttling
 
-import assets.MessageLookup.Base
-import assets.MessageLookup.ThrottleLimit._
-import org.jsoup.Jsoup
+import assets.MessageLookup.{Base => common, ThrottleLimit => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
+import views.ViewSpecTrait
 
-class ThrottleLimitViewSpec extends UnitTestTrait {
+class ThrottleLimitViewSpec extends ViewSpecTrait {
 
-  lazy val page = views.html.throttling.daily_limit_reached(postAction = controllers.throttling.routes.ThrottlingController.submit())(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
+  val action = ViewSpecTrait.testCall
 
-  "The No Nino view" should {
+  lazy val page = views.html.throttling.daily_limit_reached(postAction = action)(FakeRequest(), applicationMessages, appConfig)
 
-    s"have the title '$title'" in {
-      document.title() must be (title)
-    }
+  "The Throttle Limit view" should {
+    val testPage = TestView(
+      name = "Throttle Limit View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page
+    )
 
-    s"have the heading (H1) '$heading'" in {
-      document.getElementsByTag("H1").text() must be (heading)
-    }
+    testPage.mustHavePara(
+      messages.line1
+    )
 
-    s"have the paragraph (P) '$line1'" in {
-      document.getElementsByTag("P").text() must include(line1)
-    }
+    val form = testPage.getForm("Already Enrolled form")(actionCall = action)
 
-    "have a sign-out button" in {
-      document.select("button").attr("type") mustBe "submit"
-      document.select("button").text() mustBe Base.signout
-    }
+    form.mustHaveSubmitButton(common.signOut)
+
   }
 
 }
