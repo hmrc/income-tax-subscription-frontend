@@ -108,7 +108,7 @@ object MessageLookup {
     object RegisterNextAccountingPeriod {
       val title = "You can't send quarterly reports yet"
       val heading = title
-      val line_1 = "You can only use this service if your current accounting period started after 5 April 2017"
+      val line_1 = "You can only use this service if your current accounting period started after 5 April 2017."
       val line_2 = "You can sign up now, but you won't be able to send any reports until your next accounting period begins."
       val yes = "Continue to sign up"
       val no = "Sign out"
@@ -174,7 +174,7 @@ object MessageLookup {
     }
 
     val accounting_period_prior = "Did your current accounting period start before 1 April 2017?"
-    val accounting_period = s"Your accounting period dates:"
+    val accounting_period = s"Your accounting period dates"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "What's the name of your business?"
     val income_type = "What method do you use for your accounting?"
@@ -215,7 +215,7 @@ object MessageLookup {
       val heading = "What happens next"
       val para2 = "You must report to HMRC once every quarter from the start of your accounting period."
       val para3 = "HMRC will calculate an estimate of your Income Tax after you send a report. You can see these estimates from your accounting software after your first report, or through your business tax account from August 2017."
-      val para4 = "Activate your business tax account, you can use this to see a summary of all your business taxes."
+      val para4 = "Activate your business tax account, you can use this to see a summary of your business taxes."
     }
 
   }

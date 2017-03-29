@@ -73,7 +73,7 @@ business.current_financial_period_prior.no                      = No
 # Current Financial Period Prior page
 business.register_next_accounting_period.title                   = You can''t send quarterly reports yet
 business.register_next_accounting_period.heading                 = You can''t send quarterly reports yet
-business.register_next_accounting_period.line_1                  = You can only use this service if your current accounting period started after 5 April 2017
+business.register_next_accounting_period.line_1                  = You can only use this service if your current accounting period started after 5 April 2017.
 business.register_next_accounting_period.line_2                  = You can sign up now, but you won''t be able to send any reports until your next accounting period begins.
 business.register_next_accounting_period.yes                     = Continue to sign up
 business.register_next_accounting_period.no                      = Sign out
@@ -170,7 +170,7 @@ summary.income_source.business                                  = Sole trader bu
 summary.income_source.property                                  = Property
 summary.income_source.both                                      = Sole trader business and property
 summary.other_income                                            = Do you have any other sources of income?
-summary.accounting_period                                       = Your accounting period dates:
+summary.accounting_period                                       = Your accounting period dates
 summary.business_name                                           = What''s the name of your business?
 summary.income_type                                             = What method do you use for your accounting?
 summary.income_type.cash                                        = Cash basis
@@ -187,7 +187,7 @@ confirmation.whatHappensNext.para1                              = Make a note of
 confirmation.whatHappensNext.heading                            = What happens next
 confirmation.whatHappensNext.para2                              = You must report to HMRC once every quarter from the start of your accounting period.
 confirmation.whatHappensNext.para3                              = HMRC will calculate an estimate of your Income Tax after you send a report. You can see these estimates from your accounting software after your first report, or through your business tax account from August 2017.
-confirmation.whatHappensNext.para4                              = Activate your <a href="{0}">business tax account</a>, you can use this to see a summary of all your business taxes.
+confirmation.whatHappensNext.para4                              = Activate your <a href="{0}">business tax account</a>, you can use this to see a summary of your business taxes.
 confirmation.sign_out                                           = Finish
 
 ## Errors ##
