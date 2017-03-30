@@ -36,7 +36,7 @@ You will need [sbt](http://www.scala-sbt.org/)
   
 4) Start the frontend service:
 
-  `sbt "run 9561" -Dapplication.router=testOnlyDoNotUseInAppConf.Routes`
+   `sbt "run 9561" -Dapplication.router=testOnlyDoNotUseInAppConf.Routes`
 
   
 5) Clone the protected service:
