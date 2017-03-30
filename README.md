@@ -12,7 +12,7 @@ This is a Scala/Play frontend web UI that provides screens for an existing SA In
   
 ...on a quarterly bases and move away from the yearly Self-Assessment Tax Return.
 
-### Running the frontend subscription service locally
+### Running the subscription services locally
 
 You will need [sbt](http://www.scala-sbt.org/)
 
