@@ -15,15 +15,15 @@ This is a Scala/Play frontend web UI that provides screens for an existing SA In
 
 You will need [sbt](http://www.scala-sbt.org/)
 
-1) [Install Service-Manager](https://github.com/hmrc/service-manager/wiki/Install#install-service-manager)
+1) **[Install Service-Manager](https://github.com/hmrc/service-manager/wiki/Install#install-service-manager)**
 
 
-2) Start the ITSA subscription dependencies:
+2) **Start the ITSA subscription dependencies:**
 
    `sm --start ITSA_SUBSC_DEP -f`
 
 
-3) Clone the frontend service:
+3) **Clone the frontend service:**
 
   - SSH 
   
@@ -34,12 +34,12 @@ You will need [sbt](http://www.scala-sbt.org/)
     `git clone https://github.com/hmrc/income-tax-subscription-frontend.git`
   
   
-4) Start the frontend service:
+4) **Start the frontend service:**
 
    `sbt "run 9561" -Dapplication.router=testOnlyDoNotUseInAppConf.Routes`
-
+   
   
-5) Clone the protected service:
+5) **Clone the protected service:**
 
   - SSH 
   
@@ -49,16 +49,18 @@ You will need [sbt](http://www.scala-sbt.org/)
   
      `git clone https://github.com/hmrc/income-tax-subscription.git`
   
-  
-6) Start the protected service:
+   
+6) **Start the protected service:**
 
    `sbt "run 9560" -Dapplication.router=testOnlyDoNotUseInAppConf.Routes`
 
-7) Start the stubbed services:
+7) **Start the stubbed services:**
 
    `sm --start INCOME_TAX_SUBSCRIPTION_STUBS -f`
 
-8) Got to the homepage: http://localhost:9561/report-quarterly/income-and-expenses/sign-up
+8) **Got to the homepage:**
+
+   http://localhost:9561/report-quarterly/income-and-expenses/sign-up
 
 ### License
 
