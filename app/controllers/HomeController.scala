@@ -62,5 +62,15 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       }
   }
 
+  def agentHome : Action[AnyContent] = Action.async { implicit request =>
+    showGuidance match {
+      case true =>
+        Ok(views.html.agent_frontpage(controllers.routes.HomeController.index()))
+      case _ =>
+        Redirect(controllers.routes.HomeController.index())
+    }
+  }
+
+
   lazy val gotoPreferences = Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())
 }

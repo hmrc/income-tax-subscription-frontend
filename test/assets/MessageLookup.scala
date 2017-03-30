@@ -57,6 +57,11 @@ object MessageLookup {
     val line_6 = "You can:"
   }
 
+  object AgentFrontPage {
+    val title = "Sign up your clients to report their income and expenses quarterly"
+    val heading = title
+  }
+
   object PreferencesCallBack {
     val title = "Do you want to continue?"
     val heading: String = "To sign up, you must allow HMRC to send you electronic communications"

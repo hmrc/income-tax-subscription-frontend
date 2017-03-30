@@ -24,7 +24,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockThrottlingService
-import assets.MessageLookup.FrontPage
+import assets.MessageLookup.{AgentFrontPage, FrontPage}
 
 
 class HomeControllerSpec extends ControllerBaseSpec
@@ -68,6 +68,35 @@ class HomeControllerSpec extends ControllerBaseSpec
 
     "If the start page (showGuidance) is disabled" should {
       lazy val result = TestHomeController(enableThrottling = false, showGuidance = false).home()(authenticatedFakeRequest())
+
+      "Return status SEE_OTHER (303) redirect" in {
+        status(result) must be(Status.SEE_OTHER)
+      }
+
+      "Redirect to the 'Index' page" in {
+        redirectLocation(result).get mustBe controllers.routes.HomeController.index().url
+      }
+    }
+
+  }
+
+  "Calling the agent home action of the Home controller with an authorised user" should {
+
+    "If the start page (showGuidance) is enabled" should {
+
+      lazy val result = TestHomeController(enableThrottling = false, showGuidance = true).agentHome()(authenticatedFakeRequest())
+
+      "Return status OK (200)" in {
+        status(result) must be(Status.OK)
+      }
+
+      "Should have the page title" in {
+        Jsoup.parse(contentAsString(result)).title mustBe AgentFrontPage.title
+      }
+    }
+
+    "If the start page (showGuidance) is disabled" should {
+      lazy val result = TestHomeController(enableThrottling = false, showGuidance = false).agentHome()(authenticatedFakeRequest())
 
       "Return status SEE_OTHER (303) redirect" in {
         status(result) must be(Status.SEE_OTHER)
