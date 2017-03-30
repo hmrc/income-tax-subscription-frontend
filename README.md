@@ -58,7 +58,7 @@ You will need [sbt](http://www.scala-sbt.org/)
 
    `sm --start INCOME_TAX_SUBSCRIPTION_STUBS -f`
 
-8) **Got to the homepage:**
+8) **Go to the homepage:**
 
    http://localhost:9561/report-quarterly/income-and-expenses/sign-up
 
