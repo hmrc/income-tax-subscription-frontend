@@ -1,3 +1,4 @@
+[![Apache-2.0 license](http://img.shields.io/badge/license-Apache-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)[
 [![Build Status](https://travis-ci.org/hmrc/income-tax-subscription-frontend.svg)](https://travis-ci.org/hmrc/income-tax-subscription-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/income-tax-subscription-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/income-tax-subscription-frontend/_latestVersion)
 
 #### Sign Up to Report your Income and Expenses Quarterly (MTD ITSA)
