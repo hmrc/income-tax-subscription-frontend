@@ -56,8 +56,7 @@ class FrontPageViewSpec extends ViewSpecTrait {
       messages.bullet_6,
       messages.bullet_7,
       messages.bullet_8,
-      messages.bullet_9,
-      messages.bullet_10
+      messages.bullet_9
     )
 
     testPage.mustHaveH2(messages.subHeading_1)

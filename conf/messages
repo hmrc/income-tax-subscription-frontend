@@ -37,8 +37,6 @@ frontpage.bullet_7                                              = complete your 
 frontpage.bullet_8                                              = send your summary report for the 2017 to 2018 tax year by 31 January 2019
 frontpage.line_6                                                = You can:
 frontpage.bullet_9                                              = use your business tax account from August 2017 to see your reports and what you might owe
-frontpage.bullet_10                                             = choose to pay as you go
-
 
 ## Preferences call back page
 preferences_callback.title                                      = Do you want to continue?
