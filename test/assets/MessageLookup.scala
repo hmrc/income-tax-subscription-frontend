@@ -48,7 +48,6 @@ object MessageLookup {
     val bullet_7 = "complete your 2016 to 2017 Self Assessment tax return and pay what you owe by 31 January 2018"
     val bullet_8 = "send your summary report for the 2017 to 2018 tax year by 31 January 2019"
     val bullet_9 = "use your business tax account from August 2017 to see your reports and what you might owe"
-    val bullet_10 = "choose to pay as you go"
     val line_1 = "By signing up to HM Revenue and Customs secure service, you're helping to test a new way of working out your tax. You'll do this by:"
     val line_2 = "You can sign up if your current accounting period starts after 5 April 2017 and you're one of the following:"
     val line_3 = "If you have income other than those listed above, you won't be able to report it using this service yet."
