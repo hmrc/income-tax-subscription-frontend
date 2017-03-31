@@ -39,6 +39,9 @@ frontpage.line_6                                                = You can:
 frontpage.bullet_9                                              = use your business tax account from August 2017 to see your reports and what you might owe
 frontpage.bullet_10                                             = choose to pay as you go
 
+# Agent front page
+frontpage.agent.title                                           = Sign up your clients to report their income and expenses quarterly
+frontpage.agent.heading                                         = Sign up your clients to report their income and expenses quarterly
 
 ## Preferences call back page
 preferences_callback.title                                      = Do you want to continue?

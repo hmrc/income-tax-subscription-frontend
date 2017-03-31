@@ -4,6 +4,7 @@ GET         /assets/*file                     controllers.Assets.at(path="/publi
 # Home controller
 GET         /                                 controllers.HomeController.home
 GET         /index                            controllers.HomeController.index
+GET         /agent                            controllers.HomeController.agentHome
 
 # SignOut Controller
 GET         /logout                           controllers.SignOutController.signOut

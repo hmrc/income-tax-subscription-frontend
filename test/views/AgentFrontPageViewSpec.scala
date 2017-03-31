@@ -16,19 +16,19 @@
 
 package views
 
-import assets.MessageLookup.{Base => common, FrontPage => messages}
+import assets.MessageLookup.{Base => common, AgentFrontPage => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
-class FrontPageViewSpec extends ViewSpecTrait {
+class AgentFrontPageViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.frontpage(
+  lazy val page = views.html.agent_frontpage(
     getAction = action
   )(FakeRequest(), applicationMessages, appConfig)
 
-  "The 'Front/Start Page view" should {
+  "The Agent 'Front/Start Page view" should {
 
     val testPage = TestView(
       name = "Front/Start Page View",
@@ -38,33 +38,8 @@ class FrontPageViewSpec extends ViewSpecTrait {
       showSignOutInBanner = false
     )
 
-    testPage.mustHaveParaSeq(
-      messages.line_1,
-      messages.line_2,
-      messages.line_3,
-      messages.line_4,
-      messages.line_5,
-      messages.line_6
-    )
 
-    testPage.mustHaveBulletSeq(
-      messages.bullet_1,
-      messages.bullet_2,
-      messages.bullet_3,
-      messages.bullet_4,
-      messages.bullet_5,
-      messages.bullet_6,
-      messages.bullet_7,
-      messages.bullet_8,
-      messages.bullet_9,
-      messages.bullet_10
-    )
-
-    testPage.mustHaveH2(messages.subHeading_1)
-
-    testPage.mustHaveH2(messages.subHeading_2)
-
-    val form = testPage.getForm("Front Page Error form")(actionCall = action)
+    val form = testPage.getForm("Agent Front Page Error form")(actionCall = action)
 
     form.mustHaveSubmitButton(common.signUp)
 
