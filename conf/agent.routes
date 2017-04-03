@@ -1,0 +1,3 @@
+# Client Matching
+GET         /client-details                                 controllers.agent.ClientDetailsController.showClientDetails(editMode: Boolean ?= false)
+POST        /client-details                                 controllers.agent.ClientDetailsController.submitClientDetails(editMode: Boolean ?= false)

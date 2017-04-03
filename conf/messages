@@ -282,3 +282,13 @@ income-other.bullet5                                            = capital gains
 income-other.yes                                                = Yes
 income-other.no                                                 = No
 
+## Agent - client details page ##
+client-details.title                                            = Enter client details
+client-details.heading                                          = Enter client details
+client-details.line_1                                           = This is to help us confirm who your client is, so we know what questions to ask you.
+client-details.field_1                                          = First name
+client-details.field_2                                          = Last name
+client-details.field_3                                          = National Insurance number
+client-details.field_4                                          = Date of birth
+client-details.formhint.1                                       = For example QQ123456C
+client-details.formhint.2                                       = For example, 31 3 1980
