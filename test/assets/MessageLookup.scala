@@ -362,4 +362,17 @@ object MessageLookup {
     val no = "No"
   }
 
+
+
+  object AgentMessages {
+
+    object NotEnrolledAgentServices {
+      val title = "You're not subscribed to Agent services"
+      val heading = title
+      val para1 = "You will need to subscribe to agent services before you continue to subscribe your clients for quarterly reporting."
+      val button = "Subscribe to Agent services"
+    }
+
+  }
+
 }

@@ -1,0 +1,40 @@
+@*
+ * Copyright 2017 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.templates.main_template
+@import config.AppConfig
+@import helpers._
+@import uk.gov.hmrc.play.views.html.helpers.form
+
+@(getAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@main_template(title = Messages("agent.not_enrolled_agent_services.title"), bodyClasses = None) {
+
+    <h1 class="heading-large">@Messages("agent.not_enrolled_agent_services.heading")</h1>
+
+    <div class="form-group">
+        <p>@Messages("agent.not_enrolled_agent_services.para1")</p>
+    </div>
+
+    <div class="form-group">
+        @form(action = getAction) {
+            @continueButton(Messages("agent.not_enrolled_agent_services.subscribe"))
+        }
+    </div>
+
+    <a id="sign-out" href="@controllers.routes.SignOutController.signOut().url">@Messages("base.sign-out")</a>
+
+}
