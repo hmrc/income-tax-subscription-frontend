@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 
 class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
 
-  override val controllerName: String = "AlreadyEnrolledController"
+  override val controllerName: String = "NotEnrolledAgentServicesController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "enrolled" -> TestAlreadyEnrolledController.enrolled()
   )
@@ -36,7 +36,7 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
     messagesApi
   )
 
-  "Calling the enrolled action of the AlreadyEnrolledController with a not enrolled Authenticated User" should {
+  "Calling the enrolled action of the NotEnrolledAgentServicesController with a not enrolled Authenticated User" should {
 
     lazy val result = TestAlreadyEnrolledController.enrolled(authenticatedFakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
@@ -57,7 +57,7 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
 
   }
 
-  "Calling the enrolled action of the AlreadyEnrolledController with an enrolled Authenticated User" should {
+  "Calling the enrolled action of the NotEnrolledAgentServicesController with an enrolled Authenticated User" should {
 
     lazy val result = TestAlreadyEnrolledController.enrolled(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled))
     lazy val document = Jsoup.parse(contentAsString(result))
