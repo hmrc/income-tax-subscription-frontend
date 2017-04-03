@@ -32,6 +32,7 @@ object MessageLookup {
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
+    val dateOfBirth = "Date of birth"
   }
 
   object FrontPage {
@@ -361,6 +362,22 @@ object MessageLookup {
     val bullet5 = "capital gains"
     val yes = "Yes"
     val no = "No"
+  }
+
+  object Agent {
+
+    object ClientDetails {
+      val title = "Enter client details"
+      val heading = "Enter client details"
+      val line1 = "This is to help us confirm who your client is, so we know what questions to ask you."
+      val field1 = "First name"
+      val field2 = "Last name"
+      val field3 = "National Insurance number"
+      val field4 = "Date of birth"
+      val formhint1 = "For example QQ123456C"
+      val formhint2 = "For example, 31 3 1980"
+    }
+
   }
 
 }

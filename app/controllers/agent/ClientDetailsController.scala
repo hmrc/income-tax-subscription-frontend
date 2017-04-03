@@ -62,14 +62,14 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
         clientDetails => {
           keystoreService.saveClientDetails(clientDetails) map (_ =>
             if (isEditMode)
-              Redirect(controllers.routes.CheckYourAnswersController.show())
+              NotImplemented
             else
-              Redirect(controllers.business.routes.BusinessAccountingMethodController.show())
+              NotImplemented
             )
         }
       )
   }
 
-  lazy val backUrl: String = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+  lazy val backUrl: String = controllers.routes.HomeController.index().url
 
 }

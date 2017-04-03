@@ -163,7 +163,9 @@ trait ViewSpecTrait extends UnitTestTrait {
                           showLabel: Boolean = true,
                           maxLength: Option[Int] = None,
                           pattern: Option[String] = None,
-                          inputMode: Option[String] = None): Unit = {
+                          inputMode: Option[String] = None,
+                          hint: Option[String] = None
+                         ): Unit = {
 
       s"${this.name} must have an input field '$name'" which {
 
@@ -188,7 +190,7 @@ trait ViewSpecTrait extends UnitTestTrait {
         lazy val labelField = element.select(s"label[for=$name]")
 
         s"with the expected label label '$label'" in {
-          labelField.text() mustBe label
+          labelField.text() mustBe (label + hint.fold("")(" " + _))
         }
 
         if (!showLabel)
