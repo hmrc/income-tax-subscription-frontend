@@ -280,3 +280,13 @@ income-other.bullet5                                            = capital gains
 income-other.yes                                                = Yes
 income-other.no                                                 = No
 
+
+
+#### AGENT Journey Messages ####
+#### ---------------------- ####
+
+## Not Enrolled to Agent Services
+agent.not_enrolled_agent_services.title                         = You''re not subscribed to Agent services
+agent.not_enrolled_agent_services.heading                       = You''re not subscribed to Agent services
+agent.not_enrolled_agent_services.para1                         = You will need to subscribe to agent services before you continue to subscribe your clients for quarterly reporting.
+agent.not_enrolled_agent_services.subscribe                     = Subscribe to Agent services
