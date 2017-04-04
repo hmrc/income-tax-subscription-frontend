@@ -1,2 +1,0 @@
-# Home controller
-GET         /not-enrolled-agent-services                                controllers.agent.NotEnrolledAgentServicesController.show

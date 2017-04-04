@@ -49,7 +49,6 @@ trait AppConfig {
   val whitelistIps: Seq[String]
   val ipExclusionList: Seq[Call]
   val shutterPage: String
-  val agentServicesUrl: String
 }
 
 @Singleton
@@ -108,16 +107,13 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   // Enable or disable showing the guidance page or go straight to sign ups
   override lazy val showGuidance: Boolean = loadConfig("feature-switch.show-guidance").toBoolean
 
-  // Shutter page
   override lazy val shutterPage: String = loadConfig("shutter-page.url")
 
-  // Whitelisting config
   private def whitelistConfig(key: String): Seq[String] = configuration.getString(key).fold(Seq[String]())(ips => ips.split(",").toSeq)
-  override lazy val whitelistIps: Seq[String] = whitelistConfig("ip-whitelist.urls")
-  override lazy val ipExclusionList: Seq[Call] = whitelistConfig("ip-whitelist.excludeCalls").map(ip => Call("GET",ip))
 
-  // Agent Services config
-  override lazy val agentServicesUrl: String = loadConfig("agent-services.url")
+  override lazy val whitelistIps: Seq[String] = whitelistConfig("ip-whitelist.urls")
+
+  override lazy val ipExclusionList: Seq[Call] = whitelistConfig("ip-whitelist.excludeCalls").map(ip => Call("GET",ip))
 
 }
 
