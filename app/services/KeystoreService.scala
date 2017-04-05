@@ -54,23 +54,17 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveBusinessName(businessName: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FC =
     save[BusinessNameModel](BusinessName, businessName)
 
-  def fetchAccountingPeriod()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FO[AccountingPeriodModel] =
-    fetch[AccountingPeriodModel](AccountingPeriod)
+  def fetchAccountingPeriodDate()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FO[AccountingPeriodModel] =
+    fetch[AccountingPeriodModel](AccountingPeriodDate)
 
-  def saveAccountingPeriod(accountingPeriod: AccountingPeriodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FC =
-    save[AccountingPeriodModel](AccountingPeriod, accountingPeriod)
+  def saveAccountingPeriodDate(accountingPeriod: AccountingPeriodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FC =
+    save[AccountingPeriodModel](AccountingPeriodDate, accountingPeriod)
 
-  def fetchContactEmail()(implicit hc: HeaderCarrier, reads: Reads[EmailModel]): FO[EmailModel] =
-    fetch[EmailModel](ContactEmail)
+  def fetchAccountingMethod()(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FO[AccountingMethodModel] =
+    fetch[AccountingMethodModel](AccountingMethod)
 
-  def saveContactEmail(contactEmail: EmailModel)(implicit hc: HeaderCarrier, reads: Reads[EmailModel]): FC =
-    save[EmailModel](ContactEmail, contactEmail)
-
-  def fetchIncomeType()(implicit hc: HeaderCarrier, reads: Reads[IncomeTypeModel]): FO[IncomeTypeModel] =
-    fetch[IncomeTypeModel](IncomeType)
-
-  def saveIncomeType(incomeType: IncomeTypeModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeTypeModel]): FC =
-    save[IncomeTypeModel](IncomeType, incomeType)
+  def saveAccountingMethod(accountingMethod: AccountingMethodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FC =
+    save[AccountingMethodModel](AccountingMethod, accountingMethod)
 
   def fetchTerms()(implicit hc: HeaderCarrier, reads: Reads[TermModel]): FO[TermModel] =
     fetch[TermModel](Terms)
@@ -94,12 +88,12 @@ class KeystoreService @Inject()(val session: SessionCache) {
 
   def saveSubscriptionId(mtditId: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC = save[String](MtditId, mtditId)
 
-  def fetchCurrentFinancialPeriodPrior()(implicit hc: HeaderCarrier, reads: Reads[CurrentFinancialPeriodPriorModel]): FO[CurrentFinancialPeriodPriorModel] =
-    fetch[CurrentFinancialPeriodPriorModel](CurrentFinancialPeriodPrior)
+  def fetchAccountingPeriodPrior()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodPriorModel]): FO[AccountingPeriodPriorModel] =
+    fetch[AccountingPeriodPriorModel](AccountingPeriodPrior)
 
-  def saveCurrentFinancialPeriodPrior(currentFinancialPeriodPrior: CurrentFinancialPeriodPriorModel)
-                                     (implicit hc: HeaderCarrier, reads: Reads[CurrentFinancialPeriodPriorModel]): FC =
-    save[CurrentFinancialPeriodPriorModel](CurrentFinancialPeriodPrior, currentFinancialPeriodPrior)
+  def saveAccountingPeriodPrior(accountingPeriodPrior: AccountingPeriodPriorModel)
+                               (implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodPriorModel]): FC =
+    save[AccountingPeriodPriorModel](AccountingPeriodPrior, accountingPeriodPrior)
 
   def fetchRegisterNextAccountingPeriod()(implicit hc: HeaderCarrier, reads: Reads[RegisterNextAccountingPeriodModel]): FO[RegisterNextAccountingPeriodModel] =
     fetch[RegisterNextAccountingPeriodModel](RegisterNextAccountingPeriod)

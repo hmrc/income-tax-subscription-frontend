@@ -16,7 +16,25 @@
 
 package models.enums
 
+
 sealed trait AccountingPeriodViewType
 
 case object CurrentAccountingPeriodView extends AccountingPeriodViewType
+
 case object NextAccountingPeriodView extends AccountingPeriodViewType
+
+
+object AccountingPeriodViewType {
+
+  import forms.AccountingPeriodPriorForm
+  import models.AccountingPeriodPriorModel
+
+  implicit def conv(accountingPeriodPrior: AccountingPeriodPriorModel): AccountingPeriodViewType =
+    accountingPeriodPrior.currentPeriodIsPrior match {
+      case AccountingPeriodPriorForm.option_yes =>
+        NextAccountingPeriodView
+      case AccountingPeriodPriorForm.option_no =>
+        CurrentAccountingPeriodView
+    }
+
+}

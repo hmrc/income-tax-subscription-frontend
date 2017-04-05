@@ -16,7 +16,7 @@
 
 package controllers.business
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import controllers.BaseController
@@ -30,6 +30,7 @@ import services.KeystoreService
 
 import scala.concurrent.Future
 
+@Singleton
 class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService
@@ -46,7 +47,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
   def showBusinessName(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchBusinessName() map {
-        businessName => Ok(view(BusinessNameForm.businessNameForm.fill(businessName), isEditMode = isEditMode))
+        businessName => Ok(view(BusinessNameForm.businessNameForm.form.fill(businessName), isEditMode = isEditMode))
       }
   }
 
@@ -57,14 +58,14 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
         businessName => {
           keystoreService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
-              Redirect(controllers.routes.SummaryController.showSummary())
+              Redirect(controllers.routes.CheckYourAnswersController.show())
             else
-              Redirect(controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType())
+              Redirect(controllers.business.routes.BusinessAccountingMethodController.show())
             )
         }
       )
   }
 
-  lazy val backUrl: String = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+  lazy val backUrl: String = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
 
 }

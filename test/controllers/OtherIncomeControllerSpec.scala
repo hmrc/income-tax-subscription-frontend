@@ -16,12 +16,12 @@
 
 package controllers
 
+import audit.Logging
 import auth._
 import forms.OtherIncomeForm
 import models.OtherIncomeModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import utils.TestModels
@@ -38,7 +38,8 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
   object TestOtherIncomeController extends OtherIncomeController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    app.injector.instanceOf[Logging]
   )
 
   "Calling the showOtherIncome action of the OtherIncome controller with an authorised user" should {
@@ -102,13 +103,13 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.business.routes.CurrentFinancialPeriodPriorController.show().url}' on the business journey" in {
+    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the business journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.CurrentFinancialPeriodPriorController.show().url)
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
       await(goodRequest)
       verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
@@ -126,13 +127,13 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.business.routes.CurrentFinancialPeriodPriorController.show().url}' on the both journey" in {
+    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the both journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.CurrentFinancialPeriodPriorController.show().url)
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
       await(goodRequest)
       verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)

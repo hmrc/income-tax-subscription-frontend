@@ -29,22 +29,25 @@ object CacheUtil {
 
     def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
 
-    def getAccountingPeriod()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriod)
+    def getOtherIncome()(implicit read: Reads[OtherIncomeModel]): Option[OtherIncomeModel] = cacheMap.getEntry(OtherIncome)
+
+    def getAccountingPeriodPrior()(implicit read: Reads[AccountingPeriodPriorModel]): Option[AccountingPeriodPriorModel] = cacheMap.getEntry(AccountingPeriodPrior)
+
+    def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriodDate)
 
     def getBusinessName()(implicit read: Reads[BusinessNameModel]): Option[BusinessNameModel] = cacheMap.getEntry(BusinessName)
 
-    def getIncomeType()(implicit read: Reads[IncomeTypeModel]): Option[IncomeTypeModel] = cacheMap.getEntry(IncomeType)
-
-    def getContactEmail()(implicit read: Reads[EmailModel]): Option[EmailModel] = cacheMap.getEntry(ContactEmail)
+    def getAccountingMethod()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
 
     def getTerms()(implicit read: Reads[TermModel]): Option[TermModel] = cacheMap.getEntry(Terms)
 
     def getSummary()(implicit
                      isrc: Reads[IncomeSourceModel],
-                     acc: Reads[AccountingPeriodModel],
+                     oirc: Reads[OtherIncomeModel],
+                     accP: Reads[AccountingPeriodPriorModel],
+                     accD: Reads[AccountingPeriodModel],
                      bus: Reads[BusinessNameModel],
-                     inc: Reads[IncomeTypeModel],
-                     ema: Reads[EmailModel],
+                     accM: Reads[AccountingMethodModel],
                      ter: Reads[TermModel]): SummaryModel = {
       val incomeSource = getIncomeSource()
       incomeSource match {
@@ -53,16 +56,16 @@ object CacheUtil {
             case IncomeSourceForm.option_property =>
               SummaryModel(
                 incomeSource,
-                contactEmail = getContactEmail(),
                 terms = getTerms()
               )
             case _ =>
               SummaryModel(
                 incomeSource,
-                getAccountingPeriod(),
+                getOtherIncome(),
+                getAccountingPeriodPrior(),
+                getAccountingPeriodDate(),
                 getBusinessName(),
-                getIncomeType(),
-                getContactEmail(),
+                getAccountingMethod(),
                 getTerms()
               )
           }

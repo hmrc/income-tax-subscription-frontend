@@ -27,19 +27,21 @@
 
     @summaryErrorHelper(businessNameForm)
 
-    <h1 class="heading-xlarge">@Messages("business.name.heading")</h1>
+    <h1 class="heading-large">@Messages("business.name.heading")</h1>
 
     <p>@Messages("business.name.line_1")</p>
 
     @form(action = postAction) {
 
-        @inputHelper(
-            field = businessNameForm(businessName),
-            label = Messages("business.name.heading"),
-            labelClass = "visuallyhidden",
-            maxLength = businessNameMaxLength,
-            parentForm = businessNameForm
-        )
+        <div class="form-group">
+            @inputHelper(
+                field = businessNameForm(businessName),
+                label = Messages("business.name.heading"),
+                labelClass = "visuallyhidden",
+                maxLength = businessNameMaxLength,
+                parentForm = businessNameForm
+            )
+        </div>
 
         @if(isEditMode) {
             @continueButton(Messages("base.update"))

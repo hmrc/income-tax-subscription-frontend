@@ -16,40 +16,43 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import config.BaseControllerConfig
-import connectors.models.subscription.{FESuccessResponse, IncomeSourceType}
+import connectors.models.subscription.FESuccessResponse
 import play.api.i18n.MessagesApi
 import services.{KeystoreService, SubscriptionService}
 
 import scala.concurrent.Future
 
-class SummaryController @Inject()(val baseConfig: BaseControllerConfig,
-                                  val messagesApi: MessagesApi,
-                                  val keystoreService: KeystoreService,
-                                  val middleService: SubscriptionService,
-                                  logging: Logging
+@Singleton
+class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
+                                           val messagesApi: MessagesApi,
+                                           val keystoreService: KeystoreService,
+                                           val middleService: SubscriptionService,
+                                           logging: Logging
                                  ) extends BaseController {
 
   import services.CacheUtil._
 
-  val showSummary = Authorised.async { implicit user =>
+  val show = Authorised.async { implicit user =>
     implicit request =>
       keystoreService.fetchAll() map {
         case Some(cache) =>
-          Ok(views.html.summary_page(cache.getSummary,
-            controllers.routes.SummaryController.submitSummary(),
+          Ok(views.html.check_your_answers(cache.getSummary,
+            controllers.routes.CheckYourAnswersController.submit(),
             backUrl = backUrl
           ))
+        case _ =>
+          logging.info("User attempted to view 'Check Your Answers' without any keystore cached data")
+          InternalServerError
       }
   }
 
-  val submitSummary = Authorised.async { implicit user =>
+  val submit = Authorised.async { implicit user =>
     implicit request =>
-//        keystoreService.fetchIncomeSource() flatMap {
-        keystoreService.fetchAll() flatMap {
+      keystoreService.fetchAll() flatMap {
         case Some(source) =>
           val nino = user.nino.fold("")(x => x)
           middleService.submitSubscription(nino, source.getSummary()).flatMap {
@@ -59,6 +62,9 @@ class SummaryController @Inject()(val baseConfig: BaseControllerConfig,
               logging.warn("Successful response not received from submission")
               Future.successful(InternalServerError("Submission failed"))
           }
+        case _ =>
+          logging.info("User attempted to submit 'Check Your Answers' without any keystore cached data")
+          Future.successful(InternalServerError)
       }
   }
 

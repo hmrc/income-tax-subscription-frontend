@@ -44,6 +44,10 @@ class ContinueButtonHelperSpec extends UnitTestTrait {
         continueButton.attr("type") mustBe "submit"
       }
 
+      "has the attribute formnovalidate to disable HTML5 validation" in {
+        continueButton.hasAttr("formnovalidate") mustBe true
+      }
+
       "has the id of 'continue-button'" in {
         continueButton.attr("id") mustBe "continue-button"
       }

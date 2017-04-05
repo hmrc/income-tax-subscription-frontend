@@ -16,47 +16,35 @@
 
 package views
 
-import assets.MessageLookup
-import org.jsoup.Jsoup
+import assets.MessageLookup.{OtherIncomeError => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
 
-class OtherIncomeErrorViewSpec extends UnitTestTrait {
+class OtherIncomeErrorViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl: String = controllers.routes.OtherIncomeController.showOtherIncome().url
-  lazy val page = views.html.other_income_error(postAction = controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(), backUrl = backUrl)(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
+  val backUrl = ViewSpecTrait.testBackUrl
+
+  val action = ViewSpecTrait.testCall
+
+  lazy val page = views.html.other_income_error(postAction = action, backUrl = backUrl)(FakeRequest(), applicationMessages, appConfig)
 
   "The Main Income Error view" should {
 
-    s"have the title '${MessageLookup.OtherIncomeError.title}'" in {
-      document.title() must be(MessageLookup.OtherIncomeError.title)
-    }
+    val testPage = TestView(
+      name = "Main Income Error View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page
+    )
 
-    s"have the heading (H1) '${MessageLookup.OtherIncomeError.heading}'" in {
-      document.getElementsByTag("H1").text() must be(MessageLookup.OtherIncomeError.heading)
-    }
+    testPage.mustHaveBackLinkTo(backUrl)
 
-    s"have the paragraph (P) '${MessageLookup.OtherIncomeError.para1}'" in {
-      document.getElementsByTag("P").text() must include(MessageLookup.OtherIncomeError.para1)
-    }
+    testPage.mustHaveParaSeq(
+      messages.para1,
+      messages.para2
+    )
 
-    s"have the paragraph (P) '${MessageLookup.OtherIncomeError.para2}'" in {
-      document.getElementsByTag("P").text() must include(MessageLookup.OtherIncomeError.para2)
-    }
-
-    s"have the paragraph (LI) '${MessageLookup.OtherIncomeError.bullet1}'" in {
-      document.getElementsByTag("LI").text() must include (MessageLookup.OtherIncomeError.bullet1)
-    }
-
-    s"have the paragraph (LI) '${MessageLookup.OtherIncomeError.bullet2}'" in {
-      document.getElementsByTag("LI").text() must include (MessageLookup.OtherIncomeError.bullet2)
-    }
-
-    s"have the paragraph (LI) '${MessageLookup.OtherIncomeError.bullet3}'" in {
-      document.getElementsByTag("LI").text() must include (MessageLookup.OtherIncomeError.bullet3)
-    }
   }
+
 }
 

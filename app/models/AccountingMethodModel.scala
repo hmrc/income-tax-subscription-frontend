@@ -18,8 +18,8 @@ package models
 
 import play.api.libs.json.Json
 
-case class IncomeTypeModel(incomeType: String)
+case class AccountingMethodModel(accountingMethod: String)
 
-object IncomeTypeModel {
-  implicit val format = Json.format[IncomeTypeModel]
+object AccountingMethodModel {
+  implicit val format = Json.format[AccountingMethodModel]
 }

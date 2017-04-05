@@ -19,14 +19,14 @@ package forms
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
-import models.CurrentFinancialPeriodPriorModel
+import models.AccountingPeriodPriorModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid}
 
-object CurrentFinancialPeriodPriorForm {
+object AccountingPeriodPriorForm {
 
-  val currentFinancialPeriodPrior = "currentFinancialPeriodPrior"
+  val accountingPeriodPrior = "accountingPeriodPrior"
   val option_yes = "Yes"
   val option_no = "No"
 
@@ -47,10 +47,10 @@ object CurrentFinancialPeriodPriorForm {
     }
   )
 
-  val currentFinancialPeriodPriorForm = Form(
+  val accountingPeriodPriorForm = Form(
     mapping(
-      currentFinancialPeriodPrior -> oText.toText.verifying(nonEmpty andThen validOption)
-    )(CurrentFinancialPeriodPriorModel.apply)(CurrentFinancialPeriodPriorModel.unapply)
+      accountingPeriodPrior -> oText.toText.verifying(nonEmpty andThen validOption)
+    )(AccountingPeriodPriorModel.apply)(AccountingPeriodPriorModel.unapply)
   )
 
 }

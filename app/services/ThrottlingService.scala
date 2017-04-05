@@ -16,7 +16,7 @@
 
 package services
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import auth.IncomeTaxSAUser
@@ -27,7 +27,7 @@ import utils.Implicits._
 
 import scala.concurrent.Future
 
-
+@Singleton
 class ThrottlingService @Inject()(throttlingControlConnector: ThrottlingControlConnector,
                                   logging: Logging
                                  ) {

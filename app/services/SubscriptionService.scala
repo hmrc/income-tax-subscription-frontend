@@ -39,7 +39,7 @@ class SubscriptionService @Inject()(logging: Logging,
       incomeSource = IncomeSourceType(summaryData.incomeSource.get.source),
       accountingPeriodStart = summaryData.accountingPeriod.fold[Option[DateModel]](None)(_.startDate),
       accountingPeriodEnd = summaryData.accountingPeriod.fold[Option[DateModel]](None)(_.endDate),
-      cashOrAccruals = summaryData.incomeType.fold[OS](None)(_.incomeType),
+      cashOrAccruals = summaryData.accountingMethod.fold[OS](None)(_.accountingMethod),
       tradingName = summaryData.businessName.fold[OS](None)(_.businessName)
     )
     logging.debug(s"Submitting subscription with request: $request")

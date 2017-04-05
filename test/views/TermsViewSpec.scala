@@ -16,86 +16,50 @@
 
 package views
 
-import assets.MessageLookup.{Base, Terms => messages}
+import assets.MessageLookup.{Terms => messages}
 import forms.TermForm
-import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
 
-class TermsViewSpec extends UnitTestTrait {
+class TermsViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
-  lazy val page = views.html.terms(
+  val backUrl = ViewSpecTrait.testBackUrl
+
+  val action = ViewSpecTrait.testCall
+
+  def page(isEditMode: Boolean) = views.html.terms(
     termsForm = TermForm.termForm,
-    postAction = controllers.routes.TermsController.submitTerms(),
+    postAction = action,
     backUrl = backUrl,
-    isEditMode = false
+    isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
 
   "The Terms view" should {
+    val testPage = TestView(
+      name = "Terms view",
+      title = messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false))
 
-    s"have the title '${messages.title}'" in {
-      document.title() must be(messages.title)
-    }
+    testPage.mustHaveBackLinkTo(backUrl)
 
-    s"have the heading (H1) '${messages.heading}'" in {
-      document.getElementsByTag("H1").text() must be(messages.heading)
-    }
+    testPage.mustHavePara(messages.line_1)
 
-    s"have the line_1 (P) '${messages.line_1}'" in {
-      document.getElementsByTag("p").text() must include(messages.line_1)
-    }
+    val form = testPage.getForm("terms form")(actionCall = action)
 
-    s"have the line_2 (P) '${messages.line_2}'" in {
-      document.getElementsByTag("p").text() must include(messages.line_2)
-    }
+    form.mustHaveCheckbox(TermForm.hasAcceptedTerms, messages.checkbox)
 
-    s"have the li_1 (li) '${messages.li_1}'" in {
-      document.getElementsByTag("li").text() must include(messages.li_1)
-    }
-
-    s"have the li_2 (li) '${messages.li_2}'" in {
-      document.getElementsByTag("li").text() must include(messages.li_2)
-    }
-
-    s"have the li_3 (li) '${messages.li_3}'" in {
-      document.getElementsByTag("li").text() must include(messages.li_3)
-    }
-
-    "have a form" which {
-
-      s"has a post action to '${controllers.routes.TermsController.submitTerms().url}'" in {
-        document.select("form").attr("method") mustBe "POST"
-        document.select("form").attr("action") mustBe controllers.routes.TermsController.submitTerms().url
-      }
-
-      "has a checkbox to agree to the terms and conditions" in {
-        document.select("input").attr("type") mustBe "checkbox"
-        document.select("input").parents().get(0).text() mustBe messages.checkbox
-      }
-
-      "has a continue button" in {
-        document.select("button").attr("type") mustBe "submit"
-        document.select("button").text() mustBe Base.continue
-      }
-
-    }
+    form.mustHaveContinueButton()
   }
 
   "When in edit mode, the terms view" should {
-    lazy val editPage = views.html.terms(
-      termsForm = TermForm.termForm,
-      postAction = controllers.routes.TermsController.submitTerms(),
-      backUrl = backUrl,
-      isEditMode = true
-    )(FakeRequest(), applicationMessages, appConfig)
-    lazy val editDocument = Jsoup.parse(editPage.body)
+    val editModePage = TestView(
+      name = "Terms view",
+      title = messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = true))
 
-    "have an 'Update' button" in {
-      editDocument.select("button").attr("type") mustBe "submit"
-      editDocument.select("button").text() mustBe Base.update
-    }
+    editModePage.mustHaveUpdateButton()
   }
+
 }

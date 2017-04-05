@@ -16,7 +16,7 @@
 
 package controllers.preferences
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import connectors.models.preferences.Activated
@@ -32,6 +32,7 @@ import utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
+@Singleton
 class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val preferencesService: PreferencesService) extends BaseController {
@@ -76,6 +77,6 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   @inline def gotoPreferences(implicit request: Request[AnyContent]): Result = Redirect(preferencesService.choosePaperlessUrl)
 
-  def signOut(implicit request: Request[_]): Result = NotImplemented
+  def signOut(implicit request: Request[_]): Result = Redirect(controllers.routes.SignOutController.signOut())
 
 }

@@ -24,17 +24,17 @@ import play.api.test.Helpers._
 import services.mocks.{MockKeystoreService, MockProtectedMicroservice}
 import utils.TestModels
 
-class SummaryControllerSpec extends ControllerBaseSpec
+class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
   with MockProtectedMicroservice {
 
-  override val controllerName: String = "SummaryController"
+  override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showSummary" -> TestSummaryController.showSummary,
-    "submitSummary" -> TestSummaryController.submitSummary
+    "show" -> TestCheckYourAnswersController$.show,
+    "submit" -> TestCheckYourAnswersController$.submit
   )
 
-  object TestSummaryController extends SummaryController(
+  object TestCheckYourAnswersController$ extends CheckYourAnswersController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
@@ -42,9 +42,9 @@ class SummaryControllerSpec extends ControllerBaseSpec
     app.injector.instanceOf[Logging]
   )
 
-  "Calling the showSummary action of the SummaryController with an authorised user" should {
+  "Calling the show action of the CheckYourAnswersController with an authorised user" should {
 
-    lazy val result = TestSummaryController.showSummary(authenticatedFakeRequest())
+    lazy val result = TestCheckYourAnswersController$.show(authenticatedFakeRequest())
 
     "return ok (200)" in {
       setupMockKeystore(fetchAll = TestModels.testCacheMap)
@@ -53,9 +53,9 @@ class SummaryControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitSummary action of the SummaryController with an authorised user" should {
+  "Calling the submit action of the CheckYourAnswersController with an authorised user" should {
 
-    def call = TestSummaryController.submitSummary(authenticatedFakeRequest())
+    def call = TestCheckYourAnswersController$.submit(authenticatedFakeRequest())
 
     "When the submission is successful" should {
       lazy val result = call
@@ -88,7 +88,7 @@ class SummaryControllerSpec extends ControllerBaseSpec
 
   "The back url" should {
     s"point to ${controllers.routes.TermsController.showTerms().url}" in {
-      TestSummaryController.backUrl mustBe controllers.routes.TermsController.showTerms().url
+      TestCheckYourAnswersController$.backUrl mustBe controllers.routes.TermsController.showTerms().url
     }
   }
 

@@ -18,8 +18,8 @@ package models
 
 import play.api.libs.json.Json
 
-case class CurrentFinancialPeriodPriorModel(currentPeriodIsPrior: String)
+case class AccountingPeriodPriorModel(currentPeriodIsPrior: String)
 
-object CurrentFinancialPeriodPriorModel {
-  implicit val format = Json.format[CurrentFinancialPeriodPriorModel]
+object AccountingPeriodPriorModel {
+  implicit val format = Json.format[AccountingPeriodPriorModel]
 }

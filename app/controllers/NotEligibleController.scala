@@ -16,7 +16,7 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import forms.{IncomeSourceForm, NotEligibleForm}
@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.Future
 
-
+@Singleton
 class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val keystoreService: KeystoreService
@@ -71,7 +71,7 @@ class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,
       case Some(incomeSource) =>
         incomeSource.source match {
           case IncomeSourceForm.option_business | IncomeSourceForm.option_both =>
-            Redirect(controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod())
+            Redirect(controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod())
           case IncomeSourceForm.option_property =>
             Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())
         }
@@ -81,28 +81,6 @@ class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,
 
   def signOut(implicit request: Request[_]): Future[Result] = Future.successful(NotImplemented)
 
-  // Changed redirects from redundant routes to dummy income source route, and commented out old redirects, so they can be reverted to if required.
-  def backUrl(implicit request: Request[_]): Future[String] = {
-//    lazy val checkProperty = keystoreService.fetchPropertyIncome().map {
-//      case Some(propertyIncome) =>
-//        propertyIncome.incomeValue match {
-//          case PropertyIncomeForm.option_LT10k =>
-//            controllers.property.routes.PropertyIncomeController.showPropertyIncome().url
-//          case _ => controllers.business.routes.SoleTraderController.showSoleTrader().url
-//        }
-//    }
-
-    keystoreService.fetchIncomeSource() flatMap {
-      case Some(incomeSource) =>
-        incomeSource.source match {
-          case IncomeSourceForm.option_business =>
-            Future.successful(controllers.routes.IncomeSourceController.showIncomeSource().url)
-          case IncomeSourceForm.option_property =>
-            Future.successful(controllers.routes.IncomeSourceController.showIncomeSource().url)
-//          case IncomeSourceForm.option_both =>
-//            checkProperty
-        }
-    }
-  }
+  def backUrl(implicit request: Request[_]): Future[String] = Future.successful(controllers.routes.IncomeSourceController.showIncomeSource().url)
 
 }

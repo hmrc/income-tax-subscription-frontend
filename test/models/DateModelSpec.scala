@@ -36,5 +36,9 @@ class DateModelSpec extends PlaySpec with OneAppPerTest {
     "correctly format a date output to a view into d MMMMM uuuu" in {
       date.toOutputDateFormat shouldBe "1 February 2017"
     }
+
+    "correctly format a date for check your answers into dd/MM/uuuu" in {
+      date.toOutputDateFormat shouldBe "1 February 2017"
+    }
   }
 }

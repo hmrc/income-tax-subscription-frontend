@@ -16,6 +16,7 @@
 
 package controllers
 
+import audit.Logging
 import auth.authenticatedFakeRequest
 import forms.OtherIncomeForm
 import models.OtherIncomeModel
@@ -34,7 +35,10 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
 
   object TestOtherIncomeErrorController extends OtherIncomeErrorController()(
     MockBaseControllerConfig,
-    messagesApi, MockKeystoreService)
+    messagesApi,
+    MockKeystoreService,
+    app.injector.instanceOf[Logging]
+  )
 
   "Calling the showOtherIncomeError action of the OtherIncomeErrorController" should {
 
@@ -69,13 +73,13 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
       verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.business.routes.CurrentFinancialPeriodPriorController.show().url}' on the business journey" in {
+    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the business journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.CurrentFinancialPeriodPriorController.show().url)
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)
@@ -93,13 +97,13 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
       verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.business.routes.CurrentFinancialPeriodPriorController.show().url}' on the both journey" in {
+    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the both journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.CurrentFinancialPeriodPriorController.show().url)
+      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)

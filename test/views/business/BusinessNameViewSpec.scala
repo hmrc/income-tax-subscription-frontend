@@ -16,79 +16,54 @@
 
 package views.business
 
-import assets.MessageLookup.{Base, BusinessName => messages}
+import assets.MessageLookup.{BusinessName => messages}
 import forms.BusinessNameForm
-import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
+import views.ViewSpecTrait
 
-class BusinessNameViewSpec extends UnitTestTrait {
+class BusinessNameViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod().url
+  val backUrl = ViewSpecTrait.testBackUrl
+  val action = ViewSpecTrait.testCall
 
   def page(isEditMode: Boolean) = views.html.business.business_name(
-    businessNameForm = BusinessNameForm.businessNameForm,
-    postAction = controllers.business.routes.BusinessNameController.submitBusinessName(),
+    businessNameForm = BusinessNameForm.businessNameForm.form,
+    postAction = action,
     backUrl = backUrl,
-    isEditMode
+    isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
-  def documentCore(isEditMode: Boolean) = Jsoup.parse(page(isEditMode).body)
+
+  def documentCore(isEditMode: Boolean) = TestView(
+    name = "Business Name View",
+    title = messages.title,
+    heading = messages.heading,
+    page = page(isEditMode = isEditMode)
+  )
 
   "The Business Name view" should {
 
-    lazy val document = documentCore(isEditMode = false)
+    val testPage = documentCore(isEditMode = false)
 
-    s"have a back buttong pointed to $backUrl" in {
-      val backLink = document.select("#back")
-      backLink.isEmpty mustBe false
-      backLink.attr("href") mustBe backUrl
-    }
+    testPage.mustHaveBackLinkTo(backUrl)
 
-    s"have the title '${messages.title}'" in {
-      document.title() mustBe messages.title
-    }
+    testPage.mustHavePara(messages.line_1)
 
-    s"have the heading (H1) '${messages.heading}'" in {
-      document.select("h1").text() mustBe messages.heading
-    }
+    val form = testPage.getForm("Business Name form")(actionCall = action)
 
-    s"have the line_1 (P) '${messages.line_1}'" in {
-      document.select("p").text() must include(messages.line_1)
-    }
+    form.mustHaveTextField(
+      name = BusinessNameForm.businessName,
+      label = messages.heading,
+      showLabel = false)
 
-    "has a form" which {
-
-      "has a text input field for the business name" in {
-        document.select("input[name=BusinessName]").isEmpty mustBe false
-      }
-
-      "has a label for the input field" which {
-
-        "has the correct text" in {
-          document.select("label[for=BusinessName]").text() mustBe messages.heading
-        }
-
-        "is visuallyhidden" in {
-          document.select("label[for=BusinessName]").hasClass("visuallyhidden") mustBe true
-        }
-      }
-
-      "has a continue button" in {
-        document.select("#continue-button").isEmpty mustBe false
-      }
-
-      s"has a post action to '${controllers.business.routes.BusinessNameController.submitBusinessName().url}'" in {
-        document.select("form").attr("action") mustBe controllers.business.routes.BusinessNameController.submitBusinessName().url
-        document.select("form").attr("method") mustBe "POST"
-      }
-
-      "say update" in {
-        lazy val documentEdit = documentCore(isEditMode = true)
-        documentEdit.select("#continue-button").text() mustBe Base.update
-      }
-
-    }
+    form.mustHaveContinueButton()
 
   }
+
+  "The Business Name view in edit mode" should {
+    val editModePage = documentCore(isEditMode = true)
+
+    editModePage.mustHaveUpdateButton()
+  }
+
 }

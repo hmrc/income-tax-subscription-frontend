@@ -20,7 +20,7 @@ import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 
 class RoutesSpec extends PlaySpec with OneAppPerTest {
 
-  val contextRoute: String = "/income-tax-subscription-frontend"
+  val contextRoute: String = "/report-quarterly/income-and-expenses/sign-up"
 
   // Timeout routes
   "The URL for the timeout.timeout action" should {
@@ -30,16 +30,16 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   }
 
   "The URL for the SummaryController.showSummary action" should {
-    s"be equal to $contextRoute/summary" in {
-      controllers.routes.SummaryController.showSummary().url must be (s"$contextRoute/summary")
+    s"be equal to $contextRoute/check-your-answers" in {
+      controllers.routes.CheckYourAnswersController.show().url must be (s"$contextRoute/check-your-answers")
     }
   }
 
 
   // Summary routes
   "The URL for the SummaryController.submitSummary action" should {
-    s"be equal to $contextRoute/summary" in {
-      controllers.routes.SummaryController.submitSummary().url must be (s"$contextRoute/summary")
+    s"be equal to $contextRoute/check-your-answers" in {
+      controllers.routes.CheckYourAnswersController.submit().url must be (s"$contextRoute/check-your-answers")
     }
   }
 
@@ -49,17 +49,16 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-
-  // Current Financial Period Prior to April 2017 routes
-  "The URL for the CurrentFinancialPeriodPrior.show action" should {
-    s"be equal to $contextRoute/business/current-financial-period-prior" in {
-      controllers.business.routes.CurrentFinancialPeriodPriorController.show().url must be (s"$contextRoute/business/current-financial-period-prior")
+  // Business accounting period prior to April 2017 routes
+  "The URL for the BusinessAccountingPeriodController.show action" should {
+    s"be equal to $contextRoute/business/accounting-period" in {
+      controllers.business.routes.BusinessAccountingPeriodPriorController.show().url must be (s"$contextRoute/business/accounting-period-prior")
     }
   }
 
-  "The URL for the CurrentFinancialPeriodPrior.submit action" should {
-    s"be equal to $contextRoute/business/current-financial-period-prior" in {
-      controllers.business.routes.CurrentFinancialPeriodPriorController.show().url must be (s"$contextRoute/business/current-financial-period-prior")
+  "The URL for the BusinessAccountingPeriodController.submit action" should {
+    s"be equal to $contextRoute/business/accounting-period" in {
+      controllers.business.routes.BusinessAccountingPeriodPriorController.show().url must be (s"$contextRoute/business/accounting-period-prior")
     }
   }
 

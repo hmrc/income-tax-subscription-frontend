@@ -19,6 +19,7 @@ package views
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
 import models._
+import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
@@ -28,33 +29,33 @@ import play.twirl.api.Html
 import utils.{TestModels, UnitTestTrait}
 import views.html.helpers.SummaryIdConstants._
 
-class SummaryPageViewSpec extends UnitTestTrait {
+class CheckYourAnswersViewSpec extends UnitTestTrait {
 
   val testAccountingPeriod = AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))
   val testBusinessName = BusinessNameModel("test business name")
-  val testIncomeType: IncomeTypeModel = TestModels.testIncomeType
-  val testContactEmail = EmailModel("test@example.com")
+  val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testTerms = TermModel(true)
   val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
+  val testOtherIncome: OtherIncomeModel = TestModels.testOtherIncomeNo
   val testSummary = SummaryModel(
     incomeSource = testIncomeSource,
+    otherIncome = testOtherIncome,
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
-    incomeType = testIncomeType,
-    contactEmail = testContactEmail,
+    accountingMethod = testAccountingMethod,
     terms = testTerms
   )
 
-  lazy val postAction: Call = controllers.routes.SummaryController.submitSummary()
+  lazy val postAction: Call = controllers.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.routes.TermsController.showTerms().url
 
-  lazy val page: Html = views.html.summary_page(
+  def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Html = views.html.check_your_answers(
     summaryModel = testSummary,
     postAction = postAction,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
-  lazy val document: Document = page.doc
+  def document(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Document = page(accountingPeriodViewType).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -75,68 +76,68 @@ class SummaryPageViewSpec extends UnitTestTrait {
   "Summary page view" should {
 
     s"have a back buttong pointed to $backUrl" in {
-      val backLink = document.select("#back")
+      val backLink = document().select("#back")
       backLink.isEmpty shouldBe false
       backLink.attr("href") shouldBe backUrl
     }
 
     s"have the title '${messages.title}'" in {
-      document.title() mustBe messages.title
+      document().title() mustBe messages.title
     }
 
     s"have the heading (H1) '${messages.heading}'" in {
-      document.select("h1").text() mustBe messages.heading
+      document().select("h1").text() must include (messages.heading)
     }
 
-    s"have the line_1 (P) '${messages.line_1}'" in {
-      document.select("p").text() must include(messages.line_1)
+    s"have visually hidden text as part of the (H1) '${messages.heading_hidden}'" in {
+      document().select("h1 span").text() must include (messages.heading_hidden)
     }
 
     s"have the secondary heading (H2) '${messages.h2}'" in {
-      document.select("h2").text() must include(messages.h2)
-    }
-
-    s"have the line_2 (P) '${messages.line_2}'" in {
-      document.select("p").text() must include(messages.line_2)
+      document().select("h2").text() must include(messages.h2)
     }
 
     "has a form" which {
 
       "has a submit button" in {
-        val submit = document.getElementById("continue-button")
+        val submit = document().getElementById("continue-button")
         submit.isEmpty mustBe false
-        submit.text shouldBe MessageLookup.Base.submit
+        submit.text shouldBe MessageLookup.Summary.confirm_and_sign_up
       }
 
       s"has a post action to '${postAction.url}'" in {
-        document.select("form").attr("action") mustBe postAction.url
-        document.select("form").attr("method") mustBe "POST"
+        document().select("form").attr("action") mustBe postAction.url
+        document().select("form").attr("method") mustBe "POST"
       }
 
     }
 
-    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: String) = {
-      val accountingPeriod = document.getElementById(sectionId)
-      val question = document.getElementById(questionId(sectionId))
-      val answer = document.getElementById(answerId(sectionId))
-      val editLink = document.getElementById(editLinkId(sectionId))
+    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String]) = {
+      val accountingPeriod = document().getElementById(sectionId)
+      val question = document().getElementById(questionId(sectionId))
+      val answer = document().getElementById(answerId(sectionId))
+      val editLink = document().getElementById(editLinkId(sectionId))
 
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
-      editLinkStyleCorrectness(editLink)
+      if (expectedEditLink.nonEmpty) editLinkStyleCorrectness(editLink)
 
       question.text() shouldBe expectedQuestion
       answer.text() shouldBe expectedAnswer
-      editLink.attr("href") shouldBe expectedEditLink
-      editLink.text() shouldBe MessageLookup.Base.change
+      if (expectedEditLink.nonEmpty) {
+        editLink.attr("href") shouldBe expectedEditLink.get
+        editLink.text() should include (MessageLookup.Base.change)
+        editLink.select("span").text() shouldBe expectedQuestion
+        editLink.select("span").hasClass("visuallyhidden") shouldBe true
+      }
     }
 
-    "display the correct info for the accounting period" in {
-      val sectionId = AccountingPeriodId
+    "display the correct info for the accounting period date" in {
+      val sectionId = AccountingPeriodDateId
       val expectedQuestion = messages.accounting_period
       val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
-      val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat} ${messages.accounting_period_month(periodInMonth)}"
-      val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodController.showAccountingPeriod(editMode = true).url
+      val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
+      val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -160,6 +161,20 @@ class SummaryPageViewSpec extends UnitTestTrait {
       )
     }
 
+    "display the correct info for other income" in {
+      val sectionId = OtherIncomeId
+      val expectedQuestion = messages.other_income
+      val expectedAnswer = MessageLookup.OtherIncome.no
+      val expectedEditLink = controllers.routes.OtherIncomeController.showOtherIncome().url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )
+    }
+
     "display the correct info for the business name" in {
       val sectionId = BusinessNameId
       val expectedQuestion = messages.business_name
@@ -174,11 +189,11 @@ class SummaryPageViewSpec extends UnitTestTrait {
       )
     }
 
-    "display the correct info for the income type" in {
-      val sectionId = IncomeTypeId
+    "display the correct info for the accounting method" in {
+      val sectionId = AccountingMethodId
       val expectedQuestion = messages.income_type
-      val expectedAnswer = messages.IncomeType.cash
-      val expectedEditLink = controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType(editMode = true).url
+      val expectedAnswer = messages.AccountingMethod.cash
+      val expectedEditLink = controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -188,32 +203,31 @@ class SummaryPageViewSpec extends UnitTestTrait {
       )
     }
 
-//    TODO - Change required following design around what will be displayed for digital preference decision
-//    "display the correct info for the contact email" in {
-//      val sectionId = ContactEmailId
-//      val expectedQuestion = messages.contact_email
-//      val expectedAnswer = testContactEmail.emailAddress
-//      val expectedEditLink = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
-//
-//      sectionTest(
-//        sectionId = sectionId,
-//        expectedQuestion = expectedQuestion,
-//        expectedAnswer = expectedAnswer,
-//        expectedEditLink = expectedEditLink
-//      )
-//    }
+    //    TODO - Change required following design around what will be displayed for digital preference decision
+    //    "display the correct info for the contact email" in {
+    //      val sectionId = ContactEmailId
+    //      val expectedQuestion = messages.contact_email
+    //      val expectedAnswer = testContactEmail.emailAddress
+    //      val expectedEditLink = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
+    //
+    //      sectionTest(
+    //        sectionId = sectionId,
+    //        expectedQuestion = expectedQuestion,
+    //        expectedAnswer = expectedAnswer,
+    //        expectedEditLink = expectedEditLink
+    //      )
+    //    }
 
     "display the correct info for the terms" in {
       val sectionId = TermsId
       val expectedQuestion = messages.terms
       val expectedAnswer = messages.terms_agreed
-      val expectedEditLink = controllers.routes.TermsController.showTerms(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
+        expectedEditLink = None
       )
     }
 

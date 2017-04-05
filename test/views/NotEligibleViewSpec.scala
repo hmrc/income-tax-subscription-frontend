@@ -16,94 +16,52 @@
 
 package views
 
-import assets.MessageLookup.{Base => common, Not_Eligible => messages}
+import assets.MessageLookup.{Not_Eligible => messages}
 import forms.NotEligibleForm
-import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
 
-class NotEligibleViewSpec extends UnitTestTrait {
+class NotEligibleViewSpec extends ViewSpecTrait {
 
-  lazy val backUrl = controllers.routes.IncomeSourceController.showIncomeSource().url
+  val backUrl = ViewSpecTrait.testBackUrl
+
+  val action = ViewSpecTrait.testCall
 
   lazy val page = views.html.not_eligible(
     notEligibleForm = NotEligibleForm.notEligibleForm,
-    postAction = controllers.routes.NotEligibleController.submitNotEligible(),
+    postAction = action,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
-  lazy val document = Jsoup.parse(page.body)
-
   "The Not Eligible view" should {
 
-    s"have a back buttong pointed to $backUrl" in {
-      val backLink = document.select("#back")
-      backLink.isEmpty mustBe false
-      backLink.attr("href") mustBe backUrl
-    }
+    val testPage = TestView(
+      name = "Not Eligible View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page
+    )
 
-    s"have the title '${messages.title}'" in {
-      document.title() must be(messages.title)
-    }
+    testPage.mustHaveBackLinkTo(backUrl)
 
-    s"have the heading (H1) '${messages.heading}'" in {
-      document.getElementsByTag("H1").text() must be(messages.heading)
-    }
+    testPage.mustHaveParaSeq(
+      messages.line_1,
+      messages.line_2,
+      messages.line_3
+    )
 
-    s"have the paragraph 1 (P) '${messages.line_1}'" in {
-      document.getElementsByTag("P").text() must include(messages.line_1)
-    }
+    val form = testPage.getForm("Not Eligible form")(actionCall = action)
 
-    s"have the paragraph 2 (P) '${messages.line_2}'" in {
-      document.getElementsByTag("P").text() must include(messages.line_2)
-    }
+    form.mustHaveRadioSet(
+      legend = messages.question,
+      radioName = NotEligibleForm.choice
+    )(
+      NotEligibleForm.option_signup -> messages.signUp,
+      NotEligibleForm.option_signout -> messages.signOut
+    )
 
-    s"have the paragraph 3 (P) '${messages.line_3}'" in {
-      document.getElementsByTag("P").text() must include(messages.line_3)
-    }
+    form.mustHaveContinueButton()
 
-    "have a form" which {
-
-      val radioName = "choice"
-
-      s"has a fieldset for Sign up and Sign out" which {
-        s"has a legend which is visually hidden with the text '${messages.question}'" in {
-          document.select("fieldset legend").text() mustBe messages.question
-        }
-
-        s"has a radio option for 'incomeType-${NotEligibleForm.option_signup}'" in {
-          val cashRadio = document.select(s"#$radioName-${NotEligibleForm.option_signup}")
-          cashRadio.attr("type") mustBe "radio"
-          cashRadio.attr("name") mustBe s"$radioName"
-          cashRadio.attr("value") mustBe NotEligibleForm.option_signup
-          val label = document.getElementsByAttributeValue("for", s"$radioName-${NotEligibleForm.option_signup}")
-          label.size() mustBe 1
-          label.get(0).text() mustBe messages.signUp
-        }
-
-        s"has a radio option for 'incomeType-${NotEligibleForm.option_signout}'" in {
-          val cashRadio = document.select(s"#$radioName-${NotEligibleForm.option_signout}")
-          cashRadio.attr("type") mustBe "radio"
-          cashRadio.attr("name") mustBe s"$radioName"
-          cashRadio.attr("value") mustBe NotEligibleForm.option_signout
-          val label = document.getElementsByAttributeValue("for", s"$radioName-${NotEligibleForm.option_signout}")
-          label.size() mustBe 1
-          label.get(0).text() mustBe messages.signOut
-        }
-
-      }
-
-      s"has a post action to '${controllers.routes.NotEligibleController.submitNotEligible().url}'" in {
-        document.select("form").attr("method") mustBe "POST"
-        document.select("form").attr("action") mustBe controllers.routes.NotEligibleController.submitNotEligible().url
-      }
-
-      "has a continue button" in {
-        document.select("button").attr("type") mustBe "submit"
-        document.select("button").text() mustBe common.continue
-      }
-
-    }
   }
+
 }

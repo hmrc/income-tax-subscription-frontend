@@ -138,10 +138,11 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     def callShow() = TestPreferencesController.submitGoBackToPreferences()(authenticatedFakeRequest()
       .post(backToPreferencesForm, BackToPreferencesModel(option_no)))
 
-    "return a redirect status (NOT_IMPLEMENTED - 501)" in {
+    "return a redirect status (SEE_OTHER - 303)" in {
       val goodRequest = callShow()
 
-      status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest) mustBe Some(controllers.routes.SignOutController.signOut().url)
     }
 
   }

@@ -17,127 +17,54 @@
 package forms
 
 import assets.MessageLookup
-import forms.submapping.DateMapping
+import forms.AccountingPeriodPriorForm._
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.{DataMap, _}
-import models.{AccountingPeriodModel, DateModel}
+import models.AccountingPeriodPriorModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 
 class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
 
-  import AccountingPeriodForm._
-  import DateMapping._
-
-  "The DateForm" should {
-    "transform a valid request to the date form case class" in {
-      val testDateDay = "31"
-      val testDateMonth = "05"
-      val testDateYear = "2017"
-
-      val testDateDay2 = "01"
-      val testDateMonth2 = "06"
-      val testDateYear2 = "2018"
-
-      val testInput = Map(
-        startDate * dateDay -> testDateDay, startDate * dateMonth -> testDateMonth, startDate * dateYear -> testDateYear,
-        endDate * dateDay -> testDateDay2, endDate * dateMonth -> testDateMonth2, endDate * dateYear -> testDateYear2
-      )
-
-      val expected = AccountingPeriodModel(
-        DateModel(testDateDay, testDateMonth, testDateYear),
-        DateModel(testDateDay2, testDateMonth2, testDateYear2))
-
-      val actual = accountingPeriodForm.bind(testInput).value
+  "The AccountingPeriodForm" should {
+    "transform the request to the form case class" in {
+      val testIncomeSource = option_yes
+      val testInput = Map(accountingPeriodPrior -> testIncomeSource)
+      val expected = AccountingPeriodPriorModel(testIncomeSource)
+      val actual = accountingPeriodPriorForm.bind(testInput).value
 
       actual shouldBe Some(expected)
     }
 
-    "when testing the validation" should {
+    "validate income type correctly" in {
+      val empty = ErrorMessageFactory.error("error.business.current_financial_period_prior.empty")
+      val invalid = ErrorMessageFactory.error("error.business.current_financial_period_prior.invalid")
 
-      "output the appropriate error messages for the start date" when {
+      empty fieldErrorIs MessageLookup.Error.Business.AccountingPeriodPrior.empty
+      empty summaryErrorIs MessageLookup.Error.Business.AccountingPeriodPrior.empty
 
-        "a date is not supplied" in {
-          val empty = ErrorMessageFactory.error("error.date.empty")
-          empty fieldErrorIs MessageLookup.Error.Date.empty
-          empty summaryErrorIs MessageLookup.Error.Date.empty
+      invalid fieldErrorIs MessageLookup.Error.Business.AccountingPeriodPrior.invalid
+      invalid summaryErrorIs MessageLookup.Error.Business.AccountingPeriodPrior.invalid
 
-          accountingPeriodForm.bind(DataMap.EmptyMap) assert startDate hasExpectedErrors empty
-          accountingPeriodForm.bind(DataMap.emptyDate(startDate)) assert startDate hasExpectedErrors empty
-        }
+      val emptyInput0 = DataMap.EmptyMap
+      val emptyTest0 = accountingPeriodPriorForm.bind(emptyInput0)
+      emptyTest0 assert accountingPeriodPrior hasExpectedErrors empty
 
-        "it is an invalid date" in {
-          val invalid = ErrorMessageFactory.error("error.date.invalid")
-          invalid fieldErrorIs MessageLookup.Error.Date.invalid
-          invalid summaryErrorIs MessageLookup.Error.Date.invalid
+      val emptyInput = DataMap.accountingPeriodPrior("")
+      val emptyTest = accountingPeriodPriorForm.bind(emptyInput)
+      emptyTest assert accountingPeriodPrior hasExpectedErrors empty
 
-          val invalidTest = accountingPeriodForm.bind(DataMap.date(startDate)("29", "2", "2017"))
-          invalidTest assert startDate hasExpectedErrors invalid
-        }
-
-        "it is before the 1 April 2017" in {
-          val beforeMin = ErrorMessageFactory.error("error.business_accounting_period.minStartDate")
-          beforeMin fieldErrorIs MessageLookup.Error.BusinessAccountingPeriod.minStartDate
-          beforeMin summaryErrorIs MessageLookup.Error.BusinessAccountingPeriod.minStartDate
-
-          val beforeMinTest = accountingPeriodForm.bind(DataMap.date(startDate)("01", "2", "2017"))
-          beforeMinTest assert startDate hasExpectedErrors beforeMin
-        }
-      }
-
-      "output an appropriate error for the end date" when {
-
-        "a date is not supplied" in {
-          val empty = ErrorMessageFactory.error("error.date.empty")
-          empty fieldErrorIs MessageLookup.Error.Date.empty
-          empty summaryErrorIs MessageLookup.Error.Date.empty
-
-          val emptyDateInput0 = DataMap.EmptyMap
-          val emptyTest0 = accountingPeriodForm.bind(emptyDateInput0)
-          emptyTest0 assert endDate hasExpectedErrors empty
-
-          val emptyDateInput = DataMap.emptyDate(endDate)
-          val emptyTest = accountingPeriodForm.bind(emptyDateInput)
-          emptyTest assert endDate hasExpectedErrors empty
-
-        }
-
-        "it is an invalid date" in {
-          val invalid = ErrorMessageFactory.error("error.date.invalid")
-          invalid fieldErrorIs MessageLookup.Error.Date.invalid
-          invalid summaryErrorIs MessageLookup.Error.Date.invalid
-
-          val invalidDateInput = DataMap.date(endDate)("29", "2", "2017")
-          val invalidTest = accountingPeriodForm.bind(invalidDateInput)
-          invalidTest assert endDate hasExpectedErrors invalid
-        }
-
-        "it is before the start date" in {
-          val violation = ErrorMessageFactory.error("error.end_date_violation")
-          violation fieldErrorIs MessageLookup.Error.Date.end_violation
-          violation summaryErrorIs MessageLookup.Error.Date.end_violation
-
-          val endDateViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("28", "6", "2017")
-          val violationTest = accountingPeriodForm.bind(endDateViolationInput)
-          violationTest assert endDate hasExpectedErrors violation
-        }
-
-        "it is more than 24 months after the start date" in {
-          val violation = ErrorMessageFactory.error("error.business_accounting_period.maxEndDate")
-          violation fieldErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate
-          violation summaryErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate
-
-          val endDateViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("29", "6", "2019")
-          val violationTest = accountingPeriodForm.bind(endDateViolationInput)
-          violationTest assert endDate hasExpectedErrors violation
-        }
-      }
+      val invalidInput = DataMap.accountingPeriodPrior("α")
+      val invalidTest = accountingPeriodPriorForm.bind(invalidInput)
+      invalidTest assert accountingPeriodPrior hasExpectedErrors invalid
     }
 
-    "accept a valid date" in {
-      val testData = DataMap.date(startDate)("28", "5", "2017") ++ DataMap.date(endDate)("28", "5", "2018")
-      accountingPeriodForm isValidFor testData
+    "The following submission should be valid" in {
+      val testYes = DataMap.accountingPeriodPrior(option_yes)
+      accountingPeriodPriorForm isValidFor testYes
+      val testNo = DataMap.accountingPeriodPrior(option_no)
+      accountingPeriodPriorForm isValidFor testNo
     }
   }
 

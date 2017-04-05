@@ -19,10 +19,12 @@ package controllers
 import audit.Logging
 import auth.{MockConfig, authenticatedFakeRequest}
 import config.BaseControllerConfig
+import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockThrottlingService
+import assets.MessageLookup.FrontPage
 
 
 class HomeControllerSpec extends ControllerBaseSpec
@@ -31,61 +33,81 @@ class HomeControllerSpec extends ControllerBaseSpec
   override val controllerName: String = "HomeControllerSpec"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "index" -> TestHomeController(false).index()
+    "index" -> TestHomeController(enableThrottling = false, showGuidance = false).index()
   )
 
-  def mockBaseControllerConfig(enableThrottling: Boolean): BaseControllerConfig = {
-    val et = enableThrottling
+  def mockBaseControllerConfig(isThrottled: Boolean, showStartPage: Boolean): BaseControllerConfig = {
     val mockConfig = new MockConfig {
-      override val enableThrottling: Boolean = et
+      override val enableThrottling: Boolean = isThrottled
+      override val showGuidance: Boolean = showStartPage
     }
     mockBaseControllerConfig(mockConfig)
   }
 
-  def TestHomeController(enableThrottling: Boolean) = new HomeController(
-    mockBaseControllerConfig(enableThrottling),
+  def TestHomeController(enableThrottling: Boolean, showGuidance: Boolean) = new HomeController(
+    mockBaseControllerConfig(enableThrottling, showGuidance),
     messagesApi,
     TestThrottlingService,
     app.injector.instanceOf[Logging]
   )
 
-  "Calling the index action of the Home controller with an authorised user" should {
+  "Calling the home action of the Home controller with an authorised user" should {
 
-    lazy val result = TestHomeController(false).index()(authenticatedFakeRequest())
+    "If the start page (showGuidance) is enabled" should {
 
-    s"get a redirection (303) to ${controllers.preferences.routes.PreferencesController.checkPreferences().url}" in {
+      lazy val result = TestHomeController(enableThrottling = false, showGuidance = true).home()(authenticatedFakeRequest())
 
-      status(result) must be(Status.SEE_OTHER)
+      "Return status OK (200)" in {
+        status(result) must be(Status.OK)
+      }
 
-      redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+      "Should have the page title" in {
+        Jsoup.parse(contentAsString(result)).title mustBe FrontPage.title
+      }
     }
+
+    "If the start page (showGuidance) is disabled" should {
+      lazy val result = TestHomeController(enableThrottling = false, showGuidance = false).home()(authenticatedFakeRequest())
+
+      "Return status SEE_OTHER (303) redirect" in {
+        status(result) must be(Status.SEE_OTHER)
+      }
+
+      "Redirect to the 'Index' page" in {
+        redirectLocation(result).get mustBe controllers.routes.HomeController.index().url
+      }
+    }
+
   }
 
-  "If throttling is enabled when calling the index" should {
-    lazy val result = TestHomeController(true).index()(authenticatedFakeRequest())
+  "Calling the index action of the HomeController with an authorised user" should {
 
-    "trigger a call to the throttling service" in {
-      setupMockCheckAccess(auth.nino)(OK)
+    "If throttling is enabled when calling the index" should {
+      lazy val result = TestHomeController(enableThrottling = true, showGuidance = false).index()(authenticatedFakeRequest())
 
-      status(result) must be(Status.SEE_OTHER)
+      "trigger a call to the throttling service" in {
+        setupMockCheckAccess(auth.nino)(OK)
 
-      redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+        status(result) must be(Status.SEE_OTHER)
 
-      verifyMockCheckAccess(1)
+        redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+
+        verifyMockCheckAccess(1)
+      }
     }
-  }
 
-  "If throttling is disabled when calling the index" should {
-    lazy val result = TestHomeController(false).index()(authenticatedFakeRequest())
+    "If throttling is disabled when calling the index" should {
+      lazy val result = TestHomeController(enableThrottling = false, showGuidance = false).index()(authenticatedFakeRequest())
 
-    "not trigger a call to the throttling service" in {
-      setupMockCheckAccess(auth.nino)(OK)
+      "not trigger a call to the throttling service" in {
+        setupMockCheckAccess(auth.nino)(OK)
 
-      status(result) must be(Status.SEE_OTHER)
+        status(result) must be(Status.SEE_OTHER)
 
-      redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+        redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
 
-      verifyMockCheckAccess(0)
+        verifyMockCheckAccess(0)
+      }
     }
   }
 

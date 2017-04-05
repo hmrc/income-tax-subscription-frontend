@@ -78,12 +78,12 @@ class TermsControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchTerms = 0, saveTerms = 1)
       }
 
-      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodResult = callShow()
 
-        redirectLocation(goodResult) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+        redirectLocation(goodResult) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodResult)
         verifyKeystore(fetchTerms = 0, saveTerms = 1)
@@ -101,11 +101,11 @@ class TermsControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchTerms = 0, saveTerms = 1)
       }
 
-      s"redirect to '${controllers.routes.SummaryController.showSummary().url}'" in {
+      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
 
         val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.SummaryController.showSummary().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchTerms = 0, saveTerms = 1)
@@ -127,15 +127,15 @@ class TermsControllerSpec extends ControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the business journey" in {
+    s"point to ${controllers.business.routes.BusinessAccountingMethodController.show().url} on the business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessAccountingMethodController.show().url
       verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
     }
 
-    s"point to ${controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url} on the both journey" in {
+    s"point to ${controllers.business.routes.BusinessAccountingMethodController.show().url} on the both journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
-      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessIncomeTypeController.showBusinessIncomeType().url
+      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessAccountingMethodController.show().url
       verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
     }
 

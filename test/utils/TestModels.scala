@@ -30,6 +30,8 @@ object TestModels extends Implicits {
 
   val testStartDate = DateModel("01", "04", "2017")
   val testEndDate = DateModel("01", "04", "2018")
+  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
@@ -38,36 +40,35 @@ object TestModels extends Implicits {
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
-  val testContactEmail = EmailModel("test@example.com")
-  val testIncomeType = IncomeTypeModel(IncomeTypeForm.option_cash)
+  val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
   val testTerms = TermModel(true)
 
   val emptyCacheMap = CacheMap("", Map())
 
   val testCacheMap: CacheMap =
-    testCacheMap(
-      incomeSource = testIncomeSourceBoth,
-      accountingPeriod = testAccountingPeriod,
+    testCacheMap(incomeSource = testIncomeSourceBoth,
+      otherIncome = testOtherIncomeNo,
+      accountingPeriodPrior = testAccountingPeriodPriorCurrent,
+      accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
-      incomeType = testIncomeType,
-      contactEmail = testContactEmail,
-      terms = testTerms
-    )
+      accountingMethod = testAccountingMethod,
+      terms = testTerms)
 
   def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
-                   accountingPeriod: Option[AccountingPeriodModel] = None,
+                   otherIncome: Option[OtherIncomeModel] = None,
+                   accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
+                   accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
-                   incomeType: Option[IncomeTypeModel] = None,
-                   contactEmail: Option[EmailModel] = None,
-                   terms: Option[TermModel] = None
-                  ): CacheMap = {
+                   accountingMethod: Option[AccountingMethodModel] = None,
+                   terms: Option[TermModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
-      accountingPeriod.fold(emptyMap)(model => Map(AccountingPeriod -> AccountingPeriodModel.format.writes(model))) ++
+      otherIncome.fold(emptyMap)(model => Map(OtherIncome -> OtherIncomeModel.format.writes(model))) ++
+      accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
+      accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
-      incomeType.fold(emptyMap)(model => Map(IncomeType -> IncomeTypeModel.format.writes(model))) ++
-      contactEmail.fold(emptyMap)(model => Map(ContactEmail -> EmailModel.format.writes(model))) ++
+      accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
       terms.fold(emptyMap)(model => Map(Terms -> TermModel.format.writes(model)))
     CacheMap("", map)
   }
@@ -80,9 +81,9 @@ object TestModels extends Implicits {
 
   lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
 
-  lazy val testIsCurrentPeriod = CurrentFinancialPeriodPriorModel(CurrentFinancialPeriodPriorForm.option_no)
+  lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
 
-  lazy val testIsNextPeriod = CurrentFinancialPeriodPriorModel(CurrentFinancialPeriodPriorForm.option_yes)
+  lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
   lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
 

@@ -18,7 +18,7 @@
 
 package testonly.controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import controllers.BaseController
@@ -34,6 +34,7 @@ import scala.concurrent.Future
   * This is necessary as it is currently not possible to set NINO or confidence level in GG Stubs
   * But we need to stub out the enrolment calls which we cannot simulate solely using the auth stubs
   */
+@Singleton
 class AuthUpdateController @Inject()(val baseConfig: BaseControllerConfig,
                                      val messagesApi: MessagesApi,
                                      val http: HttpPatch
@@ -44,7 +45,7 @@ class AuthUpdateController @Inject()(val baseConfig: BaseControllerConfig,
 
   lazy val updateURL = s"${baseConfig.applicationConfig.authUrl}/auth/authority"
 
-  def update = Authorised.async { implicit user =>
+  val update = Authorised.async { implicit user =>
     implicit request =>
       val confidencePatch = http.PATCH(updateURL, Json.obj("confidenceLevel" -> 200))
       confidencePatch.flatMap(_ => updated)

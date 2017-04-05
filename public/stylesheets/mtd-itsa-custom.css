@@ -1,0 +1,13 @@
+input[type=checkbox]
+{
+  width:29px;
+  height:29px;
+  margin-left:-5px;
+}
+
+input[type=radio]
+{
+    margin-left: -5px;
+    width: 29px;
+    height: 29px;
+}
