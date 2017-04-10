@@ -214,7 +214,8 @@ object MessageLookup {
       val heading = "What happens next"
       val para2 = "You must report to HMRC once every quarter from the start of your accounting period."
       val para3 = "HMRC will calculate an estimate of your Income Tax after you send a report. You can see these estimates from your accounting software after your first report, or through your business tax account from August 2017."
-      val para4 = "Activate your business tax account, you can use this to see a summary of your business taxes."
+      val linkText = "business tax account"
+      val para4 = s"Activate your $linkText, you can use this to see a summary of your business taxes."
     }
 
   }
