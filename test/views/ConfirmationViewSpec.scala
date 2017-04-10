@@ -95,6 +95,11 @@ class ConfirmationViewSpec extends UnitTestTrait {
         document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para4)
       }
 
+      s"has an Agent Services account link '${MessageLookup.Confirmation.whatHappensNext.linkText}'" in {
+        document.select("#whatHappensNext a").text() mustBe MessageLookup.Confirmation.whatHappensNext.linkText
+        document.select("#whatHappensNext a").attr("href") mustBe appConfig.btaUrl
+      }
+
     }
 
     "have a sign out button" in {
