@@ -150,8 +150,8 @@ object MessageLookup {
     val accordion_line_2 = "If you would record this income in:"
     val accordion_bullet_1 = "May 2017, then the method you use is 'cash basis' accounting"
     val accordion_bullet_2 = "March 2017, then the method you use is 'traditional accounting'"
-    val cash = "Cash basis"
-    val accruals = "Traditional accounting"
+    val cash = "Cash basis Your end-of-year records show the money you've received or paid out in the tax year. Most sole traders and small businesses use this method."
+    val accruals = "Accruals basis Your end-of-year accounts record income and expenses in the tax year that they occur, regardless of when you receive or make a payment. This method is also called ‘traditional’ accounting."
   }
 
   object Terms {
