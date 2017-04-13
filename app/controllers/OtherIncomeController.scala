@@ -38,18 +38,19 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                       val logging: Logging
                                      ) extends BaseController {
 
-  def view(isEditMode: Boolean, otherIncomeForm: Form[OtherIncomeModel], backUrl: String)(implicit request: Request[_]): Html =
+  def view(otherIncomeForm: Form[OtherIncomeModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.other_income(
       otherIncomeForm = otherIncomeForm,
       postAction = controllers.routes.OtherIncomeController.submitOtherIncome(editMode = isEditMode),
-      backUrl = backUrl
+      backUrl = backUrl,
+      isEditMode = isEditMode
     )
 
   def showOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       for {
         choice <- keystoreService.fetchOtherIncome()
-      } yield Ok(view(isEditMode, OtherIncomeForm.otherIncomeForm.fill(choice), backUrl))
+      } yield Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl, isEditMode))
   }
 
   def defaultRedirections(otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
@@ -75,7 +76,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
   def submitOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(view(isEditMode, otherIncomeForm = formWithErrors, backUrl = backUrl)),
+        formWithErrors => BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl, isEditMode = isEditMode)),
         choice =>
           keystoreService.fetchOtherIncome().flatMap {
             previousOtherIncome =>

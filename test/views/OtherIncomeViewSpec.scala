@@ -27,10 +27,11 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.other_income(
+  def page(isEditMode: Boolean) =  views.html.other_income(
     otherIncomeForm = OtherIncomeForm.otherIncomeForm,
     postAction = action,
-    backUrl = backUrl
+    backUrl = backUrl,
+    isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
   "The Other Income View" should {
@@ -39,7 +40,7 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       name = "Other Income View",
       title = messages.title,
       heading = messages.heading,
-      page = page)
+      page = page(isEditMode = false))
 
     testPage.mustHaveBackLinkTo(backUrl)
 
@@ -65,5 +66,12 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
 
     form.mustHaveContinueButton()
 
+    val editModePage = TestView(
+      name = "Edit Other Income View",
+      title = messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = true))
+
+    editModePage.mustHaveUpdateButton()
   }
 }
