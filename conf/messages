@@ -40,10 +40,9 @@ frontpage.bullet_9                                              = use your busin
 
 ## Preferences call back page
 preferences_callback.title                                      = Do you want to continue?
-preferences_callback.heading                                    = To sign up, you must allow HMRC to send you electronic communications
-preferences_callback.legend                                     = To sign up for quarterly reporting, you must allow HMRC to send you electronic communications
-preferences_callback.yes                                        = Continue to sign up
-preferences_callback.no                                         = Sign out
+preferences_callback.heading                                    = You can''t sign up for quarterly reporting
+preferences_callback.line_1                                     = To sign up for this service, you must allow HMRC to send you electronic communications.
+preferences_callback.button                                     = Go back
 
 ## Income source page
 income_source.title                                             = Where does your income come from?

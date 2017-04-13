@@ -32,6 +32,7 @@ object MessageLookup {
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
+    val goBack = "Go back"
   }
 
   object FrontPage {
@@ -58,10 +59,10 @@ object MessageLookup {
 
   object PreferencesCallBack {
     val title = "Do you want to continue?"
-    val heading: String = "To sign up, you must allow HMRC to send you electronic communications"
-    val legend: String = "To sign up for quarterly reporting, you must allow HMRC to send you electronic communications"
-    val yes: String = "Continue to sign up"
-    val no: String = "Sign out"
+    val heading: String = "You can't sign up for quarterly reporting"
+    val legend: String = "To sign up for this service, you must allow HMRC to send you electronic communications."
+    val button: String = "Go back"
+    val signOut: String = "Sign out"
   }
 
   object IncomeSource {

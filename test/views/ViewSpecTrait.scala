@@ -224,6 +224,8 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     def mustHaveUpdateButton(): Unit = mustHaveSubmitButton(common.update)
 
+    def mustHaveGoBackButton(): Unit = mustHaveSubmitButton(common.goBack)
+
     def mustHaveCheckbox(name: String, message: String): Unit =
       s"${this.name} must have a checkbox for '$name' with label '$message'" in {
         import collection.JavaConversions._
