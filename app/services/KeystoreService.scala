@@ -95,11 +95,11 @@ class KeystoreService @Inject()(val session: SessionCache) {
                                (implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodPriorModel]): FC =
     save[AccountingPeriodPriorModel](AccountingPeriodPrior, accountingPeriodPrior)
 
-  def fetchRegisterNextAccountingPeriod()(implicit hc: HeaderCarrier, reads: Reads[RegisterNextAccountingPeriodModel]): FO[RegisterNextAccountingPeriodModel] =
-    fetch[RegisterNextAccountingPeriodModel](RegisterNextAccountingPeriod)
+  def fetchRegisterNextAccountingPeriod()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] =
+    fetch[String](RegisterNextAccountingPeriod)
 
-  def saveRegisterNextAccountingPeriod(registerNextAccountingPeriod: RegisterNextAccountingPeriodModel)
-                                     (implicit hc: HeaderCarrier, reads: Reads[RegisterNextAccountingPeriodModel]): FC =
-    save[RegisterNextAccountingPeriodModel](RegisterNextAccountingPeriod, registerNextAccountingPeriod)
+  def saveRegisterNextAccountingPeriod(registerNextAccountingPeriod: String)
+                                     (implicit hc: HeaderCarrier, reads: Reads[String]): FC =
+    save[String](registerNextAccountingPeriod, RegisterNextAccountingPeriod)
 }
 

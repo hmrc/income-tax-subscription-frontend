@@ -20,16 +20,11 @@ import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import controllers.BaseController
-import forms.RegisterNextAccountingPeriodForm
-import models.RegisterNextAccountingPeriodModel
-import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.KeystoreService
 import utils.Implicits._
-
-import scala.concurrent.Future
 
 @Singleton
 class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseControllerConfig,
@@ -37,35 +32,19 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
                                                        val keystoreService: KeystoreService
                                                       ) extends BaseController {
 
-  def view(registerNextAccountingPeriodForm: Form[RegisterNextAccountingPeriodModel])(implicit request: Request[_]): Html =
+  def view()(implicit request: Request[_]): Html =
     views.html.business.register_next_accounting_period(
-      registerNextAccountingPeriodForm = registerNextAccountingPeriodForm,
       postAction = controllers.business.routes.RegisterNextAccountingPeriodController.submit(),
       backUrl = controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
     )
 
   val show: Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      keystoreService.fetchRegisterNextAccountingPeriod().map { x =>
-        Ok(view(RegisterNextAccountingPeriodForm.registerNextAccountingPeriodForm.fill(x)))
-      }
+      Ok(view)
   }
 
   val submit: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
-      RegisterNextAccountingPeriodForm.registerNextAccountingPeriodForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(view(formWithErrors)),
-        registerNextAccountingPeriod =>
-          keystoreService.saveRegisterNextAccountingPeriod(registerNextAccountingPeriod) flatMap { _ =>
-            registerNextAccountingPeriod.isRegisteringForNextPeriod match {
-              case RegisterNextAccountingPeriodForm.option_yes => yes
-              case RegisterNextAccountingPeriodForm.option_no => no
-            }
-          }
-      )
+    implicit request => Redirect(controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod())
   }
 
-  def yes(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod())
-
-  def no(implicit request: Request[_]): Future[Result] = Redirect(controllers.routes.SignOutController.signOut())
 }

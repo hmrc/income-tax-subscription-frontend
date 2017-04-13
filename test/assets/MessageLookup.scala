@@ -20,6 +20,7 @@ object MessageLookup {
 
   object Base {
     val continue = "Continue"
+    val continueToSignUp = "Continue to sign up"
     val submit = "Submit"
     val update = "Update"
     val signOut = "Sign out"
@@ -110,8 +111,8 @@ object MessageLookup {
       val heading = title
       val line_1 = "You can only use this service if your current accounting period started after 5 April 2017."
       val line_2 = "You can sign up now, but you won't be able to send any reports until your next accounting period begins."
-      val yes = "Continue to sign up"
-      val no = "Sign out"
+      val button = "Continue to sign up"
+      val signOut = "Sign out"
     }
 
   }

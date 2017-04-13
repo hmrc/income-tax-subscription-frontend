@@ -222,6 +222,8 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     def mustHaveContinueButton(): Unit = mustHaveSubmitButton(common.continue)
 
+    def mustHaveContinueToSignUpButton(): Unit = mustHaveSubmitButton(common.continueToSignUp)
+
     def mustHaveUpdateButton(): Unit = mustHaveSubmitButton(common.update)
 
     def mustHaveGoBackButton(): Unit = mustHaveSubmitButton(common.goBack)

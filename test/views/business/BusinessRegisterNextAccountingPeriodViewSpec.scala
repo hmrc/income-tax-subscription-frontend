@@ -17,7 +17,6 @@
 package views.business
 
 import assets.MessageLookup.Business.{RegisterNextAccountingPeriod => messages}
-import forms.RegisterNextAccountingPeriodForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
@@ -28,7 +27,6 @@ class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
   val action = ViewSpecTrait.testCall
 
   lazy val page = views.html.business.register_next_accounting_period(
-    registerNextAccountingPeriodForm = RegisterNextAccountingPeriodForm.registerNextAccountingPeriodForm,
     postAction = action,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
@@ -48,17 +46,13 @@ class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
       messages.line_2
     )
 
+    testPage.mustHaveALink(id = "sign-out", href = controllers.routes.SignOutController.signOut().url, text = messages.signOut)
+
     val form = testPage.getForm("Register Next Accounting Period form")(actionCall = action)
 
-    form.mustHaveRadioSet(
-      legend = messages.heading,
-      radioName = RegisterNextAccountingPeriodForm.registerNextAccountingPeriod
-    )(
-      RegisterNextAccountingPeriodForm.option_yes -> messages.yes,
-      RegisterNextAccountingPeriodForm.option_no -> messages.no
-    )
+    form.mustHaveContinueToSignUpButton()
 
-    form.mustHaveContinueButton()
+
 
   }
 }
