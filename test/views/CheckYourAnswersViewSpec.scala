@@ -165,7 +165,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = OtherIncomeId
       val expectedQuestion = messages.other_income
       val expectedAnswer = MessageLookup.OtherIncome.no
-      val expectedEditLink = controllers.routes.OtherIncomeController.showOtherIncome().url
+      val expectedEditLink = controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -202,21 +202,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedEditLink = expectedEditLink
       )
     }
-
-    //    TODO - Change required following design around what will be displayed for digital preference decision
-    //    "display the correct info for the contact email" in {
-    //      val sectionId = ContactEmailId
-    //      val expectedQuestion = messages.contact_email
-    //      val expectedAnswer = testContactEmail.emailAddress
-    //      val expectedEditLink = controllers.routes.ContactEmailController.showContactEmail(editMode = true).url
-    //
-    //      sectionTest(
-    //        sectionId = sectionId,
-    //        expectedQuestion = expectedQuestion,
-    //        expectedAnswer = expectedAnswer,
-    //        expectedEditLink = expectedEditLink
-    //      )
-    //    }
 
     "display the correct info for the terms" in {
       val sectionId = TermsId

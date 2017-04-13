@@ -30,11 +30,11 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestCheckYourAnswersController$.show,
-    "submit" -> TestCheckYourAnswersController$.submit
+    "show" -> TestCheckYourAnswersController.show,
+    "submit" -> TestCheckYourAnswersController.submit
   )
 
-  object TestCheckYourAnswersController$ extends CheckYourAnswersController(
+  object TestCheckYourAnswersController extends CheckYourAnswersController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
@@ -44,7 +44,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" should {
 
-    lazy val result = TestCheckYourAnswersController$.show(authenticatedFakeRequest())
+    lazy val result = TestCheckYourAnswersController.show(authenticatedFakeRequest())
 
     "return ok (200)" in {
       setupMockKeystore(fetchAll = TestModels.testCacheMap)
@@ -55,7 +55,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the CheckYourAnswersController with an authorised user" should {
 
-    def call = TestCheckYourAnswersController$.submit(authenticatedFakeRequest())
+    def call = TestCheckYourAnswersController.submit(authenticatedFakeRequest())
 
     "When the submission is successful" should {
       lazy val result = call
@@ -88,7 +88,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "The back url" should {
     s"point to ${controllers.routes.TermsController.showTerms().url}" in {
-      TestCheckYourAnswersController$.backUrl mustBe controllers.routes.TermsController.showTerms().url
+      TestCheckYourAnswersController.backUrl mustBe controllers.routes.TermsController.showTerms().url
     }
   }
 

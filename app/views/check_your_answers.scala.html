@@ -55,7 +55,7 @@
     val rowName = OtherIncomeId
     val rowQuestion = Messages("summary.other_income")
     val rowAnswer = source.choice
-    val rowUrl = controllers.routes.OtherIncomeController.showOtherIncome().url
+    val rowUrl = controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
