@@ -18,8 +18,6 @@ package controllers.preferences
 
 import auth._
 import controllers.ControllerBaseSpec
-import forms.preferences.BackToPreferencesForm._
-import models.preferences.BackToPreferencesModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.i18n.Messages
@@ -116,7 +114,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submitGoBackToPreferences action of the PreferencesController with an authorised user with yes" should {
-    implicit lazy val request = authenticatedFakeRequest().post(backToPreferencesForm, BackToPreferencesModel(option_yes))
+    implicit lazy val request = authenticatedFakeRequest()
 
     def callShow() = TestPreferencesController.submitGoBackToPreferences()(request)
 
@@ -132,31 +130,6 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
       await(goodRequest)
     }
-  }
-
-  "Calling the submitGoBackToPreferences action of the PreferencesController with an authorised user with no" should {
-    def callShow() = TestPreferencesController.submitGoBackToPreferences()(authenticatedFakeRequest()
-      .post(backToPreferencesForm, BackToPreferencesModel(option_no)))
-
-    "return a redirect status (SEE_OTHER - 303)" in {
-      val goodRequest = callShow()
-
-      status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest) mustBe Some(controllers.routes.SignOutController.signOut().url)
-    }
-
-  }
-
-  "Calling the submitGoBackToPreferences action of the PreferencesController with an authorised user and invalid submission" should {
-    lazy val callShow = TestPreferencesController.submitGoBackToPreferences()(authenticatedFakeRequest()
-      .post(backToPreferencesForm, BackToPreferencesModel("")))
-
-    "return a redirect status (SEE_OTHER - 303)" in {
-      val goodRequest = callShow
-
-      status(goodRequest) must be(Status.BAD_REQUEST)
-    }
-
   }
 
   authorisationTests()

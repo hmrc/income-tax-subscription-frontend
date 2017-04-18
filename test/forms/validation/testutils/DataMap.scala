@@ -16,7 +16,7 @@
 
 package forms.validation.testutils
 
-import forms.{AccountingPeriodPriorForm, RegisterNextAccountingPeriodForm}
+import forms.AccountingPeriodPriorForm
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil.constraint
 import play.api.data.validation.{Constraint, Invalid}
@@ -25,11 +25,10 @@ object DataMap {
 
   import forms.BusinessNameForm._
   import forms.EmailForm._
-  import forms.{IncomeSourceForm, AccountingMethodForm}
   import forms.NotEligibleForm._
   import forms.TermForm._
-  import forms.preferences.BackToPreferencesForm
   import forms.submapping.DateMapping._
+  import forms.{AccountingMethodForm, IncomeSourceForm}
 
 
   type DataMap = Map[String, String]
@@ -47,8 +46,6 @@ object DataMap {
 
   def accountingPeriodPrior(currentPeriodIsPrior: String): DataMap = Map(AccountingPeriodPriorForm.accountingPeriodPrior -> currentPeriodIsPrior)
 
-  def registerNextAccountingPeriod(isRegisteringForNextPeriod: String): DataMap = Map(RegisterNextAccountingPeriodForm.registerNextAccountingPeriod -> isRegisteringForNextPeriod)
-
   def accountingMethod(iType: String): DataMap = Map(AccountingMethodForm.accountingMethod -> iType)
 
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
@@ -60,8 +57,6 @@ object DataMap {
   def terms(acceptedTerms: String): DataMap = Map(hasAcceptedTerms -> acceptedTerms)
 
   def terms(acceptedTerms: Boolean): DataMap = terms(acceptedTerms.toString)
-
-  def acceptPaperlessDataMap(accept: String): DataMap = Map(BackToPreferencesForm.backToPreferences -> accept)
 
   val alwaysFailInvalid: Invalid = ErrorMessageFactory.error("always fail")
 
