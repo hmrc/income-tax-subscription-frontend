@@ -30,11 +30,11 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "BusinessAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestBusinessAccountingMethodController$.show(isEditMode = false),
-    "submit" -> TestBusinessAccountingMethodController$.submit(isEditMode = false)
+    "show" -> TestBusinessAccountingMethodController.show(isEditMode = false),
+    "submit" -> TestBusinessAccountingMethodController.submit(isEditMode = false)
   )
 
-  object TestBusinessAccountingMethodController$ extends BusinessAccountingMethodController(
+  object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService
@@ -42,7 +42,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "Calling the show action of the BusinessAccountingMethod with an authorised user" should {
 
-    lazy val result = TestBusinessAccountingMethodController$.show(isEditMode = false)(authenticatedFakeRequest())
+    lazy val result = TestBusinessAccountingMethodController.show(isEditMode = false)(authenticatedFakeRequest())
 
     "return ok (200)" in {
       setupMockKeystore(fetchAccountingMethod = None)
@@ -56,7 +56,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the BusinessAccountingMethod with an authorised user and valid submission" should {
 
-    def callShow(isEditMode: Boolean) = TestBusinessAccountingMethodController$.submit(isEditMode = isEditMode)(authenticatedFakeRequest()
+    def callShow(isEditMode: Boolean) = TestBusinessAccountingMethodController.submit(isEditMode = isEditMode)(authenticatedFakeRequest()
       .post(AccountingMethodForm.accountingMethodForm, AccountingMethodModel(AccountingMethodForm.option_cash)))
 
     "When it is not in edit mode" should {
@@ -109,7 +109,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submit action of the BusinessAccountingMethod with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessAccountingMethodController$.submit(isEditMode = false)(authenticatedFakeRequest())
+    lazy val badRequest = TestBusinessAccountingMethodController.submit(isEditMode = false)(authenticatedFakeRequest())
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)
@@ -121,7 +121,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "The back url" should {
     s"point to ${controllers.business.routes.BusinessNameController.showBusinessName().url}" in {
-      TestBusinessAccountingMethodController$.backUrl mustBe controllers.business.routes.BusinessNameController.showBusinessName().url
+      TestBusinessAccountingMethodController.backUrl mustBe controllers.business.routes.BusinessNameController.showBusinessName().url
     }
   }
 

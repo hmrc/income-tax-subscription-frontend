@@ -24,19 +24,19 @@ import play.api.test.Helpers._
 
 class SignOutControllerSpec extends ControllerBaseSpec {
 
-  object TestSignOutController$ extends SignOutController(
+  object TestSignOutController extends SignOutController(
     app,
     appConfig
   )
 
   override val controllerName: String = "SignOutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "signOut" -> TestSignOutController$.signOut
+    "signOut" -> TestSignOutController.signOut
   )
 
   "Authorised users" should {
     "be redirected to the gg signOut" in {
-      val result = TestSignOutController$.signOut(authenticatedFakeRequest())
+      val result = TestSignOutController.signOut(authenticatedFakeRequest())
       status(result) shouldBe SEE_OTHER
       redirectLocation(result).get should be(appConfig.ggSignOutUrl)
     }

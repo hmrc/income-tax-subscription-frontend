@@ -29,7 +29,7 @@ import scala.concurrent.Future
 
 @Singleton
 class SubscriptionService @Inject()(logging: Logging,
-                                    protectedMicroserviceConnector: SubscriptionConnector) {
+                                    subscriptionConnector: SubscriptionConnector) {
 
   type OS = Option[String]
 
@@ -46,12 +46,12 @@ class SubscriptionService @Inject()(logging: Logging,
   def submitSubscription(nino: String, summaryData: SummaryModel)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
     val request = buildRequest(nino, summaryData)
     logging.debug(s"Submitting subscription with request: $request")
-    protectedMicroserviceConnector.subscribe(request)
+    subscriptionConnector.subscribe(request)
   }
 
   def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
     logging.debug(s"Getting subscription for nino=$nino")
-    protectedMicroserviceConnector.getSubscription(nino)
+    subscriptionConnector.getSubscription(nino)
   }
 
 }
