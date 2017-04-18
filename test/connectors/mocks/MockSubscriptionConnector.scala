@@ -18,7 +18,7 @@ package connectors.mocks
 
 import config.AppConfig
 import connectors.models.subscription.{Both, FEFailureResponse, FERequest, FESuccessResponse}
-import connectors.subscription.ProtectedMicroserviceConnector
+import connectors.subscription.SubscriptionConnector
 import forms.{AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
 import models._
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
@@ -26,20 +26,20 @@ import play.api.libs.json.JsValue
 import utils.JsonUtils._
 import utils.TestConstants
 
-trait MockProtectedMicroserviceConnector extends MockHttp {
+trait MockSubscriptionConnector extends MockHttp {
 
-  object TestProtectedMicroserviceConnector extends ProtectedMicroserviceConnector(
+  object TestSubscriptionConnector extends SubscriptionConnector(
     app.injector.instanceOf[AppConfig],
     mockHttpPost,
     mockHttpGet
   )
 
   def setupMockSubscribe(request: Option[FERequest] = None)(status: Int, response: JsValue): Unit =
-    setupMockHttpPost(url = TestProtectedMicroserviceConnector.subscriptionUrl(""), request)(status, response)
+    setupMockHttpPost(url = TestSubscriptionConnector.subscriptionUrl(""), request)(status, response)
 
   def setupMockGetSubscription(nino: Option[String] = None)(status: Int, response: JsValue): Unit =
     setupMockHttpGet(
-      url = nino.fold(None: Option[String])(nino => TestProtectedMicroserviceConnector.subscriptionUrl(nino))
+      url = nino.fold(None: Option[String])(nino => TestSubscriptionConnector.subscriptionUrl(nino))
     )(status, response)
 
   def setupSubscribe(request: Option[FERequest] = None) = (setupMockSubscribe(request) _).tupled

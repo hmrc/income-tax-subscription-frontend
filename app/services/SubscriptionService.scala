@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import connectors.models.subscription.{FERequest, FEResponse, IncomeSourceType}
-import connectors.subscription.ProtectedMicroserviceConnector
+import connectors.subscription.SubscriptionConnector
 import models.{DateModel, SummaryModel}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.Implicits._
@@ -29,7 +29,7 @@ import scala.concurrent.Future
 
 @Singleton
 class SubscriptionService @Inject()(logging: Logging,
-                                    protectedMicroserviceConnector: ProtectedMicroserviceConnector) {
+                                    protectedMicroserviceConnector: SubscriptionConnector) {
 
   type OS = Option[String]
 

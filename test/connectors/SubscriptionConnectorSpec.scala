@@ -16,24 +16,24 @@
 
 package connectors
 
-import connectors.mocks.MockProtectedMicroserviceConnector
+import connectors.mocks.MockSubscriptionConnector
 import connectors.models.subscription.{FEResponse, FESuccessResponse}
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
 import utils.TestConstants
 
-class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnector {
+class SubscriptionConnectorSpec extends MockSubscriptionConnector {
 
   val nino: String = TestConstants.testNino
   val id: String = TestConstants.testMTDID
 
-  "ProtectedMicroserviceConnector.subscribe" should {
+  "SubscriptionConnector.subscribe" should {
 
     "Post to the correct url" in {
-      TestProtectedMicroserviceConnector.subscriptionUrl(TestConstants.testNino) should endWith(s"/income-tax-subscription/subscription/${TestConstants.testNino}")
+      TestSubscriptionConnector.subscriptionUrl(TestConstants.testNino) should endWith(s"/income-tax-subscription/subscription/${TestConstants.testNino}")
     }
 
-    def call = await(TestProtectedMicroserviceConnector.subscribe(request = testRequest))
+    def call = await(TestSubscriptionConnector.subscribe(request = testRequest))
 
     "return the succcess response as an object" in {
       setupSubscribe(testRequest)(subscribeSuccess)
@@ -57,14 +57,14 @@ class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnec
     }
   }
 
-  "ProtectedMicroserviceConnector.getSubscription" should {
+  "SubscriptionConnector.getSubscription" should {
 
     val testNino = TestConstants.testNino
     "GET to the correct url" in {
-      TestProtectedMicroserviceConnector.subscriptionUrl(testNino) should endWith(s"/income-tax-subscription/subscription/$testNino")
+      TestSubscriptionConnector.subscriptionUrl(testNino) should endWith(s"/income-tax-subscription/subscription/$testNino")
     }
 
-    def result: Option[FEResponse] = await(TestProtectedMicroserviceConnector.getSubscription(testNino))
+    def result: Option[FEResponse] = await(TestSubscriptionConnector.getSubscription(testNino))
 
     "return the succcess response as an object" in {
       setupGetSubscription(testNino)(subscribeSuccess)
