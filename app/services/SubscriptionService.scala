@@ -33,8 +33,8 @@ class SubscriptionService @Inject()(logging: Logging,
 
   type OS = Option[String]
 
-  def submitSubscription(nino: String, summaryData: SummaryModel)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
-    val request = FERequest(
+  private[services] def buildRequest(nino: String, summaryData: SummaryModel): FERequest =
+    FERequest(
       nino = nino,
       incomeSource = IncomeSourceType(summaryData.incomeSource.get.source),
       accountingPeriodStart = summaryData.accountingPeriod.fold[Option[DateModel]](None)(_.startDate),
@@ -42,6 +42,9 @@ class SubscriptionService @Inject()(logging: Logging,
       cashOrAccruals = summaryData.accountingMethod.fold[OS](None)(_.accountingMethod),
       tradingName = summaryData.businessName.fold[OS](None)(_.businessName)
     )
+
+  def submitSubscription(nino: String, summaryData: SummaryModel)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
+    val request = buildRequest(nino, summaryData)
     logging.debug(s"Submitting subscription with request: $request")
     protectedMicroserviceConnector.subscribe(request)
   }

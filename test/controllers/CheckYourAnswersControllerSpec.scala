@@ -62,7 +62,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
-        setupSubscribe(subscribeSuccess)
+        setupSubscribe()(subscribeSuccess)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
@@ -77,7 +77,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "return a internalServer error" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
-        setupSubscribe(subscribeBadRequest)
+        setupSubscribe()(subscribeBadRequest)
         status(result) must be(Status.INTERNAL_SERVER_ERROR)
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)

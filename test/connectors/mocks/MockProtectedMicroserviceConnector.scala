@@ -19,6 +19,8 @@ package connectors.mocks
 import config.AppConfig
 import connectors.models.subscription.{Both, FEFailureResponse, FERequest, FESuccessResponse}
 import connectors.subscription.ProtectedMicroserviceConnector
+import forms.{AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
+import models._
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.JsValue
 import utils.JsonUtils._
@@ -32,15 +34,16 @@ trait MockProtectedMicroserviceConnector extends MockHttp {
     mockHttpGet
   )
 
-  def setupMockSubscribe()(status: Int, response: JsValue): Unit =
-    setupMockHttpPost(url = TestProtectedMicroserviceConnector.subscriptionUrl(""))(status, response)
+  def setupMockSubscribe(request: Option[FERequest] = None)(status: Int, response: JsValue): Unit =
+    setupMockHttpPost(url = TestProtectedMicroserviceConnector.subscriptionUrl(""), request)(status, response)
 
   def setupMockGetSubscription(nino: Option[String] = None)(status: Int, response: JsValue): Unit =
     setupMockHttpGet(
       url = nino.fold(None: Option[String])(nino => TestProtectedMicroserviceConnector.subscriptionUrl(nino))
     )(status, response)
 
-  val setupSubscribe = (setupMockSubscribe() _).tupled
+  def setupSubscribe(request: Option[FERequest] = None) = (setupMockSubscribe(request) _).tupled
+
   def setupGetSubscription(nino: Option[String] = None) = (setupMockGetSubscription(nino) _).tupled
 
   val testRequest = FERequest(
@@ -51,6 +54,17 @@ trait MockProtectedMicroserviceConnector extends MockHttp {
     cashOrAccruals = "Cash",
     tradingName = "ABC"
   )
+
+  val testSummaryData = SummaryModel(
+    incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),
+    otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
+    accountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no),
+    accountingPeriod = AccountingPeriodModel(TestConstants.startDate, TestConstants.endDate),
+    businessName = BusinessNameModel("ABC"),
+    accountingMethod = AccountingMethodModel("Cash"),
+    terms = TermModel(true)
+  )
+
   val testId = TestConstants.testMTDID
   val badRequestReason = "Bad request"
   val internalServerErrorReason = "Internal server error"

@@ -16,34 +16,51 @@
 
 package services
 
-import connectors.models.subscription.FESuccessResponse
+import connectors.models.subscription.{FESuccessResponse, IncomeSourceType}
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionService
-import utils.TestConstants
+import utils.{TestConstants, TestModels}
 
 
 class SubscriptionServiceSpec extends MockSubscriptionService {
 
+  val testNino: String = TestConstants.testNino
+
+  "SubscriptionService.buildRequest" should {
+    "convert the user's data into the correct FERequest format" in {
+      // a freshly generated nino is used to ensure it is not simply pulling the test nino from somewhere else
+      val nino = TestModels.newNino
+      val request = TestSubscriptionService.buildRequest(nino, testSummaryData)
+      request.nino mustBe nino
+      request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.get.startDate
+      request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.get.endDate
+      request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
+      IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
+      request.isAgent mustBe false
+      request.tradingName.get mustBe testSummaryData.businessName.get.businessName
+    }
+  }
 
   "SubscriptionService.submitSubscription" should {
-    def call = await(TestProtectedMicroserviceConnector.subscribe(request = testRequest))
+    val testRequest = TestSubscriptionService.buildRequest(testNino, testSummaryData)
+    def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData))
 
     "return the safeId when the subscription is successful" in {
-      setupSubscribe(subscribeSuccess)
+      setupSubscribe(testRequest)(subscribeSuccess)
       val response = call.get
       response.isInstanceOf[FESuccessResponse] shouldBe true
       response.asInstanceOf[FESuccessResponse].mtditId shouldBe Some(testId)
     }
 
     "return the error if subscription fails on bad request" in {
-      setupSubscribe(subscribeBadRequest)
+      setupSubscribe(testRequest)(subscribeBadRequest)
       val response = call
       response shouldBe None
     }
 
     "return the error if subscription fails on internal server error" in {
-      setupSubscribe(subscribeInternalServerError)
+      setupSubscribe(testRequest)(subscribeInternalServerError)
       val response = call
       response shouldBe None
 
@@ -51,9 +68,8 @@ class SubscriptionServiceSpec extends MockSubscriptionService {
   }
 
   "SubscriptionService.getSubscription" should {
-    val testNino = TestConstants.testNino
 
-    def call = await(TestProtectedMicroserviceConnector.getSubscription(nino = testNino))
+    def call = await(TestSubscriptionService.getSubscription(nino = testNino))
 
     "return the safeId when the subscription is returned" in {
       setupGetSubscription(testNino)(subscribeSuccess)

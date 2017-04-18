@@ -36,7 +36,7 @@ class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnec
     def call = await(TestProtectedMicroserviceConnector.subscribe(request = testRequest))
 
     "return the succcess response as an object" in {
-      setupSubscribe(subscribeSuccess)
+      setupSubscribe(testRequest)(subscribeSuccess)
       val expected = FESuccessResponse(id)
       val actual = call
       actual shouldBe Some(expected)
@@ -45,13 +45,13 @@ class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnec
     "return None if the middle service indicated a bad request" in {
       val reason = "Your submission contains one or more errors. Failed Parameter(s) - [idType, idNumber, payload]"
       val code = "INVALID_NINO"
-      setupSubscribe(subscribeBadRequest)
+      setupSubscribe(testRequest)(subscribeBadRequest)
       val actual = call
       actual shouldBe None
     }
 
     "return None if the middle service indicated internal server error" in {
-      setupSubscribe(subscribeInternalServerError)
+      setupSubscribe(testRequest)(subscribeInternalServerError)
       val actual = call
       actual shouldBe None
     }
@@ -61,7 +61,7 @@ class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnec
 
     val testNino = TestConstants.testNino
     "GET to the correct url" in {
-      TestProtectedMicroserviceConnector.subscriptionUrl(testNino) should endWith(s"/income-tax-subscription/subscription/${testNino}")
+      TestProtectedMicroserviceConnector.subscriptionUrl(testNino) should endWith(s"/income-tax-subscription/subscription/$testNino")
     }
 
     def result: Option[FEResponse] = await(TestProtectedMicroserviceConnector.getSubscription(testNino))
