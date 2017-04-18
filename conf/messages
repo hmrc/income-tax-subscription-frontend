@@ -40,10 +40,9 @@ frontpage.bullet_9                                              = use your busin
 
 ## Preferences call back page
 preferences_callback.title                                      = Do you want to continue?
-preferences_callback.heading                                    = To sign up, you must allow HMRC to send you electronic communications
-preferences_callback.legend                                     = To sign up for quarterly reporting, you must allow HMRC to send you electronic communications
-preferences_callback.yes                                        = Continue to sign up
-preferences_callback.no                                         = Sign out
+preferences_callback.heading                                    = You can''t sign up for quarterly reporting
+preferences_callback.line_1                                     = To sign up for this service, you must allow HMRC to send you electronic communications.
+preferences_callback.button                                     = Go back
 
 ## Income source page
 income_source.title                                             = Where does your income come from?
@@ -73,8 +72,7 @@ business.register_next_accounting_period.title                   = You can''t se
 business.register_next_accounting_period.heading                 = You can''t send quarterly reports yet
 business.register_next_accounting_period.line_1                  = You can only use this service if your current accounting period started after 5 April 2017.
 business.register_next_accounting_period.line_2                  = You can sign up now, but you won''t be able to send any reports until your next accounting period begins.
-business.register_next_accounting_period.yes                     = Continue to sign up
-business.register_next_accounting_period.no                      = Sign out
+business.register_next_accounting_period.continue                     = Continue to sign up
 
 ## Business Accounting Period page
 accounting_period.title                                         = Business accounting period
@@ -102,9 +100,9 @@ business.accounting_method.accordion                            = Show me an exa
 business.accounting_method.accordion.line_1                     = Your accounting period is 6 April 2016 to 5 April 2017. You invoiced someone in March 2017 but didn''t receive the money until May 2017.
 business.accounting_method.accordion.line_2                     = If you would record this income in:
 business.accounting_method.accordion.bullet_1                   = May 2017, then the method you use is ''cash basis'' accounting
-business.accounting_method.accordion.bullet_2                   = March 2017, then the method you use is ''traditional accounting''
-business.accounting_method.cash                                 = Cash basis
-business.accounting_method.accruals                             = Traditional accounting
+business.accounting_method.accordion.bullet_2                   = March 2017, then the method you use is ''accruals basis'' accounting
+business.accounting_method.cash                                 = <span class="heading-small">Cash basis</span><br>Your end-of-year accounts show the money you''ve received or paid out in the tax year. Many sole traders and small businesses use this method.
+business.accounting_method.accruals                             = <span class="heading-small">Accruals basis</span><br>Your end-of-year accounts show income and expenses in the tax year that they occur, regardless of when you receive or make a payment. This method is also called ''traditional'' accounting.
 
 
 ## Business Name

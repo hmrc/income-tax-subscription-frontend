@@ -20,6 +20,7 @@ object MessageLookup {
 
   object Base {
     val continue = "Continue"
+    val continueToSignUp = "Continue to sign up"
     val submit = "Submit"
     val update = "Update"
     val signOut = "Sign out"
@@ -32,6 +33,7 @@ object MessageLookup {
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
+    val goBack = "Go back"
   }
 
   object FrontPage {
@@ -58,10 +60,10 @@ object MessageLookup {
 
   object PreferencesCallBack {
     val title = "Do you want to continue?"
-    val heading: String = "To sign up, you must allow HMRC to send you electronic communications"
-    val legend: String = "To sign up for quarterly reporting, you must allow HMRC to send you electronic communications"
-    val yes: String = "Continue to sign up"
-    val no: String = "Sign out"
+    val heading: String = "You can't sign up for quarterly reporting"
+    val legend: String = "To sign up for this service, you must allow HMRC to send you electronic communications."
+    val button: String = "Go back"
+    val signOut: String = "Sign out"
   }
 
   object IncomeSource {
@@ -109,8 +111,8 @@ object MessageLookup {
       val heading = title
       val line_1 = "You can only use this service if your current accounting period started after 5 April 2017."
       val line_2 = "You can sign up now, but you won't be able to send any reports until your next accounting period begins."
-      val yes = "Continue to sign up"
-      val no = "Sign out"
+      val button = "Continue to sign up"
+      val signOut = "Sign out"
     }
 
   }
@@ -147,9 +149,9 @@ object MessageLookup {
     val accordion_line_1 = "Your accounting period is 6 April 2016 to 5 April 2017. You invoiced someone in March 2017 but didn't receive the money until May 2017."
     val accordion_line_2 = "If you would record this income in:"
     val accordion_bullet_1 = "May 2017, then the method you use is 'cash basis' accounting"
-    val accordion_bullet_2 = "March 2017, then the method you use is 'traditional accounting'"
-    val cash = "Cash basis"
-    val accruals = "Traditional accounting"
+    val accordion_bullet_2 = "March 2017, then the method you use is 'accruals basis' accounting"
+    val cash = "Cash basis Your end-of-year accounts show the money you've received or paid out in the tax year. Many sole traders and small businesses use this method."
+    val accruals = "Accruals basis Your end-of-year accounts show income and expenses in the tax year that they occur, regardless of when you receive or make a payment. This method is also called 'traditional' accounting."
   }
 
   object Terms {
