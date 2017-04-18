@@ -23,12 +23,13 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockThrottlingService
+import services.mocks.{MockSubscriptionService, MockThrottlingService}
 import assets.MessageLookup.FrontPage
 
 
 class HomeControllerSpec extends ControllerBaseSpec
-  with MockThrottlingService {
+  with MockThrottlingService
+  with MockSubscriptionService {
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -48,6 +49,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockBaseControllerConfig(enableThrottling, showGuidance),
     messagesApi,
     TestThrottlingService,
+    TestSubscriptionService,
     app.injector.instanceOf[Logging]
   )
 
@@ -81,18 +83,46 @@ class HomeControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the index action of the HomeController with an authorised user" should {
+    def result = TestHomeController(enableThrottling = true, showGuidance = false).index()(authenticatedFakeRequest())
+
+    "redirect them to already subscribed page if they already has a subscription" in {
+      setupGetSubscription(auth.nino)(subscribeSuccess)
+      // this is mocked to check we don't call throttle as well
+      setupMockCheckAccess(auth.nino)(OK)
+
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result).get mustBe controllers.routes.AlreadyEnrolledController.enrolled().url
+
+      verifyMockCheckAccess(auth.nino)(0)
+    }
+
+    "display the error page if there was an error checking the subscription" in {
+      setupGetSubscription(auth.nino)(subscribeBadRequest)
+      // this is mocked to check we don't call throttle as well
+      setupMockCheckAccess(auth.nino)(OK)
+
+      status(result) must be(Status.INTERNAL_SERVER_ERROR)
+
+      verifyMockCheckAccess(auth.nino)(0)
+    }
+
+    // N.B. the subscribeNone case is covered below
+  }
+
+  "Calling the index action of the HomeController with an authorised user who does not already have a subscription" should {
 
     "If throttling is enabled when calling the index" should {
       lazy val result = TestHomeController(enableThrottling = true, showGuidance = false).index()(authenticatedFakeRequest())
 
       "trigger a call to the throttling service" in {
+        setupGetSubscription(auth.nino)(subscribeNone)
         setupMockCheckAccess(auth.nino)(OK)
 
         status(result) must be(Status.SEE_OTHER)
 
         redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
 
-        verifyMockCheckAccess(1)
+        verifyMockCheckAccess(auth.nino)(1)
       }
     }
 
@@ -100,13 +130,14 @@ class HomeControllerSpec extends ControllerBaseSpec
       lazy val result = TestHomeController(enableThrottling = false, showGuidance = false).index()(authenticatedFakeRequest())
 
       "not trigger a call to the throttling service" in {
+        setupGetSubscription(auth.nino)(subscribeNone)
         setupMockCheckAccess(auth.nino)(OK)
 
         status(result) must be(Status.SEE_OTHER)
 
         redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
 
-        verifyMockCheckAccess(0)
+        verifyMockCheckAccess(auth.nino)(0)
       }
     }
   }

@@ -35,11 +35,13 @@ trait MockProtectedMicroserviceConnector extends MockHttp {
   def setupMockSubscribe()(status: Int, response: JsValue): Unit =
     setupMockHttpPost(url = TestProtectedMicroserviceConnector.subscriptionUrl(""))(status, response)
 
-  def setupMockGetSubscription()(status: Int, response: JsValue): Unit =
-    setupMockHttpGet(url = TestProtectedMicroserviceConnector.subscriptionUrl(TestConstants.testNino))(status, response)
+  def setupMockGetSubscription(nino: Option[String] = None)(status: Int, response: JsValue): Unit =
+    setupMockHttpGet(
+      url = nino.fold(None: Option[String])(nino => TestProtectedMicroserviceConnector.subscriptionUrl(nino))
+    )(status, response)
 
   val setupSubscribe = (setupMockSubscribe() _).tupled
-  val setupGetSubscription = (setupMockGetSubscription() _).tupled
+  def setupGetSubscription(nino: Option[String] = None) = (setupMockGetSubscription(nino) _).tupled
 
   val testRequest = FERequest(
     nino = TestConstants.testNino,

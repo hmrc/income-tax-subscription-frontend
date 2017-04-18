@@ -21,8 +21,8 @@ import connectors.mocks.MockProtectedMicroserviceConnector
 import services.SubscriptionService
 import utils.MockTrait
 
-trait MockProtectedMicroservice extends MockTrait with MockProtectedMicroserviceConnector {
+trait MockSubscriptionService extends MockTrait with MockProtectedMicroserviceConnector {
 
-  object MockSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestProtectedMicroserviceConnector)
+  object TestSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestProtectedMicroserviceConnector)
 
 }

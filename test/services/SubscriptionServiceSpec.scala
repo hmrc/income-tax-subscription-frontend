@@ -19,11 +19,11 @@ package services
 import connectors.models.subscription.FESuccessResponse
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
-import services.mocks.MockProtectedMicroservice
+import services.mocks.MockSubscriptionService
 import utils.TestConstants
 
 
-class SubscriptionServiceSpec extends MockProtectedMicroservice {
+class SubscriptionServiceSpec extends MockSubscriptionService {
 
 
   "SubscriptionService.submitSubscription" should {
@@ -51,30 +51,32 @@ class SubscriptionServiceSpec extends MockProtectedMicroservice {
   }
 
   "SubscriptionService.getSubscription" should {
-    def call = await(TestProtectedMicroserviceConnector.getSubscription(nino = TestConstants.testNino))
+    val testNino = TestConstants.testNino
+
+    def call = await(TestProtectedMicroserviceConnector.getSubscription(nino = testNino))
 
     "return the safeId when the subscription is returned" in {
-      setupGetSubscription(subscribeSuccess)
+      setupGetSubscription(testNino)(subscribeSuccess)
       val response = call.get
       response.isInstanceOf[FESuccessResponse] shouldBe true
       response.asInstanceOf[FESuccessResponse].mtditId shouldBe Some(testId)
     }
 
     "return the None when the subscription is returned as None" in {
-      setupGetSubscription(subscribeNone)
+      setupGetSubscription(testNino)(subscribeNone)
       val response = call.get
       response.isInstanceOf[FESuccessResponse] shouldBe true
       response.asInstanceOf[FESuccessResponse].mtditId shouldBe None
     }
 
     "return the error if subscription fails on bad request" in {
-      setupGetSubscription(subscribeBadRequest)
+      setupGetSubscription(testNino)(subscribeBadRequest)
       val response = call
       response shouldBe None
     }
 
     "return the error if subscription fails on internal server error" in {
-      setupGetSubscription(subscribeInternalServerError)
+      setupGetSubscription(testNino)(subscribeInternalServerError)
       val response = call
       response shouldBe None
     }

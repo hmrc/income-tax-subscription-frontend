@@ -21,12 +21,12 @@ import auth._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.{MockKeystoreService, MockProtectedMicroservice}
+import services.mocks.{MockKeystoreService, MockSubscriptionService}
 import utils.TestModels
 
 class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
-  with MockProtectedMicroservice {
+  with MockSubscriptionService {
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -38,7 +38,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    middleService = MockSubscriptionService,
+    middleService = TestSubscriptionService,
     app.injector.instanceOf[Logging]
   )
 

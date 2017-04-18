@@ -59,29 +59,30 @@ class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnec
 
   "ProtectedMicroserviceConnector.getSubscription" should {
 
+    val testNino = TestConstants.testNino
     "GET to the correct url" in {
-      TestProtectedMicroserviceConnector.subscriptionUrl(TestConstants.testNino) should endWith(s"/income-tax-subscription/subscription/${TestConstants.testNino}")
+      TestProtectedMicroserviceConnector.subscriptionUrl(testNino) should endWith(s"/income-tax-subscription/subscription/${testNino}")
     }
 
-    def result: Option[FEResponse] = await(TestProtectedMicroserviceConnector.getSubscription(TestConstants.testNino))
+    def result: Option[FEResponse] = await(TestProtectedMicroserviceConnector.getSubscription(testNino))
 
     "return the succcess response as an object" in {
-      setupGetSubscription(subscribeSuccess)
+      setupGetSubscription(testNino)(subscribeSuccess)
       result shouldBe Some(FESuccessResponse(id))
     }
 
     "return the None response as an object" in {
-      setupGetSubscription(subscribeNone)
+      setupGetSubscription(testNino)(subscribeNone)
       result shouldBe Some(FESuccessResponse(None))
     }
 
     "return fail if the middle service indicated a bad request" in {
-      setupGetSubscription(subscribeBadRequest)
+      setupGetSubscription(testNino)(subscribeBadRequest)
       result shouldBe None
     }
 
     "return None if the middle service indicated internal server error" in {
-      setupGetSubscription(subscribeInternalServerError)
+      setupGetSubscription(testNino)(subscribeInternalServerError)
       result shouldBe None
     }
   }
