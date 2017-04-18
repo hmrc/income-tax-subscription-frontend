@@ -21,23 +21,25 @@ import connectors.models.subscription.{Both, FEFailureResponse, FERequest, FESuc
 import connectors.subscription.ProtectedMicroserviceConnector
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.play.http.HttpPost
 import utils.JsonUtils._
 import utils.TestConstants
 
 trait MockProtectedMicroserviceConnector extends MockHttp {
 
-  lazy val httpPost: HttpPost = mockHttpPost
-
   object TestProtectedMicroserviceConnector extends ProtectedMicroserviceConnector(
     app.injector.instanceOf[AppConfig],
-    httpPost
+    mockHttpPost,
+    mockHttpGet
   )
 
   def setupMockSubscribe()(status: Int, response: JsValue): Unit =
     setupMockHttpPost(url = TestProtectedMicroserviceConnector.subscriptionUrl(""))(status, response)
 
+  def setupMockGetSubscription()(status: Int, response: JsValue): Unit =
+    setupMockHttpGet(url = TestProtectedMicroserviceConnector.subscriptionUrl(TestConstants.testNino))(status, response)
+
   val setupSubscribe = (setupMockSubscribe() _).tupled
+  val setupGetSubscription = (setupMockGetSubscription() _).tupled
 
   val testRequest = FERequest(
     nino = TestConstants.testNino,
