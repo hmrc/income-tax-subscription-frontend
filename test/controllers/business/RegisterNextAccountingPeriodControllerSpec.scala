@@ -43,7 +43,6 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
   "Calling the show action of the RegisterNextAccountingPeriod with an authorised user" should {
 
     def result: Future[Result] = {
-      setupMockKeystore(fetchRegisterNextAccountingPeriod = None)
       TestRegisterNextAccountingPeriodController.show(authenticatedFakeRequest())
     }
 
