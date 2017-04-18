@@ -149,9 +149,9 @@ object MessageLookup {
     val accordion_line_1 = "Your accounting period is 6 April 2016 to 5 April 2017. You invoiced someone in March 2017 but didn't receive the money until May 2017."
     val accordion_line_2 = "If you would record this income in:"
     val accordion_bullet_1 = "May 2017, then the method you use is 'cash basis' accounting"
-    val accordion_bullet_2 = "March 2017, then the method you use is 'traditional accounting'"
-    val cash = "Cash basis Your end-of-year records show the money you've received or paid out in the tax year. Most sole traders and small businesses use this method."
-    val accruals = "Accruals basis Your end-of-year accounts record income and expenses in the tax year that they occur, regardless of when you receive or make a payment. This method is also called ‘traditional’ accounting."
+    val accordion_bullet_2 = "March 2017, then the method you use is 'accruals basis' accounting"
+    val cash = "Cash basis Your end-of-year accounts show the money you've received or paid out in the tax year. Many sole traders and small businesses use this method."
+    val accruals = "Accruals basis Your end-of-year accounts show income and expenses in the tax year that they occur, regardless of when you receive or make a payment. This method is also called 'traditional' accounting."
   }
 
   object Terms {
