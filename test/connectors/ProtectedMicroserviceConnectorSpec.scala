@@ -36,7 +36,7 @@ class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnec
     def call = await(TestProtectedMicroserviceConnector.subscribe(request = testRequest))
 
     "return the succcess response as an object" in {
-      setupSubscribe(subScribeSuccess)
+      setupSubscribe(subscribeSuccess)
       val expected = FESuccessResponse(id)
       val actual = call
       actual shouldBe Some(expected)
@@ -45,13 +45,13 @@ class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnec
     "return None if the middle service indicated a bad request" in {
       val reason = "Your submission contains one or more errors. Failed Parameter(s) - [idType, idNumber, payload]"
       val code = "INVALID_NINO"
-      setupSubscribe(subScribeBadRequest)
+      setupSubscribe(subscribeBadRequest)
       val actual = call
       actual shouldBe None
     }
 
     "return None if the middle service indicated internal server error" in {
-      setupSubscribe(subScribeInternalServerError)
+      setupSubscribe(subscribeInternalServerError)
       val actual = call
       actual shouldBe None
     }
@@ -66,17 +66,22 @@ class ProtectedMicroserviceConnectorSpec extends MockProtectedMicroserviceConnec
     def result: Option[FEResponse] = await(TestProtectedMicroserviceConnector.getSubscription(TestConstants.testNino))
 
     "return the succcess response as an object" in {
-      setupGetSubscription(subScribeSuccess)
+      setupGetSubscription(subscribeSuccess)
       result shouldBe Some(FESuccessResponse(id))
     }
 
-    "return None if the middle service indicated a bad request" in {
-      setupGetSubscription(subScribeBadRequest)
+    "return the None response as an object" in {
+      setupGetSubscription(subscribeNone)
+      result shouldBe Some(FESuccessResponse(None))
+    }
+
+    "return fail if the middle service indicated a bad request" in {
+      setupGetSubscription(subscribeBadRequest)
       result shouldBe None
     }
 
     "return None if the middle service indicated internal server error" in {
-      setupGetSubscription(subScribeInternalServerError)
+      setupGetSubscription(subscribeInternalServerError)
       result shouldBe None
     }
   }

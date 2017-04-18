@@ -53,8 +53,9 @@ trait MockProtectedMicroserviceConnector extends MockHttp {
   val badRequestReason = "Bad request"
   val internalServerErrorReason = "Internal server error"
 
-  val subScribeSuccess = (OK, FESuccessResponse(testId): JsValue)
-  val subScribeBadRequest = (BAD_REQUEST, FEFailureResponse(badRequestReason): JsValue)
-  val subScribeInternalServerError = (INTERNAL_SERVER_ERROR, FEFailureResponse(internalServerErrorReason): JsValue)
+  val subscribeSuccess = (OK, FESuccessResponse(testId): JsValue)
+  val subscribeNone = (OK, FESuccessResponse(None): JsValue)
+  val subscribeBadRequest = (BAD_REQUEST, FEFailureResponse(badRequestReason): JsValue)
+  val subscribeInternalServerError = (INTERNAL_SERVER_ERROR, FEFailureResponse(internalServerErrorReason): JsValue)
 
 }

@@ -46,4 +46,9 @@ class SubscriptionService @Inject()(logging: Logging,
     protectedMicroserviceConnector.subscribe(request)
   }
 
+  def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
+    logging.debug(s"Getting subscription for nino=$nino")
+    protectedMicroserviceConnector.getSubscription(nino)
+  }
+
 }
