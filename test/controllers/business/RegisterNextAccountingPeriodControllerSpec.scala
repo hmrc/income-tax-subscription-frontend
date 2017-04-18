@@ -18,8 +18,6 @@ package controllers.business
 
 import auth._
 import controllers.ControllerBaseSpec
-import forms.RegisterNextAccountingPeriodForm
-import models.RegisterNextAccountingPeriodModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -45,7 +43,6 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
   "Calling the show action of the RegisterNextAccountingPeriod with an authorised user" should {
 
     def result: Future[Result] = {
-      setupMockKeystore(fetchRegisterNextAccountingPeriod = None)
       TestRegisterNextAccountingPeriodController.show(authenticatedFakeRequest())
     }
 
@@ -53,10 +50,6 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
       status(result) must be(Status.OK)
     }
 
-    "retrieve one value from keystore" in {
-      await(result)
-      verifyKeystore(fetchRegisterNextAccountingPeriod = 1, saveRegisterNextAccountingPeriod = 0)
-    }
 
     s"The back url should point to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}'" in {
       val document = Jsoup.parse(contentAsString(result))
@@ -66,14 +59,13 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
 
   "Calling the submit action of the RegisterNextAccountingPeriod with an authorised user and valid submission" when {
 
-    def callShow(answer: String): Future[Result] = TestRegisterNextAccountingPeriodController.submit(authenticatedFakeRequest()
-      .post(RegisterNextAccountingPeriodForm.registerNextAccountingPeriodForm, RegisterNextAccountingPeriodModel(answer)))
+    def callShow(): Future[Result] = TestRegisterNextAccountingPeriodController.submit(authenticatedFakeRequest())
 
     "Option 'Yes' is selected" should {
 
       def goodRequest: Future[Result] = {
         setupMockKeystoreSaveFunctions()
-        callShow(RegisterNextAccountingPeriodForm.option_yes)
+        callShow()
       }
 
       "return status SEE_OTHER (303)" in {
@@ -84,45 +76,6 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
         redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
       }
 
-      "save one value into keystore" in {
-        await(goodRequest)
-        verifyKeystore(fetchRegisterNextAccountingPeriod = 0, saveRegisterNextAccountingPeriod = 1)
-      }
-    }
-
-    "Option 'No' is selected" should {
-
-      def goodRequest: Future[Result] = {
-        setupMockKeystoreSaveFunctions()
-        callShow(RegisterNextAccountingPeriodForm.option_no)
-      }
-
-      "return status SEE_OTHER (303)" in {
-        status(goodRequest) mustBe Status.SEE_OTHER
-      }
-
-      s"redirect to ${controllers.routes.SignOutController.signOut().url}" in {
-        redirectLocation(goodRequest).get mustBe controllers.routes.SignOutController.signOut().url
-      }
-
-      "save one value into keystore" in {
-        await(goodRequest)
-        verifyKeystore(fetchRegisterNextAccountingPeriod = 0, saveRegisterNextAccountingPeriod = 1)
-      }
-    }
-  }
-
-  "Calling the submit action of the RegisterNextAccountingPeriod with an authorised user and invalid submission" should {
-
-    def badRequest: Future[Result] = TestRegisterNextAccountingPeriodController.submit(authenticatedFakeRequest())
-
-    "return a bad request status (400)" in {
-      status(badRequest) must be(Status.BAD_REQUEST)
-    }
-
-    "not update or retrieve anything from keystore" in {
-      await(badRequest)
-      verifyKeystore(fetchRegisterNextAccountingPeriod = 0, saveRegisterNextAccountingPeriod = 0)
     }
   }
 
