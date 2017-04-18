@@ -72,6 +72,7 @@ class CacheUtilSpec extends UnitTestTrait {
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceProperty,
+          testOtherIncomeNo,
           terms = testTerms
         )
 

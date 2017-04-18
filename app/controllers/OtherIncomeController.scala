@@ -38,44 +38,54 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                       val logging: Logging
                                      ) extends BaseController {
 
-  def view(otherIncomeForm: Form[OtherIncomeModel], backUrl: String)(implicit request: Request[_]): Html =
+  def view(otherIncomeForm: Form[OtherIncomeModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.other_income(
       otherIncomeForm = otherIncomeForm,
-      postAction = controllers.routes.OtherIncomeController.submitOtherIncome(),
-      backUrl = backUrl
+      postAction = controllers.routes.OtherIncomeController.submitOtherIncome(editMode = isEditMode),
+      backUrl = backUrl,
+      isEditMode = isEditMode
     )
 
-  val showOtherIncome: Action[AnyContent] = Authorised.async { implicit user =>
+  def showOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       for {
         choice <- keystoreService.fetchOtherIncome()
-      } yield Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl))
+      } yield Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl, isEditMode))
   }
 
-  val submitOtherIncome: Action[AnyContent] = Authorised.async { implicit user =>
+  def defaultRedirections(otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
+    otherIncomeModel.choice match {
+      case OtherIncomeForm.option_yes =>
+        Redirect(controllers.routes.OtherIncomeErrorController.showOtherIncomeError())
+      case OtherIncomeForm.option_no =>
+        keystoreService.fetchIncomeSource() map {
+          case Some(incomeSource) => incomeSource.source match {
+            case IncomeSourceForm.option_business =>
+              Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+            case IncomeSourceForm.option_property =>
+              Redirect(controllers.routes.TermsController.showTerms())
+            case IncomeSourceForm.option_both =>
+              Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+          }
+          case _ =>
+            logging.info("Tried to submit other income when no data found in Keystore for income source")
+            InternalServerError
+        }
+    }
+
+  def submitOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl)),
+        formWithErrors => BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl, isEditMode = isEditMode)),
         choice =>
-          keystoreService.saveOtherIncome(choice).flatMap { _ =>
-            choice.choice match {
-              case OtherIncomeForm.option_yes =>
-                Redirect(controllers.routes.OtherIncomeErrorController.showOtherIncomeError())
-              case OtherIncomeForm.option_no =>
-                keystoreService.fetchIncomeSource() map {
-                  case Some(incomeSource) => incomeSource.source match {
-                    case IncomeSourceForm.option_business =>
-                      Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
-                    case IncomeSourceForm.option_property =>
-                      Redirect(controllers.routes.TermsController.showTerms())
-                    case IncomeSourceForm.option_both =>
-                      Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
-                  }
-                  case _ =>
-                    logging.info("Tried to submit other income when no data found in Keystore for income source")
-                    InternalServerError
-                }
-            }
+          keystoreService.fetchOtherIncome().flatMap {
+            previousOtherIncome =>
+              keystoreService.saveOtherIncome(choice).flatMap { _ =>
+                // if it's in update mode and the previous answer is the same as current then return to check your answers page
+                if (isEditMode && previousOtherIncome.fold(false)(old => old.equals(choice)))
+                  Redirect(controllers.routes.CheckYourAnswersController.show())
+                else defaultRedirections(choice)
+              }
           }
       )
   }
