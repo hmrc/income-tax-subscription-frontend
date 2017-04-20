@@ -278,3 +278,36 @@ income-other.bullet5                                            = capital gains
 income-other.yes                                                = Yes
 income-other.no                                                 = No
 
+## Exit survey
+exit-survey.title                                               = Before you go
+exit-survey.heading                                             = Before you go, please answer some questions to help us improve your experience
+exit-survey.q1                                                  = Before using your tax account, were you going to phone or write to HMRC about your query?
+
+exit-survey.q2                                                  = Based on what have you done today, do you need to do anything else? You can tick more than one box.
+exit-survey.q2.option.size                                      = 7
+exit-survey.q2.option.1                                         = Don''t need to do anything else
+exit-survey.q2.option.2                                         = Find out more online
+exit-survey.q2.option.3                                         = Speak to your employer
+exit-survey.q2.option.4                                         = Ask a friend or family member for advice
+exit-survey.q2.option.5                                         = Ask an agent or accountant for advice
+exit-survey.q2.option.6                                         = Don''t know
+exit-survey.q2.option.7                                         = Other
+
+exit-survey.q3                                                  = How likely are you to recommend your tax account to your friends or family?
+exit-survey.q3.option.size                                      = 5
+exit-survey.q3.option.1                                         = Very likely
+exit-survey.q3.option.2                                         = likely
+exit-survey.q3.option.3                                         = Not likely or unlikely
+exit-survey.q3.option.4                                         = Unlikely
+exit-survey.q3.option.5                                         = Very unlikely
+
+exit-survey.q4                                                  = Overall, how do you feel about your experience using your tax account today?
+exit-survey.q4.option.size                                      = 5
+exit-survey.q4.option.1                                         = Very satisfied
+exit-survey.q4.option.2                                         = Satisfied
+exit-survey.q4.option.3                                         = Not satisfied or dissatisfied
+exit-survey.q4.option.4                                         = Dissatisfied
+exit-survey.q4.option.5                                         = Very dissatisfied
+
+exit-survey.line_1                                              = If you have any additional comments please use hte feedback link at the top of the page.
+exit-survey.submit                                              = Send feedback

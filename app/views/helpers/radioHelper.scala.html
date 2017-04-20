@@ -22,7 +22,8 @@
     options: Seq[RadioOption],
     parentForm: Option[Form[_]] = None,
     inline: Boolean = false,
-    fieldSetClass: Option[String] = None
+    fieldSetClass: Option[String] = None,
+    useTextForValue: Boolean = false
 )(implicit messages: Messages)
 
 @import forms.validation.ErrorMessageHelper._
@@ -50,13 +51,20 @@
     }
 }
 
+@valueAttr(option: RadioOption) = @{
+    useTextForValue match {
+        case true => option.message
+        case false => option.optionName
+    }
+}
+
 <div class="form-group form-field@if(hasError) { form-field--error}">
     <fieldset @fieldSetClassValue>
         <legend class="visuallyhidden" id="@field.name">@legend</legend>
         @fieldErrorHelper(field, parentForm)
         @for(option <- options) {
             <label class="block-label selection-button-radio@option.classes.fold("")(x=>" "+x)" for="@{field.name}-@option.optionName">
-                <input id="@{field.name}-@option.optionName" type="radio" name="@field.name" value="@option.optionName" @isSelected(option.optionName)>
+                <input id="@{field.name}-@option.optionName" type="radio" name="@field.name" value="@valueAttr(option)" @isSelected(option.optionName)>
                 @Html(option.message)
             </label>
         }
