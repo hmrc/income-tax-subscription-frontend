@@ -60,6 +60,11 @@ trait ViewSpecTrait extends UnitTestTrait {
         element.getElementsByTag("h2").text() must include(text)
       }
 
+    def mustHaveH3(text: String): Unit =
+      s"$name have a Heading 3 (H3) for '$text'" in {
+        element.getElementsByTag("h3").text() must include(text)
+      }
+
     // n.b. href must be call-by-name otherwise it may not be evaluated with the correct context-root
     def mustHaveALink(text: String, href: => String): Unit =
       s"$name have a link with text '$text' pointed to '$href'" in {
@@ -130,7 +135,22 @@ trait ViewSpecTrait extends UnitTestTrait {
 
     }
 
-    def mustHaveRadioSet(legend: String, radioName: String)(options: RadioOption*): Unit = {
+    case class CheckboxOption(name: String, text: String)
+
+    object CheckboxOption {
+      implicit def conv(checkboxOption: CheckboxOption): (String, String) = (checkboxOption.name, checkboxOption.text)
+
+      implicit def conv(checkboxOption: Seq[CheckboxOption]): Seq[(String, String)] = checkboxOption.map(x => x: (String, String))
+
+      implicit def conv(checkboxOption: (String, String)): CheckboxOption = CheckboxOption(checkboxOption._1, checkboxOption._2)
+
+      implicit class CheckboxOptionSeqUtil(checkboxOption: Seq[CheckboxOption]) {
+        def toTuples: Seq[(String, String)] = checkboxOption: Seq[(String, String)]
+      }
+
+    }
+
+    def mustHaveRadioSet(legend: String, radioName: String, useTextForValue: Boolean = false)(options: RadioOption*): Unit = {
       if (legend.isEmpty) fail("Legend cannot be none empty, this would cause an accessibility issue")
       if (radioName.isEmpty) fail("Must provide the field name which groups all the buttons in this test")
       if (options.isEmpty) fail("Must provide at least 1 radio button for this test")
@@ -139,15 +159,18 @@ trait ViewSpecTrait extends UnitTestTrait {
       s"$name must have a radio fieldset for $legend" which {
 
         s"has a legend with the text '$legend'" in {
-          element.select("fieldset legend").text() mustBe legend
+          element.select(s"fieldset legend[id=$radioName]").text() mustBe legend
         }
 
         for ((o, text) <- options.toTuples) {
           s"has a radio option for '$radioName-$o'" in {
-            val cashRadio = element.select(s"#$radioName-$o")
-            cashRadio.attr("type") mustBe "radio"
-            cashRadio.attr("name") mustBe s"$radioName"
-            cashRadio.attr("value") mustBe o
+            val radioButton = element.select(s"#$radioName-$o")
+            radioButton.attr("type") mustBe "radio"
+            radioButton.attr("name") mustBe s"$radioName"
+            useTextForValue match {
+              case true => radioButton.attr("value") mustBe text
+              case false => radioButton.attr("value") mustBe o
+            }
             val label = element.getElementsByAttributeValue("for", s"$radioName-$o")
             label.size() mustBe 1
             label.get(0).text() mustBe text
@@ -155,7 +178,36 @@ trait ViewSpecTrait extends UnitTestTrait {
         }
 
       }
+    }
 
+    def mustHaveCheckboxSet(legend: String, checkboxName: String, useTextForValue: Boolean = false)(labels: String*): Unit = {
+      if (legend.isEmpty) fail("Legend cannot be none empty, this would cause an accessibility issue")
+      if (checkboxName.isEmpty) fail("Must provide the field name which groups all the checkboxes in this test")
+      if (labels.isEmpty) fail("Must provide at least 1 checkbox for this test")
+      if (labels.size == 1) fail("It does not make sense to have a checkbox fieldset with only a single checkbox")
+
+      s"$name must have a checkbox fieldset for $legend" which {
+
+        s"has a legend with the text '$legend'" in {
+          element.select(s"fieldset legend[id=$checkboxName]").text() mustBe legend
+        }
+
+        for ((text, index) <- labels.zipWithIndex) {
+          s"has a radio option for '$checkboxName-$index'" in {
+            val checkbox = element.select(s"#$checkboxName-$index")
+            checkbox.attr("type") mustBe "checkbox"
+            checkbox.attr("name") mustBe s"$checkboxName[$index]"
+            useTextForValue match {
+              case true => checkbox.attr("value") mustBe text
+              case false => checkbox.attr("value") mustBe "true"
+            }
+            val label = element.getElementsByAttributeValue("for", s"$checkboxName-$index")
+            label.size() mustBe 1
+            label.get(0).text() mustBe text
+          }
+        }
+
+      }
     }
 
     def mustHaveTextField(name: String,
@@ -361,7 +413,7 @@ trait ViewSpecTrait extends UnitTestTrait {
 }
 
 
-object ViewSpecTrait{
+object ViewSpecTrait {
   // these two constants are used for testing the views
   val testBackUrl = "/test-back-url"
   val testCall = Call("POST", "/test-url")

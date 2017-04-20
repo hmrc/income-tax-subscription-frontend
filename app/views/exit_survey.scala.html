@@ -40,7 +40,7 @@
     )
 }
 
-@views.html.templates.main_template(title = Messages("exit-survey.title"), bodyClasses = None) {
+@views.html.templates.main_template(title = Messages("exit-survey.title"), bodyClasses = None, showSignOutLink = false) {
 
     @summaryErrorHelper(exitSurveyForm)
 
@@ -66,6 +66,7 @@
             @question(Messages("exit-survey.q2"))
             @groupCheckboxHelper(
                 field = exitSurveyForm(ExitSurveyForm.additionalTasks),
+                legend = Messages("exit-survey.q2"),
                 labels = loadCheckboxOptions("exit-survey.q2.option"),
                 parentForm = exitSurveyForm,
                 useTextForValue = true

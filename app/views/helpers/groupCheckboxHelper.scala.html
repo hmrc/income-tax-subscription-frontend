@@ -16,6 +16,7 @@
 
 @import play.api.data.Field
 @(field: Field,
+    legend: String,
     labels: Seq[String],
     parentForm: Option[Form[_]] = None,
     useTextForValue: Boolean = false
@@ -47,11 +48,16 @@
 
 
 <div class="form-group form-field@if(hasError) { form-field--error}">
-    @fieldErrorHelper(field, parentForm)
-    @for((label,i) <- labels.zipWithIndex) {
-        <label class="block-label selection-button-checkbox" for="@{field.name}[@i]">
-            <input id="@{field.name}[@i]" name="@{field.name}[@i]" type="checkbox" value="@valueAttr(label)" @isChecked>
-            @Html(label)
-        </label>
-    }
+    <fieldset>
+        <legend class="visuallyhidden" id="@field.name">@legend</legend>
+        @fieldErrorHelper(field, parentForm)
+        @for((label,i) <- labels.zipWithIndex) {
+            <div class="multiple-choice">
+                <label class="block-label selection-button-checkbox" for="@{field.name}-@i">
+                    <input id="@{field.name}-@i" name="@{field.name}[@i]" type="checkbox" value="@valueAttr(label)" @isChecked>
+                    @Html(label)
+                </label>
+            </div>
+        }
+    </fieldset>
 </div>
