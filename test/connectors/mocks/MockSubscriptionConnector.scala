@@ -21,8 +21,11 @@ import connectors.models.subscription.{Both, FEFailureResponse, FERequest, FESuc
 import connectors.subscription.SubscriptionConnector
 import forms.{AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
 import models._
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.{times, verify}
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.JsValue
+import uk.gov.hmrc.play.http.HttpResponse
 import utils.JsonUtils._
 import utils.TestConstants
 
@@ -45,6 +48,11 @@ trait MockSubscriptionConnector extends MockHttp {
   def setupSubscribe(request: Option[FERequest] = None) = (setupMockSubscribe(request) _).tupled
 
   def setupGetSubscription(nino: Option[String] = None) = (setupMockGetSubscription(nino) _).tupled
+
+  def verifyGetSubscription(nino: Option[String] = None)(checkAccess: Int): Unit =
+    verify(mockHttpGet, times(checkAccess)).GET[HttpResponse](
+      nino.fold(ArgumentMatchers.any())(nino => ArgumentMatchers.startsWith(TestSubscriptionConnector.subscriptionUrl(nino))))(ArgumentMatchers.any(), ArgumentMatchers.any()
+    )
 
   val testRequest = FERequest(
     nino = TestConstants.testNino,

@@ -51,10 +51,14 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
   }
 
   def checkAlreadySubscribed(default: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
-    subscriptionService.getSubscription(user.nino.get).flatMap {
-      case Some(FESuccessResponse(None)) => default
-      case Some(FESuccessResponse(Some(_))) => Redirect(controllers.routes.AlreadyEnrolledController.enrolled())
-      case _ => showInternalServerError
+    baseConfig.applicationConfig.enableCheckSubscription match {
+      case false => default
+      case true =>
+        subscriptionService.getSubscription(user.nino.get).flatMap {
+          case Some(FESuccessResponse(None)) => default
+          case Some(FESuccessResponse(Some(_))) => Redirect(controllers.routes.AlreadyEnrolledController.enrolled())
+          case _ => showInternalServerError
+        }
     }
 
   def index: Action[AnyContent] = Authorised.asyncForHomeController { implicit user =>
