@@ -20,9 +20,12 @@ import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
 import forms.ExitSurveyForm
+import models.ExitSurveyModel
 import play.api.Application
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Action
+import play.api.mvc.{Action, Request}
+import play.twirl.api.Html
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 @Singleton
@@ -31,13 +34,21 @@ class ExitSurveyController @Inject()(val app: Application,
                                      val messagesApi: MessagesApi
                                     ) extends FrontendController with I18nSupport {
 
+  def view(exitSurveyForm: Form[ExitSurveyModel])(implicit request: Request[_]): Html =
+    views.html.exit_survey(
+      exitSurveyForm = exitSurveyForm,
+      routes.ExitSurveyController.submit()
+    )
+
   val show = Action { implicit request =>
-    Ok(views.html.exit_survey(ExitSurveyForm.exitSurveyForm, routes.ExitSurveyController.submit()))
+    Ok(view(ExitSurveyForm.exitSurveyForm.form))
   }
 
   val submit = Action { implicit request =>
-    val survey = ExitSurveyForm.exitSurveyForm.bindFromRequest()
-    NotImplemented(survey.value.get.toString)
+    ExitSurveyForm.exitSurveyForm.bindFromRequest().fold(
+      formWithErrors => BadRequest(view(exitSurveyForm = formWithErrors)),
+      survey => NotImplemented(survey.toString)
+    )
   }
 
 }

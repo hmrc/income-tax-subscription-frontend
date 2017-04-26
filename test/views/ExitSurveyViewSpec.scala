@@ -27,7 +27,7 @@ class ExitSurveyViewSpec extends ViewSpecTrait {
   val action = ViewSpecTrait.testCall
 
   lazy val page = views.html.exit_survey(
-    exitSurveyForm = ExitSurveyForm.exitSurveyForm,
+    exitSurveyForm = ExitSurveyForm.exitSurveyForm.form,
     postAction = action
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -43,54 +43,26 @@ class ExitSurveyViewSpec extends ViewSpecTrait {
 
     val form = testPage.getForm("Main Income Error form")(actionCall = action)
 
+    form.mustHaveH3(messages.Q1.question)
     form.mustHaveRadioSet(
       messages.Q1.question,
-      ExitSurveyForm.aboutToQuery,
+      ExitSurveyForm.satisfaction,
       useTextForValue = true
     )(
       "1" -> messages.Q1.option_1,
-      "2" -> messages.Q1.option_2
+      "2" -> messages.Q1.option_2,
+      "3" -> messages.Q1.option_3,
+      "4" -> messages.Q1.option_4,
+      "5" -> messages.Q1.option_5
     )
 
-    form.mustHaveCheckboxSet(
-      messages.Q2.question,
-      ExitSurveyForm.additionalTasks,
-      useTextForValue = true
-    )(
-      messages.Q2.option_1,
-      messages.Q2.option_2,
-      messages.Q2.option_3,
-      messages.Q2.option_4,
-      messages.Q2.option_5,
-      messages.Q2.option_6,
-      messages.Q2.option_7
+    form.mustHaveH3(messages.Q2.question)
+    form.mustHaveTextArea(
+      ExitSurveyForm.improvements,
+      maxLength = 1200
     )
 
-    form.mustHaveRadioSet(
-      messages.Q3.question,
-      ExitSurveyForm.experience,
-      useTextForValue = true
-    )(
-      "1" -> messages.Q3.option_1,
-      "2" -> messages.Q3.option_2,
-      "3" -> messages.Q3.option_3,
-      "4" -> messages.Q3.option_4,
-      "5" -> messages.Q3.option_5
-    )
-
-    form.mustHaveRadioSet(
-      messages.Q4.question,
-      ExitSurveyForm.recommendation,
-      useTextForValue = true
-    )(
-      "1" -> messages.Q4.option_1,
-      "2" -> messages.Q4.option_2,
-      "3" -> messages.Q4.option_3,
-      "4" -> messages.Q4.option_4,
-      "5" -> messages.Q4.option_5
-    )
-
-    testPage.mustHaveH3(
+    testPage.mustHavePara(
       messages.line_1
     )
 

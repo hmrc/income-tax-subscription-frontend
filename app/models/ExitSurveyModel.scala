@@ -20,10 +20,8 @@ package models
 import play.api.libs.json.Json
 
 case class ExitSurveyModel(
-                            aboutToQuery: Option[String],
-                            additionalTasks: Option[List[String]],
-                            recommendation: Option[String],
-                            experience: Option[String]
+                            satisfaction: Option[String],
+                            improvements: Option[String]
                           )
 
 object ExitSurveyModel {

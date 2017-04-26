@@ -303,6 +303,9 @@ object MessageLookup {
       val empty = "You must confirm T&C's to continue"
     }
 
+    object ExitSurvey {
+      val maxLength = "You can't enter more than 1200 characters for your feedback"
+    }
   }
 
   object Eligible {
@@ -366,39 +369,13 @@ object MessageLookup {
   }
 
   object ExitSurvey {
-    val title = "Before you go"
-    val heading = "Before you go, please answer some questions to help us improve your experience"
-    val line_1 = "If you have any additional comments please use hte feedback link at the top of the page."
+    val title = "Give feedback"
+    val heading = "Give feedback"
+    val line_1 = "Please don't include any personal or financial information, for example your National Insurance or credit card numbers"
     val submit = "Send feedback"
 
     object Q1 {
-      val question = "Before using your tax account, were you going to phone or write to HMRC about your query?"
-      val option_1 = "Yes"
-      val option_2 = "No"
-    }
-
-    object Q2 {
-      val question = "Based on what have you done today, do you need to do anything else? You can tick more than one box."
-      val option_1 = "Don't need to do anything else"
-      val option_2 = "Find out more online"
-      val option_3 = "Speak to your employer"
-      val option_4 = "Ask a friend or family member for advice"
-      val option_5 = "Ask an agent or accountant for advice"
-      val option_6 = "Don't know"
-      val option_7 = "Other"
-    }
-
-    object Q3 {
-      val question = "How likely are you to recommend your tax account to your friends or family?"
-      val option_1 = "Very likely"
-      val option_2 = "likely"
-      val option_3 = "Not likely or unlikely"
-      val option_4 = "Unlikely"
-      val option_5 = "Very unlikely"
-    }
-
-    object Q4 {
-      val question = "Overall, how do you feel about your experience using your tax account today?"
+      val question = "Overall, how did you feel about the service you received today?"
       val option_1 = "Very satisfied"
       val option_2 = "Satisfied"
       val option_3 = "Not satisfied or dissatisfied"
@@ -406,6 +383,10 @@ object MessageLookup {
       val option_5 = "Very dissatisfied"
     }
 
+    object Q2 {
+      val question = "How could we improve this service?"
+
+    }
   }
 
 }

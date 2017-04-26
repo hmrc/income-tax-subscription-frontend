@@ -25,7 +25,7 @@
 @(exitSurveyForm: Form[ExitSurveyModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question(text: String) = {
-    <h3 class="heading-small">@text</h3>
+    <h3 class="heading-medium">@text</h3>
 }
 
 @loadRadioOptions(key: String) = @{
@@ -44,61 +44,31 @@
 
     @summaryErrorHelper(exitSurveyForm)
 
-    <h1 class="heading-large">@Messages("exit-survey.heading")</h1>
+    <h1 class="heading-xlarge">@Messages("exit-survey.heading")</h1>
 
     @form(action = postAction) {
+
         <div class="form-group">
             @question(Messages("exit-survey.q1"))
             @radioHelper(
-                field = exitSurveyForm(ExitSurveyForm.aboutToQuery),
+                field = exitSurveyForm(ExitSurveyForm.satisfaction),
                 legend = Messages("exit-survey.q1"),
-                options = Seq(
-                    RadioOption("1", Messages("base.yes")),
-                    RadioOption("2", Messages("base.no"))
-                ),
+                options = loadRadioOptions("exit-survey.q1.option"),
                 parentForm = exitSurveyForm,
-                inline = true,
                 useTextForValue = true
             )
         </div>
 
         <div class="form-group">
             @question(Messages("exit-survey.q2"))
-            @groupCheckboxHelper(
-                field = exitSurveyForm(ExitSurveyForm.additionalTasks),
-                legend = Messages("exit-survey.q2"),
-                labels = loadCheckboxOptions("exit-survey.q2.option"),
-                parentForm = exitSurveyForm,
-                useTextForValue = true
+            @textAreaHelper(
+                field = exitSurveyForm(ExitSurveyForm.improvements),
+                maxLength = ExitSurveyForm.improvementsMaxLength
             )
+
+            <p>@Messages("exit-survey.line_1")</p>
         </div>
 
-        <div class="form-group">
-            @question(Messages("exit-survey.q3"))
-            @radioHelper(
-                field = exitSurveyForm(ExitSurveyForm.experience),
-                legend = Messages("exit-survey.q3"),
-                options = loadRadioOptions("exit-survey.q3.option"),
-                parentForm = exitSurveyForm,
-                useTextForValue = true
-            )
-        </div>
-
-        <div class="form-group">
-            @question(Messages("exit-survey.q4"))
-            @radioHelper(
-                field = exitSurveyForm(ExitSurveyForm.recommendation),
-                legend = Messages("exit-survey.q4"),
-                options = loadRadioOptions("exit-survey.q4.option"),
-                parentForm = exitSurveyForm,
-                useTextForValue = true
-            )
-        </div>
-
-        <div class="form-group">
-            @question(Messages("exit-survey.line_1"))
-        </div>
-        
         @continueButton(Messages("exit-survey.submit"))
     }
 

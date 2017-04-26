@@ -16,24 +16,35 @@
 
 package forms
 
+import forms.prevalidation.PreprocessedForm
+import forms.validation.ErrorMessageFactory
+import forms.validation.utils.ConstraintUtil._
 import models.ExitSurveyModel
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.data.validation.{Constraint, Valid}
+
 
 object ExitSurveyForm {
 
-  val aboutToQuery = "aboutToQuery"
-  val additionalTasks = "additionalTasks"
-  val experience = "experience"
-  val recommendation = "recommendation"
+  val satisfaction = "satisfaction"
+  val improvements = "improvements"
+  val improvementsMaxLength = 1200
 
-  val exitSurveyForm = Form(
+  val nameTooLong: Constraint[Option[String]] = constraint[Option[String]] {
+    case Some(name) =>
+      lazy val tooLong = ErrorMessageFactory.error("error.survey-feedback.maxLength")
+      if (name.trim.length > improvementsMaxLength) tooLong else Valid
+    case _ => Valid
+  }
+
+  val exitSurveyValidationForm = Form(
     mapping(
-      aboutToQuery -> optional(text),
-      additionalTasks -> optional(list(text)),
-      recommendation -> optional(text),
-      experience -> optional(text)
+      satisfaction -> optional(text),
+      improvements -> optional(text).verifying(nameTooLong)
     )(ExitSurveyModel.apply)(ExitSurveyModel.unapply)
   )
+
+  val exitSurveyForm = PreprocessedForm(exitSurveyValidationForm)
 
 }

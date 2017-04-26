@@ -16,10 +16,13 @@
 
 package forms
 
+import assets.MessageLookup
+import forms.validation.ErrorMessageFactory
+import forms.validation.testutils._
 import models.ExitSurveyModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
-
+import play.api.i18n.Messages.Implicits._
 
 class ExitSurveyFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
@@ -27,29 +30,36 @@ class ExitSurveyFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
   "ExitSurveyForm" should {
 
+    "Should validate maxlength of the how to improve this service question" in {
+      val maxLen = ErrorMessageFactory.error("error.survey-feedback.maxLength")
+
+      maxLen fieldErrorIs MessageLookup.Error.ExitSurvey.maxLength
+      maxLen summaryErrorIs MessageLookup.Error.ExitSurvey.maxLength
+
+      val maxLengthInput = Map[String, String](improvements -> "a" * (improvementsMaxLength + 1))
+      val maxLengthTest = exitSurveyForm.bind(maxLengthInput)
+      maxLengthTest assert improvements hasExpectedErrors maxLen
+
+      val withinLimitInput = Map[String, String](improvements -> "a" * improvementsMaxLength)
+      val withinLimitTest = exitSurveyForm.bind(withinLimitInput)
+      withinLimitTest assert improvements doesNotHaveSpecifiedErrors maxLen
+    }
+
     "allow null submission" in {
       val form = exitSurveyForm.bind(Map[String, String]())
       form.hasErrors mustBe false
-      form.get mustBe ExitSurveyModel(None, None, None, None)
+      form.get mustBe ExitSurveyModel(None, None)
     }
 
     "allow full submission" in {
-      val testAboutToQuery = "test1"
-      val testAdditionalTasks1 = "test2a"
-      val testAdditionalTasks2 = "test2b"
-      val testAdditionalTasks3 = "test2c"
-      val testExperience = "test3"
-      val testRecommendation = "test4"
+      val testSatisfaction = "test1"
+      val testImprovements = "test2"
       val form = exitSurveyForm.bind(Map[String, String](
-        aboutToQuery -> testAboutToQuery,
-        additionalTasks + "[0]" -> testAdditionalTasks1, // expected format for items in a list
-        additionalTasks + "[1]" -> testAdditionalTasks2,
-        additionalTasks + "[2]" -> testAdditionalTasks3,
-        recommendation -> testRecommendation,
-        experience -> testExperience
+        satisfaction -> testSatisfaction,
+        improvements -> testImprovements
       ))
       form.hasErrors mustBe false
-      form.get mustBe ExitSurveyModel(Some(testAboutToQuery), Some(List(testAdditionalTasks1, testAdditionalTasks2, testAdditionalTasks3)), Some(testRecommendation), Some(testExperience))
+      form.get mustBe ExitSurveyModel(Some(testSatisfaction), Some(testImprovements))
     }
 
   }

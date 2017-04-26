@@ -210,6 +210,32 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
     }
 
+    def mustHaveTextArea(name: String,
+                         maxLength: Option[Int] = None
+                        ): Unit = {
+      s"${this.name} must have a textarea field '$name'" which {
+        s"is a text area" in {
+          import collection.JavaConversions._
+          val eles = element.select(s"""textarea[name=$name]""")
+          if (eles.isEmpty) fail(s"$name does not have an text area with name=$name\ncurrent list of textareas:\n[${element.select("textarea")}]")
+          if (eles.size() > 1) fail(s"$name have multiple text areas with name=$name")
+          val ele = eles.head
+          maxLength match {
+            case Some(l) =>
+              ele.attr("maxLength") mustBe l.toString
+              ele.hasAttr("data-char-field") mustBe true
+              val parent = ele.parent()
+              parent.hasClass("char-counter") mustBe true
+              parent.hasAttr("data-char-counter") mustBe true
+            case _ =>
+              ele.hasAttr("data-char-field") mustBe false
+              ele.hasAttr("maxLength") mustBe false
+          }
+        }
+      }
+
+    }
+
     def mustHaveTextField(name: String,
                           label: String,
                           showLabel: Boolean = true,
