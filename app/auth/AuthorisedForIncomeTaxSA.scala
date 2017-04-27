@@ -87,7 +87,7 @@ trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
       authedBy.async {
         authContext: AuthContext =>
           implicit request =>
-            enrolmentService.checkEnrolment {
+            enrolmentService.checkMtdItsaEnrolment {
               case NotEnrolled => action(IncomeTaxSAUser(authContext))(request)
               case _ => Future.successful(Redirect(alreadyEnrolledUrl))
             }.flatMap { x => x.withSession(x.session.+(GoHome -> "et")) }
