@@ -378,7 +378,7 @@ object MessageLookup {
       val question = "Overall, how did you feel about the service you received today?"
       val option_1 = "Very satisfied"
       val option_2 = "Satisfied"
-      val option_3 = "Not satisfied or dissatisfied"
+      val option_3 = "Neither satisfied or dissatisfied"
       val option_4 = "Dissatisfied"
       val option_5 = "Very dissatisfied"
     }
