@@ -46,6 +46,7 @@ trait MockConfig extends AppConfig {
   override lazy val shutterPage = "https://www.tax.service.gov.uk/outage-income-tax-subscription/"
   override lazy val whitelistIps: Seq[String] = Seq("127.0.0.1")
   override lazy val ipExclusionList: Seq[Call] = Nil
+  override val enableCheckSubscription: Boolean = true
 }
 
 object MockConfig extends MockConfig

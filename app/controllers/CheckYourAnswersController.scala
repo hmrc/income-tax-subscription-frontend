@@ -56,7 +56,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         case Some(source) =>
           val nino = user.nino.fold("")(x => x)
           middleService.submitSubscription(nino, source.getSummary()).flatMap {
-            case Some(FESuccessResponse(id)) =>
+            case Some(FESuccessResponse(Some(id))) =>
               keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.routes.ConfirmationController.showConfirmation()))
             case _ =>
               logging.warn("Successful response not received from submission")
