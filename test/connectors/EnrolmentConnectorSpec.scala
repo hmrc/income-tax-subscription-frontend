@@ -17,7 +17,7 @@
 package connectors
 
 import audit.Logging
-import auth.{authenticatedFakeRequest, mockAuthorisedUserIdCL200, mockEnrolled}
+import auth.{authenticatedFakeRequest, mockAuthorisedUserIdCL200, mockMtdItSaEnrolled}
 import connectors.mocks.MockHttp
 import connectors.models.Enrolment
 import org.scalatest.Matchers._
@@ -40,7 +40,7 @@ class EnrolmentConnectorSpec extends UnitTestTrait with MockHttp {
     def call = await(TestEnrolmentConnector.getEnrolments("enrol"))
 
     "return an enrolment for an enrolled user" in {
-      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled)
+      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockMtdItSaEnrolled)
       val enrolment = Enrolment(ggServiceName, Seq(), "Activated")
       setupMockEnrolmentGet(OK, Json.toJson(Seq(enrolment)))
       call shouldBe Some(Seq(enrolment))

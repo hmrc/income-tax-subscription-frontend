@@ -16,7 +16,7 @@
 
 package services
 
-import auth.{authenticatedFakeRequest, mockAuthorisedUserIdCL200, mockEnrolled}
+import auth.{authenticatedFakeRequest, mockAuthorisedUserIdCL200, mockMtdItSaEnrolled, mockIrSaEnrolled}
 import connectors.models.Enrolment.{Enrolled, NotEnrolled}
 import org.scalatest.Matchers._
 import play.api.mvc.Results
@@ -28,7 +28,6 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.UnitTestTrait
 
 import scala.concurrent.Future
-
 
 class EnrolmentServiceSpec extends UnitTestTrait
   with MockEnrolmentService {
@@ -48,14 +47,24 @@ class EnrolmentServiceSpec extends UnitTestTrait
   implicit def hcUtil(implicit request: FakeRequest[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
 
   "EnrolmentService" should {
-    "return is enrolled for an enrolled user" in {
-      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled)
+    "return is enrolled for an mtd-it-sa enrolled user" in {
+      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockMtdItSaEnrolled)
       await(TestEnrolmentService.checkMtdItsaEnrolment(isEnrolled)(hcUtil(request)))
     }
 
-    "return not enrolled for a user without enrolment" in {
+    "return not enrolled for a user without an mtd-it-sa enrolment" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
       await(TestEnrolmentService.checkMtdItsaEnrolment(isNotEnrolled)(hcUtil(request)))
+    }
+
+    "return is enrolled for an ir-sa enrolled user" in {
+      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockIrSaEnrolled)
+      await(TestEnrolmentService.checkIrSaEnrolment(isEnrolled)(hcUtil(request)))
+    }
+
+    "return not enrolled for a user without an ir-sa enrolment" in {
+      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
+      await(TestEnrolmentService.checkIrSaEnrolment(isNotEnrolled)(hcUtil(request)))
     }
   }
 

@@ -44,5 +44,9 @@ class EnrolmentService @Inject()(val authConnector: AuthConnector,
   }
 
   def checkMtdItsaEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] =
-    checkEnrolment(Constants.ggServiceName, f)
+    checkEnrolment(Constants.mtdItServiceName, f)
+
+  def checkIrSaEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] =
+    checkEnrolment(Constants.irSaServiceName, f)
+
 }

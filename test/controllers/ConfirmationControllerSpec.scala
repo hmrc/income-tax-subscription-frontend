@@ -17,7 +17,7 @@
 package controllers
 
 import audit.Logging
-import auth.{authenticatedFakeRequest, mockEnrolled}
+import auth.{authenticatedFakeRequest, mockMtdItSaEnrolled}
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -42,7 +42,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
   "ConfirmationController" should {
     "If the user is enrolled then get the ID from keystore" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
-      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled))
+      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockMtdItSaEnrolled))
       status(result) shouldBe OK
 
       await(result)

@@ -59,7 +59,7 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
 
   "Calling the enrolled action of the AlreadyEnrolledController with an enrolled Authenticated User" should {
 
-    lazy val result = TestAlreadyEnrolledController.enrolled(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled))
+    lazy val result = TestAlreadyEnrolledController.enrolled(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockMtdItSaEnrolled))
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
