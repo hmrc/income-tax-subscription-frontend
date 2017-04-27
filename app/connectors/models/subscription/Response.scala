@@ -21,7 +21,7 @@ import play.api.libs.json.Json
 
 sealed trait FEResponse
 
-case class FESuccessResponse(mtditId: String) extends FEResponse
+case class FESuccessResponse(mtditId: Option[String]) extends FEResponse
 
 case class FEFailureResponse(reason: String) extends FEResponse
 
