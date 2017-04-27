@@ -288,7 +288,7 @@ exit-survey.q1                                                  = Overall, how d
 exit-survey.q1.option.size                                      = 5
 exit-survey.q1.option.1                                         = Very satisfied
 exit-survey.q1.option.2                                         = Satisfied
-exit-survey.q1.option.3                                         = Not satisfied or dissatisfied
+exit-survey.q1.option.3                                         = Neither satisfied or dissatisfied
 exit-survey.q1.option.4                                         = Dissatisfied
 exit-survey.q1.option.5                                         = Very dissatisfied
 
