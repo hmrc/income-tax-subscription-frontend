@@ -37,13 +37,13 @@ class EnrolmentConnectorSpec extends UnitTestTrait with MockHttp {
 
   "EnrolmentConnector" should {
 
-    def call = await(TestEnrolmentConnector.getIncomeTaxSAEnrolment("enrol"))
+    def call = await(TestEnrolmentConnector.getEnrolments("enrol"))
 
     "return an enrolment for an enrolled user" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled)
       val enrolment = Enrolment(ggServiceName, Seq(), "Activated")
       setupMockEnrolmentGet(OK, Json.toJson(Seq(enrolment)))
-      call shouldBe Some(enrolment)
+      call shouldBe Some(Seq(enrolment))
     }
 
     "return not enrolled for a user without enrolment" in {

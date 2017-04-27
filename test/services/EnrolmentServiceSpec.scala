@@ -50,12 +50,12 @@ class EnrolmentServiceSpec extends UnitTestTrait
   "EnrolmentService" should {
     "return is enrolled for an enrolled user" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled)
-      await(TestEnrolmentService.checkEnrolment(isEnrolled)(hcUtil(request)))
+      await(TestEnrolmentService.checkMtdItsaEnrolment(isEnrolled)(hcUtil(request)))
     }
 
     "return not enrolled for a user without enrolment" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
-      await(TestEnrolmentService.checkEnrolment(isNotEnrolled)(hcUtil(request)))
+      await(TestEnrolmentService.checkMtdItsaEnrolment(isNotEnrolled)(hcUtil(request)))
     }
   }
 
