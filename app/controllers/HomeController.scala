@@ -19,18 +19,23 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
+import auth.IncomeTaxSAUser
 import config.BaseControllerConfig
+import connectors.models.subscription.FESuccessResponse
 import connectors.models.throttling.CanAccess
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
-import services.ThrottlingService
+import play.api.mvc.{Action, AnyContent, Request, Result}
+import services.{SubscriptionService, ThrottlingService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
+
+import scala.concurrent.Future
 
 @Singleton
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                override val messagesApi: MessagesApi,
                                throttlingService: ThrottlingService,
+                               subscriptionService: SubscriptionService,
                                logging: Logging
                               ) extends BaseController {
 
@@ -45,21 +50,34 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
     }
   }
 
+  def checkAlreadySubscribed(default: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
+    baseConfig.applicationConfig.enableCheckSubscription match {
+      case false => default
+      case true =>
+        subscriptionService.getSubscription(user.nino.get).flatMap {
+          case Some(FESuccessResponse(None)) => default
+          case Some(FESuccessResponse(Some(_))) => Redirect(controllers.routes.AlreadyEnrolledController.enrolled())
+          case _ => showInternalServerError
+        }
+    }
+
   def index: Action[AnyContent] = Authorised.asyncForHomeController { implicit user =>
     implicit request =>
-      baseConfig.applicationConfig.enableThrottling match {
-        case true =>
-          throttlingService.checkAccess.flatMap {
-            case Some(CanAccess) =>
-              gotoPreferences
-            case Some(_) =>
-              Redirect(controllers.throttling.routes.ThrottlingController.show().url)
-            case x =>
-              logging.debug(s"Unexpected response from throttling service, internal server exception")
-              new InternalServerException("HomeController.index: unexpected error calling the throttling service")
-          }
-        case false => gotoPreferences
-      }
+      checkAlreadySubscribed(
+        baseConfig.applicationConfig.enableThrottling match {
+          case true =>
+            throttlingService.checkAccess.flatMap {
+              case Some(CanAccess) =>
+                gotoPreferences
+              case Some(_) =>
+                Redirect(controllers.throttling.routes.ThrottlingController.show().url)
+              case x =>
+                logging.debug(s"Unexpected response from throttling service, internal server exception")
+                new InternalServerException("HomeController.index: unexpected error calling the throttling service")
+            }
+          case false => gotoPreferences
+        }
+      )
   }
 
   lazy val gotoPreferences = Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())

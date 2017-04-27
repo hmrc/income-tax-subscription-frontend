@@ -66,7 +66,7 @@ class ThrottlingServiceSpec extends UnitTestTrait
       implicit val user = IncomeTaxSAUser(auth.ggUser.userCL200Context)
       setupMockCheckAccess(auth.nino)(OK)
       await(TestThrottlingService.checkAccess)
-      verifyMockCheckAccess(1)
+      verifyMockCheckAccess(auth.nino)(1)
     }
 
     "if there's a nino present for the user, do not call the throttling connector.check access" in {
@@ -80,7 +80,7 @@ class ThrottlingServiceSpec extends UnitTestTrait
 
       thrown.isInstanceOf[InternalServerException] shouldBe true
 
-      verifyMockCheckAccess(0)
+      verifyMockCheckAccess(auth.nino)(0)
     }
 
   }

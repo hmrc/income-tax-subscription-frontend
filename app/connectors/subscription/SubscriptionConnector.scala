@@ -21,20 +21,31 @@ import javax.inject.{Inject, Singleton}
 import config.AppConfig
 import connectors.models.subscription.{FERequest, FEResponse, FESuccessResponse}
 import play.api.http.Status.OK
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, HttpResponse}
 import utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class ProtectedMicroserviceConnector @Inject()(val appConfig: AppConfig,
-                                               val http: HttpPost) {
+class SubscriptionConnector @Inject()(val appConfig: AppConfig,
+                                      val httpPost: HttpPost,
+                                      val httpGet: HttpGet) {
 
-  lazy val subscriptionUrl = (nino: String) => s"${appConfig.subscriptionUrl}/$nino"
+  lazy val subscriptionUrl: String => String = nino => s"${appConfig.subscriptionUrl}/$nino"
 
   def subscribe(request: FERequest)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
-    http.POST[FERequest, HttpResponse](subscriptionUrl(request.nino), request).map {
+    httpPost.POST[FERequest, HttpResponse](subscriptionUrl(request.nino), request).map {
+      response =>
+        response.status match {
+          case OK => response.json.as[FESuccessResponse]
+          case _ => None
+        }
+    }
+  }
+
+  def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
+    httpGet.GET[HttpResponse](subscriptionUrl(nino)).map {
       response =>
         response.status match {
           case OK => response.json.as[FESuccessResponse]
