@@ -371,7 +371,7 @@ object MessageLookup {
   object ExitSurvey {
     val title = "Give feedback"
     val heading = "Give feedback"
-    val line_1 = "Please don't include any personal or financial information, for example your National Insurance or credit card numbers"
+    val line_1 = "Please don't include any personal or financial information, for example your National Insurance or credit card numbers."
     val submit = "Send feedback"
 
     object Q1 {
@@ -385,8 +385,14 @@ object MessageLookup {
 
     object Q2 {
       val question = "How could we improve this service?"
-
     }
+  }
+
+  object ThankYou {
+    val title = "Thank you"
+    val heading = "Thank you"
+    val line_1 = "Your feedback will help us improve this service."
+    val gotoGovUk = "Go to the GOV.UK page"
   }
 
 }

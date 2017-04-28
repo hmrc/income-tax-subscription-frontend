@@ -24,20 +24,19 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 
-class ExitSurveyControllerSpec extends ControllerBaseSpec {
+class ThankYouControllerSpec extends ControllerBaseSpec {
 
-  override val controllerName: String = "ExitSurveyController"
+  override val controllerName: String = "ThankYouController"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestExitSurveyController extends ExitSurveyController(
-    app,
+  object TestThankYouController extends ThankYouController()(
     appConfig,
     messagesApi
   )
 
-  "ExitSurveyController.show" should {
-    lazy val result = TestExitSurveyController.show()(FakeRequest())
+  "TestThankYouController.show" should {
+    lazy val result = TestThankYouController.show()(FakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return ok (200)" in {
@@ -49,22 +48,9 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
       charset(result) must be(Some("utf-8"))
     }
 
-    s"have the title '${MessageLookup.ExitSurvey.title}'" in {
-      document.title() must be(MessageLookup.ExitSurvey.title)
+    s"have the title '${MessageLookup.ThankYou.title}'" in {
+      document.title() must be(MessageLookup.ThankYou.title)
     }
-  }
-
-  "ExitSurveyController.submit" should {
-    lazy val result = TestExitSurveyController.submit()(FakeRequest())
-
-    "return SEE_OTHER (303)" in {
-      status(result) must be(Status.SEE_OTHER)
-    }
-
-    s"redirect to '${controllers.routes.ThankYouController.show().url}'" in {
-      redirectLocation(result) mustBe Some(controllers.routes.ThankYouController.show().url)
-    }
-
   }
 
 }

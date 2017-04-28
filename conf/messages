@@ -294,5 +294,10 @@ exit-survey.q1.option.5                                         = Very dissatisf
 
 exit-survey.q2                                                  = How could we improve this service?
 
-exit-survey.line_1                                              = Please don''t include any personal or financial information, for example your National Insurance or credit card numbers
+exit-survey.line_1                                              = Please don''t include any personal or financial information, for example your National Insurance or credit card numbers.
 exit-survey.submit                                              = Send feedback
+
+thank-you.title                                                 = Thank you
+thank-you.heading                                               = Thank you
+thank-you.line_1                                                = Your feedback will help us improve this service.
+thank-you.go_to_gov                                             = Go to the GOV.UK page

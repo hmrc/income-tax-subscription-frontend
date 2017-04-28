@@ -24,9 +24,11 @@ import models.ExitSurveyModel
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, Request}
+import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+
+import scala.concurrent.Future
 
 @Singleton
 class ExitSurveyController @Inject()(val app: Application,
@@ -44,11 +46,16 @@ class ExitSurveyController @Inject()(val app: Application,
     Ok(view(ExitSurveyForm.exitSurveyForm.form))
   }
 
-  val submit = Action { implicit request =>
+  val submit: Action[AnyContent] = Action.async { implicit request =>
     ExitSurveyForm.exitSurveyForm.bindFromRequest().fold(
-      formWithErrors => BadRequest(view(exitSurveyForm = formWithErrors)),
-      survey => NotImplemented(survey.toString)
+      formWithErrors => Future.successful(BadRequest(view(exitSurveyForm = formWithErrors))),
+      survey => submitSurvey(survey).map { _ => Redirect(routes.ThankYouController.show()) }
     )
+  }
+
+  //TODO replace with calls to the persistent backend once it has been decided
+  def submitSurvey(survey: ExitSurveyModel): Future[Boolean] = {
+    Future.successful(true)
   }
 
 }

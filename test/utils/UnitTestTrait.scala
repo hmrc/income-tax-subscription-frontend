@@ -17,6 +17,7 @@
 package utils
 
 import auth.MockConfig
+import config.AppConfig
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.PlaySpec
@@ -44,7 +45,7 @@ trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits 
     def doc: Document = Jsoup.parse(html.body)
   }
 
-  implicit val appConfig = MockConfig
+  implicit val appConfig: AppConfig = MockConfig
 
   implicit lazy val messagesApi = app.injector.instanceOf[MessagesApi]
 

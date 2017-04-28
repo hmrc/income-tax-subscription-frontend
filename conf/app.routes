@@ -69,3 +69,5 @@ POST        /error/other-income               controllers.OtherIncomeErrorContro
 # Exit Survey
 GET         /exit-survey                      controllers.ExitSurveyController.show
 POST        /exit-survey                      controllers.ExitSurveyController.submit
+
+GET         /feedback-submitted               controllers.ThankYouController.show
