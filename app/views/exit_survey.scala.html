@@ -40,7 +40,13 @@
     )
 }
 
-@views.html.templates.main_template(title = Messages("exit-survey.title"), bodyClasses = None, showSignOutLink = false) {
+@scripts = {
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery-ui.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-survey.js")"></script>
+}
+
+@views.html.templates.main_template(title = Messages("exit-survey.title"), bodyClasses = None, showSignOutLink = false, scriptElem = scripts) {
 
     @summaryErrorHelper(exitSurveyForm)
 
