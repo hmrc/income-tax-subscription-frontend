@@ -24,6 +24,7 @@ POST        /check-your-answers               controllers.CheckYourAnswersContro
 
 # Confirmation Routes
 GET         /confirmation                     controllers.ConfirmationController.showConfirmation
+GET         /confirmation/sign-out            controllers.ConfirmationController.signOut
 
 # Unauthorised Routes
 GET         /not-authorised                   controllers.UnauthorisedController.showNotAuthorised

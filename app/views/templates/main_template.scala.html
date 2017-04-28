@@ -22,7 +22,9 @@
   mainClass: Option[String] = None,
   scriptElem: Option[Html] = None,
   articleLayout: Boolean= true,
-  showSignOutLink: Boolean = true)(mainContent: Html)(implicit request : Request[_], messages: Messages, appConfig: AppConfig)
+  showSignOutLink: Boolean = true,
+  overrideSignOutCall: Option[Call] = None
+)(mainContent: Html)(implicit request : Request[_], messages: Messages, appConfig: AppConfig)
 
 @import uk.gov.hmrc.play.views.html.layouts
 
@@ -62,5 +64,6 @@
                mainContent = content,
                serviceInfoContent = serviceInfoContent,
                scriptElem = Some(defaultScriptElem),
-               showSignOutLink = showSignOutLink
+               showSignOutLink = showSignOutLink,
+               overrideSignOutCall = overrideSignOutCall
 )
