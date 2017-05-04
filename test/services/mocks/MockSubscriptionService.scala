@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package models.preferences
+package services.mocks
 
-import play.api.libs.json.Json
+import audit.Logging
+import connectors.mocks.MockSubscriptionConnector
+import services.SubscriptionService
+import utils.MockTrait
 
-case class BackToPreferencesModel(choice: String)
+trait MockSubscriptionService extends MockTrait with MockSubscriptionConnector {
 
-object BackToPreferencesModel {
-  val format = Json.format[BackToPreferencesModel]
+  object TestSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestSubscriptionConnector)
+
 }

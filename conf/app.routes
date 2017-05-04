@@ -45,8 +45,8 @@ GET         /not-eligible                     controllers.NotEligibleController.
 POST        /not-eligible                     controllers.NotEligibleController.submitNotEligible
 
 # Other Income Sources Routes
-GET         /income-other                     controllers.OtherIncomeController.showOtherIncome
-POST        /income-other                     controllers.OtherIncomeController.submitOtherIncome
+GET         /income-other                     controllers.OtherIncomeController.showOtherIncome(editMode: Boolean ?= false)
+POST        /income-other                     controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
 
 # Already enrolled
 GET         /error/subscription-status        controllers.AlreadyEnrolledController.enrolled

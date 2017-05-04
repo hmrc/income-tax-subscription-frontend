@@ -21,8 +21,6 @@ import javax.inject.{Inject, Singleton}
 import config.BaseControllerConfig
 import connectors.models.preferences.Activated
 import controllers.BaseController
-import forms.preferences.BackToPreferencesForm._
-import models.preferences.BackToPreferencesModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -37,9 +35,8 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val preferencesService: PreferencesService) extends BaseController {
 
-  def view(backToPreferencesForm: Form[BackToPreferencesModel])(implicit request: Request[AnyContent]): Html = {
+  def view()(implicit request: Request[AnyContent]): Html = {
     views.html.preferences.continue_registration(
-      backToPreferencesForm,
       postAction = controllers.preferences.routes.PreferencesController.submitGoBackToPreferences()
     )
   }
@@ -61,18 +58,11 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   def showGoBackToPreferences: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request => Ok(view(backToPreferencesForm))
+    implicit request => Ok(view())
   }
 
   def submitGoBackToPreferences: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
-      backToPreferencesForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(view(backToPreferencesForm = formWithErrors)),
-        choice => choice.choice match {
-          case `option_yes` => gotoPreferences
-          case `option_no` => signOut
-        }
-      )
+    implicit request => gotoPreferences
   }
 
   @inline def gotoPreferences(implicit request: Request[AnyContent]): Result = Redirect(preferencesService.choosePaperlessUrl)

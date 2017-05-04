@@ -21,30 +21,30 @@ import auth._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.{MockKeystoreService, MockProtectedMicroservice}
+import services.mocks.{MockKeystoreService, MockSubscriptionService}
 import utils.TestModels
 
 class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
-  with MockProtectedMicroservice {
+  with MockSubscriptionService {
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestCheckYourAnswersController$.show,
-    "submit" -> TestCheckYourAnswersController$.submit
+    "show" -> TestCheckYourAnswersController.show,
+    "submit" -> TestCheckYourAnswersController.submit
   )
 
-  object TestCheckYourAnswersController$ extends CheckYourAnswersController(
+  object TestCheckYourAnswersController extends CheckYourAnswersController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    middleService = MockSubscriptionService,
+    middleService = TestSubscriptionService,
     app.injector.instanceOf[Logging]
   )
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" should {
 
-    lazy val result = TestCheckYourAnswersController$.show(authenticatedFakeRequest())
+    lazy val result = TestCheckYourAnswersController.show(authenticatedFakeRequest())
 
     "return ok (200)" in {
       setupMockKeystore(fetchAll = TestModels.testCacheMap)
@@ -55,14 +55,14 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the CheckYourAnswersController with an authorised user" should {
 
-    def call = TestCheckYourAnswersController$.submit(authenticatedFakeRequest())
+    def call = TestCheckYourAnswersController.submit(authenticatedFakeRequest())
 
     "When the submission is successful" should {
       lazy val result = call
 
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
-        setupSubscribe(subScribeSuccess)
+        setupSubscribe()(subscribeSuccess)
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
@@ -77,7 +77,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "return a internalServer error" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
-        setupSubscribe(subScribeBadRequest)
+        setupSubscribe()(subscribeBadRequest)
         status(result) must be(Status.INTERNAL_SERVER_ERROR)
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
@@ -88,7 +88,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "The back url" should {
     s"point to ${controllers.routes.TermsController.showTerms().url}" in {
-      TestCheckYourAnswersController$.backUrl mustBe controllers.routes.TermsController.showTerms().url
+      TestCheckYourAnswersController.backUrl mustBe controllers.routes.TermsController.showTerms().url
     }
   }
 

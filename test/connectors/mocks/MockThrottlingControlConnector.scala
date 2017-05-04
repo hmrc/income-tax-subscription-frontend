@@ -31,7 +31,7 @@ trait MockThrottlingControlConnector extends UnitTestTrait with MockHttp {
   def setupMockCheckAccess(nino: String)(status: Int): Unit =
     setupMockHttpGet(s"${appConfig.throttleControlUrl}/$nino")(status, None)
 
-  def verifyMockCheckAccess(checkAccess: Int): Unit = {
-    verify(mockHttpGet, times(checkAccess)).GET[HttpResponse](ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any())
+  def verifyMockCheckAccess(nino:String)(checkAccess: Int): Unit = {
+    verify(mockHttpGet, times(checkAccess)).GET[HttpResponse](ArgumentMatchers.startsWith(s"${appConfig.throttleControlUrl}/$nino"))(ArgumentMatchers.any(), ArgumentMatchers.any())
   }
 }

@@ -18,20 +18,16 @@ package views.preferences
 
 import assets.MessageLookup
 import assets.MessageLookup.{PreferencesCallBack => messages}
-import forms.preferences.BackToPreferencesForm
-import forms.preferences.BackToPreferencesForm._
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
-
 
 class ContinueRegistrationViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
   lazy val page = views.html.preferences.continue_registration(
-    backToPreferencesForm,
     postAction = action
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -45,15 +41,9 @@ class ContinueRegistrationViewSpec extends ViewSpecTrait {
 
     val form = testPage.getForm("Continue Registration form")(actionCall = action)
 
-    form.mustHaveRadioSet(
-      legend = messages.legend,
-      radioName = BackToPreferencesForm.backToPreferences
-    )(
-      BackToPreferencesForm.option_yes ->messages.yes,
-      BackToPreferencesForm.option_no ->messages.no
-    )
+    form.mustHaveGoBackButton()
 
-    form.mustHaveContinueButton()
+    testPage.mustHaveALink(id = "sign-out", href = controllers.routes.SignOutController.signOut().url, text = messages.signOut)
 
   }
 }
