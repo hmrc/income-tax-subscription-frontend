@@ -1,9 +1,9 @@
 var open = false;
 
-function markAccordionOpen(element) {
+function markAccordionOpen(label) {
     if (!open) {
         open = true;
-        console.log("Logged accordion open");
-        ga('send', 'event', 'test', 'test', 'test')
+        console.log("Logged accordion open: " + label);
+        ga('send', 'event', 'itsa', 'opened accordion', label);
     }
 }

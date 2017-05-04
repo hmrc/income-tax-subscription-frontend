@@ -14,13 +14,15 @@
  * limitations under the License.
  *@
 
+@import org.apache.commons.lang3.StringEscapeUtils.escapeEcmaScript
+
 @(label: String,
   content : Html
 )(implicit messages: Messages)
 
 <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-accordion.js")"></script>
 
-<details onclick="markAccordionOpen(this)">
+<details onclick="markAccordionOpen('@escapeEcmaScript(label)')">
     <summary><span class="summary">@label</span></summary>
     <div class="panel-indent">
         @content
