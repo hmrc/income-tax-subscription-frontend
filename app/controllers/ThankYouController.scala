@@ -16,22 +16,20 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
-import scala.concurrent.Future
-
-
+@Singleton
 class ThankYouController @Inject()(implicit val applicationConfig: AppConfig,
                                    val messagesApi: MessagesApi
                                   ) extends FrontendController with I18nSupport {
 
-  def show(): Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(views.html.feedback_thank_you()))
+  val show: Action[AnyContent] = Action {
+    Ok(views.html.feedback_thank_you())
   }
 
 }
