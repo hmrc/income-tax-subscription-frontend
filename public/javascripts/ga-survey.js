@@ -6,7 +6,7 @@ $(document).ready($(function () {
     $submissionButton.on('click', function (e) {
         e.preventDefault();
         var satisfactionSelection = $('input[name=satisfaction]:checked').val();
-        if (satisfactionSelection != undefined) {
+        if (typeof ga === "function" && satisfactionSelection != undefined) {
             ga('send', 'event', 'itsa-exit-survey', 'satisfaction', satisfactionSelection, {
                 hitCallback: function () {
                     $form.submit();
