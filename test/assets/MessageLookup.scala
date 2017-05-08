@@ -303,6 +303,9 @@ object MessageLookup {
       val empty = "You must confirm T&C's to continue"
     }
 
+    object ExitSurvey {
+      val maxLength = "You can't enter more than 1200 characters for your feedback"
+    }
   }
 
   object Eligible {
@@ -363,6 +366,33 @@ object MessageLookup {
     val bullet5 = "capital gains"
     val yes = "Yes"
     val no = "No"
+  }
+
+  object ExitSurvey {
+    val title = "Give feedback"
+    val heading = "Give feedback"
+    val line_1 = "Please don't include any personal or financial information, for example your National Insurance or credit card numbers."
+    val submit = "Send feedback"
+
+    object Q1 {
+      val question = "Overall, how did you feel about the service you received today?"
+      val option_1 = "Very satisfied"
+      val option_2 = "Satisfied"
+      val option_3 = "Neither satisfied or dissatisfied"
+      val option_4 = "Dissatisfied"
+      val option_5 = "Very dissatisfied"
+    }
+
+    object Q2 {
+      val question = "How could we improve this service?"
+    }
+  }
+
+  object ThankYou {
+    val title = "Thank you"
+    val heading = "Thank you"
+    val line_1 = "Your feedback will help us improve this service."
+    val gotoGovUk = "Go to the GOV.UK page"
   }
 
 }

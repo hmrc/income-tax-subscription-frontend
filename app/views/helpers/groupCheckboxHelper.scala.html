@@ -15,31 +15,19 @@
  *@
 
 @import play.api.data.Field
-@import views.html.helpers.RadioOption
-
 @(field: Field,
     legend: String,
-    options: Seq[RadioOption],
+    labels: Seq[String],
     parentForm: Option[Form[_]] = None,
-    inline: Boolean = false,
-    fieldSetClass: Option[String] = None,
     useTextForValue: Boolean = false
 )(implicit messages: Messages)
 
 @import forms.validation.ErrorMessageHelper._
 
-@fieldSetClassValue = @{
-    (inline, fieldSetClass) match {
-        case (false, _ )       => fieldSetClass.fold(Html(""))(cls => Html(s"""class="$cls""""))
-        case (true, Some(cls)) => Html(s"""class="inline $cls"""")
-        case _                 => Html(s"""class="inline"""")
-    }
-}
-
-@isSelected(option: String) = {
-    @field.value match {
-        case Some(`option`) => {checked="checked"}
-        case _ => {}
+@isChecked = @{
+    field.value.map {
+        case "true" => Html(s"""checked="checked"""")
+        case _ => Html("")
     }
 }
 
@@ -51,23 +39,25 @@
     }
 }
 
-@valueAttr(option: RadioOption) = @{
+@valueAttr(label: String) = @{
     useTextForValue match {
-        case true => option.message
-        case false => option.optionName
+        case true => label
+        case false => "true"
     }
 }
 
+
 <div class="form-group form-field@if(hasError) { form-field--error}">
-    <fieldset @fieldSetClassValue>
+    <fieldset>
         <legend class="visuallyhidden" id="@field.name">@legend</legend>
         @fieldErrorHelper(field, parentForm)
-        @for(option <- options) {
-            <label class="block-label selection-button-radio@option.classes.fold("")(x=>" "+x)" for="@{field.name}-@option.optionName">
-                <input id="@{field.name}-@option.optionName" type="radio" name="@field.name" value="@valueAttr(option)" @isSelected(option.optionName)>
-                @Html(option.message)
-            </label>
+        @for((label,i) <- labels.zipWithIndex) {
+            <div class="multiple-choice">
+                <label class="block-label selection-button-checkbox" for="@{field.name}-@i">
+                    <input id="@{field.name}-@i" name="@{field.name}[@i]" type="checkbox" value="@valueAttr(label)" @isChecked>
+                    @Html(label)
+                </label>
+            </div>
         }
     </fieldset>
 </div>
-

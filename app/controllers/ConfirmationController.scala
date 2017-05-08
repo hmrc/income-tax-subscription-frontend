@@ -42,12 +42,16 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
           Ok(views.html.confirmation(
             subscriptionId = id,
             submissionDate = dateConvert(LocalDate.now()),
-            controllers.routes.SignOutController.signOut()
+            routes.ConfirmationController.signOut()
           ))
         case _ =>
           logging.info("User attempted to view confirmation with no subscriptionId stored in Keystore")
           InternalServerError
       }
+  }
+
+  val signOut: Action[AnyContent] = Authorised.asyncForEnrolled { implicit user =>
+    implicit request => Future.successful(Redirect(routes.ExitSurveyController.show()).withNewSession)
   }
 
 }

@@ -19,9 +19,9 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers._
 
-@(subscriptionId: String, submissionDate: DateModel, postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(subscriptionId: String, submissionDate: DateModel, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-    @views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None) {
+    @views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction)) {
 
         <div class="form-group">
             <section id="confirmation-heading" class="transaction-banner--complete">
@@ -44,7 +44,7 @@
             <p>@Html(Messages("confirmation.whatHappensNext.para4", appConfig.btaUrl))</p>
         </section>
 
-        @form(action = postAction) {
+        @form(action = signOutAction) {
             @signOutButton(Messages("confirmation.sign_out"))
         }
     }

@@ -24,6 +24,7 @@ POST        /check-your-answers               controllers.CheckYourAnswersContro
 
 # Confirmation Routes
 GET         /confirmation                     controllers.ConfirmationController.showConfirmation
+GET         /confirmation/sign-out            controllers.ConfirmationController.signOut
 
 # Unauthorised Routes
 GET         /not-authorised                   controllers.UnauthorisedController.showNotAuthorised
@@ -66,3 +67,8 @@ GET         /error/main-income                controllers.MainIncomeErrorControl
 GET         /error/other-income               controllers.OtherIncomeErrorController.showOtherIncomeError
 POST        /error/other-income               controllers.OtherIncomeErrorController.submitOtherIncomeError
 
+# Exit Survey
+GET         /exit-survey                      controllers.ExitSurveyController.show
+POST        /exit-survey                      controllers.ExitSurveyController.submit
+
+GET         /feedback-submitted               controllers.ThankYouController.show
