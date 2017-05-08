@@ -28,7 +28,7 @@ class ThankYouController @Inject()(implicit val applicationConfig: AppConfig,
                                    val messagesApi: MessagesApi
                                   ) extends FrontendController with I18nSupport {
 
-  val show: Action[AnyContent] = Action {
+  val show: Action[AnyContent] = Action { implicit request =>
     Ok(views.html.feedback_thank_you())
   }
 
