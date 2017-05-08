@@ -17,6 +17,9 @@
 package controllers
 
 import assets.MessageLookup
+import audit.Logging
+import forms.ExitSurveyForm
+import models.ExitSurveyModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -32,9 +35,12 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
 
   object TestExitSurveyController extends ExitSurveyController(
     app,
+    app.injector.instanceOf[Logging],
     appConfig,
     messagesApi
   )
+
+  val testSurvey = ExitSurveyModel("Very satisfied", "This is my extended feedback")
 
   "ExitSurveyController.show" should {
     lazy val result = TestExitSurveyController.show()(FakeRequest())
@@ -54,17 +60,64 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
     }
   }
 
-  "ExitSurveyController.submit" should {
-    lazy val result = TestExitSurveyController.submit()(FakeRequest())
+  "ExitSurveyController.surveyFormDataToMap" should {
 
-    "return SEE_OTHER (303)" in {
-      status(result) must be(Status.SEE_OTHER)
+    def result(testData: ExitSurveyModel) = TestExitSurveyController.surveyFormDataToMap(testData)
+
+    "generated the correct data map for the test survey" in {
+      result(testSurvey) mustBe Map(
+        ExitSurveyForm.satisfaction -> testSurvey.satisfaction.get,
+        ExitSurveyForm.improvements -> testSurvey.improvements.get
+      )
+    }
+    "generated the correct data map for the test survey when there is no satisfaction" in {
+      result(testSurvey.copy(satisfaction = None)) mustBe Map(
+        ExitSurveyForm.improvements -> testSurvey.improvements.get
+      )
+    }
+    "generated the correct data map for the test survey when there is no improvements" in {
+      result(testSurvey.copy(improvements = None)) mustBe Map(
+        ExitSurveyForm.satisfaction -> testSurvey.satisfaction.get
+      )
+    }
+    "generated the an empty map when nonthing is suplied" in {
+      result(ExitSurveyModel(None, None)) mustBe Map()
+    }
+  }
+
+  // N.B. currently the correctness of splunk cannot be unit tested due it being implemented as
+  // a side effect async process call inside a unit return function
+  // i.e. even if splunk fails these two tests would not fail
+  // by separating the scenarios here we can at least manually examine the print outs for these respective tests
+  // but the test for the splunk audit itself must be done manually in QA
+  "ExitSurveyController.submit" when {
+
+    "received an empty request" should {
+      lazy val result = TestExitSurveyController.submit()(FakeRequest())
+
+      "return SEE_OTHER (303)" in {
+        status(result) must be(Status.SEE_OTHER)
+      }
+
+      s"redirect to '${controllers.routes.ThankYouController.show().url}'" in {
+        redirectLocation(result) mustBe Some(controllers.routes.ThankYouController.show().url)
+      }
     }
 
-    s"redirect to '${controllers.routes.ThankYouController.show().url}'" in {
-      redirectLocation(result) mustBe Some(controllers.routes.ThankYouController.show().url)
-    }
+    "received an request with form data" should {
 
+      val surveyData = TestExitSurveyController.surveyFormDataToMap(testSurvey)
+
+      lazy val result = TestExitSurveyController.submit()(FakeRequest().post(ExitSurveyForm.exitSurveyValidationForm.fill(testSurvey)))
+
+      "return SEE_OTHER (303)" in {
+        status(result) must be(Status.SEE_OTHER)
+      }
+
+      s"redirect to '${controllers.routes.ThankYouController.show().url}'" in {
+        redirectLocation(result) mustBe Some(controllers.routes.ThankYouController.show().url)
+      }
+    }
   }
 
 }

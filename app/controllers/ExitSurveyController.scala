@@ -18,6 +18,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
+import audit.Logging
 import config.AppConfig
 import forms.ExitSurveyForm
 import models.ExitSurveyModel
@@ -27,11 +28,14 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.http.HeaderCarrier
+import utils.Implicits._
 
 import scala.concurrent.Future
 
 @Singleton
 class ExitSurveyController @Inject()(val app: Application,
+                                     val logging: Logging,
                                      implicit val applicationConfig: AppConfig,
                                      val messagesApi: MessagesApi
                                     ) extends FrontendController with I18nSupport {
@@ -49,13 +53,35 @@ class ExitSurveyController @Inject()(val app: Application,
   val submit: Action[AnyContent] = Action.async { implicit request =>
     ExitSurveyForm.exitSurveyForm.bindFromRequest().fold(
       formWithErrors => Future.successful(BadRequest(view(exitSurveyForm = formWithErrors))),
-      survey => submitSurvey(survey).map { _ => Redirect(routes.ThankYouController.show()) }
+      survey => {
+        submitSurvey(survey)
+        Redirect(routes.ThankYouController.show())
+      }
     )
   }
 
-  //TODO replace with calls to the persistent backend once it has been decided
-  def submitSurvey(survey: ExitSurveyModel): Future[Boolean] = {
-    Future.successful(true)
+  def submitSurvey(survey: ExitSurveyModel)(implicit hc: HeaderCarrier): Unit = {
+    val surveyAsMap = surveyFormDataToMap(survey)
+    if (surveyAsMap.nonEmpty)
+      logging.audit(transactionName = "ITSA Survey", detail = surveyAsMap, auditType = Logging.eventTypeSuccess)
+  }
+
+  private[controllers] final def surveyFormDataToMap(survey: ExitSurveyModel): Map[String, String] = {
+    survey.getClass.getDeclaredFields.map {
+      field =>
+        field.setAccessible(true)
+        field.getName -> (field.get(survey) match {
+          case Some(x) => x.toString
+          case xs: Seq[Any] => xs.mkString(",")
+          case x => x.toString
+        })
+    }.toMap.filter { case (x, y) =>
+      // don't keep any fields in the map if they were not answered
+      y match {
+        case "None" => false
+        case _ => true
+      }
+    }
   }
 
 }
