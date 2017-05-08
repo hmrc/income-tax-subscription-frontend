@@ -42,7 +42,7 @@ class ExitSurveyController @Inject()(val app: Application,
       routes.ExitSurveyController.submit()
     )
 
-  val show = Action {
+  val show: Action[AnyContent] = Action { implicit request =>
     Ok(view(ExitSurveyForm.exitSurveyForm.form))
   }
 
