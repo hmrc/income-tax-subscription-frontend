@@ -108,7 +108,7 @@ object Logging {
 
   val splunkString = "SPLUNK AUDIT:\n"
 
-  val eventTypeSuccess: String = "Success"
+  val eventTypeSurveyFeedback: String = "mtdItsaExitSurveyFeedback"
 
 }
 

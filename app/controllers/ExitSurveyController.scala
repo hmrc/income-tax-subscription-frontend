@@ -63,7 +63,7 @@ class ExitSurveyController @Inject()(val app: Application,
   def submitSurvey(survey: ExitSurveyModel)(implicit hc: HeaderCarrier): Unit = {
     val surveyAsMap = surveyFormDataToMap(survey)
     if (surveyAsMap.nonEmpty)
-      logging.audit(transactionName = "ITSA Survey", detail = surveyAsMap, auditType = Logging.eventTypeSuccess)
+      logging.audit(transactionName = "ITSA Survey", detail = surveyAsMap, auditType = Logging.eventTypeSurveyFeedback)
   }
 
   private[controllers] final def surveyFormDataToMap(survey: ExitSurveyModel): Map[String, String] = {
