@@ -228,7 +228,7 @@ error.not-eligible.invalid                                      = You must selec
 error.other-income.empty                                        = You must select an option to continue
 error.other-income.invalid                                      = You must select an option to continue
 
-error.terms.empty                                               = You must confirm T&C''s to continue
+error.terms.empty                                               = You must accept the terms of participation to continue
 
 error.survey-feedback.maxLength                                 = You can''t enter more than 1200 characters for your feedback
 
