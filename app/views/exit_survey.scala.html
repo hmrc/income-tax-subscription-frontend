@@ -67,12 +67,11 @@
 
         <div class="form-group">
             @question(Messages("exit-survey.q2"))
+            <p>@Messages("exit-survey.line_1")</p>
             @textAreaHelper(
                 field = exitSurveyForm(ExitSurveyForm.improvements),
                 maxLength = ExitSurveyForm.improvementsMaxLength
             )
-
-            <p>@Messages("exit-survey.line_1")</p>
         </div>
 
         @continueButton(Messages("exit-survey.submit"))
