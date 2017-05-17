@@ -24,7 +24,8 @@
   mainContent: Html = HtmlFormat.empty,
   serviceInfoContent: Html = HtmlFormat.empty,
   scriptElem: Option[Html] = None,
-  showSignOutLink: Boolean = true
+  showSignOutLink: Boolean = true,
+  overrideSignOutCall : Option[Call] = None
 )(implicit request: Request[_], messages: Messages)
 
 @import layouts.{govuk_template => hmrcGovUkTemplate}
@@ -39,8 +40,12 @@
     <meta name="format-detection" content="telephone=no" />
 }
 
+@signOut = @{
+    overrideSignOutCall.fold(routes.SignOutController.signOut)(href => href)
+}
+
 @signOutLink = {
-  @if(showSignOutLink) {<li><a id="logOutNavHref" href=@routes.SignOutController.signOut>@Messages("base.sign-out")</a></li>}
+  @if(showSignOutLink) {<li><a id="logOutNavHref" href=@signOut>@Messages("base.sign-out")</a></li>}
 }
 
 @insideHeader = {

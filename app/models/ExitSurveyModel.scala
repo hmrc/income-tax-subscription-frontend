@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import org.apache.commons.lang3.StringEscapeUtils.escapeEcmaScript
+package models
 
-@(label: String,
-  content : Html
-)(implicit messages: Messages)
 
-<script type="text/javascript" src="@routes.Assets.at("javascripts/ga-accordion.js")"></script>
+import play.api.libs.json.Json
 
-<details onclick="markAccordionOpen('@escapeEcmaScript(label)')">
-    <summary><span class="summary">@label</span></summary>
-    <div class="panel-indent">
-        @content
-    </div>
-</details>
+case class ExitSurveyModel(
+                            satisfaction: Option[String],
+                            improvements: Option[String]
+                          )
+
+object ExitSurveyModel {
+  implicit val format = Json.format[ExitSurveyModel]
+}

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,19 +12,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import org.apache.commons.lang3.StringEscapeUtils.escapeEcmaScript
+package controllers
 
-@(label: String,
-  content : Html
-)(implicit messages: Messages)
+import javax.inject.{Inject, Singleton}
 
-<script type="text/javascript" src="@routes.Assets.at("javascripts/ga-accordion.js")"></script>
+import config.AppConfig
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 
-<details onclick="markAccordionOpen('@escapeEcmaScript(label)')">
-    <summary><span class="summary">@label</span></summary>
-    <div class="panel-indent">
-        @content
-    </div>
-</details>
+@Singleton
+class ThankYouController @Inject()(implicit val applicationConfig: AppConfig,
+                                   val messagesApi: MessagesApi
+                                  ) extends FrontendController with I18nSupport {
+
+  val show: Action[AnyContent] = Action { implicit request =>
+    Ok(views.html.feedback_thank_you())
+  }
+
+}

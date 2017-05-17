@@ -14,17 +14,17 @@
  * limitations under the License.
  *@
 
-@import org.apache.commons.lang3.StringEscapeUtils.escapeEcmaScript
+@import views.html.templates.main_template
+@import config.AppConfig
 
-@(label: String,
-  content : Html
-)(implicit messages: Messages)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-<script type="text/javascript" src="@routes.Assets.at("javascripts/ga-accordion.js")"></script>
+@main_template(title = Messages("thank-you.title"), bodyClasses = None, showSignOutLink = false) {
 
-<details onclick="markAccordionOpen('@escapeEcmaScript(label)')">
-    <summary><span class="summary">@label</span></summary>
-    <div class="panel-indent">
-        @content
+    <h1 class="heading-large">@Messages("thank-you.heading")</h1>
+    <div class="form-group">
+        <p>@Messages("thank-you.line_1")</p>
     </div>
-</details>
+    <a id="gotoGovUK" href="https://www.gov.uk">@Messages("thank-you.go_to_gov")</a>
+
+}

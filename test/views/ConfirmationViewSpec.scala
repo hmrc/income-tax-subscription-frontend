@@ -23,15 +23,16 @@ import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import utils.UnitTestTrait
 
-class ConfirmationViewSpec extends UnitTestTrait {
+class ConfirmationViewSpec extends ViewSpecTrait {
 
   val subscriptionIdValue = "000-032407"
   val submissionDateValue = DateModel("1", "1", "2016")
+  val action = ViewSpecTrait.testCall
 
   lazy val page = views.html.confirmation(
     subscriptionId = subscriptionIdValue,
     submissionDate = submissionDateValue,
-    postAction = controllers.routes.SignOutController.signOut()
+    signOutAction = action
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
@@ -103,8 +104,18 @@ class ConfirmationViewSpec extends UnitTestTrait {
     }
 
     "have a sign out button" in {
-      val b = document.getElementById("sign-out-button")
-      b.text() mustBe MessageLookup.Confirmation.signOut
+      val form = document.select("form").first()
+      form.attr("action") mustBe action.url
+
+      val actionSignOut = form.getElementById("sign-out-button")
+      actionSignOut.text() mustBe MessageLookup.Confirmation.signOut
+    }
+
+    // N.B. both of these should be directed to the special sign out call which also takes them to the exit survey page
+    "The banner sign out button must be directed to the same as the sign out button" in {
+      val bannerSignout = document.getElementById("logOutNavHref")
+      bannerSignout.text() mustBe MessageLookup.Base.signOut
+      bannerSignout.attr("href") mustBe action.url
     }
 
   }
