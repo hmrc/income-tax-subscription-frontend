@@ -3,7 +3,7 @@ $(document).ready($(function () {
     var $btaLink = $("#bta");
 
     $btaLink.on('click', function (e) {
-            ga('send', 'event', 'itsa', 'bta link clicked');
+            ga('send', 'event', 'itsa', 'bta link clicked', 'value');
     });
 
 }));
