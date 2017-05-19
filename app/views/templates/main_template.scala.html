@@ -41,9 +41,10 @@
 *@
 @defaultScriptElem = {
     <link rel="stylesheet" href=@routes.Assets.at("stylesheets/mtd-itsa-custom.css")>
-    <script src=@routes.Assets.at("javascripts/ga-reporting.js")></script>
-    <script src=@routes.Assets.at("javascripts/ga-support.js")></script>
-    <script src=@routes.Assets.at("javascripts/ga-feedback.js")></script>
+    <script type="text/javascript" src=@routes.Assets.at("javascripts/ga-reporting.js")></script>
+    <script type="text/javascript" src=@routes.Assets.at("javascripts/ga-support.js")></script>
+    <script type="text/javascript" src=@routes.Assets.at("javascripts/ga-feedback.js")></script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-backlink.js")"></script>
     @* append custom scripts *@
     @scriptElem.fold(HtmlFormat.empty)(x => x)
 }
