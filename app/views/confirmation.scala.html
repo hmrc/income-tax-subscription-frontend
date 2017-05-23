@@ -21,7 +21,10 @@
 
 @(subscriptionId: String, submissionDate: DateModel, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-    @views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction)) {
+@scripts= {
+        <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
+}
+    @views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction), scriptElem = scripts) {
 
         <div class="form-group">
             <section id="confirmation-heading" class="transaction-banner--complete">
