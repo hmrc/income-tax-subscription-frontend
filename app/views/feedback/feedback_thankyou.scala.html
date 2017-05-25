@@ -23,5 +23,5 @@
 
 @main_template(Messages("feedback.thankyou.title")) {
     @cachedStaticHtmlPartialRetriever.getPartialContent(partialUrl)
-    <a id="back" href='@redirectUrl' role="button" tabindex="0" class="button">@Messages("base.back")</a>
+    <a id="feedback-back" href='@redirectUrl' role="button" tabindex="0" class="button">@Messages("base.back")</a>
 }
