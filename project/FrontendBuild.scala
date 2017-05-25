@@ -29,6 +29,8 @@ private object AppDependencies {
   private val pegdownVersion = "1.6.0"
   private val httpCachingCleintVersion = "6.1.0"
   private val playWhitelistFilterVersion = "2.0.0"
+  private val wiremockVersion = "2.5.1"
+
 
   val compile = Seq(
     ws,
@@ -63,5 +65,23 @@ private object AppDependencies {
     }.test
   }
 
-  def apply(): Seq[ModuleID] = compile ++ Test()
+  object IntegrationTest {
+    def apply() = new TestDependencies {
+
+      override lazy val scope: String = "it"
+
+      override lazy val test = Seq(
+        "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
+        "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
+        "org.pegdown" % "pegdown" % pegdownVersion % scope,
+        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
+        "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope,
+        "com.github.fge" % "json-schema-validator" % "2.2.6" % scope,
+        "org.jsoup" % "jsoup" % "1.10.2" % scope,
+        "com.github.tomakehurst" % "wiremock" % wiremockVersion % scope
+      )
+    }.test
+  }
+
+  def apply(): Seq[ModuleID] = compile ++ Test() ++ IntegrationTest()
 }
