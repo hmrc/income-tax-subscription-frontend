@@ -8,7 +8,7 @@ $(document).ready($(function () {
             if (reportSubmit.length) {
                 reportSubmit.click(function(){
                     var supportLinkClickedTitle = $('title').text();
-                    ga('send', 'event', 'link clicked', 'support ticket submitted', supportLinkClickedTitle);
+                    ga('send', 'event', 'button clicked', 'support ticket submitted', supportLinkClickedTitle);
                 });
                 clearInterval(checkExist);
             }
