@@ -20,6 +20,7 @@ import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
+import config.ITSAHeaderCarrierForPartialsConverter._
 import connectors.RawResponseReads
 import connectors.models.preferences.PaperlessState
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -27,7 +28,6 @@ import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.http._
 import utils.Implicits.FutureUtl
-import config.ITSAHeaderCarrierForPartialsConverter._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -38,20 +38,13 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
                                             httpPut: HttpPut,
                                             val messagesApi: MessagesApi) extends I18nSupport with RawResponseReads {
 
-  private[preferences] lazy val returnUrl: String =
-    encryptAndEncode(appConfig.baseUrl + controllers.preferences.routes.PreferencesController.callback().url)
-
-  private[preferences] lazy val returnLinkText: String = encryptAndEncode(Messages("preferences.returnLinkText"))
+  lazy val returnUrl: String = PreferenceFrontendConnector.returnUrl(appConfig.baseUrl)
 
   lazy val checkPaperlessUrl: String =
-    s"""${appConfig.preferencesService}/paperless/activate?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
+    appConfig.preferencesService + PreferenceFrontendConnector.checkPaperlessUri(returnUrl = returnUrl)
 
   lazy val choosePaperlessUrl: String =
-    s"""${appConfig.preferencesUrl}/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
-
-  private[preferences] def urlEncode(text: String) = URLEncoder.encode(text, "UTF-8")
-
-  private[preferences] def encryptAndEncode(s: String) = urlEncode(ApplicationCrypto.QueryParameterCrypto.encrypt(PlainText(s)).value)
+    appConfig.preferencesUrl + PreferenceFrontendConnector.choosePaperlessUri(returnUrl)
 
   def checkPaperless(implicit request: Request[AnyContent]): Future[PaperlessState] = {
     // The header carrier must include the current user's session in order to be authenticated by the preferences-frontend service
@@ -67,5 +60,24 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
       }
     }
   }
+
+}
+
+object PreferenceFrontendConnector {
+
+  private[preferences] def urlEncode(text: String) = URLEncoder.encode(text, "UTF-8")
+
+  private[preferences] def encryptAndEncode(s: String) = urlEncode(ApplicationCrypto.QueryParameterCrypto.encrypt(PlainText(s)).value)
+
+  private[preferences] def returnUrl(baseUrl: String): String =
+    encryptAndEncode(baseUrl + controllers.preferences.routes.PreferencesController.callback().url)
+
+  private[preferences] def returnLinkText(implicit messages: Messages): String = encryptAndEncode(Messages("preferences.returnLinkText"))
+
+  def checkPaperlessUri(returnUrl: String)(implicit messages: Messages): String =
+    s"""/paperless/activate?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
+
+  def choosePaperlessUri(returnUrl: String)(implicit messages: Messages): String =
+    s"""/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
 }
