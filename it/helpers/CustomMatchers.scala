@@ -16,9 +16,10 @@
 
 package helpers
 
+import org.jsoup.Jsoup
 import org.scalatest.matchers._
-import play.api.libs.json.Reads
 import play.api.libs.ws.WSResponse
+import play.api.test.Helpers._
 
 trait CustomMatchers {
   def httpStatus(expectedValue: Int): HavePropertyMatcher[WSResponse, Int] =
@@ -32,25 +33,61 @@ trait CustomMatchers {
         )
     }
 
-  def jsonBodyAs[T](expectedValue: T)(implicit reads: Reads[T]): HavePropertyMatcher[WSResponse, T] =
-    new HavePropertyMatcher[WSResponse, T] {
-    def apply(response: WSResponse) =
-      HavePropertyMatchResult(
-        response.json.as[T] == expectedValue,
-        "jsonBodyAs",
-        expectedValue,
-        response.json.as[T]
-      )
-  }
-
-  def emptyBody: HavePropertyMatcher[WSResponse, String] =
+  def pageTitle(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
-      def apply(response: WSResponse) =
+
+      def apply(response: WSResponse) = {
+        val body = Jsoup.parse(response.body)
+
         HavePropertyMatchResult(
-          response.body == "",
-          "emptyBody",
-          "",
-          response.body
+          body.title == expectedValue,
+          "pageTitle",
+          expectedValue,
+          body.title
         )
+      }
     }
+
+  def elementValueByID(id: String)(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+
+      def apply(response: WSResponse) = {
+        val body = Jsoup.parse(response.body)
+
+        HavePropertyMatchResult(
+          body.getElementById(id).`val` == expectedValue,
+          s"elementByID($id)",
+          expectedValue,
+          body.getElementById(id).`val`
+        )
+      }
+    }
+
+  def elementTextByID(id: String)(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+
+      def apply(response: WSResponse) = {
+        val body = Jsoup.parse(response.body)
+
+        HavePropertyMatchResult(
+          body.getElementById(id).text == expectedValue,
+          s"elementByID($id)",
+          expectedValue,
+          body.getElementById(id).text
+        )
+      }
+    }
+
+  def redirectURI(expectedValue: String): HavePropertyMatcher[WSResponse, String] = new HavePropertyMatcher[WSResponse, String] {
+    def apply(response: WSResponse) = {
+      val redirectLocation: Option[String] = response.header("Location")
+
+      HavePropertyMatchResult(
+        redirectLocation.contains(expectedValue),
+        "httpStatus",
+        expectedValue,
+        redirectLocation.getOrElse("")
+      )
+    }
+  }
 }
