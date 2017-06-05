@@ -16,7 +16,10 @@
 
 package helpers
 
+import java.util.UUID
+
 import models.DateModel
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 
 object IntegrationTestConstants {
@@ -25,4 +28,32 @@ object IntegrationTestConstants {
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
+  val SessionId = s"stubbed-${UUID.randomUUID}"
+  val userId = "/auth/oid/1234567890"
+  val dateOfBirth = DateModel("01", "01", "1980")
+
+  val baseURI = "/report-quarterly/income-and-expenses/sign-up"
+  val userDetailsURI = "/user-details"
+  val confirmDetailsURI = "/confirm-details"
+
+  object Auth {
+    def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(
+      s"""
+         |{
+         |  "uri":"$uri",
+         |  "userDetailsLink":"$userDetailsLink",
+         |  "credentials" : {
+         |    "gatewayId":"$gatewayId"
+         |  },
+         |  "ids":"$idsLink"
+         |}
+     """.stripMargin
+    )
+
+    def idsResponseJson(internalId: String, externalId: String): JsValue = Json.parse(
+      s"""{
+           "internalId":"$internalId",
+           "externalId":"$externalId"
+        }""")
+  }
 }

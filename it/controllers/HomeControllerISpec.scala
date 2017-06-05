@@ -25,8 +25,10 @@ class HomeControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up" when {
     "feature-switch.show-guidance is true" should {
       "return the guidance page" in {
-        val res = IncomeTaxSubscriptionFrontend.startPage
+        When("We hit to the guidance page route")
+        val res = IncomeTaxSubscriptionFrontend.startPage()
 
+        Then("Return the guidance page")
         res.status shouldBe Status.OK
         val document = Jsoup.parse(res.body)
 
