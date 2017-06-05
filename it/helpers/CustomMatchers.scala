@@ -18,8 +18,8 @@ package helpers
 
 import org.jsoup.Jsoup
 import org.scalatest.matchers._
+import play.api.libs.json.Reads
 import play.api.libs.ws.WSResponse
-import play.api.test.Helpers._
 
 trait CustomMatchers {
   def httpStatus(expectedValue: Int): HavePropertyMatcher[WSResponse, Int] =
@@ -30,6 +30,28 @@ trait CustomMatchers {
           "httpStatus",
           expectedValue,
           response.status
+        )
+    }
+
+  def jsonBodyAs[T](expectedValue: T)(implicit reads: Reads[T]): HavePropertyMatcher[WSResponse, T] =
+    new HavePropertyMatcher[WSResponse, T] {
+      def apply(response: WSResponse) =
+        HavePropertyMatchResult(
+          response.json.as[T] == expectedValue,
+          "jsonBodyAs",
+          expectedValue,
+          response.json.as[T]
+        )
+    }
+
+  def emptyBody: HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+      def apply(response: WSResponse) =
+        HavePropertyMatchResult(
+          response.body == "",
+          "emptyBody",
+          "",
+          response.body
         )
     }
 
