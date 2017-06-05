@@ -34,7 +34,7 @@ class ThrottlingControlConnector @Inject()(val appConfig: AppConfig,
                                            val http: HttpGet,
                                            logging: Logging) extends RawResponseReads {
 
-  lazy val throttleControlUrl = (nino: String) => s"${appConfig.throttleControlUrl}/$nino"
+  def throttleControlUrl(nino: String): String = appConfig.throttleControlUrl + ThrottlingControlConnector.throttleControlUri(nino)
 
   def checkAccess(nino: String)(implicit hc: HeaderCarrier): Future[Option[UserAccess]] = {
     http.GET[HttpResponse](throttleControlUrl(nino)).map {
@@ -51,4 +51,8 @@ class ThrottlingControlConnector @Inject()(val appConfig: AppConfig,
     }
   }
 
+}
+
+object ThrottlingControlConnector {
+  def throttleControlUri(nino: String): String = "/" + nino
 }
