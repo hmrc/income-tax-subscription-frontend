@@ -51,7 +51,9 @@ package object auth {
   val mockUpliftUserIdCL50 = UserIdBuilder("mockUpliftUserIdCL50")
   val mockWeakUserId = UserIdBuilder("mockWeakUserId")
   val mockTimeout = UserIdBuilder("mockTimeout")
-  val mockEnrolled = UserIdBuilder("mockEnrolled")
+  val mockMtdItSaEnrolled = UserIdBuilder("mockMtdItSaEnrolled")
+  val mockIrSaEnrolled = UserIdBuilder("mockIrSaEnrolled")
+  val mockNoNino = UserIdBuilder("mockNoNino")
 
   object ggUser {
 
@@ -170,6 +172,42 @@ package object auth {
       )
     val weakStrengthUserContext = AuthContext(
       authority = weakStrengthUser,
+      governmentGatewayToken = Some(ggSession.governmentGatewayToken),
+      nameFromSession = Some(ggSession.name)
+    )
+
+    val noNinoUser: Authority =
+      Authority(mockNoNino,
+        noAuthorisedUserAccounts,
+        loggedInAt,
+        previouslyLoggedInAt,
+        CredentialStrength.Weak,
+        ConfidenceLevel.L50,
+        None,
+        None,
+        None,
+        ""
+      )
+    val noNinoUserContext = AuthContext(
+      authority = noNinoUser,
+      governmentGatewayToken = Some(ggSession.governmentGatewayToken),
+      nameFromSession = Some(ggSession.name)
+    )
+
+    val irSaUser: Authority =
+      Authority(mockIrSaEnrolled,
+        noAuthorisedUserAccounts,
+        loggedInAt,
+        previouslyLoggedInAt,
+        CredentialStrength.Weak,
+        ConfidenceLevel.L50,
+        None,
+        None,
+        None,
+        ""
+      )
+    val irSaUserContext = AuthContext(
+      authority = irSaUser,
       governmentGatewayToken = Some(ggSession.governmentGatewayToken),
       nameFromSession = Some(ggSession.name)
     )

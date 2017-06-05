@@ -18,6 +18,7 @@ package common
 
 object Constants {
 
-  val ggServiceName = "HMRC-MTD-IT"
+  val mtdItServiceName = "HMRC-MTD-IT"
+  val irSaServiceName = "IR-SA"
 
 }

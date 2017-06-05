@@ -94,7 +94,7 @@ class AuthorisedForIncomeTaxSASpec extends MockAuthTestController {
   }
 
   "Calling authenticated action with an enrolled user" should {
-    lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled))
+    lazy val result = AuthTestController.authorisedAsyncAction(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockMtdItSaEnrolled))
 
     "result in a redirect status" in {
       status(result) shouldBe Status.SEE_OTHER

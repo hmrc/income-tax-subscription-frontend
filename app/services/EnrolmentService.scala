@@ -19,26 +19,34 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
+import common.Constants
 import connectors.EnrolmentConnector
 import connectors.models.Enrolment.Enrolled
 import play.api.mvc.Result
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class EnrolmentService @Inject()(val authConnector: AuthConnector,
                                  val enrolmentConnector: EnrolmentConnector,
                                  logging: Logging) {
 
-  def checkEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-    logging.debug(s"Checking enrolment")
+  def checkEnrolment(enrolmentKey: String, f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+    logging.debug(s"Checking enrolment for: $enrolmentKey")
     for {
       authority <- authConnector.currentAuthority
-      enrolment <- enrolmentConnector.getIncomeTaxSAEnrolment(authority.fold("")(_.uri))
-      result <- f(enrolment.isEnrolled)
+      enrolments <- enrolmentConnector.getEnrolments(authority.fold("")(_.uri))
+      result <- f(enrolments.isEnrolled(enrolmentKey))
     } yield result
   }
+
+  def checkMtdItsaEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] =
+    checkEnrolment(Constants.mtdItServiceName, f)
+
+  def checkIrSaEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] =
+    checkEnrolment(Constants.irSaServiceName, f)
+
 }
