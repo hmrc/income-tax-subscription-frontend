@@ -21,17 +21,17 @@ package testonly.controllers
 import javax.inject.{Inject, Singleton}
 
 import play.api.mvc.{Action, AnyContent}
-import testonly.connectors.{AuthenticatorConnector, DeEnrolmentConnector}
+import testonly.connectors.{GGAuthenticationConnector, DeEnrolmentConnector}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 @Singleton
 class DeEnrolController @Inject()(deEnrolmentConnector: DeEnrolmentConnector,
-                                  authenticatorConnector: AuthenticatorConnector) extends FrontendController {
+                                  ggAuthenticationConnector: GGAuthenticationConnector) extends FrontendController {
 
   val resetUsers = Action.async { implicit request =>
     for {
       ggStubResponse <- deEnrolmentConnector.resetUsers()
-      authRefreshed <- authenticatorConnector.refreshProfile()
+      authRefreshed <- ggAuthenticationConnector.refreshProfile()
     } yield (authRefreshed.status, ggStubResponse.status) match {
       case (NO_CONTENT, OK) => Ok("Successfully Reset GG stubbed user")
       case _ => BadRequest(s"Failed to Reset GG stubbed user: ggStubResponse=${ggStubResponse.status}, authRefreshed=${authRefreshed.status}")
