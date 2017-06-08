@@ -32,7 +32,7 @@ class SubscriptionConnector @Inject()(val appConfig: AppConfig,
                                       val httpPost: HttpPost,
                                       val httpGet: HttpGet) {
 
-  lazy val subscriptionUrl: String => String = nino => s"${appConfig.subscriptionUrl}/$nino"
+  def subscriptionUrl(nino: String): String = appConfig.subscriptionUrl + SubscriptionConnector.subscriptionUri(nino)
 
   def subscribe(request: FERequest)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
     httpPost.POST[FERequest, HttpResponse](subscriptionUrl(request.nino), request).map {
@@ -53,5 +53,11 @@ class SubscriptionConnector @Inject()(val appConfig: AppConfig,
         }
     }
   }
+
+}
+
+object SubscriptionConnector {
+
+  def subscriptionUri(nino: String): String = "/" + nino
 
 }
