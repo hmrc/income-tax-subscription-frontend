@@ -60,6 +60,23 @@ object TestModels extends Implicits {
       accountingMethod = testAccountingMethod,
       terms = testTerms)
 
+  def testCacheMapCustom(
+                          incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
+                          otherIncome: Option[OtherIncomeModel] = testOtherIncomeNo,
+                          accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
+                          accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
+                          businessName: Option[BusinessNameModel] = testBusinessName,
+                          accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
+                          terms: Option[TermModel] = testTerms): CacheMap =
+    testCacheMap(
+      incomeSource = incomeSource,
+      otherIncome = otherIncome,
+      accountingPeriodPrior = accountingPeriodPrior,
+      accountingPeriodDate = accountingPeriodDate,
+      businessName = businessName,
+      accountingMethod = accountingMethod,
+      terms = terms)
+
   def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,

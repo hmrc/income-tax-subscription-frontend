@@ -47,6 +47,8 @@ trait ComponentSpecBase extends UnitSpec
     "play.filters.csrf.header.bypassHeaders.Csrf-Token" -> "nocheck",
     "microservice.services.auth.host" -> mockHost,
     "microservice.services.auth.port" -> mockPort,
+    "microservice.services.subscription-service.host" -> mockHost,
+    "microservice.services.subscription-service.port" -> mockPort,
     "microservice.services.session-cache.host" -> mockHost,
     "microservice.services.session-cache.port" -> mockPort,
     "microservice.services.feature-switch.show-guidance" -> "true",
@@ -88,6 +90,8 @@ trait ComponentSpecBase extends UnitSpec
     )
 
     def startPage(): WSResponse = get("/")
+    def checkYourAnswers(): WSResponse = get("/check-your-answers")
+    def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
 
   }
 
