@@ -17,43 +17,54 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import helpers.{IntegrationTestConstants, WiremockHelper}
+import connectors.models.Enrolment
+import helpers.IntegrationTestConstants._
 import models.auth.UserIds
-import play.api.http.Status
+import org.joda.time.{DateTime, DateTimeZone}
 import play.api.http.Status._
-import play.api.libs.json.{JsObject, Json}
+import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.play.frontend.auth.connectors.domain
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Authority, ConfidenceLevel, CredentialStrength, PayeAccount}
 
 object AuthStub extends WireMockMethods {
-  val authIDs = "/uri/to/ids"
-  val authority = "/auth/authority"
+  private val authIDs = "/uri/to/ids"
+  private val authority = "/auth/authority"
 
-  val gatewayID = "12345"
-  val internalID = "internal"
-  val externalID = "external"
-  val userIDs = UserIds(internalId = internalID, externalId = externalID)
+  private val gatewayID = "12345"
+  private val internalID = "internal"
+  private val externalID = "external"
+  private val loggedInAt: Some[DateTime] = Some(new DateTime(2015, 11, 22, 11, 33, 15, 234, DateTimeZone.UTC))
+  private val previouslyLoggedInAt: Some[DateTime] = Some(new DateTime(2014, 8, 3, 9, 25, 44, 342, DateTimeZone.UTC))
+  private val userIDs = UserIds(internalId = internalID, externalId = externalID)
 
   def stubAuthSuccess(): StubMapping = {
     stubAuthoritySuccess()
     stubAuthorityUserIDsSuccess()
+    stubEnrolments()
   }
 
-  def stubAuthoritySuccess(): StubMapping =
+  private def stubAuthoritySuccess(): StubMapping =
     when(method = GET, uri = authority)
       .thenReturn(status = OK, body = successfulAuthResponse)
 
-  def successfulAuthResponse: JsObject = {
-    Json.obj(
-      "uri" -> "/auth/oid/58a2e8c82e00008c005d4699",
-      "userDetailsLink" -> "/uri/to/user-details",
-      "credentials" -> Json.obj(
-        "gatewayId" -> gatewayID
-      ),
-      "ids" -> authIDs
-    )
-  }
+  private def successfulAuthResponse: Authority = Authority(
+    uri = userId,
+    accounts = domain.Accounts(paye = Some(PayeAccount("", Nino(testNino)))),
+    loggedInAt = loggedInAt,
+    previouslyLoggedInAt = previouslyLoggedInAt,
+    credentialStrength = CredentialStrength.Strong,
+    confidenceLevel = ConfidenceLevel.L500,
+    userDetailsLink = None,
+    enrolments = None,
+    ids = None,
+    legacyOid = ""
+  )
 
-  def stubAuthorityUserIDsSuccess(): StubMapping =
+  private def stubAuthorityUserIDsSuccess(): StubMapping =
     when(method = GET, uri = authIDs)
       .thenReturn(status = OK, body = userIDs)
 
+  private def stubEnrolments(): StubMapping =
+    when(method = GET, uri = s"$userId/enrolments")
+      .thenReturn(status = OK, body = Seq.empty[Enrolment])
 }

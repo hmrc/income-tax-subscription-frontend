@@ -19,10 +19,14 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
+import auth.IncomeTaxSAUser
 import config.BaseControllerConfig
 import connectors.models.subscription.FESuccessResponse
 import play.api.i18n.MessagesApi
+import play.api.mvc.{AnyContent, Request, Result}
 import services.{KeystoreService, SubscriptionService}
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -32,42 +36,50 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val keystoreService: KeystoreService,
                                            val middleService: SubscriptionService,
                                            logging: Logging
-                                 ) extends BaseController {
+                                          ) extends BaseController {
 
   import services.CacheUtil._
 
-  val show = Authorised.async { implicit user =>
+  lazy val backUrl: String = controllers.routes.TermsController.showTerms().url
+  val show = journeySafeGuard { implicit user =>
     implicit request =>
-      keystoreService.fetchAll() map {
-        case Some(cache) =>
+      cache =>
+        Future.successful(
           Ok(views.html.check_your_answers(cache.getSummary,
             controllers.routes.CheckYourAnswersController.submit(),
             backUrl = backUrl
           ))
-        case _ =>
-          logging.info("User attempted to view 'Check Your Answers' without any keystore cached data")
-          InternalServerError
-      }
-  }
+        )
+  }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any keystore cached data")
 
-  val submit = Authorised.async { implicit user =>
+  val submit = journeySafeGuard { implicit user =>
     implicit request =>
-      keystoreService.fetchAll() flatMap {
-        case Some(source) =>
-          val nino = user.nino.fold("")(x => x)
-          middleService.submitSubscription(nino, source.getSummary()).flatMap {
-            case Some(FESuccessResponse(Some(id))) =>
-              keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.routes.ConfirmationController.showConfirmation()))
-            case _ =>
-              logging.warn("Successful response not received from submission")
-              Future.successful(InternalServerError("Submission failed"))
-          }
-        case _ =>
-          logging.info("User attempted to submit 'Check Your Answers' without any keystore cached data")
-          Future.successful(InternalServerError)
-      }
+      cache =>
+        val nino = user.nino.get
+        middleService.submitSubscription(nino, cache.getSummary()).flatMap {
+          case Some(FESuccessResponse(Some(id))) =>
+            keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.routes.ConfirmationController.showConfirmation()))
+          case _ =>
+            error("Successful response not received from submission")
+        }
+  }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any keystore cached data")
+
+  private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CacheMap => Future[Result])
+                              (noCacheMapErrMessage: String) =
+    Authorised.async { implicit user =>
+      implicit request =>
+        keystoreService.fetchAll().flatMap {
+          case Some(cache) =>
+            cache.getTerms() match {
+              case None => Future.successful(Redirect(controllers.routes.TermsController.showTerms()))
+              case _ => processFunc(user)(request)(cache)
+            }
+          case _ => error(noCacheMapErrMessage)
+        }
+    }
+
+  def error(message: String): Future[Nothing] = {
+    logging.warn(message)
+    Future.failed(new InternalServerException(message))
   }
-
-  lazy val backUrl: String = controllers.routes.TermsController.showTerms().url
-
 }

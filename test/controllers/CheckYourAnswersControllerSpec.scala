@@ -21,7 +21,9 @@ import auth._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import services.CacheConstants._
 import services.mocks.{MockKeystoreService, MockSubscriptionService}
+import uk.gov.hmrc.play.http.InternalServerException
 import utils.TestModels
 
 class CheckYourAnswersControllerSpec extends ControllerBaseSpec
@@ -78,11 +80,20 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       "return a internalServer error" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
         setupSubscribe()(subscribeBadRequest)
-        status(result) must be(Status.INTERNAL_SERVER_ERROR)
-        await(result)
+        intercept[InternalServerException](await(result)).message mustBe "Successful response not received from submission"
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
+    }
+    "When the terms have not been agreed" should {
+      lazy val result = call
 
+      "return a internalServer error" in {
+        setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(terms = None))
+        setupSubscribe()(subscribeBadRequest)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) must contain (controllers.routes.TermsController.showTerms().url)
+        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+      }
     }
   }
 
