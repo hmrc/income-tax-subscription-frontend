@@ -157,8 +157,16 @@ object MessageLookup {
   object Terms {
     val title = "Terms of participation"
     val heading: String = title
-    val line_1 = "By accepting the terms of participation, you confirm that you've read and understood the terms of the trial. Your accounting software provider will have sent you these terms separately."
-    val checkbox = "I accept the terms of participation"
+    val line_1 = "By taking part in this trial, you agree to:"
+    val line_2 = "These terms aren't contractual and you can stop taking part in the trial at any time."
+    val bullet_1 = "use accounting software to record your income and expenses, then submit a report once every 3 months from the start of your accounting period"
+    val bullet_2 = "allow HMRC to calculate your Income Tax estimate using the information from your reports"
+    val bullet_3 = "send HMRC your summary report for the 2017 to 2018 tax year by 31 January 2019"
+    val bullet_4 = "declare any other income sources and reliefs"
+    val bullet_5 = "authorise any third party you use to act on your behalf, such as your accountant"
+    val bullet_6 = "have responsibility for any information a third party gives to HMRC on your behalf"
+    val bullet_7 = "contact HMRC if you can't continue to take part in this trial"
+    val button = "Accept and continue"
   }
 
   object Summary {
@@ -187,8 +195,6 @@ object MessageLookup {
     }
 
     val contact_email = "Do you want to receive electronic communications from HMRC?"
-    val terms = "Terms of participation"
-    val terms_agreed = "I agree"
     val confirm_and_sign_up = "Confirm and sign up"
   }
 

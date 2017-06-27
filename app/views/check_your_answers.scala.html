@@ -84,15 +84,6 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@terms(terms: TermModel) = @{
-    if(terms.hasAcceptedTerms) {
-        val rowName = TermsId
-        val rowQuestion = Messages("summary.terms")
-        val rowAnswer = Messages("summary.terms.agreed")
-        summaryRow(rowName, rowQuestion, rowAnswer)
-    } else Html("")
-}
-
 @views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None, articleLayout = false) {
 
     @back_link(backUrl)
@@ -107,7 +98,6 @@
         @summaryModel.accountingPeriod.map(accountingPeriodDate)
         @summaryModel.businessName.map(businessName)
         @summaryModel.accountingMethod.map(accountingMethod)
-        @summaryModel.terms.map(terms)
         <div class="divider--top--thick"></div>
     </div>
 

@@ -69,8 +69,7 @@ trait MockSubscriptionConnector extends MockHttp {
     accountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no),
     accountingPeriod = AccountingPeriodModel(TestConstants.startDate, TestConstants.endDate),
     businessName = BusinessNameModel("ABC"),
-    accountingMethod = AccountingMethodModel("Cash"),
-    terms = TermModel(true)
+    accountingMethod = AccountingMethodModel("Cash")
   )
 
   val testId = TestConstants.testMTDID

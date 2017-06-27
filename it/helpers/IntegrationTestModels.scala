@@ -3,7 +3,7 @@ package helpers
 
 import forms._
 import models._
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import services.CacheConstants
 import uk.gov.hmrc.domain.Generator
 
@@ -30,7 +30,7 @@ object IntegrationTestModels {
 
   val testBusinessName = BusinessNameModel("test business")
   val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
-  val testTerms = TermModel(true)
+  val testTerms = true
 
   val fullKeystoreData: Map[String, JsValue] =
     keystoreData(
@@ -49,7 +49,7 @@ object IntegrationTestModels {
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
-                   terms: Option[TermModel] = None): Map[String, JsValue] = {
+                   terms: Option[Boolean] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++
@@ -57,7 +57,7 @@ object IntegrationTestModels {
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      terms.map(model => Terms -> TermModel.format.writes(model))
+      terms.map(model => Terms -> Json.toJson(model))
   }
 
   lazy val testIncomeSourceBusiness = IncomeSourceModel(IncomeSourceForm.option_business)

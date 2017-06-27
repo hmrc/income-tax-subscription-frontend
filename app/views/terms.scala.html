@@ -15,36 +15,35 @@
  *@
 
 @import models._
-@import forms.TermForm._
-@import helpers.checkboxHelper
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers._
 @import config.AppConfig
 
-@(termsForm: Form[TermModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
 
 @views.html.templates.main_template(title = Messages("terms.title"), bodyClasses = None) {
     @back_link(backUrl)
 
-    @summaryErrorHelper(termsForm)
-
     <h1 class="heading-large">@Messages("terms.heading")</h1>
 
-    <p>@Messages("terms.line_1")</p>
+    <div class="form-group">
+        <p>@Messages("terms.line_1")</p>
+            <ul class="bullets">
+                <li>@Messages("terms.bullet_1")</li>
+                <li>@Messages("terms.bullet_2")</li>
+                <li>@Messages("terms.bullet_3")</li>
+                <li>@Messages("terms.bullet_4")</li>
+                <li>@Messages("terms.bullet_5")</li>
+                <li>@Messages("terms.bullet_6")</li>
+                <li>@Messages("terms.bullet_7")</li>
+            </ul>
+        <p>@Messages("terms.line_2")</p>
+    </div>
 
     @form(action = postAction) {
 
-        @checkboxHelper(
-            field = termsForm(hasAcceptedTerms),
-            label = Messages("terms.checkbox"),
-            parentForm = termsForm
-        )
-
-        @if(isEditMode) {
-            @continueButton(Messages("base.update"))
-        } else {
-            @continueButton()
-        }
+        @continueButton(Messages("terms.button"))
 
     }
 }

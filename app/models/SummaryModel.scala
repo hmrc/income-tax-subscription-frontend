@@ -23,4 +23,4 @@ case class SummaryModel(incomeSource: Option[IncomeSourceModel] = None,
                         accountingPeriod: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
-                        terms: Option[TermModel] = None)
+                        terms: Option[Boolean] = None)

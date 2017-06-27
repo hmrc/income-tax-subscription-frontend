@@ -19,8 +19,8 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
-import forms.{IncomeSourceForm, TermForm}
-import models.{OtherIncomeModel, TermModel}
+import forms.IncomeSourceForm
+import models.OtherIncomeModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -37,31 +37,23 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
                                 val keystoreService: KeystoreService
                                ) extends BaseController {
 
-  def view(termsForm: Form[TermModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
+  def view(backUrl: String)(implicit request: Request[_]): Html =
     views.html.terms(
-      termsForm,
-      postAction = controllers.routes.TermsController.submitTerms(isEditMode),
-      backUrl,
-      isEditMode
+      postAction = controllers.routes.TermsController.submitTerms(),
+      backUrl
     )
 
-  def showTerms(isEditMode: Boolean = false): Action[AnyContent] = Authorised.async { implicit user =>
+  def showTerms(): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
       for {
-        terms <- keystoreService.fetchTerms()
         backUrl <- backUrl
-      } yield Ok(view(TermForm.termForm.fill(terms), backUrl = backUrl, isEditMode))
+      } yield Ok(view(backUrl = backUrl))
   }
 
   def submitTerms(isEditMode: Boolean = false): Action[AnyContent] = Authorised.async { implicit user =>
     implicit request =>
-      TermForm.termForm.bindFromRequest.fold(
-        formWithErrors => backUrl.map(backUrl => BadRequest(view(formWithErrors, backUrl = backUrl, isEditMode))),
-        terms => {
-          keystoreService.saveTerms(terms) map (
-            _ => Redirect(controllers.routes.CheckYourAnswersController.show()))
-        }
-      )
+      keystoreService.saveTerms(true) map (
+        _ => Redirect(controllers.routes.CheckYourAnswersController.show()))
   }
 
   def backUrl(implicit request: Request[_]): Future[String] =

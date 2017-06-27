@@ -17,8 +17,6 @@
 package controllers
 
 import auth._
-import forms.TermForm
-import models.TermModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
@@ -55,18 +53,18 @@ class TermsControllerSpec extends ControllerBaseSpec
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchTerms = 1, saveTerms = 0)
+      verifyKeystore(fetchTerms = 0, saveTerms = 0)
     }
   }
 
   "Calling the submitTerms action of the TermsController with an authorised user and valid submission" when {
 
-    def callShow(isEditMode: Boolean = false): Future[Result] = {
+    def callShow(): Future[Result] = {
       setupMockKeystoreSaveFunctions()
-      TestTermsController.submitTerms(isEditMode)(authenticatedFakeRequest().post(TermForm.termForm, TermModel(true)))
+      TestTermsController.submitTerms()(authenticatedFakeRequest())
     }
 
-    "not in edit mode" should {
+    "submit" should {
 
       "return a redirect status (SEE_OTHER - 303)" in {
 
@@ -90,40 +88,6 @@ class TermsControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-
-        val goodRequest = callShow(isEditMode = true)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifyKeystore(fetchTerms = 0, saveTerms = 1)
-      }
-
-      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
-
-        val goodRequest = callShow(isEditMode = true)
-
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchTerms = 0, saveTerms = 1)
-      }
-    }
-  }
-
-  "Calling the submitTerms action of the TermsController with an authorised user and invalid submission" should {
-    lazy val badRequest = TestTermsController.submitTerms()(authenticatedFakeRequest())
-
-    "return a bad request status (400)" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-
-      status(badRequest) must be(Status.BAD_REQUEST)
-
-      await(badRequest)
-      verifyKeystore(fetchTerms = 0, saveTerms = 0)
-    }
   }
 
   "The back url" should {
