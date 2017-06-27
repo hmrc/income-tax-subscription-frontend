@@ -34,7 +34,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testAccountingPeriod = AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))
   val testBusinessName = BusinessNameModel("test business name")
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
-  val testTerms = TermModel(true)
   val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
   val testOtherIncome: OtherIncomeModel = TestModels.testOtherIncomeNo
   val testSummary = SummaryModel(
@@ -42,8 +41,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     otherIncome = testOtherIncome,
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
-    accountingMethod = testAccountingMethod,
-    terms = testTerms
+    accountingMethod = testAccountingMethod
   )
 
   lazy val postAction: Call = controllers.routes.CheckYourAnswersController.submit()
@@ -200,19 +198,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink
-      )
-    }
-
-    "display the correct info for the terms" in {
-      val sectionId = TermsId
-      val expectedQuestion = messages.terms
-      val expectedAnswer = messages.terms_agreed
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = None
       )
     }
 

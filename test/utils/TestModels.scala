@@ -19,7 +19,7 @@ package utils
 
 import forms._
 import models._
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import services.CacheConstants
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -47,7 +47,7 @@ object TestModels extends Implicits {
 
   val testBusinessName = BusinessNameModel("test business")
   val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
-  val testTerms = TermModel(true)
+  val testTerms = true
 
   val emptyCacheMap = CacheMap("", Map())
 
@@ -67,7 +67,7 @@ object TestModels extends Implicits {
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                           businessName: Option[BusinessNameModel] = testBusinessName,
                           accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
-                          terms: Option[TermModel] = testTerms): CacheMap =
+                          terms: Option[Boolean] = testTerms): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
       otherIncome = otherIncome,
@@ -83,7 +83,7 @@ object TestModels extends Implicits {
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
-                   terms: Option[TermModel] = None): CacheMap = {
+                   terms: Option[Boolean] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
@@ -92,7 +92,7 @@ object TestModels extends Implicits {
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
-      terms.fold(emptyMap)(model => Map(Terms -> TermModel.format.writes(model)))
+      terms.fold(emptyMap)(model => Map(Terms -> Json.toJson(model)))
     CacheMap("", map)
   }
 

@@ -17,7 +17,6 @@
 package views
 
 import assets.MessageLookup.{Terms => messages}
-import forms.TermForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
@@ -27,11 +26,9 @@ class TermsViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = views.html.terms(
-    termsForm = TermForm.termForm,
+  def page() = views.html.terms(
     postAction = action,
-    backUrl = backUrl,
-    isEditMode = isEditMode
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
   "The Terms view" should {
@@ -39,27 +36,26 @@ class TermsViewSpec extends ViewSpecTrait {
       name = "Terms view",
       title = messages.title,
       heading = messages.heading,
-      page = page(isEditMode = false))
+      page = page())
 
     testPage.mustHaveBackLinkTo(backUrl)
 
     testPage.mustHavePara(messages.line_1)
+    testPage.mustHavePara(messages.line_2)
+
+    testPage.mustHaveBulletSeq(
+      messages.bullet_1,
+      messages.bullet_2,
+      messages.bullet_3,
+      messages.bullet_4,
+      messages.bullet_5,
+      messages.bullet_6,
+      messages.bullet_7
+    )
 
     val form = testPage.getForm("terms form")(actionCall = action)
 
-    form.mustHaveCheckbox(TermForm.hasAcceptedTerms, messages.checkbox)
-
-    form.mustHaveContinueButton()
-  }
-
-  "When in edit mode, the terms view" should {
-    val editModePage = TestView(
-      name = "Terms view",
-      title = messages.title,
-      heading = messages.heading,
-      page = page(isEditMode = true))
-
-    editModePage.mustHaveUpdateButton()
+    form.mustHaveSubmitButton(messages.button)
   }
 
 }

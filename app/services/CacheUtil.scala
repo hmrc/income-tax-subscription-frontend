@@ -39,7 +39,7 @@ object CacheUtil {
 
     def getAccountingMethod()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
 
-    def getTerms()(implicit read: Reads[TermModel]): Option[TermModel] = cacheMap.getEntry(Terms)
+    def getTerms()(implicit read: Reads[Boolean]): Option[Boolean] = cacheMap.getEntry(Terms)
 
     def getSummary()(implicit
                      isrc: Reads[IncomeSourceModel],
@@ -48,7 +48,7 @@ object CacheUtil {
                      accD: Reads[AccountingPeriodModel],
                      bus: Reads[BusinessNameModel],
                      accM: Reads[AccountingMethodModel],
-                     ter: Reads[TermModel]): SummaryModel = {
+                     ter: Reads[Boolean]): SummaryModel = {
       val incomeSource = getIncomeSource()
       incomeSource match {
         case Some(src) =>

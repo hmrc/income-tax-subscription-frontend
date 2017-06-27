@@ -26,7 +26,6 @@ object DataMap {
   import forms.BusinessNameForm._
   import forms.EmailForm._
   import forms.NotEligibleForm._
-  import forms.TermForm._
   import forms.submapping.DateMapping._
   import forms.{AccountingMethodForm, IncomeSourceForm}
 
@@ -53,10 +52,6 @@ object DataMap {
   def notEligibleChoice(iType: String): DataMap = Map(choice -> iType)
 
   def email(email: String): DataMap = Map(emailAddress -> email)
-
-  def terms(acceptedTerms: String): DataMap = Map(hasAcceptedTerms -> acceptedTerms)
-
-  def terms(acceptedTerms: Boolean): DataMap = terms(acceptedTerms.toString)
 
   val alwaysFailInvalid: Invalid = ErrorMessageFactory.error("always fail")
 

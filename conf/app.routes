@@ -38,8 +38,8 @@ POST        /feedback                         controllers.FeedbackController.sub
 GET         /thankyou                         controllers.FeedbackController.thankyou
 
 # Terms Routes
-GET         /terms                            controllers.TermsController.showTerms(editMode: Boolean ?= false)
-POST        /terms                            controllers.TermsController.submitTerms(editMode: Boolean ?= false)
+GET         /terms                            controllers.TermsController.showTerms()
+POST        /terms                            controllers.TermsController.submitTerms()
 
 # Not Eligible Routes - CURRENTLY NOT USED (but kept if required at a later date)
 GET         /not-eligible                     controllers.NotEligibleController.showNotEligible
