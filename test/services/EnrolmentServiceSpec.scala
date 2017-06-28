@@ -65,7 +65,6 @@ class EnrolmentServiceSpec extends UnitTestTrait
     }
   }
 
-
   val mockAuthConnector = mock[AuthConnector]
   val mockEnrolmentConnector = mock[EnrolmentConnector]
   val mockLogging = mock[Logging]

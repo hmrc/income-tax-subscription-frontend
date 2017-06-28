@@ -16,8 +16,10 @@
 
 package auth
 
+import common.Constants
 import config.AppConfig
-import connectors.models.Enrolment.{Enrolled, NotEnrolled}
+import connectors.models.Enrolment
+import connectors.models.Enrolment._
 import controllers.ErrorPageRenderer
 import controllers.ITSASessionKey._
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -29,6 +31,7 @@ import utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
 
 trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
 
@@ -55,42 +58,65 @@ trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
     def asyncCore(action: AsyncUserRequest): Action[AnyContent] =
       authedBy.async { authContext: AuthContext =>
         implicit request =>
-          request.session.get(GoHome) match {
-            case Some(_) =>
-              action(IncomeTaxSAUser(authContext))(request)
-            case None =>
-              Redirect(controllers.routes.HomeController.index())
+          enrolmentService.getEnrolments.flatMap { enrolments =>
+            request.session.get(GoHome) match {
+              case Some(_) => action(IncomeTaxSAUser(authContext, enrolments))(request)
+              case None => Redirect(controllers.routes.HomeController.index())
+            }
           }
       }
 
+    private def checkNino(enrolments: Option[Seq[Enrolment]])(action: Boolean => Future[Result]) =
+      action(enrolments.isEnrolled(Constants.ninoEnrolmentName))
+
+    private def checkItsaEnrolment(enrolments: Option[Seq[Enrolment]])(action: Boolean => Future[Result]) =
+      action(enrolments.isEnrolled(Constants.itsaEnrolmentName))
+
+    private def predicates(action: AsyncUserRequest
+                          )(implicit authContext: IncomeTaxSAUser,
+                            request: Request[AnyContent]
+                          ): Future[Result] = {
+      val enrolments = authContext.enrolments
+      checkNino(enrolments) {
+        case NotEnrolled =>
+          Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
+        case isEnrolled =>
+          checkItsaEnrolment(enrolments) {
+            case NotEnrolled => action(authContext)(request)
+            case _ => Future.successful(Redirect(alreadyEnrolledUrl))
+          }
+      }
+    }
+
     def async(action: AsyncUserRequest): Action[AnyContent] =
       asyncCore {
-        authContext: IncomeTaxSAUser =>
+        implicit authContext: IncomeTaxSAUser =>
           implicit request =>
-            enrolmentService.checkItsaEnrolment {
-              case NotEnrolled => action(authContext)(request)
-              case _ => Future.successful(Redirect(alreadyEnrolledUrl))
-            }
+            predicates(action)
       }
 
     def asyncForEnrolled(action: AsyncUserRequest): Action[AnyContent] =
       asyncCore {
-        authContext: IncomeTaxSAUser =>
+        implicit user: IncomeTaxSAUser =>
           implicit request =>
-            enrolmentService.checkItsaEnrolment {
-              case Enrolled => action(authContext)(request)
-              case _ => Future.successful(showNotFound)
-            }
+            val fEnrolments = enrolmentService.getEnrolments
+            fEnrolments.flatMap(
+              enrolments =>
+                checkItsaEnrolment(enrolments) {
+                  case Enrolled => action(user)(request)
+                  case _ => Future.successful(showNotFound)
+                }
+            )
       }
 
     def asyncForHomeController(action: AsyncUserRequest): Action[AnyContent] =
       authedBy.async {
         authContext: AuthContext =>
           implicit request =>
-            enrolmentService.checkItsaEnrolment {
-              case NotEnrolled => action(IncomeTaxSAUser(authContext))(request)
-              case _ => Future.successful(Redirect(alreadyEnrolledUrl))
-            }.flatMap { x => x.withSession(x.session.+(GoHome -> "et")) }
+            enrolmentService.getEnrolments.flatMap { enrolments =>
+              implicit val auth = IncomeTaxSAUser(authContext, enrolments)
+              predicates(action).flatMap { x => x.withSession(x.session.+(GoHome -> "et")) }
+            }
       }
   }
 

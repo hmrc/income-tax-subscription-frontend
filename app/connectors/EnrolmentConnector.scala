@@ -22,7 +22,6 @@ import audit.Logging
 import config.AppConfig
 import connectors.models.Enrolment
 import play.api.http.Status._
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
 import uk.gov.hmrc.play.http.{HeaderCarrier, _}
 
 import scala.concurrent.ExecutionContext.Implicits.global

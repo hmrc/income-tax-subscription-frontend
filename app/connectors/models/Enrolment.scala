@@ -30,11 +30,11 @@ object Enrolment {
   val Activated = "Activated"
 
   implicit class OEnrolmentUtil(enrolment: Option[Enrolment]) {
-    def isEnrolled: Enrolled = enrolment.fold(false)(_.isEnrolled)
+    def isEnrolled: Enrolled = enrolment.fold(NotEnrolled)(_.isEnrolled)
   }
 
   implicit class OSeqEnrolmentUtil(enrolments: Option[Seq[Enrolment]]) {
-    def isEnrolled(enrolment: String): Enrolled = enrolments.fold(false)(_.find(_.key == enrolment).isEnrolled)
+    def isEnrolled(enrolment: String): Enrolled = enrolments.fold(NotEnrolled)(_.find(_.key == enrolment).isEnrolled)
   }
 
 }

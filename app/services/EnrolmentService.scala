@@ -21,7 +21,6 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import common.Constants
 import connectors.EnrolmentConnector
-import connectors.models.Enrolment
 import connectors.models.Enrolment._
 import play.api.mvc.Result
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
@@ -29,6 +28,8 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import common.Constants._
+import connectors.models.Enrolment
 
 @Singleton
 class EnrolmentService @Inject()(val authConnector: AuthConnector,

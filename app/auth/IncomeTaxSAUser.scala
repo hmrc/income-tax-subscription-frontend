@@ -16,10 +16,15 @@
 
 package auth
 
+import common.Constants
+import connectors.models.Enrolment
 import org.joda.time.DateTime
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 
-case class IncomeTaxSAUser(authContext: AuthContext) {
-  def nino: Option[String] = authContext.principal.accounts.paye.map(_.nino.nino)
+case class IncomeTaxSAUser(authContext: AuthContext, enrolments: Option[Seq[Enrolment]]) {
+  lazy val nino: Option[String] =
+    enrolments.flatMap(_.find(_.key == Constants.ninoEnrolmentName)
+      .map(_.identifiers.head.value))
+
   def previouslyLoggedInAt: Option[DateTime] = authContext.user.previouslyLoggedInAt
 }
