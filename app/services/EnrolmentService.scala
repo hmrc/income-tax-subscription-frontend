@@ -19,26 +19,49 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
+import common.Constants
 import connectors.EnrolmentConnector
-import connectors.models.Enrolment.Enrolled
+import connectors.models.Enrolment
+import connectors.models.Enrolment._
 import play.api.mvc.Result
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class EnrolmentService @Inject()(val authConnector: AuthConnector,
                                  val enrolmentConnector: EnrolmentConnector,
                                  logging: Logging) {
 
-  def checkEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-    logging.debug(s"Checking enrolment")
+  def getEnrolments(implicit hc: HeaderCarrier): Future[Option[Seq[Enrolment]]] = {
+    logging.debug(s"getEnrolments")
     for {
       authority <- authConnector.currentAuthority
-      enrolment <- enrolmentConnector.getIncomeTaxSAEnrolment(authority.fold("")(_.uri))
-      result <- f(enrolment.isEnrolled)
+        .collect { case Some(auth) => auth }
+      enrolments <- enrolmentConnector.getEnrolments(authority.uri)
+    } yield enrolments
+  }
+
+  def getNino(implicit hc: HeaderCarrier): Future[Option[String]] = {
+    logging.debug(s"getNino")
+    for {
+      optEnrolments <- getEnrolments
+    } yield for {
+      enrolments <- optEnrolments
+      agentEnrolment <- enrolments.find(_.key == Constants.ninoEnrolmentName)
+      arn <- agentEnrolment.identifiers.find(_.key == Constants.ninoEnrolmentIdentifierKey)
+    } yield arn.value
+  }
+
+  def checkItsaEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
+    logging.debug(s"checkItsaEnrolment")
+    for {
+      enrolments <- getEnrolments
+      result <- f(enrolments.isEnrolled(Constants.itsaEnrolmentName))
     } yield result
   }
+
 }
+

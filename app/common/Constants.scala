@@ -18,6 +18,8 @@ package common
 
 object Constants {
 
-  val ggServiceName = "HMRC-MTD-IT"
+  val itsaEnrolmentName = "HMRC-MTD-IT"
+  val ninoEnrolmentName = "HMRC-NI"
+  val ninoEnrolmentIdentifierKey = "NINO"
 
 }

@@ -22,8 +22,8 @@ import audit.Logging
 import config.AppConfig
 import connectors.models.Enrolment
 import play.api.http.Status._
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
 import uk.gov.hmrc.play.http.{HeaderCarrier, _}
-import common.Constants._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -35,19 +35,20 @@ class EnrolmentConnector @Inject()(appConfig: AppConfig,
 
   def getEnrolmentsUrl(uri: String): String = appConfig.authUrl + EnrolmentConnector.getEnrolmentsUri(uri)
 
-  def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] = {
+  def getEnrolments(uri: String)(implicit hc: HeaderCarrier): Future[Option[Seq[Enrolment]]] = {
     lazy val requestDetails: Map[String, String] = Map("uri" -> uri)
     logging.debug(s"Request:\n$requestDetails")
     http.GET[HttpResponse](getEnrolmentsUrl(uri)).map {
       response =>
         response.status match {
-          case OK => response.json.as[Seq[Enrolment]].find(_.key == ggServiceName)
-          case _ =>
-            logging.warn("Get Income Tax enrolment responded with a unexpected error")
+          case OK => response.json.asOpt[Seq[Enrolment]]
+          case status =>
+            logging.warn(s"Get Income Tax enrolment responded with a unexpected error: status=$status, body=${response.body}")
             None
         }
     }
   }
+
 }
 
 object EnrolmentConnector {
