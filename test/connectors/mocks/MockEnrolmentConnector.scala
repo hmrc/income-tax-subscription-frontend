@@ -30,8 +30,8 @@ import scala.concurrent.Future
 trait MockEnrolmentConnector extends UnitTestTrait with MockHttp {
 
   object TestEnrolmentConnector extends EnrolmentConnector(appConfig, mockHttpGet, app.injector.instanceOf[Logging]) {
-    override def getEnrolments(uri: String)(implicit hc: HeaderCarrier): Future[Option[Seq[Enrolment]]] = {
-      val nino = Seq(Enrolment(
+    override def getEnrolments(uri: String)(implicit hc: HeaderCarrier): Future[Set[Enrolment]] = {
+      val nino = Set(Enrolment(
         Constants.ninoEnrolmentName,
         Seq(Identifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)),
         Enrolment.Activated
@@ -41,10 +41,10 @@ trait MockEnrolmentConnector extends UnitTestTrait with MockHttp {
         Seq(Identifier(Constants.mtdItsaEnrolmentIdentifierKey, TestConstants.testMTDID)),
         Enrolment.Activated
       )
-      hc.userId.fold(Future.successful(None: Option[Seq[Enrolment]]))(userId => userId.value match {
-        case auth.mockEnrolled => Future.successful(Some(nino :+ mtdId))
-        case auth.mockUpliftUserIdCL200NoAccounts => Future.successful(None)
-        case _ => Future.successful(Some(nino))
+      hc.userId.fold(Future.successful(Set.empty[Enrolment]))(userId => userId.value match {
+        case auth.mockEnrolled => Future.successful(nino + mtdId)
+        case auth.mockUpliftUserIdCL200NoAccounts => Future.successful(Set.empty[Enrolment])
+        case _ => Future.successful(nino)
       })
     }
   }

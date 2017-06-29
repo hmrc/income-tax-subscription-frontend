@@ -64,9 +64,9 @@ trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
       }
 
     private def defaultPredicates(action: AsyncUserRequest
-                          )(implicit user: IncomeTaxSAUser,
-                            request: Request[AnyContent]
-                          ): Future[Result] =
+                                 )(implicit user: IncomeTaxSAUser,
+                                   request: Request[AnyContent]
+                                 ): Future[Result] =
       (user.nino, user.mtdItsaRef) match {
         case (None, _) => Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
         case (_, Some(_)) => Future.successful(Redirect(alreadyEnrolledUrl))
@@ -93,10 +93,10 @@ trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
     def asyncForHomeController(action: AsyncUserRequest): Action[AnyContent] =
       authedBy.async { authContext: AuthContext =>
         implicit request =>
-          enrolmentService.getEnrolments.flatMap { enrolments =>
-            defaultPredicates(action)(IncomeTaxSAUser(authContext, enrolments), request)
-              .flatMap { x => x.withSession(x.session.+(GoHome -> "et")) }
-          }
+          for {
+            enrolments <- enrolmentService.getEnrolments
+            result <- defaultPredicates(action)(IncomeTaxSAUser(authContext, enrolments), request)
+          } yield result.addingToSession(GoHome -> "et")
       }
   }
 

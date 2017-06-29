@@ -34,16 +34,16 @@ class EnrolmentConnector @Inject()(appConfig: AppConfig,
 
   def getEnrolmentsUrl(uri: String): String = appConfig.authUrl + EnrolmentConnector.getEnrolmentsUri(uri)
 
-  def getEnrolments(uri: String)(implicit hc: HeaderCarrier): Future[Option[Seq[Enrolment]]] = {
+  def getEnrolments(uri: String)(implicit hc: HeaderCarrier): Future[Set[Enrolment]] = {
     lazy val requestDetails: Map[String, String] = Map("uri" -> uri)
     logging.debug(s"Request:\n$requestDetails")
     http.GET[HttpResponse](getEnrolmentsUrl(uri)).map {
       response =>
         response.status match {
-          case OK => response.json.asOpt[Seq[Enrolment]]
+          case OK => response.json.asOpt[Set[Enrolment]].fold(Set.empty[Enrolment])(identity)
           case status =>
             logging.warn(s"Get Income Tax enrolment responded with a unexpected error: status=$status, body=${response.body}")
-            None
+            Set.empty[Enrolment]
         }
     }
   }

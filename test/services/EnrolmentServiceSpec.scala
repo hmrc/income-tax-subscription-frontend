@@ -17,24 +17,18 @@
 package services
 
 import audit.Logging
-import auth.{authenticatedFakeRequest, ggUser, mockAuthorisedUserIdCL200, mockEnrolled}
+import auth.ggUser
 import common.Constants
 import connectors.EnrolmentConnector
 import connectors.models.{Enrolment, Identifier}
-import connectors.models.Enrolment.{Enrolled, NotEnrolled}
 import org.mockito.Mockito.when
 import org.scalatest.Matchers._
-import play.api.mvc.Results
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockEnrolmentService
-import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.{TestConstants, UnitTestTrait}
 
 import scala.concurrent.Future
-
 
 class EnrolmentServiceSpec extends UnitTestTrait
   with MockEnrolmentService {
@@ -51,11 +45,11 @@ class EnrolmentServiceSpec extends UnitTestTrait
       when(mockAuthConnector.currentAuthority).thenReturn(Future.successful(Some(authority)))
 
       val enrolment = Enrolment(Constants.ninoEnrolmentName, Seq(Identifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)), Enrolment.Activated)
-      when(mockEnrolmentConnector.getEnrolments(authority.uri)).thenReturn(Future.successful(Some(Seq(enrolment))))
+      when(mockEnrolmentConnector.getEnrolments(authority.uri)).thenReturn(Future.successful(Set(enrolment)))
 
       val res = await(service.getEnrolments)
 
-      res.get should contain(enrolment)
+      res should contain(enrolment)
     }
   }
 

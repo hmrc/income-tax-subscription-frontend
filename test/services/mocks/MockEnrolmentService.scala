@@ -19,17 +19,9 @@ package services.mocks
 import audit.Logging
 import auth.MockAuthConnector
 import connectors.mocks.MockEnrolmentConnector
-import connectors.models.Enrolment.Enrolled
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, when}
-import org.mockito.invocation.InvocationOnMock
-import org.mockito.stubbing.Answer
-import play.api.mvc.Result
+import org.mockito.Mockito.reset
 import services.EnrolmentService
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.UnitTestTrait
-
-import scala.concurrent.Future
 
 trait MockEnrolmentService extends UnitTestTrait
   with MockAuthConnector

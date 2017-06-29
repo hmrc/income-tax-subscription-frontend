@@ -21,14 +21,14 @@ import connectors.models.Enrolment
 import org.joda.time.DateTime
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 
-case class IncomeTaxSAUser(authContext: AuthContext, enrolments: Option[Seq[Enrolment]]) {
+case class IncomeTaxSAUser(authContext: AuthContext, enrolments: Set[Enrolment]) {
   lazy val nino: Option[String] =
-    enrolments.flatMap(_.find(_.key == Constants.ninoEnrolmentName)
-      .flatMap(_.identifiers.headOption.map(_.value)))
+    enrolments.find(_.key == Constants.ninoEnrolmentName)
+      .flatMap(_.identifiers.headOption.map(_.value))
 
   lazy val mtdItsaRef: Option[String] =
-    enrolments.flatMap(_.find(_.key == Constants.mtdItsaEnrolmentName)
-      .flatMap(_.identifiers.headOption.map(_.value)))
+    enrolments.find(_.key == Constants.mtdItsaEnrolmentName)
+      .flatMap(_.identifiers.headOption.map(_.value))
 
   def previouslyLoggedInAt: Option[DateTime] = authContext.user.previouslyLoggedInAt
 }

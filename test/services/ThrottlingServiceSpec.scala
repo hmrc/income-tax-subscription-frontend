@@ -61,11 +61,10 @@ class ThrottlingServiceSpec extends UnitTestTrait
 
   "ThrottlingService" should {
 
-    val userEnrolment = Some(
-      Seq(Enrolment(Constants.ninoEnrolmentName,
+    val userEnrolment =
+      Set(Enrolment(Constants.ninoEnrolmentName,
         Seq(Identifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)),
         Enrolment.Activated))
-    )
 
     implicit lazy val request = authenticatedFakeRequest()
     implicit lazy val hc = HeaderCarrier()
@@ -78,7 +77,7 @@ class ThrottlingServiceSpec extends UnitTestTrait
     }
 
     "if nino is not present for the user, do not call the throttling connector.check access" in {
-      implicit val user = IncomeTaxSAUser(TestUser.noNinoUserContext, None)
+      implicit val user = IncomeTaxSAUser(TestUser.noNinoUserContext, Set.empty[Enrolment])
 
       setupMockCheckAccess(auth.nino)(OK)
 

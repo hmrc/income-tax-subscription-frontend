@@ -26,11 +26,9 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
   "IncomeTaxSAUser" should {
     lazy val user = IncomeTaxSAUser(
       ggUser.userCL200Context,
-      Some(
-        Seq(Enrolment(Constants.ninoEnrolmentName,
+        Set(Enrolment(Constants.ninoEnrolmentName,
           Seq(Identifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)),
           Enrolment.Activated))
-      )
     )
 
     "have the expected NINO 'AB124512C'" in {

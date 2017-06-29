@@ -19,24 +19,20 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
-import common.Constants
 import connectors.EnrolmentConnector
-import connectors.models.Enrolment._
-import play.api.mvc.Result
+import connectors.models.Enrolment
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import common.Constants._
-import connectors.models.Enrolment
 
 @Singleton
 class EnrolmentService @Inject()(val authConnector: AuthConnector,
                                  val enrolmentConnector: EnrolmentConnector,
                                  logging: Logging) {
 
-  def getEnrolments(implicit hc: HeaderCarrier): Future[Option[Seq[Enrolment]]] = {
+  def getEnrolments(implicit hc: HeaderCarrier): Future[Set[Enrolment]] = {
     logging.debug(s"getEnrolments")
     for {
       authority <- authConnector.currentAuthority

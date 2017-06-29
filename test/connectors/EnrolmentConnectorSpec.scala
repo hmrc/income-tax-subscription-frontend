@@ -42,20 +42,20 @@ class EnrolmentConnectorSpec extends UnitTestTrait with MockHttp {
     "return an enrolment for an enrolled user" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled)
       val enrolment = Enrolment(ggServiceName, Seq(), "Activated")
-      setupMockEnrolmentGet(OK, Json.toJson(Seq(enrolment)))
-      call shouldBe Some(Seq(enrolment))
+      setupMockEnrolmentGet(OK, Json.toJson(Set(enrolment)))
+      call shouldBe Set(enrolment)
     }
 
     "return not enrolled for a user without enrolment" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
       setupMockEnrolmentGet(OK, Json.obj())
-      call shouldBe None
+      call shouldBe Set.empty[Enrolment]
     }
 
     "return None when call to enrolments in unsuccessful" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
       setupMockEnrolmentGet(BAD_REQUEST, Json.parse("[]"))
-      call shouldBe None
+      call shouldBe Set.empty[Enrolment]
     }
   }
 
