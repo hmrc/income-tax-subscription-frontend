@@ -39,32 +39,6 @@ import scala.concurrent.Future
 class EnrolmentServiceSpec extends UnitTestTrait
   with MockEnrolmentService {
 
-  val isEnrolled = (e: Enrolled) => e match {
-    case x =>
-      x shouldBe Enrolled
-      Future.successful(Results.Ok)
-  }
-
-  val isNotEnrolled = (e: Enrolled) => e match {
-    case x =>
-      x shouldBe NotEnrolled
-      Future.successful(Results.Ok)
-  }
-
-  implicit def hcUtil(implicit request: FakeRequest[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
-
-  "EnrolmentService" should {
-    "return is enrolled for an enrolled user" in {
-      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled)
-      await(TestEnrolmentService.checkItsaEnrolment(isEnrolled)(hcUtil(request)))
-    }
-
-    "return not enrolled for a user without enrolment" in {
-      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
-      await(TestEnrolmentService.checkItsaEnrolment(isNotEnrolled)(hcUtil(request)))
-    }
-  }
-
   val mockAuthConnector = mock[AuthConnector]
   val mockEnrolmentConnector = mock[EnrolmentConnector]
   val mockLogging = mock[Logging]
@@ -85,18 +59,5 @@ class EnrolmentServiceSpec extends UnitTestTrait
     }
   }
 
-  "getNino" should {
-    "return the nino for a user" in {
-      val authority = ggUser.userCL50
-      when(mockAuthConnector.currentAuthority).thenReturn(Future.successful(Some(authority)))
-
-      val enrolment = Enrolment(Constants.ninoEnrolmentName, Seq(Identifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)), Enrolment.Activated)
-      when(mockEnrolmentConnector.getEnrolments(authority.uri)).thenReturn(Future.successful(Some(Seq(enrolment))))
-
-      val res = await(service.getNino)
-
-      res should contain(TestConstants.testNino)
-    }
-  }
 
 }

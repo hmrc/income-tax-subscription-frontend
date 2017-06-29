@@ -45,24 +45,5 @@ class EnrolmentService @Inject()(val authConnector: AuthConnector,
     } yield enrolments
   }
 
-  def getNino(implicit hc: HeaderCarrier): Future[Option[String]] = {
-    logging.debug(s"getNino")
-    for {
-      optEnrolments <- getEnrolments
-    } yield for {
-      enrolments <- optEnrolments
-      agentEnrolment <- enrolments.find(_.key == Constants.ninoEnrolmentName)
-      arn <- agentEnrolment.identifiers.find(_.key == Constants.ninoEnrolmentIdentifierKey)
-    } yield arn.value
-  }
-
-  def checkItsaEnrolment(f: Enrolled => Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-    logging.debug(s"checkItsaEnrolment")
-    for {
-      enrolments <- getEnrolments
-      result <- f(enrolments.isEnrolled(Constants.itsaEnrolmentName))
-    } yield result
-  }
-
 }
 
