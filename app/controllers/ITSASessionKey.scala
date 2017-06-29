@@ -18,4 +18,5 @@ package controllers
 
 object ITSASessionKey {
   val GoHome = "HOME"
+  val StartTime = "StartTime"
 }
