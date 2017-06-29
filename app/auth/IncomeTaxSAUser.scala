@@ -24,7 +24,11 @@ import uk.gov.hmrc.play.frontend.auth.AuthContext
 case class IncomeTaxSAUser(authContext: AuthContext, enrolments: Option[Seq[Enrolment]]) {
   lazy val nino: Option[String] =
     enrolments.flatMap(_.find(_.key == Constants.ninoEnrolmentName)
-      .map(_.identifiers.head.value))
+      .flatMap(_.identifiers.headOption.map(_.value)))
+
+  lazy val mtdItsaRef: Option[String] =
+    enrolments.flatMap(_.find(_.key == Constants.mtdItsaEnrolmentName)
+      .flatMap(_.identifiers.headOption.map(_.value)))
 
   def previouslyLoggedInAt: Option[DateTime] = authContext.user.previouslyLoggedInAt
 }

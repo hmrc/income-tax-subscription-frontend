@@ -36,8 +36,13 @@ trait MockEnrolmentConnector extends UnitTestTrait with MockHttp {
         Seq(Identifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)),
         Enrolment.Activated
       ))
+      lazy val mtdId = Enrolment(
+        Constants.mtdItsaEnrolmentName,
+        Seq(Identifier(Constants.mtdItsaEnrolmentIdentifierKey, TestConstants.testMTDID)),
+        Enrolment.Activated
+      )
       hc.userId.fold(Future.successful(None: Option[Seq[Enrolment]]))(userId => userId.value match {
-        case auth.mockEnrolled => Future.successful(Some(nino :+ Enrolment(Constants.itsaEnrolmentName, Seq(), Enrolment.Activated)))
+        case auth.mockEnrolled => Future.successful(Some(nino :+ mtdId))
         case auth.mockUpliftUserIdCL200NoAccounts => Future.successful(None)
         case _ => Future.successful(Some(nino))
       })
