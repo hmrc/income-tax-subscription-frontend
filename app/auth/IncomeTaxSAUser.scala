@@ -17,18 +17,20 @@
 package auth
 
 import common.Constants
-import connectors.models.Enrolment
+import connectors.models.{Enrolment, Identifier}
 import org.joda.time.DateTime
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 
-case class IncomeTaxSAUser(authContext: AuthContext, enrolments: Set[Enrolment]) {
-  lazy val nino: Option[String] =
-    enrolments.find(_.key == Constants.ninoEnrolmentName)
-      .flatMap(_.identifiers.headOption.map(_.value))
+import scala.collection.immutable.::
 
-  lazy val mtdItsaRef: Option[String] =
-    enrolments.find(_.key == Constants.mtdItsaEnrolmentName)
-      .flatMap(_.identifiers.headOption.map(_.value))
+case class IncomeTaxSAUser(authContext: AuthContext, enrolments: Set[Enrolment]) {
+  lazy val nino: Option[String] = getEnrolment(Constants.ninoEnrolmentName)
+
+  lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
 
   def previouslyLoggedInAt: Option[DateTime] = authContext.user.previouslyLoggedInAt
+
+  private def getEnrolment(key: String) = enrolments.collectFirst {
+    case Enrolment(`key`, Identifier(_, value) :: _, _) => value
+  }
 }

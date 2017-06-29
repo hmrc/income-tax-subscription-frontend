@@ -67,10 +67,14 @@ trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
                                  )(implicit user: IncomeTaxSAUser,
                                    request: Request[AnyContent]
                                  ): Future[Result] =
-      (user.nino, user.mtdItsaRef) match {
-        case (None, _) => Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
-        case (_, Some(_)) => Future.successful(Redirect(alreadyEnrolledUrl))
-        case _ => action(user)(request)
+      if (user.nino.isEmpty) {
+        Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
+      }
+      else if (user.mtdItsaRef.nonEmpty) {
+        Future.successful(Redirect(alreadyEnrolledUrl))
+      }
+      else {
+        action(user)(request)
       }
 
     def async(action: AsyncUserRequest): Action[AnyContent] =
@@ -84,10 +88,8 @@ trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
       asyncCore {
         implicit user: IncomeTaxSAUser =>
           implicit request =>
-            user.mtdItsaRef match {
-              case Some(_) => action(user)(request)
-              case _ => Future.successful(showNotFound)
-            }
+            if (user.mtdItsaRef.isDefined) action(user)(request)
+            else Future.successful(showNotFound)
       }
 
     def asyncForHomeController(action: AsyncUserRequest): Action[AnyContent] =
