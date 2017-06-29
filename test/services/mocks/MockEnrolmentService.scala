@@ -19,12 +19,20 @@ package services.mocks
 import audit.Logging
 import auth.MockAuthConnector
 import connectors.mocks.MockEnrolmentConnector
+import org.mockito.Mockito.reset
 import services.EnrolmentService
 import utils.UnitTestTrait
 
 trait MockEnrolmentService extends UnitTestTrait
   with MockAuthConnector
   with MockEnrolmentConnector {
+
+  val mockEnrolmentService = mock[EnrolmentService]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockEnrolmentService)
+  }
 
   object TestEnrolmentService extends EnrolmentService(TestAuthConnector, TestEnrolmentConnector, app.injector.instanceOf[Logging])
 

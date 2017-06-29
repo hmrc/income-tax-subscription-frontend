@@ -17,7 +17,9 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import connectors.models.Enrolment
+import common.Constants
+import connectors.models.{Enrolment, Identifier}
+import helpers.IntegrationTestConstants
 import helpers.IntegrationTestConstants._
 import models.auth.UserIds
 import org.joda.time.{DateTime, DateTimeZone}
@@ -66,5 +68,12 @@ object AuthStub extends WireMockMethods {
 
   private def stubEnrolments(): StubMapping =
     when(method = GET, uri = s"$userId/enrolments")
-      .thenReturn(status = OK, body = Seq.empty[Enrolment])
+      .thenReturn(
+        status = OK,
+        body = Seq(
+          Enrolment(Constants.ninoEnrolmentName,
+            Seq(Identifier(Constants.ninoEnrolmentIdentifierKey, IntegrationTestConstants.testNino)),
+            Enrolment.Activated)
+        )
+      )
 }

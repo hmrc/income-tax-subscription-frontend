@@ -19,18 +19,14 @@ package connectors.models
 import play.api.libs.json.Json
 
 case class Enrolment(key: String, identifiers: Seq[Identifier], state: String) {
-  def isEnrolled: Enrolment.Enrolled = state.equals("Activated")
+  def isEnrolled: Boolean = state.equals(Enrolment.Activated)
 }
 
 object Enrolment {
   implicit val formats = Json.format[Enrolment]
-
-  type Enrolled = Boolean
-  val Enrolled: Enrolled = true
-  val NotEnrolled: Enrolled = false
+  val Activated = "Activated"
 
   implicit class OEnrolmentUtil(enrolment: Option[Enrolment]) {
-    def isEnrolled: Enrolled = enrolment.fold(false)(_.isEnrolled)
+    def isEnrolled: Boolean = enrolment.fold(false)(_.isEnrolled)
   }
-
 }

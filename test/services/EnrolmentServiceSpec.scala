@@ -16,47 +16,42 @@
 
 package services
 
-import auth.{authenticatedFakeRequest, mockAuthorisedUserIdCL200, mockEnrolled}
-import connectors.models.Enrolment.{Enrolled, NotEnrolled}
+import audit.Logging
+import auth.ggUser
+import common.Constants
+import connectors.EnrolmentConnector
+import connectors.models.{Enrolment, Identifier}
+import org.mockito.Mockito.when
 import org.scalatest.Matchers._
-import play.api.mvc.Results
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockEnrolmentService
-import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
-import uk.gov.hmrc.play.http.HeaderCarrier
-import utils.UnitTestTrait
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+import utils.{TestConstants, UnitTestTrait}
 
 import scala.concurrent.Future
-
 
 class EnrolmentServiceSpec extends UnitTestTrait
   with MockEnrolmentService {
 
-  val isEnrolled = (e: Enrolled) => e match {
-    case x =>
-      x shouldBe Enrolled
-      Future.successful(Results.Ok)
-  }
+  val mockAuthConnector = mock[AuthConnector]
+  val mockEnrolmentConnector = mock[EnrolmentConnector]
+  val mockLogging = mock[Logging]
 
-  val isNotEnrolled = (e: Enrolled) => e match {
-    case x =>
-      x shouldBe NotEnrolled
-      Future.successful(Results.Ok)
-  }
+  val service = new EnrolmentService(mockAuthConnector, mockEnrolmentConnector, mockLogging)
 
-  implicit def hcUtil(implicit request: FakeRequest[_]): HeaderCarrier = HeaderCarrier.fromHeadersAndSession(request.headers, Some(request.session))
+  "getEnrolments" should {
+    "return all enrolments for a user" in {
+      val authority = ggUser.userCL50
+      when(mockAuthConnector.currentAuthority).thenReturn(Future.successful(Some(authority)))
 
-  "EnrolmentService" should {
-    "return is enrolled for an enrolled user" in {
-      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled)
-      await(TestEnrolmentService.checkEnrolment(isEnrolled)(hcUtil(request)))
-    }
+      val enrolment = Enrolment(Constants.ninoEnrolmentName, Seq(Identifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)), Enrolment.Activated)
+      when(mockEnrolmentConnector.getEnrolments(authority.uri)).thenReturn(Future.successful(Set(enrolment)))
 
-    "return not enrolled for a user without enrolment" in {
-      implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
-      await(TestEnrolmentService.checkEnrolment(isNotEnrolled)(hcUtil(request)))
+      val res = await(service.getEnrolments)
+
+      res should contain(enrolment)
     }
   }
+
 
 }
