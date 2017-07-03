@@ -112,4 +112,23 @@ trait CustomMatchers {
       )
     }
   }
+
+  def radioButton(id: String, selectedValue: Option[String]): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+      def apply(response: WSResponse) = {
+        val body = Jsoup.parse(response.body)
+        val radio = body.getElementById(id)
+        val checkedAttr = "checked"
+        val matchCondition = selectedValue match {
+          case Some(expectedOption) => radio.attr(checkedAttr) == expectedOption
+          case None => !radio.hasAttr(checkedAttr)
+        }
+        HavePropertyMatchResult(
+          matches = matchCondition,
+          propertyName = "radioButton",
+          expectedValue = "",
+          actualValue = radio.attr(checkedAttr)
+        )
+      }
+    }
 }

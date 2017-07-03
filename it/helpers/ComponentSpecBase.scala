@@ -90,6 +90,7 @@ trait ComponentSpecBase extends UnitSpec
     )
 
     def startPage(): WSResponse = get("/")
+    def income(): WSResponse = get("/income")
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
 
