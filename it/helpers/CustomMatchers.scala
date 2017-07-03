@@ -113,23 +113,40 @@ trait CustomMatchers {
     }
   }
 
-  def radioButton(id: String, selectedValue: Option[String]): HavePropertyMatcher[WSResponse, String] =
+  def radioButtonSet(id: String, selectedRadioButton: Option[String]): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
       def apply(response: WSResponse): HavePropertyMatchResult[String] = {
         val body = Jsoup.parse(response.body)
         val radios = body.select(s"input[id^=$id]")
         val checkedAttr = "checked"
-        val matchCondition = selectedValue match {
+
+        def textForSelectedButton(idForSelectedRadio: String) =
+          if (idForSelectedRadio.isEmpty) ""
+          else body.select(s"label[for=$idForSelectedRadio]").text()
+
+        val matchCondition = selectedRadioButton match {
           case Some(expectedOption) =>
-            radios.select(s"input[value=$expectedOption]")
-              .hasAttr(checkedAttr)
+            val idForSelectedRadio = radios.select(s"input[checked]").attr("id")
+            textForSelectedButton(idForSelectedRadio) == expectedOption
           case None => !radios.hasAttr(checkedAttr)
         }
+
         HavePropertyMatchResult(
           matches = matchCondition,
           propertyName = "radioButton",
-          expectedValue = selectedValue.fold("")(identity),
-          actualValue = radios.select("input[checked]").toString
+          expectedValue = selectedRadioButton.fold("")(identity),
+          actualValue = {
+            val selected = radios.select("input[checked]")
+            selected.size() match {
+              case 0 =>
+                "no radio button is selected"
+              case 1 =>
+                val idForSelectedRadio = selected.attr("id")
+                s"""The "${textForSelectedButton(idForSelectedRadio)}" selected"""
+              case _ =>
+                s"multiple radio buttons are selected: [$radios]"
+            }
+          }
         )
       }
     }

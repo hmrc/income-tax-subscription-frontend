@@ -15,7 +15,6 @@
  */
 package controllers
 
-import forms.IncomeSourceForm
 import helpers.ComponentSpecBase
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status.OK
@@ -39,7 +38,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(Messages("income_source.title")),
-          radioButton(id = "incomeSource", selectedValue = Some(IncomeSourceForm.option_both))
+          radioButtonSet(id = "incomeSource", selectedRadioButton = Some(Messages("income_source.both")))
         )
       }
     }
@@ -57,7 +56,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(Messages("income_source.title")),
-          radioButton("incomeSource", None)
+          radioButtonSet(id = "incomeSource", selectedRadioButton = None)
         )
       }
     }
