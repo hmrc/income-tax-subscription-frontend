@@ -15,10 +15,14 @@
  */
 package controllers
 
+import forms.IncomeSourceForm
 import helpers.ComponentSpecBase
-import helpers.servicemocks.{AuthStub, KeystoreStub}
-import play.api.http.Status.OK
+import helpers.IntegrationTestConstants._
+import helpers.servicemocks.{AuthStub, KeystoreStub, SubscriptionStub}
+import models.IncomeSourceModel
+import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
+import services.CacheConstants
 
 
 class IncomeSourceControllerISpec extends ComponentSpecBase {
@@ -62,6 +66,28 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
     }
   }
 
+
+  "POST /report-quarterly/income-and-expenses/sign-up/income" when {
+    "keystore returns all data" should {
+      "redirect to the other income page" in {
+        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+        When("POST /income is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of other income")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(otherIncomeURI)
+        )
+      }
+    }
+
+  }
 }
 
 
