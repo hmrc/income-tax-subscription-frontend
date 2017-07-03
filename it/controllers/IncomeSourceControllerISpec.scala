@@ -15,6 +15,7 @@
  */
 package controllers
 
+import forms.IncomeSourceForm
 import helpers.ComponentSpecBase
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status.OK
@@ -37,28 +38,28 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the income source page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("income_source.title"))
-          //todo check selected option
+          pageTitle(Messages("income_source.title")),
+          radioButton(id = "incomeSource", selectedValue = Some(IncomeSourceForm.option_both))
         )
       }
     }
-  }
 
-  "keystore returns no data" should {
-    "show the income source page without an option selected" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      KeystoreStub.stubEmptyKeystore()
+    "keystore returns no data" should {
+      "show the income source page without an option selected" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
 
-      When("GET /income is called")
-      val res = IncomeTaxSubscriptionFrontend.income()
+        When("GET /income is called")
+        val res = IncomeTaxSubscriptionFrontend.income()
 
-      Then("Should return a OK with the income source page")
-      res should have(
-        httpStatus(OK),
-        pageTitle(Messages("income_source.title"))
-        //todo check selected option
-      )
+        Then("Should return a OK with the income source page")
+        res should have(
+          httpStatus(OK),
+          pageTitle(Messages("income_source.title")),
+          radioButton("incomeSource", None)
+        )
+      }
     }
   }
 
