@@ -66,10 +66,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
     }
   }
 
-
   "POST /report-quarterly/income-and-expenses/sign-up/income" when {
-    "keystore returns all data" should {
-      "redirect to the other income page" in {
+
+    "not in edit mode" should {
+      "select the Both income source radio button on the income source page" in {
         val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
 
         Given("I setup the Wiremock stubs")
@@ -85,9 +85,78 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
           redirectURI(otherIncomeURI)
         )
       }
+
+      "select the Business income source radio button on the income source page" in {
+        val userInput = IncomeSourceModel(IncomeSourceForm.option_business)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+        When("POST /income is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of other income")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(otherIncomeURI)
+        )
+      }
+
+      "select the Property income source radio button on the income source page" in {
+        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+        When("POST /income is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of other income")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(otherIncomeURI)
+        )
+      }
+
+      "select the Other income source radio button on the income source page" in {
+          val userInput = IncomeSourceModel(IncomeSourceForm.option_other)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+          When("POST /income is called")
+          val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of main income")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(mainIncomeURI)
+          )
+        }
+      }
+
+    }
+
+    "when in edit mode" should {
+      "select the Both income source radio button on the income source page" in {
+        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+        When("POST /income is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of main income")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(otherIncomeURI)
+        )
+      }
     }
 
   }
-}
-
-
