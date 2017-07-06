@@ -17,14 +17,16 @@
 package helpers.servicemocks
 
 import connectors.models.subscription.FESuccessResponse
+import controllers.ITSASessionKeys
 import helpers.IntegrationTestConstants._
 import play.api.http.Status
 
 object SubscriptionStub extends WireMockMethods{
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"
+  val callingPageURI = "/report-quarterly/income-and-expenses/sign-up/check-your-answers"
 
   def stubSuccessfulSubscription(): Unit = {
-    when(method = POST, uri = subscriptionURI(testNino))
+    when(method = POST, uri = subscriptionURI(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageURI))
       .thenReturn(Status.OK, successfulSubscriptionResponse)
   }
 

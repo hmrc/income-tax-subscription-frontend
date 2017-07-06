@@ -18,7 +18,7 @@ package helpers
 
 import java.util.UUID
 
-import controllers.ITSASessionKey.GoHome
+import controllers.ITSASessionKeys.GoHome
 import forms.IncomeSourceForm
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
