@@ -70,6 +70,21 @@ trait CustomMatchers {
       }
     }
 
+  def errorDisplayed(): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+      def apply(response: WSResponse) = {
+        val body = Jsoup.parse(response.body)
+        val errorHeader = body.getElementById("error-summary-heading")
+
+        HavePropertyMatchResult(
+          errorHeader != null,
+          "errorDisplayed",
+          "error heading found",
+          "no error heading found"
+        )
+      }
+    }
+
   def elementValueByID(id: String)(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
 
@@ -112,4 +127,42 @@ trait CustomMatchers {
       )
     }
   }
+
+  def radioButtonSet(id: String, selectedRadioButton: Option[String]): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+      def apply(response: WSResponse): HavePropertyMatchResult[String] = {
+        val body = Jsoup.parse(response.body)
+        val radios = body.select(s"input[id^=$id]")
+        val checkedAttr = "checked"
+
+        def textForSelectedButton(idForSelectedRadio: String) =
+          if (idForSelectedRadio.isEmpty) ""
+          else body.select(s"label[for=$idForSelectedRadio]").text()
+
+        val matchCondition = selectedRadioButton match {
+          case Some(expectedOption) =>
+            val idForSelectedRadio = radios.select(s"input[checked]").attr("id")
+            textForSelectedButton(idForSelectedRadio) == expectedOption
+          case None => !radios.hasAttr(checkedAttr)
+        }
+
+        HavePropertyMatchResult(
+          matches = matchCondition,
+          propertyName = "radioButton",
+          expectedValue = selectedRadioButton.fold("")(identity),
+          actualValue = {
+            val selected = radios.select("input[checked]")
+            selected.size() match {
+              case 0 =>
+                "no radio button is selected"
+              case 1 =>
+                val idForSelectedRadio = selected.attr("id")
+                s"""The "${textForSelectedButton(idForSelectedRadio)}" selected"""
+              case _ =>
+                s"multiple radio buttons are selected: [$radios]"
+            }
+          }
+        )
+      }
+    }
 }

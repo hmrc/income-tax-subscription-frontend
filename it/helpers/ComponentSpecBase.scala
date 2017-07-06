@@ -19,8 +19,10 @@ package helpers
 import java.util.UUID
 
 import controllers.ITSASessionKey.GoHome
+import forms.IncomeSourceForm
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
+import models.IncomeSourceModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -90,8 +92,22 @@ trait ComponentSpecBase extends UnitSpec
     )
 
     def startPage(): WSResponse = get("/")
+
+    def income(): WSResponse = get("/income")
+
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
+
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
+
+    def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
+      val uri = s"/income?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            IncomeSourceForm.incomeSourceForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
 
   }
 
