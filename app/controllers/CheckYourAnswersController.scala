@@ -26,7 +26,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Request, Result}
 import services.{KeystoreService, SubscriptionService}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.http.InternalServerException
+import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
 
@@ -56,7 +56,9 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     implicit request =>
       cache =>
         val nino = user.nino.get
-        middleService.submitSubscription(nino, cache.getSummary()).flatMap {
+        val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
+
+        middleService.submitSubscription(nino, cache.getSummary())(headerCarrier).flatMap {
           case Some(FESuccessResponse(Some(id))) =>
             keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.routes.ConfirmationController.showConfirmation()))
           case _ =>
@@ -69,11 +71,8 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     Authorised.async { implicit user =>
       implicit request =>
         keystoreService.fetchAll().flatMap {
-          case Some(cache) =>
-            cache.getTerms() match {
-              case None => Future.successful(Redirect(controllers.routes.TermsController.showTerms()))
-              case _ => processFunc(user)(request)(cache)
-            }
+          case Some(cache) if cache.getTerms.nonEmpty => processFunc(user)(request)(cache)
+          case Some(_) => Future.successful(Redirect(controllers.routes.TermsController.showTerms()))
           case _ => error(noCacheMapErrMessage)
         }
     }

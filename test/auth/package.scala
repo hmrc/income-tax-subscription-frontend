@@ -17,7 +17,7 @@
 import java.util.UUID
 
 import config.AppConfig
-import controllers.ITSASessionKey
+import controllers.ITSASessionKeys
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -177,7 +177,7 @@ package object auth {
   }
 
   val beenHomeSession: Boolean => List[(String, String)] = {
-    case true => List((ITSASessionKey.GoHome, "et"))
+    case true => List((ITSASessionKeys.GoHome, "et"))
     case false => List()
   }
 

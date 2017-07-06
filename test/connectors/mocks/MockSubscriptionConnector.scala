@@ -25,9 +25,11 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{times, verify}
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.play.http.HttpResponse
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import utils.JsonUtils._
 import utils.TestConstants
+
+import scala.concurrent.Future
 
 trait MockSubscriptionConnector extends MockHttp {
 
@@ -80,5 +82,15 @@ trait MockSubscriptionConnector extends MockHttp {
   val subscribeNone = (OK, FESuccessResponse(None): JsValue)
   val subscribeBadRequest = (BAD_REQUEST, FEFailureResponse(badRequestReason): JsValue)
   val subscribeInternalServerError = (INTERNAL_SERVER_ERROR, FEFailureResponse(internalServerErrorReason): JsValue)
+
+  def verifySubscriptionHeader(header: (String, String)): Future[HttpResponse] = verify(mockHttpPost).POST(
+    ArgumentMatchers.any[String],
+    ArgumentMatchers.any[String],
+    ArgumentMatchers.any[Seq[(String, String)]]
+  )(
+    ArgumentMatchers.any(),
+    ArgumentMatchers.any(),
+    matches[HeaderCarrier](_.headers.contains(header))
+  )
 
 }
