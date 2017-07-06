@@ -101,7 +101,6 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
       val uri = s"/income?editMode=$inEditMode"
-      println(uri+"\n\n\n\n\n\n\n\n\n\n")
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>

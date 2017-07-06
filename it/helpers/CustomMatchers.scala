@@ -70,6 +70,21 @@ trait CustomMatchers {
       }
     }
 
+  def errorDisplayed(): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+      def apply(response: WSResponse) = {
+        val body = Jsoup.parse(response.body)
+        val errorHeader = body.getElementById("error-summary-heading")
+
+        HavePropertyMatchResult(
+          errorHeader != null,
+          "errorDisplayed",
+          "error heading found",
+          "no error heading found"
+        )
+      }
+    }
+
   def elementValueByID(id: String)(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
 
