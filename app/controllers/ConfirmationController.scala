@@ -40,7 +40,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
     implicit request =>
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKey.StartTime).get)
       val endTime = java.time.LocalDateTime.now()
-      val journeyDuration = ChronoUnit.SECONDS.between(startTime, endTime).toInt
+      val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
       keystoreService.fetchSubscriptionId.map {
         case Some(id) =>
           Ok(views.html.confirmation(
