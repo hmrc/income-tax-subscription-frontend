@@ -37,7 +37,7 @@ object IntegrationTestConstants {
   val confirmDetailsURI = "/confirm-details"
   val confirmationURI = s"$baseURI/confirmation"
   val otherIncomeURI = s"$baseURI/income-other"
-  val mainIncomeURI = s"$baseURI/error/main-income"
+  val errorMainIncomeURI = s"$baseURI/error/main-income"
   val termsURI = s"$baseURI/terms"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
 

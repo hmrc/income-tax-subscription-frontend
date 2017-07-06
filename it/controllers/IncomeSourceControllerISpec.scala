@@ -135,7 +135,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of main income")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(mainIncomeURI)
+          redirectURI(errorMainIncomeURI)
         )
       }
 
@@ -212,10 +212,9 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "simulate not changing income source from business and property when calling page from Check Your Answers" in {
+      "simulate not changing income source from business and property to both when calling page from Check Your Answers" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
         val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
-
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
@@ -231,7 +230,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "simulate changing income source from business when calling page from Check Your Answers" in {
+      "simulate changing income source from business to property when calling page from Check Your Answers" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
         val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
 
@@ -243,14 +242,14 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of income source")
+        Then("Should return a SEE_OTHER with a redirect location of income other")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(otherIncomeURI)
         )
       }
 
-      "simulate changing income source from property when calling page from Check Your Answers" in {
+      "simulate changing income source from property to both when calling page from Check Your Answers" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_property)
         val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
 
@@ -262,14 +261,14 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of income source")
+        Then("Should return a SEE_OTHER with a redirect location of income other")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(otherIncomeURI)
         )
       }
 
-      "simulate changing income source from business and property when calling page from Check Your Answers" in {
+      "simulate changing income source from business and property to business when calling page from Check Your Answers" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
         val userInput = IncomeSourceModel(IncomeSourceForm.option_business)
 
@@ -281,10 +280,29 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of income source")
+        Then("Should return a SEE_OTHER with a redirect location of income other")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(otherIncomeURI)
+        )
+      }
+
+      "simulate changing income source from business to other when calling page from Check Your Answers" in {
+        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
+        val userInput = IncomeSourceModel(IncomeSourceForm.option_other)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
+        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, keystoreIncomeSource)
+
+        When("POST /income is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of error main income")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(errorMainIncomeURI)
         )
       }
     }
