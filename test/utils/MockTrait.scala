@@ -16,6 +16,7 @@
 
 package utils
 
+import org.mockito.{ArgumentMatcher, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 
@@ -64,4 +65,9 @@ trait MockTrait extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach 
   type MFO[T] = MockConfiguration[Future[Option[T]]]
   type MF[T] = MockConfiguration[Future[T]]
 
+  def matches[T](predicate: T => Boolean): T = ArgumentMatchers.argThat(
+    new ArgumentMatcher[T] {
+      override def matches(argument: T): Boolean = predicate(argument)
+    }
+  )
 }
