@@ -16,13 +16,19 @@
 
 package controllers
 
+import java.time.LocalDateTime
+
 import audit.Logging
 import auth.{authenticatedFakeRequest, mockEnrolled}
 import org.scalatest.Matchers._
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
+import utils.TestModels
+
+import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -39,10 +45,20 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "showConfirmation" -> TestConfirmationController.showConfirmation
   )
 
+  implicit class SessionUtil[T](fakeRequest: FakeRequest[T]) {
+    def addStartTime(time: LocalDateTime): FakeRequest[T] = fakeRequest.withSession(
+      (fakeRequest.session.data + (ITSASessionKeys.StartTime -> time.toString)).toSeq: _*
+    )
+  }
+
   "ConfirmationController" should {
+    val startTime: LocalDateTime = LocalDateTime.now()
     "If the user is enrolled then get the ID from keystore" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
-      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled))
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+      val result: Future[Result] = TestConfirmationController.showConfirmation(
+        authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled).addStartTime(startTime)
+      )
       status(result) shouldBe OK
 
       await(result)
@@ -51,7 +67,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
     "If the user is not enrolled then return not found" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
-      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
+      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest().addStartTime(startTime))
       status(result) shouldBe NOT_FOUND
 
       await(result)
