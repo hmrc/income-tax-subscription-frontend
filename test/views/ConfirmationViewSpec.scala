@@ -29,12 +29,14 @@ class ConfirmationViewSpec extends ViewSpecTrait {
   val submissionDateValue = DateModel("1", "1", "2016")
   val duration: Int = 0
   val action = ViewSpecTrait.testCall
+  val incomeSource = "incomeSource"
 
   lazy val page = views.html.confirmation(
     subscriptionId = subscriptionIdValue,
     submissionDate = submissionDateValue,
     signOutAction = action,
-    journeyDuration = duration
+    journeyDuration = duration,
+    incomeSource = incomeSource
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 

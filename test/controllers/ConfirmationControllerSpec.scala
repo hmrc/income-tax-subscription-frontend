@@ -26,6 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
+import utils.TestModels
 
 import scala.concurrent.Future
 
@@ -54,6 +55,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     val startTime: LocalDateTime = LocalDateTime.now()
     "If the user is enrolled then get the ID from keystore" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
       val result: Future[Result] = TestConfirmationController.showConfirmation(
         authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled).addStartTime(startTime)
       )

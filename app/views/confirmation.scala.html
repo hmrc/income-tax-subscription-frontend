@@ -19,14 +19,14 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers._
 
-@(subscriptionId: String, submissionDate: DateModel, signOutAction: Call, journeyDuration: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(subscriptionId: String, submissionDate: DateModel, signOutAction: Call, journeyDuration: Int, incomeSource: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
 }
 @views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction), scriptElem = scripts) {
 
-    <div class="form-group" data-metrics="itsa:journey duration:value:@journeyDuration">
+    <div class="form-group" data-metrics="itsa:journey duration:@incomeSource:@journeyDuration">
         <section id="confirmation-heading" class="transaction-banner--complete">
             <h1 class="transaction-banner__heading" style="color: #fff">@Messages("confirmation.heading")</h1>
             <p>@Messages("confirmation.banner.line_1")</p>

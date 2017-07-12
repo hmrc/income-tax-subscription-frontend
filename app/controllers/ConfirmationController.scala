@@ -41,17 +41,24 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKey.StartTime).get)
       val endTime = java.time.LocalDateTime.now()
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
-      keystoreService.fetchSubscriptionId.map {
-        case Some(id) =>
-          Ok(views.html.confirmation(
-            subscriptionId = id,
-            submissionDate = dateConvert(LocalDate.now()),
-            routes.ConfirmationController.signOut(),
-            journeyDuration
-          ))
+      keystoreService.fetchIncomeSource.flatMap {
+        case Some(incomeSource) =>
+          keystoreService.fetchSubscriptionId.map {
+            case Some(id) =>
+              Ok(views.html.confirmation(
+                subscriptionId = id,
+                submissionDate = dateConvert(LocalDate.now()),
+                routes.ConfirmationController.signOut(),
+                journeyDuration,
+                incomeSource.source
+              ))
+            case _ =>
+              logging.info("User attempted to view confirmation with no subscriptionId stored in Keystore")
+              InternalServerError
+          }
         case _ =>
-          logging.info("User attempted to view confirmation with no subscriptionId stored in Keystore")
-          InternalServerError
+          logging.info("User attempted to view confirmation with no incomeSource stored in Keystore")
+          Future.successful(InternalServerError)
       }
   }
 
