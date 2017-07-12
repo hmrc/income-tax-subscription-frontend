@@ -17,23 +17,36 @@
 package connectors.mocks
 
 import audit.Logging
+import common.Constants
 import connectors.EnrolmentConnector
-import connectors.models.Enrolment
+import connectors.models.{Enrolment, Identifier}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.play.http.HeaderCarrier
-import utils.UnitTestTrait
+import utils.{TestConstants, UnitTestTrait}
 
 import scala.concurrent.Future
 
 trait MockEnrolmentConnector extends UnitTestTrait with MockHttp {
 
   object TestEnrolmentConnector extends EnrolmentConnector(appConfig, mockHttpGet, app.injector.instanceOf[Logging]) {
-    override def getIncomeTaxSAEnrolment(uri: String)(implicit hc: HeaderCarrier): Future[Option[Enrolment]] =
-      hc.userId.fold(Future.successful(None: Option[Enrolment]))(userId => userId.value match {
-        case auth.mockEnrolled => Future.successful(Some(Enrolment("", Seq(), "Activated")))
-        case _ => Future.successful(None)
+    override def getEnrolments(uri: String)(implicit hc: HeaderCarrier): Future[Set[Enrolment]] = {
+      val nino = Set(Enrolment(
+        Constants.ninoEnrolmentName,
+        Seq(Identifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)),
+        Enrolment.Activated
+      ))
+      lazy val mtdId = Enrolment(
+        Constants.mtdItsaEnrolmentName,
+        Seq(Identifier(Constants.mtdItsaEnrolmentIdentifierKey, TestConstants.testMTDID)),
+        Enrolment.Activated
+      )
+      hc.userId.fold(Future.successful(Set.empty[Enrolment]))(userId => userId.value match {
+        case auth.mockEnrolled => Future.successful(nino + mtdId)
+        case auth.mockUpliftUserIdCL200NoAccounts => Future.successful(Set.empty[Enrolment])
+        case _ => Future.successful(nino)
       })
+    }
   }
 
   def setupMockEnrolmentGet(status: Int, response: JsValue)(implicit request: Request[AnyContent]): Unit =

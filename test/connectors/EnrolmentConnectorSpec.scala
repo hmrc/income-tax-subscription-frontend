@@ -25,8 +25,8 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
-import utils.UnitTestTrait
 import utils.TestConstants._
+import utils.UnitTestTrait
 
 class EnrolmentConnectorSpec extends UnitTestTrait with MockHttp {
 
@@ -37,25 +37,25 @@ class EnrolmentConnectorSpec extends UnitTestTrait with MockHttp {
 
   "EnrolmentConnector" should {
 
-    def call = await(TestEnrolmentConnector.getIncomeTaxSAEnrolment("enrol"))
+    def call = await(TestEnrolmentConnector.getEnrolments("enrol"))
 
     "return an enrolment for an enrolled user" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled)
       val enrolment = Enrolment(ggServiceName, Seq(), "Activated")
-      setupMockEnrolmentGet(OK, Json.toJson(Seq(enrolment)))
-      call shouldBe Some(enrolment)
+      setupMockEnrolmentGet(OK, Json.toJson(Set(enrolment)))
+      call shouldBe Set(enrolment)
     }
 
     "return not enrolled for a user without enrolment" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
-      setupMockEnrolmentGet(OK, Json.parse("[]"))
-      call shouldBe None
+      setupMockEnrolmentGet(OK, Json.obj())
+      call shouldBe Set.empty[Enrolment]
     }
 
     "return None when call to enrolments in unsuccessful" in {
       implicit val request = authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockAuthorisedUserIdCL200)
       setupMockEnrolmentGet(BAD_REQUEST, Json.parse("[]"))
-      call shouldBe None
+      call shouldBe Set.empty[Enrolment]
     }
   }
 

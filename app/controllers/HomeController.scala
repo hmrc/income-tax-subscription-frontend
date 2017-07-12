@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.{SubscriptionService, ThrottlingService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
-import ITSASessionKey._
+import ITSASessionKeys._
 
 
 import scala.concurrent.Future

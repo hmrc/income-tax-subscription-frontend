@@ -47,7 +47,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   implicit class SessionUtil[T](fakeRequest: FakeRequest[T]) {
     def addStartTime(time: LocalDateTime): FakeRequest[T] = fakeRequest.withSession(
-      (fakeRequest.session.data + (ITSASessionKey.StartTime -> time.toString)).toSeq: _*
+      (fakeRequest.session.data + (ITSASessionKeys.StartTime -> time.toString)).toSeq: _*
     )
   }
 

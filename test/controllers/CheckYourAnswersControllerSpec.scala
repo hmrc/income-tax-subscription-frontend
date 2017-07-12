@@ -57,7 +57,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the CheckYourAnswersController with an authorised user" should {
 
-    def call = TestCheckYourAnswersController.submit(authenticatedFakeRequest())
+    lazy val request = authenticatedFakeRequest()
+    def call = TestCheckYourAnswersController.submit(request)
 
     "When the submission is successful" should {
       lazy val result = call
@@ -68,11 +69,13 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
+        verifySubscriptionHeader(ITSASessionKeys.RequestURI -> request.uri)
       }
 
       s"redirect to '${controllers.routes.ConfirmationController.showConfirmation().url}'" in {
         redirectLocation(result) mustBe Some(controllers.routes.ConfirmationController.showConfirmation().url)
       }
+
     }
     "When the submission is unsuccessful" should {
       lazy val result = call

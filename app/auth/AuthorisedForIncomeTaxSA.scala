@@ -17,9 +17,8 @@
 package auth
 
 import config.AppConfig
-import connectors.models.Enrolment.{Enrolled, NotEnrolled}
 import controllers.ErrorPageRenderer
-import controllers.ITSASessionKey._
+import controllers.ITSASessionKeys._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.EnrolmentService
 import uk.gov.hmrc.play.frontend.auth._
@@ -29,6 +28,7 @@ import utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
 
 trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
 
@@ -55,42 +55,50 @@ trait AuthorisedForIncomeTaxSA extends Actions with ErrorPageRenderer {
     def asyncCore(action: AsyncUserRequest): Action[AnyContent] =
       authedBy.async { authContext: AuthContext =>
         implicit request =>
-          request.session.get(GoHome) match {
-            case Some(_) =>
-              action(IncomeTaxSAUser(authContext))(request)
-            case None =>
-              Redirect(controllers.routes.HomeController.index())
+          enrolmentService.getEnrolments.flatMap { enrolments =>
+            request.session.get(GoHome) match {
+              case Some(_) => action(IncomeTaxSAUser(authContext, enrolments))(request)
+              case None => Redirect(controllers.routes.HomeController.index())
+            }
           }
+      }
+
+    private def defaultPredicates(action: AsyncUserRequest
+                                 )(implicit user: IncomeTaxSAUser,
+                                   request: Request[AnyContent]
+                                 ): Future[Result] =
+      if (user.nino.isEmpty) {
+        Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
+      }
+      else if (user.mtdItsaRef.nonEmpty) {
+        Future.successful(Redirect(alreadyEnrolledUrl))
+      }
+      else {
+        action(user)(request)
       }
 
     def async(action: AsyncUserRequest): Action[AnyContent] =
       asyncCore {
-        authContext: IncomeTaxSAUser =>
+        implicit authContext: IncomeTaxSAUser =>
           implicit request =>
-            enrolmentService.checkEnrolment {
-              case NotEnrolled => action(authContext)(request)
-              case _ => Future.successful(Redirect(alreadyEnrolledUrl))
-            }
+            defaultPredicates(action)
       }
 
     def asyncForEnrolled(action: AsyncUserRequest): Action[AnyContent] =
       asyncCore {
-        authContext: IncomeTaxSAUser =>
+        implicit user: IncomeTaxSAUser =>
           implicit request =>
-            enrolmentService.checkEnrolment {
-              case Enrolled => action(authContext)(request)
-              case _ => Future.successful(showNotFound)
-            }
+            if (user.mtdItsaRef.isDefined) action(user)(request)
+            else Future.successful(showNotFound)
       }
 
     def asyncForHomeController(action: AsyncUserRequest): Action[AnyContent] =
-      authedBy.async {
-        authContext: AuthContext =>
-          implicit request =>
-            enrolmentService.checkEnrolment {
-              case NotEnrolled => action(IncomeTaxSAUser(authContext))(request)
-              case _ => Future.successful(Redirect(alreadyEnrolledUrl))
-            }.flatMap { x => x.withSession(x.session.+(GoHome -> "et")) }
+      authedBy.async { authContext: AuthContext =>
+        implicit request =>
+          for {
+            enrolments <- enrolmentService.getEnrolments
+            result <- defaultPredicates(action)(IncomeTaxSAUser(authContext, enrolments), request)
+          } yield result.addingToSession(GoHome -> "et")
       }
   }
 

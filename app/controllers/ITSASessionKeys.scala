@@ -16,7 +16,8 @@
 
 package controllers
 
-object ITSASessionKey {
+object ITSASessionKeys {
   val GoHome = "HOME"
   val StartTime = "StartTime"
+  val RequestURI = "Request-URI"
 }

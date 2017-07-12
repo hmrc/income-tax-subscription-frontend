@@ -17,7 +17,7 @@
 import java.util.UUID
 
 import config.AppConfig
-import controllers.ITSASessionKey
+import controllers.ITSASessionKeys
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -27,11 +27,12 @@ import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Accounts, Authority, Co
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, AuthenticationProviderIds}
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.time.DateTimeUtils
+import utils.TestConstants
 
 package object auth {
 
   lazy val mockConfig: AppConfig = MockConfig
-  val nino = "AB124512C"
+  val nino = TestConstants.testNino
   lazy val authorisedUserAccounts = domain.Accounts(paye = Some(domain.PayeAccount(link = "/paye/abc", nino = Nino(nino))))
   lazy val noAuthorisedUserAccounts = domain.Accounts(paye = None)
 
@@ -176,7 +177,7 @@ package object auth {
   }
 
   val beenHomeSession: Boolean => List[(String, String)] = {
-    case true => List((ITSASessionKey.GoHome, "et"))
+    case true => List((ITSASessionKeys.GoHome, "et"))
     case false => List()
   }
 

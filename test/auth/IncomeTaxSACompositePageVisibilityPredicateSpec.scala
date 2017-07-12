@@ -40,13 +40,4 @@ class IncomeTaxSACompositePageVisibilityPredicateSpec extends UnitSpec with With
     }
   }
 
-  "Calling IncomeTaxSACompositePageVisibilityPredicate with an auth context that has no NINO on the Auth Profile" should {
-    "result in page is not visible" in {
-      val predicate = new IncomeTaxSACompositePageVisibilityPredicate
-      val authContext = ggUser.userCL200NoAccountsContext
-      val result = predicate(authContext, fakeRequest)
-      val pageVisibility = await(result)
-      pageVisibility.isVisible shouldBe false
-    }
-  }
 }

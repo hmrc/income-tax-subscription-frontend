@@ -38,7 +38,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
 
   val showConfirmation: Action[AnyContent] = Authorised.asyncForEnrolled { implicit user =>
     implicit request =>
-      val startTime = LocalDateTime.parse(request.session.get(ITSASessionKey.StartTime).get)
+      val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
       val endTime = java.time.LocalDateTime.now()
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
       keystoreService.fetchIncomeSource.flatMap {

@@ -16,15 +16,23 @@
 
 package auth
 
+import common.Constants
+import connectors.models.{Enrolment, Identifier}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import utils.TestConstants
 
 class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
   "IncomeTaxSAUser" should {
-    lazy val user = IncomeTaxSAUser(ggUser.userCL200Context)
+    lazy val user = IncomeTaxSAUser(
+      ggUser.userCL200Context,
+        Set(Enrolment(Constants.ninoEnrolmentName,
+          Seq(Identifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)),
+          Enrolment.Activated))
+    )
 
     "have the expected NINO 'AB124512C'" in {
-      user.nino shouldBe Some(nino)
+      user.nino shouldBe Some(TestConstants.testNino)
     }
 
     "have the previously logged in time of logged in user" in {

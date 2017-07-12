@@ -36,7 +36,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
         When("GET /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
 
-        Then("Should return a SEE_OTHER with a redirect location of confirmation")
+        Then("Should return a OK with the check your answers page")
         res should have(
           httpStatus(OK),
           pageTitle(Messages("summary.title"))
@@ -52,7 +52,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
       When("GET /check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
 
-      Then("Should return a SEE_OTHER with a redirect location of confirmation")
+      Then("Should return a SEE_OTHER with a redirect location of terms")
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(termsURI)
@@ -69,7 +69,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
         SubscriptionStub.stubSuccessfulSubscription()
         KeystoreStub.stubPutMtditId()
 
-        When("GET /check-your-answers is called")
+        When("POST /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
         Then("Should return a SEE_OTHER with a redirect location of confirmation")
@@ -85,10 +85,10 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreData(fullKeystoreData - Terms)
 
-      When("GET /check-your-answers is called")
+      When("POST /check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-      Then("Should return a SEE_OTHER with a redirect location of confirmation")
+      Then("Should return a SEE_OTHER with a redirect location of terms")
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(termsURI)
