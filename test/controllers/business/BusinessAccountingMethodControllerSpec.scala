@@ -22,8 +22,9 @@ import forms.AccountingMethodForm
 import models.AccountingMethodModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
+import services.mocks.{MockAuthService, MockKeystoreService}
 
 class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -37,12 +38,13 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    mockAuthService
   )
 
   "Calling the show action of the BusinessAccountingMethod with an authorised user" should {
 
-    lazy val result = TestBusinessAccountingMethodController.show(isEditMode = false)(authenticatedFakeRequest())
+    lazy val result = TestBusinessAccountingMethodController.show(isEditMode = false)(fakeRequest)
 
     "return ok (200)" in {
       setupMockKeystore(fetchAccountingMethod = None)
@@ -56,7 +58,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the BusinessAccountingMethod with an authorised user and valid submission" should {
 
-    def callShow(isEditMode: Boolean) = TestBusinessAccountingMethodController.submit(isEditMode = isEditMode)(authenticatedFakeRequest()
+    def callShow(isEditMode: Boolean) = TestBusinessAccountingMethodController.submit(isEditMode = isEditMode)(fakeRequest
       .post(AccountingMethodForm.accountingMethodForm, AccountingMethodModel(AccountingMethodForm.option_cash)))
 
     "When it is not in edit mode" should {
@@ -109,7 +111,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submit action of the BusinessAccountingMethod with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessAccountingMethodController.submit(isEditMode = false)(authenticatedFakeRequest())
+    lazy val badRequest = TestBusinessAccountingMethodController.submit(isEditMode = false)(fakeRequest)
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)

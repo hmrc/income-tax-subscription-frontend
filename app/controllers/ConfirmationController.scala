@@ -24,7 +24,7 @@ import config.BaseControllerConfig
 import models.DateModel.dateConvert
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import services.KeystoreService
+import services.{AuthService, KeystoreService}
 
 import scala.concurrent.Future
 
@@ -32,11 +32,12 @@ import scala.concurrent.Future
 class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService,
-                                       val logging: Logging
-                                      ) extends BaseController {
+                                       val logging: Logging,
+                                       val authService: AuthService
+                                      ) extends AuthenticatedController {
 
-  val showConfirmation: Action[AnyContent] = Authorised.asyncForEnrolled { implicit user =>
-    implicit request =>
+  val showConfirmation: Action[AnyContent] = Authenticated.asyncEnrolled { implicit request =>
+    implicit user =>
       keystoreService.fetchSubscriptionId.map {
         case Some(id) =>
           Ok(views.html.confirmation(
@@ -50,7 +51,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  val signOut: Action[AnyContent] = Authorised.asyncForEnrolled { implicit user =>
+  val signOut: Action[AnyContent] = Authenticated.asyncEnrolled { implicit user =>
     implicit request => Future.successful(Redirect(routes.ExitSurveyController.show()).withNewSession)
   }
 

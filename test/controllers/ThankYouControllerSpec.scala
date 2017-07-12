@@ -36,7 +36,7 @@ class ThankYouControllerSpec extends ControllerBaseSpec {
   )
 
   "TestThankYouController.show" should {
-    lazy val result = TestThankYouController.show()(FakeRequest())
+    lazy val result = TestThankYouController.show()(fakeRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return ok (200)" in {

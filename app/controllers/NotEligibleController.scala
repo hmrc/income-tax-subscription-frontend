@@ -25,7 +25,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.KeystoreService
+import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.Future
@@ -33,8 +33,9 @@ import scala.concurrent.Future
 @Singleton
 class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
-                                      val keystoreService: KeystoreService
-                                     ) extends BaseController {
+                                      val keystoreService: KeystoreService,
+                                      val authService: AuthService
+                                     ) extends AuthenticatedController {
 
   def view(notEligibleForm: Form[NotEligibleModel], backUrl: String)(implicit request: Request[_]): Html =
     views.html.not_eligible(
@@ -43,16 +44,16 @@ class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,
       backUrl = backUrl
     )
 
-  val showNotEligible: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  val showNotEligible: Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       for {
         choice <- keystoreService.fetchNotEligible
         backUrl <- backUrl
       } yield Ok(view(NotEligibleForm.notEligibleForm.fill(choice), backUrl))
   }
 
-  val submitNotEligible: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  val submitNotEligible: Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       NotEligibleForm.notEligibleForm.bindFromRequest.fold(
         formWithErrors => backUrl.map(backUrl => BadRequest(view(notEligibleForm = formWithErrors, backUrl = backUrl))),
         choice => {

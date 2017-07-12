@@ -24,7 +24,7 @@ import config.BaseControllerConfig
 import connectors.models.subscription.FESuccessResponse
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Request, Result}
-import services.{KeystoreService, SubscriptionService}
+import services.{AuthService, KeystoreService, SubscriptionService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 
@@ -35,8 +35,9 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val messagesApi: MessagesApi,
                                            val keystoreService: KeystoreService,
                                            val middleService: SubscriptionService,
+                                           val authService: AuthService,
                                            logging: Logging
-                                          ) extends BaseController {
+                                          ) extends AuthenticatedController {
 
   import services.CacheUtil._
 
@@ -68,8 +69,8 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
 
   private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CacheMap => Future[Result])
                               (noCacheMapErrMessage: String) =
-    Authorised.async { implicit user =>
-      implicit request =>
+    Authenticated.async { implicit request =>
+      implicit user =>
         keystoreService.fetchAll().flatMap {
           case Some(cache) if cache.getTerms.nonEmpty => processFunc(user)(request)(cache)
           case Some(_) => Future.successful(Redirect(controllers.routes.TermsController.showTerms()))

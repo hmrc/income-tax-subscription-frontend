@@ -23,6 +23,7 @@ import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockPreferencesService
 
@@ -37,12 +38,13 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   object TestPreferencesController extends PreferencesController(
     MockBaseControllerConfig,
     messagesApi,
-    TestPreferencesService
+    TestPreferencesService,
+    mockAuthService
   )
 
   "Calling the checkPreference action of the PreferencesController with an authorised user" should {
 
-    implicit lazy val request = authenticatedFakeRequest()
+    implicit lazy val request = fakeRequest
 
     def result = TestPreferencesController.checkPreferences(request)
 
@@ -71,7 +73,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
   "Calling the callback action of the PreferencesController with an authorised user" should {
 
-    implicit lazy val request = authenticatedFakeRequest()
+    implicit lazy val request = fakeRequest
 
     def result = TestPreferencesController.callback(request)
 
@@ -100,7 +102,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
   "Calling the showGoBackToPreferences action of the PreferencesController with an authorised user" should {
 
-    lazy val result = TestPreferencesController.showGoBackToPreferences()(authenticatedFakeRequest())
+    lazy val result = TestPreferencesController.showGoBackToPreferences()(fakeRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
 
@@ -114,7 +116,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submitGoBackToPreferences action of the PreferencesController with an authorised user with yes" should {
-    implicit lazy val request = authenticatedFakeRequest()
+    implicit lazy val request = fakeRequest
 
     def callShow() = TestPreferencesController.submitGoBackToPreferences()(request)
 

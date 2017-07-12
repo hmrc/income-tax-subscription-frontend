@@ -20,8 +20,8 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import play.api.mvc.{Action, AnyContent}
-import testonly.connectors.{GGAuthenticationConnector, DeEnrolmentConnector}
+import play.api.mvc.Action
+import testonly.connectors.{DeEnrolmentConnector, GGAuthenticationConnector}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 @Singleton

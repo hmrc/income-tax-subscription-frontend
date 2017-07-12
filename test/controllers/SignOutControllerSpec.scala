@@ -16,9 +16,9 @@
 
 package controllers
 
-import auth.authenticatedFakeRequest
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 
@@ -31,12 +31,12 @@ class SignOutControllerSpec extends ControllerBaseSpec {
 
   override val controllerName: String = "SignOutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "signOut" -> TestSignOutController.signOut
+    //"signOut" -> TestSignOutController.signOut
   )
 
   "Authorised users" should {
     "be redirected to the gg signOut" in {
-      val result = TestSignOutController.signOut(authenticatedFakeRequest())
+      val result = TestSignOutController.signOut(fakeRequest)
       status(result) shouldBe SEE_OTHER
       redirectLocation(result).get should be(appConfig.ggSignOutUrl)
     }

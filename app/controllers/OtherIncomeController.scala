@@ -20,13 +20,13 @@ import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import config.BaseControllerConfig
-import forms.{AccountingMethodForm, IncomeSourceForm, OtherIncomeForm}
+import forms.{IncomeSourceForm, OtherIncomeForm}
 import models.OtherIncomeModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.KeystoreService
+import services.{AuthService, KeystoreService}
 import utils.Implicits._
 
 import scala.concurrent.Future
@@ -35,8 +35,9 @@ import scala.concurrent.Future
 class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val keystoreService: KeystoreService,
-                                      val logging: Logging
-                                     ) extends BaseController {
+                                      val logging: Logging,
+                                      val authService: AuthService
+                                     ) extends AuthenticatedController {
 
   def view(otherIncomeForm: Form[OtherIncomeModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.other_income(
@@ -46,8 +47,8 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       isEditMode = isEditMode
     )
 
-  def showOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def showOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       for {
         choice <- keystoreService.fetchOtherIncome()
       } yield Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl, isEditMode))
@@ -73,8 +74,8 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
         }
     }
 
-  def submitOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def submitOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
         formWithErrors => BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl, isEditMode = isEditMode)),
         choice =>

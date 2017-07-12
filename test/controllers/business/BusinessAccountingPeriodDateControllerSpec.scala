@@ -42,12 +42,13 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   object TestBusinessAccountingPeriodController extends BusinessAccountingPeriodDateController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    mockAuthService
   )
 
   "Calling the showAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user with is current period as yes" should {
 
-    lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(isEditMode = false)(authenticatedFakeRequest())
+    lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(isEditMode = false)(fakeRequest)
 
     "return ok (200)" in {
       // required for backurl
@@ -68,7 +69,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
   "Calling the showAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user with is current period prior as no" should {
 
-    lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(isEditMode = false)(authenticatedFakeRequest())
+    lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(isEditMode = false)(fakeRequest)
 
     "return ok (200)" in {
       // required for backurl
@@ -89,7 +90,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
 
-    def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = isEditMode)(authenticatedFakeRequest()
+    def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = isEditMode)(fakeRequest
       .post(AccountingPeriodDateForm.accountingPeriodDateForm, AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("1", "4", "2018"))))
 
     "When it is not in edit mode" should {
@@ -146,7 +147,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user and invalid submission" should {
-    lazy val badrequest = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = false)(authenticatedFakeRequest())
+    lazy val badrequest = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = false)(fakeRequest)
 
     "return a bad request status (400)" in {
       // required for backurl
@@ -162,7 +163,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   "The back url when the user is submitting details for current period" should {
     s"point to ${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}" in {
       setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
-      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
+      await(TestBusinessAccountingPeriodController.backUrl(fakeRequest)) mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
       verifyKeystore(fetchAccountingPeriodPrior = 1)
     }
   }
@@ -170,7 +171,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   "The back url when the user is submitting details for next period" should {
     s"point to ${controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in {
       setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
-      await(TestBusinessAccountingPeriodController.backUrl(FakeRequest())) mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+      await(TestBusinessAccountingPeriodController.backUrl(fakeRequest)) mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
       verifyKeystore(fetchAccountingPeriodPrior = 1)
     }
   }

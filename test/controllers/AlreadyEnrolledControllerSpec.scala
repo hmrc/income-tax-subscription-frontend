@@ -21,6 +21,7 @@ import auth._
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 
@@ -33,12 +34,13 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
 
   object TestAlreadyEnrolledController extends AlreadyEnrolledController(
     MockBaseControllerConfig,
-    messagesApi
+    messagesApi,
+    mockAuthService
   )
 
   "Calling the enrolled action of the AlreadyEnrolledController with an enrolled Authenticated User" should {
 
-    lazy val result = TestAlreadyEnrolledController.enrolled(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled))
+    lazy val result = TestAlreadyEnrolledController.enrolled(fakeRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {

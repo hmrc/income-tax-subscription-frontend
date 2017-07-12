@@ -17,13 +17,11 @@
 package services.mocks
 
 import audit.Logging
-import auth.MockAuthConnector
 import connectors.mocks.MockThrottlingControlConnector
 import services.ThrottlingService
 import utils.UnitTestTrait
 
 trait MockThrottlingService extends UnitTestTrait
-  with MockAuthConnector
   with MockThrottlingControlConnector {
 
   object TestThrottlingService extends ThrottlingService(

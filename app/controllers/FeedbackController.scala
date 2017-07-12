@@ -25,8 +25,6 @@ import play.api.http.{Status => HttpStatus}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, RequestHeader}
 import play.twirl.api.Html
-import uk.gov.hmrc.play.frontend.auth.Actions
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.http._
@@ -38,10 +36,9 @@ import scala.concurrent.Future
 
 @Singleton
 class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
-                                   protected val authConnector: AuthConnector,
                                    val wsHttp: WSHttp,
                                    val messagesApi: MessagesApi
-                                  ) extends FrontendController with Actions with PartialRetriever with I18nSupport {
+                                  ) extends FrontendController with PartialRetriever with I18nSupport {
   override val httpGet = wsHttp
   val httpPost = wsHttp
 
@@ -125,4 +122,5 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
   implicit val readPartialsForm: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
     def read(method: String, url: String, response: HttpResponse): HttpResponse = response
   }
+
 }

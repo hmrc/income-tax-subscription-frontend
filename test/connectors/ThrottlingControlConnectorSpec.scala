@@ -16,10 +16,10 @@
 
 package connectors
 
-import auth.authenticatedFakeRequest
 import connectors.mocks.MockThrottlingControlConnector
 import connectors.models.throttling.{CanAccess, LimitReached}
 import org.scalatest.Matchers._
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.{TestConstants, UnitTestTrait}
 
@@ -30,7 +30,7 @@ class ThrottlingControlConnectorSpec extends UnitTestTrait
 
     def call = await(TestThrottlingControlConnector.checkAccess(TestConstants.testNino))
 
-    implicit lazy val request = authenticatedFakeRequest()
+    implicit lazy val request = FakeRequest()
 
     "return CanAccess if the service returns an OK" in {
       val enrolment = CanAccess

@@ -19,22 +19,23 @@ package controllers.business
 import javax.inject.Inject
 
 import config.BaseControllerConfig
-import controllers.BaseController
+import controllers.AuthenticatedController
 import forms.AccountingMethodForm
 import models.AccountingMethodModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.KeystoreService
+import services.{AuthService, KeystoreService}
 
 import scala.concurrent.Future
 
 
 class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
                                                    val messagesApi: MessagesApi,
-                                                   val keystoreService: KeystoreService
-                                                  ) extends BaseController {
+                                                   val keystoreService: KeystoreService,
+                                                   val authService: AuthService
+                                                  ) extends AuthenticatedController {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.business.accounting_method(
@@ -44,15 +45,15 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       isEditMode
     )
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       keystoreService.fetchAccountingMethod() map {
         accountingMethod => Ok(view(accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(accountingMethod), isEditMode = isEditMode))
       }
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       AccountingMethodForm.accountingMethodForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(accountingMethodForm = formWithErrors, isEditMode = isEditMode))),
         accountingMethod => {

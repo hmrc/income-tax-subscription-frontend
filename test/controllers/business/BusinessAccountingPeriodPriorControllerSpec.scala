@@ -24,6 +24,7 @@ import models.{AccountingPeriodPriorModel, OtherIncomeModel}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, _}
 import services.mocks.MockKeystoreService
 import utils.TestModels
@@ -41,7 +42,8 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
   object TestAccountingPeriodPriorController extends BusinessAccountingPeriodPriorController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    mockAuthService
   )
 
   // answer to other income is only significant for testing the backurl.
@@ -54,7 +56,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         fetchAccountingPeriodPrior = None,
         fetchOtherIncome = defaultOtherIncomeAnswer
       )
-      TestAccountingPeriodPriorController.show(isEditMode = true)(authenticatedFakeRequest())
+      TestAccountingPeriodPriorController.show(isEditMode = true)(fakeRequest)
     }
 
     "return ok (200)" in {
@@ -79,7 +81,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         fetchAccountingPeriodPrior = None,
         fetchOtherIncome = OtherIncomeModel(choice)
       )
-      TestAccountingPeriodPriorController.show(isEditMode = false)(authenticatedFakeRequest())
+      TestAccountingPeriodPriorController.show(isEditMode = false)(fakeRequest)
     }
 
     s"When the user previously answered yes to otherIncome, it should point to '${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
@@ -96,7 +98,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
   "Calling the submit action of the BusinessAccountingPeriodPriorController with an authorised user and valid submission" when {
 
-    def callShowCore(answer: String, isEditMode: Boolean): Future[Result] = TestAccountingPeriodPriorController.submit(isEditMode)(authenticatedFakeRequest()
+    def callShowCore(answer: String, isEditMode: Boolean): Future[Result] = TestAccountingPeriodPriorController.submit(isEditMode)(fakeRequest
       .post(AccountingPeriodPriorForm.accountingPeriodPriorForm, AccountingPeriodPriorModel(answer)))
 
     "Not in edit mode and " when {
@@ -199,7 +201,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
     def badRequest: Future[Result] = {
       setupMockKeystore(fetchOtherIncome = defaultOtherIncomeAnswer)
-      TestAccountingPeriodPriorController.submit(isEditMode = false)(authenticatedFakeRequest())
+      TestAccountingPeriodPriorController.submit(isEditMode = false)(fakeRequest)
     }
 
     "return a bad request status (400)" in {

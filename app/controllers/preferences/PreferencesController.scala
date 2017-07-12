@@ -20,19 +20,20 @@ import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import connectors.models.preferences.Activated
-import controllers.BaseController
+import controllers.AuthenticatedController
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.PreferencesService
-import utils.Implicits._
+import services.{AuthService, PreferencesService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
-                                      val preferencesService: PreferencesService) extends BaseController {
+                                      val preferencesService: PreferencesService,
+                                      val authService: AuthService
+                                     ) extends AuthenticatedController {
 
   def view()(implicit request: Request[AnyContent]): Html = {
     views.html.preferences.continue_registration(
@@ -40,28 +41,30 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
     )
   }
 
-  def checkPreferences: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def checkPreferences: Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       preferencesService.checkPaperless.map {
         case Activated => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
         case _ => gotoPreferences
       }
   }
 
-  def callback: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def callback: Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       preferencesService.checkPaperless.map {
         case Activated => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
         case _ => Redirect(controllers.preferences.routes.PreferencesController.showGoBackToPreferences())
       }
   }
 
-  def showGoBackToPreferences: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request => Ok(view())
+  def showGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
+    implicit user =>
+      Ok(view())
   }
 
-  def submitGoBackToPreferences: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request => gotoPreferences
+  def submitGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
+    implicit user =>
+      gotoPreferences
   }
 
   @inline def gotoPreferences(implicit request: Request[AnyContent]): Result = Redirect(preferencesService.choosePaperlessUrl)

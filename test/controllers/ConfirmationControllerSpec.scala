@@ -17,12 +17,11 @@
 package controllers
 
 import audit.Logging
-import auth.{authenticatedFakeRequest, mockEnrolled}
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
-import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 
 class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -31,7 +30,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    app.injector.instanceOf[Logging]
+    app.injector.instanceOf[Logging],
+    mockAuthService
   )
 
   override val controllerName: String = "ConfirmationControllerSpec"
@@ -41,8 +41,9 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   "ConfirmationController" should {
     "If the user is enrolled then get the ID from keystore" in {
+      mockAuthEnrolled()
       setupMockKeystore(fetchSubscriptionId = "testId")
-      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled))
+      val result = TestConfirmationController.showConfirmation(fakeRequest)
       status(result) shouldBe OK
 
       await(result)
@@ -51,7 +52,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
     "If the user is not enrolled then return not found" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
-      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest())
+      val result = TestConfirmationController.showConfirmation(fakeRequest)
       status(result) shouldBe NOT_FOUND
 
       await(result)

@@ -43,7 +43,7 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
   val testSurvey = ExitSurveyModel("Very satisfied", "This is my extended feedback")
 
   "ExitSurveyController.show" should {
-    lazy val result = TestExitSurveyController.show()(FakeRequest())
+    lazy val result = TestExitSurveyController.show()(fakeRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return ok (200)" in {
@@ -93,7 +93,7 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
   "ExitSurveyController.submit" when {
 
     "received an empty request" should {
-      lazy val result = TestExitSurveyController.submit()(FakeRequest())
+      lazy val result = TestExitSurveyController.submit()(fakeRequest)
 
       "return SEE_OTHER (303)" in {
         status(result) must be(Status.SEE_OTHER)
@@ -108,7 +108,7 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
 
       val surveyData = TestExitSurveyController.surveyFormDataToMap(testSurvey)
 
-      lazy val result = TestExitSurveyController.submit()(FakeRequest().post(ExitSurveyForm.exitSurveyValidationForm.fill(testSurvey)))
+      lazy val result = TestExitSurveyController.submit()(fakeRequest.post(ExitSurveyForm.exitSurveyValidationForm.fill(testSurvey)))
 
       "return SEE_OTHER (303)" in {
         status(result) must be(Status.SEE_OTHER)

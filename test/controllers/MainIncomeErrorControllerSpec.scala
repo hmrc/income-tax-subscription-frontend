@@ -16,10 +16,10 @@
 
 package controllers
 
-import auth.authenticatedFakeRequest
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 class MainIncomeErrorControllerSpec extends ControllerBaseSpec {
@@ -31,11 +31,13 @@ class MainIncomeErrorControllerSpec extends ControllerBaseSpec {
 
   object TestMainIncomeErrorController extends MainIncomeErrorController(
     MockBaseControllerConfig,
-    messagesApi)
+    messagesApi,
+    mockAuthService
+  )
 
   "Calling the mainIncomeError action of the MainIncomeErrorController" should {
 
-    lazy val result = TestMainIncomeErrorController.mainIncomeError(authenticatedFakeRequest())
+    lazy val result = TestMainIncomeErrorController.mainIncomeError(fakeRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {

@@ -16,20 +16,15 @@
 
 package controllers
 
-import auth.{MockAuthConnector, MockConfig}
+import auth.MockConfig
 import config.{AppConfig, BaseControllerConfig}
-import services.mocks.MockEnrolmentService
 import utils.UnitTestTrait
 
 
-trait ControllerBaseTrait extends UnitTestTrait
-  with MockEnrolmentService
-  with MockAuthConnector {
+trait ControllerBaseTrait extends UnitTestTrait {
 
   def mockBaseControllerConfig(appConfig: AppConfig): BaseControllerConfig = new BaseControllerConfig(
-    applicationConfig = appConfig,
-    enrolmentService = TestEnrolmentService,
-    authConnector = TestAuthConnector) {
+    applicationConfig = appConfig) {
     override lazy val postSignInRedirectUrl = appConfig.ggSignInContinueUrl
   }
 

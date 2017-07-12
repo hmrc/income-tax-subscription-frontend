@@ -19,23 +19,24 @@ package controllers.throttling
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
-import controllers.BaseController
+import controllers.AuthenticatedController
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import utils.Implicits._
+import services.AuthService
 
 @Singleton
 class ThrottlingController @Inject()(override val baseConfig: BaseControllerConfig,
-                                     val messagesApi: MessagesApi
-                                    ) extends BaseController {
+                                     val messagesApi: MessagesApi,
+                                     val authService: AuthService
+                                    ) extends AuthenticatedController {
 
-  val show: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  val show: Action[AnyContent] = Authenticated { implicit request =>
+    implicit user =>
       Ok(views.html.throttling.daily_limit_reached(controllers.throttling.routes.ThrottlingController.submit()))
   }
 
-  val submit: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request => Redirect(controllers.routes.SignOutController.signOut())
+  val submit: Action[AnyContent] = Authenticated { implicit request =>
+    implicit user => Redirect(controllers.routes.SignOutController.signOut())
   }
 
 }

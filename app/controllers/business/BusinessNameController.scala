@@ -19,22 +19,23 @@ package controllers.business
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
-import controllers.BaseController
+import controllers.AuthenticatedController
 import forms.BusinessNameForm
 import models.BusinessNameModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.KeystoreService
+import services.{AuthService, KeystoreService}
 
 import scala.concurrent.Future
 
 @Singleton
 class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
-                                       val keystoreService: KeystoreService
-                                      ) extends BaseController {
+                                       val keystoreService: KeystoreService,
+                                       val authService: AuthService
+                                      ) extends AuthenticatedController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.business.business_name(
@@ -44,15 +45,15 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
       isEditMode
     )
 
-  def showBusinessName(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def showBusinessName(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       keystoreService.fetchBusinessName() map {
         businessName => Ok(view(BusinessNameForm.businessNameForm.form.fill(businessName), isEditMode = isEditMode))
       }
   }
 
-  def submitBusinessName(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def submitBusinessName(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         businessName => {

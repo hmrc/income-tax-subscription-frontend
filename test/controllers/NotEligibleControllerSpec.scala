@@ -16,7 +16,6 @@
 
 package controllers
 
-import auth._
 import forms.NotEligibleForm
 import models.NotEligibleModel
 import play.api.http.Status
@@ -38,12 +37,13 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
   object TestNotEligibleController extends NotEligibleController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    mockAuthService
   )
 
   "Calling the showNotEligible action of the NotEligible controller with an authorised user" should {
 
-    lazy val result = TestNotEligibleController.showNotEligible(authenticatedFakeRequest())
+    lazy val result = TestNotEligibleController.showNotEligible(fakeRequest)
 
     "return ok (200)" in {
       // required for backurl
@@ -60,7 +60,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
 
   "Calling the showNotEligible action of the NotEligible controller with an authorised user and valid submission" should {
 
-    def callShow(option: String) = TestNotEligibleController.submitNotEligible(authenticatedFakeRequest()
+    def callShow(option: String) = TestNotEligibleController.submitNotEligible(fakeRequest
       .post(NotEligibleForm.notEligibleForm, NotEligibleModel(option)))
 
     "return a see other status (303) for SignUp on a business journey" in {
@@ -114,7 +114,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the showNotEligible action of the NotEligible controller with an authorised user and invalid submission" should {
-    lazy val badRequest = TestNotEligibleController.submitNotEligible(authenticatedFakeRequest())
+    lazy val badRequest = TestNotEligibleController.submitNotEligible(fakeRequest)
 
     "return a bad request status (400)" in {
       // required for backurl
@@ -130,7 +130,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
   "The back url" should {
     s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-      await(TestNotEligibleController.backUrl(FakeRequest())) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+      await(TestNotEligibleController.backUrl(fakeRequest)) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
     }
   }
 

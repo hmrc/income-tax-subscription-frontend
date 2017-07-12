@@ -22,6 +22,7 @@ import models.IncomeSourceModel
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import utils.TestModels
@@ -38,12 +39,13 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
   object TestIncomeSourceController extends IncomeSourceController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    mockAuthService
   )
 
   "test" should {
     "en" in {
-      val m: Messages = messagesApi.preferred(authenticatedFakeRequest())
+      val m: Messages = messagesApi.preferred(fakeRequest)
       m must not be null
       m.apply("base.back") must be("Back")
     }
@@ -51,7 +53,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
   "Calling the showIncomeSource action of the IncomeSource controller with an authorised user" should {
 
-    lazy val result = TestIncomeSourceController.showIncomeSource(isEditMode = true)(authenticatedFakeRequest())
+    lazy val result = TestIncomeSourceController.showIncomeSource(isEditMode = true)(fakeRequest)
 
     "return ok (200)" in {
       setupMockKeystore(fetchIncomeSource = None)
@@ -65,7 +67,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
   "Calling the submitIncomeSource action of the IncomeSource controller with an authorised user and valid submission" should {
 
-    def callShow(option: String, isEditMode: Boolean) = TestIncomeSourceController.submitIncomeSource(isEditMode = isEditMode)(authenticatedFakeRequest()
+    def callShow(option: String, isEditMode: Boolean) = TestIncomeSourceController.submitIncomeSource(isEditMode = isEditMode)(fakeRequest
       .post(IncomeSourceForm.incomeSourceForm, IncomeSourceModel(option)))
 
     "When it is not edit mode" should {
@@ -220,7 +222,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submitIncomeSource action of the IncomeSource controller with an authorised user and invalid submission" should {
-    lazy val badRequest = TestIncomeSourceController.submitIncomeSource(isEditMode = true)(authenticatedFakeRequest())
+    lazy val badRequest = TestIncomeSourceController.submitIncomeSource(isEditMode = true)(fakeRequest)
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)

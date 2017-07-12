@@ -21,11 +21,10 @@ import javax.inject.{Inject, Singleton}
 import config.BaseControllerConfig
 import forms.IncomeSourceForm
 import models.OtherIncomeModel
-import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.KeystoreService
+import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 
@@ -34,8 +33,9 @@ import scala.concurrent.Future
 @Singleton
 class TermsController @Inject()(val baseConfig: BaseControllerConfig,
                                 val messagesApi: MessagesApi,
-                                val keystoreService: KeystoreService
-                               ) extends BaseController {
+                                val keystoreService: KeystoreService,
+                                val authService: AuthService
+                               ) extends AuthenticatedController {
 
   def view(backUrl: String)(implicit request: Request[_]): Html =
     views.html.terms(
@@ -43,16 +43,16 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       backUrl
     )
 
-  def showTerms(): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def showTerms(): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       for {
         backUrl <- backUrl
       } yield Ok(view(backUrl = backUrl))
   }
 
-  def submitTerms(isEditMode: Boolean = false): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
-      keystoreService.saveTerms(true) map (
+  def submitTerms(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
+      keystoreService.saveTerms(terms = true) map (
         _ => Redirect(controllers.routes.CheckYourAnswersController.show()))
   }
 

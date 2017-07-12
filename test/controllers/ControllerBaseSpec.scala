@@ -18,13 +18,16 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import org.mockito.Mockito
 import play.api.data.Form
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
+import play.api.mvc._
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{status, _}
+import play.api.test.Helpers._
+import services.mocks.MockAuthService
+import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 
-trait ControllerBaseSpec extends ControllerBaseTrait {
+trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
@@ -36,11 +39,15 @@ trait ControllerBaseSpec extends ControllerBaseTrait {
     authorisedRoutes.foreach {
       case (name, call) =>
         s"Calling the $name action of the $controllerName with an unauthorised user" should {
-
-          lazy val result = call(FakeRequest())
+          lazy val result = call(fakeRequest)
 
           "return 303" in {
-            status(result) must be(Status.SEE_OTHER)
+            Mockito.reset(mockAuthService)
+
+            val exception = new InvalidBearerToken()
+            mockAuthUnauthorised(exception)
+
+            intercept[AuthorisationException](await(result)) mustBe exception
           }
         }
     }
@@ -53,5 +60,7 @@ trait ControllerBaseSpec extends ControllerBaseTrait {
     implicit def post[T](form: Form[T]): FakeRequest[AnyContentAsFormUrlEncoded] =
       fakeRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
   }
+
+  lazy val fakeRequest = FakeRequest().withSession(ITSASessionKeys.GoHome -> "et")
 
 }

@@ -18,13 +18,16 @@ package controllers
 
 import assets.MessageLookup.FrontPage
 import audit.Logging
-import auth.{MockConfig, authenticatedFakeRequest}
+import auth.MockConfig
 import config.BaseControllerConfig
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.{MockSubscriptionService, MockThrottlingService}
+import uk.gov.hmrc.play.http.InternalServerException
+import utils.TestConstants
 
 
 class HomeControllerSpec extends ControllerBaseSpec
@@ -51,14 +54,17 @@ class HomeControllerSpec extends ControllerBaseSpec
     messagesApi,
     TestThrottlingService,
     TestSubscriptionService,
+    mockAuthService,
     app.injector.instanceOf[Logging]
   )
+  
+  val testNino = TestConstants.testNino
 
   "Calling the home action of the Home controller with an authorised user" should {
 
     "If the start page (showGuidance) is enabled" should {
 
-      lazy val result = TestHomeController(enableThrottling = false, showGuidance = true, enableCheckSubscriptionCalls = true).home()(authenticatedFakeRequest())
+      lazy val result = TestHomeController(enableThrottling = false, showGuidance = true, enableCheckSubscriptionCalls = true).home()(fakeRequest)
 
       "Return status OK (200)" in {
         status(result) must be(Status.OK)
@@ -70,7 +76,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     }
 
     "If the start page (showGuidance) is disabled" should {
-      lazy val result = TestHomeController(enableThrottling = false, showGuidance = false, enableCheckSubscriptionCalls = true).home()(authenticatedFakeRequest())
+      lazy val result = TestHomeController(enableThrottling = false, showGuidance = false, enableCheckSubscriptionCalls = true).home()(fakeRequest)
 
       "Return status SEE_OTHER (303) redirect" in {
         status(result) must be(Status.SEE_OTHER)
@@ -83,30 +89,30 @@ class HomeControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the index action of the HomeController with an authorised user" should {
-    def call() = TestHomeController(enableThrottling = true, showGuidance = false, enableCheckSubscriptionCalls = true).index()(authenticatedFakeRequest())
+    def call() = TestHomeController(enableThrottling = true, showGuidance = false, enableCheckSubscriptionCalls = true).index()(fakeRequest)
 
     "redirect them to already subscribed page if they already has a subscription" in {
-      setupGetSubscription(auth.nino)(subscribeSuccess)
+      setupGetSubscription(testNino)(subscribeSuccess)
       // this is mocked to check we don't call throttle as well
-      setupMockCheckAccess(auth.nino)(OK)
+      setupMockCheckAccess(testNino)(OK)
 
       val result = call()
       status(result) must be(Status.SEE_OTHER)
       redirectLocation(result).get mustBe controllers.routes.AlreadyEnrolledController.enrolled().url
 
-      verifyGetSubscription(auth.nino)(1)
-      verifyMockCheckAccess(auth.nino)(0)
+      verifyGetSubscription(testNino)(1)
+      verifyMockCheckAccess(testNino)(0)
     }
 
     "display the error page if there was an error checking the subscription" in {
-      setupGetSubscription(auth.nino)(subscribeBadRequest)
+      setupGetSubscription(testNino)(subscribeBadRequest)
       // this is mocked to check we don't call throttle as well
-      setupMockCheckAccess(auth.nino)(OK)
+      setupMockCheckAccess(testNino)(OK)
 
-      status(call()) must be(Status.INTERNAL_SERVER_ERROR)
+      intercept[InternalServerException](await(call()))
 
-      verifyGetSubscription(auth.nino)(1)
-      verifyMockCheckAccess(auth.nino)(0)
+      verifyGetSubscription(testNino)(1)
+      verifyMockCheckAccess(testNino)(0)
     }
 
     // N.B. the subscribeNone case is covered below
@@ -124,34 +130,34 @@ class HomeControllerSpec extends ControllerBaseSpec
       "Calling the index action of the HomeController with an authorised user who does not already have a subscription" should {
 
         "If throttling is enabled when calling the index" should {
-          lazy val result = TestHomeController(enableThrottling = true, showGuidance = false, enableCheckSubscriptionCalls = enableCheckSubscription).index()(authenticatedFakeRequest())
+          lazy val result = TestHomeController(enableThrottling = true, showGuidance = false, enableCheckSubscriptionCalls = enableCheckSubscription).index()(fakeRequest)
 
           "trigger a call to the throttling service" in {
-            setupGetSubscription(auth.nino)(subscribeNone)
-            setupMockCheckAccess(auth.nino)(OK)
+            setupGetSubscription(testNino)(subscribeNone)
+            setupMockCheckAccess(testNino)(OK)
 
             status(result) must be(Status.SEE_OTHER)
 
             redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
 
-            verifyGetSubscription(auth.nino)(expectedGetSubscriptionCalls)
-            verifyMockCheckAccess(auth.nino)(1)
+            verifyGetSubscription(testNino)(expectedGetSubscriptionCalls)
+            verifyMockCheckAccess(testNino)(1)
           }
         }
 
         "If throttling is disabled when calling the index" should {
-          lazy val result = TestHomeController(enableThrottling = false, showGuidance = false, enableCheckSubscriptionCalls = enableCheckSubscription).index()(authenticatedFakeRequest())
+          lazy val result = TestHomeController(enableThrottling = false, showGuidance = false, enableCheckSubscriptionCalls = enableCheckSubscription).index()(fakeRequest)
 
           "not trigger a call to the throttling service" in {
-            setupGetSubscription(auth.nino)(subscribeNone)
-            setupMockCheckAccess(auth.nino)(OK)
+            setupGetSubscription(testNino)(subscribeNone)
+            setupMockCheckAccess(testNino)(OK)
 
             status(result) must be(Status.SEE_OTHER)
 
             redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
 
-            verifyGetSubscription(auth.nino)(expectedGetSubscriptionCalls)
-            verifyMockCheckAccess(auth.nino)(0)
+            verifyGetSubscription(testNino)(expectedGetSubscriptionCalls)
+            verifyMockCheckAccess(testNino)(0)
           }
         }
       }

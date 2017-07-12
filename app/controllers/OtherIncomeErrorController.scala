@@ -23,23 +23,24 @@ import config.BaseControllerConfig
 import forms.IncomeSourceForm
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import services.KeystoreService
+import services.{AuthService, KeystoreService}
 
 import scala.concurrent.Future
 
 @Singleton
-class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControllerConfig,
+class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                            val messagesApi: MessagesApi,
                                            val keystoreService: KeystoreService,
-                                           val logging: Logging
-) extends BaseController {
+                                           val logging: Logging,
+                                           val authService: AuthService
+) extends AuthenticatedController {
 
   val showOtherIncomeError = Action.async { implicit request =>
     Future.successful(Ok(views.html.other_income_error(postAction = controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(), backUrl)))
   }
 
-  val submitOtherIncomeError: Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  val submitOtherIncomeError: Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       keystoreService.fetchIncomeSource() map {
         case Some(incomeSource) => incomeSource.source match {
           case IncomeSourceForm.option_business =>
