@@ -16,7 +16,8 @@
 
 package controllers
 
-import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import java.time.{LocalDate, LocalDateTime}
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
@@ -38,16 +39,27 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
 
   val showConfirmation: Action[AnyContent] = Authenticated.asyncEnrolled { implicit request =>
     implicit user =>
+      val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
+      val endTime = java.time.LocalDateTime.now()
+      val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
+      keystoreService.fetchIncomeSource.flatMap {
+        case Some(incomeSource) =>
       keystoreService.fetchSubscriptionId.map {
         case Some(id) =>
           Ok(views.html.confirmation(
             subscriptionId = id,
             submissionDate = dateConvert(LocalDate.now()),
-            routes.ConfirmationController.signOut()
+            routes.ConfirmationController.signOut(),
+            journeyDuration,
+            incomeSource.source
           ))
         case _ =>
           logging.info("User attempted to view confirmation with no subscriptionId stored in Keystore")
           InternalServerError
+      }
+        case _ =>
+          logging.info("User attempted to view confirmation with no incomeSource stored in Keystore")
+          Future.successful(InternalServerError)
       }
   }
 

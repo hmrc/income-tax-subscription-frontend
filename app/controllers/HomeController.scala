@@ -17,6 +17,7 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
+import java.time.LocalDateTime._
 
 import audit.Logging
 import auth.IncomeTaxSAUser
@@ -28,6 +29,8 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.{AuthService, SubscriptionService, ThrottlingService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
+import ITSASessionKeys._
+
 
 import scala.concurrent.Future
 
@@ -66,19 +69,20 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
   def index: Action[AnyContent] = Authenticated.asyncForHomeController { implicit request =>
     implicit user =>
+      val timestamp: String = java.time.LocalDateTime.now().toString
       checkAlreadySubscribed(
         baseConfig.applicationConfig.enableThrottling match {
           case true =>
             throttlingService.checkAccess.flatMap {
               case Some(CanAccess) =>
-                gotoPreferences
+                gotoPreferences.addingToSession(StartTime -> timestamp)
               case Some(_) =>
                 Redirect(controllers.throttling.routes.ThrottlingController.show().url)
               case x =>
                 logging.debug(s"Unexpected response from throttling service, internal server exception")
                 new InternalServerException("HomeController.index: unexpected error calling the throttling service")
             }
-          case false => gotoPreferences
+          case false => gotoPreferences.addingToSession(StartTime -> timestamp)
         }
       )
   }
