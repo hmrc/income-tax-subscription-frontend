@@ -18,23 +18,19 @@ package controllers
 
 import config.FrontendAppConfig
 import org.mockito.Mockito
-import play.api.{Configuration, Environment}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import play.api.{Configuration, Environment}
 
 class SignInControllerSpec extends ControllerBaseSpec {
 
   val mockFrontendConfig = mock[FrontendAppConfig]
 
-  val testURL = "/url"
-  Mockito.when(mockFrontendConfig.ggSignInContinueUrl).thenReturn(testURL)
-
-
   object TestSignInController extends SignInController(
-    mock[FrontendAppConfig],
-    mock[Configuration],
-    mock[Environment]
+    app.injector.instanceOf[FrontendAppConfig],
+    app.injector.instanceOf[Configuration],
+    app.injector.instanceOf[Environment]
   )
 
   "navigating to SignIn page" should {
@@ -45,10 +41,12 @@ class SignInControllerSpec extends ControllerBaseSpec {
     }
 
     "Redirect to GG Sign In on Company Auth Frontend" in {
-      redirectLocation(result) must contain(testURL)
+      redirectLocation(result) must contain(
+        "/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9561%2Freport-quarterly%2Fincome-and-expenses%2Fsign-up%2Findex&origin=income-tax-subscription-frontend"
+      )
     }
 
   }
   override val controllerName: String = "SignInController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map.empty()
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map.empty
 }

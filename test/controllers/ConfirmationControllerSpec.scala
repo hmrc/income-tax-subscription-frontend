@@ -20,11 +20,13 @@ import java.time.LocalDateTime
 
 import audit.Logging
 import org.scalatest.Matchers._
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
-import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
+import utils.TestModels
+
+import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -50,20 +52,21 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   "ConfirmationController" should {
     val startTime: LocalDateTime = LocalDateTime.now()
-    "If the user is enrolled then get the ID from keystore" in {
+    "get the ID from keystore if the user is enrolled" in {
       mockAuthEnrolled()
       setupMockKeystore(fetchSubscriptionId = "testId")
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
       val result: Future[Result] = TestConfirmationController.showConfirmation(
-        FakeRequest().addStartTime(startTime)
+        fakeRequest.addStartTime(startTime)
       )
+
       status(result) shouldBe OK
 
       await(result)
       verifyKeystore(fetchSubscriptionId = 1)
     }
 
-    "If the user is not enrolled then return not found" in {
+    "return not found if the user is not enrolled" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
       val result = TestConfirmationController.showConfirmation(fakeRequest)
       status(result) shouldBe NOT_FOUND
