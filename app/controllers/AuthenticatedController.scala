@@ -21,11 +21,13 @@ import config.BaseControllerConfig
 import controllers.AuthPredicates._
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import services.AuthService
 import uk.gov.hmrc.auth.core.Enrolments
 import uk.gov.hmrc.auth.core.Retrievals._
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.http.SessionKeys
+import uk.gov.hmrc.play.http.SessionKeys._
 
 import scala.concurrent.Future
 
@@ -37,21 +39,35 @@ trait AuthenticatedController extends FrontendController with I18nSupport {
   object Authenticated {
     def apply(action: Request[AnyContent] => IncomeTaxSAUser => Result): Action[AnyContent] = async(action andThen (_ andThen Future.successful))
 
-    def async(action: Request[AnyContent] => IncomeTaxSAUser => Future[Result]): Action[AnyContent] = asyncInternal(action)(defaultPredicates)
+    def async(action: Request[AnyContent] => IncomeTaxSAUser => Future[Result]): Action[AnyContent] = asyncHomeCheck(action)(defaultPredicates)
 
-    def asyncEnrolled(action: Request[AnyContent] => IncomeTaxSAUser => Future[Result]): Action[AnyContent] = asyncInternal(action)(confirmationPredicate)
+    def asyncEnrolled(action: Request[AnyContent] => IncomeTaxSAUser => Future[Result]): Action[AnyContent] = asyncHomeCheck(action)(confirmationPredicate)
+
+    def asyncForHomeController(action: Request[AnyContent] => IncomeTaxSAUser => Future[Result]): Action[AnyContent] =
+      Action.async { implicit request =>
+        asyncInternal(action)(defaultPredicates)(request) map (_.addingToSession(ITSASessionKeys.GoHome -> "et"))
+      }
+
+    def asyncHomeCheck(action: Request[AnyContent] => IncomeTaxSAUser => Future[Result]
+                      )(predicate: => (Enrolments => Future[Result]) => Enrolments => Future[Result]): Action[AnyContent] = Action.async { implicit request =>
+      if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
+        Future.successful(Redirect(timeoutRoute))
+      }
+      else if (request.session.get(ITSASessionKeys.GoHome).nonEmpty) {
+        asyncInternal(action)(predicate)(request)
+      }
+      else Future.successful(Redirect(homeRoute))
+    }
 
     def asyncInternal(action: Request[AnyContent] => IncomeTaxSAUser => Future[Result]
-                     )(predicate: => (Enrolments => Future[Result]) => Enrolments => Future[Result]): Action[AnyContent] =
-      Action.async { implicit request =>
-        if (request.session.get(ITSASessionKeys.GoHome).nonEmpty || request.uri == homeRoute.url) {
-          authService.authorised().retrieve(allEnrolments).apply {
-            enrolments =>
-              predicate(action(request).compose(IncomeTaxSAUser.apply))(enrolments)
-          }
-        }
-        else Future.successful(Redirect(homeRoute))
+                     )(predicate: => (Enrolments => Future[Result]) => Enrolments => Future[Result]): Request[AnyContent] => Future[Result] = { implicit request =>
+      authService.authorised().retrieve(allEnrolments).apply {
+        enrolments =>
+          predicate(action(request).compose(IncomeTaxSAUser.apply))(enrolments)
       }
+    }
+
+    lazy val timeoutRoute = controllers.routes.SessionTimeoutController.timeout()
 
     lazy val homeRoute = controllers.routes.HomeController.index()
   }

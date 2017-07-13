@@ -18,27 +18,21 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import config.BaseControllerConfig
+import config.FrontendAppConfig
 import play.api.i18n.MessagesApi
-import services.AuthService
+import play.api.mvc._
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.auth.frontend.Redirects
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
 @Singleton
-class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
-                                          val messagesApi: MessagesApi,
-                                          val authService: AuthService
-                                         ) extends AuthenticatedController {
-  val enrolled = Authenticated.asyncEnrolled {
-    implicit request =>
-      implicit val headerCarrier = hc(request)
+class SignInController @Inject()(val appConfig: FrontendAppConfig,
+                                 val config: Configuration,
+                                 val env: Environment) extends FrontendController with Redirects {
 
-      user =>
-        Future.successful(Ok(
-          views.html.enrolled.already_enrolled(
-            postAction = controllers.routes.SignOutController.signOut()
-          )
-        ))
+  val signIn: Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(toGGLogin(appConfig.ggSignInContinueUrl))
   }
-
 }
