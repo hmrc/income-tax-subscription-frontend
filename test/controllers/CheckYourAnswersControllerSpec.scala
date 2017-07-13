@@ -20,6 +20,7 @@ import audit.Logging
 import auth._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.CacheConstants._
 import services.mocks.{MockKeystoreService, MockSubscriptionService}
@@ -41,12 +42,13 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     middleService = TestSubscriptionService,
+    mockAuthService,
     app.injector.instanceOf[Logging]
   )
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" should {
 
-    lazy val result = TestCheckYourAnswersController.show(authenticatedFakeRequest())
+    lazy val result = TestCheckYourAnswersController.show(fakeRequest)
 
     "return ok (200)" in {
       setupMockKeystore(fetchAll = TestModels.testCacheMap)
@@ -57,7 +59,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the CheckYourAnswersController with an authorised user" should {
 
-    lazy val request = authenticatedFakeRequest()
+    lazy val request = fakeRequest
     def call = TestCheckYourAnswersController.submit(request)
 
     "When the submission is successful" should {

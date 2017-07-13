@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package auth
+package services
 
-import uk.gov.hmrc.play.frontend.auth.{CompositePageVisibilityPredicate, PageVisibilityPredicate}
+import javax.inject.Inject
 
-class IncomeTaxSACompositePageVisibilityPredicate extends CompositePageVisibilityPredicate {
-  override def children: Seq[PageVisibilityPredicate] = Nil
-}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
+
+class AuthService @Inject()(val authConnector: AuthConnector) extends AuthorisedFunctions

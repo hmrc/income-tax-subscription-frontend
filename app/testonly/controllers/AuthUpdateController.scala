@@ -21,9 +21,10 @@ package testonly.controllers
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
-import controllers.BaseController
+import controllers.AuthenticatedController
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
+import services.AuthService
 import uk.gov.hmrc.play.http.HttpPatch
 
 import scala.concurrent.Future
@@ -37,16 +38,17 @@ import scala.concurrent.Future
 @Singleton
 class AuthUpdateController @Inject()(val baseConfig: BaseControllerConfig,
                                      val messagesApi: MessagesApi,
-                                     val http: HttpPatch
-                                    ) extends BaseController with I18nSupport {
+                                     val http: HttpPatch,
+                                     val authService: AuthService
+                                    ) extends AuthenticatedController with I18nSupport {
 
   lazy val noAction = Future.successful("no actions taken")
   lazy val updated = Future.successful(Ok("updated"))
 
   lazy val updateURL = s"${baseConfig.applicationConfig.authUrl}/auth/authority"
 
-  val update = Authorised.async { implicit user =>
-    implicit request =>
+  val update = Authenticated.async { implicit request =>
+    implicit user =>
       val confidencePatch = http.PATCH(updateURL, Json.obj("confidenceLevel" -> 200))
       confidencePatch.flatMap(_ => updated)
   }

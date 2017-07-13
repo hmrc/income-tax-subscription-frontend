@@ -20,7 +20,7 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.Action
 import testonly.connectors.ResetThrottleConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 

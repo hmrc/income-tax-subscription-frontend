@@ -19,13 +19,11 @@ package controllers
 import java.time.LocalDateTime
 
 import audit.Logging
-import auth.{authenticatedFakeRequest, mockEnrolled}
 import org.scalatest.Matchers._
-import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
-import uk.gov.hmrc.play.frontend.auth.AuthenticationProviderIds
 import utils.TestModels
 
 import scala.concurrent.Future
@@ -37,7 +35,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    app.injector.instanceOf[Logging]
+    app.injector.instanceOf[Logging],
+    mockAuthService
   )
 
   override val controllerName: String = "ConfirmationControllerSpec"
@@ -53,21 +52,23 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   "ConfirmationController" should {
     val startTime: LocalDateTime = LocalDateTime.now()
-    "If the user is enrolled then get the ID from keystore" in {
+    "get the ID from keystore if the user is enrolled" in {
+      mockAuthEnrolled()
       setupMockKeystore(fetchSubscriptionId = "testId")
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
       val result: Future[Result] = TestConfirmationController.showConfirmation(
-        authenticatedFakeRequest(AuthenticationProviderIds.GovernmentGatewayId, mockEnrolled).addStartTime(startTime)
+        fakeRequest.addStartTime(startTime)
       )
+
       status(result) shouldBe OK
 
       await(result)
       verifyKeystore(fetchSubscriptionId = 1)
     }
 
-    "If the user is not enrolled then return not found" in {
+    "return not found if the user is not enrolled" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
-      val result = TestConfirmationController.showConfirmation(authenticatedFakeRequest().addStartTime(startTime))
+      val result = TestConfirmationController.showConfirmation(fakeRequest)
       status(result) shouldBe NOT_FOUND
 
       await(result)

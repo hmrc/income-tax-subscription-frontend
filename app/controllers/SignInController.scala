@@ -14,30 +14,25 @@
  * limitations under the License.
  */
 
-package auth
+package controllers
 
+import javax.inject.{Inject, Singleton}
+
+import config.FrontendAppConfig
 import play.api.i18n.MessagesApi
-import services.mocks.MockEnrolmentService
+import play.api.mvc._
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils.UnitTestTrait
 
 import scala.concurrent.Future
 
-trait MockAuthTestController extends UnitTestTrait
-  with MockAuthConnector
-  with MockEnrolmentService {
+@Singleton
+class SignInController @Inject()(val appConfig: FrontendAppConfig,
+                                 val config: Configuration,
+                                 val env: Environment) extends FrontendController with Redirects {
 
-  object AuthTestController extends FrontendController with AuthorisedForIncomeTaxSA {
-    override val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-    override lazy val applicationConfig = mockConfig
-    override lazy val authConnector = TestAuthConnector
-    override lazy val enrolmentService = TestEnrolmentService
-    override lazy val postSignInRedirectUrl = "www.redirected.com"
-
-    val authorisedAsyncAction = Authorised.async {
-      implicit user => implicit request => Future.successful(Ok)
-    }
-
+  val signIn: Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(toGGLogin(appConfig.ggSignInContinueUrl))
   }
-
 }

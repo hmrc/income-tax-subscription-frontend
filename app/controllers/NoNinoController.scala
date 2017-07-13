@@ -22,18 +22,17 @@ import config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils.Implicits._
 
 @Singleton
 class NoNinoController @Inject()(implicit val applicationConfig: AppConfig,
                                  val messagesApi: MessagesApi
                                 ) extends FrontendController with I18nSupport {
 
-  val showNoNino: Action[AnyContent] = Action.async {
+  val showNoNino: Action[AnyContent] = Action {
     implicit request => Ok(views.html.no_nino(postAction = controllers.routes.NoNinoController.submitNoNino()))
   }
 
-  val submitNoNino: Action[AnyContent] = Action.async {
+  val submitNoNino: Action[AnyContent] = Action {
     implicit request => Redirect(controllers.routes.SignOutController.signOut())
   }
 

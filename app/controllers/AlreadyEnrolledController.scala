@@ -18,22 +18,27 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import config.{AppConfig, BaseControllerConfig}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
-import services.KeystoreService
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import config.BaseControllerConfig
+import play.api.i18n.MessagesApi
+import services.AuthService
 
 import scala.concurrent.Future
 
 @Singleton
 class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
-                                         val messagesApi: MessagesApi
-                                        ) extends BaseController {
-
-  val enrolled = Authorised.asyncCore {  implicit user =>
+                                          val messagesApi: MessagesApi,
+                                          val authService: AuthService
+                                         ) extends AuthenticatedController {
+  val enrolled = Authenticated.asyncEnrolled {
     implicit request =>
-      Future.successful(Ok(views.html.enrolled.already_enrolled(postAction = controllers.routes.SignOutController.signOut())))
+      implicit val headerCarrier = hc(request)
+
+      user =>
+        Future.successful(Ok(
+          views.html.enrolled.already_enrolled(
+            postAction = controllers.routes.SignOutController.signOut()
+          )
+        ))
   }
 
 }

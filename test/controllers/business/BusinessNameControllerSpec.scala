@@ -22,6 +22,7 @@ import forms.BusinessNameForm
 import models.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 
@@ -37,12 +38,13 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
   object TestBusinessNameController extends BusinessNameController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    mockAuthService
   )
 
   "Calling the showBusinessName action of the BusinessNameController with an authorised user" should {
 
-    lazy val result = TestBusinessNameController.showBusinessName(isEditMode = false)(authenticatedFakeRequest())
+    lazy val result = TestBusinessNameController.showBusinessName(isEditMode = false)(fakeRequest)
 
     "return ok (200)" in {
       setupMockKeystore(fetchBusinessName = None)
@@ -59,7 +61,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
 
     def callShow(isEditMode: Boolean) =
       TestBusinessNameController.submitBusinessName(isEditMode = isEditMode)(
-        authenticatedFakeRequest()
+        fakeRequest
           .post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
       )
 
@@ -113,7 +115,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessNameController.submitBusinessName(isEditMode = false)(authenticatedFakeRequest())
+    lazy val badRequest = TestBusinessNameController.submitBusinessName(isEditMode = false)(fakeRequest)
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)

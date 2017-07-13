@@ -51,7 +51,8 @@ object SessionCookieBaker {
       SessionKeys.userId -> userId,
       SessionKeys.token -> "token",
       SessionKeys.authProvider -> "GGW",
-      SessionKeys.lastRequestTimestamp -> rollbackTimestamp
+      SessionKeys.lastRequestTimestamp -> rollbackTimestamp,
+      SessionKeys.authToken -> "auth"
     ) ++ additionalData
   }
 

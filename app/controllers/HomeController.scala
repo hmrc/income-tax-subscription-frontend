@@ -26,7 +26,7 @@ import connectors.models.subscription.FESuccessResponse
 import connectors.models.throttling.CanAccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.{SubscriptionService, ThrottlingService}
+import services.{AuthService, SubscriptionService, ThrottlingService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 import ITSASessionKeys._
@@ -39,33 +39,36 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                override val messagesApi: MessagesApi,
                                throttlingService: ThrottlingService,
                                subscriptionService: SubscriptionService,
+                               val authService: AuthService,
                                logging: Logging
-                              ) extends BaseController {
+                              ) extends AuthenticatedController {
 
   lazy val showGuidance: Boolean = baseConfig.applicationConfig.showGuidance
 
-  def home: Action[AnyContent] = Action.async { implicit request =>
+  def home: Action[AnyContent] = Action { implicit request =>
+    val redirect = controllers.routes.HomeController.index()
+
     showGuidance match {
       case true =>
-        Ok(views.html.frontpage(controllers.routes.HomeController.index()))
+        Ok(views.html.frontpage(redirect))
       case _ =>
-        Redirect(controllers.routes.HomeController.index())
+        Redirect(redirect)
     }
   }
 
-  def checkAlreadySubscribed(default: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
+  private def checkAlreadySubscribed(default: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
     baseConfig.applicationConfig.enableCheckSubscription match {
       case false => default
       case true =>
         subscriptionService.getSubscription(user.nino.get).flatMap {
           case Some(FESuccessResponse(None)) => default
           case Some(FESuccessResponse(Some(_))) => Redirect(controllers.routes.AlreadyEnrolledController.enrolled())
-          case _ => showInternalServerError
+          case _ => new InternalServerException("HomeController.index: unexpected error calling the subscription service")
         }
     }
 
-  def index: Action[AnyContent] = Authorised.asyncForHomeController { implicit user =>
-    implicit request =>
+  def index: Action[AnyContent] = Authenticated.asyncForHomeController { implicit request =>
+    implicit user =>
       val timestamp: String = java.time.LocalDateTime.now().toString
       checkAlreadySubscribed(
         baseConfig.applicationConfig.enableThrottling match {

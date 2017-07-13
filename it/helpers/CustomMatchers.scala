@@ -121,7 +121,7 @@ trait CustomMatchers {
 
       HavePropertyMatchResult(
         redirectLocation.contains(expectedValue),
-        "httpStatus",
+        "redirectUri",
         expectedValue,
         redirectLocation.getOrElse("")
       )

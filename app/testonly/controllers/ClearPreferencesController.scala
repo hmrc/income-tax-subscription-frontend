@@ -21,9 +21,9 @@ import javax.inject.{Inject, Singleton}
 import config.BaseControllerConfig
 import connectors.models.preferences.Activated
 import connectors.preferences.PreferenceFrontendConnector
-import controllers.BaseController
+import controllers.AuthenticatedController
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import services.AuthService
 import testonly.connectors.ClearPreferencesConnector
 import uk.gov.hmrc.play.http.HttpGet
 import utils.Implicits._
@@ -33,11 +33,12 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
                                            clearPreferencesConnector: ClearPreferencesConnector,
                                            val baseConfig: BaseControllerConfig,
                                            val messagesApi: MessagesApi,
-                                           httpGet: HttpGet
-                                          ) extends BaseController {
+                                           httpGet: HttpGet,
+                                           val authService: AuthService
+                                          ) extends AuthenticatedController {
 
-  val clear = Authorised.async { implicit user =>
-    implicit request =>
+  val clear = Authenticated.async { implicit request =>
+    implicit user =>
       user.nino match {
         case None => InternalServerError("no nino")
         case Some(nino) =>

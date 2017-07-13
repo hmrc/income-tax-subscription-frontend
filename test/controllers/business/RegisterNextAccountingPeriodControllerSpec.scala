@@ -21,6 +21,7 @@ import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 
@@ -37,13 +38,14 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
   object TestRegisterNextAccountingPeriodController extends RegisterNextAccountingPeriodController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    mockAuthService
   )
 
   "Calling the show action of the RegisterNextAccountingPeriod with an authorised user" should {
 
     def result: Future[Result] = {
-      TestRegisterNextAccountingPeriodController.show(authenticatedFakeRequest())
+      TestRegisterNextAccountingPeriodController.show(fakeRequest)
     }
 
     "return ok (200)" in {
@@ -59,7 +61,7 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
 
   "Calling the submit action of the RegisterNextAccountingPeriod with an authorised user and valid submission" when {
 
-    def callShow(): Future[Result] = TestRegisterNextAccountingPeriodController.submit(authenticatedFakeRequest())
+    def callShow(): Future[Result] = TestRegisterNextAccountingPeriodController.submit(fakeRequest)
 
     "Option 'Yes' is selected" should {
 

@@ -19,15 +19,14 @@ package controllers.business
 import javax.inject.Inject
 
 import config.BaseControllerConfig
-import controllers.BaseController
+import controllers.AuthenticatedController
 import forms.AccountingPeriodPriorForm
 import models.{AccountingPeriodPriorModel, OtherIncomeModel}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.KeystoreService
-import uk.gov.hmrc.play.http.InternalServerException
+import services.{AuthService, KeystoreService}
 import utils.Implicits._
 
 import scala.concurrent.Future
@@ -35,8 +34,9 @@ import scala.concurrent.Future
 
 class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseControllerConfig,
                                                         val messagesApi: MessagesApi,
-                                                        val keystoreService: KeystoreService
-                                                       ) extends BaseController {
+                                                        val keystoreService: KeystoreService,
+                                                        val authService: AuthService
+                                                       ) extends AuthenticatedController {
 
   def view(accountingPeriodPriorForm: Form[AccountingPeriodPriorModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] =
     backUrl.map { backUrl =>
@@ -48,15 +48,15 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
       )
     }
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       keystoreService.fetchAccountingPeriodPrior().flatMap { x =>
         view(AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(x), isEditMode = isEditMode).flatMap(view => Ok(view))
       }
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       AccountingPeriodPriorForm.accountingPeriodPriorForm.bindFromRequest.fold(
         formWithErrors => view(formWithErrors, isEditMode = isEditMode).flatMap(view => BadRequest(view)),
         accountingPeriodPrior =>

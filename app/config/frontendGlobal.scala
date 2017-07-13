@@ -21,14 +21,17 @@ import config.filters.WhitelistFilter
 import net.ceedubs.ficus.Ficus._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{EssentialFilter, Request}
-import play.api.{Application, Configuration, Play}
+import play.api.mvc.Results._
+import play.api.mvc.{EssentialFilter, Request, RequestHeader, Result}
+import play.api.{Application, Configuration, Logger, Play}
 import play.twirl.api.Html
+import uk.gov.hmrc.auth.core.{AuthorisationException, BearerTokenExpired, InsufficientEnrolments}
+import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.audit.filters.FrontendAuditFilter
 import uk.gov.hmrc.play.config.{AppName, ControllerConfig, RunMode}
 import uk.gov.hmrc.play.filters.{MicroserviceFilterSupport, RecoveryFilter}
-import uk.gov.hmrc.play.frontend.bootstrap.DefaultFrontendGlobal
+import uk.gov.hmrc.play.frontend.bootstrap.{DefaultFrontendGlobal, ShowErrorPage}
 import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
 
 
@@ -60,6 +63,22 @@ object FrontendGlobal
     views.html.templates.error_template(pageTitle, heading, message)(implicitly, implicitly, new FrontendAppConfig(Play.current))
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"microservice.metrics")
+
+  override def resolveError(rh: RequestHeader, ex: Throwable): Result = {
+    ex match {
+      case _: InsufficientEnrolments =>
+        Logger.debug("[AuthenticationPredicate][async] No HMRC-MTD-IT Enrolment and/or No NINO.")
+        super.resolveError(rh, ex)
+      case _: BearerTokenExpired =>
+        Logger.debug("[AuthenticationPredicate][async] Bearer Token Timed Out.")
+        Redirect(controllers.routes.SessionTimeoutController.timeout())
+      case _: AuthorisationException =>
+        Logger.debug("[AuthenticationPredicate][async] Unauthorised request. Redirect to Sign In.")
+        Redirect(controllers.routes.SignInController.signIn())
+      case _ =>
+        super.resolveError(rh, ex)
+    }
+  }
 }
 
 object ControllerConfiguration extends ControllerConfig {

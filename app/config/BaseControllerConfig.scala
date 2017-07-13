@@ -18,13 +18,7 @@ package config
 
 import javax.inject._
 
-import services.EnrolmentService
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-
 @Singleton
-class BaseControllerConfig @Inject()(val applicationConfig: AppConfig,
-                                     val enrolmentService: EnrolmentService,
-                                     val authConnector: AuthConnector
-                                    ) {
+class BaseControllerConfig @Inject()(val applicationConfig: AppConfig) {
   lazy val postSignInRedirectUrl: String = applicationConfig.ggSignInContinueUrl
 }

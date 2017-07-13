@@ -16,11 +16,11 @@
 
 package controllers.throttling
 
-import auth.authenticatedFakeRequest
 import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 class ThrottlingControllerSpec extends ControllerBaseSpec {
@@ -32,12 +32,13 @@ class ThrottlingControllerSpec extends ControllerBaseSpec {
 
   object TestThrottlingController extends ThrottlingController(
     MockBaseControllerConfig,
-    messagesApi
+    messagesApi,
+    mockAuthService
   )
 
   "Calling the show action of the ThrottlingController" should {
 
-    lazy val result = TestThrottlingController.show(authenticatedFakeRequest())
+    lazy val result = TestThrottlingController.show(fakeRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -48,7 +49,7 @@ class ThrottlingControllerSpec extends ControllerBaseSpec {
 
   "Calling the submit action of the ThrottlingController" should {
 
-    lazy val result = TestThrottlingController.submit(authenticatedFakeRequest())
+    lazy val result = TestThrottlingController.submit(fakeRequest)
 
     s"return SEE_OTHER and redirects to ${controllers.routes.SignOutController.signOut().url}" in {
       status(result) must be(Status.SEE_OTHER)

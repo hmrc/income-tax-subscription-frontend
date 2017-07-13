@@ -38,12 +38,13 @@ class TermsControllerSpec extends ControllerBaseSpec
   object TestTermsController extends TermsController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService
+    MockKeystoreService,
+    mockAuthService
   )
 
   "Calling the showTerms action of the TermsController with an authorised user" should {
 
-    lazy val result = TestTermsController.showTerms()(authenticatedFakeRequest())
+    lazy val result = TestTermsController.showTerms()(fakeRequest)
 
     "return ok (200)" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
@@ -61,7 +62,7 @@ class TermsControllerSpec extends ControllerBaseSpec
 
     def callShow(): Future[Result] = {
       setupMockKeystoreSaveFunctions()
-      TestTermsController.submitTerms()(authenticatedFakeRequest())
+      TestTermsController.submitTerms()(fakeRequest)
     }
 
     "submit" should {
@@ -93,13 +94,13 @@ class TermsControllerSpec extends ControllerBaseSpec
   "The back url" should {
     s"point to ${controllers.business.routes.BusinessAccountingMethodController.show().url} on the business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessAccountingMethodController.show().url
+      await(TestTermsController.backUrl(fakeRequest)) mustBe controllers.business.routes.BusinessAccountingMethodController.show().url
       verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
     }
 
     s"point to ${controllers.business.routes.BusinessAccountingMethodController.show().url} on the both journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
-      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.business.routes.BusinessAccountingMethodController.show().url
+      await(TestTermsController.backUrl(fakeRequest)) mustBe controllers.business.routes.BusinessAccountingMethodController.show().url
       verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
     }
 
@@ -108,7 +109,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         fetchIncomeSource = TestModels.testIncomeSourceProperty,
         fetchOtherIncome = TestModels.testOtherIncomeYes
       )
-      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+      await(TestTermsController.backUrl(fakeRequest)) mustBe controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
       verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
     }
 
@@ -117,7 +118,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         fetchIncomeSource = TestModels.testIncomeSourceProperty,
         fetchOtherIncome = TestModels.testOtherIncomeNo
       )
-      await(TestTermsController.backUrl(FakeRequest())) mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
+      await(TestTermsController.backUrl(fakeRequest)) mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
       verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
     }
 

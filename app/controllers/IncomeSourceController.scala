@@ -25,15 +25,16 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.KeystoreService
+import services.{AuthService, KeystoreService}
 
 import scala.concurrent.Future
 
 @Singleton
 class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
-                                       val keystoreService: KeystoreService
-                                      ) extends BaseController {
+                                       val keystoreService: KeystoreService,
+                                       val authService: AuthService
+                                      ) extends AuthenticatedController {
 
   def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.income_source(
@@ -41,15 +42,15 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
       postAction = controllers.routes.IncomeSourceController.submitIncomeSource(editMode = isEditMode)
     )
 
-  def showIncomeSource(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def showIncomeSource(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       keystoreService.fetchIncomeSource() map {
         incomeSource => Ok(view(incomeSourceForm = IncomeSourceForm.incomeSourceForm.fill(incomeSource), isEditMode = isEditMode))
       }
   }
 
-  def submitIncomeSource(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def submitIncomeSource(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       IncomeSourceForm.incomeSourceForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
         incomeSource => {

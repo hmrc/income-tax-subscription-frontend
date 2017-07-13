@@ -21,18 +21,18 @@ import javax.inject.{Inject, Singleton}
 import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.Call
-
-import scala.concurrent.Future
+import services.AuthService
 
 @Singleton
 class MainIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
-                                          val messagesApi: MessagesApi
-                                         ) extends BaseController {
+                                          val messagesApi: MessagesApi,
+                                          val authService: AuthService
+                                         ) extends AuthenticatedController {
 
 
-  val mainIncomeError = Authorised.async { implicit user =>
-    implicit request =>
-      Future.successful(Ok(views.html.main_income_error(backUrl, getAction)))
+  val mainIncomeError = Authenticated { implicit request =>
+    implicit user =>
+      Ok(views.html.main_income_error(backUrl, getAction))
   }
 
   lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url

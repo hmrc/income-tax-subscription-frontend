@@ -17,7 +17,6 @@
 package controllers
 
 import audit.Logging
-import auth.authenticatedFakeRequest
 import forms.OtherIncomeForm
 import models.OtherIncomeModel
 import org.jsoup.Jsoup
@@ -33,16 +32,17 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
   override val controllerName: String = "OtherIncomeErrorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestOtherIncomeErrorController extends OtherIncomeErrorController()(
+  object TestOtherIncomeErrorController extends OtherIncomeErrorController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    app.injector.instanceOf[Logging]
+    app.injector.instanceOf[Logging],
+    mockAuthService
   )
 
   "Calling the showOtherIncomeError action of the OtherIncomeErrorController" should {
 
-    lazy val result = TestOtherIncomeErrorController.showOtherIncomeError(FakeRequest())
+    lazy val result = TestOtherIncomeErrorController.showOtherIncomeError(fakeRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -58,7 +58,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
 
   "Calling the submitOtherIncomeError action of the OtherIncomeError controller with an authorised user" should {
 
-    def callSubmit = TestOtherIncomeErrorController.submitOtherIncomeError(authenticatedFakeRequest()
+    def callSubmit = TestOtherIncomeErrorController.submitOtherIncomeError(fakeRequest
       .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
 
     "return a redirect status (SEE_OTHER - 303)" in {

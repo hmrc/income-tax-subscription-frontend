@@ -19,12 +19,15 @@ package config
 import javax.inject._
 
 import play.api.Application
+import uk.gov.hmrc.auth.core.{AuthConnector, PlayAuthConnector, Predicate, Retrieval}
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost}
 import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
+
+import scala.concurrent.Future
 
 @Singleton
 class FrontendAuditConnector @Inject()(val app: Application) extends Auditing with AppName {
@@ -37,11 +40,6 @@ class WSHttp @Inject()(val app: Application) extends uk.gov.hmrc.play.http.ws.WS
   override val hooks = NoneRequired
 }
 
-@Singleton
-class FrontendAuthConnector @Inject()(val app: Application) extends AuthConnector with ServicesConfig {
-  lazy val serviceUrl = baseUrl("auth")
-  lazy val http = new WSHttp(app)
-}
 
 @Singleton
 class SessionCache @Inject()(val app: Application,
@@ -61,5 +59,9 @@ trait SessionCookieCryptoFilterWrapper {
 
 object ITSAHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsConverter with SessionCookieCryptoFilterWrapper {
   override val crypto = encryptCookieString _
+}
+
+class AuthConnector @Inject()(appConfig: AppConfig, val http: HttpPost) extends PlayAuthConnector {
+  override val serviceUrl: String = appConfig.authUrl
 }
 

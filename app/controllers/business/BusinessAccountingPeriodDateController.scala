@@ -19,7 +19,7 @@ package controllers.business
 import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
-import controllers.BaseController
+import controllers.AuthenticatedController
 import forms._
 import models.AccountingPeriodModel
 import models.enums._
@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.KeystoreService
+import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 
@@ -36,8 +36,9 @@ import scala.concurrent.Future
 @Singleton
 class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseControllerConfig,
                                                        val messagesApi: MessagesApi,
-                                                       val keystoreService: KeystoreService
-                                                      ) extends BaseController {
+                                                       val keystoreService: KeystoreService,
+                                                       val authService: AuthService
+                                                      ) extends AuthenticatedController {
 
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, viewType: AccountingPeriodViewType)(implicit request: Request[_]): Html =
     views.html.business.accounting_period_date(
@@ -48,8 +49,8 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
       isEditMode
     )
 
-  def showAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request =>
+  def showAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
       for {
         accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
         backUrl <- backUrl
@@ -63,8 +64,8 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
         ))
   }
 
-  def submitAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authorised.async { implicit user =>
-    implicit request => {
+  def submitAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user => {
       whichView.flatMap {
         viewType =>
           AccountingPeriodDateForm.accountingPeriodDateForm.bindFromRequest().fold(
