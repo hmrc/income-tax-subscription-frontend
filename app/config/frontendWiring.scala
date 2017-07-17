@@ -59,6 +59,7 @@ object ITSAHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsCon
   override val crypto = encryptCookieString _
 }
 
+@Singleton
 class AuthConnector @Inject()(appConfig: AppConfig, val http: HttpPost) extends PlayAuthConnector {
   override val serviceUrl: String = appConfig.authUrl
 }
