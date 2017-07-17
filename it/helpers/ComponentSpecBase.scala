@@ -97,9 +97,13 @@ trait ComponentSpecBase extends UnitSpec
 
     def otherIncome(): WSResponse = get("/income-other")
 
+    def otherIncomeError(): WSResponse = get("/error/other-income")
+
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
+
+    def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
 
     def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
       val uri = s"/income?editMode=$inEditMode"

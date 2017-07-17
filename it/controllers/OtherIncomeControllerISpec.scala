@@ -70,7 +70,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubUnauthorised()
 
-      When("GET /check-your-answers is called")
+      When("GET /income-other is called")
       val res = IncomeTaxSubscriptionFrontend.otherIncome()
 
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
@@ -114,7 +114,26 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         When("POST /income-other is called")
         val res = IncomeTaxSubscriptionFrontend.submitOtherIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of error other income")
+        Then("Should return a SEE_OTHER with a redirect location of accounting period prior")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(accountingPeriodPriorURI)
+        )
+      }
+
+      "select the No other income radio button on the other income page while on Both journey" in {
+        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
+        KeystoreStub.stubKeystoreSave(CacheConstants.OtherIncome, userInput)
+
+        When("POST /income-other is called")
+        val res = IncomeTaxSubscriptionFrontend.submitOtherIncome(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of accounting period prior")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(accountingPeriodPriorURI)
@@ -133,7 +152,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         When("POST /income-other is called")
         val res = IncomeTaxSubscriptionFrontend.submitOtherIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of error other income")
+        Then("Should return a SEE_OTHER with a redirect location of terms")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(termsURI)
@@ -191,14 +210,13 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
 
     "in edit mode" should {
 
-      "changing to the Yes other income radio button on the other income page while in edit mode" in {
+      "changing to the Yes other income radio button on the other income page" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
         val keystoreOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
         val userInput = OtherIncomeModel(OtherIncomeForm.option_yes)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
         KeystoreStub.stubKeystoreData(keystoreData(otherIncome = Some(keystoreOtherIncome)))
         KeystoreStub.stubKeystoreSave(CacheConstants.OtherIncome, userInput)
 
@@ -212,21 +230,20 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "simulate not changing other income when already selected no on the other income page while in edit mode" in {
+      "simulate not changing other income when already selected no on the other income page" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
         val keystoreOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
         val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
         KeystoreStub.stubKeystoreData(keystoreData(otherIncome = Some(keystoreOtherIncome)))
         KeystoreStub.stubKeystoreSave(CacheConstants.OtherIncome, userInput)
 
         When("POST /income-other is called")
         val res = IncomeTaxSubscriptionFrontend.submitOtherIncome(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of error other income")
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
