@@ -16,13 +16,9 @@
 
 package controllers
 
-import forms.{IncomeSourceForm, OtherIncomeForm}
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels._
-import helpers.servicemocks.{AuthStub, KeystoreStub}
-import models.{IncomeSourceModel, OtherIncomeModel}
-import play.api.http.Status.{OK, SEE_OTHER}
+import helpers.servicemocks.AuthStub
+import play.api.http.Status.OK
 import play.api.i18n.Messages
 
 class MainIncomeErrorControllerISpec extends ComponentSpecBase {
