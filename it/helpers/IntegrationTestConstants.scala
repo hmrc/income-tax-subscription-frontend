@@ -40,6 +40,8 @@ object IntegrationTestConstants {
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val errorOtherIncomeURI = s"$baseURI/error/other-income"
   val accountingPeriodPriorURI = s"$baseURI/business/accounting-period-prior"
+  val registerNextAccountingPeriodURI = s"$baseURI/business/register-next-accounting-period"
+  val accountingPeriodDatesURI = s"$baseURI/business/accounting-period-dates"
   val termsURI = s"$baseURI/terms"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val signInURI = s"$baseURI/sign-in"
