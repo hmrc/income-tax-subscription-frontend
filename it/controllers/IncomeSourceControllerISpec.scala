@@ -194,7 +194,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         When("GET /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of terms")
+        Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(signInURI)
@@ -345,7 +345,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         When("GET /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of terms")
+        Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(signInURI)
