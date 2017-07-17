@@ -19,10 +19,10 @@ package helpers
 import java.util.UUID
 
 import controllers.ITSASessionKeys.GoHome
-import forms.{IncomeSourceForm, OtherIncomeForm}
+import forms.{AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import models.{IncomeSourceModel, OtherIncomeModel}
+import models.{AccountingPeriodModel, AccountingPeriodPriorModel, IncomeSourceModel, OtherIncomeModel}
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -104,6 +104,18 @@ trait ComponentSpecBase extends UnitSpec
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
 
     def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
+
+    def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
+
+    def submitBusinessAccountingPeriodPrior(inEditMode: Boolean, request: Option[AccountingPeriodPriorModel]): WSResponse = {
+      val uri = s"/business/accounting-period-prior?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
 
     def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
       val uri = s"/income?editMode=$inEditMode"
