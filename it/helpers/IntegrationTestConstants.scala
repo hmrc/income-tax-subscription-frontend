@@ -40,6 +40,7 @@ object IntegrationTestConstants {
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val termsURI = s"$baseURI/terms"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
+  val signInURI = s"$baseURI/sign-in"
 
   object Auth {
     def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(
