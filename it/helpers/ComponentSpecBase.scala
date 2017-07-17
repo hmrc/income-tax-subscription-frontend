@@ -97,11 +97,15 @@ trait ComponentSpecBase extends UnitSpec
 
     def otherIncome(): WSResponse = get("/income-other")
 
+    def mainIncomeError(): WSResponse = get("/error/main-income")
+
     def otherIncomeError(): WSResponse = get("/error/other-income")
 
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
+
+    def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
 
     def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
 
