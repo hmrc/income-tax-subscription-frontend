@@ -21,7 +21,6 @@ private object AppDependencies {
   private val govukTemplateVersion = "5.2.0"
   private val playUiVersion = "7.4.0"
   private val playPartialsVersion = "5.4.0"
-  private val playAuthorisedFrontendVersion = "6.4.0"
   private val playConfigVersion = "4.3.0"
   private val hmrcTestVersion = "2.3.0"
   private val scalaTestVersion = "3.0.1"
@@ -31,12 +30,12 @@ private object AppDependencies {
   private val playWhitelistFilterVersion = "2.0.0"
   private val wiremockVersion = "2.5.1"
   private val playAuthVersion = "1.2.0"
+  private val domainVersion = "4.1.0"
 
   val compile = Seq(
     ws,
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
     "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
-    "uk.gov.hmrc" %% "play-authorised-frontend" % playAuthorisedFrontendVersion,
     "uk.gov.hmrc" %% "play-config" % playConfigVersion,
     "uk.gov.hmrc" %% "logback-json-logger" % logbackJsonLoggerVersion,
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
@@ -44,7 +43,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingCleintVersion,
     "uk.gov.hmrc" %% "play-whitelist-filter" % playWhitelistFilterVersion,
-    "uk.gov.hmrc" %% "play-auth" % playAuthVersion
+    "uk.gov.hmrc" %% "play-auth" % playAuthVersion,
+    "uk.gov.hmrc" %% "domain" % domainVersion
   )
 
   trait TestDependencies {

@@ -58,6 +58,20 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
         redirectURI(termsURI)
       )
     }
+
+    "redirect to sign-in when auth fails" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubUnauthorised()
+
+      When("GET /check-your-answers is called")
+      val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
+
+      Then("Should return a SEE_OTHER with a redirect location of terms")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(signInURI)
+      )
+    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {

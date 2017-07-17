@@ -31,6 +31,11 @@ object AuthStub extends WireMockMethods {
       .thenReturn(status = OK, body = successfulAuthResponse)
   }
 
+  def stubUnauthorised(): StubMapping = {
+    when(method = POST, uri = authoriseUri)
+      .thenReturn(status = UNAUTHORIZED)
+  }
+
   private val ninoEnrolment = Json.obj(
     "key" -> ninoEnrolmentName,
     "identifiers" -> Json.arr(
