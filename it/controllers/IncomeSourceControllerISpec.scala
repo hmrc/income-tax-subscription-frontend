@@ -65,6 +65,20 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         )
       }
     }
+
+    "redirect to sign-in when auth fails" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubUnauthorised()
+
+      When("GET /check-your-answers is called")
+      val res = IncomeTaxSubscriptionFrontend.income()
+
+      Then("Should return a SEE_OTHER with a redirect location of terms")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(signInURI)
+      )
+    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/income" when {
@@ -168,6 +182,22 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(BAD_REQUEST),
           errorDisplayed()
+        )
+      }
+
+      "redirect to sign-in when auth fails" in {
+        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubUnauthorised()
+
+        When("GET /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of terms")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(signInURI)
         )
       }
     }
@@ -303,6 +333,22 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(errorMainIncomeURI)
+        )
+      }
+
+      "redirect to sign-in when auth fails" in {
+        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubUnauthorised()
+
+        When("GET /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of terms")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(signInURI)
         )
       }
     }
