@@ -109,6 +109,7 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
+    def confirmation(): WSResponse = get("/confirmation")
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =

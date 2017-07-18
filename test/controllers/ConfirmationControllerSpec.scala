@@ -24,6 +24,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import uk.gov.hmrc.play.http.NotFoundException
 import utils.TestModels
 
 import scala.concurrent.Future
@@ -69,9 +70,8 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "return not found if the user is not enrolled" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
       val result = TestConfirmationController.showConfirmation(fakeRequest)
-      status(result) shouldBe NOT_FOUND
 
-      await(result)
+      intercept[NotFoundException](await(result)).message shouldBe "AuthPredicates.enrolledPredicate"
       verifyKeystore(fetchSubscriptionId = 0)
     }
   }
