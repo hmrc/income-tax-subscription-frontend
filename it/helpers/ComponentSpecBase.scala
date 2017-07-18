@@ -19,7 +19,7 @@ package helpers
 import java.util.UUID
 
 import controllers.ITSASessionKeys.GoHome
-import forms.{AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
+import forms.{AccountingPeriodDateForm, AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.{AccountingPeriodModel, AccountingPeriodPriorModel, IncomeSourceModel, OtherIncomeModel}
@@ -142,6 +142,17 @@ trait ComponentSpecBase extends UnitSpec
         )
       )
     }
+
+    def submitAccountingPeriodDates(inEditMode: Boolean, request: Option[AccountingPeriodModel]): WSResponse = {
+      val uri = s"/business/accounting-period-dates?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            AccountingPeriodDateForm.accountingPeriodDateForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
 
   }
 

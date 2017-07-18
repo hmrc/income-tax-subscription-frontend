@@ -17,7 +17,7 @@
 package controllers.business
 
 import forms._
-import helpers.ComponentSpecBase
+import helpers.{ComponentSpecBase, IntegrationTestModels}
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
@@ -43,7 +43,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(Messages("accounting_period.title"))
-//        TODO: Create new method here to check accounting period dates entered.
+          //        TODO: Create new method here to check accounting period dates entered.
         )
       }
     }
@@ -71,7 +71,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(Messages("accounting_period.title"))
-//        TODO: Create new method here to check accounting period dates not entered.
+          //        TODO: Create new method here to check accounting period dates not entered.
         )
       }
     }
@@ -96,274 +96,135 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
 
     "not in edit mode" should {
 
-      "select the Both income source radio button on the income source page" in {
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
+      "enter accounting period start and end dates on the accounting period page" in {
+        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
-        When("POST /income is called")
-        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of other income")
+        Then("Should return a SEE_OTHER with a redirect location of business name")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(otherIncomeURI)
+          redirectURI(businessNameURI)
+        )
+      }
+
+      "enter no accounting period dates on the accounting period page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, "")
+
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, None)
+
+        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        res should have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
+
+      "select invalid income source option on the income source page as if the user it trying to manipulate the html" in {
+        val userInput = AccountingPeriodModel(DateModel("dd", "mm", "yyyy"), DateModel("dd", "mm", "yyyy"))
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+
+        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        res should have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
+
+      "redirect to sign-in when auth fails" in {
+        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubUnauthorised()
+
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of sign-in")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(signInURI)
+        )
+      }
+    }
+
+    "in edit mode" should {
+
+      "simulate not changing accounting period dates when calling page from Check Your Answers" in {
+        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
+        )
+      }
+
+      "simulate changing accounting period dates when calling page from Check Your Answers" in {
+        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
+        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+        val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2019"))
+        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            incomeSource = Some(keystoreIncomeSource),
+            otherIncome = Some(keystoreIncomeOther),
+            accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
+            accountingPeriodDate = Some(keystoreAccountingPeriodDates)
+          )
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
+        )
+      }
+
+      "redirect to sign-in when auth fails" in {
+        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubUnauthorised()
+
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of sign-in")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(signInURI)
         )
       }
     }
   }
-
-//      "select the Business income source radio button on the income source page" in {
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_business)
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of other income")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(otherIncomeURI)
-//        )
-//      }
-//
-//      "select the Property income source radio button on the income source page" in {
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of other income")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(otherIncomeURI)
-//        )
-//      }
-//
-//      "select the Other income source radio button on the income source page" in {
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_other)
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of main income")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(errorMainIncomeURI)
-//        )
-//      }
-//
-//      "select no income source option on the income source page" in {
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, "")
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, None)
-//
-//        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-//        res should have(
-//          httpStatus(BAD_REQUEST),
-//          errorDisplayed()
-//        )
-//      }
-//
-//      "select invalid income source option on the income source page as if the user it trying to manipulate the html" in {
-//        val userInput = IncomeSourceModel("madeup")
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, "madeup")
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
-//
-//        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-//        res should have(
-//          httpStatus(BAD_REQUEST),
-//          errorDisplayed()
-//        )
-//      }
-//
-//      "redirect to sign-in when auth fails" in {
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubUnauthorised()
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(signInURI)
-//        )
-//      }
-//    }
-//
-//    "when in edit mode" should {
-//
-//      "simulate not changing income source from business when calling page from Check Your Answers" in {
-//        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_business)
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, keystoreIncomeSource)
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(checkYourAnswersURI)
-//        )
-//      }
-//
-//      "simulate not changing income source from property when calling page from Check Your Answers" in {
-//        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_property)
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, keystoreIncomeSource)
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(checkYourAnswersURI)
-//        )
-//      }
-//
-//      "simulate not changing income source from business and property to both when calling page from Check Your Answers" in {
-//        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, keystoreIncomeSource)
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(checkYourAnswersURI)
-//        )
-//      }
-//
-//      "simulate changing income source from business to property when calling page from Check Your Answers" in {
-//        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, keystoreIncomeSource)
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of income other")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(otherIncomeURI)
-//        )
-//      }
-//
-//      "simulate changing income source from property to both when calling page from Check Your Answers" in {
-//        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_property)
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, keystoreIncomeSource)
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of income other")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(otherIncomeURI)
-//        )
-//      }
-//
-//      "simulate changing income source from business and property to business when calling page from Check Your Answers" in {
-//        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_business)
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, keystoreIncomeSource)
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of income other")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(otherIncomeURI)
-//        )
-//      }
-//
-//      "simulate changing income source from business to other when calling page from Check Your Answers" in {
-//        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_other)
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubAuthSuccess()
-//        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
-//        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, keystoreIncomeSource)
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of error main income")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(errorMainIncomeURI)
-//        )
-//      }
-//
-//      "redirect to sign-in when auth fails" in {
-//        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
-//
-//        Given("I setup the Wiremock stubs")
-//        AuthStub.stubUnauthorised()
-//
-//        When("POST /income is called")
-//        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
-//
-//        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-//        res should have(
-//          httpStatus(SEE_OTHER),
-//          redirectURI(signInURI)
-//        )
-//      }
-//    }
-
 }

@@ -17,8 +17,8 @@ object IntegrationTestModels {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate = DateModel("01", "04", "2017")
-  val testEndDate = DateModel("01", "04", "2018")
+  val testStartDate = DateModel("06", "04", "2017")
+  val testEndDate = DateModel("05", "04", "2018")
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
   val testAccountingPeriod: AccountingPeriodModel =
