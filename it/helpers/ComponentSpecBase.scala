@@ -111,7 +111,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
 
-    def businessAccountingPeriodDates(): WSResponse = get("/business/accou")
+    def businessAccountingPeriodDates(): WSResponse = get("/business/accounting-period-dates")
 
     def registerNextAccountingPeriod(): WSResponse = get("/business/register-next-accounting-period")
 
