@@ -105,8 +105,9 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(Messages("accounting_period.title")),
-          mainHeading(Messages("accounting_period.heading.next"))
-          //        TODO: Create new method here to check accounting period dates entered.
+          mainHeading(Messages("accounting_period.heading.next")),
+          dateField("startDate", testAccountingPeriod.startDate),
+          dateField("endDate", testAccountingPeriod.endDate)
         )
       }
     }
