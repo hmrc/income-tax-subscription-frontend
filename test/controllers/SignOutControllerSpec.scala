@@ -30,9 +30,7 @@ class SignOutControllerSpec extends ControllerBaseSpec {
   )
 
   override val controllerName: String = "SignOutController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    //"signOut" -> TestSignOutController.signOut
-  )
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map.empty
 
   "Authorised users" should {
     "be redirected to the gg signOut" in {
