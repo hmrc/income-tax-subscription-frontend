@@ -115,6 +115,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def registerNextAccountingPeriod(): WSResponse = get("/business/register-next-accounting-period")
 
+    def businessName(): WSResponse = get("/business/name")
+
     def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
 
     def submitBusinessAccountingPeriodPrior(inEditMode: Boolean, request: Option[AccountingPeriodPriorModel]): WSResponse = {
