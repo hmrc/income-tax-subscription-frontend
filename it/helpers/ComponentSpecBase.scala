@@ -113,6 +113,10 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessAccountingPeriodDates(): WSResponse = get("/business/accou")
 
+    def registerNextAccountingPeriod(): WSResponse = get("/business/register-next-accounting-period")
+
+    def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
+
     def submitBusinessAccountingPeriodPrior(inEditMode: Boolean, request: Option[AccountingPeriodPriorModel]): WSResponse = {
       val uri = s"/business/accounting-period-prior?editMode=$inEditMode"
       post(uri)(
