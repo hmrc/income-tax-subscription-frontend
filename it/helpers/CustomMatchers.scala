@@ -70,6 +70,21 @@ trait CustomMatchers {
       }
     }
 
+  def mainHeading(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+
+      def apply(response: WSResponse) = {
+        val body = Jsoup.parse(response.body)
+        val h1 = body.select("h1").first().text()
+        HavePropertyMatchResult(
+          h1 == expectedValue,
+          "h1",
+          expectedValue,
+          h1
+        )
+      }
+    }
+
   def errorDisplayed(): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
       def apply(response: WSResponse) = {

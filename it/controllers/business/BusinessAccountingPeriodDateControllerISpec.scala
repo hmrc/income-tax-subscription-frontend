@@ -31,7 +31,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-period-dates" when {
 
     "keystore returns all data" should {
-      "show the accounting period dates page with date values entered" in {
+      "show the current accounting period dates page with date values entered" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
@@ -42,14 +42,15 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the accounting period dates page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("accounting_period.title"))
+          pageTitle(Messages("accounting_period.title")),
+          mainHeading(Messages("accounting_period.heading.current"))
           //        TODO: Create new method here to check accounting period dates entered.
         )
       }
     }
 
     "keystore returns no data" should {
-      "show the accounting period dates page without date values entered" in {
+      "show the current accounting period dates page without date values entered" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
         val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
@@ -70,11 +71,46 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the accounting period dates page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("accounting_period.title"))
+          pageTitle(Messages("accounting_period.title")),
+          mainHeading(Messages("accounting_period.heading.current"))
           //        TODO: Create new method here to check accounting period dates not entered.
         )
       }
     }
+
+    "keystore returns all data" should {
+      "show the future accounting period dates page with date values entered" in {
+        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
+        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
+        val keystoreAccountingPeriodDates: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            incomeSource = Some(keystoreIncomeSource),
+            otherIncome = Some(keystoreIncomeOther),
+            accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
+            accountingPeriodDate = Some(keystoreAccountingPeriodDates)
+          )
+        )
+
+        When("GET /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.businessAccountingPeriodDates()
+
+        Then("Should return a OK with the accounting period dates page")
+        res should have(
+          httpStatus(OK),
+          pageTitle(Messages("accounting_period.title")),
+          mainHeading(Messages("accounting_period.heading.next"))
+          //        TODO: Create new method here to check accounting period dates entered.
+        )
+      }
+    }
+
+
+
 
     "redirect to sign-in when auth fails" in {
       Given("I setup the Wiremock stubs")
