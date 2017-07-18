@@ -38,7 +38,6 @@ class WSHttp @Inject()(val app: Application) extends uk.gov.hmrc.play.http.ws.WS
   override val hooks = NoneRequired
 }
 
-
 @Singleton
 class SessionCache @Inject()(val app: Application,
                              val http: WSHttp) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {

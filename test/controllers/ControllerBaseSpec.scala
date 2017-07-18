@@ -41,7 +41,7 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
         s"Calling the $name action of the $controllerName with an unauthorised user" should {
           lazy val result = call(fakeRequest)
 
-          "return 303" in {
+          "return an AuthorisationException" in {
             Mockito.reset(mockAuthService)
 
             val exception = new InvalidBearerToken()

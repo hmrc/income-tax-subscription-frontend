@@ -17,11 +17,13 @@
 package helpers
 
 import java.net.URLEncoder
+import java.time.LocalDateTime
 
 import play.api.libs.Crypto
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
 import uk.gov.hmrc.play.http.SessionKeys
 import IntegrationTestConstants._
+import controllers.ITSASessionKeys
 
 object SessionCookieBaker {
   private val cookieKey = "gvBoGdgzqG1AarzF1LY0zQ=="
@@ -52,7 +54,8 @@ object SessionCookieBaker {
       SessionKeys.token -> "token",
       SessionKeys.authProvider -> "GGW",
       SessionKeys.lastRequestTimestamp -> rollbackTimestamp,
-      SessionKeys.authToken -> "auth"
+      SessionKeys.authToken -> "auth",
+      ITSASessionKeys.StartTime -> LocalDateTime.now().toString
     ) ++ additionalData
   }
 

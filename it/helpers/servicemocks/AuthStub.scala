@@ -28,7 +28,12 @@ object AuthStub extends WireMockMethods {
 
   def stubAuthSuccess(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse)
+      .thenReturn(status = OK, body = successfulAuthResponse(ninoEnrolment))
+  }
+
+  def stubEnrolled(): StubMapping = {
+    when(method = POST, uri = authoriseUri)
+      .thenReturn(status = OK, body = successfulAuthResponse(ninoEnrolment, mtdidEnrolment))
   }
 
   def stubUnauthorised(): StubMapping = {
@@ -56,11 +61,9 @@ object AuthStub extends WireMockMethods {
     )
   )
 
-  private val successfulAuthResponse: JsObject =
+  private def successfulAuthResponse(enrolments: JsObject*): JsObject =
   //Written out manually as the json writer for Enrolment doesn't match the reader
     Json.obj(
-      "allEnrolments" -> Json.arr(
-        ninoEnrolment
-      )
+      "allEnrolments" -> enrolments
     )
 }

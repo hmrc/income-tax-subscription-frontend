@@ -19,6 +19,7 @@ package controllers
 import common.Constants._
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.Enrolments
+import uk.gov.hmrc.play.http.NotFoundException
 
 import scala.concurrent.Future
 
@@ -41,7 +42,7 @@ object AuthPredicates extends Results {
   def enrolledPredicate(result: Enrolments => Future[Result]): Enrolments => Future[Result] = {
     enrolments =>
       if (enrolments.getEnrolment(mtdItsaEnrolmentName).nonEmpty) result(enrolments)
-      else Future.successful(NotFound)
+      else Future.failed(new NotFoundException("AuthPredicates.enrolledPredicate"))
   }
 
   private val noNino: Result = Redirect(controllers.routes.NoNinoController.showNoNino())

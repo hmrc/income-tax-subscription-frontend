@@ -26,17 +26,17 @@ import play.api.mvc.{EssentialFilter, Request, RequestHeader, Result}
 import play.api.{Application, Configuration, Logger, Play}
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{AuthorisationException, BearerTokenExpired, InsufficientEnrolments}
-import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.audit.filters.FrontendAuditFilter
 import uk.gov.hmrc.play.config.{AppName, ControllerConfig, RunMode}
 import uk.gov.hmrc.play.filters.{MicroserviceFilterSupport, RecoveryFilter}
 import uk.gov.hmrc.play.frontend.bootstrap.{DefaultFrontendGlobal, ShowErrorPage}
+import uk.gov.hmrc.play.http.NotFoundException
 import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
 
 
 object FrontendGlobal
-  extends DefaultFrontendGlobal {
+  extends DefaultFrontendGlobal with ShowErrorPage {
 
   override lazy val auditConnector = new FrontendAuditConnector(Play.current)
   override val loggingFilter = LoggingFilter
@@ -75,6 +75,8 @@ object FrontendGlobal
       case _: AuthorisationException =>
         Logger.debug("[AuthenticationPredicate][async] Unauthorised request. Redirect to Sign In.")
         Redirect(controllers.routes.SignInController.signIn())
+      case _: NotFoundException =>
+        NotFound(notFoundTemplate(Request(rh, "")))
       case _ =>
         super.resolveError(rh, ex)
     }

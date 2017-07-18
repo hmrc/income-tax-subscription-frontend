@@ -19,10 +19,10 @@ package helpers
 import java.util.UUID
 
 import controllers.ITSASessionKeys.GoHome
-import forms.IncomeSourceForm
+import forms.{AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import models.IncomeSourceModel
+import models.{AccountingPeriodModel, AccountingPeriodPriorModel, IncomeSourceModel, OtherIncomeModel}
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -95,9 +95,33 @@ trait ComponentSpecBase extends UnitSpec
 
     def income(): WSResponse = get("/income")
 
+    def otherIncome(): WSResponse = get("/income-other")
+
+    def mainIncomeError(): WSResponse = get("/error/main-income")
+
+    def otherIncomeError(): WSResponse = get("/error/other-income")
+
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
+
+    def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
+
+    def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
+
+    def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
+
+    def businessAccountingPeriodDates(): WSResponse = get("/business/accou")
+
+    def submitBusinessAccountingPeriodPrior(inEditMode: Boolean, request: Option[AccountingPeriodPriorModel]): WSResponse = {
+      val uri = s"/business/accounting-period-prior?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
 
     def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
       val uri = s"/income?editMode=$inEditMode"
@@ -105,6 +129,18 @@ trait ComponentSpecBase extends UnitSpec
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             IncomeSourceForm.incomeSourceForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def confirmation(): WSResponse = get("/confirmation")
+
+    def submitOtherIncome(inEditMode: Boolean, request: Option[OtherIncomeModel]): WSResponse = {
+      val uri = s"/income-other?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            OtherIncomeForm.otherIncomeForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

@@ -35,12 +35,8 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
       ))
     )
 
-    "have the expected NINO 'AB124512C'" in {
+    s"have the expected NINO ${TestConstants.testNino}" in {
       user.nino shouldBe Some(TestConstants.testNino)
     }
-
-    //    "have the previously logged in time of logged in user" in {
-    //      user.previouslyLoggedInAt shouldBe ggUser.previouslyLoggedInAt
-    //    }
   }
 }
