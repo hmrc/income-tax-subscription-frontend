@@ -16,6 +16,7 @@
 
 package helpers
 
+import models.DateModel
 import org.jsoup.Jsoup
 import org.scalatest.matchers._
 import play.api.libs.json.Reads
@@ -66,6 +67,38 @@ trait CustomMatchers {
           "pageTitle",
           expectedValue,
           body.title
+        )
+      }
+    }
+
+  def mainHeading(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+
+      def apply(response: WSResponse) = {
+        val body = Jsoup.parse(response.body)
+        val h1 = body.select("h1").first().text()
+        HavePropertyMatchResult(
+          h1 == expectedValue,
+          "h1",
+          expectedValue,
+          h1
+        )
+      }
+    }
+
+  def dateField(id: String, expectedValue: DateModel): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+
+      def apply(response: WSResponse) = {
+        val body = Jsoup.parse(response.body)
+        val day = body.getElementById(id + ".dateDay").`val`()
+        val month = body.getElementById(id + ".dateMonth").`val`()
+        val year = body.getElementById(id + ".dateYear").`val`()
+        HavePropertyMatchResult(
+          day == expectedValue.day && month == expectedValue.month && year == expectedValue.year,
+          "day",
+          expectedValue.toString,
+          day + " / " + month + " / " + year
         )
       }
     }

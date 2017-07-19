@@ -19,7 +19,7 @@ package helpers
 import java.util.UUID
 
 import controllers.ITSASessionKeys.GoHome
-import forms.{AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
+import forms.{AccountingPeriodDateForm, AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models.{AccountingPeriodModel, AccountingPeriodPriorModel, IncomeSourceModel, OtherIncomeModel}
@@ -111,7 +111,13 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
 
-    def businessAccountingPeriodDates(): WSResponse = get("/business/accou")
+    def businessAccountingPeriodDates(): WSResponse = get("/business/accounting-period-dates")
+
+    def registerNextAccountingPeriod(): WSResponse = get("/business/register-next-accounting-period")
+
+    def businessName(): WSResponse = get("/business/name")
+
+    def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
 
     def submitBusinessAccountingPeriodPrior(inEditMode: Boolean, request: Option[AccountingPeriodPriorModel]): WSResponse = {
       val uri = s"/business/accounting-period-prior?editMode=$inEditMode"
@@ -144,6 +150,17 @@ trait ComponentSpecBase extends UnitSpec
         )
       )
     }
+
+    def submitAccountingPeriodDates(inEditMode: Boolean, request: Option[AccountingPeriodModel]): WSResponse = {
+      val uri = s"/business/accounting-period-dates?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            AccountingPeriodDateForm.accountingPeriodDateForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
 
   }
 
