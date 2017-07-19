@@ -231,10 +231,22 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
     "in edit mode" should {
 
       "simulate not changing accounting period dates when calling page from Check Your Answers" in {
+        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
+        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+        val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "04", "2017"), DateModel("05", "04", "2018"))
         val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            incomeSource = Some(keystoreIncomeSource),
+            otherIncome = Some(keystoreIncomeOther),
+            accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
+            accountingPeriodDate = Some(keystoreAccountingPeriodDates)
+          )
+        )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")

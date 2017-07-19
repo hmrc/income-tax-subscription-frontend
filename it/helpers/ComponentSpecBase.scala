@@ -19,10 +19,10 @@ package helpers
 import java.util.UUID
 
 import controllers.ITSASessionKeys.GoHome
-import forms.{AccountingPeriodDateForm, AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
+import forms._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import models.{AccountingPeriodModel, AccountingPeriodPriorModel, IncomeSourceModel, OtherIncomeModel}
+import models._
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -115,6 +115,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def registerNextAccountingPeriod(): WSResponse = get("/business/register-next-accounting-period")
 
+    def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
+
     def businessName(): WSResponse = get("/business/name")
 
     def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
@@ -161,6 +163,16 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
+    def submitAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethodModel]): WSResponse = {
+      val uri = s"/business/accounting-method?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            AccountingMethodForm.accountingMethodForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
 
   }
 
@@ -170,5 +182,8 @@ trait ComponentSpecBase extends UnitSpec
   implicit val nilWrites: Writes[Nil.type] = new Writes[Nil.type] {
     override def writes(o: Nil.type): JsValue = JsArray()
   }
+
+  def removeHtmlMarkup(stringWithMarkup: String): String =
+    stringWithMarkup.replaceAll("<.+?>", " ").replaceAll("[\\s]{2,}", " ").trim
 
 }
