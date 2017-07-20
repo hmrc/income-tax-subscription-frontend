@@ -16,24 +16,15 @@
 
 package services
 
-import common.Constants.GovernmentGateway._
-import connectors.mocks.MockGGAdminConnector
 import connectors.models.gg._
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.play.PlaySpec
+import services.mocks.TestKnownFactsService
 import utils.TestConstants._
 import utils.UnitTestTrait
 
 import scala.concurrent.Future
 
-class KnownFactsServiceSpec extends PlaySpec with UnitTestTrait with MockGGAdminConnector with ScalaFutures {
-  object TestKnownFactsService extends KnownFactsService(mockGGAdminConnector)
-
-  val expectedRequestModel = KnownFactsRequest(List(
-    TypeValuePair(MTDITID, testMTDID),
-    TypeValuePair(NINO, testNino)
-  ))
-
+class KnownFactsServiceSpec extends UnitTestTrait with TestKnownFactsService with ScalaFutures {
   "addKnownFacts" must {
     def result: Future[KnownFactsResponse] = TestKnownFactsService.addKnownFacts(testMTDID, testNino)
 
