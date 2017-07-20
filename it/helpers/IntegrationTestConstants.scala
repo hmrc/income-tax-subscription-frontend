@@ -46,6 +46,7 @@ object IntegrationTestConstants {
   val accountingPeriodDatesURI = s"$baseURI/business/accounting-period-dates"
   val termsURI = s"$baseURI/terms"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
+  val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
   val signInURI = s"$baseURI/sign-in"
 
   object Auth {
