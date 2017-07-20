@@ -167,6 +167,16 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
+    def submitBusinessName(inEditMode: Boolean, request: Option[BusinessNameModel]): WSResponse = {
+      val uri = s"/business/name?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            BusinessNameForm.businessNameValidationForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
     def submitAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethodModel]): WSResponse = {
       val uri = s"/business/accounting-method?editMode=$inEditMode"
       post(uri)(
