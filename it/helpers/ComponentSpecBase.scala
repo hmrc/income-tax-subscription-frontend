@@ -101,6 +101,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def otherIncomeError(): WSResponse = get("/error/other-income")
 
+    def terms(): WSResponse = get("/terms")
+
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
@@ -109,11 +111,15 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
 
+    def submitTerms(): WSResponse = post("/terms")(Map.empty)
+
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
 
     def businessAccountingPeriodDates(): WSResponse = get("/business/accounting-period-dates")
 
     def registerNextAccountingPeriod(): WSResponse = get("/business/register-next-accounting-period")
+
+    def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 
     def businessName(): WSResponse = get("/business/name")
 
@@ -171,6 +177,16 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
+    def submitAccountingMethod(inEditMode: Boolean, request: Option[AccountingMethodModel]): WSResponse = {
+      val uri = s"/business/accounting-method?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            AccountingMethodForm.accountingMethodForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
 
   }
 
@@ -180,5 +196,8 @@ trait ComponentSpecBase extends UnitSpec
   implicit val nilWrites: Writes[Nil.type] = new Writes[Nil.type] {
     override def writes(o: Nil.type): JsValue = JsArray()
   }
+
+  def removeHtmlMarkup(stringWithMarkup: String): String =
+    stringWithMarkup.replaceAll("<.+?>", " ").replaceAll("[\\s]{2,}", " ").trim
 
 }
