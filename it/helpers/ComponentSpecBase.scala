@@ -101,6 +101,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def otherIncomeError(): WSResponse = get("/error/other-income")
 
+    def terms(): WSResponse = get("/terms")
+
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
@@ -108,6 +110,8 @@ trait ComponentSpecBase extends UnitSpec
     def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
 
     def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
+
+    def submitTerms(): WSResponse = post("/terms")(Map.empty)
 
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
 
