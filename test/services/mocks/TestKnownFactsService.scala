@@ -18,15 +18,36 @@ package services.mocks
 
 import common.Constants.GovernmentGateway._
 import connectors.mocks.MockGGAdminConnector
-import connectors.models.gg.{KnownFactsRequest, TypeValuePair}
+import connectors.models.gg._
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito._
 import services.KnownFactsService
+import uk.gov.hmrc.play.http.HeaderCarrier
+import utils.MockTrait
 import utils.TestConstants._
 
+import scala.concurrent.Future
+
 trait TestKnownFactsService extends MockGGAdminConnector {
+
   object TestKnownFactsService extends KnownFactsService(mockGGAdminConnector)
 
   val expectedRequestModel = KnownFactsRequest(List(
     TypeValuePair(MTDITID, testMTDID),
     TypeValuePair(NINO, testNino)
   ))
+}
+
+trait MockKnownFactsService extends MockTrait {
+  val mockKnownFactsService = mock[KnownFactsService]
+
+  private def mockAddKnownFacts(mtditid: String, nino: String)(response: Future[KnownFactsResponse]): Unit =
+    when(mockKnownFactsService.addKnownFacts(ArgumentMatchers.eq(mtditid), ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(response)
+
+  def mockAddKnownFactsSuccess(mtditid: String, nino: String): Unit = mockAddKnownFacts(mtditid, nino)(Future.successful(KnownFactsSuccess))
+
+  def mockAddKnownFactsFailure(mtditid: String, nino: String): Unit = mockAddKnownFacts(mtditid, nino)(Future.successful(KnownFactsFailure(testErrorMessage)))
+
+  def mockAddKnownFactsException(mtditid: String, nino: String): Unit = mockAddKnownFacts(mtditid, nino)(Future.failed(testException))
 }

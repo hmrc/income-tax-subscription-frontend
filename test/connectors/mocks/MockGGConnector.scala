@@ -30,9 +30,6 @@ trait MockGGConnector extends MockHttp {
   lazy val httpPost: HttpPost = mockHttpPost
   lazy val logging: Logging = app.injector.instanceOf[Logging]
 
-  val errorJson = JsString("This is an error")
-  val testException = new Exception
-
   def mockEnrolSuccess(request: EnrolRequest): Unit =
     setupMockHttpPost(Some(TestGovernmentGatewayEnrolConnector.enrolUrl), Some(request))(Status.OK, JsNull)
 

@@ -21,18 +21,15 @@ import connectors.GGAdminConnector
 import connectors.models.gg.{KnownFactsFailure, KnownFactsRequest, KnownFactsResponse, KnownFactsSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.libs.json._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
+import utils.MockTrait
 
 import scala.concurrent.Future
 
-trait MockGGAdminConnector extends MockitoSugar {
+trait MockGGAdminConnector extends MockTrait {
   val mockGGAdminConnector = mock[GGAdminConnector]
-
-  val testErrorMessage = "This is an error"
-  val testException = new Exception
 
   private def mockAddKnownFacts(request: KnownFactsRequest)(response: Future[KnownFactsResponse]): Unit =
     when(mockGGAdminConnector.addKnownFacts(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier]))
@@ -53,9 +50,6 @@ trait TestGGAdminConnector extends MockHttp {
   lazy val logging: Logging = app.injector.instanceOf[Logging]
   lazy val httpPost: HttpPost = mockHttpPost
   lazy val httpGet: HttpGet = mockHttpGet
-
-  val errorJson = JsString("This is an error")
-  val testException = new Exception
 
   def mockAddKnownFactsSuccess(request: KnownFactsRequest): Unit =
     setupMockHttpPost(Some(TestGGAdminConnector.addKnownFactsUrl), Some(request))(Status.OK, JsNull)

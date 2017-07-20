@@ -18,7 +18,7 @@ package connectors.mocks
 
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsString, JsValue}
 import uk.gov.hmrc.play.http.{HttpGet, HttpPost, HttpPut, HttpResponse}
 import utils.MockTrait
 
@@ -30,6 +30,8 @@ trait MockHttp extends MockTrait {
   val mockHttpGet = mock[HttpGet]
   val mockHttpPost = mock[HttpPost]
   val mockHttpPut = mock[HttpPut]
+
+  val errorJson = JsString(testErrorMessage)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

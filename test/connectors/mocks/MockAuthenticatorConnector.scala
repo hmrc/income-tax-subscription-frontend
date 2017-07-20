@@ -33,9 +33,6 @@ trait MockAuthenticatorConnector extends MockHttp {
   lazy val httpPost: HttpPost = mockHttpPost
   lazy val httpGet: HttpGet = mockHttpGet
 
-  val errorJson = JsString("This is an error")
-  val testException = new Exception
-
   def mockRefreshProfileSuccess(): Unit =
     setupMockHttpPostEmpty(Some(TestGGAuthenticationConnector.refreshProfileUrl))(Status.NO_CONTENT, JsNull)
 
