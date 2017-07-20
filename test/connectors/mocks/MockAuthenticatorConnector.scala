@@ -18,28 +18,33 @@ package connectors.mocks
 
 import audit.Logging
 import config.AppConfig
-import connectors.GGAuthenticationConnector
+import connectors.{GGAdminConnector, GGAuthenticationConnector}
+import connectors.models.gg.KnownFactsRequest
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
-import play.api.libs.json.JsValue
-import uk.gov.hmrc.play.http.HttpPost
+import play.api.http.Status
+import play.api.libs.json.{JsNull, JsString, JsValue}
+import uk.gov.hmrc.play.http.{HttpGet, HttpPost}
 import utils.Implicits._
 
 trait MockAuthenticatorConnector extends MockHttp {
 
-//  lazy val config: Configuration = app.injector.instanceOf[Configuration]
-//  lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-//  lazy val logging: Logging = app.injector.instanceOf[Logging]
-//  lazy val httpPost: HttpPost = mockHttpPost
-//
-//  val mockRefreshProfile = (setupRefreshProfile _).tupled
-//
-//  object TestGGAuthenticationConnector extends GGAuthenticationConnector(config, appConfig, logging, httpPost)
-//
-//  def setupRefreshProfile(status: Int, response: Option[JsValue]): Unit =
-//    setupMockHttpPostEmpty(url = TestGGAuthenticationConnector.refreshProfileUrl)(status, response)
-//
-//  def verifyRefreshProfile(count: Int): Unit =
-//    verifyMockHttpPostEmpty(url = TestGGAuthenticationConnector.refreshProfileUrl)(count)
+  lazy val logging: Logging = app.injector.instanceOf[Logging]
+  lazy val httpPost: HttpPost = mockHttpPost
+  lazy val httpGet: HttpGet = mockHttpGet
+
+  val errorJson = JsString("This is an error")
+  val testException = new Exception
+
+  def mockRefreshProfileSuccess(): Unit =
+    setupMockHttpPostEmpty(Some(TestGGAuthenticationConnector.refreshProfileUrl))(Status.NO_CONTENT, JsNull)
+
+  def mockRefreshProfileFailure(): Unit =
+    setupMockHttpPostEmpty(Some(TestGGAuthenticationConnector.refreshProfileUrl))(Status.INTERNAL_SERVER_ERROR, JsNull)
+
+  def mockRefreshProfileException(): Unit =
+    setupMockHttpPostEmptyException(Some(TestGGAuthenticationConnector.refreshProfileUrl))(testException)
+
+  object TestGGAuthenticationConnector extends GGAuthenticationConnector(appConfig, httpPost, logging)
 
 }

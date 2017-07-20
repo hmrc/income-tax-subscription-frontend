@@ -17,31 +17,36 @@
 package connectors
 
 import connectors.mocks.MockAuthenticatorConnector
+import connectors.models.authenticator.{RefreshFailure, RefreshProfileResult, RefreshSuccessful}
+import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.play.http.HeaderCarrier
 
+import scala.concurrent.Future
 
-class GGAuthenticationConnectorSpec extends MockAuthenticatorConnector {
+
+class GGAuthenticationConnectorSpec extends MockAuthenticatorConnector with ScalaFutures {
 
   override implicit val hc = HeaderCarrier()
-//
-//  "GGAuthenticationConnector.refreshProfile" must {
-//
-//    "return RefreshSuccessful when successful" in {
-//      mockRefreshProfile(refreshSuccess)
-//
-//      val result = TestGGAuthenticationConnector.refreshProfile
-//      val enrolResponse = await(result)
-//      enrolResponse shouldBe RefreshSuccessful
-//    }
-//
-//    "return RefreshSuccessful in case of failure" in {
-//      mockRefreshProfile(refreshFailure)
-//
-//      val result = TestGGAuthenticationConnector.refreshProfile
-//      val enrolResponse = await(result)
-//      enrolResponse shouldBe RefreshFailure
-//    }
-//
-//  }
+
+  "GGAuthenticationConnector.refreshProfile" must {
+
+    def refreshProfileResponse: Future[RefreshProfileResult] = TestGGAuthenticationConnector.refreshProfile
+
+    "return RefreshSuccessful when successful" in {
+      mockRefreshProfileSuccess()
+      whenReady(refreshProfileResponse)(_ mustBe RefreshSuccessful)
+    }
+
+    "return RefreshSuccessful in case of failure" in {
+      mockRefreshProfileFailure()
+      whenReady(refreshProfileResponse)(_ mustBe RefreshFailure)
+    }
+
+    "pass through the exception when the connection fails" in {
+      mockRefreshProfileException()
+      whenReady(refreshProfileResponse.failed)(_ mustBe testException)
+    }
+
+  }
 
 }

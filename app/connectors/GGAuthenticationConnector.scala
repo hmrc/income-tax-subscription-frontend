@@ -18,21 +18,19 @@ package connectors
 
 import javax.inject.Inject
 
-import audit.{Logging, LoggingConfig}
+import audit.Logging
 import config.AppConfig
 import connectors.GGAuthenticationConnector._
 import connectors.models.authenticator._
-import play.api.Configuration
 import play.api.http.Status._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class GGAuthenticationConnector @Inject()(configuration: Configuration,
-                                          appConfig: AppConfig,
-                                          logging: Logging,
-                                          httpPost: HttpPost
+class GGAuthenticationConnector @Inject()(appConfig: AppConfig,
+                                          httpPost: HttpPost,
+                                          logging: Logging
                                          ) extends RawResponseReads {
 
   lazy val refreshProfileUrl = appConfig.ggAuthenticationURL + refreshProfileUri
@@ -40,7 +38,6 @@ class GGAuthenticationConnector @Inject()(configuration: Configuration,
   def refreshProfile(implicit hc: HeaderCarrier): Future[RefreshProfileResult] =
     httpPost.POSTEmpty[HttpResponse](refreshProfileUrl).map {
       response =>
-        implicit lazy val loggingConfig = GGAuthenticationConnector.refreshProfileLoggingConfig
         response.status match {
           case NO_CONTENT =>
             logging.info(s"GGAuthentication refreshProfile responded with NO_CONTENT")
@@ -56,7 +53,5 @@ class GGAuthenticationConnector @Inject()(configuration: Configuration,
 object GGAuthenticationConnector {
 
   val refreshProfileUri = "/government-gateway-authentication/refresh-profile"
-
-  val refreshProfileLoggingConfig: Option[LoggingConfig] = Some(LoggingConfig(heading = "GGAuthenticationConnector.refreshProfile"))
 
 }
