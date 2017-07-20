@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-package common
+package connectors.models.gg
 
-object Constants {
+sealed trait KnownFactsResult
 
-  val mtdItsaEnrolmentName = "HMRC-MTD-IT"
-  val mtdItsaEnrolmentIdentifierKey = "MTDITID"
-  val ninoEnrolmentName = "HMRC-NI"
-  val ninoEnrolmentIdentifierKey = "NINO"
+object KnownFactsSuccess extends KnownFactsResult
 
-  object GovernmentGateway {
-    val MTDITID = "MTDITID"
-    val NINO = "NINO"
-    val ggPortalId = "Default"
-    val ggServiceName = "HMRC-MTD-IT"
-    val ggFriendlyName = "Making Tax Digital Income Tax Self-Assessment enrolment"
-  }
-}
+case class KnownFactsFailure(message: String) extends KnownFactsResult

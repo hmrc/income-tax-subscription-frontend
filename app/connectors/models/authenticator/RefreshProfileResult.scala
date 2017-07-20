@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-package common
+package connectors.models.authenticator
 
-object Constants {
+sealed trait RefreshProfileResult
 
-  val mtdItsaEnrolmentName = "HMRC-MTD-IT"
-  val mtdItsaEnrolmentIdentifierKey = "MTDITID"
-  val ninoEnrolmentName = "HMRC-NI"
-  val ninoEnrolmentIdentifierKey = "NINO"
+case object RefreshSuccessful extends RefreshProfileResult
 
-  object GovernmentGateway {
-    val MTDITID = "MTDITID"
-    val NINO = "NINO"
-    val ggPortalId = "Default"
-    val ggServiceName = "HMRC-MTD-IT"
-    val ggFriendlyName = "Making Tax Digital Income Tax Self-Assessment enrolment"
-  }
-}
+case object RefreshFailure extends RefreshProfileResult

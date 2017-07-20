@@ -1,0 +1,47 @@
+/*
+ * Copyright 2017 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package connectors.mocks
+
+import audit.Logging
+import config.AppConfig
+import connectors.GGAdminConnector
+import connectors.models.gg.KnownFactsRequest
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Configuration
+import play.api.http.Status
+import play.api.libs.json._
+import uk.gov.hmrc.play.http.{HttpGet, HttpPost}
+import utils.Implicits._
+
+trait MockGGAdminConnector extends MockHttp {
+
+  lazy val config: Configuration = app.injector.instanceOf[Configuration]
+  lazy val logging: Logging = app.injector.instanceOf[Logging]
+  lazy val httpPost: HttpPost = mockHttpPost
+  lazy val httpGet: HttpGet = mockHttpGet
+
+  val errorJson = JsString("This is an error")
+
+  def mockAddKnownFactsSuccess(request: KnownFactsRequest): Unit =
+    setupMockHttpPost(Some(TestGGAdminConnector.addKnownFactsUrl), Some(request))(Status.OK, JsNull)
+
+  def mockAddKnownFactsFailure(request: KnownFactsRequest): Unit =
+    setupMockHttpPost(Some(TestGGAdminConnector.addKnownFactsUrl), Some(request))(Status.INTERNAL_SERVER_ERROR, errorJson)
+
+  object TestGGAdminConnector extends GGAdminConnector(config, appConfig, logging, httpPost)
+
+}

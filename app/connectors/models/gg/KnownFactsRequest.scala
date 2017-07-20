@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package common
+package connectors.models.gg
 
-object Constants {
+import play.api.libs.json.Json
 
-  val mtdItsaEnrolmentName = "HMRC-MTD-IT"
-  val mtdItsaEnrolmentIdentifierKey = "MTDITID"
-  val ninoEnrolmentName = "HMRC-NI"
-  val ninoEnrolmentIdentifierKey = "NINO"
 
-  object GovernmentGateway {
-    val MTDITID = "MTDITID"
-    val NINO = "NINO"
-    val ggPortalId = "Default"
-    val ggServiceName = "HMRC-MTD-IT"
-    val ggFriendlyName = "Making Tax Digital Income Tax Self-Assessment enrolment"
-  }
+case class KnownFactsRequest(facts: List[TypeValuePair])
+
+object KnownFactsRequest {
+  implicit val formats = Json.format[KnownFactsRequest]
 }

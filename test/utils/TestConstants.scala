@@ -16,6 +16,9 @@
 
 package utils
 
+import common.Constants
+import common.Constants.GovernmentGateway._
+import connectors.models.gg.{KnownFactsRequest, TypeValuePair}
 import models.DateModel
 import uk.gov.hmrc.domain.Generator
 
@@ -28,4 +31,11 @@ object TestConstants {
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
+
+  lazy val knownFactsRequest = KnownFactsRequest(
+    List(
+      TypeValuePair(MTDITID, testMTDID),
+      TypeValuePair(NINO, testNino)
+    )
+  )
 }

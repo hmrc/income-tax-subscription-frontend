@@ -28,7 +28,7 @@ class TestOnlyAppConfig @Inject()(app: Application) extends FrontendAppConfig(ap
 
   lazy val ggStubsURL: String = baseUrl("gg-stubs")
 
-  lazy val ggAuthenticationURL: String = baseUrl("gg-authentication")
+  override lazy val ggAuthenticationURL: String = baseUrl("gg-authentication")
 
   lazy val preferencesURL: String = baseUrl("preferences")
 
