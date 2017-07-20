@@ -17,18 +17,39 @@
 package connectors.mocks
 
 import audit.Logging
-import config.AppConfig
 import connectors.GGAdminConnector
-import connectors.models.gg.KnownFactsRequest
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Configuration
+import connectors.models.gg.{KnownFactsFailure, KnownFactsRequest, KnownFactsResponse, KnownFactsSuccess}
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito._
+import org.scalatest.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.libs.json._
-import uk.gov.hmrc.play.http.{HttpGet, HttpPost}
-import utils.Implicits._
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
 
-trait MockGGAdminConnector extends MockHttp {
+import scala.concurrent.Future
 
+trait MockGGAdminConnector extends MockitoSugar {
+  val mockGGAdminConnector = mock[GGAdminConnector]
+
+  val testErrorMessage = "This is an error"
+  val testException = new Exception
+
+  private def mockAddKnownFacts(request: KnownFactsRequest)(response: Future[KnownFactsResponse]): Unit =
+    when(mockGGAdminConnector.addKnownFacts(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(response)
+
+  def mockAddKnownFactsSuccess(request: KnownFactsRequest): Unit =
+    mockAddKnownFacts(request)(Future.successful(KnownFactsSuccess))
+
+  def mockAddKnownFactsFailure(request: KnownFactsRequest): Unit =
+    mockAddKnownFacts(request)(Future.successful(KnownFactsFailure(testErrorMessage)))
+
+  def mockAddKnownFactsException(request: KnownFactsRequest): Unit =
+    mockAddKnownFacts(request)(Future.failed(testException))
+
+}
+
+trait TestGGAdminConnector extends MockHttp {
   lazy val logging: Logging = app.injector.instanceOf[Logging]
   lazy val httpPost: HttpPost = mockHttpPost
   lazy val httpGet: HttpGet = mockHttpGet

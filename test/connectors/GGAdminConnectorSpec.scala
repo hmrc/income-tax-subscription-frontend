@@ -16,14 +16,14 @@
 
 package connectors
 
-import connectors.mocks.MockGGAdminConnector
+import connectors.mocks.{TestGGAdminConnector, MockGGAdminConnector}
 import connectors.models.gg.{KnownFactsFailure, KnownFactsResponse, KnownFactsSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import utils.TestConstants._
 
 import scala.concurrent.Future
 
-class GGAdminConnectorSpec extends MockGGAdminConnector with ScalaFutures {
+class GGAdminConnectorSpec extends TestGGAdminConnector with ScalaFutures {
   "GGAdminConnector.addKnownFacts" must {
 
     "Post to the correct url" in {
