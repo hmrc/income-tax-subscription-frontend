@@ -113,6 +113,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitTerms(): WSResponse = post("/terms")(Map.empty)
 
+    def submitExitSurvey(): WSResponse = post("/exit-survey")(Map.empty)
+
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
 
     def businessAccountingPeriodDates(): WSResponse = get("/business/accounting-period-dates")
@@ -122,6 +124,8 @@ trait ComponentSpecBase extends UnitSpec
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 
     def businessName(): WSResponse = get("/business/name")
+
+    def exitSurvey(): WSResponse = get("/exit-survey")
 
     def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
 
