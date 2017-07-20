@@ -101,6 +101,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def otherIncomeError(): WSResponse = get("/error/other-income")
 
+    def terms(): WSResponse = get("/terms")
+
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
@@ -108,6 +110,10 @@ trait ComponentSpecBase extends UnitSpec
     def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
 
     def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
+
+    def submitTerms(): WSResponse = post("/terms")(Map.empty)
+
+    def submitExitSurvey(): WSResponse = post("/exit-survey")(Map.empty)
 
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
 
@@ -118,6 +124,8 @@ trait ComponentSpecBase extends UnitSpec
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 
     def businessName(): WSResponse = get("/business/name")
+
+    def exitSurvey(): WSResponse = get("/exit-survey")
 
     def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
 
@@ -159,6 +167,16 @@ trait ComponentSpecBase extends UnitSpec
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             AccountingPeriodDateForm.accountingPeriodDateForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def submitBusinessName(inEditMode: Boolean, request: Option[BusinessNameModel]): WSResponse = {
+      val uri = s"/business/name?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            BusinessNameForm.businessNameValidationForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

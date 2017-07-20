@@ -103,6 +103,21 @@ trait CustomMatchers {
       }
     }
 
+  def textField(id: String, expectedValue: String): HavePropertyMatcher[WSResponse, String] =
+    new HavePropertyMatcher[WSResponse, String] {
+
+      def apply(response: WSResponse) = {
+        val body = Jsoup.parse(response.body)
+        val text = body.getElementById(id).`val`()
+        HavePropertyMatchResult(
+          text == expectedValue,
+          "text field",
+          expectedValue,
+          text
+        )
+      }
+    }
+
   def errorDisplayed(): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
       def apply(response: WSResponse) = {

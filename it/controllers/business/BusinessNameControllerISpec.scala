@@ -16,11 +16,15 @@
 
 package controllers.business
 
-import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.signInURI
+import forms.IncomeSourceForm
+import helpers.IntegrationTestConstants.{businessAccountingMethodURI, checkYourAnswersURI, signInURI}
+import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import play.api.http.Status.{OK, SEE_OTHER}
+import helpers.{ComponentSpecBase, IntegrationTestModels}
+import models._
+import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
+import services.CacheConstants
 
 class BusinessNameControllerISpec extends ComponentSpecBase {
 
@@ -38,8 +42,8 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the business name page with populated business name")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.name.title"))
-          // TODO: Implement matcher to check business name against keystore
+          pageTitle(Messages("business.name.title")),
+          textField("businessName", testBusinessName.businessName)
         )
       }
     }
@@ -56,8 +60,8 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the business name page with no business name")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.name.title"))
-          // TODO: Implement matcher to check business name against keystore
+          pageTitle(Messages("business.name.title")),
+          textField("businessName", "")
         )
       }
     }
@@ -78,6 +82,136 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/name" when {
+
+    "not in edit mode" should {
+
+      "enter business name" in {
+        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
+
+        When("POST /business/name is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of business accounting method")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(businessAccountingMethodURI)
+        )
+      }
+
+      "do not enter business name" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, "")
+
+        When("POST /business/name is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, None)
+
+        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        res should have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
+
+      "select invalid business name option on the business name page as if the user it trying to manipulate the html" in {
+        val userInput = BusinessNameModel("ἄλφα")
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
+
+        When("POST /business/name is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
+
+        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        res should have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
+
+      "redirect to sign-in when auth fails" in {
+        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubUnauthorised()
+
+        When("POST /business/name is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of sign-in")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(signInURI)
+        )
+      }
+
+    }
+
+    "in edit mode" should {
+      "simulate not changing business name when calling page from Check Your Answers" in {
+        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
+
+        When("POST /business/name is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = true, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
+        )
+      }
+
+      "simulate changing business name when calling page from Check Your Answers" in {
+        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreBusinessName = BusinessNameModel("testBusiness")
+        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            incomeSource = Some(keystoreIncomeSource),
+            businessName = Some(keystoreBusinessName)
+          )
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
+
+        When("POST /business/name is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = true, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
+        )
+      }
+
+      "redirect to sign-in when auth fails" in {
+        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubUnauthorised()
+
+        When("POST /business/name is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = true, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of sign-in")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(signInURI)
+        )
+      }
+
+    }
 
   }
 }
