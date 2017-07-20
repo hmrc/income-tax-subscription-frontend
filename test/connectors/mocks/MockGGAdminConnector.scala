@@ -35,12 +35,16 @@ trait MockGGAdminConnector extends MockHttp {
   lazy val httpGet: HttpGet = mockHttpGet
 
   val errorJson = JsString("This is an error")
+  val testException = new Exception
 
   def mockAddKnownFactsSuccess(request: KnownFactsRequest): Unit =
     setupMockHttpPost(Some(TestGGAdminConnector.addKnownFactsUrl), Some(request))(Status.OK, JsNull)
 
   def mockAddKnownFactsFailure(request: KnownFactsRequest): Unit =
     setupMockHttpPost(Some(TestGGAdminConnector.addKnownFactsUrl), Some(request))(Status.INTERNAL_SERVER_ERROR, errorJson)
+
+  def mockAddKnownFactsException(request: KnownFactsRequest): Unit =
+    setupMockHttpPostException(Some(TestGGAdminConnector.addKnownFactsUrl), Some(request))(testException)
 
   object TestGGAdminConnector extends GGAdminConnector(config, appConfig, logging, httpPost)
 

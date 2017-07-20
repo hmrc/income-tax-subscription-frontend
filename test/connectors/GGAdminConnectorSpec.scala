@@ -19,15 +19,11 @@ package connectors
 import connectors.mocks.MockGGAdminConnector
 import connectors.models.gg.{KnownFactsFailure, KnownFactsResult, KnownFactsSuccess}
 import org.scalatest.concurrent.ScalaFutures
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.TestConstants._
 
 import scala.concurrent.Future
 
 class GGAdminConnectorSpec extends MockGGAdminConnector with ScalaFutures {
-
-  override implicit val hc = HeaderCarrier()
-
   "GGAdminConnector.addKnownFacts" must {
 
     "Post to the correct url" in {
@@ -36,16 +32,20 @@ class GGAdminConnectorSpec extends MockGGAdminConnector with ScalaFutures {
 
     def result: Future[KnownFactsResult] = TestGGAdminConnector.addKnownFacts(knownFactsRequest)
 
-    "parse and return the success response correctly" in {
+    "parse and return a success response correctly" in {
       mockAddKnownFactsSuccess(knownFactsRequest)
       whenReady(result)(_ mustBe KnownFactsSuccess)
     }
 
-    "parse and return the Bad request response correctly" in {
+    "parse and return a failure correctly" in {
       mockAddKnownFactsFailure(knownFactsRequest)
       whenReady(result)(_ mustBe KnownFactsFailure(errorJson.toString))
     }
 
+    "pass through an exception if one occurs" in {
+      mockAddKnownFactsException(knownFactsRequest)
+      whenReady(result.failed)(_ mustBe testException)
+    }
   }
 
 }

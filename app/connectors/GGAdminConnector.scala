@@ -45,13 +45,13 @@ class GGAdminConnector @Inject()(config: Configuration,
     lazy val requestDetails: Map[String, String] = Map("knownFacts" -> toJson(knownFacts).toString)
     logging.debug(s"Request:\n$requestDetails")
 
-    httpPost.POST[KnownFactsRequest, HttpResponse](addKnownFactsUrl, knownFacts) flatMap {
+    httpPost.POST[KnownFactsRequest, HttpResponse](addKnownFactsUrl, knownFacts) map {
       case HttpResponse(OK, _, _, body) =>
         logging.debug("addKnownFacts responded with OK")
-        Future.successful(KnownFactsSuccess)
+        KnownFactsSuccess
       case HttpResponse(status, _, _, body) =>
         logging.warn(s"addKnownFacts responded with an error: $status: $body")
-        Future.successful(KnownFactsFailure(body))
+        KnownFactsFailure(body)
     }
   }
 }
