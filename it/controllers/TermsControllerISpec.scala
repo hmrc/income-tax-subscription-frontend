@@ -24,6 +24,7 @@ import helpers.servicemocks.{AuthStub, KeystoreStub}
 import models._
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
+import services.CacheConstants
 
 class TermsControllerISpec extends ComponentSpecBase {
 
@@ -68,23 +69,11 @@ class TermsControllerISpec extends ComponentSpecBase {
     "not in edit mode" should {
 
       "select the Continue button on the terms page" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
-        val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-        val keystoreAccountingPeriodDates: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
-        val keystoreAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
-            otherIncome = Some(keystoreIncomeOther),
-            accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
-            accountingPeriodDate = Some(keystoreAccountingPeriodDates),
-            accountingMethod = Some(keystoreAccountingMethod)
-          )
-        )
+        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubKeystoreSave(CacheConstants.Terms,true)
 
         When("POST /terms is called")
         val res = IncomeTaxSubscriptionFrontend.submitTerms()
@@ -93,6 +82,20 @@ class TermsControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
+        )
+      }
+
+      "redirect to sign-in when auth fails" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubUnauthorised()
+
+        When("POST /terms is called")
+        val res = IncomeTaxSubscriptionFrontend.submitTerms()
+
+        Then("Should return a SEE_OTHER with a redirect location of sign-in")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(signInURI)
         )
       }
     }
