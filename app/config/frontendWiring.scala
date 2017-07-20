@@ -60,6 +60,6 @@ object ITSAHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsCon
 
 @Singleton
 class AuthConnector @Inject()(appConfig: AppConfig, val http: HttpPost) extends PlayAuthConnector {
-  override val serviceUrl: String = appConfig.authUrl
+  override lazy val serviceUrl: String = appConfig.authUrl
 }
 
