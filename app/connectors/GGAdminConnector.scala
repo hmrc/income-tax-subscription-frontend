@@ -23,7 +23,6 @@ import common.Constants._
 import config.AppConfig
 import connectors.GGAdminConnector._
 import connectors.models.gg._
-import play.api.Configuration
 import play.api.http.Status.OK
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.play.http._
@@ -32,16 +31,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class GGAdminConnector @Inject()(config: Configuration,
-                                 applicationConfig: AppConfig,
-                                 logging: Logging,
-                                 httpPost: HttpPost
+class GGAdminConnector @Inject()(applicationConfig: AppConfig,
+                                 httpPost: HttpPost,
+                                 logging: Logging
                                 ) extends RawResponseReads {
   private lazy val ggAdminUrl: String = applicationConfig.ggAdminURL
 
   val addKnownFactsUrl: String = ggAdminUrl + addKnownFactsUri
 
-  def addKnownFacts(knownFacts: KnownFactsRequest)(implicit hc: HeaderCarrier): Future[KnownFactsResult] = {
+  def addKnownFacts(knownFacts: KnownFactsRequest)(implicit hc: HeaderCarrier): Future[KnownFactsResponse] = {
     lazy val requestDetails: Map[String, String] = Map("knownFacts" -> toJson(knownFacts).toString)
     logging.debug(s"Request:\n$requestDetails")
 

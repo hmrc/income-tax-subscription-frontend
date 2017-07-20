@@ -29,7 +29,6 @@ import utils.Implicits._
 
 trait MockGGAdminConnector extends MockHttp {
 
-  lazy val config: Configuration = app.injector.instanceOf[Configuration]
   lazy val logging: Logging = app.injector.instanceOf[Logging]
   lazy val httpPost: HttpPost = mockHttpPost
   lazy val httpGet: HttpGet = mockHttpGet
@@ -46,6 +45,6 @@ trait MockGGAdminConnector extends MockHttp {
   def mockAddKnownFactsException(request: KnownFactsRequest): Unit =
     setupMockHttpPostException(Some(TestGGAdminConnector.addKnownFactsUrl), Some(request))(testException)
 
-  object TestGGAdminConnector extends GGAdminConnector(config, appConfig, logging, httpPost)
+  object TestGGAdminConnector extends GGAdminConnector(appConfig, httpPost, logging)
 
 }

@@ -17,34 +17,30 @@
 package connectors
 
 import connectors.mocks.MockGGConnector
-import play.api.libs.json.Json
-import uk.gov.hmrc.play.http.HeaderCarrier
+import connectors.models.gg.{EnrolFailure, EnrolResponse, EnrolSuccess}
+import org.scalatest.concurrent.ScalaFutures
+import utils.TestConstants.testEnrolRequest
 
-class GGConnectorSpec extends MockGGConnector {
+import scala.concurrent.Future
 
-  override implicit val hc = HeaderCarrier()
-  val dummyResponse = Json.parse("{}")
+class GGConnectorSpec extends MockGGConnector with ScalaFutures {
+  "GGConnector.enrol" must {
+    def result: Future[EnrolResponse] = TestGovernmentGatewayEnrolConnector.enrol(testEnrolRequest)
 
-//  def result = await(TestGovernmentGatewayEnrolConnector.enrol(governmentGatewayEnrolPayload))
-//
-//  "return OK response correctly" in {
-//    mockGovernmentGatewayEnrol(governmentGatewayEnrolPayload)((OK, dummyResponse))
-//    result.status shouldBe OK
-//  }
-//
-//  "return BAD_REQUEST response correctly" in {
-//    mockGovernmentGatewayEnrol(governmentGatewayEnrolPayload)((BAD_REQUEST, dummyResponse))
-//    result.status shouldBe BAD_REQUEST
-//  }
-//
-//  "return FORBIDDEN response correctly" in {
-//    mockGovernmentGatewayEnrol(governmentGatewayEnrolPayload)((FORBIDDEN, dummyResponse))
-//    result.status shouldBe FORBIDDEN
-//
-//  }
-//  "return INTERNAL_SERVER_ERROR response correctly" in {
-//    mockGovernmentGatewayEnrol(governmentGatewayEnrolPayload)((INTERNAL_SERVER_ERROR, dummyResponse))
-//    result.status shouldBe INTERNAL_SERVER_ERROR
-//
-//  }
+    "handle when enrol returns a success" in {
+      mockEnrolSuccess(testEnrolRequest)
+      whenReady(result)(_ mustBe EnrolSuccess)
+    }
+
+    "handle when enrol returns an error" in {
+      mockEnrolFailure(testEnrolRequest)
+      whenReady(result)(_ mustBe EnrolFailure(errorJson.toString()))
+    }
+
+    "pass through the exception when the call to enrol fails" in {
+      mockEnrolException(testEnrolRequest)
+      whenReady(result.failed)(_ mustBe testException)
+    }
+  }
+
 }

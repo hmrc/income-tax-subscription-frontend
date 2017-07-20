@@ -16,9 +16,8 @@
 
 package utils
 
-import common.Constants
 import common.Constants.GovernmentGateway._
-import connectors.models.gg.{KnownFactsRequest, TypeValuePair}
+import connectors.models.gg.{EnrolRequest, KnownFactsRequest, TypeValuePair}
 import models.DateModel
 import uk.gov.hmrc.domain.Generator
 
@@ -37,5 +36,12 @@ object TestConstants {
       TypeValuePair(MTDITID, testMTDID),
       TypeValuePair(NINO, testNino)
     )
+  )
+
+  val testEnrolRequest = EnrolRequest(
+    portalId = ggPortalId,
+    serviceName = ggServiceName,
+    friendlyName = ggFriendlyName,
+    knownFacts = List(testMTDID, testNino)
   )
 }

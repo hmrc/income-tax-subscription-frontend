@@ -17,7 +17,7 @@
 package connectors
 
 import connectors.mocks.MockGGAdminConnector
-import connectors.models.gg.{KnownFactsFailure, KnownFactsResult, KnownFactsSuccess}
+import connectors.models.gg.{KnownFactsFailure, KnownFactsResponse, KnownFactsSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import utils.TestConstants._
 
@@ -30,7 +30,7 @@ class GGAdminConnectorSpec extends MockGGAdminConnector with ScalaFutures {
       TestGGAdminConnector.addKnownFactsUrl must endWith("/government-gateway-admin/service/HMRC-MTD-IT/known-facts")
     }
 
-    def result: Future[KnownFactsResult] = TestGGAdminConnector.addKnownFacts(knownFactsRequest)
+    def result: Future[KnownFactsResponse] = TestGGAdminConnector.addKnownFacts(knownFactsRequest)
 
     "parse and return a success response correctly" in {
       mockAddKnownFactsSuccess(knownFactsRequest)
@@ -42,7 +42,7 @@ class GGAdminConnectorSpec extends MockGGAdminConnector with ScalaFutures {
       whenReady(result)(_ mustBe KnownFactsFailure(errorJson.toString))
     }
 
-    "pass through an exception if one occurs" in {
+    "pass through the exception when the call to known facts fails" in {
       mockAddKnownFactsException(knownFactsRequest)
       whenReady(result.failed)(_ mustBe testException)
     }

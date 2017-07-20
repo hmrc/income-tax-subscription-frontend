@@ -16,8 +16,8 @@
 
 package connectors.models.gg
 
-sealed trait KnownFactsResult
+sealed trait EnrolResponse
 
-object KnownFactsSuccess extends KnownFactsResult
+object EnrolSuccess extends EnrolResponse
 
-case class KnownFactsFailure(message: String) extends KnownFactsResult
+case class EnrolFailure(message: String) extends EnrolResponse

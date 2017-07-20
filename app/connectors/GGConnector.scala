@@ -19,51 +19,38 @@ package connectors
 import javax.inject.Inject
 
 import _root_.utils.JsonUtils._
-import audit.{Logging, LoggingConfig}
+import audit.Logging
 import config.AppConfig
 import connectors.GGConnector._
-import connectors.models.gg.EnrolRequest
-import play.api.Configuration
+import connectors.models.gg.{EnrolFailure, EnrolRequest, EnrolResponse, EnrolSuccess}
 import play.api.http.Status.OK
-import play.api.libs.json.{JsValue, Writes}
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpReads, HttpResponse}
+import play.api.libs.json.JsValue
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class GGConnector @Inject()
-(
-  config: Configuration,
-  httpPost: HttpPost,
-  applicationConfig: AppConfig,
-  logging: Logging
-) extends ServicesConfig with RawResponseReads {
+class GGConnector @Inject()(httpPost: HttpPost,
+                            applicationConfig: AppConfig,
+                            logging: Logging
+                           ) extends RawResponseReads {
 
   lazy val governmentGatewayURL = applicationConfig.ggURL
 
   val enrolUrl: String = governmentGatewayURL + enrolUri
 
-  def createHeaderCarrierPost(hc: HeaderCarrier): HeaderCarrier = hc.withExtraHeaders("Content-Type" -> "application/json")
-
-  def enrol(enrolmentRequest: EnrolRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    import GGConnector._
-
-    implicit lazy val loggingConfig = addEnrolLoggingConfig
+  def enrol(enrolmentRequest: EnrolRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EnrolResponse] = {
 
     lazy val requestDetails: Map[String, String] = Map("enrolRequest" -> (enrolmentRequest: JsValue).toString)
     logging.debug(s"Request:\n$requestDetails")
 
-    httpPost.POST[EnrolRequest, HttpResponse](enrolUrl, enrolmentRequest)(
-      implicitly[Writes[EnrolRequest]], implicitly[HttpReads[HttpResponse]], createHeaderCarrierPost(hc)
-    ).map { response =>
-
+    httpPost.POST[EnrolRequest, HttpResponse](enrolUrl, enrolmentRequest) map { response =>
       response.status match {
         case OK =>
           logging.info(s"GG enrol responded with OK")
-          response
+          EnrolSuccess
         case status =>
           logging.warn(s"GG enrol responded with an error, status=$status body=${response.body}")
-          response
+          EnrolFailure(response.body)
       }
     }
 
@@ -72,10 +59,4 @@ class GGConnector @Inject()
 
 object GGConnector {
   val enrolUri = "/enrol"
-
-  val auditEnrolName = "gg-enrol"
-
-  val addEnrolLoggingConfig: Option[LoggingConfig] = LoggingConfig(heading = "GGConnector.enrol")
-
-
 }

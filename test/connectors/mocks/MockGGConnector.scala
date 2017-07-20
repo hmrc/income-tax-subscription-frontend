@@ -17,30 +17,31 @@
 package connectors.mocks
 
 import audit.Logging
-import config.AppConfig
 import connectors.GGConnector
 import connectors.models.gg.EnrolRequest
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
-import play.api.libs.json.JsValue
+import play.api.http.Status
+import play.api.libs.json.{JsNull, JsString}
 import uk.gov.hmrc.play.http.HttpPost
-import utils.Implicits._
 
 trait MockGGConnector extends MockHttp {
-//
-//  lazy val config: Configuration = app.injector.instanceOf[Configuration]
-//  lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-//  lazy val httpPost: HttpPost = mockHttpPost
-//  lazy val logging: Logging = app.injector.instanceOf[Logging]
-//
-//  object TestGovernmentGatewayEnrolConnector extends GGConnector(config, httpPost, appConfig, logging)
-//
-//  def mockGovernmentGatewayEnrol(payload: EnrolRequest) = (setupMockGovernmentGatewayEnrol(payload) _).tupled
-//
-//  def setupMockGovernmentGatewayEnrol(payload: EnrolRequest)(status: Int, response: JsValue): Unit =
-//    setupMockHttpPost(url = TestGovernmentGatewayEnrolConnector.enrolUrl, payload)(status, response)
-//
-//  def verifyMockGovernmentGatewayEnrol(payload: Option[EnrolRequest]=None)(count: Int): Unit =
-//    verifyHttpPost(url = TestGovernmentGatewayEnrolConnector.enrolUrl, payload)(count)
+
+  lazy val config: Configuration = app.injector.instanceOf[Configuration]
+  lazy val httpPost: HttpPost = mockHttpPost
+  lazy val logging: Logging = app.injector.instanceOf[Logging]
+
+  val errorJson = JsString("This is an error")
+  val testException = new Exception
+
+  def mockEnrolSuccess(request: EnrolRequest): Unit =
+    setupMockHttpPost(Some(TestGovernmentGatewayEnrolConnector.enrolUrl), Some(request))(Status.OK, JsNull)
+
+  def mockEnrolFailure(request: EnrolRequest): Unit =
+    setupMockHttpPost(Some(TestGovernmentGatewayEnrolConnector.enrolUrl), Some(request))(Status.INTERNAL_SERVER_ERROR, errorJson)
+
+  def mockEnrolException(request: EnrolRequest): Unit =
+    setupMockHttpPostException(Some(TestGovernmentGatewayEnrolConnector.enrolUrl), Some(request))(testException)
+
+  object TestGovernmentGatewayEnrolConnector extends GGConnector(httpPost, appConfig, logging)
 
 }
