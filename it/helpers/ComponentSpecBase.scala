@@ -103,6 +103,12 @@ trait ComponentSpecBase extends UnitSpec
 
     def terms(): WSResponse = get("/terms")
 
+    def sessionTimeout(): WSResponse = get("/session-timeout")
+
+    def notAuthorised(): WSResponse = get("/not-authorised")
+
+    def thankYou(): WSResponse = get("/thankyou")
+
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)

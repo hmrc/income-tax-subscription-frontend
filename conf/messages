@@ -307,3 +307,7 @@ thank-you.title                                                 = Thank you
 thank-you.heading                                               = Thank you
 thank-you.line_1                                                = Your feedback will help us improve this service.
 thank-you.go_to_gov                                             = Go to the GOV.UK page
+
+
+# feedback thank you
+feedback.thankyou.title                                         = Feedback received
