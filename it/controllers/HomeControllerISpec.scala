@@ -25,7 +25,9 @@ import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, SubscriptionStub}
 
 class HomeControllerISpec extends ComponentSpecBase {
+
   "GET /report-quarterly/income-and-expenses/sign-up" when {
+
     "feature-switch.show-guidance is true" should {
       "return the guidance page" in {
         When("We hit to the guidance page route")
@@ -41,16 +43,17 @@ class HomeControllerISpec extends ComponentSpecBase {
   }
 
   "GET /report-quarterly/income-and-expenses/sign-up/index" when {
-    "feature-switch.show-guidance is true" should {
-      "return the guidance page" in {
-        Given("I set up")
-        AuthStub.stubAuthSuccess()
-        SubscriptionStub.stubSuccessfulSubscription()
 
-        When("We hit to the guidance page route")
+    "keystore not applicable" should {
+      "redirect to the claim subscription page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        SubscriptionStub.stubGetSubscriptionFound()
+
+        When("GET /index is called")
         val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-        Then("Return the guidance page")
+        Then("Should return a SEE OTHER with the claim subscription page")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(claimSubscriptionURI)
