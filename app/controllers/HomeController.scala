@@ -62,7 +62,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       case true =>
         subscriptionService.getSubscription(user.nino.get).flatMap {
           case Some(FESuccessResponse(None)) => default
-          case Some(FESuccessResponse(Some(_))) => Redirect(controllers.routes.AlreadyEnrolledController.enrolled())
+          case Some(FESuccessResponse(Some(_))) => Redirect(controllers.routes.ClaimSubscriptionController.claim())
           case _ => new InternalServerException("HomeController.index: unexpected error calling the subscription service")
         }
     }

@@ -19,7 +19,10 @@ package controllers
 import helpers.ComponentSpecBase
 import org.jsoup.Jsoup
 import play.api.http.Status
+import play.api.http.Status.SEE_OTHER
 import play.api.i18n.Messages
+import helpers.IntegrationTestConstants._
+import helpers.servicemocks.{AuthStub, SubscriptionStub}
 
 class HomeControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up" when {
@@ -36,4 +39,24 @@ class HomeControllerISpec extends ComponentSpecBase {
       }
     }
   }
+
+  "GET /report-quarterly/income-and-expenses/sign-up/index" when {
+    "feature-switch.show-guidance is true" should {
+      "return the guidance page" in {
+        Given("I set up")
+        AuthStub.stubAuthSuccess()
+        SubscriptionStub.stubSuccessfulSubscription()
+
+        When("We hit to the guidance page route")
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        Then("Return the guidance page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(claimSubscriptionURI)
+        )
+      }
+    }
+  }
+
 }
