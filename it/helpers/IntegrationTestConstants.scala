@@ -49,6 +49,7 @@ object IntegrationTestConstants {
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
   val signInURI = s"$baseURI/sign-in"
   val signOutURI = s"$baseURI/logout"
+  val claimSubscriptionURI = s"$baseURI/claim-subscription"
 
   object Auth {
     def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(

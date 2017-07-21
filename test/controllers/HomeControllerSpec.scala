@@ -98,7 +98,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
       val result = call()
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get mustBe controllers.routes.AlreadyEnrolledController.enrolled().url
+      redirectLocation(result).get mustBe controllers.routes.ClaimSubscriptionController.claim().url
 
       verifyGetSubscription(testNino)(1)
       verifyMockCheckAccess(testNino)(0)

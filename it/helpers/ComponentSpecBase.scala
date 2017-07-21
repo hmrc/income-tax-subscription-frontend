@@ -100,6 +100,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def preferences(): WSResponse = get("/preferences")
 
+    def indexPage(): WSResponse = get("/index")
+
     def income(): WSResponse = get("/income")
 
     def otherIncome(): WSResponse = get("/income-other")
