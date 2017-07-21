@@ -30,16 +30,16 @@ class GGAdminConnectorSpec extends TestGGAdminConnector with ScalaFutures {
       TestGGAdminConnector.addKnownFactsUrl must endWith("/government-gateway-admin/service/HMRC-MTD-IT/known-facts")
     }
 
-    def result: Future[KnownFactsResponse] = TestGGAdminConnector.addKnownFacts(knownFactsRequest)
+    def result: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = TestGGAdminConnector.addKnownFacts(knownFactsRequest)
 
     "parse and return a success response correctly" in {
       mockAddKnownFactsSuccess(knownFactsRequest)
-      whenReady(result)(_ mustBe KnownFactsSuccess)
+      whenReady(result)(_ mustBe Right(KnownFactsSuccess))
     }
 
     "parse and return a failure correctly" in {
       mockAddKnownFactsFailure(knownFactsRequest)
-      whenReady(result)(_ mustBe KnownFactsFailure(errorJson.toString))
+      whenReady(result)(_ mustBe Left(KnownFactsFailure(errorJson.toString)))
     }
 
     "pass through the exception when the call to known facts fails" in {

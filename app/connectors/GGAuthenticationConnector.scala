@@ -35,16 +35,16 @@ class GGAuthenticationConnector @Inject()(appConfig: AppConfig,
 
   lazy val refreshProfileUrl = appConfig.ggAuthenticationURL + refreshProfileUri
 
-  def refreshProfile(implicit hc: HeaderCarrier): Future[RefreshProfileResult] =
+  def refreshProfile()(implicit hc: HeaderCarrier): Future[Either[RefreshProfileFailure.type, RefreshProfileSuccess.type]] =
     httpPost.POSTEmpty[HttpResponse](refreshProfileUrl).map {
       response =>
         response.status match {
           case NO_CONTENT =>
             logging.info(s"GGAuthentication refreshProfile responded with NO_CONTENT")
-            RefreshSuccessful
+            Right(RefreshProfileSuccess)
           case status =>
             logging.warn(s"GGAuthentication refreshProfile responded with a error: status=$status body=${response.body}")
-            RefreshFailure
+            Left(RefreshProfileFailure)
         }
     }
 

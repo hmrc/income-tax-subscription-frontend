@@ -38,7 +38,7 @@ class GGConnector @Inject()(httpPost: HttpPost,
 
   val enrolUrl: String = governmentGatewayURL + enrolUri
 
-  def enrol(enrolmentRequest: EnrolRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EnrolResponse] = {
+  def enrol(enrolmentRequest: EnrolRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
 
     lazy val requestDetails: Map[String, String] = Map("enrolRequest" -> (enrolmentRequest: JsValue).toString)
     logging.debug(s"Request:\n$requestDetails")
@@ -47,10 +47,10 @@ class GGConnector @Inject()(httpPost: HttpPost,
       response.status match {
         case OK =>
           logging.info(s"GG enrol responded with OK")
-          EnrolSuccess
+          Right(EnrolSuccess)
         case status =>
           logging.warn(s"GG enrol responded with an error, status=$status body=${response.body}")
-          EnrolFailure(response.body)
+          Left(EnrolFailure(response.body))
       }
     }
 

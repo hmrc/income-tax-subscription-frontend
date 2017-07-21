@@ -31,15 +31,15 @@ import scala.concurrent.Future
 trait MockGGAdminConnector extends MockTrait {
   val mockGGAdminConnector = mock[GGAdminConnector]
 
-  private def mockAddKnownFacts(request: KnownFactsRequest)(response: Future[KnownFactsResponse]): Unit =
+  private def mockAddKnownFacts(request: KnownFactsRequest)(response: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]]): Unit =
     when(mockGGAdminConnector.addKnownFacts(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(response)
 
   def mockAddKnownFactsSuccess(request: KnownFactsRequest): Unit =
-    mockAddKnownFacts(request)(Future.successful(KnownFactsSuccess))
+    mockAddKnownFacts(request)(Future.successful(Right(KnownFactsSuccess)))
 
   def mockAddKnownFactsFailure(request: KnownFactsRequest): Unit =
-    mockAddKnownFacts(request)(Future.successful(KnownFactsFailure(testErrorMessage)))
+    mockAddKnownFacts(request)(Future.successful(Left(KnownFactsFailure(testErrorMessage))))
 
   def mockAddKnownFactsException(request: KnownFactsRequest): Unit =
     mockAddKnownFacts(request)(Future.failed(testException))

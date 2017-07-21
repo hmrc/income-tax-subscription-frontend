@@ -41,6 +41,7 @@ trait MicroService {
     .settings(playSettings ++ scoverageSettings: _*)
     .settings(scalaSettings: _*)
     .settings(publishingSettings: _*)
+      .settings(scalaVersion := "2.11.11")
     .settings(defaultSettings(): _*)
     .settings(
       Keys.fork in Test := true,

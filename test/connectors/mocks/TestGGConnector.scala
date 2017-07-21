@@ -18,13 +18,38 @@ package connectors.mocks
 
 import audit.Logging
 import connectors.GGConnector
-import connectors.models.gg.EnrolRequest
+import connectors.models.gg.{EnrolFailure, EnrolRequest, EnrolSuccess}
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito._
 import play.api.Configuration
 import play.api.http.Status
-import play.api.libs.json.{JsNull, JsString}
-import uk.gov.hmrc.play.http.HttpPost
+import play.api.libs.json.JsNull
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost}
+import utils.MockTrait
 
-trait MockGGConnector extends MockHttp {
+import scala.concurrent.{ExecutionContext, Future}
+
+trait MockGGConnector extends MockTrait {
+  val mockGGConnector = mock[GGConnector]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockGGConnector)
+  }
+
+  private def mockEnrol(request: EnrolRequest)(response: Future[Either[EnrolFailure, EnrolSuccess.type]]): Unit =
+    when(mockGGConnector.enrol(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[ExecutionContext]))
+      .thenReturn(response)
+
+  def mockEnrolSuccess(request: EnrolRequest): Unit = mockEnrol(request)(Future.successful(Right(EnrolSuccess)))
+
+  def mockEnrolFailure(request: EnrolRequest): Unit = mockEnrol(request)(Future.successful(Left(EnrolFailure(testErrorMessage))))
+
+  def mockEnrolException(request: EnrolRequest): Unit = mockEnrol(request)(Future.failed(testException))
+
+}
+
+trait TestGGConnector extends MockHttp {
 
   lazy val config: Configuration = app.injector.instanceOf[Configuration]
   lazy val httpPost: HttpPost = mockHttpPost

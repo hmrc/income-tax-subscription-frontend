@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-package connectors.models.gg
+package connectors.models
 
-import connectors.models.ConnectorError
-
-sealed trait EnrolResponse
-
-object EnrolSuccess extends EnrolResponse
-
-case class EnrolFailure(message: String) extends EnrolResponse with ConnectorError
+trait ConnectorError

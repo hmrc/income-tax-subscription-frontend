@@ -16,8 +16,10 @@
 
 package connectors.models.authenticator
 
+import connectors.models.ConnectorError
+
 sealed trait RefreshProfileResult
 
-case object RefreshSuccessful extends RefreshProfileResult
+case object RefreshProfileSuccess extends RefreshProfileResult
 
-case object RefreshFailure extends RefreshProfileResult
+case object RefreshProfileFailure extends RefreshProfileResult with ConnectorError

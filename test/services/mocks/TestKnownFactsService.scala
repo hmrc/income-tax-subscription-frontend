@@ -41,13 +41,16 @@ trait TestKnownFactsService extends MockGGAdminConnector {
 trait MockKnownFactsService extends MockTrait {
   val mockKnownFactsService = mock[KnownFactsService]
 
-  private def mockAddKnownFacts(mtditid: String, nino: String)(response: Future[KnownFactsResponse]): Unit =
+  private def mockAddKnownFacts(mtditid: String, nino: String)(response: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]]): Unit =
     when(mockKnownFactsService.addKnownFacts(ArgumentMatchers.eq(mtditid), ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(response)
 
-  def mockAddKnownFactsSuccess(mtditid: String, nino: String): Unit = mockAddKnownFacts(mtditid, nino)(Future.successful(KnownFactsSuccess))
+  def mockAddKnownFactsSuccess(mtditid: String, nino: String): Unit =
+    mockAddKnownFacts(mtditid, nino)(Future.successful(Right(KnownFactsSuccess)))
 
-  def mockAddKnownFactsFailure(mtditid: String, nino: String): Unit = mockAddKnownFacts(mtditid, nino)(Future.successful(KnownFactsFailure(testErrorMessage)))
+  def mockAddKnownFactsFailure(mtditid: String, nino: String): Unit =
+    mockAddKnownFacts(mtditid, nino)(Future.successful(Left(KnownFactsFailure(testErrorMessage))))
 
-  def mockAddKnownFactsException(mtditid: String, nino: String): Unit = mockAddKnownFacts(mtditid, nino)(Future.failed(testException))
+  def mockAddKnownFactsException(mtditid: String, nino: String): Unit =
+    mockAddKnownFacts(mtditid, nino)(Future.failed(testException))
 }

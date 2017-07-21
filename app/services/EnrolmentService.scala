@@ -19,24 +19,22 @@ package services
 import javax.inject.Inject
 
 import common.Constants.GovernmentGateway._
-import connectors.GGAdminConnector
+import connectors.GGConnector
 import connectors.models.gg._
 import uk.gov.hmrc.play.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class KnownFactsService @Inject()(gGAdminConnector: GGAdminConnector) {
-  def addKnownFacts(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
-    val mtditIdKnownFact = TypeValuePair(MTDITID, mtditId)
-    val ninoKnownFact = TypeValuePair(NINO, nino)
-
-    val request = KnownFactsRequest(
-      List(
-        mtditIdKnownFact,
-        ninoKnownFact
-      )
+class EnrolmentService @Inject()(ggConnector: GGConnector) {
+  def enrol(mtditId: String, nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
+    val enrolRequest = EnrolRequest(
+      portalId = ggPortalId,
+      serviceName = ggServiceName,
+      friendlyName = ggFriendlyName,
+      knownFacts = List(mtditId, nino)
     )
 
-    gGAdminConnector.addKnownFacts(request)
+    ggConnector.enrol(enrolRequest)
   }
 }
+

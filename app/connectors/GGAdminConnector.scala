@@ -39,17 +39,17 @@ class GGAdminConnector @Inject()(applicationConfig: AppConfig,
 
   val addKnownFactsUrl: String = ggAdminUrl + addKnownFactsUri
 
-  def addKnownFacts(knownFacts: KnownFactsRequest)(implicit hc: HeaderCarrier): Future[KnownFactsResponse] = {
+  def addKnownFacts(knownFacts: KnownFactsRequest)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
     lazy val requestDetails: Map[String, String] = Map("knownFacts" -> toJson(knownFacts).toString)
     logging.debug(s"Request:\n$requestDetails")
 
     httpPost.POST[KnownFactsRequest, HttpResponse](addKnownFactsUrl, knownFacts) map {
       case HttpResponse(OK, _, _, body) =>
         logging.debug("addKnownFacts responded with OK")
-        KnownFactsSuccess
+        Right(KnownFactsSuccess)
       case HttpResponse(status, _, _, body) =>
         logging.warn(s"addKnownFacts responded with an error: $status: $body")
-        KnownFactsFailure(body)
+        Left(KnownFactsFailure(body))
     }
   }
 }

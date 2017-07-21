@@ -16,25 +16,25 @@
 
 package connectors
 
-import connectors.mocks.MockGGConnector
+import connectors.mocks.TestGGConnector
 import connectors.models.gg.{EnrolFailure, EnrolResponse, EnrolSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import utils.TestConstants.testEnrolRequest
 
 import scala.concurrent.Future
 
-class GGConnectorSpec extends MockGGConnector with ScalaFutures {
+class GGConnectorSpec extends TestGGConnector with ScalaFutures {
   "GGConnector.enrol" must {
-    def result: Future[EnrolResponse] = TestGovernmentGatewayEnrolConnector.enrol(testEnrolRequest)
+    def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestGovernmentGatewayEnrolConnector.enrol(testEnrolRequest)
 
     "handle when enrol returns a success" in {
       mockEnrolSuccess(testEnrolRequest)
-      whenReady(result)(_ mustBe EnrolSuccess)
+      whenReady(result)(_ mustBe Right(EnrolSuccess))
     }
 
     "handle when enrol returns an error" in {
       mockEnrolFailure(testEnrolRequest)
-      whenReady(result)(_ mustBe EnrolFailure(errorJson.toString()))
+      whenReady(result)(_ mustBe Left(EnrolFailure(errorJson.toString())))
     }
 
     "pass through the exception when the call to enrol fails" in {

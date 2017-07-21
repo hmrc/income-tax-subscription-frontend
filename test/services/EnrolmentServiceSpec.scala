@@ -18,30 +18,30 @@ package services
 
 import connectors.models.gg._
 import org.scalatest.concurrent.ScalaFutures
-import services.mocks.TestKnownFactsService
+import services.mocks.TestEnrolmentService
 import utils.TestConstants._
 import utils.UnitTestTrait
 
 import scala.concurrent.Future
 
-class KnownFactsServiceSpec extends UnitTestTrait with TestKnownFactsService with ScalaFutures {
+class EnrolmentServiceSpec extends UnitTestTrait with TestEnrolmentService with ScalaFutures {
   "addKnownFacts" must {
-    def result: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = TestKnownFactsService.addKnownFacts(testMTDID, testNino)
+    def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentService.enrol(testMTDID, testNino)
 
-    "return a success from the GGAdminConnector" in {
-      mockAddKnownFactsSuccess(expectedRequestModel)
+    "return a success from the GGConnector" in {
+      mockEnrolSuccess(expectedRequestModel)
 
-      whenReady(result)(_ mustBe Right(KnownFactsSuccess))
+      whenReady(result)(_ mustBe Right(EnrolSuccess))
     }
 
     "return a failure from the GGAdminConnector" in {
-      mockAddKnownFactsFailure(expectedRequestModel)
+      mockEnrolFailure(expectedRequestModel)
 
-      whenReady(result)(_ mustBe Left(KnownFactsFailure(testErrorMessage)))
+      whenReady(result)(_ mustBe Left(EnrolFailure(testErrorMessage)))
     }
 
     "pass through the exception if the GGAdminConnector fails" in {
-      mockAddKnownFactsException(expectedRequestModel)
+      mockEnrolException(expectedRequestModel)
 
       whenReady(result.failed)(_ mustBe testException)
     }

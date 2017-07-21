@@ -17,17 +17,32 @@
 package connectors.mocks
 
 import audit.Logging
-import config.AppConfig
-import connectors.{GGAdminConnector, GGAuthenticationConnector}
-import connectors.models.gg.KnownFactsRequest
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Configuration
+import connectors.GGAuthenticationConnector
+import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito._
 import play.api.http.Status
-import play.api.libs.json.{JsNull, JsString, JsValue}
-import uk.gov.hmrc.play.http.{HttpGet, HttpPost}
-import utils.Implicits._
+import play.api.libs.json.JsNull
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
+import utils.MockTrait
 
-trait MockAuthenticatorConnector extends MockHttp {
+import scala.concurrent.Future
+
+trait MockGGAuthenticationConnector extends MockTrait {
+  val mockGGAuthenticationConnector = mock[GGAuthenticationConnector]
+
+  private def mockRefreshProfile(result: Future[Either[RefreshProfileFailure.type, RefreshProfileSuccess.type]]): Unit =
+    when(mockGGAuthenticationConnector.refreshProfile()(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(result)
+
+  def mockRefreshProfileSuccess(): Unit = mockRefreshProfile(Future.successful(Right(RefreshProfileSuccess)))
+
+  def mockRefreshProfileFailure(): Unit = mockRefreshProfile(Future.successful(Left(RefreshProfileFailure)))
+
+  def mockRefreshProfileException(): Unit = mockRefreshProfile(Future.failed(testException))
+}
+
+trait TestGGAuthenticationConnector extends MockHttp {
 
   lazy val logging: Logging = app.injector.instanceOf[Logging]
   lazy val httpPost: HttpPost = mockHttpPost

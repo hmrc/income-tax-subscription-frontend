@@ -18,25 +18,14 @@ package services
 
 import javax.inject.Inject
 
-import common.Constants.GovernmentGateway._
-import connectors.GGAdminConnector
-import connectors.models.gg._
+import connectors.GGAuthenticationConnector
+import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
 import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class KnownFactsService @Inject()(gGAdminConnector: GGAdminConnector) {
-  def addKnownFacts(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
-    val mtditIdKnownFact = TypeValuePair(MTDITID, mtditId)
-    val ninoKnownFact = TypeValuePair(NINO, nino)
-
-    val request = KnownFactsRequest(
-      List(
-        mtditIdKnownFact,
-        ninoKnownFact
-      )
-    )
-
-    gGAdminConnector.addKnownFacts(request)
+class RefreshProfileService @Inject()(ggAuthenticationConnector: GGAuthenticationConnector) {
+  def refreshProfile()(implicit hc: HeaderCarrier): Future[Either[RefreshProfileFailure.type, RefreshProfileSuccess.type]] = {
+    ggAuthenticationConnector.refreshProfile()
   }
 }
