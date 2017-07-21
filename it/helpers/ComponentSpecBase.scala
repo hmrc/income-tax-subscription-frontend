@@ -53,6 +53,11 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.subscription-service.port" -> mockPort,
     "microservice.services.session-cache.host" -> mockHost,
     "microservice.services.session-cache.port" -> mockPort,
+    "microservice.services.preferences.host" -> mockHost,
+    "microservice.services.preferences.port" -> mockPort,
+    "preferences.url" -> mockUrl,
+    "microservice.services.preferences-frontend.host" -> mockHost,
+    "microservice.services.preferences-frontend.port" -> mockPort,
     "microservice.services.feature-switch.show-guidance" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> mockPort
@@ -92,6 +97,8 @@ trait ComponentSpecBase extends UnitSpec
     )
 
     def startPage(): WSResponse = get("/")
+
+    def preferences(): WSResponse = get("/preferences")
 
     def income(): WSResponse = get("/income")
 
@@ -135,9 +142,13 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessName(): WSResponse = get("/business/name")
 
+    def maintenance(): WSResponse =get("/error/maintenance")
+
     def exitSurvey(): WSResponse = get("/exit-survey")
 
     def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
+
+    def submitMaintenance(): WSResponse = post("/error/maintenance")(Map.empty)
 
     def submitBusinessAccountingPeriodPrior(inEditMode: Boolean, request: Option[AccountingPeriodPriorModel]): WSResponse = {
       val uri = s"/business/accounting-period-prior?editMode=$inEditMode"
