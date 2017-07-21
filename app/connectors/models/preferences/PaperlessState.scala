@@ -29,7 +29,7 @@ object PaperlessState {
 
   val Paperless = "optedIn"
 
-  val parseResponse: HttpResponse => Boolean = (response: HttpResponse) => (response.json \ Paperless).get.as[Boolean]
+  def parseResponse(response: HttpResponse): Boolean = (response.json \ Paperless).get.as[Boolean]
 
   def apply(response: HttpResponse): Either[(Int, String), PaperlessState] = response.status match {
     case OK if parseResponse(response) => Activated //200 & { "paperless" : true }
