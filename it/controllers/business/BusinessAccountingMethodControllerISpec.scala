@@ -222,12 +222,11 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
             accountingMethod = Some(keystoreAccountingMethod)
           )
         )
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
-        When("POST /business/accounting-period-dates is called")
+        When("POST /terms is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of terms")
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)

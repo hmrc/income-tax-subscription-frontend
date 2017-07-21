@@ -72,7 +72,7 @@ business.register_next_accounting_period.title                   = You can''t se
 business.register_next_accounting_period.heading                 = You can''t send quarterly reports yet
 business.register_next_accounting_period.line_1                  = You can only use this service if your current accounting period started after 5 April 2017.
 business.register_next_accounting_period.line_2                  = You can sign up now, but you won''t be able to send any reports until your next accounting period begins.
-business.register_next_accounting_period.continue                     = Continue to sign up
+business.register_next_accounting_period.continue                = Continue to sign up
 
 ## Business Accounting Period page
 accounting_period.title                                         = Business accounting period
@@ -307,3 +307,7 @@ thank-you.title                                                 = Thank you
 thank-you.heading                                               = Thank you
 thank-you.line_1                                                = Your feedback will help us improve this service.
 thank-you.go_to_gov                                             = Go to the GOV.UK page
+
+
+# feedback thank you
+feedback.thankyou.title                                         = Feedback received

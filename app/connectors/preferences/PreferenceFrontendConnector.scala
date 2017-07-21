@@ -69,7 +69,7 @@ object PreferenceFrontendConnector {
 
   private[preferences] def encryptAndEncode(s: String) = urlEncode(ApplicationCrypto.QueryParameterCrypto.encrypt(PlainText(s)).value)
 
-  private[preferences] def returnUrl(baseUrl: String): String =
+  def returnUrl(baseUrl: String): String =
     encryptAndEncode(baseUrl + controllers.preferences.routes.PreferencesController.callback().url)
 
   private[preferences] def returnLinkText(implicit messages: Messages): String = encryptAndEncode(Messages("preferences.returnLinkText"))

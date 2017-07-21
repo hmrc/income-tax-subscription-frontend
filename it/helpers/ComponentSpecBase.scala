@@ -53,6 +53,11 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.subscription-service.port" -> mockPort,
     "microservice.services.session-cache.host" -> mockHost,
     "microservice.services.session-cache.port" -> mockPort,
+    "microservice.services.preferences.host" -> mockHost,
+    "microservice.services.preferences.port" -> mockPort,
+    "preferences.url" -> mockUrl,
+    "microservice.services.preferences-frontend.host" -> mockHost,
+    "microservice.services.preferences-frontend.port" -> mockPort,
     "microservice.services.feature-switch.show-guidance" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> mockPort
@@ -93,6 +98,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def startPage(): WSResponse = get("/")
 
+    def preferences(): WSResponse = get("/preferences")
+
     def income(): WSResponse = get("/income")
 
     def otherIncome(): WSResponse = get("/income-other")
@@ -101,6 +108,22 @@ trait ComponentSpecBase extends UnitSpec
 
     def otherIncomeError(): WSResponse = get("/error/other-income")
 
+    def terms(): WSResponse = get("/terms")
+
+    def sessionTimeout(): WSResponse = get("/session-timeout")
+
+    def notAuthorised(): WSResponse = get("/not-authorised")
+
+    def thankYou(): WSResponse = get("/thankyou")
+
+    def feedback(): WSResponse = get("/feedback-submitted")
+
+    def signIn(): WSResponse = get("/sign-in")
+
+    def signOut(): WSResponse = get("/logout")
+
+    def alreadyEnrolled(): WSResponse = get("/error/subscription-status")
+
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
@@ -108,6 +131,10 @@ trait ComponentSpecBase extends UnitSpec
     def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
 
     def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
+
+    def submitTerms(): WSResponse = post("/terms")(Map.empty)
+
+    def submitExitSurvey(): WSResponse = post("/exit-survey")(Map.empty)
 
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
 
@@ -119,7 +146,17 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessName(): WSResponse = get("/business/name")
 
+    def maintenance(): WSResponse =get("/error/maintenance")
+
+    def noNino(): WSResponse =get("/error/no-nino")
+
+    def exitSurvey(): WSResponse = get("/exit-survey")
+
     def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
+
+    def submitMaintenance(): WSResponse = post("/error/maintenance")(Map.empty)
+
+    def submitNoNino(): WSResponse = post("/error/no-nino")(Map.empty)
 
     def submitBusinessAccountingPeriodPrior(inEditMode: Boolean, request: Option[AccountingPeriodPriorModel]): WSResponse = {
       val uri = s"/business/accounting-period-prior?editMode=$inEditMode"
@@ -159,6 +196,16 @@ trait ComponentSpecBase extends UnitSpec
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             AccountingPeriodDateForm.accountingPeriodDateForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def submitBusinessName(inEditMode: Boolean, request: Option[BusinessNameModel]): WSResponse = {
+      val uri = s"/business/name?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            BusinessNameForm.businessNameValidationForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
