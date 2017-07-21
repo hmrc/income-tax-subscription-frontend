@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.throttling
+package controllers
 
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{signInURI, signOutURI}
@@ -22,69 +22,41 @@ import helpers.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 
-class ThrottlingControllerISpec extends ComponentSpecBase {
+class NoNinoControllerISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/error/maintenance" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/error/no-nino" when {
 
     "keystore not applicable" should {
       "show the error maintenance page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        When("GET /error/maintenance is called")
-        val res = IncomeTaxSubscriptionFrontend.maintenance()
+        When("GET /error/no-nino is called")
+        val res = IncomeTaxSubscriptionFrontend.noNino()
 
         Then("Should return a OK with the error main income page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("throttle_limit.title"))
+          pageTitle(Messages("no-nino.title"))
         )
       }
     }
-
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /error/maintenance is called")
-      val res = IncomeTaxSubscriptionFrontend.maintenance()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
-      )
-    }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/error/maintenance" when {
+  "POST /report-quarterly/income-and-expenses/sign-up/error/no-nino" when {
 
     "always" should {
       "proceed to sign out" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        When("POST /error/maintenance is called")
-        val res = IncomeTaxSubscriptionFrontend.submitMaintenance()
+        When("POST /error/no-nino is called")
+        val res = IncomeTaxSubscriptionFrontend.submitNoNino()
 
         Then("Should return a SEE_OTHER with a redirect location of sign out")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(signOutURI)
-        )
-      }
-
-      "redirect to sign-in when auth fails" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubUnauthorised()
-
-        When("POST /error/maintenance is called")
-        val res = IncomeTaxSubscriptionFrontend.submitMaintenance()
-
-        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
         )
       }
     }
