@@ -109,6 +109,10 @@ trait ComponentSpecBase extends UnitSpec
 
     def thankYou(): WSResponse = get("/thankyou")
 
+    def feedback(): WSResponse = get("/feedback-submitted")
+
+    def signIn(): WSResponse = get("/sign-in")
+
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)
