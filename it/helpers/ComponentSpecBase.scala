@@ -120,6 +120,10 @@ trait ComponentSpecBase extends UnitSpec
 
     def signIn(): WSResponse = get("/sign-in")
 
+    def signOut(): WSResponse = get("/logout")
+
+    def alreadyEnrolled(): WSResponse = get("/error/subscription-status")
+
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
     def submitCheckYourAnswers(): WSResponse = post("/check-your-answers")(Map.empty)

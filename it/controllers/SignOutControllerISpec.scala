@@ -17,21 +17,20 @@
 package controllers
 
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.SEE_OTHER
 
-class SignInControllerISpec extends ComponentSpecBase {
+class SignOutControllerISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/sign-in" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/logout" when {
 
     "keystore not applicable" should {
-      "show the sign in page" in {
+      "show the logout page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        When("GET /sign-in is called")
-        val res = IncomeTaxSubscriptionFrontend.signIn()
+        When("GET /logout is called")
+        val res = IncomeTaxSubscriptionFrontend.signOut()
 
         Then("Should return a SEE_OTHER with a redirect location of gg sign in")
         res should have(

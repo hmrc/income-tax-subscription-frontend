@@ -17,27 +17,26 @@
 package controllers
 
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
 import helpers.servicemocks.AuthStub
-import play.api.http.Status.SEE_OTHER
+import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.i18n.Messages
 
-class SignInControllerISpec extends ComponentSpecBase {
+class AlreadyEnrolledControllerISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/sign-in" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/error/subscription-status" when {
 
     "keystore not applicable" should {
-      "show the sign in page" in {
+      "show the already enrolled page" in {
         Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
+        AuthStub.stubEnrolled()
 
-        When("GET /sign-in is called")
-        val res = IncomeTaxSubscriptionFrontend.signIn()
+        When("GET /error/subscription-status is called")
+        val res = IncomeTaxSubscriptionFrontend.alreadyEnrolled()
 
-        Then("Should return a SEE_OTHER with a redirect location of gg sign in")
+        Then("Should return a OK with the already enrolled page")
         res should have(
-          httpStatus(SEE_OTHER)
-//          TODO: Add applicable sign in URI check for redirect location
-//          redirectURI(signInURI)
+          httpStatus(OK),
+          pageTitle(Messages("already-enrolled.title"))
         )
       }
     }
