@@ -20,9 +20,9 @@ import forms.IncomeSourceForm
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
-import helpers.servicemocks.{AuthStub, KeystoreStub, SubscriptionStub}
+import helpers.servicemocks.{AuthStub, KeystoreStub}
 import models.IncomeSourceModel
-import play.api.http.Status.{OK, SEE_OTHER, BAD_REQUEST}
+import play.api.http.Status._
 import play.api.i18n.Messages
 import services.CacheConstants
 
@@ -62,6 +62,23 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
           httpStatus(OK),
           pageTitle(Messages("income_source.title")),
           radioButtonSet(id = "incomeSource", selectedRadioButton = None)
+        )
+      }
+    }
+
+    "call to keystore fails" should {
+      "fail to display income source page" in {
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("GET /income is called")
+        val res = IncomeTaxSubscriptionFrontend.income()
+
+        Then("Should return a INTERNAL_SERVER_ERROR")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
     }
