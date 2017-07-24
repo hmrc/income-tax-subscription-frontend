@@ -16,7 +16,7 @@
 
 package connectors
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import config.AppConfig

@@ -16,7 +16,7 @@
 
 package services
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import connectors.GGAuthenticationConnector
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}

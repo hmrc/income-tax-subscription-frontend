@@ -16,7 +16,7 @@
 
 package connectors
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import _root_.utils.JsonUtils._
 import audit.Logging
