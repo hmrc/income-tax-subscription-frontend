@@ -16,7 +16,7 @@
 
 package connectors
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import common.Constants._
@@ -31,6 +31,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
+@Singleton
 class GGAdminConnector @Inject()(applicationConfig: AppConfig,
                                  httpPost: HttpPost,
                                  logging: Logging

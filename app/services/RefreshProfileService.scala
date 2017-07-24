@@ -24,6 +24,7 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 
+@Singleton
 class RefreshProfileService @Inject()(ggAuthenticationConnector: GGAuthenticationConnector) {
   def refreshProfile()(implicit hc: HeaderCarrier): Future[Either[RefreshProfileFailure.type, RefreshProfileSuccess.type]] = {
     ggAuthenticationConnector.refreshProfile()

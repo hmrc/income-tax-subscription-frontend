@@ -28,6 +28,7 @@ import connectors.models.subscription.SubscriptionSuccessResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class SubscriptionOrchestrationService @Inject() (subscriptionService: SubscriptionService,
                                                   knownFactsService: KnownFactsService,
                                                   enrolmentService: EnrolmentService,

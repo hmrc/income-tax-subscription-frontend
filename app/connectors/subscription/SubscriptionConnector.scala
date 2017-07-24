@@ -19,10 +19,9 @@ package connectors.subscription
 import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
-import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionRequest, SubscriptionResponse, SubscriptionSuccessResponse}
+import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccessResponse}
 import play.api.http.Status.OK
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, HttpResponse}
-import utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

@@ -28,6 +28,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@Singleton
 class GGAuthenticationConnector @Inject()(appConfig: AppConfig,
                                           httpPost: HttpPost,
                                           logging: Logging

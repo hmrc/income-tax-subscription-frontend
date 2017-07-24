@@ -25,6 +25,7 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class EnrolmentService @Inject()(ggConnector: GGConnector) {
   def enrol(mtditId: String, nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
     val enrolRequest = EnrolRequest(

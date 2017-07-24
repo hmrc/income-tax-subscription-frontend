@@ -25,6 +25,7 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
 
+@Singleton
 class KnownFactsService @Inject()(gGAdminConnector: GGAdminConnector) {
   def addKnownFacts(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
     val mtditIdKnownFact = TypeValuePair(MTDITID, mtditId)

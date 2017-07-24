@@ -29,6 +29,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class GGConnector @Inject()(httpPost: HttpPost,
                             applicationConfig: AppConfig,
                             logging: Logging
