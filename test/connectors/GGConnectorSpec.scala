@@ -17,9 +17,9 @@
 package connectors
 
 import connectors.mocks.TestGGConnector
-import connectors.models.gg.{EnrolFailure, EnrolResponse, EnrolSuccess}
+import connectors.models.gg.{EnrolFailure, EnrolSuccess}
 import org.scalatest.concurrent.ScalaFutures
-import utils.TestConstants.testEnrolRequest
+import utils.TestConstants._
 
 import scala.concurrent.Future
 

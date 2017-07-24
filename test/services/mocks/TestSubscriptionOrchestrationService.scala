@@ -16,27 +16,40 @@
 
 package services.mocks
 
-import audit.Logging
-import connectors.mocks.MockSubscriptionConnector
 import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccessResponse}
 import models.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import services.SubscriptionService
+import services.SubscriptionOrchestrationService
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.MockTrait
 import utils.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockSubscriptionService extends MockTrait with MockSubscriptionConnector {
+trait TestSubscriptionOrchestrationService extends MockSubscriptionService
+  with MockKnownFactsService
+  with MockEnrolmentService
+  with MockRefreshProfileService {
 
-  object TestSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestSubscriptionConnector)
+  object TestSubscriptionOrchestrationService extends SubscriptionOrchestrationService(
+    mockSubscriptionService,
+    mockKnownFactsService,
+    mockEnrolmentService,
+    mockRefreshProfileService
+  )
 
-  val mockSubscriptionService = mock[SubscriptionService]
+}
 
-  private def mockCreateSubscription(nino: String, summaryModel: SummaryModel)(result: Future[Either[SubscriptionFailureResponse, SubscriptionSuccessResponse]]): Unit =
-    when(mockSubscriptionService.submitSubscription(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(summaryModel))(ArgumentMatchers.any[HeaderCarrier]))
+trait MockSubscriptionOrchestrationService extends MockTrait {
+  val mockSubscriptionOrchestrationService = mock[SubscriptionOrchestrationService]
+
+  private def mockCreateSubscription(nino: String,
+                                     summaryModel: SummaryModel
+                                    )(result: Future[Either[SubscriptionFailureResponse, SubscriptionSuccessResponse]]): Unit =
+    when(mockSubscriptionOrchestrationService
+      .createSubscription(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(summaryModel)
+      )(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
   def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel): Unit =
@@ -47,5 +60,4 @@ trait MockSubscriptionService extends MockTrait with MockSubscriptionConnector {
 
   def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel): Unit =
     mockCreateSubscription(nino, summaryModel)(Future.failed(testException))
-
 }

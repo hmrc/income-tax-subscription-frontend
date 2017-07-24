@@ -21,10 +21,10 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import auth.IncomeTaxSAUser
 import config.BaseControllerConfig
-import connectors.models.subscription.FESuccessResponse
+import connectors.models.subscription.SubscriptionSuccessResponse
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Request, Result}
-import services.{AuthService, KeystoreService, SubscriptionService}
+import services.{AuthService, KeystoreService, SubscriptionOrchestrationService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 
@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val messagesApi: MessagesApi,
                                            val keystoreService: KeystoreService,
-                                           val middleService: SubscriptionService,
+                                           val subscriptionService: SubscriptionOrchestrationService,
                                            val authService: AuthService,
                                            logging: Logging
                                           ) extends AuthenticatedController {
@@ -59,8 +59,8 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         val nino = user.nino.get
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
-        middleService.submitSubscription(nino, cache.getSummary())(headerCarrier).flatMap {
-          case Some(FESuccessResponse(Some(id))) =>
+        subscriptionService.createSubscription(nino, cache.getSummary())(headerCarrier).flatMap {
+          case Right(SubscriptionSuccessResponse(id)) =>
             keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.routes.ConfirmationController.showConfirmation()))
           case _ =>
             error("Successful response not received from submission")

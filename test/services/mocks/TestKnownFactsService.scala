@@ -46,10 +46,10 @@ trait MockKnownFactsService extends MockTrait {
       .thenReturn(response)
 
   def mockAddKnownFactsSuccess(mtditid: String, nino: String): Unit =
-    mockAddKnownFacts(mtditid, nino)(Future.successful(Right(KnownFactsSuccess)))
+    mockAddKnownFacts(mtditid, nino)(Future.successful(testKnownFactsSuccess))
 
   def mockAddKnownFactsFailure(mtditid: String, nino: String): Unit =
-    mockAddKnownFacts(mtditid, nino)(Future.successful(Left(KnownFactsFailure(testErrorMessage))))
+    mockAddKnownFacts(mtditid, nino)(Future.successful(testKnownFactsFailure))
 
   def mockAddKnownFactsException(mtditid: String, nino: String): Unit =
     mockAddKnownFacts(mtditid, nino)(Future.failed(testException))

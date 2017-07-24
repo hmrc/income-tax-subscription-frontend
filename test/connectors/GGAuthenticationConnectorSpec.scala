@@ -17,9 +17,10 @@
 package connectors
 
 import connectors.mocks.TestGGAuthenticationConnector
-import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileResult, RefreshProfileSuccess}
+import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.play.http.HeaderCarrier
+import utils.TestConstants._
 
 import scala.concurrent.Future
 

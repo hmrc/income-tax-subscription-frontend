@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package connectors.models.gg
+package helpers.servicemocks
 
-import connectors.models.ConnectorError
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import connectors.GGAuthenticationConnector
+import play.api.http.Status._
 
-sealed trait KnownFactsResponse
+object GGAuthenticationStub extends WireMockMethods {
 
-object KnownFactsSuccess extends KnownFactsResponse
+  def stubRefreshProfileSuccess(): StubMapping =
+    when(method = POST, uri = GGAuthenticationConnector.refreshProfileUri)
+      .thenReturn(status = NO_CONTENT)
 
-case class KnownFactsFailure(message: String) extends KnownFactsResponse with ConnectorError
+  def stubRefreshProfileFailure(): StubMapping =
+    when(method = POST, uri = GGAuthenticationConnector.refreshProfileUri)
+      .thenReturn(status = UNAUTHORIZED)
+
+}

@@ -18,13 +18,14 @@ package connectors.mocks
 
 import audit.Logging
 import connectors.GGAdminConnector
-import connectors.models.gg.{KnownFactsFailure, KnownFactsRequest, KnownFactsResponse, KnownFactsSuccess}
+import connectors.models.gg.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status
 import play.api.libs.json._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
 import utils.MockTrait
+import utils.TestConstants._
 
 import scala.concurrent.Future
 

@@ -18,7 +18,7 @@ package controllers
 
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestModels._
-import helpers.servicemocks.{AuthStub, KeystoreStub, SubscriptionStub}
+import helpers.servicemocks._
 import play.api.http.Status._
 import play.api.i18n.Messages
 import services.CacheConstants._
@@ -81,6 +81,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription()
+        GGAdminStub.stubAddKnownFactsSuccess()
+        GGConnectorStub.stubEnrolSuccess()
+        GGAuthenticationStub.stubRefreshProfileSuccess()
         KeystoreStub.stubPutMtditId()
 
         When("POST /check-your-answers is called")

@@ -22,7 +22,7 @@ import play.api.http.Status
 import play.api.http.Status.SEE_OTHER
 import play.api.i18n.Messages
 import helpers.IntegrationTestConstants._
-import helpers.servicemocks.{AuthStub, SubscriptionStub}
+import helpers.servicemocks.{AuthStub, KeystoreStub, SubscriptionStub}
 
 class HomeControllerISpec extends ComponentSpecBase {
 
@@ -49,6 +49,7 @@ class HomeControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         SubscriptionStub.stubGetSubscriptionFound()
+        KeystoreStub.stubPutMtditId()
 
         When("GET /index is called")
         val res = IncomeTaxSubscriptionFrontend.indexPage()

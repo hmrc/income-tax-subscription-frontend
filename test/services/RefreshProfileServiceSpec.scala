@@ -19,6 +19,7 @@ package services
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import services.mocks.TestRefreshProfileService
+import utils.TestConstants._
 import utils.UnitTestTrait
 
 import scala.concurrent.Future

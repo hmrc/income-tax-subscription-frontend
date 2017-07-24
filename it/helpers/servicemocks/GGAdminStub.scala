@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package connectors.models.subscription
+package helpers.servicemocks
 
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import connectors.GGAdminConnector
+import play.api.http.Status._
 import play.api.libs.json.Json
 
+object GGAdminStub extends WireMockMethods {
+  def stubAddKnownFactsSuccess(): StubMapping =
+    when(method = POST, uri = GGAdminConnector.addKnownFactsUri)
+      .thenReturn(status = OK, body = Json.obj())
 
-sealed trait FEResponse
-
-case class FESuccessResponse(mtditId: Option[String]) extends FEResponse
-
-case class FEFailureResponse(reason: String) extends FEResponse
-
-object FESuccessResponse{
-  implicit val format = Json.format[FESuccessResponse]
-}
-
-object FEFailureResponse {
-  implicit val format = Json.format[FEFailureResponse]
+  def stubAddKnownFactsFailure(): StubMapping =
+    when(method = POST, uri = GGAdminConnector.addKnownFactsUri)
+      .thenReturn(status = BAD_REQUEST, body = Json.obj())
 }

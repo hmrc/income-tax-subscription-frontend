@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package connectors.models.gg
+package helpers.servicemocks
 
-import connectors.models.ConnectorError
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import connectors.GGConnector
+import play.api.http.Status._
 
-sealed trait KnownFactsResponse
+object GGConnectorStub extends WireMockMethods {
 
-object KnownFactsSuccess extends KnownFactsResponse
+  def stubEnrolSuccess(): StubMapping =
+    when(method = POST, uri = GGConnector.enrolUri)
+      .thenReturn(status = OK)
 
-case class KnownFactsFailure(message: String) extends KnownFactsResponse with ConnectorError
+  def stubEnrolFailure(): StubMapping =
+    when(method = POST, uri = GGConnector.enrolUri)
+      .thenReturn(status = FORBIDDEN)
+
+}

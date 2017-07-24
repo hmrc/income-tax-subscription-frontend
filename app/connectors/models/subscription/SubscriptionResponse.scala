@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package connectors.models.gg
+package connectors.models.subscription
 
 import connectors.models.ConnectorError
+import play.api.libs.json.Json
 
-sealed trait KnownFactsResponse
 
-object KnownFactsSuccess extends KnownFactsResponse
+sealed trait SubscriptionResponse
 
-case class KnownFactsFailure(message: String) extends KnownFactsResponse with ConnectorError
+case class SubscriptionSuccessResponse(mtditId: String) extends SubscriptionResponse
+
+case class SubscriptionFailureResponse(reason: String) extends SubscriptionResponse with ConnectorError
+
+object SubscriptionSuccessResponse {
+  implicit val format = Json.format[SubscriptionSuccessResponse]
+}
+
+object SubscriptionFailureResponse {
+  implicit val format = Json.format[SubscriptionFailureResponse]
+}

@@ -23,6 +23,7 @@ import org.mockito.Mockito._
 import services.RefreshProfileService
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.MockTrait
+import utils.TestConstants._
 
 import scala.concurrent.Future
 
@@ -37,9 +38,13 @@ trait MockRefreshProfileService extends MockTrait {
     when(mockRefreshProfileService.refreshProfile()(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  def mockRefreshProfileSuccess(): Unit = mockRefreshProfile(Future.successful(Right(RefreshProfileSuccess)))
+  def mockRefreshProfileSuccess(): Unit = {
+    mockRefreshProfile(Future.successful(testRefreshProfileSuccess))
+  }
 
-  def mockRefreshProfileFailure(): Unit = mockRefreshProfile(Future.successful(Left(RefreshProfileFailure)))
+  def mockRefreshProfileFailure(): Unit = {
+    mockRefreshProfile(Future.successful(testRefreshProfileFailure))
+  }
 
   def mockRefreshProfileException(): Unit = mockRefreshProfile(Future.failed(testException))
 }

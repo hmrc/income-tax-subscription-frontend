@@ -54,12 +54,13 @@ trait MockEnrolmentService extends MockTrait {
       )
     ).thenReturn(response)
 
-  def mockAddKnownFactsSuccess(mtditid: String, nino: String): Unit =
-    mockEnrol(mtditid, nino)(Future.successful(Right(EnrolSuccess)))
+  def mockEnrolSuccess(mtditid: String, nino: String): Unit = {
+    mockEnrol(mtditid, nino)(Future.successful(testEnrolSuccess))
+  }
+  def mockEnrolFailure(mtditid: String, nino: String): Unit = {
+    mockEnrol(mtditid, nino)(Future.successful(testEnrolFailure))
+  }
 
-  def mockAddKnownFactsFailure(mtditid: String, nino: String): Unit =
-    mockEnrol(mtditid, nino)(Future.successful(Left(EnrolFailure(testErrorMessage))))
-
-  def mockAddKnownFactsException(mtditid: String, nino: String): Unit =
+  def mockEnrolException(mtditid: String, nino: String): Unit =
     mockEnrol(mtditid, nino)(Future.failed(testException))
 }

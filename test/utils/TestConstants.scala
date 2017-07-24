@@ -17,7 +17,9 @@
 package utils
 
 import common.Constants.GovernmentGateway._
-import connectors.models.gg.{EnrolRequest, KnownFactsRequest, TypeValuePair}
+import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
+import connectors.models.gg._
+import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccessResponse}
 import models.DateModel
 import uk.gov.hmrc.domain.Generator
 
@@ -44,4 +46,23 @@ object TestConstants {
     friendlyName = ggFriendlyName,
     knownFacts = List(testMTDID, testNino)
   )
+
+  val testErrorMessage = "This is an error"
+  val testException = new Exception
+
+  val testRefreshProfileSuccess = Right(RefreshProfileSuccess)
+
+  val testRefreshProfileFailure = Left(RefreshProfileFailure)
+
+  val testEnrolSuccess = Right(EnrolSuccess)
+
+  val testEnrolFailure = Left(EnrolFailure(testErrorMessage))
+
+  val testSubscriptionSuccess = Right(SubscriptionSuccessResponse(testMTDID))
+
+  val testSubscriptionFailure = Left(SubscriptionFailureResponse(testErrorMessage))
+
+  val testKnownFactsSuccess = Right(KnownFactsSuccess)
+
+  val testKnownFactsFailure = Left(KnownFactsFailure(testErrorMessage))
 }

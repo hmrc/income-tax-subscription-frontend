@@ -70,7 +70,4 @@ trait MockTrait extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach 
       override def matches(argument: T): Boolean = predicate(argument)
     }
   )
-
-  val testErrorMessage = "This is an error"
-  val testException = new Exception
 }

@@ -19,14 +19,14 @@ package connectors.models.subscription
 import models.DateModel
 import play.api.libs.json.Json
 
-case class FERequest(nino: String,
-                     incomeSource: IncomeSourceType,
-                     isAgent: Boolean = false,
-                     accountingPeriodStart: Option[DateModel] = None,
-                     accountingPeriodEnd: Option[DateModel] = None,
-                     tradingName: Option[String] = None,
-                     cashOrAccruals: Option[String] = None)
+case class SubscriptionRequest(nino: String,
+                               incomeSource: IncomeSourceType,
+                               isAgent: Boolean = false,
+                               accountingPeriodStart: Option[DateModel] = None,
+                               accountingPeriodEnd: Option[DateModel] = None,
+                               tradingName: Option[String] = None,
+                               cashOrAccruals: Option[String] = None)
 
-object FERequest {
-  implicit val format = Json.format[FERequest]
+object SubscriptionRequest {
+  implicit val format = Json.format[SubscriptionRequest]
 }
