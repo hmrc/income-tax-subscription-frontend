@@ -35,9 +35,8 @@ class SignInControllerISpec extends ComponentSpecBase {
 
         Then("Should return a SEE_OTHER with a redirect location of gg sign in")
         res should have(
-          httpStatus(SEE_OTHER)
-//          TODO: Add applicable sign in URI check for redirect location
-//          redirectURI(signInURI)
+          httpStatus(SEE_OTHER),
+          redirectURI(ggSignInURI)
         )
       }
     }

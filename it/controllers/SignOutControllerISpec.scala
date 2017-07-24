@@ -17,6 +17,7 @@
 package controllers
 
 import helpers.ComponentSpecBase
+import helpers.IntegrationTestConstants._
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.SEE_OTHER
 
@@ -34,9 +35,8 @@ class SignOutControllerISpec extends ComponentSpecBase {
 
         Then("Should return a SEE_OTHER with a redirect location of gg sign in")
         res should have(
-          httpStatus(SEE_OTHER)
-//          TODO: Add applicable sign in URI check for redirect location
-//          redirectURI(signInURI)
+          httpStatus(SEE_OTHER),
+          redirectURI(ggSignOutURI)
         )
       }
     }
