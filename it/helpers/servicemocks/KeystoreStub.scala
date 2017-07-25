@@ -16,6 +16,8 @@
 
 package helpers.servicemocks
 
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import play.api.http.Status
@@ -45,6 +47,15 @@ object KeystoreStub extends WireMockMethods {
 
     when(method = GET, uri = keystoreUri)
       .thenReturn(Status.OK, body)
+  }
+
+  def stubKeystoreFailure() : Unit = {
+    when(method = GET, uri = keystoreUri)
+      .thenReturn(Status.INTERNAL_SERVER_ERROR)
+
+    val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(s"$keystoreUri/data/.*"))
+    val response = aResponse().withStatus(Status.INTERNAL_SERVER_ERROR)
+    stubFor(mapping.willReturn(response))
   }
 
   def stubKeystoreSave[T](id: String, body: T)(implicit writer: Writes[T]): Unit = {
