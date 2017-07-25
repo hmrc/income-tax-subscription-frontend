@@ -18,11 +18,34 @@ package services.mocks
 
 import audit.Logging
 import connectors.mocks.MockSubscriptionConnector
+import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccessResponse}
+import models.SummaryModel
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito._
 import services.SubscriptionService
+import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.MockTrait
+import utils.TestConstants._
+
+import scala.concurrent.Future
 
 trait MockSubscriptionService extends MockTrait with MockSubscriptionConnector {
 
   object TestSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestSubscriptionConnector)
+
+  val mockSubscriptionService = mock[SubscriptionService]
+
+  private def mockCreateSubscription(nino: String, summaryModel: SummaryModel)(result: Future[Either[SubscriptionFailureResponse, SubscriptionSuccessResponse]]): Unit =
+    when(mockSubscriptionService.submitSubscription(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(summaryModel))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(result)
+
+  def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscription(nino, summaryModel)(Future.successful(testSubscriptionSuccess))
+
+  def mockCreateSubscriptionFailure(nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscription(nino, summaryModel)(Future.successful(testSubscriptionFailure))
+
+  def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscription(nino, summaryModel)(Future.failed(testException))
 
 }

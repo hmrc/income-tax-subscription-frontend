@@ -74,3 +74,6 @@ POST        /exit-survey                      controllers.ExitSurveyController.s
 GET         /feedback-submitted               controllers.ThankYouController.show
 
 GET         /sign-in                          controllers.SignInController.signIn
+
+# Claim Subscription
+GET         /claim-subscription               controllers.ClaimSubscriptionController.claim

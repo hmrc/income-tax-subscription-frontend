@@ -22,15 +22,14 @@ import java.time.LocalDateTime._
 import audit.Logging
 import auth.IncomeTaxSAUser
 import config.BaseControllerConfig
-import connectors.models.subscription.FESuccessResponse
+import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccessResponse}
 import connectors.models.throttling.CanAccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.{AuthService, SubscriptionService, ThrottlingService}
+import services.{AuthService, KeystoreService, SubscriptionService, ThrottlingService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 import ITSASessionKeys._
-
 
 import scala.concurrent.Future
 
@@ -39,6 +38,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                override val messagesApi: MessagesApi,
                                throttlingService: ThrottlingService,
                                subscriptionService: SubscriptionService,
+                               keystoreService: KeystoreService,
                                val authService: AuthService,
                                logging: Logging
                               ) extends AuthenticatedController {
@@ -57,15 +57,15 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
   }
 
   private def checkAlreadySubscribed(default: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
-    baseConfig.applicationConfig.enableCheckSubscription match {
-      case false => default
-      case true =>
         subscriptionService.getSubscription(user.nino.get).flatMap {
-          case Some(FESuccessResponse(None)) => default
-          case Some(FESuccessResponse(Some(_))) => Redirect(controllers.routes.AlreadyEnrolledController.enrolled())
-          case _ => new InternalServerException("HomeController.index: unexpected error calling the subscription service")
+          case Right(None) => default
+          case Right(Some(SubscriptionSuccessResponse(mtditId))) =>
+            keystoreService.saveSubscriptionId(mtditId) map { _ =>
+              Redirect(controllers.routes.ClaimSubscriptionController.claim())
+            }
+          case Left(SubscriptionFailureResponse(error)) =>
+            Future.failed(new InternalServerException(s"HomeController.index: unexpected error calling the subscription service: $error"))
         }
-    }
 
   def index: Action[AnyContent] = Authenticated.asyncForHomeController { implicit request =>
     implicit user =>

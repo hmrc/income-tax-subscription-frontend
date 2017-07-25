@@ -60,7 +60,13 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.preferences-frontend.port" -> mockPort,
     "microservice.services.feature-switch.show-guidance" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
-    "auditing.consumer.baseUri.port" -> mockPort
+    "auditing.consumer.baseUri.port" -> mockPort,
+    "microservice.services.gg-admin.host" -> mockHost,
+    "microservice.services.gg-admin.port" -> mockPort,
+    "microservice.services.government-gateway.host" -> mockHost,
+    "microservice.services.government-gateway.port" -> mockPort,
+    "microservice.services.gg-authentication.host" -> mockHost,
+    "microservice.services.gg-authentication.port" -> mockPort
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -99,6 +105,8 @@ trait ComponentSpecBase extends UnitSpec
     def startPage(): WSResponse = get("/")
 
     def preferences(): WSResponse = get("/preferences")
+
+    def indexPage(): WSResponse = get("/index")
 
     def income(): WSResponse = get("/income")
 

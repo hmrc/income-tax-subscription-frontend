@@ -16,7 +16,7 @@
 
 package testonly.connectors
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import connectors.RawResponseReads
 import play.api.http.Status._
@@ -27,6 +27,7 @@ import utils.Implicits._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@Singleton
 class ClearPreferencesConnector @Inject()(appConfig: TestOnlyAppConfig,
                                           httpGet: HttpGet,
                                           http: HttpDelete) extends RawResponseReads {

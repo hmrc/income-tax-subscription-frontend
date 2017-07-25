@@ -112,4 +112,12 @@ object TestModels extends Implicits {
 
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
 
+  val testSummaryData = SummaryModel(
+    incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),
+    otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
+    accountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no),
+    accountingPeriod = AccountingPeriodModel(TestConstants.startDate, TestConstants.endDate),
+    businessName = BusinessNameModel("ABC"),
+    accountingMethod = AccountingMethodModel("Cash")
+  )
 }

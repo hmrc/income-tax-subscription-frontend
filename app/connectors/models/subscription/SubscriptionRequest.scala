@@ -16,19 +16,17 @@
 
 package connectors.models.subscription
 
+import models.DateModel
 import play.api.libs.json.Json
 
+case class SubscriptionRequest(nino: String,
+                               incomeSource: IncomeSourceType,
+                               isAgent: Boolean = false,
+                               accountingPeriodStart: Option[DateModel] = None,
+                               accountingPeriodEnd: Option[DateModel] = None,
+                               tradingName: Option[String] = None,
+                               cashOrAccruals: Option[String] = None)
 
-sealed trait FEResponse
-
-case class FESuccessResponse(mtditId: Option[String]) extends FEResponse
-
-case class FEFailureResponse(reason: String) extends FEResponse
-
-object FESuccessResponse{
-  implicit val format = Json.format[FESuccessResponse]
-}
-
-object FEFailureResponse {
-  implicit val format = Json.format[FEFailureResponse]
+object SubscriptionRequest {
+  implicit val format = Json.format[SubscriptionRequest]
 }

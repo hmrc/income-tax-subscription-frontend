@@ -18,7 +18,7 @@ package controllers
 
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestModels._
-import helpers.servicemocks.{AuthStub, KeystoreStub, SubscriptionStub}
+import helpers.servicemocks._
 import play.api.http.Status._
 import play.api.i18n.Messages
 import services.CacheConstants._
@@ -81,6 +81,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription()
+        GGAdminStub.stubAddKnownFactsSuccess()
+        GGConnectorStub.stubEnrolSuccess()
+        GGAuthenticationStub.stubRefreshProfileSuccess()
         KeystoreStub.stubPutMtditId()
 
         When("POST /check-your-answers is called")
@@ -120,6 +123,21 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(signInURI)
+      )
+    }
+
+    "return an INTERNAL_SERVER_ERROR when the backend service returns a NOT_FOUND" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      KeystoreStub.stubFullKeystore()
+      SubscriptionStub.stubCreateSubscriptionNotFound()
+
+      When("POST /check-your-answers is called")
+      val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+      Then("Should return an INTERNAL_SERVER_ERROR")
+      res should have(
+        httpStatus(INTERNAL_SERVER_ERROR)
       )
     }
   }
