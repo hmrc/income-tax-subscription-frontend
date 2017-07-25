@@ -16,4 +16,6 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.0")
 
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.8.0")
 
+addSbtPlugin("org.lyranthe.sbt" % "partial-unification" % "1.0.0")
+
 resolvers += Resolver.bintrayRepo("hmrc", "releases")

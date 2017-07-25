@@ -17,14 +17,14 @@
 package connectors.mocks
 
 import config.AppConfig
-import connectors.models.subscription.{Both, FEFailureResponse, FERequest, FESuccessResponse}
+import connectors.models.subscription._
 import connectors.subscription.SubscriptionConnector
 import forms.{AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
 import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{times, verify}
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import utils.JsonUtils._
 import utils.TestConstants
@@ -39,7 +39,7 @@ trait MockSubscriptionConnector extends MockHttp {
     mockHttpGet
   )
 
-  def setupMockSubscribe(request: Option[FERequest] = None)(status: Int, response: JsValue): Unit =
+  def setupMockSubscribe(request: Option[SubscriptionRequest] = None)(status: Int, response: JsValue): Unit =
     setupMockHttpPost(url = TestSubscriptionConnector.subscriptionUrl(""), request)(status, response)
 
   def setupMockGetSubscription(nino: Option[String] = None)(status: Int, response: JsValue): Unit =
@@ -47,7 +47,7 @@ trait MockSubscriptionConnector extends MockHttp {
       url = nino.fold(None: Option[String])(nino => TestSubscriptionConnector.subscriptionUrl(nino))
     )(status, response)
 
-  def setupSubscribe(request: Option[FERequest] = None) = (setupMockSubscribe(request) _).tupled
+  def setupSubscribe(request: Option[SubscriptionRequest] = None) = (setupMockSubscribe(request) _).tupled
 
   def setupGetSubscription(nino: Option[String] = None) = (setupMockGetSubscription(nino) _).tupled
 
@@ -56,7 +56,7 @@ trait MockSubscriptionConnector extends MockHttp {
       nino.fold(ArgumentMatchers.any())(nino => ArgumentMatchers.startsWith(TestSubscriptionConnector.subscriptionUrl(nino))))(ArgumentMatchers.any(), ArgumentMatchers.any()
     )
 
-  val testRequest = FERequest(
+  val testRequest = SubscriptionRequest(
     nino = TestConstants.testNino,
     incomeSource = Both,
     accountingPeriodStart = TestConstants.startDate,
@@ -65,23 +65,14 @@ trait MockSubscriptionConnector extends MockHttp {
     tradingName = "ABC"
   )
 
-  val testSummaryData = SummaryModel(
-    incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),
-    otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
-    accountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no),
-    accountingPeriod = AccountingPeriodModel(TestConstants.startDate, TestConstants.endDate),
-    businessName = BusinessNameModel("ABC"),
-    accountingMethod = AccountingMethodModel("Cash")
-  )
-
   val testId = TestConstants.testMTDID
   val badRequestReason = "Bad request"
   val internalServerErrorReason = "Internal server error"
 
-  val subscribeSuccess = (OK, FESuccessResponse(testId): JsValue)
-  val subscribeNone = (OK, FESuccessResponse(None): JsValue)
-  val subscribeBadRequest = (BAD_REQUEST, FEFailureResponse(badRequestReason): JsValue)
-  val subscribeInternalServerError = (INTERNAL_SERVER_ERROR, FEFailureResponse(internalServerErrorReason): JsValue)
+  val subscribeSuccess = (OK, SubscriptionSuccessResponse(testId): JsValue)
+  val subscribeEmptyBody = (OK, Json.obj())
+  val subscribeBadRequest = (BAD_REQUEST, SubscriptionFailureResponse(badRequestReason): JsValue)
+  val subscribeInternalServerError = (INTERNAL_SERVER_ERROR, SubscriptionFailureResponse(internalServerErrorReason): JsValue)
 
   def verifySubscriptionHeader(header: (String, String)): Future[HttpResponse] = verify(mockHttpPost).POST(
     ArgumentMatchers.any[String],

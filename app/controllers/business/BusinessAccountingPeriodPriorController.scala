@@ -16,7 +16,7 @@
 
 package controllers.business
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import config.BaseControllerConfig
 import controllers.AuthenticatedController
@@ -31,7 +31,7 @@ import utils.Implicits._
 
 import scala.concurrent.Future
 
-
+@Singleton
 class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseControllerConfig,
                                                         val messagesApi: MessagesApi,
                                                         val keystoreService: KeystoreService,

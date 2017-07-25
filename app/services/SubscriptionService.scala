@@ -19,11 +19,10 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
-import connectors.models.subscription.{FERequest, FEResponse, IncomeSourceType}
+import connectors.models.subscription._
 import connectors.subscription.SubscriptionConnector
-import models.{DateModel, SummaryModel}
+import models.SummaryModel
 import uk.gov.hmrc.play.http.HeaderCarrier
-import utils.Implicits._
 
 import scala.concurrent.Future
 
@@ -31,25 +30,32 @@ import scala.concurrent.Future
 class SubscriptionService @Inject()(logging: Logging,
                                     subscriptionConnector: SubscriptionConnector) {
 
-  type OS = Option[String]
+  private[services] def buildRequest(nino: String, summaryData: SummaryModel): SubscriptionRequest = {
+    val incomeSource = IncomeSourceType(summaryData.incomeSource.get.source)
+    val accountingPeriodStart = summaryData.accountingPeriod map (_.startDate)
+    val accountingPeriodEnd = summaryData.accountingPeriod map (_.endDate)
+    val cashOrAccruals = summaryData.accountingMethod map (_.accountingMethod)
+    val tradingName = summaryData.businessName map (_.businessName)
 
-  private[services] def buildRequest(nino: String, summaryData: SummaryModel): FERequest =
-    FERequest(
+    SubscriptionRequest(
       nino = nino,
-      incomeSource = IncomeSourceType(summaryData.incomeSource.get.source),
-      accountingPeriodStart = summaryData.accountingPeriod.fold[Option[DateModel]](None)(_.startDate),
-      accountingPeriodEnd = summaryData.accountingPeriod.fold[Option[DateModel]](None)(_.endDate),
-      cashOrAccruals = summaryData.accountingMethod.fold[OS](None)(_.accountingMethod),
-      tradingName = summaryData.businessName.fold[OS](None)(_.businessName)
+      incomeSource = incomeSource,
+      accountingPeriodStart = accountingPeriodStart,
+      accountingPeriodEnd = accountingPeriodEnd,
+      cashOrAccruals = cashOrAccruals,
+      tradingName = tradingName
     )
+  }
 
-  def submitSubscription(nino: String, summaryData: SummaryModel)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
+  def submitSubscription(nino: String,
+                         summaryData: SummaryModel
+                        )(implicit hc: HeaderCarrier): Future[Either[SubscriptionFailureResponse, SubscriptionSuccessResponse]] = {
     val request = buildRequest(nino, summaryData)
     logging.debug(s"Submitting subscription with request: $request")
     subscriptionConnector.subscribe(request)
   }
 
-  def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[Option[FEResponse]] = {
+  def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[Either[SubscriptionFailureResponse, Option[SubscriptionSuccessResponse]]] = {
     logging.debug(s"Getting subscription for nino=$nino")
     subscriptionConnector.getSubscription(nino)
   }

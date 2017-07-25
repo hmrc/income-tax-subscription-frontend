@@ -47,6 +47,11 @@ trait MockConfig extends AppConfig {
   override lazy val whitelistIps: Seq[String] = Seq("127.0.0.1")
   override lazy val ipExclusionList: Seq[Call] = Nil
   override val enableCheckSubscription: Boolean = true
+
+  override val authURL: String = "/auth"
+  override val ggAdminURL: String = "/gg-admin"
+  override val ggURL: String = "/gg"
+  override val ggAuthenticationURL: String = "/gg-auth"
 }
 
 object MockConfig extends MockConfig

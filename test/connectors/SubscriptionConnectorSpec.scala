@@ -17,7 +17,9 @@
 package connectors
 
 import connectors.mocks.MockSubscriptionConnector
-import connectors.models.subscription.{FEResponse, FESuccessResponse}
+import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionResponse, SubscriptionSuccessResponse}
+import connectors.subscription.SubscriptionConnector
+import connectors.subscription.SubscriptionConnector.badlyFormattedMessage
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
 import utils.TestConstants
@@ -35,25 +37,32 @@ class SubscriptionConnectorSpec extends MockSubscriptionConnector {
 
     def call = await(TestSubscriptionConnector.subscribe(request = testRequest))
 
-    "return the succcess response as an object" in {
+    "return the success response as an object" in {
       setupSubscribe(testRequest)(subscribeSuccess)
-      val expected = FESuccessResponse(id)
+      val expected = SubscriptionSuccessResponse(id)
       val actual = call
-      actual shouldBe Some(expected)
+      actual shouldBe Right(expected)
     }
 
-    "return None if the middle service indicated a bad request" in {
+    "return an error if the response is badly formatted" in {
+      setupSubscribe(testRequest)(subscribeEmptyBody)
+      val expected = SubscriptionFailureResponse(badlyFormattedMessage)
+      val actual = call
+      actual shouldBe Left(expected)
+    }
+
+    "return the correct error if the middle service indicated a bad request" in {
       val reason = "Your submission contains one or more errors. Failed Parameter(s) - [idType, idNumber, payload]"
       val code = "INVALID_NINO"
       setupSubscribe(testRequest)(subscribeBadRequest)
       val actual = call
-      actual shouldBe None
+      actual shouldBe Left(SubscriptionFailureResponse(SubscriptionConnector.subscriptionErrorText(BAD_REQUEST)))
     }
 
-    "return None if the middle service indicated internal server error" in {
+    "return the correct error if the middle service indicated internal server error" in {
       setupSubscribe(testRequest)(subscribeInternalServerError)
       val actual = call
-      actual shouldBe None
+      actual shouldBe Left(SubscriptionFailureResponse(SubscriptionConnector.subscriptionErrorText(INTERNAL_SERVER_ERROR)))
     }
   }
 
@@ -64,26 +73,26 @@ class SubscriptionConnectorSpec extends MockSubscriptionConnector {
       TestSubscriptionConnector.subscriptionUrl(testNino) should endWith(s"/income-tax-subscription/subscription/$testNino")
     }
 
-    def result: Option[FEResponse] = await(TestSubscriptionConnector.getSubscription(testNino))
+    def result: Either[SubscriptionFailureResponse, Option[SubscriptionSuccessResponse]] = await(TestSubscriptionConnector.getSubscription(testNino))
 
-    "return the succcess response as an object" in {
+    "return the success response as an object" in {
       setupGetSubscription(testNino)(subscribeSuccess)
-      result shouldBe Some(FESuccessResponse(id))
+      result shouldBe Right(Some(SubscriptionSuccessResponse(id)))
     }
 
-    "return the None response as an object" in {
-      setupGetSubscription(testNino)(subscribeNone)
-      result shouldBe Some(FESuccessResponse(None))
+    "return an empty OK response as None" in {
+      setupGetSubscription(testNino)(subscribeEmptyBody)
+      result shouldBe Right(None)
     }
 
     "return fail if the middle service indicated a bad request" in {
       setupGetSubscription(testNino)(subscribeBadRequest)
-      result shouldBe None
+      result shouldBe Left(SubscriptionFailureResponse(SubscriptionConnector.subscriptionErrorText(BAD_REQUEST)))
     }
 
     "return None if the middle service indicated internal server error" in {
       setupGetSubscription(testNino)(subscribeInternalServerError)
-      result shouldBe None
+      result shouldBe Left(SubscriptionFailureResponse(SubscriptionConnector.subscriptionErrorText(INTERNAL_SERVER_ERROR)))
     }
   }
 

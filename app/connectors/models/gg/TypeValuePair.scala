@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package connectors.models.subscription
+package connectors.models.gg
 
-import models.DateModel
 import play.api.libs.json.Json
 
-case class FERequest(nino: String,
-                     incomeSource: IncomeSourceType,
-                     isAgent: Boolean = false,
-                     accountingPeriodStart: Option[DateModel] = None,
-                     accountingPeriodEnd: Option[DateModel] = None,
-                     tradingName: Option[String] = None,
-                     cashOrAccruals: Option[String] = None)
+case class TypeValuePair(`type`: String, value: String)
 
-object FERequest {
-  implicit val format = Json.format[FERequest]
+object TypeValuePair {
+  implicit val format = Json.format[TypeValuePair]
 }

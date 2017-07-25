@@ -16,10 +16,12 @@
 
 package services
 
-import connectors.models.subscription.{FESuccessResponse, IncomeSourceType}
+import connectors.models.subscription.{IncomeSourceType, SubscriptionFailureResponse, SubscriptionSuccessResponse}
+import connectors.subscription.SubscriptionConnector.subscriptionErrorText
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
 import services.mocks.MockSubscriptionService
+import utils.TestModels._
 import utils.{TestConstants, TestModels}
 
 
@@ -48,21 +50,20 @@ class SubscriptionServiceSpec extends MockSubscriptionService {
 
     "return the safeId when the subscription is successful" in {
       setupSubscribe(testRequest)(subscribeSuccess)
-      val response = call.get
-      response.isInstanceOf[FESuccessResponse] shouldBe true
-      response.asInstanceOf[FESuccessResponse].mtditId shouldBe Some(testId)
+      val response = call
+      response shouldBe Right(SubscriptionSuccessResponse(testId))
     }
 
     "return the error if subscription fails on bad request" in {
       setupSubscribe(testRequest)(subscribeBadRequest)
       val response = call
-      response shouldBe None
+      response shouldBe Left(SubscriptionFailureResponse(subscriptionErrorText(BAD_REQUEST)))
     }
 
     "return the error if subscription fails on internal server error" in {
       setupSubscribe(testRequest)(subscribeInternalServerError)
       val response = call
-      response shouldBe None
+      response shouldBe Left(SubscriptionFailureResponse(subscriptionErrorText(INTERNAL_SERVER_ERROR)))
 
     }
   }
@@ -73,28 +74,26 @@ class SubscriptionServiceSpec extends MockSubscriptionService {
 
     "return the safeId when the subscription is returned" in {
       setupGetSubscription(testNino)(subscribeSuccess)
-      val response = call.get
-      response.isInstanceOf[FESuccessResponse] shouldBe true
-      response.asInstanceOf[FESuccessResponse].mtditId shouldBe Some(testId)
+      val response = call
+      response shouldBe Right(Some(SubscriptionSuccessResponse(testId)))
     }
 
     "return the None when the subscription is returned as None" in {
-      setupGetSubscription(testNino)(subscribeNone)
-      val response = call.get
-      response.isInstanceOf[FESuccessResponse] shouldBe true
-      response.asInstanceOf[FESuccessResponse].mtditId shouldBe None
+      setupGetSubscription(testNino)(subscribeEmptyBody)
+      val response = call
+      response shouldBe Right(None)
     }
 
     "return the error if subscription fails on bad request" in {
       setupGetSubscription(testNino)(subscribeBadRequest)
       val response = call
-      response shouldBe None
+      response shouldBe Left(SubscriptionFailureResponse(subscriptionErrorText(BAD_REQUEST)))
     }
 
     "return the error if subscription fails on internal server error" in {
       setupGetSubscription(testNino)(subscribeInternalServerError)
       val response = call
-      response shouldBe None
+      response shouldBe Left(SubscriptionFailureResponse(subscriptionErrorText(INTERNAL_SERVER_ERROR)))
     }
   }
 

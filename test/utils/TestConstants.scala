@@ -16,6 +16,10 @@
 
 package utils
 
+import common.Constants.GovernmentGateway._
+import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
+import connectors.models.gg._
+import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccessResponse}
 import models.DateModel
 import uk.gov.hmrc.domain.Generator
 
@@ -28,4 +32,37 @@ object TestConstants {
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
+
+  lazy val knownFactsRequest = KnownFactsRequest(
+    List(
+      TypeValuePair(MTDITID, testMTDID),
+      TypeValuePair(NINO, testNino)
+    )
+  )
+
+  val testEnrolRequest = EnrolRequest(
+    portalId = ggPortalId,
+    serviceName = ggServiceName,
+    friendlyName = ggFriendlyName,
+    knownFacts = List(testMTDID, testNino)
+  )
+
+  val testErrorMessage = "This is an error"
+  val testException = new Exception
+
+  val testRefreshProfileSuccess = Right(RefreshProfileSuccess)
+
+  val testRefreshProfileFailure = Left(RefreshProfileFailure)
+
+  val testEnrolSuccess = Right(EnrolSuccess)
+
+  val testEnrolFailure = Left(EnrolFailure(testErrorMessage))
+
+  val testSubscriptionSuccess = Right(SubscriptionSuccessResponse(testMTDID))
+
+  val testSubscriptionFailure = Left(SubscriptionFailureResponse(testErrorMessage))
+
+  val testKnownFactsSuccess = Right(KnownFactsSuccess)
+
+  val testKnownFactsFailure = Left(KnownFactsFailure(testErrorMessage))
 }

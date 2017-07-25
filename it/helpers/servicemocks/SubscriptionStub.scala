@@ -16,10 +16,11 @@
 
 package helpers.servicemocks
 
-import connectors.models.subscription.FESuccessResponse
+import connectors.models.subscription.SubscriptionSuccessResponse
 import controllers.ITSASessionKeys
 import helpers.IntegrationTestConstants._
 import play.api.http.Status
+import play.api.libs.json.Json
 
 object SubscriptionStub extends WireMockMethods{
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"
@@ -40,6 +41,11 @@ object SubscriptionStub extends WireMockMethods{
       .thenReturn(Status.OK, successfulNoSubscriptionResponse)
   }
 
-  val successfulSubscriptionResponse = FESuccessResponse(Some(testMTDID))
-  val successfulNoSubscriptionResponse = FESuccessResponse(None)
+  def stubCreateSubscriptionNotFound(): Unit = {
+    when(method = POST, uri = subscriptionURI(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageURI))
+      .thenReturn(Status.NOT_FOUND)
+  }
+
+  val successfulSubscriptionResponse = SubscriptionSuccessResponse(testMTDID)
+  val successfulNoSubscriptionResponse = Json.obj()
 }

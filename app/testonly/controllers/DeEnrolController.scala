@@ -20,8 +20,10 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
+import connectors.GGAuthenticationConnector
+import connectors.models.authenticator.RefreshProfileSuccess
 import play.api.mvc.Action
-import testonly.connectors.{DeEnrolmentConnector, GGAuthenticationConnector}
+import testonly.connectors.DeEnrolmentConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 @Singleton
@@ -32,9 +34,9 @@ class DeEnrolController @Inject()(deEnrolmentConnector: DeEnrolmentConnector,
     for {
       ggStubResponse <- deEnrolmentConnector.resetUsers()
       authRefreshed <- ggAuthenticationConnector.refreshProfile()
-    } yield (authRefreshed.status, ggStubResponse.status) match {
-      case (NO_CONTENT, OK) => Ok("Successfully Reset GG stubbed user")
-      case _ => BadRequest(s"Failed to Reset GG stubbed user: ggStubResponse=${ggStubResponse.status}, authRefreshed=${authRefreshed.status}")
+    } yield (authRefreshed, ggStubResponse.status) match {
+      case (Right(RefreshProfileSuccess), OK) => Ok("Successfully Reset GG stubbed user")
+      case _ => BadRequest(s"Failed to Reset GG stubbed user: ggStubResponse=${ggStubResponse.status}, authRefreshed=$authRefreshed")
     }
   }
 

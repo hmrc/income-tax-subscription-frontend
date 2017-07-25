@@ -23,4 +23,11 @@ object Constants {
   val ninoEnrolmentName = "HMRC-NI"
   val ninoEnrolmentIdentifierKey = "NINO"
 
+  object GovernmentGateway {
+    val MTDITID = "MTDITID"
+    val NINO = "NINO"
+    val ggPortalId = "Default"
+    val ggServiceName = "HMRC-MTD-IT"
+    val ggFriendlyName = "Making Tax Digital Income Tax Self-Assessment enrolment"
+  }
 }
