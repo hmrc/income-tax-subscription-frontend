@@ -30,6 +30,23 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/income" when {
 
+    "call to keystore fails" should {
+      "fail to display income source page" in {
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("GET /income is called")
+        val res = IncomeTaxSubscriptionFrontend.income()
+
+        Then("Should return a INTERNAL_SERVER_ERROR")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
+
     "keystore returns all data" should {
       "show the income source page with an option selected" in {
         Given("I setup the Wiremock stubs")
@@ -62,23 +79,6 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
           httpStatus(OK),
           pageTitle(Messages("income_source.title")),
           radioButtonSet(id = "incomeSource", selectedRadioButton = None)
-        )
-      }
-    }
-
-    "call to keystore fails" should {
-      "fail to display income source page" in {
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("GET /income is called")
-        val res = IncomeTaxSubscriptionFrontend.income()
-
-        Then("Should return a INTERNAL_SERVER_ERROR")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
     }
