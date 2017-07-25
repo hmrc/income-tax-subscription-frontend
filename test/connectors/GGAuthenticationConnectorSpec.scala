@@ -18,14 +18,14 @@ package connectors
 
 import connectors.mocks.TestGGAuthenticationConnector
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.TestConstants._
 
 import scala.concurrent.Future
 
 
-class GGAuthenticationConnectorSpec extends TestGGAuthenticationConnector with ScalaFutures {
+class GGAuthenticationConnectorSpec extends TestGGAuthenticationConnector with ScalaFutures with IntegrationPatience {
 
   override implicit val hc = HeaderCarrier()
 

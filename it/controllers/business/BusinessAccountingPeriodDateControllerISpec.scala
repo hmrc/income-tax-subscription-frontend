@@ -22,13 +22,29 @@ import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import models._
-import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import play.api.http.Status._
 import play.api.i18n.Messages
 import services.CacheConstants
 
 class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-period-dates" when {
+
+    "keystore call fails" should {
+      "return an internal server error" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("GET /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.businessAccountingPeriodDates()
+
+        Then("should return an internal server error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
 
     "keystore returns all data" should {
       "show the current accounting period dates page with date values entered" in {
@@ -211,6 +227,22 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         )
       }
 
+      "keystore call fails" in {
+        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+
+        Then("should return an internal server error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+
       "redirect to sign-in when auth fails" in {
         val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
@@ -285,6 +317,22 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
+        )
+      }
+
+      "keystore call fails" in {
+        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
+
+        Then("should return an internal server error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
 

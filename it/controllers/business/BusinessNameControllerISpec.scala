@@ -22,13 +22,29 @@ import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models._
-import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import play.api.http.Status._
 import play.api.i18n.Messages
 import services.CacheConstants
 
 class BusinessNameControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/name" when {
+
+    "keystore call fails" should {
+      "return an internal server error" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("GET /business/name is called")
+        val res = IncomeTaxSubscriptionFrontend.businessName()
+
+        Then("return an internal server error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
 
     "keystore returns all data" should {
       "show the business name page" in {
@@ -134,6 +150,22 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         )
       }
 
+      "keystore call fails" in {
+        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("POST /business/name is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
+
+        Then("Should return an Internal Server Error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+
       "redirect to sign-in when auth fails" in {
         val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
 
@@ -192,6 +224,22 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
+        )
+      }
+
+      "keystore call fails" in {
+        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("POST /business/name is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
+
+        Then("Should return an Internal Server Error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
 

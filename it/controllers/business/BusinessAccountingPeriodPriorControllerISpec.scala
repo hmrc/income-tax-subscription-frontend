@@ -21,13 +21,29 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import models.AccountingPeriodPriorModel
-import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
+import play.api.http.Status._
 import play.api.i18n.Messages
 import services.CacheConstants
 
 class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-period-prior" when {
+
+    "keystore call fails" should {
+      "internal server error" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("GET /business/accounting-period-prior is called")
+        val res = IncomeTaxSubscriptionFrontend.businessAccountingPeriodPrior()
+
+        Then("Should return an Internal Server Error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
 
     "keystore returns all data" should {
       "show the accounting period prior page with an option selected" in {
@@ -148,6 +164,20 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(BAD_REQUEST),
           errorDisplayed()
+        )
+      }
+
+      "keystore call fails" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("POST /business/accounting-period-prior is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessAccountingPeriodPrior(inEditMode = false, None)
+
+        Then("Should return an internal server error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
 
