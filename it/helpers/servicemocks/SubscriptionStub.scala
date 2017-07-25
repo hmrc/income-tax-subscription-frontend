@@ -41,6 +41,11 @@ object SubscriptionStub extends WireMockMethods{
       .thenReturn(Status.OK, successfulNoSubscriptionResponse)
   }
 
+  def stubCreateSubscriptionNotFound(): Unit = {
+    when(method = POST, uri = subscriptionURI(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageURI))
+      .thenReturn(Status.NOT_FOUND)
+  }
+
   val successfulSubscriptionResponse = SubscriptionSuccessResponse(testMTDID)
   val successfulNoSubscriptionResponse = Json.obj()
 }

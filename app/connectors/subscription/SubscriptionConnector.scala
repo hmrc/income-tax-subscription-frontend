@@ -19,6 +19,7 @@ package connectors.subscription
 import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
+import connectors.RawResponseReads
 import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccessResponse}
 import play.api.http.Status.OK
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, HttpResponse}
@@ -29,7 +30,7 @@ import scala.concurrent.Future
 @Singleton
 class SubscriptionConnector @Inject()(val appConfig: AppConfig,
                                       val httpPost: HttpPost,
-                                      val httpGet: HttpGet) {
+                                      val httpGet: HttpGet) extends RawResponseReads {
   import SubscriptionConnector._
 
   def subscriptionUrl(nino: String): String = appConfig.subscriptionUrl + SubscriptionConnector.subscriptionUri(nino)

@@ -36,7 +36,7 @@ class SubscriptionOrchestrationService @Inject() (subscriptionService: Subscript
                                                  ) (implicit ec: ExecutionContext){
 
   def createSubscription(nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccessResponse]] = {
-    val res: EitherT[Future, ConnectorError, SubscriptionSuccessResponse] = for {
+    val res = for {
       subscriptionResponse <- EitherT(subscriptionService.submitSubscription(nino, summaryModel))
       mtditId = subscriptionResponse.mtditId
       _ <- EitherT(knownFactsService.addKnownFacts(mtditId, nino))
@@ -47,13 +47,12 @@ class SubscriptionOrchestrationService @Inject() (subscriptionService: Subscript
   }
 
   def enrolAndRefresh(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] = {
-    val res: EitherT[Future, ConnectorError, String] = for {
+    val res = for {
       _ <- EitherT(enrolmentService.enrol(mtditId, nino))
       _ <- EitherT[Future, ConnectorError, RefreshProfileResult](refreshProfileService.refreshProfile())
     } yield mtditId
 
     res.value
   }
-
 
 }

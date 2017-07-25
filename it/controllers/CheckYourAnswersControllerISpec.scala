@@ -125,5 +125,20 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
         redirectURI(signInURI)
       )
     }
+
+    "return an INTERNAL_SERVER_ERROR when the backend service returns a NOT_FOUND" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      KeystoreStub.stubFullKeystore()
+      SubscriptionStub.stubCreateSubscriptionNotFound()
+
+      When("POST /check-your-answers is called")
+      val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+      Then("Should return an INTERNAL_SERVER_ERROR")
+      res should have(
+        httpStatus(INTERNAL_SERVER_ERROR)
+      )
+    }
   }
 }
