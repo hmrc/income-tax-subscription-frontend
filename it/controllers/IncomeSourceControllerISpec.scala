@@ -101,7 +101,6 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
   "POST /report-quarterly/income-and-expenses/sign-up/income" when {
 
     "not in edit mode" should {
-
       "select the Both income source radio button on the income source page" in {
         val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
 
@@ -215,6 +214,22 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(signInURI)
+        )
+      }
+
+      "call to keystore fails" in {
+        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("POST /income is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+
+        Then("Should return a INTERNAL_SERVER_ERROR")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
     }
@@ -366,6 +381,22 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(signInURI)
+        )
+      }
+
+      "call to keystore fails" in {
+        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("POST /income is called")
+        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
+
+        Then("Should return a INTERNAL_SERVER_ERROR")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
     }
