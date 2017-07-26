@@ -16,6 +16,7 @@
 
 package services.mocks
 
+import connectors.models.ConnectorError
 import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccessResponse}
 import models.SummaryModel
 import org.mockito.ArgumentMatchers
@@ -60,4 +61,24 @@ trait MockSubscriptionOrchestrationService extends MockTrait {
 
   def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel): Unit =
     mockCreateSubscription(nino, summaryModel)(Future.failed(testException))
+
+  private def mockEnrolAndRefresh(mtditId: String, nino: String)(result: Future[Either[ConnectorError, String]]): Unit =
+    when(
+      mockSubscriptionOrchestrationService.enrolAndRefresh
+      (ArgumentMatchers.eq(mtditId), ArgumentMatchers.eq(nino))
+      (ArgumentMatchers.any[HeaderCarrier])
+    )
+      .thenReturn(result)
+
+  def mockEnrolAndRefreshSuccess(mtditId: String, nino: String): Unit =
+    mockEnrolAndRefresh(mtditId, nino)(Future.successful(Right(mtditId)))
+
+  def mockEnrolFailure(mtditId: String, nino: String): Unit =
+    mockEnrolAndRefresh(mtditId, nino)(Future.successful(testEnrolFailure))
+
+  def mockRefreshFailure(mtditId: String, nino: String): Unit =
+    mockEnrolAndRefresh(mtditId, nino)(Future.successful(testRefreshProfileFailure))
+
+  def mockEnrolAndRefreshException(mtditId: String, nino: String): Unit =
+    mockEnrolAndRefresh(mtditId, nino)(Future.failed(testException))
 }
