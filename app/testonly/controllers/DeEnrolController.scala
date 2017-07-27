@@ -20,15 +20,22 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
+import config.BaseControllerConfig
 import connectors.GGAuthenticationConnector
 import connectors.models.authenticator.RefreshProfileSuccess
-import play.api.mvc.Action
+import controllers.AuthenticatedController
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent}
+import services.AuthService
 import testonly.connectors.DeEnrolmentConnector
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 @Singleton
-class DeEnrolController @Inject()(deEnrolmentConnector: DeEnrolmentConnector,
-                                  ggAuthenticationConnector: GGAuthenticationConnector) extends FrontendController {
+class DeEnrolController @Inject()(val baseConfig: BaseControllerConfig,
+                                  val messagesApi: MessagesApi,
+                                  val authService: AuthService,
+                                  deEnrolmentConnector: DeEnrolmentConnector,
+                                  ggAuthenticationConnector: GGAuthenticationConnector
+                                 ) extends AuthenticatedController {
 
   val resetUsers = Action.async { implicit request =>
     for {
@@ -37,6 +44,17 @@ class DeEnrolController @Inject()(deEnrolmentConnector: DeEnrolmentConnector,
     } yield (authRefreshed, ggStubResponse.status) match {
       case (Right(RefreshProfileSuccess), OK) => Ok("Successfully Reset GG stubbed user")
       case _ => BadRequest(s"Failed to Reset GG stubbed user: ggStubResponse=${ggStubResponse.status}, authRefreshed=$authRefreshed")
+    }
+  }
+
+  def deEnrol: Action[AnyContent] = Action.async { implicit request =>
+    for {
+      ggStubResponse <- deEnrolmentConnector.deEnrol()
+      authRefreshed <- ggAuthenticationConnector.refreshProfile()
+    } yield (ggStubResponse.status, authRefreshed) match {
+      case (OK, Right(RefreshProfileSuccess)) => Ok("Successfully De-enrolled")
+      case (status, Right(RefreshProfileSuccess)) => BadRequest(s"Failed to De-enrol: status=$status, body=${ggStubResponse.body}")
+      case _ => InternalServerError("refresh profile failed")
     }
   }
 
