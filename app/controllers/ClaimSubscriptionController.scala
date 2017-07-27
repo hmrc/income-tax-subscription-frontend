@@ -42,7 +42,7 @@ class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig
   val claim: Action[AnyContent] = Authenticated.async {
     implicit request =>
       user =>
-        val res: EitherT[Future, ConnectorError, Result] = for {
+        val res = for {
           mtditId <- EitherT(getMtditId())
           nino = user.nino.get
           subscriptionResult <- EitherT(subscriptionOrchestrationService.enrolAndRefresh(mtditId, nino))

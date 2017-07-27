@@ -130,7 +130,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def signOut(): WSResponse = get("/logout")
 
-    def alreadyEnrolled(): WSResponse = get("/error/subscription-status")
+    def alreadyEnrolled(): WSResponse = get("/already-enrolled")
 
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
