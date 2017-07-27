@@ -54,11 +54,8 @@ class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig
   private def getMtditId()(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] =
     keystoreService.fetchSubscriptionId() map (_.toRight(left = KeystoreMissingError(MtditId)))
 
-  private def confirmationPage(id: String)(implicit request: Request[AnyContent]) = views.html.confirmation(
+  private def confirmationPage(id: String)(implicit request: Request[AnyContent]) = views.html.enrolled.already_enrolled(
     subscriptionId = id,
-    submissionDate = dateConvert(LocalDate.now()),
-    routes.ConfirmationController.signOut(),
-    1,
-    ""
-  )
+    routes.ConfirmationController.signOut()
+   )
 }
