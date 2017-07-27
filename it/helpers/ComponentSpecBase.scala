@@ -176,6 +176,11 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
+    def claimSubscription(): WSResponse = {
+      val uri = s"/claim-subscription"
+      get(uri)
+    }
+
     def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
       val uri = s"/income?editMode=$inEditMode"
       post(uri)(
