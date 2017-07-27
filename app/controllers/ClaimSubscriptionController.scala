@@ -16,30 +16,46 @@
 
 package controllers
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
+import cats.data.EitherT
+import cats.implicits._
 import config.BaseControllerConfig
+import connectors.models.{ConnectorError, KeystoreMissingError}
+import models.DateModel._
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
-import services.AuthService
+import play.api.mvc.{Action, AnyContent, Request, Result}
+import services.CacheConstants.MtditId
+import services.{AuthService, KeystoreService, SubscriptionOrchestrationService}
+import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
 
 @Singleton
 class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig,
                                             val messagesApi: MessagesApi,
-                                            val authService: AuthService
-                                         ) extends AuthenticatedController {
+                                            val authService: AuthService,
+                                            val subscriptionOrchestrationService: SubscriptionOrchestrationService,
+                                            val keystoreService: KeystoreService
+                                           ) extends AuthenticatedController {
   val claim: Action[AnyContent] = Authenticated.async {
     implicit request =>
-      implicit val headerCarrier = hc(request)
-
       user =>
-        Future.successful(Ok(
-          views.html.enrolled.already_enrolled(
-            postAction = controllers.routes.SignOutController.signOut()
-          )
-        ))
+        val res = for {
+          mtditId <- EitherT(getMtditId())
+          nino = user.nino.get
+          subscriptionResult <- EitherT(subscriptionOrchestrationService.enrolAndRefresh(mtditId, nino))
+        } yield Ok(confirmationPage(mtditId))
+
+        res.valueOr(ex => throw new InternalServerException(ex.toString))
   }
 
+  private def getMtditId()(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] =
+    keystoreService.fetchSubscriptionId() map (_.toRight(left = KeystoreMissingError(MtditId)))
+
+  private def confirmationPage(id: String)(implicit request: Request[AnyContent]) = views.html.enrolled.already_enrolled(
+    subscriptionId = id,
+    routes.ConfirmationController.signOut()
+   )
 }

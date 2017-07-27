@@ -32,13 +32,14 @@ class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
   val enrolled = Authenticated.asyncEnrolled {
     implicit request =>
       implicit val headerCarrier = hc(request)
-
       user =>
-        Future.successful(Ok(
-          views.html.enrolled.already_enrolled(
-            postAction = controllers.routes.SignOutController.signOut()
+        Future.successful(
+          Ok(
+            views.html.enrolled.already_enrolled(
+              subscriptionId = user.mtdItsaRef.get,
+              signOutAction = controllers.routes.SignOutController.signOut()
+            )
           )
-        ))
+        )
   }
-
 }

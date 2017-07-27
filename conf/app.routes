@@ -50,7 +50,7 @@ GET         /income-other                     controllers.OtherIncomeController.
 POST        /income-other                     controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
 
 # Already enrolled
-GET         /error/subscription-status        controllers.AlreadyEnrolledController.enrolled
+GET         /already-enrolled                 controllers.AlreadyEnrolledController.enrolled
 
 # No NINO Routes
 GET         /error/no-nino                    controllers.NoNinoController.showNoNino

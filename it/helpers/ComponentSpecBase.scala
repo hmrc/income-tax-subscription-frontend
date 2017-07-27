@@ -130,7 +130,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def signOut(): WSResponse = get("/logout")
 
-    def alreadyEnrolled(): WSResponse = get("/error/subscription-status")
+    def alreadyEnrolled(): WSResponse = get("/already-enrolled")
 
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
@@ -174,6 +174,11 @@ trait ComponentSpecBase extends UnitSpec
             AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
+    }
+
+    def claimSubscription(): WSResponse = {
+      val uri = s"/claim-subscription"
+      get(uri)
     }
 
     def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
