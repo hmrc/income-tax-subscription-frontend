@@ -19,7 +19,9 @@ package testonly.connectors
 
 import javax.inject.{Inject, Singleton}
 
+import common.Constants
 import connectors.RawResponseReads
+import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.ws.WSHttp
@@ -32,9 +34,16 @@ class DeEnrolmentConnector @Inject()(appConfig: TestOnlyAppConfig,
 
   lazy val resetURI = s"${appConfig.ggStubsURL}/test-only/with-refreshed-enrolments/false"
 
+  lazy val deEnrolURI = s"${appConfig.taxEnrolmentsURL}/tax-enrolments/de-enrol/${Constants.mtdItsaEnrolmentName}"
+
   def resetUsers()(implicit hc: HeaderCarrier): Future[HttpResponse] = {
     http.POSTEmpty[HttpResponse](resetURI)
   }
+
+  def deEnrol()(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](deEnrolURI, Json.parse("""{"keepAgentAllocations": true}"""))
+  }
+
 }
 
 // $COVERAGE-ON$
