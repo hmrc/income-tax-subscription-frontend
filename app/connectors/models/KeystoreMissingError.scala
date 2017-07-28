@@ -14,23 +14,6 @@
  * limitations under the License.
  */
 
-package forms.validation.utils
+package connectors.models
 
-
-object Patterns {
-
-  // ISO 8859-1 standard
-  // ASCII range {32 to 126} + {160 to 255} all values inclusive
-  val iso8859_1Regex = """^([\x20-\x7E\xA0-\xFF])*$"""
-
-  val emailRegex = """(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"""
-
-  val ninoRegex = """^((?!(BG|GB|KN|NK|NT|TN|ZZ)|(D|F|I|Q|U|V)[A-Z]|[A-Z](D|F|I|O|Q|U|V))[A-Z]{2})[0-9]{6}[A-D]$"""
-
-  def validText(text: String): Boolean = text matches iso8859_1Regex
-
-  def validEmail(text: String): Boolean = text matches emailRegex
-
-  def validNino(text: String): Boolean = text matches ninoRegex
-
-}
+case class KeystoreMissingError(key: String) extends ConnectorError

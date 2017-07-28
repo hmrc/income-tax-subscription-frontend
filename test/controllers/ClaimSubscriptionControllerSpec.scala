@@ -21,8 +21,11 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import services.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
+import uk.gov.hmrc.play.http.InternalServerException
+import utils.TestConstants._
 
-class ClaimSubscriptionControllerSpec extends ControllerBaseSpec {
+class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeystoreService with MockSubscriptionOrchestrationService {
 
   override val controllerName: String = "ClaimSubscriptionController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -32,23 +35,45 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec {
   object TestClaimSubscriptionController extends ClaimSubscriptionController(
     MockBaseControllerConfig,
     messagesApi,
-    mockAuthService
+    mockAuthService,
+    mockSubscriptionOrchestrationService,
+    MockKeystoreService
   )
 
   "Calling the claim action of the ClaimSubscriptionController with a subscribed Authenticated User" should {
-    "return an OK with the error page" in {
+    "return a a redirect to the confirmation page" in {
+      setupMockKeystore(fetchSubscriptionId = testMTDID)
+      mockEnrolAndRefreshSuccess(testMTDID, testNino)
 
       lazy val result = TestClaimSubscriptionController.claim(fakeRequest)
-      lazy val document = Jsoup.parse(contentAsString(result))
 
       status(result) must be(Status.OK)
+    }
 
-      contentType(result) must be(Some("text/html"))
-      charset(result) must be(Some("utf-8"))
+    "return an error where enrolment fails" in {
+      setupMockKeystore(fetchSubscriptionId = testMTDID)
+      mockEnrolFailure(testMTDID, testNino)
 
-      document.title mustBe messages.heading
+      lazy val result = TestClaimSubscriptionController.claim(fakeRequest)
 
-      document.select("form").attr("action") mustBe controllers.routes.SignOutController.signOut().url
+      intercept[InternalServerException](await(result))
+    }
+
+    "return an error where refresh profile fails" in {
+      setupMockKeystore(fetchSubscriptionId = testMTDID)
+      mockRefreshFailure(testMTDID, testNino)
+
+      lazy val result = TestClaimSubscriptionController.claim(fakeRequest)
+
+      intercept[InternalServerException](await(result))
+    }
+
+    "return an error where keystore does not contain the MtditId" in {
+      setupMockKeystore(fetchSubscriptionId = None)
+
+      lazy val result = TestClaimSubscriptionController.claim(fakeRequest)
+
+      intercept[InternalServerException](await(result))
     }
   }
 

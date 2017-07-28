@@ -30,7 +30,6 @@
         <section id="confirmation-heading" class="transaction-banner--complete">
             <h1 class="transaction-banner__heading" style="color: #fff">@Messages("confirmation.heading")</h1>
             <p>@Messages("confirmation.banner.line_1")</p>
-            <p>@Messages("confirmation.banner.line_2")</p>
             <p>
                 <span id="subscription-id-value" class="h3-heading">@subscriptionId</span>
             </p>
@@ -43,8 +42,7 @@
         </div>
         <h2>@Messages("confirmation.whatHappensNext.heading")</h2>
         <p>@Messages("confirmation.whatHappensNext.para2")</p>
-        <p>@Messages("confirmation.whatHappensNext.para3")</p>
-        <p>@Html(Messages("confirmation.whatHappensNext.para4", appConfig.btaUrl))</p>
+        <p>@Html(Messages("confirmation.whatHappensNext.para3", appConfig.btaUrl))</p>
     </section>
 
     @form(action = signOutAction) {

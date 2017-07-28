@@ -205,25 +205,22 @@ object MessageLookup {
   }
 
   object AlreadyEnrolled {
-    val title = "You've already signed up"
-    val heading = "You've already signed up"
-    val para1 = "Your Government Gateway ID is already in use."
+    val title = "You've already signed up for quarterly reporting"
+    val heading = "You've already signed up for quarterly reporting"
   }
 
   object Confirmation {
     val title = "Confirmation page"
-    val heading = "Success"
-    val banner_line1_1 = "Sign up complete."
-    val banner_line1_2 = "Your reference number is:"
-    val signOut = "Finish"
+    val heading = "Sign up complete"
+    val banner_line1 = "Make a note of your Income Tax reference number:"
+    val signOut = "Sign out"
 
     object whatHappensNext {
-      val para1 = "Make a note of your reference number. If you forget your Government Gateway login details, we can use it to help you retrieve them."
+      val para1 = "If you forget your Government Gateway login details, we can use this reference number to help you retrieve them."
       val heading = "What happens next"
-      val para2 = "You must report to HMRC once every quarter from the start of your accounting period."
-      val para3 = "HMRC will calculate an estimate of your Income Tax after you send a report. You can see these estimates from your accounting software after your first report, or through your business tax account from August 2017."
+      val para2 = "You must use accounting software to keep your accounts, and send a report to HMRC at least every quarter."
       val linkText = "business tax account"
-      val para4 = s"Activate your $linkText, you can use this to see a summary of your business taxes."
+      val para3 = s"You'll get an Income Tax estimate once you've submitted a report using your accounting software. From August 2017, you can view your estimate and report deadlines in your"
     }
 
   }

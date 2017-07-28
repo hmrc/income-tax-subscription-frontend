@@ -144,9 +144,8 @@ throttle_limit.line_1                                           = Please try aga
 
 
 ## Already enrolled page ##
-already-enrolled.title                                          = You''ve already signed up
-already-enrolled.heading                                        = You''ve already signed up
-already-enrolled.para1                                          = Your Government Gateway ID is already in use.
+already-enrolled.title                                          = You''ve already signed up for quarterly reporting
+already-enrolled.heading                                        = You''ve already signed up for quarterly reporting
 
 ## Failure Messages ##
 notAuthorised.title                                             = Not Authorised
@@ -184,15 +183,13 @@ summary.terms.agreed                                            = I agree
 
 ## Confirmation page ##
 confirmation.title                                              = Confirmation page
-confirmation.heading                                            = Success
-confirmation.banner.line_1                                      = Sign up complete.
-confirmation.banner.line_2                                      = Your reference number is:
-confirmation.whatHappensNext.para1                              = Make a note of your reference number. If you forget your Government Gateway login details, we can use it to help you retrieve them.
+confirmation.heading                                            = Sign up complete
+confirmation.banner.line_1                                      = Make a note of your Income Tax reference number:
+confirmation.whatHappensNext.para1                              = If you forget your Government Gateway login details, we can use this reference number to help you retrieve them.
 confirmation.whatHappensNext.heading                            = What happens next
-confirmation.whatHappensNext.para2                              = You must report to HMRC once every quarter from the start of your accounting period.
-confirmation.whatHappensNext.para3                              = HMRC will calculate an estimate of your Income Tax after you send a report. You can see these estimates from your accounting software after your first report, or through your business tax account from August 2017.
-confirmation.whatHappensNext.para4                              = Activate your <a id="bta" href="{0}">business tax account</a>, you can use this to see a summary of your business taxes.
-confirmation.sign_out                                           = Finish
+confirmation.whatHappensNext.para2                              = You must use accounting software to keep your accounts, and send a report to HMRC at least every quarter.
+confirmation.whatHappensNext.para3                              = You''ll get an Income Tax estimate once you''ve submitted a report using your accounting software. From August 2017, you can view your estimate and report deadlines in your <a id="bta" href="{0}">business tax account</a>.
+confirmation.sign_out                                           = Sign out
 
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue
