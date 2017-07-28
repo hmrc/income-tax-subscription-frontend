@@ -35,4 +35,12 @@ object PreferencesStub extends WireMockMethods {
     val response = aResponse().withStatus(Status.OK).withBody(rBody)
     stubFor(mapping.willReturn(response))
   }
+
+  def stubPaperlessInactive()(implicit appConfig: AppConfig, messages: Messages): Unit = {
+    val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
+    val rBody = paperlessResponse(false)
+    val response = aResponse().withStatus(Status.OK).withBody(rBody)
+    stubFor(mapping.willReturn(response))
+  }
+
 }

@@ -19,14 +19,15 @@ package controllers.preferences
 import config.AppConfig
 import helpers.ComponentSpecBase
 import helpers.servicemocks.{AuthStub, PreferencesStub}
-import play.api.http.Status.SEE_OTHER
+import play.api.http.Status.{SEE_OTHER, OK}
 
 class PreferencesControllerISpec extends ComponentSpecBase {
 
   private implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   "GET /preferences" should {
-    "return the preferences page when the user is not activated for preference service" in {
+
+    "return the preferences page when the user is activated for preference service" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesStub.stubPaperlessActivated()
@@ -34,9 +35,23 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
 
-      Then("Should return a OK with the confirmation page")
+      Then("Should return a SEE_OTHER with a re-direct location of confirmation page")
       res should have(
         httpStatus(SEE_OTHER)
+      )
+    }
+
+    "return the preferences page when the user is not activated for preference service" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      PreferencesStub.stubPaperlessInactive()
+
+      When("GET /preferences is called")
+      val res = IncomeTaxSubscriptionFrontend.preferences()
+
+      Then("Should return a OK with the confirmation page")
+      res should have(
+        httpStatus(OK)
       )
     }
   }
