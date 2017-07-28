@@ -46,7 +46,6 @@ class KnownFactsController @Inject()(val baseConfig: BaseControllerConfig,
 
   def show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-
       Future.successful(Ok(view(knownFactsForm.form)))
   }
 
