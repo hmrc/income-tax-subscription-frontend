@@ -82,7 +82,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
 
-      Then("Should return a INTERNAL_SERVER_ERROR with a re-direct location of ???")
+      Then("Should return a INTERNAL_SERVER_ERROR")
       res should have(
         httpStatus(INTERNAL_SERVER_ERROR)
       )

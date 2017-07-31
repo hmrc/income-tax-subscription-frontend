@@ -19,7 +19,7 @@ package controllers
 import helpers.ComponentSpecBase
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.http.Status.SEE_OTHER
+import play.api.http.Status.{SEE_OTHER, INTERNAL_SERVER_ERROR}
 import play.api.i18n.Messages
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, SubscriptionStub}
@@ -44,8 +44,9 @@ class HomeControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/index" when {
 
-    "keystore not applicable" should {
+    "the user has a subscription applicable" should {
       "redirect to the claim subscription page" in {
+
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         SubscriptionStub.stubGetSubscriptionFound()
@@ -61,6 +62,43 @@ class HomeControllerISpec extends ComponentSpecBase {
         )
       }
     }
+
+    "the user does not have a subscription applicable" should {
+      "redirect to the preferences page" in {
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        SubscriptionStub.stubGetNoSubscription()
+
+        When("GET /index is called")
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        Then("Should return a SEE OTHER and re-direct to the preferences page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(preferencesURI)
+        )
+      }
+    }
+
+    "the subscription call fails" should {
+      "return an internal server error" in {
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        SubscriptionStub.stubGetSubscriptionFail()
+
+        When("GET /index is called")
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        Then("Should return an INTERNAL_SERVER_ERROR")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
+
+
   }
 
 }
