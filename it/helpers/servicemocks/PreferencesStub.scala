@@ -43,4 +43,16 @@ object PreferencesStub extends WireMockMethods {
     stubFor(mapping.willReturn(response))
   }
 
+  def stubPaperlessPreconditionFail()(implicit appConfig: AppConfig, messages: Messages): Unit = {
+    val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
+    val response = aResponse().withStatus(Status.PRECONDITION_FAILED)
+    stubFor(mapping.willReturn(response))
+  }
+
+  def stubPaperlessError()(implicit appConfig: AppConfig, messages: Messages): Unit = {
+    val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
+    val response = aResponse().withStatus(Status.NOT_FOUND)
+    stubFor(mapping.willReturn(response))
+  }
+
 }
