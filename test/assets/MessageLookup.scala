@@ -225,6 +225,13 @@ object MessageLookup {
 
   }
 
+  object AffinityGroup {
+    val title = "You can't use this service"
+    val heading = "You can't use this service"
+    val line1 = "You can only use this service if you have an individual Government Gateway account."
+    val line2 = """To sign up for quarterly reporting, you'll need to sign in using a different type of account."""
+  }
+
   object Error {
 
     object BackToPreferences {
@@ -309,6 +316,7 @@ object MessageLookup {
     object ExitSurvey {
       val maxLength = "You can't enter more than 1200 characters for your feedback"
     }
+
   }
 
   object Eligible {
@@ -389,6 +397,7 @@ object MessageLookup {
     object Q2 {
       val question = "How could we improve this service?"
     }
+
   }
 
   object ThankYou {

@@ -46,7 +46,7 @@ class AffinityGroupErrorControllerSpec extends ControllerBaseSpec {
     }
 
     s"have the title '${MessageLookup.Timeout.title}'" in {
-      document.title() must be(MessageLookup.Timeout.title)
+      document.title() must be(MessageLookup.AffinityGroup.title)
     }
   }
 }
