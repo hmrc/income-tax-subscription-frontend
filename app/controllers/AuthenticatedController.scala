@@ -72,6 +72,18 @@ trait AuthenticatedController extends FrontendController with I18nSupport {
     lazy val homeRoute = controllers.routes.HomeController.index()
   }
 
+  object IV {
+
+    // todo this is only a place holder auth
+    def async(action: Request[AnyContent] => IncomeTaxSAUser => Future[Result]): Action[AnyContent] =
+      Action.async { implicit request =>
+        authService.authorised().retrieve(allEnrolments).apply {
+          enrolments =>
+            action(request).compose(IncomeTaxSAUser.apply)(enrolments)
+        }
+      }
+  }
+
   implicit class FormUtil[T](form: Form[T]) {
     def fill(data: Option[T]): Form[T] = data.fold(form)(form.fill)
   }

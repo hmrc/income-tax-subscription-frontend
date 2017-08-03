@@ -77,3 +77,8 @@ GET         /sign-in                          controllers.SignInController.signI
 
 # Claim Subscription
 GET         /claim-subscription               controllers.ClaimSubscriptionController.claim
+
+# IV
+GET         /iv                               controllers.iv.IdentityVerificationController.gotoIV
+GET         /iv/callback                      controllers.iv.IdentityVerificationController.callback(journeyId: String)
+GET         /iv/failure                       controllers.iv.IdentityVerificationController.failureCallBack(journeyId: String)
