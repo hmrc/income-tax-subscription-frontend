@@ -51,6 +51,7 @@ class IdentityVerificationController @Inject()(override val baseConfig: BaseCont
   def failureCallBack(journeyId: String): Action[AnyContent] = IV.async { implicit user =>
     implicit request =>
       // TODO call back IV and find out what type of error it was, display timeout page if it was a time out, redirect to no nino page otherwise
+//      Future.successful(Ok(s"journeyId=$journeyId"))
       Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
   }
 }

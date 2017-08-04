@@ -73,7 +73,6 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
 
       lazy val result = TestIdentityVerificationController.gotoIV(request)
 
-
       status(result) must be(Status.SEE_OTHER)
       val redirection = redirectLocation(result).get
       redirection must include regex """^/mdtp/uplift\?origin=mtd-itsa&confidenceLevel=([0-9]+?)&completionURL=(.+?)&failureURL=(.+?)$"""
