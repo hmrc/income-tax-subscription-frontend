@@ -77,3 +77,6 @@ GET         /sign-in                          controllers.SignInController.signI
 
 # Claim Subscription
 GET         /claim-subscription               controllers.ClaimSubscriptionController.claim
+
+# Affinity Group Error
+GET         /affinity-group-error             controllers.AffinityGroupErrorController.show
