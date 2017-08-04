@@ -18,10 +18,10 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
+import auth.AuthenticatedController
 import config.BaseControllerConfig
 import connectors.models.preferences.Activated
 import connectors.preferences.PreferenceFrontendConnector
-import controllers.AuthenticatedController
 import play.api.i18n.MessagesApi
 import services.AuthService
 import testonly.connectors.ClearPreferencesConnector

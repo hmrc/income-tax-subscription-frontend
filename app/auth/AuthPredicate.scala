@@ -16,17 +16,22 @@
 
 package auth
 
-import common.Constants
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, EnrolmentIdentifier, Enrolments}
+import cats.Monoid
+import play.api.mvc.{AnyContent, Request, Result}
 
-import scala.collection.immutable.::
+import scala.concurrent.Future
 
-case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup]) {
-  lazy val nino: Option[String] = getEnrolment(Constants.ninoEnrolmentName)
+object AuthPredicate {
+  object AuthPredicateSuccess
 
-  lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
+  type AuthPredicateSuccess = AuthPredicateSuccess.type
 
-  private def getEnrolment(key: String) = enrolments.enrolments.collectFirst {
-    case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _, _) => value
+  implicit object AuthPredicateSuccessMonoid extends Monoid[AuthPredicateSuccess] {
+    override def empty: AuthPredicateSuccess = AuthPredicateSuccess
+
+    override def combine(x: AuthPredicateSuccess, y: AuthPredicateSuccess): AuthPredicateSuccess = AuthPredicateSuccess
   }
+
+  type AuthPredicate = Request[AnyContent] => IncomeTaxSAUser => Either[Future[Result], AuthPredicateSuccess]
+
 }

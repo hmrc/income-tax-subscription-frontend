@@ -18,8 +18,8 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
+import auth.AuthenticatedController
 import config.BaseControllerConfig
-import controllers.AuthenticatedController
 import forms.AccountingPeriodPriorForm
 import models.{AccountingPeriodPriorModel, OtherIncomeModel}
 import play.api.data.Form

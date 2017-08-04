@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import java.time.LocalDateTime._
 
 import audit.Logging
-import auth.IncomeTaxSAUser
+import auth.{AuthenticatedController, IncomeTaxSAUser}
 import config.BaseControllerConfig
 import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccessResponse}
 import connectors.models.throttling.CanAccess

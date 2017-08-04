@@ -19,7 +19,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
-import auth.IncomeTaxSAUser
+import auth.{AuthenticatedController, IncomeTaxSAUser}
 import config.BaseControllerConfig
 import connectors.models.subscription.SubscriptionSuccessResponse
 import play.api.i18n.MessagesApi

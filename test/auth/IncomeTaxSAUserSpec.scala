@@ -32,7 +32,8 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
           "Activated",
           L50
         )
-      ))
+      )),
+      None
     )
 
     s"have the expected NINO ${TestConstants.testNino}" in {

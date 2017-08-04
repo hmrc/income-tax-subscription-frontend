@@ -23,6 +23,8 @@ import org.scalatest.{BeforeAndAfterEach, Suite}
 import services.AuthService
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.~
+
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.TestConstants
 
@@ -31,6 +33,7 @@ import scala.concurrent.Future
 
 trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
   self: Suite =>
+
 
   val mockAuthService = mock[AuthService]
 
@@ -58,7 +61,7 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
         })
   }
 
-  def mockNinoRetrieval(): Unit = mockRetrievalSuccess(Enrolments(Set(ninoEnrolment)))
+  def mockNinoRetrieval(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment)), Some(AffinityGroup.Individual)))
 
   def mockAuthUnauthorised(exception: AuthorisationException = new InvalidBearerToken): Unit =
     when(mockAuthService.authorised())
@@ -70,7 +73,7 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
         }
       })
 
-  def mockAuthEnrolled(): Unit = mockRetrievalSuccess(Enrolments(Set(ninoEnrolment, mtdidEnrolment)))
+  def mockAuthEnrolled(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment, mtdidEnrolment)), Some(AffinityGroup.Individual)))
 
   val ninoEnrolment = Enrolment(
     Constants.ninoEnrolmentName,
