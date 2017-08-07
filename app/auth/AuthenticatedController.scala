@@ -46,12 +46,12 @@ trait AuthenticatedController extends FrontendController with I18nSupport {
 
     def apply(action: Request[AnyContent] => IncomeTaxSAUser => Result): Action[AnyContent] = async(action andThen (_ andThen Future.successful))
 
-    val async: AuthenticatedAction = asyncInternal(defaultPredicates |+| goHomePredicate)
+    val async: AuthenticatedAction = asyncInternal(subscriptionPredicates)
 
-    val asyncEnrolled: AuthenticatedAction = asyncInternal(confirmationPredicate)
+    val asyncEnrolled: AuthenticatedAction = asyncInternal(enrolledPredicates)
 
     val asyncForHomeController: AuthenticatedAction = { actionBody: ActionBody =>
-      asyncInternal(defaultPredicates)({
+      asyncInternal(defaultPredicates |+| mtdidPredicate)({
         implicit request =>
           user =>
             actionBody(request)(user) map (_.addingToSession(ITSASessionKeys.GoHome -> "et"))

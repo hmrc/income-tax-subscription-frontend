@@ -26,6 +26,7 @@ import play.api.test.Helpers._
 import services.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
 import uk.gov.hmrc.play.http.NotFoundException
+import uk.gov.hmrc.play.http.SessionKeys._
 import utils.UnitTestTrait
 
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
@@ -36,7 +37,19 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   val userWithNinoEnrolment = testUser(None, ninoEnrolment)
   val userWithMtditIdEnrolment = testUser(None, mtdidEnrolment)
-  val userWithNoEnrolments = testUser(None)
+  val userWithMtditIdEnrolmentAndNino = testUser(None, ninoEnrolment, mtdidEnrolment)
+  val blankUser = testUser(None)
+
+  val userWithIndividualAffinity = testUser(Some(AffinityGroup.Individual))
+  val userWithOrganisationAffinity = testUser(Some(AffinityGroup.Organisation))
+
+  val defaultPredicateUser = testUser(Some(AffinityGroup.Individual), ninoEnrolment)
+  val enrolledPredicateUser = testUser(Some(AffinityGroup.Individual), ninoEnrolment, mtdidEnrolment)
+
+  lazy val goneHomeRequest = FakeRequest().withSession(ITSASessionKeys.GoHome -> "et")
+  lazy val authorisedRequest = FakeRequest().withSession(ITSASessionKeys.GoHome -> "et", authToken -> "", lastRequestTimestamp -> "")
+  lazy val homelessAuthorisedRequest = FakeRequest().withSession(authToken -> "", lastRequestTimestamp -> "")
+
 
   "ninoPredicate" should {
     "return an AuthPredicateSuccess where a nino enrolment exists" in {
@@ -44,13 +57,13 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
 
     "return the no-nino error page where a nino enrolment does not exist" in {
-      await(ninoPredicate(FakeRequest())(userWithNoEnrolments).left.value) mustBe noNino
+      await(ninoPredicate(FakeRequest())(blankUser).left.value) mustBe noNino
     }
   }
 
   "mtdidPredicate" should {
     "return an AuthPredicateSuccess where an mtdid enrolment does not already exist" in {
-      mtdidPredicate(FakeRequest())(userWithNoEnrolments).right.value mustBe AuthPredicateSuccess
+      mtdidPredicate(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
     }
 
     "return the already-enrolled page where an mtdid enrolment already exists" in {
@@ -64,14 +77,97 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
 
     "return a NotFoundException where an mtdid enrolment does not already exist" in {
-      intercept[NotFoundException](await(enrolledPredicate(FakeRequest())(userWithNoEnrolments).left.value))
+      intercept[NotFoundException](await(enrolledPredicate(FakeRequest())(blankUser).left.value))
     }
   }
 
   "goHomePredicate" should {
     "return an AuthPredicateSuccess where the request session contains the GoHome flag" in {
-      val request = FakeRequest().withSession(ITSASessionKeys.GoHome -> "et")
-      goHomePredicate(request)(userWithNoEnrolments).right.value mustBe AuthPredicateSuccess
+      goHomePredicate(goneHomeRequest)(blankUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return the home page where the request session does not contain the GoHomeFlag" in {
+      await(goHomePredicate(FakeRequest())(blankUser).left.value) mustBe homeRoute
+    }
+  }
+
+  "timeoutPredicate" should {
+    "return an AuthPredicateSuccess where the lastRequestTimestamp is not set" in {
+      timeoutPredicate(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return an AuthPredicateSuccess where the authToken is set and hte lastRequestTimestamp is set" in {
+      timeoutPredicate(authorisedRequest)(blankUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return the timeout page where the lastRequestTimestamp is set but the auth token is not" in {
+      lazy val request = FakeRequest().withSession(lastRequestTimestamp -> "")
+      await(timeoutPredicate(request)(blankUser).left.value) mustBe timeoutRoute
+    }
+  }
+
+  "affinityPredicate" should {
+    "return an AuthPredicateSuccess where the affinity group is individual" in {
+      affinityPredicate(FakeRequest())(userWithIndividualAffinity).right.value mustBe AuthPredicateSuccess
+    }
+    "return the wrong-affinity page where the affinity group is organisation" in {
+      await(affinityPredicate(FakeRequest())(userWithOrganisationAffinity).left.value) mustBe wrongAffinity
+    }
+    "return the wrong-affinity page where there is no affinity group" in {
+      await(affinityPredicate(FakeRequest())(blankUser).left.value) mustBe wrongAffinity
+    }
+  }
+
+  "defaultPredicates" should {
+    "return an AuthPredicateSuccess where there is a nino, an individual affinity, and an auth token" in {
+      defaultPredicates(authorisedRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return the wrong-affinity page where there is no affinity group" in {
+      await(defaultPredicates(authorisedRequest)(userWithNinoEnrolment).left.value) mustBe wrongAffinity
+    }
+
+    "return the no-nino error page where a nino enrolment does not exist" in {
+      affinityPredicate(authorisedRequest)(userWithIndividualAffinity).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return the timeout page where the lastRequestTimestamp is set but the auth token is not" in {
+      lazy val request = FakeRequest().withSession(lastRequestTimestamp -> "")
+      await(timeoutPredicate(request)(defaultPredicateUser).left.value) mustBe timeoutRoute
+    }
+  }
+
+  "subscriptionPredicates" should {
+    "return an AuthPredicateSuccess where there is a nino, no mtditId, an individual affinity, the home session flag and an auth token" in {
+      defaultPredicates(authorisedRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return the home page where the request session does not contain the GoHomeFlag" in {
+      await(goHomePredicate(homelessAuthorisedRequest)(defaultPredicateUser).left.value) mustBe homeRoute
+    }
+
+    "return the already-enrolled page where an mtdid enrolment already exists" in {
+      await(mtdidPredicate(authorisedRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
+    }
+  }
+
+  "enrolledPredicates" should {
+    "return an AuthPredicateSuccess where there is a nino, an mtditId, an individual affinity, the home session flag and an auth token" in {
+      enrolledPredicates(authorisedRequest)(enrolledPredicateUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "throw a NotFoundException where the user is not enrolled" in {
+      intercept[NotFoundException](await(enrolledPredicate(authorisedRequest)(defaultPredicateUser).left.value))
+    }
+  }
+
+  "homePredicates" should {
+    "return an AuthPredicateSuccess where there is a nino, no mtditId, an individual affinity and an auth token" in {
+      homePredicates(homelessAuthorisedRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return the already-enrolled page where an mtdid enrolment already exists" in {
+      await(mtdidPredicate(homelessAuthorisedRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
     }
   }
 }

@@ -136,6 +136,13 @@ class HomeControllerSpec extends ControllerBaseSpec
         verifyGetSubscription(testNino)(1)
         verifyMockCheckAccess(testNino)(1)
       }
+
+      "redirect when auth returns an org affinity" in {
+        mockNinoRetrievalWithOrg()
+
+        status(result) mustBe Status.SEE_OTHER
+        redirectLocation(result).get mustBe controllers.routes.AffinityGroupErrorController.show().url
+      }
     }
 
     "If throttling is disabled when calling the index" should {

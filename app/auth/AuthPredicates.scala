@@ -58,14 +58,21 @@ object AuthPredicates extends Results {
     }
     else Right(AuthPredicateSuccess)
 
-  lazy val wrongAffinity: Result = ???
+  lazy val wrongAffinity: Result = Redirect(controllers.routes.AffinityGroupErrorController.show())
 
   val affinityPredicate: AuthPredicate = request => user =>
-    if(user.affinityGroup.contains(AffinityGroup.Individual)) Right(AuthPredicateSuccess)
-    else wrongAffinity
+    if(user.affinityGroup contains AffinityGroup.Individual) Right(AuthPredicateSuccess)
+    else {
+      println("HERE I AM JUGGERNAUT")
+      Left(Future.successful(wrongAffinity))
+    }
 
-  val defaultPredicates = ninoPredicate |+| mtdidPredicate |+| timeoutPredicate
+  val defaultPredicates = ninoPredicate |+| timeoutPredicate |+| affinityPredicate
 
-  val confirmationPredicate = ninoPredicate |+| enrolledPredicate |+| goHomePredicate |+| timeoutPredicate
+  val homePredicates = defaultPredicates |+| mtdidPredicate
+
+  val subscriptionPredicates = defaultPredicates |+| mtdidPredicate |+| goHomePredicate
+
+  val enrolledPredicates = defaultPredicates |+| enrolledPredicate |+| goHomePredicate
 
 }
