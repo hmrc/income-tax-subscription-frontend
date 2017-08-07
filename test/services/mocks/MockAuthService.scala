@@ -62,6 +62,8 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
 
   def mockNinoRetrievalWithOrg(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment)), Some(AffinityGroup.Organisation)))
 
+  def mockNinoRetrievalWithNoAffinity(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment)), None))
+
   def mockAuthUnauthorised(exception: AuthorisationException = new InvalidBearerToken): Unit =
     when(mockAuthService.authorised())
       .thenReturn(new mockAuthService.AuthorisedFunction(EmptyPredicate) {

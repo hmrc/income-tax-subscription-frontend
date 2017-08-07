@@ -52,6 +52,7 @@ object IntegrationTestConstants {
   val signOutURI = s"$baseURI/logout"
   val ggSignOutURI = s"/gg/sign-out"
   val claimSubscriptionURI = s"$baseURI/claim-subscription"
+  val wrongAffinityURI = s"$baseURI/error/affinity-group"
 
   object Auth {
     def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(

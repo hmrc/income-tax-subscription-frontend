@@ -45,7 +45,7 @@ class AffinityGroupErrorControllerSpec extends ControllerBaseSpec {
       charset(result) must be(Some("utf-8"))
     }
 
-    s"have the title '${MessageLookup.Timeout.title}'" in {
+    s"have the title '${MessageLookup.AffinityGroup.title}'" in {
       document.title() must be(MessageLookup.AffinityGroup.title)
     }
   }

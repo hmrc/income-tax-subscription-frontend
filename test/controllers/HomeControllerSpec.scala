@@ -149,6 +149,15 @@ class HomeControllerSpec extends ControllerBaseSpec
         status(result) mustBe Status.SEE_OTHER
         redirectLocation(result).get mustBe controllers.routes.AffinityGroupErrorController.show().url
       }
+
+      "redirect when auth returns no affinity" in {
+        mockNinoRetrievalWithNoAffinity()
+
+        val result = getResult
+
+        status(result) mustBe Status.SEE_OTHER
+        redirectLocation(result).get mustBe controllers.routes.AffinityGroupErrorController.show().url
+      }
     }
 
     "If throttling is disabled when calling the index" should {

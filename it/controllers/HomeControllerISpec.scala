@@ -61,6 +61,22 @@ class HomeControllerISpec extends ComponentSpecBase {
         )
       }
     }
+
+    "auth returns an org affinity group" should {
+      "redirect to the wrong affinity group error page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthOrgAffinity()
+
+        When("GET /index is called")
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        Then("Should return a SEE OTHER with the claim subscription page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(wrongAffinityURI)
+        )
+      }
+    }
   }
 
 }
