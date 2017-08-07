@@ -21,19 +21,25 @@ import common.Constants._
 import helpers.IntegrationTestConstants._
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
+import uk.gov.hmrc.auth.core.AffinityGroup
 
 object AuthStub extends WireMockMethods {
+  def stubAuthOrgAffinity(): StubMapping = {
+    when(method = POST, uri = authoriseUri)
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation, ninoEnrolment))
+  }
+
   private val authIDs = "/uri/to/ids"
   private val authoriseUri = "/auth/authorise"
 
   def stubAuthSuccess(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(ninoEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ninoEnrolment))
   }
 
   def stubEnrolled(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(ninoEnrolment, mtdidEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ninoEnrolment, mtdidEnrolment))
   }
 
   def stubUnauthorised(): StubMapping = {
@@ -61,9 +67,10 @@ object AuthStub extends WireMockMethods {
     )
   )
 
-  private def successfulAuthResponse(enrolments: JsObject*): JsObject =
+  private def successfulAuthResponse(affinityGroup: AffinityGroup, enrolments: JsObject*): JsObject =
   //Written out manually as the json writer for Enrolment doesn't match the reader
     Json.obj(
-      "allEnrolments" -> enrolments
+      "allEnrolments" -> enrolments,
+      "affinityGroup" -> affinityGroup
     )
 }

@@ -20,10 +20,10 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
+import auth.AuthenticatedController
 import config.BaseControllerConfig
 import connectors.GGAuthenticationConnector
 import connectors.models.authenticator.RefreshProfileSuccess
-import controllers.AuthenticatedController
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService

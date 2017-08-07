@@ -20,8 +20,8 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
+import auth.AuthenticatedController
 import config.BaseControllerConfig
-import controllers.AuthenticatedController
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import services.AuthService

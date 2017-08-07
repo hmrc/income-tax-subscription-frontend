@@ -21,6 +21,7 @@ import java.time.{LocalDate, LocalDateTime}
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
+import auth.AuthenticatedController
 import config.BaseControllerConfig
 import models.DateModel.dateConvert
 import play.api.i18n.MessagesApi

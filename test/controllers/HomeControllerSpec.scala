@@ -22,11 +22,13 @@ import auth.MockConfig
 import config.BaseControllerConfig
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockKeystoreService, MockSubscriptionService, MockThrottlingService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.TestConstants
+
+import scala.concurrent.Future
 
 
 class HomeControllerSpec extends ControllerBaseSpec
@@ -123,11 +125,13 @@ class HomeControllerSpec extends ControllerBaseSpec
   "Calling the index action of the HomeController with an authorised user who does not already have a subscription" should {
 
     "If throttling is enabled when calling the index" should {
-      lazy val result = TestHomeController(enableThrottling = true, showGuidance = false).index()(fakeRequest)
+      def getResult: Future[Result] = TestHomeController(enableThrottling = true, showGuidance = false).index()(fakeRequest)
 
       "trigger a call to the throttling service" in {
         setupGetSubscription(testNino)(subscribeEmptyBody)
         setupMockCheckAccess(testNino)(OK)
+
+        val result = getResult
 
         status(result) must be(Status.SEE_OTHER)
 
@@ -135,6 +139,24 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         verifyGetSubscription(testNino)(1)
         verifyMockCheckAccess(testNino)(1)
+      }
+
+      "redirect when auth returns an org affinity" in {
+        mockNinoRetrievalWithOrg()
+
+        val result = getResult
+
+        status(result) mustBe Status.SEE_OTHER
+        redirectLocation(result).get mustBe controllers.routes.AffinityGroupErrorController.show().url
+      }
+
+      "redirect when auth returns no affinity" in {
+        mockNinoRetrievalWithNoAffinity()
+
+        val result = getResult
+
+        status(result) mustBe Status.SEE_OTHER
+        redirectLocation(result).get mustBe controllers.routes.AffinityGroupErrorController.show().url
       }
     }
 

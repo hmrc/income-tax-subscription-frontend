@@ -19,6 +19,7 @@ package controllers
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
+import auth.AuthenticatedController
 import cats.data.EitherT
 import cats.implicits._
 import config.BaseControllerConfig
