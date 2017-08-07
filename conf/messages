@@ -313,4 +313,4 @@ feedback.thankyou.title                                         = Feedback recei
 affinity-group-error.title                                      = You can''t use this service
 affinity-group-error.heading                                    = You can''t use this service
 affinity-group-error.line1                                      = You can only use this service if you have an individual Government Gateway account.
-affinity-group-error.line2                                      = To sign up for quarterly reporting, you''ll need to <a id="affinity" href="{0}">sign in using a different type of account.</a>
+affinity-group-error.line2                                      = To sign up for quarterly reporting, you''ll need to <a id="sign-out" href="{0}">sign in using a different type of account.</a>
