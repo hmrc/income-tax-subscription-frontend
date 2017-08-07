@@ -18,7 +18,6 @@ package auth
 
 import auth.AuthPredicate._
 import auth.AuthPredicates._
-import cats.implicits._
 import config.BaseControllerConfig
 import controllers.ITSASessionKeys
 import play.api.data.Form
@@ -36,6 +35,7 @@ import scala.concurrent.Future
   * Created by rob on 04/08/17.
   */
 trait AuthenticatedController extends FrontendController with I18nSupport {
+
   val authService: AuthService
   val baseConfig: BaseControllerConfig
   lazy implicit val applicationConfig = baseConfig.applicationConfig
@@ -51,14 +51,14 @@ trait AuthenticatedController extends FrontendController with I18nSupport {
     val asyncEnrolled: AuthenticatedAction = asyncInternal(enrolledPredicates)
 
     val asyncForHomeController: AuthenticatedAction = { actionBody: ActionBody =>
-      asyncInternal(defaultPredicates |+| mtdidPredicate)({
+      asyncInternal(homePredicates)({
         implicit request =>
           user =>
             actionBody(request)(user) map (_.addingToSession(ITSASessionKeys.GoHome -> "et"))
       })
     }
 
-    def asyncInternal(predicate: AuthPredicate)(action: ActionBody): Action[AnyContent] =
+    private def asyncInternal(predicate: AuthPredicate)(action: ActionBody): Action[AnyContent] =
       Action.async { implicit request =>
         authService.authorised().retrieve(allEnrolments and affinityGroup) {
           case enrolments ~ affinity =>
@@ -70,10 +70,6 @@ trait AuthenticatedController extends FrontendController with I18nSupport {
             }
         }
       }
-
-    lazy val timeoutRoute = controllers.routes.SessionTimeoutController.timeout()
-
-    lazy val homeRoute = controllers.routes.HomeController.index()
   }
 
   implicit class FormUtil[T](form: Form[T]) {

@@ -62,10 +62,7 @@ object AuthPredicates extends Results {
 
   val affinityPredicate: AuthPredicate = request => user =>
     if(user.affinityGroup contains AffinityGroup.Individual) Right(AuthPredicateSuccess)
-    else {
-      println("HERE I AM JUGGERNAUT")
-      Left(Future.successful(wrongAffinity))
-    }
+    else Left(Future.successful(wrongAffinity))
 
   val defaultPredicates = ninoPredicate |+| timeoutPredicate |+| affinityPredicate
 

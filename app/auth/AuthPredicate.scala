@@ -22,6 +22,7 @@ import play.api.mvc.{AnyContent, Request, Result}
 import scala.concurrent.Future
 
 object AuthPredicate {
+
   object AuthPredicateSuccess
 
   type AuthPredicateSuccess = AuthPredicateSuccess.type
