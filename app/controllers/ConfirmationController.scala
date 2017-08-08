@@ -27,6 +27,7 @@ import models.DateModel.dateConvert
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.{AuthService, KeystoreService}
+import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -56,11 +57,11 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
               ))
             case _ =>
               logging.info("User attempted to view confirmation with no subscriptionId stored in Keystore")
-              InternalServerError
+              throw new InternalServerException("Confirmation Controller, call to view confirmation with no subscription ID")
           }
         case _ =>
           logging.info("User attempted to view confirmation with no incomeSource stored in Keystore")
-          Future.successful(InternalServerError)
+          Future.failed(new InternalServerException("Confirmation Controller, call to show confirmation with no income source"))
       }
   }
 
