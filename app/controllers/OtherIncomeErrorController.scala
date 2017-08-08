@@ -53,6 +53,7 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
             Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
         }
         case _ =>
+          logging.info("Tried to submit 'other income error' when no data found in Keystore for 'income source'")
           throw new InternalServerException("Other Income Error Controller, call to submit 'other income error' when no 'income source'")
 
       }
