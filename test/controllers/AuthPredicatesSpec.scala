@@ -135,6 +135,10 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       lazy val request = FakeRequest().withSession(lastRequestTimestamp -> "")
       await(timeoutPredicate(request)(defaultPredicateUser).left.value) mustBe timeoutRoute
     }
+
+    "return the wrong affinity page where there is no affinity group or nino enrolment" in {
+      await(defaultPredicates(authorisedRequest)(blankUser).left.value) mustBe wrongAffinity
+    }
   }
 
   "subscriptionPredicates" should {
