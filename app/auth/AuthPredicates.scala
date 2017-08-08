@@ -34,11 +34,13 @@ object AuthPredicates extends Results {
 
   lazy val noNino: Result = Redirect(controllers.routes.NoNinoController.showNoNino())
 
+  lazy val iv: Result = Redirect(controllers.iv.routes.IdentityVerificationController.gotoIV())
+
   val ninoPredicate: AuthPredicate = request => user =>
     if (user.enrolments.getEnrolment(Constants.ninoEnrolmentName).exists(_.confidenceLevel >= L200)) {
       Right(AuthPredicateSuccess)
     }
-    else Left(Future.successful(Redirect(controllers.iv.routes.IdentityVerificationController.gotoIV())))
+    else Left(Future.successful(iv))
 
   lazy val alreadyEnrolled: Result = Redirect(controllers.routes.AlreadyEnrolledController.enrolled())
 

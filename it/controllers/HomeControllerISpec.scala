@@ -70,7 +70,7 @@ class HomeControllerISpec extends ComponentSpecBase {
         When("GET /index is called")
         val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-        Then("Should return a SEE OTHER with the claim subscription page")
+        Then("Should return a SEE OTHER with the wrong affinity page")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(wrongAffinityURI)
@@ -86,10 +86,26 @@ class HomeControllerISpec extends ComponentSpecBase {
         When("GET /index is called")
         val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-        Then("Should return a SEE OTHER with the claim subscription page")
+        Then("Should return a SEE OTHER with the wrong affinity page")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(wrongAffinityURI)
+        )
+      }
+    }
+
+    "auth returns a confidence level lower than 200" should {
+      "redirect to IV" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthLowConfidenceLevel()
+
+        When("GET /index is called")
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        Then("Should return a SEE OTHER with the IV page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(ivURI)
         )
       }
     }
