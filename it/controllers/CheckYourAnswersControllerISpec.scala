@@ -75,6 +75,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
+
     "keystore returns all data" should {
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
@@ -82,7 +83,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription()
         GGAdminStub.stubAddKnownFactsSuccess()
-        GGConnectorStub.stubEnrolSuccess()
+        GGConnectorStub.stubEnrolResult(OK)
         GGAuthenticationStub.stubRefreshProfileSuccess()
         KeystoreStub.stubPutMtditId()
 
@@ -93,6 +94,63 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(confirmationURI)
+        )
+      }
+    }
+
+    "enrolment failure occurs where not on whitelist" should {
+      "show the check your answers page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
+        SubscriptionStub.stubSuccessfulSubscription()
+        GGAdminStub.stubAddKnownFactsSuccess()
+        GGConnectorStub.stubEnrolResult(FORBIDDEN)
+
+        When("POST /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+        Then("Should return a INTERNAL SERVER ERROR status")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
+
+    "enrolment failure occurs where missing details" should {
+      "show the check your answers page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
+        SubscriptionStub.stubSuccessfulSubscription()
+        GGAdminStub.stubAddKnownFactsSuccess()
+        GGConnectorStub.stubEnrolResult(BAD_REQUEST)
+
+        When("POST /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+        Then("Should return a INTERNAL SERVER ERROR status")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
+
+    "enrolment failure occurs where auth success but access error with gateway token" should {
+      "show the check your answers page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
+        SubscriptionStub.stubSuccessfulSubscription()
+        GGAdminStub.stubAddKnownFactsSuccess()
+        GGConnectorStub.stubEnrolResult(INTERNAL_SERVER_ERROR)
+
+        When("POST /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+        Then("Should return a INTERNAL SERVER ERROR status")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
     }

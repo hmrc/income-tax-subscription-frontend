@@ -30,7 +30,7 @@ class ClaimSubscriptionControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreData(Map(MtditId -> toJson(testMTDID)))
-      GGConnectorStub.stubEnrolSuccess()
+      GGConnectorStub.stubEnrolResult(OK)
       GGAuthenticationStub.stubRefreshProfileSuccess()
 
       When("GET /claim-subscription is called")
