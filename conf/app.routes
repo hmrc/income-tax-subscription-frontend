@@ -26,9 +26,6 @@ POST        /check-your-answers               controllers.CheckYourAnswersContro
 GET         /confirmation                     controllers.ConfirmationController.showConfirmation
 GET         /confirmation/sign-out            controllers.ConfirmationController.signOut
 
-# Unauthorised Routes
-GET         /not-authorised                   controllers.UnauthorisedController.showNotAuthorised
-
 # Session Timeout Route
 GET         /session-timeout                  controllers.SessionTimeoutController.timeout
 
@@ -69,6 +66,9 @@ POST        /error/other-income               controllers.OtherIncomeErrorContro
 
 # Affinity Group Error
 GET         /error/affinity-group              controllers.AffinityGroupErrorController.show
+
+# IV Error
+GET         /error/iv-failed                  controllers.iv.IdentityVerificationController.ivFailed
 
 # Exit Survey
 GET         /exit-survey                      controllers.ExitSurveyController.show

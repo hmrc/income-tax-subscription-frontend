@@ -16,8 +16,10 @@
 
 package controllers.iv
 
+import assets.MessageLookup
 import audit.Logging
 import controllers.ControllerBaseSpec
+import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -54,7 +56,7 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
     }
   }
 
-  "Calling the gotoIV action of the IdentityVerificationController with a user without a nino" should {
+  "Calling the gotoIV action with a user without a nino" should {
     "return an SEE OTHER to the identity verification frontend" in {
       mockIndividualWithNoEnrolments()
 
@@ -71,6 +73,18 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
       redirection must include regex s"&completionURL=(.*?)$cUrl"
       val fUrl = IdentityVerificationController.failureUri(baseUrl)
       redirection must include regex s"&failureURL=(.*?)$fUrl"
+    }
+  }
+
+  "calling the ivError action" should {
+    "return the iv_failed page" in {
+      val request = fakeRequest
+
+      lazy val result = await(TestIdentityVerificationController.ivFailed(request))
+      lazy val document = Jsoup.parse(contentAsString(result))
+
+      status(result) mustBe Status.OK
+      document.title() mustBe MessageLookup.IvFailed.title
     }
   }
 

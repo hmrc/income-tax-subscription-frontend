@@ -15,11 +15,20 @@
  *@
 
 @import config.AppConfig
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import views.html.helpers._
+@import views.html.templates.main_template
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("notAuthorised.title")) {
+@main_template(title = Messages("iv-error.title"), bodyClasses = None) {
 
-    <h1 class="heading-large">@Messages("notAuthorised.pageHeading")</h1>
+<h1 class="heading-large">@Messages("iv-error.heading")</h1>
+    <p>@Messages("iv-error.line1")</p>
+    <p>@Messages("iv-error.line2")</p>
+    <p>@Html(Messages("iv-error.line3"))<a></a></p>
 
+    @form(action = postAction) {
+        @continueButton(Messages("iv-error.try-again"))
+    }
 }

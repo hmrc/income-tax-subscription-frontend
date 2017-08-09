@@ -407,4 +407,14 @@ object MessageLookup {
     val gotoGovUk = "Go to the GOV.UK page"
   }
 
+  object IvFailed {
+    val title = "We couldn't confirm your identity"
+    val heading = title
+    val line_1 = "The information you provided doesn't match the details HMRC holds on you."
+    val line_2 = "You can't register with this service until we've confirmed your identity. This is to stop anyone else from accessing your personal details."
+    val line_3 = "To continue you'll need to try to confirm your identity again, or you can register"
+    val linkText = "using another HMRC service"
+    val buttonText = "Try again"
+  }
+
 }

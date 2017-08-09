@@ -314,3 +314,11 @@ affinity-group-error.title                                      = You can''t use
 affinity-group-error.heading                                    = You can''t use this service
 affinity-group-error.line1                                      = You can only use this service if you have an individual Government Gateway account.
 affinity-group-error.line2                                      = To sign up for quarterly reporting, you''ll need to <a id="sign-out" href="{0}">sign in using a different type of account.</a>
+
+## IV Error
+iv-error.title                                                  = We couldn''t confirm your identity
+iv-error.heading                                                = We couldn''t confirm your identity
+iv-error.line1                                                  = The information you provided doesn''t match the details HMRC holds on you.
+iv-error.line2                                                  = You can''t register with this service until we''ve confirmed your identity. This is to stop anyone else from accessing your personal details.
+iv-error.line3                                                  = To continue you''ll need to try to confirm your identity again, or you can register <a href="{0}"> using another HMRC service.</a>
+iv-error.try-again                                              = Try again

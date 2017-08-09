@@ -43,6 +43,10 @@ class IdentityVerificationController @Inject()(override val baseConfig: BaseCont
       implicit request =>
         Future.successful(Redirect(identityVerificationUrl))
   }
+
+  def ivFailed: Action[AnyContent] = Action {implicit request =>
+    Ok(views.html.iv.iv_failed(controllers.iv.routes.IdentityVerificationController.gotoIV()))
+  }
 }
 
 object IdentityVerificationController {
@@ -51,7 +55,7 @@ object IdentityVerificationController {
 
   def completionUri(baseUrl: String): String = baseUrl + controllers.routes.HomeController.index().url
 
-  def failureUri(baseUrl: String): String = baseUrl + controllers.routes.NoNinoController.showNoNino().url
+  def failureUri(baseUrl: String): String = baseUrl + controllers.iv.routes.IdentityVerificationController.ivFailed().url
 
   def identityVerificationUrl(baseUrl: String)(implicit request: Request[AnyContent]): String =
     s"/mdtp/uplift?origin=$origin&confidenceLevel=200&completionURL=${completionUri(baseUrl)}&failureURL=${failureUri(baseUrl)}"
