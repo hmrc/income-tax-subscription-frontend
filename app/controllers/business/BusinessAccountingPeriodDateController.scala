@@ -18,8 +18,8 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
+import auth.AuthenticatedController
 import config.BaseControllerConfig
-import controllers.AuthenticatedController
 import forms._
 import models.AccountingPeriodModel
 import models.enums._

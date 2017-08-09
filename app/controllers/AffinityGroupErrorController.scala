@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package auth
+package controllers
 
-import common.Constants
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, EnrolmentIdentifier, Enrolments}
+import javax.inject.{Inject, Singleton}
 
-import scala.collection.immutable.::
+import config.AppConfig
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 
-case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup]) {
-  lazy val nino: Option[String] = getEnrolment(Constants.ninoEnrolmentName)
+@Singleton
+class AffinityGroupErrorController @Inject()(implicit val applicationConfig: AppConfig,
+                                             val messagesApi: MessagesApi
+                                            ) extends FrontendController with I18nSupport {
 
-  lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
-
-  private def getEnrolment(key: String) = enrolments.enrolments.collectFirst {
-    case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _, _) => value
+  val show: Action[AnyContent] = Action { implicit request =>
+    Ok(views.html.affinity_group_error())
   }
+
 }

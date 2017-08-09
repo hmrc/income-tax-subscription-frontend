@@ -18,6 +18,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
+import auth.AuthenticatedController
 import config.BaseControllerConfig
 import forms.{IncomeSourceForm, NotEligibleForm}
 import models.NotEligibleModel

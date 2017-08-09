@@ -19,6 +19,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
+import auth.AuthenticatedController
 import config.BaseControllerConfig
 import forms.IncomeSourceForm
 import play.api.i18n.MessagesApi

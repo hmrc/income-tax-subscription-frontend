@@ -18,9 +18,9 @@ package controllers.preferences
 
 import javax.inject.{Inject, Singleton}
 
+import auth.AuthenticatedController
 import config.BaseControllerConfig
 import connectors.models.preferences.Activated
-import controllers.AuthenticatedController
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html

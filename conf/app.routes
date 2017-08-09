@@ -67,6 +67,9 @@ GET         /error/main-income                controllers.MainIncomeErrorControl
 GET         /error/other-income               controllers.OtherIncomeErrorController.showOtherIncomeError
 POST        /error/other-income               controllers.OtherIncomeErrorController.submitOtherIncomeError
 
+# Affinity Group Error
+GET         /error/affinity-group              controllers.AffinityGroupErrorController.show
+
 # Exit Survey
 GET         /exit-survey                      controllers.ExitSurveyController.show
 POST        /exit-survey                      controllers.ExitSurveyController.submit
@@ -77,3 +80,4 @@ GET         /sign-in                          controllers.SignInController.signI
 
 # Claim Subscription
 GET         /claim-subscription               controllers.ClaimSubscriptionController.claim
+

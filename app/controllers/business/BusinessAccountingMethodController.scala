@@ -18,8 +18,8 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
+import auth.AuthenticatedController
 import config.BaseControllerConfig
-import controllers.AuthenticatedController
 import forms.AccountingMethodForm
 import models.AccountingMethodModel
 import play.api.data.Form

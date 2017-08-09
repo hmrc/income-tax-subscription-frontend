@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package auth
+@import config.AppConfig
+@import views.html.templates.main_template
 
-import common.Constants
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, EnrolmentIdentifier, Enrolments}
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-import scala.collection.immutable.::
+@main_template(title = Messages("affinity-group-error.title"), bodyClasses = None) {
 
-case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup]) {
-  lazy val nino: Option[String] = getEnrolment(Constants.ninoEnrolmentName)
-
-  lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
-
-  private def getEnrolment(key: String) = enrolments.enrolments.collectFirst {
-    case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _, _) => value
-  }
+    <h1 class="heading-large">@Messages("affinity-group-error.heading")</h1>
+    <p>@Messages("affinity-group-error.line1")</p>
+    <div id="signOut"><p>@Html(Messages("affinity-group-error.line2", controllers.routes.SignOutController.signOut().url))</p></div>
 }
