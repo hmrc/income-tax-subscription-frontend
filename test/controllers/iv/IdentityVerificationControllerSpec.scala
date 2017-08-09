@@ -52,7 +52,7 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
     }
     "failureUri sets the correctly uri without a query string" in {
       val url = IdentityVerificationController.failureUri(baseUrl)
-      url must endWith(controllers.routes.NoNinoController.showNoNino().url)
+      url must endWith(controllers.iv.routes.IdentityVerificationController.ivFailed().url)
     }
   }
 

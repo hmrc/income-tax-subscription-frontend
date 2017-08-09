@@ -18,6 +18,7 @@ package helpers
 
 import java.util.UUID
 
+import config.AppConfig
 import controllers.ITSASessionKeys.GoHome
 import forms._
 import helpers.SessionCookieBaker._
@@ -73,6 +74,8 @@ trait ComponentSpecBase extends UnitSpec
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config)
     .build
+
+  val appConfig = app.injector.instanceOf[AppConfig]
 
   override lazy val messagesApi = app.injector.instanceOf[MessagesApi]
 
@@ -154,9 +157,9 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessName(): WSResponse = get("/business/name")
 
-    def maintenance(): WSResponse =get("/error/maintenance")
+    def maintenance(): WSResponse = get("/error/maintenance")
 
-    def noNino(): WSResponse =get("/error/no-nino")
+    def noNino(): WSResponse = get("/error/no-nino")
 
     def exitSurvey(): WSResponse = get("/exit-survey")
 
@@ -233,7 +236,7 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
-
+    def iv(): WSResponse = get("iv")
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
