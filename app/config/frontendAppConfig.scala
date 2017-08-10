@@ -54,6 +54,8 @@ trait AppConfig {
   val ggURL: String
   val ggAdminURL: String
   val ggAuthenticationURL: String
+  val identityVerificationURL: String
+  val contactHmrcLink: String
 }
 
 @Singleton
@@ -128,5 +130,8 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val ggURL = baseUrl("government-gateway")
   override lazy val ggAdminURL = baseUrl("gg-admin")
 
+  override lazy val identityVerificationURL: String = loadConfig("identity-verification-frontend.url")
+
+  override lazy val contactHmrcLink: String = loadConfig("contact-hmrc.url")
 }
 

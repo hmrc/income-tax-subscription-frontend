@@ -19,7 +19,7 @@ package controllers
 import helpers.ComponentSpecBase
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.http.Status.{SEE_OTHER, INTERNAL_SERVER_ERROR}
+import play.api.http.Status._
 import play.api.i18n.Messages
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, SubscriptionStub}
@@ -128,6 +128,22 @@ class HomeControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(wrongAffinityURI)
+        )
+      }
+    }
+
+    "auth returns a confidence level lower than 200" should {
+      "redirect to IV" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthLowConfidenceLevel()
+
+        When("GET /index is called")
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        Then("Should return a SEE OTHER with the IV page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(ivURI)
         )
       }
     }

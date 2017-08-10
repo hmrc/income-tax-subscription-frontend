@@ -25,7 +25,7 @@ import play.api.i18n.Messages
 
 class PreferencesControllerISpec extends ComponentSpecBase {
 
-  private implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  override implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   "GET /preferences" should {
 

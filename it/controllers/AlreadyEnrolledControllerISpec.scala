@@ -18,7 +18,7 @@ package controllers
 
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.OK
 import play.api.i18n.Messages
 
 class AlreadyEnrolledControllerISpec extends ComponentSpecBase {

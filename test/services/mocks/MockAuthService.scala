@@ -21,7 +21,7 @@ import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import services.AuthService
-import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
+import uk.gov.hmrc.auth.core.ConfidenceLevel.{L200, L50}
 import uk.gov.hmrc.auth.core.{~, _}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.TestConstants
@@ -64,6 +64,8 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
 
   def mockNinoRetrievalWithNoAffinity(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment)), None))
 
+  def mockIndividualWithNoEnrolments(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set.empty), Some(AffinityGroup.Individual)))
+
   def mockAuthUnauthorised(exception: AuthorisationException = new InvalidBearerToken): Unit =
     when(mockAuthService.authorised())
       .thenReturn(new mockAuthService.AuthorisedFunction(EmptyPredicate) {
@@ -80,13 +82,13 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
     Constants.ninoEnrolmentName,
     Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)),
     "Activated",
-    L50
+    L200
   )
 
   val mtdidEnrolment = Enrolment(
     Constants.mtdItsaEnrolmentName,
     Seq(EnrolmentIdentifier(Constants.mtdItsaEnrolmentIdentifierKey, TestConstants.testMTDID)),
     "Activated",
-    L50
+    L200
   )
 }

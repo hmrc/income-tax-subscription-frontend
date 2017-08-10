@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package auth
 
-import auth.{AuthPredicates, IncomeTaxSAUser}
-import AuthPredicates._
 import auth.AuthPredicate.AuthPredicateSuccess
+import auth.AuthPredicates._
+import controllers.ITSASessionKeys
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.FakeRequest
@@ -57,7 +57,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
 
     "return the no-nino error page where a nino enrolment does not exist" in {
-      await(ninoPredicate(FakeRequest())(blankUser).left.value) mustBe noNino
+      await(ninoPredicate(FakeRequest())(blankUser).left.value) mustBe iv
     }
   }
 

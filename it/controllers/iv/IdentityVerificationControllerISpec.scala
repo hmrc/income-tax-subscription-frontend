@@ -14,31 +14,26 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.iv
 
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
-import play.api.http.Status.OK
-import play.api.i18n.Messages
+import play.api.http.Status._
 
-class UnauthorisedControllerISpec extends ComponentSpecBase {
+class IdentityVerificationControllerISpec extends ComponentSpecBase {
+  "GET /report-quarterly/income-and-expenses/sign-up/iv" should {
+    "redirect to the IV service" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
 
-  "GET /report-quarterly/income-and-expenses/sign-up/not-authorised" when {
+      When("GET /iv is called")
+      val res = IncomeTaxSubscriptionFrontend.iv()
 
-    "keystore not applicable" should {
-      "show the not authorised page" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("GET /not-authorised is called")
-        val res = IncomeTaxSubscriptionFrontend.notAuthorised()
-
-        Then("Should return a OK with the not authorised page")
-        res should have(
-          httpStatus(OK),
-          pageTitle(Messages("notAuthorised.title"))
-        )
-      }
+      Then("Should redirect to Identity Verification")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(appConfig.identityVerificationURL)
+      )
     }
   }
 }

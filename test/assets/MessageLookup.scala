@@ -407,4 +407,13 @@ object MessageLookup {
     val gotoGovUk = "Go to the GOV.UK page"
   }
 
+  object IvFailed {
+    val title = "We're unable to confirm your identity"
+    val heading = title
+    val line_1 = "To help protect your data, you can only sign up to report your income and expenses quarterly once we've confirmed who you are."
+    val hmrcLink = "HM Revenue and Customs (opens in new window)"
+    val line_2 = s"If you can't confirm your identity and you have a query you can contact $hmrcLink to get help."
+    val tryAgainLink = "Try to confirm your identity again."
+  }
+
 }

@@ -18,9 +18,11 @@ package auth
 
 import auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import cats.implicits._
+import common.Constants
 import controllers.ITSASessionKeys
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.auth.core.ConfidenceLevel._
 import uk.gov.hmrc.play.http.NotFoundException
 import uk.gov.hmrc.play.http.SessionKeys._
 
@@ -28,11 +30,17 @@ import scala.concurrent.Future
 
 object AuthPredicates extends Results {
 
+  val emptyPredicate: AuthPredicate = _ => _ => Right(AuthPredicateSuccess)
+
   lazy val noNino: Result = Redirect(controllers.routes.NoNinoController.showNoNino())
 
+  lazy val iv: Result = Redirect(controllers.iv.routes.IdentityVerificationController.gotoIV())
+
   val ninoPredicate: AuthPredicate = request => user =>
-    if (user.nino.nonEmpty) Right(AuthPredicateSuccess)
-    else Left(Future.successful(noNino))
+    if (user.enrolments.getEnrolment(Constants.ninoEnrolmentName).exists(_.confidenceLevel >= L200)) {
+      Right(AuthPredicateSuccess)
+    }
+    else Left(Future.successful(iv))
 
   lazy val alreadyEnrolled: Result = Redirect(controllers.routes.AlreadyEnrolledController.enrolled())
 
@@ -61,7 +69,7 @@ object AuthPredicates extends Results {
   lazy val wrongAffinity: Result = Redirect(controllers.routes.AffinityGroupErrorController.show())
 
   val affinityPredicate: AuthPredicate = request => user =>
-    if(user.affinityGroup contains AffinityGroup.Individual) Right(AuthPredicateSuccess)
+    if (user.affinityGroup contains AffinityGroup.Individual) Right(AuthPredicateSuccess)
     else Left(Future.successful(wrongAffinity))
 
   val defaultPredicates = timeoutPredicate |+| affinityPredicate |+| ninoPredicate

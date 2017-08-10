@@ -18,14 +18,18 @@ package auth
 
 import auth.AuthPredicate._
 import auth.AuthPredicates._
+import cats.kernel.Monoid.empty
+import common.Constants
+import common.Constants.ninoEnrolmentName
 import config.BaseControllerConfig
 import controllers.ITSASessionKeys
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.AuthService
+import uk.gov.hmrc.auth.core.ConfidenceLevel.L200
 import uk.gov.hmrc.auth.core.Retrievals._
-import uk.gov.hmrc.auth.core.~
+import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, ~}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -57,6 +61,8 @@ trait AuthenticatedController extends FrontendController with I18nSupport {
             actionBody(request)(user) map (_.addingToSession(ITSASessionKeys.GoHome -> "et"))
       })
     }
+
+    val asyncForIV: AuthenticatedAction = asyncInternal(emptyPredicate)
 
     private def asyncInternal(predicate: AuthPredicate)(action: ActionBody): Action[AnyContent] =
       Action.async { implicit request =>
