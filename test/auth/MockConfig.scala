@@ -54,6 +54,8 @@ trait MockConfig extends AppConfig {
   override val ggAuthenticationURL: String = "/gg-auth"
 
   override val identityVerificationURL: String = ""
+
+  override val contactHmrcLink: String = "https://www.gov.uk/contact-hmrc"
 }
 
 object MockConfig extends MockConfig

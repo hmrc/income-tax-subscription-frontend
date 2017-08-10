@@ -23,7 +23,7 @@ import play.api.http.Status.SEE_OTHER
 
 class PreferencesControllerISpec extends ComponentSpecBase {
 
-  private implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  override implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   "GET /preferences" should {
     "return the preferences page when the user is not activated for preference service" in {

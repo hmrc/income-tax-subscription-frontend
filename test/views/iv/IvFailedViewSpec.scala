@@ -22,9 +22,9 @@ import play.api.test.FakeRequest
 import views.ViewSpecTrait
 
 class IvFailedViewSpec extends ViewSpecTrait {
-  val action = ViewSpecTrait.testCall
+  val testUrl = "link/iv"
 
-  lazy val page = views.html.iv.iv_failed(action)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = views.html.iv.iv_failed(testUrl)(FakeRequest(), applicationMessages, appConfig)
 
   "The IV failed view spec" should {
     val testPage = TestView(
@@ -37,11 +37,8 @@ class IvFailedViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line_1)
     testPage.mustHavePara(messages.line_2)
-    testPage.mustHavePara(messages.line_3)
 
-    testPage.mustHaveALink(messages.linkText, "")
-
-    testPage.mustHaveSubmitButton(messages.buttonText)
-
+    testPage.mustHaveALink("contact-hmrc", messages.hmrcLink, appConfig.contactHmrcLink)
+    testPage.mustHaveALink("try-again", messages.tryAgainLink, testUrl)
   }
 }

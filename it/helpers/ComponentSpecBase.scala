@@ -236,7 +236,7 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
-    def iv(): WSResponse = get("iv")
+    def iv(): WSResponse = get("/iv")
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =

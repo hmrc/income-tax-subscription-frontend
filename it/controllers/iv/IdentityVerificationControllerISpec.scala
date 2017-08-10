@@ -26,7 +26,7 @@ class IdentityVerificationControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
 
-      When("GET /index is called")
+      When("GET /iv is called")
       val res = IncomeTaxSubscriptionFrontend.iv()
 
       Then("Should redirect to Identity Verification")

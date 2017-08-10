@@ -408,13 +408,12 @@ object MessageLookup {
   }
 
   object IvFailed {
-    val title = "We couldn't confirm your identity"
+    val title = "We're unable to confirm your identity"
     val heading = title
-    val line_1 = "The information you provided doesn't match the details HMRC holds on you."
-    val line_2 = "You can't register with this service until we've confirmed your identity. This is to stop anyone else from accessing your personal details."
-    val line_3 = "To continue you'll need to try to confirm your identity again, or you can register"
-    val linkText = "using another HMRC service"
-    val buttonText = "Try again"
+    val line_1 = "To help protect your data, you can only sign up to report your income and expenses quarterly once we've confirmed who you are."
+    val hmrcLink = "HM Revenue and Customs (opens in new window)"
+    val line_2 = s"If you can't confirm your identity and you have a query you can contact $hmrcLink to get help."
+    val tryAgainLink = "Try to confirm your identity again."
   }
 
 }

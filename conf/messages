@@ -316,9 +316,8 @@ affinity-group-error.line1                                      = You can only u
 affinity-group-error.line2                                      = To sign up for quarterly reporting, you''ll need to <a id="sign-out" href="{0}">sign in using a different type of account.</a>
 
 ## IV Error
-iv-error.title                                                  = We couldn''t confirm your identity
-iv-error.heading                                                = We couldn''t confirm your identity
-iv-error.line1                                                  = The information you provided doesn''t match the details HMRC holds on you.
-iv-error.line2                                                  = You can''t register with this service until we''ve confirmed your identity. This is to stop anyone else from accessing your personal details.
-iv-error.line3                                                  = To continue you''ll need to try to confirm your identity again, or you can register <a href="{0}"> using another HMRC service.</a>
-iv-error.try-again                                              = Try again
+iv-error.title                                                  = We''re unable to confirm your identity
+iv-error.heading                                                = We''re unable to confirm your identity
+iv-error.line1                                                  = To help protect your data, you can only sign up to report your income and expenses quarterly once we''ve confirmed who you are.
+iv-error.line2                                                  = If you can''t confirm your identity and you have a query you can contact <a id="contact-hmrc" href="{0}" target="_blank"> HM Revenue and Customs (opens in new window)</a> to get help.
+iv-error.try_again                                              = <a id="try-again" href="{0}"> Try to confirm your identity again.</a>
