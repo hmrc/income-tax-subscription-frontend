@@ -16,7 +16,7 @@
 
 package helpers.servicemocks
 
-import connectors.models.subscription.SubscriptionSuccessResponse
+import connectors.models.subscription._
 import controllers.ITSASessionKeys
 import helpers.IntegrationTestConstants._
 import play.api.http.Status
@@ -41,11 +41,17 @@ object SubscriptionStub extends WireMockMethods{
       .thenReturn(Status.OK, successfulNoSubscriptionResponse)
   }
 
+  def stubGetSubscriptionFail(): Unit = {
+    when(method = GET, uri = subscriptionURI(testNino))
+      .thenReturn(Status.INTERNAL_SERVER_ERROR, failureSubscriptionResponse)
+  }
+
   def stubCreateSubscriptionNotFound(): Unit = {
     when(method = POST, uri = subscriptionURI(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageURI))
       .thenReturn(Status.NOT_FOUND)
   }
 
   val successfulSubscriptionResponse = SubscriptionSuccessResponse(testMTDID)
+  val failureSubscriptionResponse = SubscriptionFailureResponse("error")
   val successfulNoSubscriptionResponse = Json.obj()
 }

@@ -17,10 +17,10 @@
 package controllers.business
 
 import forms._
-import helpers.{ComponentSpecBase, IntegrationTestModels}
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.keystoreData
 import helpers.servicemocks.{AuthStub, KeystoreStub}
+import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models._
 import play.api.http.Status._
 import play.api.i18n.Messages
@@ -29,6 +29,23 @@ import services.CacheConstants
 class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-method" when {
+
+    "keystore call fails" should {
+      "not show page but return internal server error" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("GET /business/accounting-method is called")
+        val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
+
+        Then("should return an internal server error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
+
 
     "keystore returns all data" should {
       "show the accounting method page with an option selected" in {
@@ -72,7 +89,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubUnauthorised()
 
-      When("GET /business/accounting-period-dates is called")
+      When("GET /business/accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
 
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
@@ -83,7 +100,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-period-dates" when {
+  "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-method" when {
 
     "not in edit mode" should {
 
@@ -94,7 +111,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
-        When("POST /business/accounting-period-dates is called")
+        When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of terms")
@@ -111,7 +128,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
-        When("POST /business/accounting-period-dates is called")
+        When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of terms")
@@ -127,7 +144,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "")
 
-      When("POST /business/accounting-period-dates is called")
+      When("POST /business/accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, None)
 
       Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
@@ -144,7 +161,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "madeup")
 
-      When("POST /business/accounting-period-dates is called")
+      When("POST /business/accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
       Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
@@ -154,13 +171,29 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       )
     }
 
+    "not show the page correctly and return an internal server error" in {
+      val userInput = AccountingMethodModel(AccountingMethodForm.option_cash)
+
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      KeystoreStub.stubKeystoreFailure()
+
+      When("POST /business/accounting-method is called")
+      val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
+
+      Then("should return an internal server error")
+      res should have(
+        httpStatus(INTERNAL_SERVER_ERROR)
+      )
+    }
+
     "redirect to sign-in when auth fails" in {
       val userInput = AccountingMethodModel(AccountingMethodForm.option_cash)
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubUnauthorised()
 
-      When("POST /business/accounting-period-dates is called")
+      When("POST /business/accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
@@ -193,7 +226,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
-        When("POST /business/accounting-period-dates is called")
+        When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of terms")
@@ -223,7 +256,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
           )
         )
 
-        When("POST /terms is called")
+        When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
@@ -233,21 +266,37 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         )
       }
 
-        "redirect to sign-in when auth fails" in {
-          val userInput = AccountingMethodModel(AccountingMethodForm.option_cash)
+      "not show the page correctly and return an internal server error" in {
+        val userInput = AccountingMethodModel(AccountingMethodForm.option_cash)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubUnauthorised()
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
 
-          When("POST /business/accounting-period-dates is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
+        When("POST /business/accounting-method is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of sign-in")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(signInURI)
-          )
-        }
+        Then("should return an internal server error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+
+      "redirect to sign-in when auth fails" in {
+        val userInput = AccountingMethodModel(AccountingMethodForm.option_cash)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubUnauthorised()
+
+        When("POST /business/accounting-method is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of sign-in")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(signInURI)
+        )
       }
     }
+  }
 }

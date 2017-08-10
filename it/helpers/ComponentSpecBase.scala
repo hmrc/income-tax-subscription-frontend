@@ -106,6 +106,10 @@ trait ComponentSpecBase extends UnitSpec
 
     def preferences(): WSResponse = get("/preferences")
 
+    def paperlessError(): WSResponse =get("/paperless-error")
+
+    def callback(): WSResponse = get("/callback")
+
     def indexPage(): WSResponse = get("/index")
 
     def income(): WSResponse = get("/income")
@@ -139,6 +143,8 @@ trait ComponentSpecBase extends UnitSpec
     def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
 
     def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
+
+    def submitPaperlessError(): WSResponse = post("/paperless-error")(Map.empty)
 
     def submitTerms(): WSResponse = post("/terms")(Map.empty)
 

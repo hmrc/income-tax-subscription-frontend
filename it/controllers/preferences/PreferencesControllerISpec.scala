@@ -18,15 +18,18 @@ package controllers.preferences
 
 import config.AppConfig
 import helpers.ComponentSpecBase
+import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, PreferencesStub}
-import play.api.http.Status.SEE_OTHER
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
+import play.api.i18n.Messages
 
 class PreferencesControllerISpec extends ComponentSpecBase {
 
   private implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   "GET /preferences" should {
-    "return the preferences page when the user is not activated for preference service" in {
+
+    "where the user has previously accepted paperless where optedIn is set to True" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesStub.stubPaperlessActivated()
@@ -34,11 +37,107 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
 
-      Then("Should return a OK with the confirmation page")
+      Then("Should return a SEE_OTHER with a re-direct location of income source page")
       res should have(
-        httpStatus(SEE_OTHER)
+        httpStatus(SEE_OTHER),
+        redirectURI(incomeSourceURI)
+      )
+    }
+
+    "where the user has previously accepted paperless where optedIn is set to False" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      PreferencesStub.stubPaperlessInactive()
+
+      When("GET /preferences is called")
+      val res = IncomeTaxSubscriptionFrontend.preferences()
+
+      Then("Should return a SEE_OTHER with a re-direct location of choose paperless page")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(choosePaperlessURI)
+      )
+    }
+
+    "where the user needs to be re-directed to set paperless options" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      PreferencesStub.stubPaperlessPreconditionFail()
+
+      When("GET /preferences is called")
+      val res = IncomeTaxSubscriptionFrontend.preferences()
+
+      Then("Should return a SEE_OTHER with a re-direct location of choose paperless page")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(choosePaperlessURI)
+      )
+    }
+
+    "where the GET/preferences returns an error" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      PreferencesStub.stubPaperlessError()
+
+      When("GET /preferences is called")
+      val res = IncomeTaxSubscriptionFrontend.preferences()
+
+      Then("Should return a INTERNAL_SERVER_ERROR")
+      res should have(
+        httpStatus(INTERNAL_SERVER_ERROR)
       )
     }
   }
 
+  "GET /callback" should {
+
+    "where the user has previously accepted paperless where optedIn is set to False" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      PreferencesStub.stubPaperlessInactive()
+
+      When("GET /callback is called")
+      val res = IncomeTaxSubscriptionFrontend.callback()
+
+      Then("Should return a SEE_OTHER with a re-direct location of paperless error page")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(errorPreferencesURI)
+      )
+    }
+  }
+
+  "GET /paperless-error" should {
+
+    "where the GET /paperless-error is called" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+
+      When("GET /paperless-error is called")
+      val res = IncomeTaxSubscriptionFrontend.paperlessError()
+
+      Then("Should return a OK status with the paperless error page")
+      res should have(
+        httpStatus(OK),
+        pageTitle(Messages("preferences_callback.title"))
+      )
+    }
+  }
+
+  "POST /paperless-error" should {
+
+    "where the POST /paperless-error is called" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+
+      When("POST /paperless-error is called")
+      val res = IncomeTaxSubscriptionFrontend.submitPaperlessError()
+
+      Then("Should return a SEE_OTHER with a re-direct location of choose paperless page")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(choosePaperlessURI)
+      )
+    }
+  }
 }
