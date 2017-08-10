@@ -36,7 +36,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         MtditId -> JsString(testMTDID)
       ))
 
-      When("GET /income is called")
+      When("GET /confirmation is called")
       val res = IncomeTaxSubscriptionFrontend.confirmation()
 
       Then("Should return a OK with the confirmation page")
@@ -50,10 +50,10 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
 
-      When("GET /income is called")
+      When("GET /confirmation is called")
       val res = IncomeTaxSubscriptionFrontend.confirmation()
 
-      Then("Should return a OK with the confirmation page")
+      Then("Should return a NOT_FOUND status")
       res should have(
         httpStatus(NOT_FOUND))
     }

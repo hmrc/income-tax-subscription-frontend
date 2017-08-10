@@ -87,7 +87,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubUnauthorised()
 
-      When("GET /check-your-answers is called")
+      When("GET /income is called")
       val res = IncomeTaxSubscriptionFrontend.income()
 
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
@@ -162,7 +162,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of main income")
+        Then("Should return a SEE_OTHER with a redirect location of error main income")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(errorMainIncomeURI)

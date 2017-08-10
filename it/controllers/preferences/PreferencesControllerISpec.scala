@@ -133,7 +133,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       When("POST /paperless-error is called")
       val res = IncomeTaxSubscriptionFrontend.submitPaperlessError()
 
-      Then("Should return a SEE_OTHER with a re-direct location of paperless error page")
+      Then("Should return a SEE_OTHER with a re-direct location of choose paperless page")
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(choosePaperlessURI)

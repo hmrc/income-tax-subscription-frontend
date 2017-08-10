@@ -31,12 +31,12 @@ class ClaimSubscriptionControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreData(Map(MtditId -> toJson(testMTDID)))
       GGConnectorStub.stubEnrolResult(OK)
-      GGAuthenticationStub.stubRefreshProfileSuccess()
+      GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
 
       When("GET /claim-subscription is called")
       val res = IncomeTaxSubscriptionFrontend.claimSubscription()
 
-      Then("Should return a SEE_OTHER with a redirect location of confirmation")
+      Then("Should return an OK status")
       res should have(
         httpStatus(OK)
       )

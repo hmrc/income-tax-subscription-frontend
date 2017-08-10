@@ -100,7 +100,7 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
 
     "always" should {
 
-      "select the Yes current accounting period radio button on the accounting period page" in {
+      "select the Yes current accounting period radio button on the accounting period prior page" in {
         val userInput = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
         Given("I setup the Wiremock stubs")
@@ -117,7 +117,7 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "select the No current accounting period radio button on the accounting period page" in {
+      "select the No current accounting period radio button on the accounting period prior page" in {
         val userInput = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
 
         Given("I setup the Wiremock stubs")
@@ -135,7 +135,7 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
       }
 
 
-      "select no option on the radio buttons on the accounting period page" in {
+      "select no option on the radio buttons on the accounting period prior page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodPrior, "")

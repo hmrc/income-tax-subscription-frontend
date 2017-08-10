@@ -108,7 +108,7 @@ class HomeControllerISpec extends ComponentSpecBase {
         When("GET /index is called")
         val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-        Then("Should return a SEE OTHER with the claim subscription page")
+        Then("Should return a SEE OTHER with the error affinity group page")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(wrongAffinityURI)
@@ -124,7 +124,7 @@ class HomeControllerISpec extends ComponentSpecBase {
         When("GET /index is called")
         val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-        Then("Should return a SEE OTHER with the claim subscription page")
+        Then("Should return a SEE OTHER with the error affinity group page")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(wrongAffinityURI)

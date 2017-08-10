@@ -89,7 +89,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubUnauthorised()
 
-      When("GET /business/accounting-period-dates is called")
+      When("GET /business/accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
 
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
@@ -100,7 +100,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-period-dates" when {
+  "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-method" when {
 
     "not in edit mode" should {
 
@@ -111,7 +111,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
-        When("POST /business/accounting-period-dates is called")
+        When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of terms")
@@ -128,7 +128,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
-        When("POST /business/accounting-period-dates is called")
+        When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of terms")
@@ -144,7 +144,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "")
 
-      When("POST /business/accounting-period-dates is called")
+      When("POST /business/accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, None)
 
       Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
@@ -161,7 +161,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "madeup")
 
-      When("POST /business/accounting-period-dates is called")
+      When("POST /business/accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
       Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
@@ -178,7 +178,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreFailure()
 
-      When("POST /business/accounting-period-dates is called")
+      When("POST /business/accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
       Then("should return an internal server error")
@@ -193,7 +193,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubUnauthorised()
 
-      When("POST /business/accounting-period-dates is called")
+      When("POST /business/accounting-method is called")
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
@@ -226,7 +226,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
-        When("POST /business/accounting-period-dates is called")
+        When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of terms")
@@ -256,7 +256,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
           )
         )
 
-        When("POST /terms is called")
+        When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
@@ -273,7 +273,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
 
-        When("POST /business/accounting-period-dates is called")
+        When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
 
         Then("should return an internal server error")
@@ -288,7 +288,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubUnauthorised()
 
-        When("POST /business/accounting-period-dates is called")
+        When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
 
         Then("Should return a SEE_OTHER with a redirect location of sign-in")

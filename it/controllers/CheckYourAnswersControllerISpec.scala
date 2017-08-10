@@ -82,9 +82,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription()
-        GGAdminStub.stubAddKnownFactsSuccess()
+        GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(OK)
-        GGAuthenticationStub.stubRefreshProfileSuccess()
+        GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
         KeystoreStub.stubPutMtditId()
 
         When("POST /check-your-answers is called")
@@ -98,13 +98,51 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
       }
     }
 
+    "Refresh Profile call fails" should {
+      "show the check your answers page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
+        SubscriptionStub.stubSuccessfulSubscription()
+        GGAdminStub.stubAddKnownFactsResult(OK)
+        GGConnectorStub.stubEnrolResult(OK)
+        GGAuthenticationStub.stubRefreshProfileResult(BAD_REQUEST)
+
+        When("POST /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+        Then("Should return an INTERNAL_SERVER_ERROR")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
+
+    "Known Facts call fails" should {
+      "show the check your answers page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
+        SubscriptionStub.stubSuccessfulSubscription()
+        GGAdminStub.stubAddKnownFactsResult(BAD_REQUEST)
+
+        When("POST /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+        Then("Should return an INTERNAL_SERVER_ERROR")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
+
     "enrolment failure occurs where not on whitelist" should {
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription()
-        GGAdminStub.stubAddKnownFactsSuccess()
+        GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(FORBIDDEN)
 
         When("POST /check-your-answers is called")
@@ -123,7 +161,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription()
-        GGAdminStub.stubAddKnownFactsSuccess()
+        GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(BAD_REQUEST)
 
         When("POST /check-your-answers is called")
@@ -142,7 +180,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase{
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription()
-        GGAdminStub.stubAddKnownFactsSuccess()
+        GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(INTERNAL_SERVER_ERROR)
 
         When("POST /check-your-answers is called")

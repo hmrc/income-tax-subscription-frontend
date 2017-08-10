@@ -23,14 +23,14 @@ import play.api.i18n.Messages
 
 class AlreadyEnrolledControllerISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/error/subscription-status" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/already-enrolled" when {
 
     "keystore not applicable" should {
       "show the already enrolled page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubEnrolled()
 
-        When("GET /error/subscription-status is called")
+        When("GET /already-enrolled is called")
         val res = IncomeTaxSubscriptionFrontend.alreadyEnrolled()
 
         Then("Should return a OK with the already enrolled page")
