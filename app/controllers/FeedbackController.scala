@@ -88,12 +88,12 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
             resp.status match {
               case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))
               case HttpStatus.BAD_REQUEST => BadRequest(views.html.feedback.feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
-              case status => Logger.error(s"Unexpected status code from feedback form: $status"); InternalServerError
+              case status => Logger.error(s"Unexpected status code from feedback form: $status"); throw new InternalServerException("Feedback, submit call")
             }
         }
       }.getOrElse {
         Logger.error("Trying to submit an empty feedback form")
-        Future.successful(InternalServerError)
+        Future.failed(new InternalServerException("Feedback Controller, trying to submit empty feedback"))
       }
   }
 

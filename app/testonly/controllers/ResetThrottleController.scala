@@ -23,6 +23,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.Action
 import testonly.connectors.ResetThrottleConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.http.InternalServerException
 
 @Singleton
 class ResetThrottleController @Inject()(resetThrottleConnector: ResetThrottleConnector) extends FrontendController {
@@ -32,7 +33,7 @@ class ResetThrottleController @Inject()(resetThrottleConnector: ResetThrottleCon
       response =>
         response.status match {
           case OK => Ok("throttle reset")
-          case _ => InternalServerError(s"error occured during reset, status=${response.status}")
+          case _ => throw new InternalServerException(s"error occured during reset, status=${response.status}")
         }
     }
   }

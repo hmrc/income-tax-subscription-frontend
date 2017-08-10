@@ -28,6 +28,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.{AuthService, KeystoreService}
+import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 
 import scala.concurrent.Future
@@ -71,7 +72,8 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
           }
           case _ =>
             logging.info("Tried to submit other income when no data found in Keystore for income source")
-            InternalServerError
+            throw new InternalServerException("Other Income Controller, call to submit with no income source")
+
         }
     }
 
