@@ -44,7 +44,7 @@ class HomeControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/index" when {
 
-    "the user has a subscription applicable" should {
+    "the user has a subscription" should {
       "redirect to the claim subscription page" in {
 
         Given("I setup the Wiremock stubs")
@@ -63,7 +63,7 @@ class HomeControllerISpec extends ComponentSpecBase {
       }
     }
 
-    "the user does not have a subscription applicable" should {
+    "the user does not have a subscription" should {
       "redirect to the preferences page" in {
 
         Given("I setup the Wiremock stubs")
