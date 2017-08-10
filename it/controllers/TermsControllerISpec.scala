@@ -16,19 +16,32 @@
 
 package controllers
 
-import forms.{AccountingMethodForm, AccountingPeriodPriorForm, IncomeSourceForm, OtherIncomeForm}
-import helpers.{ComponentSpecBase, IntegrationTestModels}
+import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import models._
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status._
 import play.api.i18n.Messages
 import services.CacheConstants
 
 class TermsControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/terms" when {
+
+    "keystore call fails" should {
+      "return internal server error" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("GET /terms is called")
+        val res = IncomeTaxSubscriptionFrontend.terms()
+
+        Then("Should return an internal server error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
 
     "keystore returns all data" should {
       "show the terms page" in {
@@ -82,6 +95,21 @@ class TermsControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
+        )
+      }
+
+      "keystore call fails" in {
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreFailure()
+
+        When("POST /terms is called")
+        val res = IncomeTaxSubscriptionFrontend.submitTerms()
+
+        Then("should return an internal server error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
 

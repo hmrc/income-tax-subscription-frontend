@@ -22,11 +22,8 @@ import play.api.http.Status._
 import play.api.libs.json.Json
 
 object GGAdminStub extends WireMockMethods {
-  def stubAddKnownFactsSuccess(): StubMapping =
+  def stubAddKnownFactsResult(status: Int): StubMapping =
     when(method = POST, uri = GGAdminConnector.addKnownFactsUri)
-      .thenReturn(status = OK, body = Json.obj())
+      .thenReturn(status = status, body = Json.obj())
 
-  def stubAddKnownFactsFailure(): StubMapping =
-    when(method = POST, uri = GGAdminConnector.addKnownFactsUri)
-      .thenReturn(status = BAD_REQUEST, body = Json.obj())
 }

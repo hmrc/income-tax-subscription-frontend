@@ -69,7 +69,7 @@ class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase {
         When("POST /business/register-next-accounting-period is called")
         val res = IncomeTaxSubscriptionFrontend.submitRegisterNextAccountingPeriod()
 
-        Then("Should return a SEE_OTHER with a redirect location of register next period")
+        Then("Should return a SEE_OTHER with a redirect location of accounting period dates page")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(accountingPeriodDatesURI)
@@ -80,7 +80,7 @@ class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubUnauthorised()
 
-        When("POST /business/accounting-period-prior is called")
+        When("POST /business/register-next-accounting-period is called")
         val res = IncomeTaxSubscriptionFrontend.submitRegisterNextAccountingPeriod()
 
         Then("Should return a SEE_OTHER with a redirect location of sign-in")

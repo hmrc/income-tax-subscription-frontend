@@ -49,7 +49,7 @@ class ExitSurveyControllerISpec extends ComponentSpecBase {
         When("POST /exit-survey is called")
         val res = IncomeTaxSubscriptionFrontend.submitExitSurvey()
 
-        Then("Should return a SEE_OTHER with a redirect location of accounting period prior")
+        Then("Should return a SEE_OTHER with a redirect location of feedback submitted page")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(feedbackSubmittedURI)

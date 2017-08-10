@@ -30,13 +30,13 @@ class ClaimSubscriptionControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreData(Map(MtditId -> toJson(testMTDID)))
-      GGConnectorStub.stubEnrolSuccess()
-      GGAuthenticationStub.stubRefreshProfileSuccess()
+      GGConnectorStub.stubEnrolResult(OK)
+      GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
 
       When("GET /claim-subscription is called")
       val res = IncomeTaxSubscriptionFrontend.claimSubscription()
 
-      Then("Should return a SEE_OTHER with a redirect location of confirmation")
+      Then("Should return an OK status")
       res should have(
         httpStatus(OK)
       )
