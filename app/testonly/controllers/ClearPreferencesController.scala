@@ -25,7 +25,7 @@ import connectors.preferences.PreferenceFrontendConnector
 import play.api.i18n.MessagesApi
 import services.AuthService
 import testonly.connectors.ClearPreferencesConnector
-import uk.gov.hmrc.play.http.HttpGet
+import uk.gov.hmrc.play.http.{HttpGet, InternalServerException}
 import utils.Implicits._
 
 @Singleton
@@ -40,14 +40,14 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
   val clear = Authenticated.async { implicit request =>
     implicit user =>
       user.nino match {
-        case None => InternalServerError("no nino")
+        case None => throw new InternalServerException("clear preferences controller, no nino")
         case Some(nino) =>
           preferenceFrontendConnector.checkPaperless.flatMap {
             case Activated =>
               clearPreferencesConnector.clear(nino).map { response =>
                 response.status match {
                   case OK => Ok("Preferences cleared")
-                  case _ => InternalServerError("Unexpected error: status=" + response.status + ", body=" + response.body)
+                  case _ => throw new InternalServerException("Unexpected error in clear pref: status=" + response.status + ", body=" + response.body)
                 }
               }
             case _ => Ok("No Preferences found")

@@ -28,6 +28,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService
 import testonly.connectors.DeEnrolmentConnector
+import uk.gov.hmrc.play.http.InternalServerException
 
 @Singleton
 class DeEnrolController @Inject()(val baseConfig: BaseControllerConfig,
@@ -54,7 +55,7 @@ class DeEnrolController @Inject()(val baseConfig: BaseControllerConfig,
     } yield (ggStubResponse.status, authRefreshed) match {
       case (OK, Right(RefreshProfileSuccess)) => Ok("Successfully De-enrolled")
       case (status, Right(RefreshProfileSuccess)) => BadRequest(s"Failed to De-enrol: status=$status, body=${ggStubResponse.body}")
-      case _ => InternalServerError("refresh profile failed")
+      case _ => throw new InternalServerException("refresh profile failed")
     }
   }
 
