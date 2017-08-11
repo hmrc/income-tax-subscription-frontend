@@ -79,10 +79,15 @@ trait ComponentSpecBase extends UnitSpec
 
   override lazy val messagesApi = app.injector.instanceOf[MessagesApi]
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    resetWiremock()
+    AuditStub.stubAuditing()
+  }
+
   override def beforeAll(): Unit = {
     super.beforeAll()
     startWiremock()
-    AuditStub.stubAuditing()
   }
 
   override def afterAll(): Unit = {
