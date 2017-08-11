@@ -255,6 +255,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
             accountingMethod = Some(keystoreAccountingMethod)
           )
         )
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
         When("POST /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))

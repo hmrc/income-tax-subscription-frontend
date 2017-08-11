@@ -175,6 +175,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
 
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-period-dates" when {
+    val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
 
     "not in edit mode" should {
 
@@ -183,6 +184,9 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(accountingPeriodPrior = Some(keystoreAccountingPeriodPrior))
+        )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")
@@ -198,6 +202,9 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
       "enter no accounting period dates on the accounting period page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(accountingPeriodPrior = Some(keystoreAccountingPeriodPrior))
+        )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, "")
 
         When("POST /business/accounting-period-dates is called")
@@ -215,6 +222,9 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(accountingPeriodPrior = Some(keystoreAccountingPeriodPrior))
+        )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")
