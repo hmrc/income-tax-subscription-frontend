@@ -22,7 +22,6 @@ import common.Constants
 import controllers.ITSASessionKeys
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup
-import uk.gov.hmrc.auth.core.ConfidenceLevel._
 import uk.gov.hmrc.play.http.NotFoundException
 import uk.gov.hmrc.play.http.SessionKeys._
 
@@ -37,7 +36,7 @@ object AuthPredicates extends Results {
   lazy val iv: Result = Redirect(controllers.iv.routes.IdentityVerificationController.gotoIV())
 
   val ninoPredicate: AuthPredicate = request => user =>
-    if (user.enrolments.getEnrolment(Constants.ninoEnrolmentName).exists(_.confidenceLevel >= L200)) {
+    if (user.enrolments.getEnrolment(Constants.ninoEnrolmentName).isDefined) {
       Right(AuthPredicateSuccess)
     }
     else Left(Future.successful(iv))

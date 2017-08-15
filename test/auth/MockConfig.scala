@@ -29,7 +29,7 @@ trait MockConfig extends AppConfig {
   override val ggSignInContinueUrl: String = "/income-tax-subscription-frontend"
   override val betaFeedbackUnauthenticatedUrl: String = "/unauthorised"
   override val betaFeedbackUrl: String = "/feedback"
-  override val contactFormServiceIdentifier: String = "/contact"
+  override val contactFormServiceIdentifier: String = "MTDIT"
   override val contactFrontendPartialBaseUrl: String = "/contact/partial"
   override val alreadyEnrolledUrl: String = "/already-enrolled"
   override val subscriptionUrl: String = "/income-tax-subscription/subscription"

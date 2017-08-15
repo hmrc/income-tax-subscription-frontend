@@ -29,11 +29,6 @@ object AuthStub extends WireMockMethods {
       .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation, ninoEnrolment))
   }
 
-  def stubAuthLowConfidenceLevel(): StubMapping = {
-    when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ninoEnrolmentWithLowConfidenceLevel))
-  }
-
   def stubAuthOrgAffinityNoEnrolments(): StubMapping = {
     when(method = POST, uri = authoriseUri)
       .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation))
@@ -76,17 +71,6 @@ object AuthStub extends WireMockMethods {
         "value" -> testMTDID
       )
     )
-  )
-
-  private val ninoEnrolmentWithLowConfidenceLevel = Json.obj(
-    "key" -> ninoEnrolmentName,
-    "identifiers" -> Json.arr(
-      Json.obj(
-        "key" -> ninoEnrolmentIdentifierKey,
-        "value" -> testNino
-      )
-    ),
-    "confidenceLevel" -> 50
   )
 
   private def successfulAuthResponse(affinityGroup: AffinityGroup, enrolments: JsObject*): JsObject =
