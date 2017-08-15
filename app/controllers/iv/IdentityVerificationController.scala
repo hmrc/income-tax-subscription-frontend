@@ -22,7 +22,7 @@ import audit.Logging
 import auth.AuthenticatedController
 import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Call, Request}
+import play.api.mvc.{Action, AnyContent, Request}
 import services.AuthService
 
 import scala.concurrent.Future
@@ -36,7 +36,11 @@ class IdentityVerificationController @Inject()(override val baseConfig: BaseCont
                                               ) extends AuthenticatedController {
 
   def identityVerificationUrl(implicit request: Request[AnyContent]): String =
-    applicationConfig.identityVerificationURL + IdentityVerificationController.identityVerificationUrl(applicationConfig.baseUrl)
+    applicationConfig.identityVerificationURL +
+      IdentityVerificationController.identityVerificationUrl(
+        applicationConfig.contactFormServiceIdentifier,
+        applicationConfig.baseUrl
+      )
 
   def gotoIV: Action[AnyContent] = Authenticated.asyncForIV {
     implicit user =>
@@ -44,20 +48,18 @@ class IdentityVerificationController @Inject()(override val baseConfig: BaseCont
         Future.successful(Redirect(identityVerificationUrl))
   }
 
-  def ivFailed: Action[AnyContent] = Action {implicit request =>
+  def ivFailed: Action[AnyContent] = Action { implicit request =>
     Ok(views.html.iv.iv_failed(controllers.iv.routes.IdentityVerificationController.gotoIV().url))
   }
 }
 
 object IdentityVerificationController {
-  //TODO confirm
-  lazy val origin = "mtd-itsa"
 
   def completionUri(baseUrl: String): String = baseUrl + controllers.routes.HomeController.index().url
 
   def failureUri(baseUrl: String): String = baseUrl + controllers.iv.routes.IdentityVerificationController.ivFailed().url
 
-  def identityVerificationUrl(baseUrl: String)(implicit request: Request[AnyContent]): String =
+  def identityVerificationUrl(origin: String, baseUrl: String)(implicit request: Request[AnyContent]): String =
     s"/mdtp/uplift?origin=$origin&confidenceLevel=200&completionURL=${completionUri(baseUrl)}&failureURL=${failureUri(baseUrl)}"
 
 }

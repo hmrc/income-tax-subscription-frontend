@@ -66,7 +66,7 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
 
       status(result) must be(Status.SEE_OTHER)
       val redirection = redirectLocation(result).get
-      redirection must include regex """^/mdtp/uplift\?origin=mtd-itsa&confidenceLevel=([0-9]+?)&completionURL=(.+?)&failureURL=(.+?)$"""
+      redirection must include regex """^/mdtp/uplift\?origin=MTDIT&confidenceLevel=([0-9]+?)&completionURL=(.+?)&failureURL=(.+?)$"""
       redirection must include("/mdtp/uplift?")
       redirection must include("&confidenceLevel=200")
       val cUrl = IdentityVerificationController.completionUri(baseUrl)

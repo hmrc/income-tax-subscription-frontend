@@ -21,7 +21,7 @@ import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import services.AuthService
-import uk.gov.hmrc.auth.core.ConfidenceLevel.{L200, L50}
+import uk.gov.hmrc.auth.core.ConfidenceLevel.L200
 import uk.gov.hmrc.auth.core.{~, _}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.TestConstants
@@ -30,7 +30,6 @@ import scala.concurrent.Future
 
 trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
   self: Suite =>
-
 
   val mockAuthService = mock[AuthService]
 
