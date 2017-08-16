@@ -17,7 +17,7 @@
 package services.mocks
 
 import connectors.models.ConnectorError
-import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccessResponse}
+import connectors.models.subscription.SubscriptionResponse.SubscriptionResponse
 import models.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -47,7 +47,7 @@ trait MockSubscriptionOrchestrationService extends MockTrait {
 
   private def mockCreateSubscription(nino: String,
                                      summaryModel: SummaryModel
-                                    )(result: Future[Either[SubscriptionFailureResponse, SubscriptionSuccessResponse]]): Unit =
+                                    )(result: Future[SubscriptionResponse]): Unit =
     when(mockSubscriptionOrchestrationService
       .createSubscription(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(summaryModel)
       )(ArgumentMatchers.any[HeaderCarrier]))

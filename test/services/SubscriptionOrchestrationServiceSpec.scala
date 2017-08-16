@@ -17,12 +17,12 @@
 package services
 
 import connectors.models.ConnectorError
-import connectors.models.subscription.SubscriptionSuccessResponse
+import connectors.models.subscription.SubscriptionResponse.SubscriptionSuccess
 import org.scalatest.concurrent.ScalaFutures
 import services.mocks._
-import utils.UnitTestTrait
 import utils.TestConstants._
 import utils.TestModels._
+import utils.UnitTestTrait
 
 import scala.concurrent.Future
 
@@ -30,13 +30,13 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
   with TestSubscriptionOrchestrationService {
 
   "createSubscription" should {
-    def res: Future[Either[ConnectorError, SubscriptionSuccessResponse]] =
+    def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
       TestSubscriptionOrchestrationService.createSubscription(testNino, testSummaryData)
 
     "return a success when all services succeed" in {
       mockCreateSubscriptionSuccess(testNino, testSummaryData)
-      mockAddKnownFactsSuccess(testId, testNino)
-      mockEnrolSuccess(testId, testNino)
+      mockAddKnownFactsSuccess(testMTDID, testNino)
+      mockEnrolSuccess(testMTDID, testNino)
       mockRefreshProfileSuccess()
 
       whenReady(res)(_ mustBe testSubscriptionSuccess)
@@ -57,14 +57,14 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
 
       "add known facts returns an error" in {
         mockCreateSubscriptionSuccess(testNino, testSummaryData)
-        mockAddKnownFactsFailure(testId, testNino)
+        mockAddKnownFactsFailure(testMTDID, testNino)
 
         whenReady(res)(_ mustBe testKnownFactsFailure)
       }
 
       "add known facts returns an exception" in {
         mockCreateSubscriptionSuccess(testNino, testSummaryData)
-        mockAddKnownFactsException(testId, testNino)
+        mockAddKnownFactsException(testMTDID, testNino)
 
         whenReady(res.failed)(_ mustBe testException)
       }
@@ -73,30 +73,30 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
 
   "enrolAndRefresh" should {
     def res: Future[Either[ConnectorError, String]] =
-      TestSubscriptionOrchestrationService.enrolAndRefresh(testId, testNino)
+      TestSubscriptionOrchestrationService.enrolAndRefresh(testMTDID, testNino)
 
     "return a success when enrolment and refresh profile succeed" in {
-      mockEnrolSuccess(testId, testNino)
+      mockEnrolSuccess(testMTDID, testNino)
       mockRefreshProfileSuccess()
 
-      whenReady(res)(_ mustBe Right(testId))
+      whenReady(res)(_ mustBe Right(testMTDID))
     }
 
     "return a failure" when {
       "enrol returns an error" in {
-        mockEnrolFailure(testId, testNino)
+        mockEnrolFailure(testMTDID, testNino)
 
         whenReady(res)(_ mustBe testEnrolFailure)
       }
 
       "enrol returns an exception" in {
-        mockEnrolException(testId, testNino)
+        mockEnrolException(testMTDID, testNino)
 
         whenReady(res.failed)(_ mustBe testException)
       }
 
       "refreshProfile returns an error" in {
-        mockEnrolSuccess(testId, testNino)
+        mockEnrolSuccess(testMTDID, testNino)
         mockRefreshProfileFailure()
 
         whenReady(res)(_ mustBe testRefreshProfileFailure)

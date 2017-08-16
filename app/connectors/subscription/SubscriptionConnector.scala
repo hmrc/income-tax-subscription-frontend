@@ -19,53 +19,28 @@ package connectors.subscription
 import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
-import connectors.RawResponseReads
-import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccessResponse}
-import play.api.http.Status.OK
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost, HttpResponse}
+import connectors.models.subscription.SubscriptionRequest
+import connectors.models.subscription.SubscriptionResponse._
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
 class SubscriptionConnector @Inject()(val appConfig: AppConfig,
                                       val httpPost: HttpPost,
-                                      val httpGet: HttpGet) extends RawResponseReads {
-  import SubscriptionConnector._
+                                      val httpGet: HttpGet) {
 
   def subscriptionUrl(nino: String): String = appConfig.subscriptionUrl + SubscriptionConnector.subscriptionUri(nino)
 
-  def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[Either[SubscriptionFailureResponse, SubscriptionSuccessResponse]] = {
-    httpPost.POST[SubscriptionRequest, HttpResponse](subscriptionUrl(request.nino), request).map {
-      response =>
-        response.status match {
-          case OK =>
-            response.json.asOpt[SubscriptionSuccessResponse] match {
-              case Some(successResponse) => Right(successResponse)
-              case _ => Left(SubscriptionFailureResponse(badlyFormattedMessage))
-            }
-          case status => Left(SubscriptionFailureResponse(subscriptionErrorText(status)))
-        }
-    }
-  }
+  def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] =
+    httpPost.POST[SubscriptionRequest, SubscriptionResponse](subscriptionUrl(request.nino), request)
 
-  def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[Either[SubscriptionFailureResponse, Option[SubscriptionSuccessResponse]]] = {
-    httpGet.GET[HttpResponse](subscriptionUrl(nino)).map {
-      response =>
-        response.status match {
-          case OK => Right(response.json.asOpt[SubscriptionSuccessResponse])
-          case status => Left(SubscriptionFailureResponse(subscriptionErrorText(status)))
-        }
-    }
-  }
-
+  def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] =
+    httpGet.GET[GetSubscriptionResponse](subscriptionUrl(nino))
 }
 
 object SubscriptionConnector {
 
   def subscriptionUri(nino: String): String = "/" + nino
 
-  def subscriptionErrorText(status: Int) = s"Back end service returned $status"
-
-  val badlyFormattedMessage = "Badly formatted subscription response"
 }

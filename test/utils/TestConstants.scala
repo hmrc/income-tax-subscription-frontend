@@ -19,8 +19,10 @@ package utils
 import common.Constants.GovernmentGateway._
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
 import connectors.models.gg._
-import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccessResponse}
+import connectors.models.subscription.SubscriptionResponse.{SubscriptionFailureResponse, SubscriptionSuccess}
+import connectors.models.subscription.{Both, SubscriptionRequest}
 import models.DateModel
+import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
 
 object TestConstants {
@@ -47,6 +49,15 @@ object TestConstants {
     knownFacts = List(testMTDID, testNino)
   )
 
+  val testSubmissionRequest = SubscriptionRequest(
+    nino = TestConstants.testNino,
+    incomeSource = Both,
+    accountingPeriodStart = Some(startDate),
+    accountingPeriodEnd = Some(endDate),
+    cashOrAccruals = Some("Cash"),
+    tradingName = Some("ABC")
+  )
+
   val testErrorMessage = "This is an error"
   val testException = new Exception
 
@@ -58,9 +69,9 @@ object TestConstants {
 
   val testEnrolFailure = Left(EnrolFailure(testErrorMessage))
 
-  val testSubscriptionSuccess = Right(SubscriptionSuccessResponse(testMTDID))
+  val testSubscriptionSuccess = Right(SubscriptionSuccess(testMTDID))
 
-  val testSubscriptionFailure = Left(SubscriptionFailureResponse(testErrorMessage))
+  val testSubscriptionFailure = Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
 
   val testKnownFactsSuccess = Right(KnownFactsSuccess)
 

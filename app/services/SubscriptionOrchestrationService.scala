@@ -19,12 +19,12 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import cats.data.EitherT
+import cats.implicits._
 import connectors.models.ConnectorError
 import connectors.models.authenticator.RefreshProfileResult
+import connectors.models.subscription.SubscriptionResponse.SubscriptionSuccess
 import models.SummaryModel
 import uk.gov.hmrc.play.http.HeaderCarrier
-import cats.implicits._
-import connectors.models.subscription.SubscriptionSuccessResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,7 +35,7 @@ class SubscriptionOrchestrationService @Inject() (subscriptionService: Subscript
                                                   refreshProfileService: RefreshProfileService
                                                  ) (implicit ec: ExecutionContext){
 
-  def createSubscription(nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccessResponse]] = {
+  def createSubscription(nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
     val res = for {
       subscriptionResponse <- EitherT(subscriptionService.submitSubscription(nino, summaryModel))
       mtditId = subscriptionResponse.mtditId
