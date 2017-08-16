@@ -23,6 +23,7 @@ import connectors.models.subscription._
 import connectors.subscription.SubscriptionConnector
 import models.SummaryModel
 import uk.gov.hmrc.play.http.HeaderCarrier
+import SubscriptionResponse._
 
 import scala.concurrent.Future
 
@@ -49,13 +50,13 @@ class SubscriptionService @Inject()(logging: Logging,
 
   def submitSubscription(nino: String,
                          summaryData: SummaryModel
-                        )(implicit hc: HeaderCarrier): Future[Either[SubscriptionFailureResponse, SubscriptionSuccessResponse]] = {
+                        )(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
     val request = buildRequest(nino, summaryData)
     logging.debug(s"Submitting subscription with request: $request")
     subscriptionConnector.subscribe(request)
   }
 
-  def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[Either[SubscriptionFailureResponse, Option[SubscriptionSuccessResponse]]] = {
+  def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] = {
     logging.debug(s"Getting subscription for nino=$nino")
     subscriptionConnector.getSubscription(nino)
   }

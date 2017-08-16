@@ -16,16 +16,18 @@
 
 package services
 
-import connectors.models.subscription.{IncomeSourceType, SubscriptionFailureResponse, SubscriptionSuccessResponse}
-import connectors.subscription.SubscriptionConnector.subscriptionErrorText
+import connectors.models.subscription.IncomeSourceType
+import connectors.models.subscription.SubscriptionResponse.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionSuccess}
+import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
-import services.mocks.MockSubscriptionService
+import services.mocks.{MockSubscriptionService, TestSubscriptionService}
+import utils.TestConstants._
 import utils.TestModels._
 import utils.{TestConstants, TestModels}
 
 
-class SubscriptionServiceSpec extends MockSubscriptionService {
+class SubscriptionServiceSpec extends TestSubscriptionService with EitherValues {
 
   val testNino: String = TestConstants.testNino
 
@@ -45,25 +47,26 @@ class SubscriptionServiceSpec extends MockSubscriptionService {
   }
 
   "SubscriptionService.submitSubscription" should {
-    val testRequest = TestSubscriptionService.buildRequest(testNino, testSummaryData)
     def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData))
 
     "return the safeId when the subscription is successful" in {
-      setupSubscribe(testRequest)(subscribeSuccess)
-      val response = call
-      response shouldBe Right(SubscriptionSuccessResponse(testId))
+      setupMockSubscribeSuccess(testSubmissionRequest)
+      call.right.value shouldBe SubscriptionSuccess(testMTDID)
     }
 
     "return the error if subscription fails on bad request" in {
-      setupSubscribe(testRequest)(subscribeBadRequest)
-      val response = call
-      response shouldBe Left(SubscriptionFailureResponse(subscriptionErrorText(BAD_REQUEST)))
+      setupMockSubscribeFailure(testSubmissionRequest)
+      call.left.value shouldBe SubscriptionFailureResponse(BAD_REQUEST)
     }
 
-    "return the error if subscription fails on internal server error" in {
-      setupSubscribe(testRequest)(subscribeInternalServerError)
-      val response = call
-      response shouldBe Left(SubscriptionFailureResponse(subscriptionErrorText(INTERNAL_SERVER_ERROR)))
+    "return the error if subscription fails on bad formatting" in {
+      setupMockSubscribeBadFormatting(testSubmissionRequest)
+      call.left.value shouldBe BadlyFormattedSubscriptionResponse
+    }
+
+    "return the error if subscription throws an exception" in {
+      setupMockSubscribeException(testSubmissionRequest)
+      intercept[Exception](call) shouldBe testException
 
     }
   }
@@ -73,27 +76,23 @@ class SubscriptionServiceSpec extends MockSubscriptionService {
     def call = await(TestSubscriptionService.getSubscription(nino = testNino))
 
     "return the safeId when the subscription is returned" in {
-      setupGetSubscription(testNino)(subscribeSuccess)
-      val response = call
-      response shouldBe Right(Some(SubscriptionSuccessResponse(testId)))
+      setupMockGetSubscriptionFound(testNino)
+      call.right.value shouldBe Some(SubscriptionSuccess(testMTDID))
     }
 
     "return the None when the subscription is returned as None" in {
-      setupGetSubscription(testNino)(subscribeEmptyBody)
-      val response = call
-      response shouldBe Right(None)
+      setupMockGetSubscriptionNotFound(testNino)
+      call.right.value shouldBe empty
     }
 
     "return the error if subscription fails on bad request" in {
-      setupGetSubscription(testNino)(subscribeBadRequest)
-      val response = call
-      response shouldBe Left(SubscriptionFailureResponse(subscriptionErrorText(BAD_REQUEST)))
+      setupMockGetSubscriptionFailure(testNino)
+      call.left.value shouldBe SubscriptionFailureResponse(BAD_REQUEST)
     }
 
-    "return the error if subscription fails on internal server error" in {
-      setupGetSubscription(testNino)(subscribeInternalServerError)
-      val response = call
-      response shouldBe Left(SubscriptionFailureResponse(subscriptionErrorText(INTERNAL_SERVER_ERROR)))
+    "return the error if subscription throws an exception" in {
+      setupMockGetSubscriptionException(testNino)
+      intercept[Exception](call) shouldBe testException
     }
   }
 

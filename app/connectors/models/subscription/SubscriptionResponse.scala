@@ -17,19 +17,45 @@
 package connectors.models.subscription
 
 import connectors.models.ConnectorError
+import play.api.http.Status._
 import play.api.libs.json.Json
+import uk.gov.hmrc.play.http.{HttpReads, HttpResponse}
 
+object SubscriptionResponse {
+  type SubscriptionResponse = Either[SubscriptionFailure, SubscriptionSuccess]
+  type GetSubscriptionResponse = Either[SubscriptionFailureResponse, Option[SubscriptionSuccess]]
 
-sealed trait SubscriptionResponse
+  case class SubscriptionSuccess(mtditId: String)
 
-case class SubscriptionSuccessResponse(mtditId: String) extends SubscriptionResponse
+  implicit val format = Json.format[SubscriptionSuccess]
 
-case class SubscriptionFailureResponse(reason: String) extends SubscriptionResponse with ConnectorError
+  trait SubscriptionFailure extends ConnectorError
 
-object SubscriptionSuccessResponse {
-  implicit val format = Json.format[SubscriptionSuccessResponse]
+  object BadlyFormattedSubscriptionResponse extends SubscriptionFailure
+
+  case class SubscriptionFailureResponse(status: Int) extends SubscriptionFailure
+
+  implicit object SubscriptionResponseHttpReads extends HttpReads[SubscriptionResponse] {
+    override def read(method: String, url: String, response: HttpResponse): SubscriptionResponse = {
+      response.status match {
+        case OK =>
+          response.json.asOpt[SubscriptionSuccess] match {
+            case Some(successResponse) => Right(successResponse)
+            case _ => Left(BadlyFormattedSubscriptionResponse)
+          }
+        case status => Left(SubscriptionFailureResponse(status))
+      }
+    }
+  }
+
+  implicit object GetSubscriptionResponseHttpReads extends HttpReads[GetSubscriptionResponse] {
+    override def read(method: String, url: String, response: HttpResponse): GetSubscriptionResponse = {
+      response.status match {
+        case OK => Right(response.json.asOpt[SubscriptionSuccess])
+        case status => Left(SubscriptionFailureResponse(status))
+      }
+    }
+  }
+
 }
 
-object SubscriptionFailureResponse {
-  implicit val format = Json.format[SubscriptionFailureResponse]
-}

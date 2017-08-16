@@ -18,10 +18,11 @@ package services.mocks
 
 import audit.Logging
 import connectors.mocks.MockSubscriptionConnector
-import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccessResponse}
+import connectors.models.subscription.SubscriptionResponse.{GetSubscriptionResponse, SubscriptionFailureResponse, SubscriptionResponse, SubscriptionSuccess}
 import models.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import play.api.http.Status._
 import services.SubscriptionService
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.MockTrait
@@ -29,13 +30,10 @@ import utils.TestConstants._
 
 import scala.concurrent.Future
 
-trait MockSubscriptionService extends MockTrait with MockSubscriptionConnector {
-
-  object TestSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], TestSubscriptionConnector)
-
+trait MockSubscriptionService extends MockTrait {
   val mockSubscriptionService = mock[SubscriptionService]
 
-  private def mockCreateSubscription(nino: String, summaryModel: SummaryModel)(result: Future[Either[SubscriptionFailureResponse, SubscriptionSuccessResponse]]): Unit =
+  private def mockCreateSubscription(nino: String, summaryModel: SummaryModel)(result: Future[SubscriptionResponse]): Unit =
     when(mockSubscriptionService.submitSubscription(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(summaryModel))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
@@ -47,5 +45,25 @@ trait MockSubscriptionService extends MockTrait with MockSubscriptionConnector {
 
   def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel): Unit =
     mockCreateSubscription(nino, summaryModel)(Future.failed(testException))
+
+  private def mockGetSubscription(nino: String)(result: Future[GetSubscriptionResponse]): Unit =
+    when(mockSubscriptionService.getSubscription(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(result)
+
+  def setupMockGetSubscriptionFound(nino: String): Unit =
+    mockGetSubscription(nino)(Future.successful(Right(Some(SubscriptionSuccess(testMTDID)))))
+
+  def setupMockGetSubscriptionNotFound(nino: String): Unit =
+    mockGetSubscription(nino)(Future.successful(Right(None)))
+
+  def setupMockGetSubscriptionFailure(nino: String): Unit =
+    mockGetSubscription(nino)(Future.successful(Left(SubscriptionFailureResponse(BAD_REQUEST))))
+
+  def setupMockGetSubscriptionException(nino: String): Unit =
+    mockGetSubscription(nino)(Future.failed(testException))
+}
+
+trait TestSubscriptionService extends MockSubscriptionConnector {
+  object TestSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], mockSubscriptionConnector)
 
 }

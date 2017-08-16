@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import auth.{AuthenticatedController, IncomeTaxSAUser}
 import config.BaseControllerConfig
-import connectors.models.subscription.SubscriptionSuccessResponse
+import connectors.models.subscription.SubscriptionResponse.SubscriptionSuccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Request, Result}
 import services.{AuthService, KeystoreService, SubscriptionOrchestrationService}
@@ -60,7 +60,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
         subscriptionService.createSubscription(nino, cache.getSummary())(headerCarrier).flatMap {
-          case Right(SubscriptionSuccessResponse(id)) =>
+          case Right(SubscriptionSuccess(id)) =>
             keystoreService.saveSubscriptionId(id).map(_ => Redirect(controllers.routes.ConfirmationController.showConfirmation()))
           case _ =>
             error("Successful response not received from submission")
