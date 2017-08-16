@@ -137,29 +137,9 @@ timeout.title                                                   = Your session h
 timeout.heading                                                 = Your session has timed out
 timeout.returnToHome                                            = To sign up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
-## Throttle limit reached page ##
-throttle_limit.title                                            = Service is unavailable due to maintenance
-throttle_limit.heading                                          = Service is unavailable due to maintenance
-throttle_limit.line_1                                           = Please try again later.
-
-
 ## Already enrolled page ##
 already-enrolled.title                                          = You''ve already signed up for quarterly reporting
 already-enrolled.heading                                        = You''ve already signed up for quarterly reporting
-
-## Failure Messages ##
-notAuthorised.title                                             = Not Authorised
-notAuthorised.pageHeading                                       = We were unable to confirm your identity
-
-lockedOut.title                                                 = Locked Out
-lockedOut.pageHeading                                           = You have tried to confirm your identity too many times
-lockedOut.paraOne                                               = You can try again in 7 days.
-lockedOut.paraTwo                                               = <p>If you have a query you can <a href="{0}" target="_blank">contact HM Revenue and Customs (opens in a new window)</a> to get help.</p>
-
-technicalIssue.title                                            = Technical Issues
-technicalIssue.pageHeading                                      = There is a technical problem
-technicalIssue.paraOne                                          = This online service is experiencing difficulties.
-technicalIssue.paraTwo                                          = Please try again in 5 minutes.
 
 ## Summary page ##
 summary.title                                                   = Check your answers
@@ -304,7 +284,6 @@ thank-you.title                                                 = Thank you
 thank-you.heading                                               = Thank you
 thank-you.line_1                                                = Your feedback will help us improve this service.
 thank-you.go_to_gov                                             = Go to the GOV.UK page
-
 
 # feedback thank you
 feedback.thankyou.title                                         = Feedback received
