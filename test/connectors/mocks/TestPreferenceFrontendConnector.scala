@@ -17,16 +17,41 @@
 package connectors.mocks
 
 import config.AppConfig
-import connectors.models.preferences.PaperlessState
+import connectors.models.preferences.{Activated, Declined, PaperlessState, Unset}
 import connectors.preferences.PreferenceFrontendConnector
+import org.mockito.ArgumentMatchers
 import play.api.http.Status._
 import play.api.i18n.MessagesApi
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Request}
 import utils.JsonUtils._
-import utils.UnitTestTrait
+import utils.{MockTrait, UnitTestTrait}
+import org.mockito.Mockito._
+import utils.TestConstants._
 
-trait MockPreferenceFrontendConnector extends UnitTestTrait
+import scala.concurrent.Future
+
+trait MockPreferenceFrontendConnector extends MockTrait {
+  val mockPreferenceFrontendConnector = mock[PreferenceFrontendConnector]
+
+  private def mockCheckPaperless(result: Future[PaperlessState]): Unit =
+    when(mockPreferenceFrontendConnector.checkPaperless(ArgumentMatchers.any[Request[AnyContent]]))
+      .thenReturn(result)
+
+  def mockCheckPaperlessActivated(): Unit = mockCheckPaperless(Future.successful(Activated))
+
+  def mockCheckPaperlessDeclined(): Unit = mockCheckPaperless(Future.successful(Declined))
+
+  def mockCheckPaperlessUnset(): Unit = mockCheckPaperless(Future.successful(Unset))
+
+  def mockCheckPaperlessException(): Unit = mockCheckPaperless(Future.failed(testException))
+
+  def mockChoosePaperlessUrl(url: String): Unit =
+    when(mockPreferenceFrontendConnector.choosePaperlessUrl) thenReturn url
+
+}
+
+trait TestPreferenceFrontendConnector extends UnitTestTrait
   with MockHttp {
 
   object TestPreferenceFrontendConnector extends PreferenceFrontendConnector(

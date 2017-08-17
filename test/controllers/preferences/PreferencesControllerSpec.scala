@@ -16,19 +16,17 @@
 
 package controllers.preferences
 
-import auth._
 import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockPreferencesService
+import utils.TestConstants._
 
-class PreferencesControllerSpec extends ControllerBaseSpec
-  with MockPreferencesService {
+class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesService {
 
   override val controllerName: String = "PreferencesControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -38,7 +36,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   object TestPreferencesController extends PreferencesController(
     MockBaseControllerConfig,
     messagesApi,
-    TestPreferencesService,
+    mockPreferencesService,
     mockAuthService
   )
 
@@ -49,24 +47,26 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     def result = TestPreferencesController.checkPreferences(request)
 
     "Redirect to Income Source if paperless is activated" in {
-      setupCheckPaperless(paperlessActivated)
+      mockCheckPaperlessActivated()
 
       status(result) must be(Status.SEE_OTHER)
       redirectLocation(result).get must be(controllers.routes.IncomeSourceController.showIncomeSource().url)
     }
 
     "Redirect to preferences service if paperless is deactivated" in {
-      setupCheckPaperless(paperlessDeclined)
+      mockCheckPaperlessDeclined()
+      mockChoosePaperlessUrl(testUrl)
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(TestPreferencesService.choosePaperlessUrl)
+      redirectLocation(result).get mustBe testUrl
     }
 
     "Redirect to preferences service if paperless was previously unspecified" in {
-      setupCheckPaperless(paperlessPreconditionFailed)
+      mockCheckPaperlessUnset()
+      mockChoosePaperlessUrl(testUrl)
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(TestPreferencesService.choosePaperlessUrl)
+      redirectLocation(result).get mustBe testUrl
     }
 
   }
@@ -78,21 +78,21 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     def result = TestPreferencesController.callback(request)
 
     "Redirect to Terms and Conditions if paperless is activated" in {
-      setupCheckPaperless(paperlessActivated)
+      mockCheckPaperlessActivated()
 
       status(result) must be(Status.SEE_OTHER)
       redirectLocation(result).get must be(controllers.routes.IncomeSourceController.showIncomeSource().url)
     }
 
     "Redirect to do you still want to continue page if paperless deactivated" in {
-      setupCheckPaperless(paperlessDeclined)
+      mockCheckPaperlessDeclined()
 
       status(result) must be(Status.SEE_OTHER)
       redirectLocation(result).get must be(routes.PreferencesController.showGoBackToPreferences().url)
     }
 
     "Redirect to do you still want to continue page if paperless was previously unspecified" in {
-      setupCheckPaperless(paperlessPreconditionFailed)
+      mockCheckPaperlessUnset()
 
       status(result) must be(Status.SEE_OTHER)
       redirectLocation(result).get must be(routes.PreferencesController.showGoBackToPreferences().url)

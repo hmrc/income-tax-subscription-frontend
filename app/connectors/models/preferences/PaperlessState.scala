@@ -19,36 +19,26 @@ package connectors.models.preferences
 import uk.gov.hmrc.play.http.HttpResponse
 import play.api.http.Status._
 
-sealed trait PaperlessState {
-  val redirection: Option[String]
-}
+sealed trait PaperlessState
 
 object PaperlessState {
-
-  import utils.Implicits.{EitherUtilLeft, EitherUtilRight}
 
   val Paperless = "optedIn"
 
   def parseResponse(response: HttpResponse): Boolean = (response.json \ Paperless).get.as[Boolean]
 
   def apply(response: HttpResponse): Either[(Int, String), PaperlessState] = response.status match {
-    case OK if parseResponse(response) => Activated //200 & { "paperless" : true }
-    case OK if !parseResponse(response) => Declined //200 & { "paperless" : false }
-    case PRECONDITION_FAILED => Unset //412
-    case x => (x, response.body)
+    case OK if parseResponse(response) => Right(Activated)//200 & { "paperless" : true }
+    case OK if !parseResponse(response) => Right(Declined) //200 & { "paperless" : false }
+    case PRECONDITION_FAILED => Right(Unset) //412
+    case x => Left((x, response.body))
   }
 
 }
 
-case object Activated extends PaperlessState {
-  override val redirection: Option[String] = None
-}
+case object Activated extends PaperlessState
 
-case object Declined extends PaperlessState {
-  override val redirection: Option[String] = None
-}
+case object Declined extends PaperlessState
 
-case object Unset extends PaperlessState {
-  override val redirection: Option[String] = None
-}
+case object Unset extends PaperlessState
 

@@ -20,19 +20,20 @@ import connectors.models.preferences.{Activated, Declined, Unset}
 import org.scalatest.Matchers._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.MockPreferencesService
+import services.mocks.TestPreferencesService
+import utils.TestConstants._
 import utils.UnitTestTrait
 
-
-class PreferencesServiceSpec extends UnitTestTrait
-  with MockPreferencesService {
+class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService {
 
   implicit val fakeRequest = FakeRequest()
 
   "TestPreferencesService" should {
 
     "Provide the correct choosePaperlessUrl URL" in {
-      TestPreferencesService.choosePaperlessUrl should include regex """^.*\/paperless\/choose\?returnUrl=(.*)&returnLinkText=(.*)$"""
+      mockChoosePaperlessUrl(testUrl)
+
+      TestPreferencesService.choosePaperlessUrl shouldBe testUrl
     }
 
   }
@@ -40,30 +41,27 @@ class PreferencesServiceSpec extends UnitTestTrait
   "TestPreferencesService.checkPaperless" should {
 
     "return Activated if checkPaperless returns a 200 and indicated activation is true" in {
-      val expected = Activated
+      mockCheckPaperlessActivated()
 
-      setupCheckPaperless(paperlessActivated)
-      val actual = TestPreferencesService.checkPaperless
-
-      await(actual) shouldBe expected
+      await(TestPreferencesService.checkPaperless) shouldBe Activated
     }
 
     "return Declined if checkPaperless returns a 200 and indicated activation is false" in {
-      val expected = Declined
+      mockCheckPaperlessDeclined()
 
-      setupCheckPaperless(paperlessDeclined)
-      val actual = TestPreferencesService.checkPaperless
-
-      await(actual) shouldBe expected
+      await(TestPreferencesService.checkPaperless) shouldBe Declined
     }
 
     "return Unset if checkPaperless returns a 412" in {
-      val expected = Unset
+      mockCheckPaperlessUnset()
 
-      setupCheckPaperless(paperlessPreconditionFailed)
-      val actual = TestPreferencesService.checkPaperless
+      await(TestPreferencesService.checkPaperless) shouldBe Unset
+    }
 
-      await(actual) shouldBe expected
+    "return a failed future in checkPaperless returns a failed future" in {
+      mockCheckPaperlessException()
+
+      intercept[Exception](await(TestPreferencesService.checkPaperless)) shouldBe testException
     }
 
   }

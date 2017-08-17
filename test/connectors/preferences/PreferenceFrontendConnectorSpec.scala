@@ -17,7 +17,7 @@
 package connectors.preferences
 
 import config.ITSAHeaderCarrierForPartialsConverter._
-import connectors.mocks.MockPreferenceFrontendConnector
+import connectors.mocks.TestPreferenceFrontendConnector
 import connectors.models.preferences._
 import org.scalatest.Matchers._
 import play.api.test.FakeRequest
@@ -25,7 +25,7 @@ import play.api.test.Helpers._
 import utils.UnitTestTrait
 
 class PreferenceFrontendConnectorSpec extends UnitTestTrait
-  with MockPreferenceFrontendConnector {
+  with TestPreferenceFrontendConnector {
 
   implicit val fakeRequest = FakeRequest()
 
