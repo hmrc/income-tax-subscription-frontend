@@ -19,8 +19,7 @@ package utils
 import common.Constants.GovernmentGateway._
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
 import connectors.models.gg._
-import connectors.models.subscription.SubscriptionResponse.{SubscriptionFailureResponse, SubscriptionSuccess}
-import connectors.models.subscription.{Both, SubscriptionRequest}
+import connectors.models.subscription.{Both, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
 import models.DateModel
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator

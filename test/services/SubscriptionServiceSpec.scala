@@ -16,12 +16,11 @@
 
 package services
 
-import connectors.models.subscription.IncomeSourceType
-import connectors.models.subscription.SubscriptionResponse.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionSuccess}
+import connectors.models.subscription.{BadlyFormattedSubscriptionResponse, IncomeSourceType, SubscriptionFailureResponse, SubscriptionSuccess}
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
-import services.mocks.{MockSubscriptionService, TestSubscriptionService}
+import services.mocks.TestSubscriptionService
 import utils.TestConstants._
 import utils.TestModels._
 import utils.{TestConstants, TestModels}

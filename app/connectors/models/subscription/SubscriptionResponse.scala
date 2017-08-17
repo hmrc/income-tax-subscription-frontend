@@ -17,45 +17,16 @@
 package connectors.models.subscription
 
 import connectors.models.ConnectorError
-import play.api.http.Status._
 import play.api.libs.json.Json
-import uk.gov.hmrc.play.http.{HttpReads, HttpResponse}
 
-object SubscriptionResponse {
-  type SubscriptionResponse = Either[SubscriptionFailure, SubscriptionSuccess]
-  type GetSubscriptionResponse = Either[SubscriptionFailureResponse, Option[SubscriptionSuccess]]
+case class SubscriptionSuccess(mtditId: String)
 
-  case class SubscriptionSuccess(mtditId: String)
-
+object SubscriptionSuccess {
   implicit val format = Json.format[SubscriptionSuccess]
-
-  trait SubscriptionFailure extends ConnectorError
-
-  object BadlyFormattedSubscriptionResponse extends SubscriptionFailure
-
-  case class SubscriptionFailureResponse(status: Int) extends SubscriptionFailure
-
-  implicit object SubscriptionResponseHttpReads extends HttpReads[SubscriptionResponse] {
-    override def read(method: String, url: String, response: HttpResponse): SubscriptionResponse = {
-      response.status match {
-        case OK =>
-          response.json.asOpt[SubscriptionSuccess] match {
-            case Some(successResponse) => Right(successResponse)
-            case _ => Left(BadlyFormattedSubscriptionResponse)
-          }
-        case status => Left(SubscriptionFailureResponse(status))
-      }
-    }
-  }
-
-  implicit object GetSubscriptionResponseHttpReads extends HttpReads[GetSubscriptionResponse] {
-    override def read(method: String, url: String, response: HttpResponse): GetSubscriptionResponse = {
-      response.status match {
-        case OK => Right(response.json.asOpt[SubscriptionSuccess])
-        case status => Left(SubscriptionFailureResponse(status))
-      }
-    }
-  }
-
 }
 
+sealed trait SubscriptionFailure extends ConnectorError
+
+object BadlyFormattedSubscriptionResponse extends SubscriptionFailure
+
+case class SubscriptionFailureResponse(status: Int) extends SubscriptionFailure

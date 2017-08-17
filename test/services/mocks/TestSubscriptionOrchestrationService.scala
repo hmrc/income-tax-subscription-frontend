@@ -16,8 +16,8 @@
 
 package services.mocks
 
+import connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.models.ConnectorError
-import connectors.models.subscription.SubscriptionResponse.SubscriptionResponse
 import models.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._

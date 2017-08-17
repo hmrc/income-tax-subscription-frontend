@@ -17,8 +17,10 @@
 package services.mocks
 
 import audit.Logging
+import connectors.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.mocks.MockSubscriptionConnector
-import connectors.models.subscription.SubscriptionResponse.{GetSubscriptionResponse, SubscriptionFailureResponse, SubscriptionResponse, SubscriptionSuccess}
+import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
 import models.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._

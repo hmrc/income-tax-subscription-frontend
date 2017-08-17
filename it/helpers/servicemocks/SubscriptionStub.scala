@@ -16,7 +16,7 @@
 
 package helpers.servicemocks
 
-import connectors.models.subscription.SubscriptionResponse.SubscriptionSuccess
+import connectors.models.subscription.SubscriptionSuccess
 import controllers.ITSASessionKeys
 import helpers.IntegrationTestConstants._
 import play.api.http.Status

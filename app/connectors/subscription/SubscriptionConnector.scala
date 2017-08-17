@@ -20,8 +20,9 @@ import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
 import connectors.models.subscription.SubscriptionRequest
-import connectors.models.subscription.SubscriptionResponse._
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
+import connectors.httpparsers.SubscriptionResponseHttpParser._
+import connectors.httpparsers.GetSubscriptionResponseHttpParser._
 
 import scala.concurrent.Future
 
