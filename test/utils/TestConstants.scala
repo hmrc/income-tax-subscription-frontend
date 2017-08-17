@@ -34,6 +34,8 @@ object TestConstants {
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
 
+  val testUrl = "/"
+
   lazy val knownFactsRequest = KnownFactsRequest(
     List(
       TypeValuePair(MTDITID, testMTDID),
