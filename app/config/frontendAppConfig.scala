@@ -46,7 +46,6 @@ trait AppConfig {
   val whitelistIps: Seq[String]
   val ipExclusionList: Seq[Call]
   val shutterPage: String
-  val enableCheckSubscription: Boolean
   val authURL: String
   val ggURL: String
   val ggAdminURL: String
@@ -113,9 +112,6 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val whitelistIps: Seq[String] = whitelistConfig("ip-whitelist.urls")
 
   override lazy val ipExclusionList: Seq[Call] = whitelistConfig("ip-whitelist.excludeCalls").map(ip => Call("GET", ip))
-
-  // Enable or disable calling check already subscribed from the HomeController
-  override lazy val enableCheckSubscription: Boolean = loadConfig("feature-switch.enable-check-subscription").toBoolean
 
   override lazy val authURL = baseUrl("auth")
   override lazy val ggAuthenticationURL = baseUrl("gg-authentication")
