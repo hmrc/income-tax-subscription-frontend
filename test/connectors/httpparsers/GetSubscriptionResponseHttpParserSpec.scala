@@ -14,48 +14,20 @@
  * limitations under the License.
  */
 
-package connectors.models.subscription
+package connectors.httpparsers
 
-import connectors.models.subscription.SubscriptionResponse._
+import connectors.httpparsers.GetSubscriptionResponseHttpParser._
+import connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.http.HttpResponse
-import utils.UnitTestTrait
 import utils.TestConstants._
+import utils.UnitTestTrait
 
-
-class SubscriptionResponseSpec extends UnitTestTrait with EitherValues {
-  val testHttpVerb = "POST"
+class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {
+  val testHttpVerb = "GET"
   val testUri = "/"
-
-  "SubscriptionResponseHttpReads" when {
-    "read" should {
-      "parse a correctly formatted OK response as a SubscriptionSuccess" in {
-        val httpResponse = HttpResponse(OK, Json.toJson(SubscriptionSuccess(testMTDID)))
-
-        val res = SubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
-
-        res.right.value mustBe SubscriptionSuccess(testMTDID)
-      }
-
-      "parse an incorrectly formatted OK response as a BadlyFormattedSubscriptionResponse" in {
-        val httpResponse = HttpResponse(OK, Json.obj())
-
-        val res = SubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
-
-        res.left.value mustBe BadlyFormattedSubscriptionResponse
-      }
-
-      "parse any other http status as a SubscriptionFailureResponse" in {
-        val httpResponse = HttpResponse(BAD_REQUEST)
-
-        val res = SubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
-
-        res.left.value mustBe SubscriptionFailureResponse(BAD_REQUEST)
-      }
-    }
-  }
 
   "GetSubscriptionResponseHttpReads" when {
     "read" should {

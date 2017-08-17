@@ -17,7 +17,7 @@
 package services
 
 import connectors.models.ConnectorError
-import connectors.models.subscription.SubscriptionResponse.SubscriptionSuccess
+import connectors.models.subscription.SubscriptionSuccess
 import org.scalatest.concurrent.ScalaFutures
 import services.mocks._
 import utils.TestConstants._

@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import auth.{AuthenticatedController, IncomeTaxSAUser}
 import config.BaseControllerConfig
-import connectors.models.subscription.SubscriptionResponse.SubscriptionSuccess
+import connectors.models.subscription.SubscriptionSuccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Request, Result}
 import services.{AuthService, KeystoreService, SubscriptionOrchestrationService}

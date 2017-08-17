@@ -22,7 +22,7 @@ import cats.data.EitherT
 import cats.implicits._
 import connectors.models.ConnectorError
 import connectors.models.authenticator.RefreshProfileResult
-import connectors.models.subscription.SubscriptionResponse.SubscriptionSuccess
+import connectors.models.subscription.SubscriptionSuccess
 import models.SummaryModel
 import uk.gov.hmrc.play.http.HeaderCarrier
 

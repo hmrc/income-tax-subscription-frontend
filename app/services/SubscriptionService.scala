@@ -19,11 +19,12 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
+import connectors.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.models.subscription._
 import connectors.subscription.SubscriptionConnector
 import models.SummaryModel
 import uk.gov.hmrc.play.http.HeaderCarrier
-import SubscriptionResponse._
 
 import scala.concurrent.Future
 

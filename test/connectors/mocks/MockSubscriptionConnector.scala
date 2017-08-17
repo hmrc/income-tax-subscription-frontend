@@ -17,7 +17,8 @@
 package connectors.mocks
 
 import config.AppConfig
-import connectors.models.subscription.SubscriptionResponse._
+import connectors.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.models.subscription._
 import connectors.subscription.SubscriptionConnector
 import org.mockito.ArgumentMatchers
