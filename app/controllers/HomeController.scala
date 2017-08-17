@@ -22,11 +22,10 @@ import audit.Logging
 import auth.{AuthenticatedController, IncomeTaxSAUser}
 import config.BaseControllerConfig
 import connectors.models.subscription.SubscriptionSuccess
-import connectors.models.throttling.CanAccess
 import controllers.ITSASessionKeys._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.{AuthService, KeystoreService, SubscriptionService, ThrottlingService}
+import services.{AuthService, KeystoreService, SubscriptionService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 
@@ -35,7 +34,6 @@ import scala.concurrent.Future
 @Singleton
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                override val messagesApi: MessagesApi,
-                               throttlingService: ThrottlingService,
                                subscriptionService: SubscriptionService,
                                keystoreService: KeystoreService,
                                val authService: AuthService,
@@ -69,21 +67,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
   def index: Action[AnyContent] = Authenticated.asyncForHomeController { implicit request =>
     implicit user =>
       val timestamp: String = java.time.LocalDateTime.now().toString
-      checkAlreadySubscribed(
-        baseConfig.applicationConfig.enableThrottling match {
-          case true =>
-            throttlingService.checkAccess.flatMap {
-              case Some(CanAccess) =>
-                gotoPreferences.addingToSession(StartTime -> timestamp)
-              case Some(_) =>
-                Redirect(controllers.throttling.routes.ThrottlingController.show().url)
-              case x =>
-                logging.debug(s"Unexpected response from throttling service, internal server exception")
-                new InternalServerException("HomeController.index: unexpected error calling the throttling service")
-            }
-          case false => gotoPreferences.addingToSession(StartTime -> timestamp)
-        }
-      )
+      checkAlreadySubscribed(gotoPreferences.addingToSession(StartTime -> timestamp))
   }
 
   lazy val gotoPreferences = Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())
