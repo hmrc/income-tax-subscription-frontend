@@ -24,7 +24,6 @@ import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
   val betaFeedbackUrl: String
-  val betaFeedbackUnauthenticatedUrl: String
   val analyticsToken: String
   val analyticsHost: String
   val contactFormServiceIdentifier: String
@@ -36,12 +35,10 @@ trait AppConfig {
   val ggSignInContinueUrl: String
   val alreadyEnrolledUrl: String
   val subscriptionUrl: String
-  val throttleControlUrl: String
   val authUrl: String
   val preferencesService: String
   val preferencesUrl: String
   val baseUrl: String
-  val enableThrottling: Boolean
   val ggUrl: String
   val ggSignOutUrl: String
   val btaUrl: String
@@ -93,7 +90,6 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   protected lazy val contactFrontendService = baseUrl("contact-frontend")
   protected lazy val contactHost = loadConfig("contact-frontend.host")
   override lazy val betaFeedbackUrl = s"$contextRoute/feedback"
-  override lazy val betaFeedbackUnauthenticatedUrl = betaFeedbackUrl
   override lazy val contactFormServiceIdentifier = "MTDIT"
   override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
@@ -102,14 +98,10 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   // protected microservice
   protected lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
-  override lazy val throttleControlUrl = s"$protectedMicroServiceUrl/income-tax-subscription/throttle"
 
   // Digital Preferences
   override lazy val preferencesService = baseUrl("preferences-frontend")
   override lazy val preferencesUrl = loadConfig("preferences.url")
-
-  // Enable or disable calling the throttling control in the middle service from the HomeController
-  override lazy val enableThrottling = loadConfig("feature-switch.enable-throttling").toBoolean
 
   // Enable or disable showing the guidance page or go straight to sign ups
   override lazy val showGuidance: Boolean = loadConfig("feature-switch.show-guidance").toBoolean

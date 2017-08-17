@@ -343,12 +343,6 @@ object MessageLookup {
     val line1 = "You can sign up later in the year when this service is available to you."
   }
 
-  object ThrottleLimit {
-    val title = "Service is unavailable due to maintenance"
-    val heading = title
-    val line1 = "Please try again later."
-  }
-
   object MainIncomeError {
     val title = "You can't sign up for quarterly reporting yet"
     val heading = "You can't sign up for quarterly reporting yet"

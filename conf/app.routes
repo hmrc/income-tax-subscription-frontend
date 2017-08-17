@@ -53,10 +53,6 @@ GET         /already-enrolled                 controllers.AlreadyEnrolledControl
 GET         /error/no-nino                    controllers.NoNinoController.showNoNino
 POST        /error/no-nino                    controllers.NoNinoController.submitNoNino
 
-# Throttle limit reached routes
-GET         /error/maintenance                controllers.throttling.ThrottlingController.show
-POST        /error/maintenance                controllers.throttling.ThrottlingController.submit
-
 # Main Income Error Routes
 GET         /error/main-income                controllers.MainIncomeErrorController.mainIncomeError
 

@@ -27,7 +27,6 @@ trait MockConfig extends AppConfig {
   override val notAuthorisedRedirectUrl: String = "/not-authorised"
   override val ggSignInUrl: String = "/gg/sign-in"
   override val ggSignInContinueUrl: String = "/income-tax-subscription-frontend"
-  override val betaFeedbackUnauthenticatedUrl: String = "/unauthorised"
   override val betaFeedbackUrl: String = "/feedback"
   override val contactFormServiceIdentifier: String = "MTDIT"
   override val contactFrontendPartialBaseUrl: String = "/contact/partial"
@@ -37,8 +36,6 @@ trait MockConfig extends AppConfig {
   override val preferencesUrl: String = ""
   override val baseUrl: String = ""
   override val authUrl: String = ""
-  override val throttleControlUrl: String = ""
-  override val enableThrottling: Boolean = true
   override lazy val ggUrl = ""
   override lazy val ggSignOutUrl = s"$ggUrl/gg/sign-out?continue=$ggSignInContinueUrl"
   override lazy val btaUrl = "https://www.tax.service.gov.uk/business-account"
