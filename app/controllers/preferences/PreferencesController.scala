@@ -25,6 +25,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.{AuthService, PreferencesService}
+import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -44,16 +45,18 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
   def checkPreferences: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       preferencesService.checkPaperless.map {
-        case Activated => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
-        case _ => gotoPreferences
+        case Right(Activated) => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+        case Right(_) => gotoPreferences
+        case _ => throw new InternalServerException("Could not get paperless preferences")
       }
   }
 
   def callback: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       preferencesService.checkPaperless.map {
-        case Activated => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+        case Right(Activated) => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
         case _ => Redirect(controllers.preferences.routes.PreferencesController.showGoBackToPreferences())
+        case _ => throw new InternalServerException("Could not get paperless preferences")
       }
   }
 

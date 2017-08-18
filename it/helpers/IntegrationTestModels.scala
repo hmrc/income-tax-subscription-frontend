@@ -1,10 +1,8 @@
 
 package helpers
 
-import connectors.models.preferences.PaperlessState
 import forms._
 import models._
-import play.api.http.Status.OK
 import play.api.libs.json.{JsValue, Json}
 import services.CacheConstants
 import uk.gov.hmrc.domain.Generator
@@ -76,9 +74,5 @@ object IntegrationTestModels {
   lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
 
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
-
-  def paperlessResponse(activated: Boolean): String =
-    s"""{ "${PaperlessState.Paperless}": $activated }""".stripMargin
-
 
 }

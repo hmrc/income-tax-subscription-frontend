@@ -16,8 +16,9 @@
 
 package connectors.mocks
 
+import audit.Logging
 import config.AppConfig
-import connectors.models.preferences.{Activated, Declined, PaperlessState, Unset}
+import connectors.models.preferences._
 import connectors.preferences.PreferenceFrontendConnector
 import org.mockito.ArgumentMatchers
 import play.api.http.Status._
@@ -34,15 +35,15 @@ import scala.concurrent.Future
 trait MockPreferenceFrontendConnector extends MockTrait {
   val mockPreferenceFrontendConnector = mock[PreferenceFrontendConnector]
 
-  private def mockCheckPaperless(result: Future[PaperlessState]): Unit =
+  private def mockCheckPaperless(result: Future[Either[PaperlessPreferenceError.type, PaperlessState]]): Unit =
     when(mockPreferenceFrontendConnector.checkPaperless(ArgumentMatchers.any[Request[AnyContent]]))
       .thenReturn(result)
 
-  def mockCheckPaperlessActivated(): Unit = mockCheckPaperless(Future.successful(Activated))
+  def mockCheckPaperlessActivated(): Unit = mockCheckPaperless(Future.successful(Right(Activated)))
 
-  def mockCheckPaperlessDeclined(): Unit = mockCheckPaperless(Future.successful(Declined))
+  def mockCheckPaperlessDeclined(): Unit = mockCheckPaperless(Future.successful(Right(Declined)))
 
-  def mockCheckPaperlessUnset(): Unit = mockCheckPaperless(Future.successful(Unset))
+  def mockCheckPaperlessUnset(): Unit = mockCheckPaperless(Future.successful(Right(Unset)))
 
   def mockCheckPaperlessException(): Unit = mockCheckPaperless(Future.failed(testException))
 
@@ -58,7 +59,8 @@ trait TestPreferenceFrontendConnector extends UnitTestTrait
     app.injector.instanceOf[AppConfig],
     mockHttpGet,
     mockHttpPut,
-    app.injector.instanceOf[MessagesApi]
+    app.injector.instanceOf[MessagesApi],
+    app.injector.instanceOf[Logging]
   )
 
   def setupCheckPaperless(tuple: (Int, Option[JsValue]))(implicit request: Request[AnyContent]): Unit =
@@ -69,7 +71,7 @@ trait TestPreferenceFrontendConnector extends UnitTestTrait
 
 
   private final val okResponseJson: Boolean => JsValue =
-    (paperless: Boolean) => s"""{ "${PaperlessState.Paperless}": $paperless }""".stripMargin
+    (paperless: Boolean) => s"""{ "optedIn": $paperless }""".stripMargin
 
 
   val paperlessActivated: ((Int, Option[JsValue])) = (OK, okResponseJson(true))

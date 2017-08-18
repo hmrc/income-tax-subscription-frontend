@@ -16,22 +16,22 @@
 
 package connectors.models.preferences
 
+import connectors.models.ConnectorError
 import uk.gov.hmrc.play.http.HttpResponse
 import play.api.http.Status._
+import play.api.libs.json.{JsResult, JsSuccess, JsValue, Reads}
 
 sealed trait PaperlessState
 
 object PaperlessState {
 
-  val Paperless = "optedIn"
-
-  def parseResponse(response: HttpResponse): Boolean = (response.json \ Paperless).get.as[Boolean]
-
-  def apply(response: HttpResponse): Either[(Int, String), PaperlessState] = response.status match {
-    case OK if parseResponse(response) => Right(Activated)//200 & { "paperless" : true }
-    case OK if !parseResponse(response) => Right(Declined) //200 & { "paperless" : false }
-    case PRECONDITION_FAILED => Right(Unset) //412
-    case x => Left((x, response.body))
+  implicit object PaperlessStateJsonReads extends Reads[PaperlessState] {
+    override def reads(json: JsValue): JsResult[PaperlessState] = {
+      (json \ "optedIn").validate[Boolean] map {
+        case true => Activated
+        case false => Declined
+      }
+    }
   }
 
 }
@@ -41,4 +41,6 @@ case object Activated extends PaperlessState
 case object Declined extends PaperlessState
 
 case object Unset extends PaperlessState
+
+case object PaperlessPreferenceError extends ConnectorError
 

@@ -14,6 +14,17 @@
  * limitations under the License.
  */
 
-package connectors.models
+package utils
 
-trait ConnectorError
+import connectors.models.ConnectorError
+import play.api.libs.json.JsError
+import uk.gov.hmrc.play.http.{HttpReads, HttpResponse}
+
+
+object HttpResult {
+  type HttpResult[T] = Either[HttpConnectorError, T]
+
+  case class HttpConnectorError(httpResponse: HttpResponse, jsonError: Option[JsError] = None) extends ConnectorError
+
+  trait HttpResultParser[T] extends HttpReads[HttpResult[T]]
+}
