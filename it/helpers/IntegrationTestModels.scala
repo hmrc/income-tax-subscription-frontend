@@ -77,8 +77,8 @@ object IntegrationTestModels {
 
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
 
-  def paperlessResponse(activated: Boolean): String =
-    s"""{ "${PaperlessState.Paperless}": $activated }""".stripMargin
+//  def paperlessResponse(activated: Boolean): String =
+//    s"""{ "${PaperlessState.Paperless}": $activated }""".stripMargin
 
 
 }

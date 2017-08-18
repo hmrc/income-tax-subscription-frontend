@@ -17,7 +17,7 @@
 package services.mocks
 
 import connectors.mocks.MockPreferenceFrontendConnector
-import connectors.models.preferences.{Activated, Declined, PaperlessState, Unset}
+import connectors.models.preferences._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.mvc.{AnyContent, Request}
@@ -30,15 +30,15 @@ import scala.concurrent.Future
 trait MockPreferencesService extends MockTrait {
   val mockPreferencesService = mock[PreferencesService]
 
-  private def mockCheckPaperless(result: Future[PaperlessState]): Unit =
+  private def mockCheckPaperless(result: Future[Either[PaperlessPreferenceError.type, PaperlessState]]): Unit =
     when(mockPreferencesService.checkPaperless(ArgumentMatchers.any[Request[AnyContent]]))
       .thenReturn(result)
 
-  def mockCheckPaperlessActivated(): Unit = mockCheckPaperless(Future.successful(Activated))
+  def mockCheckPaperlessActivated(): Unit = mockCheckPaperless(Future.successful(Right(Activated)))
 
-  def mockCheckPaperlessDeclined(): Unit = mockCheckPaperless(Future.successful(Declined))
+  def mockCheckPaperlessDeclined(): Unit = mockCheckPaperless(Future.successful(Right(Declined)))
 
-  def mockCheckPaperlessUnset(): Unit = mockCheckPaperless(Future.successful(Unset))
+  def mockCheckPaperlessUnset(): Unit = mockCheckPaperless(Future.successful(Right(Unset)))
 
   def mockCheckPaperlessException(): Unit = mockCheckPaperless(Future.failed(testException))
 

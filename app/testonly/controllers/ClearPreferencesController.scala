@@ -43,7 +43,7 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
         case None => throw new InternalServerException("clear preferences controller, no nino")
         case Some(nino) =>
           preferenceFrontendConnector.checkPaperless.flatMap {
-            case Activated =>
+            case Right(Activated) =>
               clearPreferencesConnector.clear(nino).map { response =>
                 response.status match {
                   case OK => Ok("Preferences cleared")

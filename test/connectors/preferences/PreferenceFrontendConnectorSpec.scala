@@ -16,7 +16,6 @@
 
 package connectors.preferences
 
-import config.ITSAHeaderCarrierForPartialsConverter._
 import connectors.mocks.TestPreferenceFrontendConnector
 import connectors.models.preferences._
 import org.scalatest.Matchers._
@@ -41,35 +40,35 @@ class PreferenceFrontendConnectorSpec extends UnitTestTrait
 
   }
 
-  "PreferenceFrontendConnector.checkPaperless" should {
-
-    "return Activated if checkPaperless returns a 200 and indicated activation is true" in {
-      val expected = Activated
-
-      setupCheckPaperless(paperlessActivated)
-      val actual = TestPreferenceFrontendConnector.checkPaperless
-
-      await(actual) shouldBe expected
-    }
-
-    "return Declined if checkPaperless returns a 200 and indicated activation is false" in {
-      val expected = Declined
-
-      setupCheckPaperless(paperlessDeclined)
-      val actual = TestPreferenceFrontendConnector.checkPaperless
-
-      await(actual) shouldBe expected
-    }
-
-    "return Unset if checkPaperless returns a 412" in {
-      val expected = Unset
-
-      setupCheckPaperless(paperlessPreconditionFailed)
-      val actual = TestPreferenceFrontendConnector.checkPaperless
-
-      await(actual) shouldBe expected
-    }
-
-  }
+//  "PreferenceFrontendConnector.checkPaperless" should {
+//
+//    "return Activated if checkPaperless returns a 200 and indicated activation is true" in {
+//      val expected = Activated
+//
+//      setupCheckPaperless(paperlessActivated)
+//      val actual = TestPreferenceFrontendConnector.checkPaperless
+//
+//      await(actual) shouldBe expected
+//    }
+//
+//    "return Declined if checkPaperless returns a 200 and indicated activation is false" in {
+//      val expected = Declined
+//
+//      setupCheckPaperless(paperlessDeclined)
+//      val actual = TestPreferenceFrontendConnector.checkPaperless
+//
+//      await(actual) shouldBe expected
+//    }
+//
+//    "return Unset if checkPaperless returns a 412" in {
+//      val expected = Unset
+//
+//      setupCheckPaperless(paperlessPreconditionFailed)
+//      val actual = TestPreferenceFrontendConnector.checkPaperless
+//
+//      await(actual) shouldBe expected
+//    }
+//
+//  }
 
 }

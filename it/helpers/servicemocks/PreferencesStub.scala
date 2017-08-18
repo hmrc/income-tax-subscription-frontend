@@ -23,6 +23,7 @@ import connectors.preferences.PreferenceFrontendConnector
 import helpers.IntegrationTestModels._
 import play.api.http.Status
 import play.api.i18n.Messages
+import play.api.libs.json.Json
 
 
 object PreferencesStub extends WireMockMethods {
@@ -31,15 +32,15 @@ object PreferencesStub extends WireMockMethods {
 
   def stubPaperlessActivated()(implicit appConfig: AppConfig, messages: Messages): Unit = {
     val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
-    val rBody = paperlessResponse(true)
-    val response = aResponse().withStatus(Status.OK).withBody(rBody)
+    val rBody = Json.obj("optedIn" -> true)
+    val response = aResponse().withStatus(Status.OK).withBody(rBody.toString)
     stubFor(mapping.willReturn(response))
   }
 
   def stubPaperlessInactive()(implicit appConfig: AppConfig, messages: Messages): Unit = {
     val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
-    val rBody = paperlessResponse(false)
-    val response = aResponse().withStatus(Status.OK).withBody(rBody)
+    val rBody = Json.obj("optedIn" -> false)
+    val response = aResponse().withStatus(Status.OK).withBody(rBody.toString)
     stubFor(mapping.willReturn(response))
   }
 

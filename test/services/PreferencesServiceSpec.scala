@@ -17,6 +17,7 @@
 package services
 
 import connectors.models.preferences.{Activated, Declined, Unset}
+import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -24,7 +25,7 @@ import services.mocks.TestPreferencesService
 import utils.TestConstants._
 import utils.UnitTestTrait
 
-class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService {
+class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService with EitherValues {
 
   implicit val fakeRequest = FakeRequest()
 
@@ -43,19 +44,19 @@ class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService {
     "return Activated if checkPaperless returns a 200 and indicated activation is true" in {
       mockCheckPaperlessActivated()
 
-      await(TestPreferencesService.checkPaperless) shouldBe Activated
+      await(TestPreferencesService.checkPaperless).right.value shouldBe Activated
     }
 
     "return Declined if checkPaperless returns a 200 and indicated activation is false" in {
       mockCheckPaperlessDeclined()
 
-      await(TestPreferencesService.checkPaperless) shouldBe Declined
+      await(TestPreferencesService.checkPaperless).right.value shouldBe Declined
     }
 
     "return Unset if checkPaperless returns a 412" in {
       mockCheckPaperlessUnset()
 
-      await(TestPreferencesService.checkPaperless) shouldBe Unset
+      await(TestPreferencesService.checkPaperless).right.value shouldBe Unset
     }
 
     "return a failed future in checkPaperless returns a failed future" in {
