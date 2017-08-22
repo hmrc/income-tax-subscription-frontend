@@ -3,11 +3,11 @@ import uk.gov.hmrc.SbtAutoBuildPlugin
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
 
-object FrontendBuild extends Build with MicroService {
+object FrontendBuild {
 
   val appName = "income-tax-subscription-frontend"
 
-  override lazy val appDependencies: Seq[ModuleID] = AppDependencies()
+  lazy val appDependencies: Seq[ModuleID] = AppDependencies()
 }
 
 private object AppDependencies {
