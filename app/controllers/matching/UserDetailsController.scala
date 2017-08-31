@@ -28,7 +28,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.{AuthService, KeystoreService, UserLockoutService}
-import uk.gov.hmrc.play.http.InternalServerException
+import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
 
@@ -48,7 +48,8 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
     )
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
-    (lockOutService.getLockoutStatus(user.arn.get) flatMap {
+    val bearerToken = implicitly[HeaderCarrier].token.get
+    (lockOutService.getLockoutStatus(bearerToken.value) flatMap {
       case Right(NotLockedOut) => f
       case Right(_) => Future.successful(Redirect(controllers.matching.routes.UserDetailsLockoutController.show().url))
     }).recover { case e =>
@@ -60,7 +61,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
     implicit user =>
       handleLockOut {
         keystoreService.fetchUserDetails() map {
-          clientDetails => Ok(view(UserDetailsForm.userDetailsForm.form.fill(clientDetails), isEditMode = isEditMode))
+          userDetails => Ok(view(UserDetailsForm.userDetailsForm.form.fill(userDetails), isEditMode = isEditMode))
         }
       }
   }

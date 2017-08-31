@@ -22,7 +22,6 @@ import javax.inject._
 import models._
 import models.matching.UserDetailsModel
 import play.api.libs.json.{Reads, Writes}
-import services.CacheConstants.ClientDetails
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse, InternalServerException}
 

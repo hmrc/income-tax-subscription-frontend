@@ -12,6 +12,10 @@ GET         /logout                           controllers.SignOutController.sign
 GET         /user-details                     controllers.matching.UserDetailsController.show(editMode: Boolean ?= false)
 POST        /user-details                     controllers.matching.UserDetailsController.submit(editMode: Boolean ?= false)
 
+# User Lockout
+GET         /error/lockout                    controllers.matching.UserDetailsLockoutController.show
+POST        /error/lockout                    controllers.matching.UserDetailsLockoutController.submit
+
 # Preferences routes
 GET         /preferences                      controllers.preferences.PreferencesController.checkPreferences
 GET         /callback                         controllers.preferences.PreferencesController.callback

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import models.agent._
+@import models.matching._
 @import forms.UserDetailsForm._
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
@@ -56,7 +56,7 @@
                 field = userDetailsForm(userNino),
                 label = Messages("user-details.field_3"),
                 labelClass = "form-label-bold",
-                formHint = Seq(Messages("user_details.formhint.1.line_1")),
+                formHint = Option(Messages("user_details.formhint.1.line_1")),
                 parentForm = userDetailsForm
             )
             </div>
