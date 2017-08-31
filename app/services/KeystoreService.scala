@@ -20,11 +20,13 @@ package services
 import javax.inject._
 
 import models._
+import models.matching.UserDetailsModel
 import play.api.libs.json.{Reads, Writes}
+import services.CacheConstants.ClientDetails
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse, InternalServerException}
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
@@ -97,5 +99,13 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveAccountingPeriodPrior(accountingPeriodPrior: AccountingPeriodPriorModel)
                                (implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodPriorModel]): FC =
     save[AccountingPeriodPriorModel](AccountingPeriodPrior, accountingPeriodPrior)
+
+  def fetchUserDetails()(implicit hc: HeaderCarrier, reads: Reads[UserDetailsModel]): FO[UserDetailsModel] =
+    fetch[UserDetailsModel](UserDetails)
+
+  def saveUserDetails(userDetails: UserDetailsModel)(implicit hc: HeaderCarrier, reads: Reads[UserDetailsModel]): FC =
+    save[UserDetailsModel](UserDetails, userDetails)
+
+
 }
 
