@@ -20,8 +20,8 @@ import javax.inject.{Inject, Singleton}
 
 import auth.{AuthenticatedController, IncomeTaxSAUser}
 import config.BaseControllerConfig
-import connectors.models.matching.{LockedOut, NotLockedOut}
-import forms.{UserDetailsForm, _}
+import connectors.models.matching.NotLockedOut
+import forms.UserDetailsForm
 import models.matching.UserDetailsModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -88,7 +88,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
 
             for {
               _ <- persist
-            } yield Redirect(routes.ConfirmClientController.show())
+            } yield Redirect(routes.ConfirmUserController.show())
           }
         )
       }

@@ -16,9 +16,12 @@
 
 package utils
 
+import java.time.OffsetDateTime
+
 import common.Constants.GovernmentGateway._
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
 import connectors.models.gg._
+import connectors.models.matching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import connectors.models.subscription.{Both, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
 import models.DateModel
 import play.api.http.Status._
@@ -29,10 +32,13 @@ object TestConstants {
   * this nino is a constant, if you need a fresh one use TestModels.newNino
   */
   lazy val testNino: String = new Generator().nextNino.nino
+  lazy val testToken: String = "token"
   lazy val testMTDID = "XE0001234567890"
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
+  lazy val testLockoutResponse = LockedOut(testNino, OffsetDateTime.now())
+
 
   val testUrl = "/"
 
@@ -77,4 +83,8 @@ object TestConstants {
   val testKnownFactsSuccess = Right(KnownFactsSuccess)
 
   val testKnownFactsFailure = Left(KnownFactsFailure(testErrorMessage))
+
+  val testMatchSuccess = Right(UserMatchSuccessResponseModel)
+
+  val testMatchFailure = Left(UserMatchFailureResponseModel)
 }

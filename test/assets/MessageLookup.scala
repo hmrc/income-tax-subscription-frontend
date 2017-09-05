@@ -209,6 +209,43 @@ object MessageLookup {
     val heading = "You've already signed up for quarterly reporting"
   }
 
+  object UserDetailsError {
+    val title = "User match error"
+    val heading = "We couldn't confirm your details"
+    val line1 = "The details you've entered are not on our system."
+  }
+
+  object UserDetailsLockout {
+    val title = "You've been locked out"
+    val heading = "You've been locked out"
+
+    def line1(testTime: String) = s"To sign your client up for quarterly reporting, you'll have to try again in $testTime."
+  }
+
+  object UserDetails {
+    val title = "Enter your details"
+    val heading = "Enter your details"
+    val line1 = "We will attempt to match these details against information we currently hold."
+    val field1 = "First name"
+    val field2 = "Last name"
+    val field3 = "National Insurance number"
+    val field4 = "Date of birth"
+    val formhint1_line1 = "For example, 'QQ 12 34 56 C'."
+    val formhint2 = "For example, 10 12 1990"
+  }
+
+  object ConfirmUser {
+    val title = "Confirm your details"
+    val heading = "Check your answers"
+    val heading_hidden = "before looking up your client"
+    val h2 = "You've told us"
+    val firstName = "First name"
+    val lastName = "Last name"
+    val nino = "National Insurance number"
+    val dob = "Date of birth"
+  }
+
+
   object Confirmation {
     val title = "Confirmation page"
     val heading = "Sign up complete"

@@ -17,6 +17,7 @@
 package services.mocks
 
 import models._
+import models.matching.UserDetailsModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.KeystoreService
@@ -63,6 +64,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
+                                         fetchUserDetails: MFO[UserDetailsModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
@@ -74,6 +76,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[NotEligibleModel](NotEligible, fetchNotEligible)
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
+    mockFetchFromKeyStore[UserDetailsModel](UserDetails, fetchUserDetails)
     mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
 
     setupMockKeystoreSaveFunctions()
@@ -101,6 +104,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveSubscriptionId: Option[Int] = None,
                                       fetchAccountingPeriodPrior: Option[Int] = None,
                                       saveAccountingPeriodPrior: Option[Int] = None,
+                                      fetchUserDetails: Option[Int] = None,
+                                      saveUserDetails: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
@@ -122,6 +127,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(MtditId, saveSubscriptionId)
     verifyKeystoreFetch(AccountingPeriodPrior, fetchAccountingPeriodPrior)
     verifyKeystoreSave(AccountingPeriodPrior, saveAccountingPeriodPrior)
+    verifyKeystoreFetch(UserDetails, fetchUserDetails)
+    verifyKeystoreSave(UserDetails, saveUserDetails)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any()))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any()))

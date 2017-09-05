@@ -17,8 +17,10 @@
 package utils
 
 
+import connectors.models.matching.UserMatchSuccessResponseModel
 import forms._
 import models._
+import models.matching.UserDetailsModel
 import play.api.libs.json.{JsValue, Json}
 import services.CacheConstants
 import uk.gov.hmrc.domain.Generator
@@ -111,6 +113,10 @@ object TestModels extends Implicits {
   lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
 
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
+
+  lazy val testUserDetails = UserDetailsModel("Test", "User", TestConstants.testNino, testStartDate)
+
+  lazy val testMatchSuccessModel  = UserMatchSuccessResponseModel("test", "user", "000", newNino, "abc")
 
   val testSummaryData = SummaryModel(
     incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),

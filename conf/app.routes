@@ -16,6 +16,14 @@ POST        /user-details                     controllers.matching.UserDetailsCo
 GET         /error/lockout                    controllers.matching.UserDetailsLockoutController.show
 POST        /error/lockout                    controllers.matching.UserDetailsLockoutController.submit
 
+# Confirm User
+GET         /confirm-user                     controllers.matching.ConfirmUserController.show()
+POST        /confirm-user                     controllers.matching.ConfirmUserController.submit()
+
+# User Details Error
+GET         /error/client-details             controllers.matching.UserDetailsErrorController.show()
+POST        /error/client-details             controllers.matching.UserDetailsErrorController.submit()
+
 # Preferences routes
 GET         /preferences                      controllers.preferences.PreferencesController.checkPreferences
 GET         /callback                         controllers.preferences.PreferencesController.callback
