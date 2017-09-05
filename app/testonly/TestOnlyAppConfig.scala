@@ -38,6 +38,8 @@ class TestOnlyAppConfig @Inject()(app: Application) extends FrontendAppConfig(ap
 
   lazy val taxEnrolmentsURL: String = baseUrl("tax-enrolments")
 
+  lazy val matchingStubsURL: String = baseUrl("matching-stubs")
+
 }
 
 // $COVERAGE-ON$
