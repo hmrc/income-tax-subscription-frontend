@@ -22,6 +22,8 @@ object Constants {
   val mtdItsaEnrolmentIdentifierKey = "MTDITID"
   val ninoEnrolmentName = "HMRC-NI"
   val ninoEnrolmentIdentifierKey = "NINO"
+  val utrEnrolmentName = "IR-SA"
+  val utrEnrolmentIdentifierKey = "UTR"
 
   object GovernmentGateway {
     val MTDITID = "MTDITID"

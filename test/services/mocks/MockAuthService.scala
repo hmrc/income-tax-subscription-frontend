@@ -37,7 +37,7 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
     super.beforeEach()
     reset(mockAuthService)
 
-    mockNinoRetrieval()
+    mockNinoAndUtrRetrieval()
   }
 
   def mockAuthSuccess(): Unit = {
@@ -57,6 +57,10 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
         })
   }
 
+  def mockNinoAndUtrRetrieval(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment, utrEnrolment)), Some(AffinityGroup.Individual)))
+
+  def mockUtrRetrieval(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(utrEnrolment)), Some(AffinityGroup.Individual)))
+
   def mockNinoRetrieval(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment)), Some(AffinityGroup.Individual)))
 
   def mockNinoRetrievalWithOrg(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment)), Some(AffinityGroup.Organisation)))
@@ -75,7 +79,7 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
         }
       })
 
-  def mockAuthEnrolled(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment, mtdidEnrolment)), Some(AffinityGroup.Individual)))
+  def mockAuthEnrolled(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment, utrEnrolment, mtdidEnrolment)), Some(AffinityGroup.Individual)))
 
   val ninoEnrolment = Enrolment(
     Constants.ninoEnrolmentName,
@@ -87,6 +91,13 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
   val mtdidEnrolment = Enrolment(
     Constants.mtdItsaEnrolmentName,
     Seq(EnrolmentIdentifier(Constants.mtdItsaEnrolmentIdentifierKey, TestConstants.testMTDID)),
+    "Activated",
+    L200
+  )
+
+  val utrEnrolment = Enrolment(
+    Constants.utrEnrolmentName,
+    Seq(EnrolmentIdentifier(Constants.utrEnrolmentIdentifierKey, TestConstants.testUtr)),
     "Activated",
     L200
   )

@@ -24,6 +24,7 @@ import uk.gov.hmrc.domain.Generator
 
 object IntegrationTestConstants {
   lazy val testNino: String = new Generator().nextNino.nino
+  lazy val testUtr: String = new Generator().nextAtedUtr.utr
   lazy val testMTDID = "XE0001234567890"
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
@@ -43,7 +44,7 @@ object IntegrationTestConstants {
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val errorOtherIncomeURI = s"$baseURI/error/other-income"
   val preferencesURI = s"$baseURI/preferences"
-  val choosePaperlessURI =s"/paperless/choose?returnUrl"
+  val choosePaperlessURI = s"/paperless/choose?returnUrl"
   val errorPreferencesURI = s"$baseURI/paperless-error"
   val accountingPeriodPriorURI = s"$baseURI/business/accounting-period-prior"
   val registerNextAccountingPeriodURI = s"$baseURI/business/register-next-accounting-period"
@@ -79,4 +80,5 @@ object IntegrationTestConstants {
            "externalId":"$externalId"
         }""")
   }
+
 }

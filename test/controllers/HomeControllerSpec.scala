@@ -24,7 +24,7 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockKeystoreService, MockSubscriptionService}
+import services.mocks.{MockCitizenDetailsService, MockKeystoreService, MockSubscriptionService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.TestConstants
 
@@ -33,7 +33,8 @@ import scala.concurrent.Future
 
 class HomeControllerSpec extends ControllerBaseSpec
   with MockSubscriptionService
-  with MockKeystoreService {
+  with MockKeystoreService
+  with MockCitizenDetailsService {
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -54,6 +55,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockSubscriptionService,
     MockKeystoreService,
     mockAuthService,
+    mockCitizenDetailsService,
     app.injector.instanceOf[Logging]
   )
 
