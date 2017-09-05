@@ -23,7 +23,7 @@ import models.matching.UserDetailsModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.JsonUtils._
 import utils.TestConstants.testException
@@ -32,7 +32,7 @@ import utils.{MockTrait, TestConstants, UnitTestTrait}
 
 import scala.concurrent.Future
 
-trait TestAuthenticationConnector extends UnitTestTrait with MockHttp {
+trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
 
   object TestAuthenticatorConnector extends AuthenticatorConnector(
     appConfig, mockHttpPost, app.injector.instanceOf[Logging])
@@ -50,14 +50,7 @@ trait TestAuthenticationConnector extends UnitTestTrait with MockHttp {
     (setupMockMatchClient(None) _).tupled
 
   def matchClientMatched(nino: String = TestConstants.testNino): (Int, JsValue) = (OK,
-    s"""{
-       | "firstName" : "",
-       | "lastName" : "",
-       | "dateOfBirth" : "",
-       | "postCode" : "",
-       | "nino" : "$nino",
-       | "saUtr" : ""
-       |}""".stripMargin: JsValue)
+    UserMatchSuccessResponseModel.format.writes(testMatchSuccessModel.copy(nino = nino)))
 
   val matchClientNoMatch: (Int, JsValue) = (UNAUTHORIZED,
     """{
@@ -73,15 +66,15 @@ trait TestAuthenticationConnector extends UnitTestTrait with MockHttp {
     """{}""".stripMargin: JsValue)
 }
 
-trait MockAuthenticationConnector extends MockTrait {
+trait MockAuthenticatiorConnector extends MockTrait {
 
-  val mockAuthenticationConnector = mock[AuthenticatorConnector]
+  val mockAuthenticatiorConnector = mock[AuthenticatorConnector]
 
 
   private def mockUserMatch(userDetails: UserDetailsModel)
                            (response: Future[Either[UserMatchFailureResponseModel, Option[UserMatchSuccessResponseModel]]]): Unit =
     when(
-      mockAuthenticationConnector.matchClient(
+      mockAuthenticatiorConnector.matchClient(
         ArgumentMatchers.eq(userDetails)
       )(
         ArgumentMatchers.any[HeaderCarrier])
@@ -90,12 +83,19 @@ trait MockAuthenticationConnector extends MockTrait {
   def mockUserMatchSuccess(userDetails: UserDetailsModel): Unit = {
     mockUserMatch(userDetails)(Future.successful(Right(Some(testMatchSuccessModel))))
   }
+
   def mockUserMatchNoUtr(userDetails: UserDetailsModel): Unit = {
     mockUserMatch(userDetails)(Future.successful(Right(Some(testMatchNoUtrModel))))
   }
-  def mockUserMatchFailure(userDetails: UserDetailsModel): Unit = {
+
+  def mockUserMatchNotFound(userDetails: UserDetailsModel): Unit = {
     mockUserMatch(userDetails)(Future.successful(None))
   }
+
+  def mockUserMatchFailure(userDetails: UserDetailsModel): Unit = {
+    mockUserMatch(userDetails)(Future.successful(Left(UserMatchFailureResponseModel(UserMatchFailureResponseModel.unexpectedError))))
+  }
+
   def mockUserMatchException(userDetails: UserDetailsModel): Unit =
     mockUserMatch(userDetails)(Future.failed(testException))
 }

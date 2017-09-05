@@ -16,48 +16,46 @@
 
 package services
 
-import connectors.models.matching.UserMatchSuccessResponseModel
+import connectors.models.matching.UserMatchFailureResponseModel
 import play.api.test.Helpers._
 import services.mocks.TestUserMatchingService
-import uk.gov.hmrc.play.http.InternalServerException
-import utils.TestConstants
 import utils.TestModels._
 
 class UserMatchingServiceSpec extends TestUserMatchingService {
 
-  "UserMatchingService" should {
+  "ClientMatchingService" should {
 
-    "return the nino if authenticator response with ok" in {
-      setupMatchClient(matchClientMatched(TestConstants.testNino))
+    "return the user with nino and utr if authenticator response with ok with both ids" in {
+      mockUserMatchSuccess(testUserDetails)
       val result = TestUserMatchingService.matchClient(testUserDetails)
       await(result) mustBe Right(Some(testMatchSuccessModel))
     }
 
+    "return the nino if authenticator response with ok with only nino" in {
+      mockUserMatchNoUtr(testUserDetails)
+      val result = TestUserMatchingService.matchClient(testUserDetails)
+      await(result) mustBe Right(Some(testMatchNoUtrModel))
+    }
+
     "return None if authenticator response with Unauthorized but with a matching error message" in {
-      setupMatchClient(matchClientNoMatch)
+      mockUserMatchNotFound(testUserDetails)
       val result = TestUserMatchingService.matchClient(testUserDetails)
       await(result) mustBe Right(None)
     }
 
-    "throw InternalServerException if authenticator response with Unauthorized but with a server error message" in {
-      setupMatchClient(matchClientUnexpectedFailure)
+    "return Left(error) if authenticator response with an error status" in {
+      mockUserMatchFailure(testUserDetails)
       val result = TestUserMatchingService.matchClient(testUserDetails)
-
-      val e = intercept[InternalServerException] {
-        await(result)
-      }
-      e.message must include (s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=$UNAUTHORIZED")
+      await(result) mustBe Left(UserMatchFailureResponseModel(UserMatchFailureResponseModel.unexpectedError))
     }
 
     "throw InternalServerException if authenticator response with an unexpected status" in {
-      setupMatchClient(matchClientUnexpectedFailure)
+      mockUserMatchException(testUserDetails)
       val result = TestUserMatchingService.matchClient(testUserDetails)
 
-      val e = intercept[InternalServerException] {
+      val e = intercept[Exception] {
         await(result)
       }
-      e.message must include (s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=")
-      e.message must not include s"UNAUTHORIZED"
     }
   }
 
