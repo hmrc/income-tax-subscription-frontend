@@ -52,6 +52,7 @@ trait AppConfig {
   val ggAuthenticationURL: String
   val identityVerificationURL: String
   val contactHmrcLink: String
+  val citizenDetailsURL: String
 }
 
 @Singleton
@@ -121,5 +122,8 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val identityVerificationURL: String = loadConfig("identity-verification-frontend.url")
 
   override lazy val contactHmrcLink: String = loadConfig("contact-hmrc.url")
+
+  override lazy val citizenDetailsURL: String = loadConfig("citizen-details.url")
+
 }
 
