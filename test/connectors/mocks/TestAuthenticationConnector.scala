@@ -18,14 +18,21 @@ package connectors.mocks
 
 import audit.Logging
 import connectors.matching.AuthenticatorConnector
-import connectors.models.matching.UserMatchRequestModel
+import connectors.models.matching.{UserMatchFailureResponseModel, UserMatchRequestModel, UserMatchSuccessResponseModel}
 import models.matching.UserDetailsModel
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.when
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
 import play.api.libs.json.JsValue
+import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.JsonUtils._
-import utils.{TestConstants, UnitTestTrait}
+import utils.TestConstants.testException
+import utils.TestModels._
+import utils.{MockTrait, TestConstants, UnitTestTrait}
 
-trait MockAuthenticatorConnector extends UnitTestTrait with MockHttp {
+import scala.concurrent.Future
+
+trait TestAuthenticationConnector extends UnitTestTrait with MockHttp {
 
   object TestAuthenticatorConnector extends AuthenticatorConnector(
     appConfig, mockHttpPost, app.injector.instanceOf[Logging])
@@ -64,4 +71,31 @@ trait MockAuthenticatorConnector extends UnitTestTrait with MockHttp {
 
   val matchClientUnexpectedStatus: (Int, JsValue) = (NOT_FOUND,
     """{}""".stripMargin: JsValue)
+}
+
+trait MockAuthenticationConnector extends MockTrait {
+
+  val mockAuthenticationConnector = mock[AuthenticatorConnector]
+
+
+  private def mockUserMatch(userDetails: UserDetailsModel)
+                           (response: Future[Either[UserMatchFailureResponseModel, Option[UserMatchSuccessResponseModel]]]): Unit =
+    when(
+      mockAuthenticationConnector.matchClient(
+        ArgumentMatchers.eq(userDetails)
+      )(
+        ArgumentMatchers.any[HeaderCarrier])
+    ).thenReturn(response)
+
+  def mockUserMatchSuccess(userDetails: UserDetailsModel): Unit = {
+    mockUserMatch(userDetails)(Future.successful(Right(Some(testMatchSuccessModel))))
+  }
+  def mockUserMatchNoUtr(userDetails: UserDetailsModel): Unit = {
+    mockUserMatch(userDetails)(Future.successful(Right(Some(testMatchNoUtrModel))))
+  }
+  def mockUserMatchFailure(userDetails: UserDetailsModel): Unit = {
+    mockUserMatch(userDetails)(Future.successful(None))
+  }
+  def mockUserMatchException(userDetails: UserDetailsModel): Unit =
+    mockUserMatch(userDetails)(Future.failed(testException))
 }

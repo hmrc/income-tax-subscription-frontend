@@ -16,7 +16,7 @@
 
 package services.mocks
 
-import connectors.mocks.MockAuthenticatorConnector
+import connectors.mocks.TestAuthenticationConnector
 import connectors.models.matching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import models.matching.UserDetailsModel
 import org.mockito.ArgumentMatchers
@@ -29,7 +29,7 @@ import utils.TestModels._
 
 import scala.concurrent.Future
 
-trait TestUserMatchingService extends MockAuthenticatorConnector {
+trait TestUserMatchingService extends TestAuthenticationConnector {
 
   object TestUserMatchingService extends UserMatchingService(appConfig, TestAuthenticatorConnector)
 
@@ -48,12 +48,14 @@ trait MockUserMatchingService extends MockTrait{
     ).thenReturn(response)
 
   def mockUserMatchSuccess(userDetails: UserDetailsModel): Unit = {
-    mockUserMatch(userDetails)(Future.successful(Option(testMatchSuccessModel)))
+    mockUserMatch(userDetails)(Future.successful(Right(Some(testMatchSuccessModel))))
   }
   def mockUserMatchFailure(userDetails: UserDetailsModel): Unit = {
     mockUserMatch(userDetails)(Future.successful(None))
   }
-
+  def mockUserMatchNoUtr(userDetails: UserDetailsModel): Unit = {
+    mockUserMatch(userDetails)(Future.successful(Right(Some(testMatchNoUtrModel))))
+  }
   def mockUserMatchException(userDetails: UserDetailsModel): Unit =
     mockUserMatch(userDetails)(Future.failed(testException))
 }

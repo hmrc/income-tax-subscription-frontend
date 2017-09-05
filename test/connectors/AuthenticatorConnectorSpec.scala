@@ -16,30 +16,30 @@
 
 package connectors
 
-import connectors.mocks.MockAuthenticatorConnector
+import connectors.mocks.MockAuthenticationConnector
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.TestModels._
 
-class AuthenticatorConnectorSpec extends MockAuthenticatorConnector {
+class AuthenticatorConnectorSpec extends MockAuthenticationConnector {
 
   "AuthenticatorConnector" should {
 
     "return true if authenticator response with ok" in {
-      setupMockMatchClient(testUserDetails)(matchClientMatched(testUserDetails.nino))
-      val result = TestAuthenticatorConnector.matchClient(testUserDetails)
-      await(result) mustBe Some(testUserDetails.nino)
+      mockUserMatchSuccess(testUserDetails)
+      val result = mockAuthenticationConnector.matchClient(testUserDetails)
+      await(result) mustBe Right(Some(testMatchSuccessModel))
     }
 
     "return false if authenticator response with Unauthorized but with a matching error message" in {
-      setupMockMatchClient(testUserDetails)(matchClientNoMatch)
-      val result = TestAuthenticatorConnector.matchClient(testUserDetails)
-      await(result) mustBe None
+      mockUserMatchFailure(testUserDetails)
+      val result = mockAuthenticationConnector.matchClient(testUserDetails)
+      await(result) mustBe Right(None)
     }
 
     "throw InternalServerException if authenticator response with Unauthorized but with a server error message" in {
-      setupMockMatchClient(testUserDetails)(matchClientUnexpectedFailure)
-      val result = TestAuthenticatorConnector.matchClient(testUserDetails)
+      mockUserMatchException(testUserDetails)
+      val result = mockAuthenticationConnector.matchClient(testUserDetails)
 
       val e = intercept[InternalServerException] {
         await(result)
@@ -48,8 +48,8 @@ class AuthenticatorConnectorSpec extends MockAuthenticatorConnector {
     }
 
     "throw InternalServerException if authenticator response with an unexpected status" in {
-      setupMockMatchClient(testUserDetails)(matchClientUnexpectedFailure)
-      val result = TestAuthenticatorConnector.matchClient(testUserDetails)
+      mockUserMatchException(testUserDetails)
+      val result = mockAuthenticationConnector.matchClient(testUserDetails)
 
       val e = intercept[InternalServerException] {
         await(result)

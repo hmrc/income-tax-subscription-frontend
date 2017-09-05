@@ -16,6 +16,7 @@
 
 package services
 
+import connectors.models.matching.UserMatchSuccessResponseModel
 import play.api.test.Helpers._
 import services.mocks.TestUserMatchingService
 import uk.gov.hmrc.play.http.InternalServerException
@@ -29,13 +30,13 @@ class UserMatchingServiceSpec extends TestUserMatchingService {
     "return the nino if authenticator response with ok" in {
       setupMatchClient(matchClientMatched(TestConstants.testNino))
       val result = TestUserMatchingService.matchClient(testUserDetails)
-      await(result) mustBe Some(TestConstants.testNino)
+      await(result) mustBe Right(Some(testMatchSuccessModel))
     }
 
     "return None if authenticator response with Unauthorized but with a matching error message" in {
       setupMatchClient(matchClientNoMatch)
       val result = TestUserMatchingService.matchClient(testUserDetails)
-      await(result) mustBe None
+      await(result) mustBe Right(None)
     }
 
     "throw InternalServerException if authenticator response with Unauthorized but with a server error message" in {

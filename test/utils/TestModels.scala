@@ -25,6 +25,7 @@ import play.api.libs.json.{JsValue, Json}
 import services.CacheConstants
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.TestConstants._
 
 
 object TestModels extends Implicits {
@@ -116,7 +117,9 @@ object TestModels extends Implicits {
 
   lazy val testUserDetails = UserDetailsModel("Test", "User", TestConstants.testNino, testStartDate)
 
-  lazy val testMatchSuccessModel  = UserMatchSuccessResponseModel("test", "user", "000", newNino, "abc")
+  lazy val testMatchSuccessModel  = UserMatchSuccessResponseModel("test", "user", "000", testNino, Some("abc"))
+
+  lazy val testMatchNoUtrModel  = UserMatchSuccessResponseModel("test", "user", "000", testNino, None)
 
   val testSummaryData = SummaryModel(
     incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),
