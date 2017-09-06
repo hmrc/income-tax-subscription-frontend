@@ -27,7 +27,7 @@ object CitizenDetailsResponseHttpParser {
   implicit object GetCitizenDetailsHttpReads extends HttpReads[GetCitizenDetailsResponse] {
     override def read(method: String, url: String, response: HttpResponse): GetCitizenDetailsResponse = {
       response.status match {
-        case OK => Right(response.json.asOpt[CitizenDetailsSuccess])
+        case OK => Right(Some(response.json.as[CitizenDetailsSuccess]))
         case NOT_FOUND => Right(None)
         case status => Left(CitizenDetailsFailureResponse(status))
       }

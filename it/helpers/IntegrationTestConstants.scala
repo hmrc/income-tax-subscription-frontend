@@ -34,6 +34,7 @@ object IntegrationTestConstants {
   val dateOfBirth = DateModel("01", "01", "1980")
 
   val baseURI = "/report-quarterly/income-and-expenses/sign-up"
+  val noNinoURI = "/error/no-nino"
   val userDetailsURI = "/user-details"
   val confirmDetailsURI = "/confirm-details"
   val confirmationURI = s"$baseURI/confirmation"

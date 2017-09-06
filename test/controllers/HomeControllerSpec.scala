@@ -132,6 +132,8 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe controllers.routes.NoNinoController.showNoNino().url
+
+        await(result).session(fakeRequest).get(ITSASessionKeys.UTR) mustBe None
       }
     }
 
@@ -146,6 +148,8 @@ class HomeControllerSpec extends ControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+
+        await(result).session(fakeRequest).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
       }
     }
 
