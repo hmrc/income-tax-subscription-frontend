@@ -21,6 +21,7 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import auth.{AuthenticatedController, IncomeTaxSAUser}
 import config.BaseControllerConfig
+import connectors.models.CitizenDetailsSuccess
 import connectors.models.subscription.SubscriptionSuccess
 import controllers.ITSASessionKeys._
 import play.api.i18n.MessagesApi
@@ -54,26 +55,30 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
     }
   }
 
-  private def checkAuth(default: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] = {
+  private def checkCID(defaultAction: Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] = {
 
-    lazy val error = Future.failed(new InternalServerException(s"HomeController.checkAuth: unexpected error calling the citizen details service"))
+    lazy val error = Future.failed(new InternalServerException("HomeController.checkCID: unexpected error calling the citizen details service"))
+
+    // TODO this condition will be changed to redirect to the registration service when it becomes available,
+    // but for now the content on the no nino page will suffice
+    lazy val gotoRegistration = Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
+
+    // TODO change this link to point to the user lookup routes
+    lazy val userLookUp = Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
 
     (user.nino, user.utr) match {
-      case (Some(nino), None) => citizenDetailsService.lookupUtr(nino).flatMap {
-        case Right(optUtr) =>
-          optUtr match {
-            case Some(utr) =>
-              Future.successful(Redirect(controllers.routes.IncomeSourceController.showIncomeSource()))
-            case _ =>
-              // TODO this condition will be changed to redirect to the registration service when it becomes available,
-              // but for now the content on the no nino page will suffice
-              Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
-          }
-          Future.failed(new InternalServerException(s"HomeController.index: unexpected error calling the subscription service"))
-        case _ =>
-          error
-      }.recoverWith { case _ => error }
-      case _ => default
+      case (Some(_), Some(_)) => defaultAction
+      case (Some(nino), None) =>
+        citizenDetailsService.lookupUtr(nino).flatMap {
+          case Right(optResult) =>
+            optResult match {
+              case Some(CitizenDetailsSuccess(optUtr@Some(utr))) => defaultAction.flatMap(_.addingToSession(ITSASessionKeys.UTR -> utr))
+              case Some(CitizenDetailsSuccess(None)) => gotoRegistration
+              case _ => error
+            }
+          case _ => gotoRegistration
+        }.recoverWith { case _ => error }
+      case (None, _) => userLookUp
     }
   }
 
@@ -91,7 +96,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
   def index: Action[AnyContent] = Authenticated.asyncForHomeController { implicit request =>
     implicit user =>
       val timestamp: String = java.time.LocalDateTime.now().toString
-      checkAuth(checkAlreadySubscribed(gotoPreferences.addingToSession(StartTime -> timestamp)))
+      checkCID(checkAlreadySubscribed(gotoPreferences.addingToSession(StartTime -> timestamp)))
   }
 
   lazy val gotoPreferences = Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())

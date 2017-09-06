@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait TestCitizenDetailsService extends MockCitizenDetailsConnector {
 
-  object TestCitizenDetailsService extends CitizenDetailsService(mockCitizenDetailsConnector)
+  object TestCitizenDetailsService extends CitizenDetailsService(appConfig, mockCitizenDetailsConnector)
 
 }
 

@@ -54,6 +54,9 @@ trait MockConfig extends AppConfig {
   override val contactHmrcLink: String = "https://www.gov.uk/contact-hmrc"
 
   override val citizenDetailsURL: String = ""
+
+  override val hasEnabledTestOnlyRoutes: Boolean = false
+
 }
 
 object MockConfig extends MockConfig
