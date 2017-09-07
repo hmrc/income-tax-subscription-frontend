@@ -89,6 +89,18 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     }
   }
 
+  "Calling the submit action of the confirmUserController with a locked out user" should {
+    def callSubmit(): Future[Result] = TestConfirmUserController.submit()(request)
+
+    "return the user details page" in {
+      setupMockLockedOut(token)
+
+      val result = callSubmit()
+
+      redirectLocation(result) must contain(controllers.matching.routes.UserDetailsLockoutController.show().url)
+    }
+  }
+
   "Calling the submit action of the confirmUserController with no keystore data" should {
     def callSubmit(): Future[Result] = TestConfirmUserController.submit()(request)
 

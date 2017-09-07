@@ -64,7 +64,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       handleLockOut {
         keystoreService.fetchUserDetails() map {
           case Some(userDetails) => Ok(view(userDetails))
-          case _ => Redirect(routes.UserDetailsController.show())
+          case _ => Redirect(routes.UserDetailsLockoutController.show())
         }
       }
   }
