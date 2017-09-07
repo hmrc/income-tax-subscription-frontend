@@ -19,6 +19,7 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
+import connectors.httpparsers.MatchUserHttpParser.MatchUserResponse
 import connectors.matching.AuthenticatorConnector
 import connectors.models.matching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import models.matching.UserDetailsModel
@@ -42,8 +43,7 @@ class UserMatchingService @Inject()(val appConfig: AppConfig,
       case false => hc
     }
 
-  @inline def matchClient(userDetailsModel: UserDetailsModel)(implicit hc: HeaderCarrier):
-  Future[Either[UserMatchFailureResponseModel, Option[UserMatchSuccessResponseModel]]] = {
+  @inline def matchClient(userDetailsModel: UserDetailsModel)(implicit hc: HeaderCarrier): Future[MatchUserResponse] = {
     authenticatorConnector.matchClient(userDetailsModel)(amendHCForTest)
   }
 }

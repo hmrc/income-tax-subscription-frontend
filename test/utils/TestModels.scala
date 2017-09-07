@@ -115,11 +115,11 @@ object TestModels extends Implicits {
 
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
 
-  lazy val testUserDetails = UserDetailsModel("Test", "User", TestConstants.testNino, testStartDate)
+  lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, TestConstants.testNino, testStartDate)
 
-  lazy val testMatchSuccessModel  = UserMatchSuccessResponseModel("test", "user", "000", testNino, Some("abc"))
+  lazy val testMatchSuccessModel  = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, Some(testUtr))
 
-  lazy val testMatchNoUtrModel  = UserMatchSuccessResponseModel("test", "user", "000", testNino, None)
+  lazy val testMatchNoUtrModel  = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, None)
 
   val testSummaryData = SummaryModel(
     incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),

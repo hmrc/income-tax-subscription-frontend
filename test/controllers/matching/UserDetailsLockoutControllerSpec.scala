@@ -19,12 +19,13 @@ package controllers.matching
 import java.time.Duration
 
 import assets.MessageLookup.{UserDetailsLockout => messages}
-import controllers.ControllerBaseSpec
+import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import services.mocks.MockUserLockoutService
+import uk.gov.hmrc.play.http.SessionKeys
 import utils.TestConstants._
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
@@ -44,32 +45,30 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
     mockUserLockoutService
   )
 
-  "Calling the 'show' action of the ClientDetailsLockoutController" when {
+  lazy val request = fakeRequest.withSession(SessionKeys.token -> testToken, ITSASessionKeys.GoHome -> "et")
+
+  "Calling the 'show' action of the UserDetailsLockoutController" when {
 
     "the agent is locked out" should {
-      lazy val result = TestUserDetailsLockoutController.show(fakeRequest)
+      lazy val result = TestUserDetailsLockoutController.show(request)
       lazy val document = Jsoup.parse(contentAsString(result))
 
       "return 200" in {
-        setupMockLockedOut(testNino)
+        setupMockLockedOut(testToken)
         status(result) must be(Status.OK)
-      }
 
-      "return HTML" in {
         contentType(result) must be(Some("text/html"))
         charset(result) must be(Some("utf-8"))
-      }
 
-      "render the 'Client Details Lockout page'" in {
         document.title mustBe messages.title
       }
     }
 
     "the agent is not locked out" should {
       s"redirect to ${controllers.matching.routes.UserDetailsController.show().url}" in {
-        setupMockNotLockedOut(testNino)
+        setupMockNotLockedOut(testToken)
 
-        lazy val result = TestUserDetailsLockoutController.show(fakeRequest)
+        lazy val result = TestUserDetailsLockoutController.show(request)
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe controllers.matching.routes.UserDetailsController.show().url
@@ -78,15 +77,15 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
 
   }
 
-  "Calling the 'submit' action of the ClientDetailsLockoutController" should {
+  "Calling the 'submit' action of the UserDetailsLockoutController" should {
 
-    lazy val result = TestUserDetailsLockoutController.submit(fakeRequest)
+    lazy val result = TestUserDetailsLockoutController.submit(request)
 
     "return 303" in {
       status(result) must be(Status.SEE_OTHER)
     }
 
-    "Redirect to the 'Client details' page" in {
+    "Redirect to the 'User details' page" in {
       redirectLocation(result).get mustBe controllers.routes.SignOutController.signOut().url
     }
 

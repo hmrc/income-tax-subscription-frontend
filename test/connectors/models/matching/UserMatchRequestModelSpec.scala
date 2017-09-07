@@ -26,7 +26,7 @@ class UserMatchRequestModelSpec extends UnitTestTrait {
     "implicitly convert from ClientDetailsModel" in {
       // nino is updated to add spaces, this is to test this conversion also removes all the spaces
       val input = TestModels.testUserDetails.copy(nino = " " + TestModels.testUserDetails.nino.toCharArray.mkString(" ") + " ")
-      val converted: UserMatchRequestModel = input
+      val converted: UserMatchRequestModel = UserMatchRequestModel(input)
       input.firstName mustBe converted.firstName
       input.lastName mustBe converted.lastName
       input.nino must not be converted.nino.toString

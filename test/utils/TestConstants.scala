@@ -17,6 +17,7 @@
 package utils
 
 import java.time.OffsetDateTime
+import java.util.UUID
 
 import common.Constants.GovernmentGateway._
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
@@ -38,7 +39,10 @@ object TestConstants {
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
   lazy val testLockoutResponse = LockedOut(testNino, OffsetDateTime.now())
+  lazy val testUtr: String = UUID.randomUUID().toString //Not an actual UTR
 
+  val testFirstName = "Test"
+  val testLastName = "Name"
 
   val testUrl = "/"
 

@@ -18,7 +18,7 @@ package connectors.mocks
 
 import audit.Logging
 import connectors.matching.AuthenticatorConnector
-import connectors.models.matching.{UserMatchFailureResponseModel, UserMatchRequestModel, UserMatchSuccessResponseModel}
+import connectors.models.matching.{UserMatchFailureResponseModel, UserMatchRequestModel, UserMatchSuccessResponseModel, UserMatchUnexpectedError}
 import models.matching.UserDetailsModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -39,7 +39,7 @@ trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
 
   def setupMockMatchClient(clientDetailsModel: Option[UserDetailsModel])(status: Int, response: JsValue): Unit =
     setupMockHttpPost(TestAuthenticatorConnector.matchingEndpoint,
-      clientDetailsModel.fold(None: Option[UserMatchRequestModel])(x => x: UserMatchRequestModel))(status, response)
+      clientDetailsModel map UserMatchRequestModel.apply)(status, response)
 
   // use this function if we want to match on the ClientDetailsModel used in the parameter
   val setupMockMatchClient: UserDetailsModel => ((Int, JsValue)) => Unit =
@@ -93,7 +93,7 @@ trait MockAuthenticatiorConnector extends MockTrait {
   }
 
   def mockUserMatchFailure(userDetails: UserDetailsModel): Unit = {
-    mockUserMatch(userDetails)(Future.successful(Left(UserMatchFailureResponseModel(UserMatchFailureResponseModel.unexpectedError))))
+    mockUserMatch(userDetails)(Future.successful(Left(UserMatchUnexpectedError)))
   }
 
   def mockUserMatchException(userDetails: UserDetailsModel): Unit =

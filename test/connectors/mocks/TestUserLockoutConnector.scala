@@ -40,7 +40,7 @@ trait TestUserLockoutConnector extends MockTrait with MockHttp {
 
 
   private def setupLockoutAgent(arn: String)(result: Future[LockoutStatusResponse]): Unit =
-    when(mockAgentLockoutConnector.lockoutAgent(ArgumentMatchers.eq(arn))(ArgumentMatchers.any[HeaderCarrier]))
+    when(mockAgentLockoutConnector.lockoutUser(ArgumentMatchers.eq(arn))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
   def setupMockLockCreated(arn: String): Unit =

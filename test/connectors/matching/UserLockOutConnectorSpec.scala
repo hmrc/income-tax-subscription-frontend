@@ -24,7 +24,7 @@ class UserLockOutConnectorSpec extends UnitTestTrait with TestUserLockoutConnect
 
   "AgentLockOutConnector" should {
     "have the correct url" in {
-      TestAgentLockoutConnector.agentLockoutUrl(testNino) must endWith(s"/income-tax-subscription/client-matching/lock/$testNino")
+      TestAgentLockoutConnector.userLockoutUrl(testNino) must endWith(s"/income-tax-subscription/client-matching/lock/$testNino")
     }
   }
 

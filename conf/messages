@@ -16,6 +16,7 @@ base.error_heading                                              = There''s a pro
 base.change                                                     = Change
 base.yes                                                        = Yes
 base.no                                                         = No
+base.go_back                                                    = Go back
 
 ## Front page
 frontpage.title                                                 = Sign up to report your income and expenses quarterly
@@ -247,7 +248,7 @@ user-details-error.line_1                                       = The details yo
 # User Details Lockout
 user-details-lockout.title                                      = You''ve been locked out
 user-details-lockout.heading                                    = You''ve been locked out
-user-details-lockout.line_1                                     = To sign up for quarterly reporting, you''ll have to try again in 1 minute.
+user-details-lockout.line_1                                     = To sign up for quarterly reporting, you''ll have to try again in {0}.
 
 # Check your details page
 user-details.summary.title                                      = Confirm your details

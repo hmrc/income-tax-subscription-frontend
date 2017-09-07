@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.models.matching.UserMatchFailureResponseModel
+import connectors.models.matching.{UserMatchFailureResponseModel, UserMatchUnexpectedError}
 import play.api.test.Helpers._
 import services.mocks.TestUserMatchingService
 import utils.TestModels._
@@ -46,7 +46,7 @@ class UserMatchingServiceSpec extends TestUserMatchingService {
     "return Left(error) if authenticator response with an error status" in {
       mockUserMatchFailure(testUserDetails)
       val result = TestUserMatchingService.matchClient(testUserDetails)
-      await(result) mustBe Left(UserMatchFailureResponseModel(UserMatchFailureResponseModel.unexpectedError))
+      await(result) mustBe Left(UserMatchUnexpectedError)
     }
 
     "throw InternalServerException if authenticator response with an unexpected status" in {

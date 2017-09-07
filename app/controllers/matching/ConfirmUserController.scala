@@ -20,7 +20,8 @@ import javax.inject.{Inject, Singleton}
 
 import auth.{AuthenticatedController, IncomeTaxSAUser}
 import config.BaseControllerConfig
-import connectors.models.matching.{LockedOut, NotLockedOut}
+import connectors.models.matching.{LockedOut, NotLockedOut, UserMatchSuccessResponseModel}
+import controllers.ITSASessionKeys._
 import models.matching.UserDetailsModel
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -71,50 +72,48 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-
-        import scala.concurrent.Future.{failed, successful}
-
         for {
-          //todo redirect to user detail if it's not present
+        //todo redirect to user detail if it's not present
           clientDetails <- keystoreService.fetchUserDetails().collect { case Some(details) => details }
           client <- userMatching.matchClient(clientDetails)
-        } yield client match {
-          case Right(Some(user)) =>
-            //TODO update session with nino and utr
-            //todo check if they have both nino and utr
-            Redirect(routes.UserDetailsController.show())
-          case Right(None) =>
-            //todo lockout mechanism
-            Redirect(routes.UserDetailsController.show())
-          case Left(_) => Redirect(routes.UserDetailsController.show())
-        }// todo display error page for recovery
+          result <- client match {
+            case Right(Some(userDetails)) =>
+              userDetails match {
+                case UserMatchSuccessResponseModel(_, _, _, nino, Some(utr)) =>
+                  Future.successful(
+                    Redirect(controllers.routes.HomeController.index())
+                      .addingToSession(
+                        NINO -> nino,
+                        UTR -> utr
+                      )
+                      .removingFromSession(FailedUserMatching)
+                  )
+                case UserMatchSuccessResponseModel(_, _, _, nino, _) =>
+                  Future.successful(
+                    Redirect(controllers.routes.HomeController.index())
+                      .addingToSession(NINO -> userDetails.nino)
+                  )
+              }
+            case Right(None) =>
+              val failedMatches = request.session.get(FailedUserMatching).fold(0)(_.toInt) + 1
 
-        //
-        //        agentQualificationService.orchestrateAgentQualification(arn).flatMap {
-        //          case Left(NoClientDetails) => successful(Redirect(routes.ClientDetailsController.show()))
-        //          case Left(NoClientMatched) =>
-        //            val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
-        //            val incCount = currentCount + 1
-        //            if (incCount < applicationConfig.matchingAttempts) {
-        //              successful(Redirect(controllers.matching.routes.ClientDetailsErrorController.show())
-        //                .addingToSession(FailedClientMatching -> incCount.toString))
-        //            }
-        //            else {
-        //              for {
-        //                _ <- lockOutService.lockoutAgent(arn)
-        //                _ <- keystoreService.deleteAll()
-        //              } yield
-        //                Redirect(controllers.matching.routes.ClientDetailsLockoutController.show()).removingFromSession(FailedClientMatching)
-        //            }
-        //          case Left(ClientAlreadySubscribed) => successful(Redirect(controllers.routes.ClientAlreadySubscribedController.show())
-        //            .removingFromSession(FailedClientMatching))
-        //          case Left(NoClientRelationship) => successful(Redirect(controllers.routes.NoClientRelationshipController.show())
-        //            .removingFromSession(FailedClientMatching))
-        //          case Right(_) => successful(Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
-        //            .removingFromSession(FailedClientMatching))
-        //        }.recoverWith {
-        //          case e => failed(new InternalServerException("ConfirmClientController.submit\n" + e.getMessage))
-        //        }
+              if (failedMatches < applicationConfig.matchingAttempts) {
+                Future.successful(
+                  Redirect(routes.UserDetailsErrorController.show())
+                    .addingToSession(FailedUserMatching -> s"$failedMatches")
+                )
+              }
+              else {
+                val bearerToken = implicitly[HeaderCarrier].token.get
+                for {
+                  _ <- lockOutService.lockoutUser(bearerToken.value)
+                } yield Redirect(routes.UserDetailsLockoutController.show())
+                  .removingFromSession(FailedUserMatching)
+              }
+            case Left(_) =>
+              Future.successful(Redirect(routes.UserDetailsController.show()))
+          }
+        } yield result // todo display error page for recovery
       }
   }
 

@@ -17,47 +17,13 @@
 package connectors
 
 import connectors.mocks.TestAuthenticatorConnector
+import org.scalatest.EitherValues
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.TestModels._
 
-class AuthenticatorConnectorSpec extends TestAuthenticatorConnector {
+class AuthenticatorConnectorSpec extends TestAuthenticatorConnector with EitherValues {
 
-  "AuthenticatorConnector" should {
-
-    "return true if authenticator response with ok" in {
-      setupMockMatchClient(testUserDetails)(matchClientMatched(testUserDetails.nino))
-      val result = TestAuthenticatorConnector.matchClient(testUserDetails)
-      await(result) mustBe Some(testUserDetails.nino)
-    }
-
-    "return false if authenticator response with Unauthorized but with a matching error message" in {
-      setupMockMatchClient(testUserDetails)(matchClientNoMatch)
-      val result = TestAuthenticatorConnector.matchClient(testUserDetails)
-      await(result) mustBe None
-    }
-
-    "throw InternalServerException if authenticator response with Unauthorized but with a server error message" in {
-      setupMockMatchClient(testUserDetails)(matchClientUnexpectedFailure)
-      val result = TestAuthenticatorConnector.matchClient(testUserDetails)
-
-      val e = intercept[InternalServerException] {
-        await(result)
-      }
-      e.message must include (s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=$UNAUTHORIZED")
-    }
-
-    "throw InternalServerException if authenticator response with an unexpected status" in {
-      setupMockMatchClient(testUserDetails)(matchClientUnexpectedFailure)
-      val result = TestAuthenticatorConnector.matchClient(testUserDetails)
-
-      val e = intercept[InternalServerException] {
-        await(result)
-      }
-      e.message must include (s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=")
-      e.message must not include s"UNAUTHORIZED"
-    }
-
-  }
+  //TODO create connector level integration tests with Wiremock
 
 }

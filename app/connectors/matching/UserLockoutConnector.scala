@@ -31,16 +31,16 @@ class UserLockoutConnector @Inject()(val appConfig: AppConfig,
                                      val httpPost: HttpPost
                                       ) {
 
-  def agentLockoutUrl(arn: String): String = appConfig.clientMatchingUrl + UserLockoutConnector.agentLockoutUri(arn)
+  def userLockoutUrl(token: String): String = appConfig.clientMatchingUrl + UserLockoutConnector.tokenLockoutUri(token)
 
-  def lockoutAgent(arn: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] =
-    httpPost.POST[LockOutRequest, LockoutStatusResponse](agentLockoutUrl(arn), LockOutRequest(appConfig.matchingLockOutSeconds))
+  def lockoutUser(arn: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] =
+    httpPost.POST[LockOutRequest, LockoutStatusResponse](userLockoutUrl(arn), LockOutRequest(appConfig.matchingLockOutSeconds))
 
-  def getLockoutStatus(arn: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] =
-    httpGet.GET[LockoutStatusResponse](agentLockoutUrl(arn))
+  def getLockoutStatus(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] =
+    httpGet.GET[LockoutStatusResponse](userLockoutUrl(token))
 
 }
 
 object UserLockoutConnector {
-  def agentLockoutUri(arn: String): String = s"/lock/$arn"
+  def tokenLockoutUri(token: String): String = s"/lock/$token"
 }

@@ -21,6 +21,7 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import config.AppConfig
 import connectors.RawResponseReads
+import connectors.httpparsers.MatchUserHttpParser._
 import connectors.models.matching.{UserMatchFailureResponseModel, UserMatchRequestModel, UserMatchSuccessResponseModel}
 import models.matching.UserDetailsModel
 import play.api.http.Status._
@@ -34,44 +35,24 @@ import scala.concurrent.Future
 @Singleton
 class AuthenticatorConnector @Inject()(appConfig: AppConfig,
                                        val http: HttpPost,
-                                       logging: Logging) extends RawResponseReads {
+                                       logging: Logging) {
 
   lazy val matchingEndpoint: String = appConfig.authenticatorUrl + "/authenticator/match"
 
-  def matchClient(userDetailsModel: UserDetailsModel)(implicit hc: HeaderCarrier): Future[Either[UserMatchFailureResponseModel,Option[UserMatchSuccessResponseModel]]] = {
+  def matchClient(userDetails: UserDetailsModel)(implicit hc: HeaderCarrier): Future[MatchUserResponse] = {
+    val request: UserMatchRequestModel = UserMatchRequestModel(userDetails)
 
-    val request: UserMatchRequestModel = userDetailsModel
-
-    lazy val logFailure = (status: Int, response: HttpResponse) => {
-      logging.warn(s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=$status, body=" + response.body)
-      new InternalServerException(s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=$status body=${response.body}")
+    def logFailure(message: String): Unit = {
+      logging.warn(s"AuthenticatorConnector.matchClient unexpected response from authenticator: $message")
     }
 
-    http.POST(matchingEndpoint, request).flatMap {
-      response =>
-        response.status match {
-          case OK =>
-            logging.debug("AuthenticatorConnector.matchClient response received: " + response.body)
-            UserMatchSuccessResponseModel.format.reads(response.json).fold(
-              invalid => logFailure(OK, response),
-              valid => Future.successful(Right(Some(valid)))
-            )
-          case UNAUTHORIZED => // this end point should always return UNAUTHORIZED when there is a failure
-            response.json.validate[UserMatchFailureResponseModel] match {
-              case JsSuccess(value, _) =>
-                value match {
-                  case UserMatchFailureResponseModel(UserMatchFailureResponseModel.unexpectedError) =>
-                    logFailure(UNAUTHORIZED, response)
-                  case _ =>
-                    logging.info(s"AuthenticatorConnector.matchClient not found: status=$UNAUTHORIZED, value=$value, body=" + response.body)
-                    Future.successful(Right(None))
-                }
-              case JsError(errors) => // the response body does not match an expected not found scenario
-                logFailure(UNAUTHORIZED, response)
-            }
-          case status =>
-            logFailure(status, response)
-        }
+    http.POST[UserMatchRequestModel, MatchUserResponse](matchingEndpoint, request).map {
+      case Right(result) =>
+        logging.debug("AuthenticatorConnector.matchClient response received: " + result)
+        Right(result)
+      case Left(error) =>
+        logFailure(error.errors)
+        Left(error)
     }
   }
 

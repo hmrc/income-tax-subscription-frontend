@@ -71,19 +71,19 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
       handleLockOut {
         UserDetailsForm.userDetailsForm.bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
-          clientDetails => {
+          userDetails => {
             val persist = keystoreService.fetchUserDetails().flatMap {
-              case Some(oldDetails) if oldDetails == clientDetails =>
+              case Some(oldDetails) if oldDetails == userDetails =>
                 Future.successful(Unit)
               case Some(_) =>
                 // n.b. the delete must come before the save otherwise nothing will ever be saved.
                 // this feature is currently NOT unit testable
                 for {
                   _ <- keystoreService.deleteAll()
-                  _ <- keystoreService.saveUserDetails(clientDetails)
+                  _ <- keystoreService.saveUserDetails(userDetails)
                 } yield Unit
               case None =>
-                keystoreService.saveUserDetails(clientDetails)
+                keystoreService.saveUserDetails(userDetails)
             }
 
             for {

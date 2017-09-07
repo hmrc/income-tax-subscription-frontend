@@ -17,7 +17,7 @@
 package controllers.matching
 
 import assets.MessageLookup.{UserDetails => messages}
-import controllers.ControllerBaseSpec
+import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import forms.UserDetailsForm
 import models.DateModel
 import models.matching.UserDetailsModel
@@ -26,8 +26,8 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import services.mocks.{MockKeystoreService, MockUserLockoutService}
-import uk.gov.hmrc.play.http.HttpResponse
-import utils.TestConstants
+import uk.gov.hmrc.play.http.{HttpResponse, SessionKeys}
+import utils.TestConstants._
 import utils.TestModels._
 
 
@@ -48,29 +48,22 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
     mockAuthService,
     mockUserLockoutService
   )
-
-  val testNino = TestConstants.testNino
+  lazy val request = fakeRequest.withSession(SessionKeys.token -> testToken, ITSASessionKeys.GoHome -> "et")
 
   "Calling the show action of the ClientDetailsController with an authorised user" should {
-
-    lazy val result = TestUserDetailsController.show(isEditMode = false)(fakeRequest)
+    lazy val result = await(TestUserDetailsController.show(isEditMode = false)(request))
 
     "return ok (200)" in {
       setupMockKeystore(fetchUserDetails = None)
-      setupMockNotLockedOut(testNino)
+      setupMockNotLockedOut(testToken)
 
       status(result) must be(Status.OK)
 
-      await(result)
       verifyKeystore(fetchUserDetails = 1, saveUserDetails = 0, deleteAll = 0)
-    }
 
-    "return HTML" in {
       contentType(result) must be(Some("text/html"))
       charset(result) must be(Some("utf-8"))
-    }
 
-    "render the 'Not subscribed to Agent Services page'" in {
       val document = Jsoup.parse(contentAsString(result))
       document.title mustBe messages.title
     }
@@ -83,7 +76,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
       "Calling the submit action of the ClientDetailsController with an authorised user and valid submission and" when {
 
-        val testClientDetails =
+        val testUserDetails =
           UserDetailsModel(
             firstName = "Abc",
             lastName = "Abc",
@@ -93,7 +86,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
         def callSubmit(isEditMode: Boolean) =
           TestUserDetailsController.submit(isEditMode = isEditMode)(
-            fakeRequest.post(UserDetailsForm.userDetailsForm.form, testUserDetails)
+            request.post(UserDetailsForm.userDetailsForm.form, testUserDetails)
           )
 
         "there are no stored data" should {
@@ -103,7 +96,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
               fetchUserDetails = None,
               deleteAll = HttpResponse(OK)
             )
-            setupMockNotLockedOut(testNino)
+            setupMockNotLockedOut(testToken)
 
             val goodResult = callSubmit(isEditMode = editMode)
 
@@ -120,10 +113,10 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
           s"redirect to '${controllers.matching.routes.ConfirmUserController.show().url} and deleted all pre-existing entries in keystore" in {
             setupMockKeystore(
-              fetchUserDetails = testClientDetails.copy(firstName = testClientDetails.firstName + "NOT"),
+              fetchUserDetails = testUserDetails.copy(firstName = testUserDetails.firstName + "NOT"),
               deleteAll = HttpResponse(OK)
             )
-            setupMockNotLockedOut(testNino)
+            setupMockNotLockedOut(testToken)
 
             val goodResult = callSubmit(isEditMode = editMode)
 
@@ -140,10 +133,10 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
           s"redirect to '${controllers.matching.routes.ConfirmUserController.show().url} but do not delete keystore" in {
             setupMockKeystore(
-              fetchUserDetails = testClientDetails,
+              fetchUserDetails = testUserDetails,
               deleteAll = HttpResponse(OK)
             )
-            setupMockNotLockedOut(testNino)
+            setupMockNotLockedOut(testToken)
 
             val goodResult = callSubmit(isEditMode = editMode)
 
@@ -161,7 +154,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
         def callSubmit(isEditMode: Boolean) =
           TestUserDetailsController.submit(isEditMode = isEditMode)(
-            fakeRequest
+            request
               .post(UserDetailsForm.userDetailsForm.form, UserDetailsModel(
                 firstName = "Abc",
                 lastName = "Abc",
@@ -171,7 +164,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
         "return a redirect status (BAD_REQUEST - 400)" in {
           setupMockKeystoreSaveFunctions()
-          setupMockNotLockedOut(testNino)
+          setupMockNotLockedOut(testToken)
 
           val badResult = callSubmit(isEditMode = editMode)
 
@@ -182,7 +175,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
         }
 
         "return HTML" in {
-          setupMockNotLockedOut(testNino)
+          setupMockNotLockedOut(testToken)
 
           val badResult = callSubmit(isEditMode = editMode)
 
@@ -191,7 +184,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
         }
 
         "render the 'Not subscribed to Agent Services page'" in {
-          setupMockNotLockedOut(testNino)
+          setupMockNotLockedOut(testToken)
 
           val badResult = callSubmit(isEditMode = editMode)
           val document = Jsoup.parse(contentAsString(badResult))
@@ -205,15 +198,15 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
   "If the agent is locked out" should {
     s"calling show should redirect them to ${controllers.matching.routes.UserDetailsLockoutController.show().url}" in {
-      setupMockLockedOut(testNino)
-      lazy val result = TestUserDetailsController.show(isEditMode = false)(fakeRequest)
+      setupMockLockedOut(testToken)
+      lazy val result = TestUserDetailsController.show(isEditMode = false)(request)
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get mustBe controllers.matching.routes.UserDetailsLockoutController.show().url
     }
 
     s"calling submit should redirect them to ${controllers.matching.routes.UserDetailsLockoutController.show().url}" in {
-      setupMockLockedOut(testNino)
-      lazy val result = TestUserDetailsController.submit(isEditMode = false)(fakeRequest)
+      setupMockLockedOut(testToken)
+      lazy val result = TestUserDetailsController.submit(isEditMode = false)(request)
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get mustBe controllers.matching.routes.UserDetailsLockoutController.show().url
     }

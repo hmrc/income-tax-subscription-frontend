@@ -33,6 +33,7 @@ object MessageLookup {
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
+    val dateOfBirth = "Date of birth"
     val goBack = "Go back"
   }
 
@@ -219,7 +220,7 @@ object MessageLookup {
     val title = "You've been locked out"
     val heading = "You've been locked out"
 
-    def line1(testTime: String) = s"To sign your client up for quarterly reporting, you'll have to try again in $testTime."
+    def line1(testTime: String) = s"To sign up for quarterly reporting, you'll have to try again in $testTime."
   }
 
   object UserDetails {
@@ -237,7 +238,7 @@ object MessageLookup {
   object ConfirmUser {
     val title = "Confirm your details"
     val heading = "Check your answers"
-    val heading_hidden = "before looking up your client"
+    val heading_hidden = "before looking up your details"
     val h2 = "You've told us"
     val firstName = "First name"
     val lastName = "Last name"

@@ -16,7 +16,7 @@
 
 package views
 
-import assets.MessageLookup.{Base => commonMessages, ClientDetailsError => messages}
+import assets.MessageLookup.{Base => commonMessages, UserDetailsError => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
@@ -24,11 +24,11 @@ class UserDetailsErrorViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.client_details_error(action)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = views.html.user_details_error(action)(FakeRequest(), applicationMessages, appConfig)
 
-  "The Client Details Error view" should {
+  "The User Details Error view" should {
     val testPage = TestView(
-      name = "Client Details Error",
+      name = "User Details Error",
       title = messages.title,
       heading = messages.heading,
       page = page
@@ -36,7 +36,7 @@ class UserDetailsErrorViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line1)
 
-    val form = testPage.getForm("Client Details Error form")(actionCall = action)
+    val form = testPage.getForm("User Details Error form")(actionCall = action)
 
     form.mustHaveSubmitButton(commonMessages.goBack)
 

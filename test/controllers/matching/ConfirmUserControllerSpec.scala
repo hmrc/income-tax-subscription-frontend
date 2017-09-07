@@ -19,6 +19,7 @@ package controllers.matching
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatest.OptionValues
 import play.api.http.{HeaderNames, Status}
 import play.api.mvc._
 import play.api.test.Helpers.{await, _}
@@ -30,7 +31,8 @@ import utils.{SessionCookieBaker, TestConstants, TestModels}
 import scala.concurrent.Future
 
 class ConfirmUserControllerSpec extends ControllerBaseSpec
-  with MockUserLockoutService with MockUserMatchingService with MockKeystoreService {
+  with MockUserLockoutService with MockUserMatchingService with MockKeystoreService
+  with OptionValues {
 
   override val controllerName: String = "ConfirmUserController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -54,10 +56,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
   val userDetails = TestModels.testUserDetails
   val token = TestConstants.testToken
 
-  lazy val sessionCookie = Session.encodeAsCookie(Session(Map(SessionKeys.token -> token, ITSASessionKeys.GoHome -> "et")))
-
-  lazy val request =
-    fakeRequest.withHeaders(play.api.http.HeaderNames.COOKIE -> Cookies.encodeSetCookieHeader(Seq(sessionCookie)))
+  lazy val request = fakeRequest.withSession(SessionKeys.token -> token, ITSASessionKeys.GoHome -> "et")
 
   "Calling the show action of the ConfirmUserController with an authorised user" should {
 
@@ -106,16 +105,101 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "UserMatchingService returned NoUserDetails" should {
-      s"redirect user to ${controllers.matching.routes.UserDetailsController.show().url}" in {
+    "UserMatchingService returns user with nino and utr" should {
+      s"redirect to the home controller with nino and sautr added to session" in {
         setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
-        mockUserMatchFailure(userDetails)
+        mockUserMatchSuccess(userDetails)
         setupMockNotLockedOut(token)
 
         val result = callSubmit()
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.matching.routes.UserDetailsController.show().url)
+        redirectLocation(result) mustBe Some(controllers.routes.HomeController.index().url)
+
+        val session = await(result).session(request)
+        session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
+        session.get(ITSASessionKeys.UTR) must contain(TestConstants.testUtr)
+      }
+    }
+
+    "UserMatchingService returns user with only nino" should {
+      s"redirect to the home controller with nino added to session" in {
+        setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
+        mockUserMatchSuccessNoUtr(userDetails)
+        setupMockNotLockedOut(token)
+
+        val result = callSubmit()
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.HomeController.index().url)
+
+        val session = await(result).session(request)
+        session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
+      }
+    }
+
+    "UserMatchingService returns nothing" when {
+      "the lockout count is 0" should {
+        "redirect to the user details page and increment the counter by 1" in {
+          setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
+          mockUserMatchFailure(userDetails)
+          setupMockNotLockedOut(token)
+
+          val result = callSubmit()
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.matching.routes.UserDetailsErrorController.show().url)
+
+          val session = await(result).session(request)
+          session.get(ITSASessionKeys.FailedUserMatching) must contain("1")
+        }
+      }
+
+      "the lockout count is less than the maximum" should {
+        "redirect to the user details page and increment the counter by 1" in {
+          implicit val requestWithLockout = fakeRequest.withSession(
+            SessionKeys.token -> token,
+            ITSASessionKeys.GoHome -> "et",
+            ITSASessionKeys.FailedUserMatching -> "1"
+          )
+
+          setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
+          mockUserMatchFailure(userDetails)
+          setupMockNotLockedOut(token)
+
+          val result = TestConfirmUserController.submit()(requestWithLockout)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.matching.routes.UserDetailsErrorController.show().url)
+
+          val session = await(result).session
+          session.get(ITSASessionKeys.FailedUserMatching) must contain("2")
+        }
+      }
+
+      "the lockout count reaches the maximum" should {
+        "lockout the user and redirect to the locked out page" in {
+          implicit val requestWithLockout = fakeRequest.withSession(
+            SessionKeys.token -> token,
+            ITSASessionKeys.GoHome -> "et",
+            ITSASessionKeys.FailedUserMatching -> "3"
+          )
+
+          setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
+          mockUserMatchFailure(userDetails)
+          setupMockNotLockedOut(token)
+          setupMockLockCreated(token)
+
+          val result = TestConfirmUserController.submit()(requestWithLockout)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.matching.routes.UserDetailsLockoutController.show().url)
+
+          val session = await(result).session
+          session.get(ITSASessionKeys.FailedUserMatching) mustBe empty
+
+          verifyLockoutUser(token, 1)
+        }
       }
     }
     //

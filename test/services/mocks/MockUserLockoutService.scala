@@ -39,7 +39,7 @@ trait MockUserLockoutService extends MockTrait {
   }
 
   private def mockLockoutAgent(bearerToken: String)(result: Future[LockoutStatusResponse]): Unit =
-    when(mockUserLockoutService.lockoutAgent(ArgumentMatchers.eq(bearerToken))(ArgumentMatchers.any[HeaderCarrier]))
+    when(mockUserLockoutService.lockoutUser(ArgumentMatchers.eq(bearerToken))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
   def setupMockLockCreated(bearerToken: String): Unit =
@@ -51,8 +51,8 @@ trait MockUserLockoutService extends MockTrait {
   def setupMockLockException(bearerToken: String): Unit =
     mockLockoutAgent(bearerToken)(Future.failed(testException))
 
-  def verifyLockoutAgent(bearerToken: String, count: Int): Unit =
-    verify(mockUserLockoutService, times(count)).lockoutAgent(ArgumentMatchers.eq(bearerToken))(ArgumentMatchers.any[HeaderCarrier])
+  def verifyLockoutUser(bearerToken: String, count: Int): Unit =
+    verify(mockUserLockoutService, times(count)).lockoutUser(ArgumentMatchers.eq(bearerToken))(ArgumentMatchers.any[HeaderCarrier])
 
   private def mockGetLockoutStatus(bearerToken: String)(result: Future[LockoutStatusResponse]): Unit =
     when(mockUserLockoutService.getLockoutStatus(ArgumentMatchers.eq(bearerToken))(ArgumentMatchers.any[HeaderCarrier]))

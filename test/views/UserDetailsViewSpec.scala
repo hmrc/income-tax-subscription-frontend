@@ -16,7 +16,8 @@
 
 package views
 
-import assets.MessageLookup.{Base => common, ClientDetails => messages}
+import assets.MessageLookup.{Base => common, UserDetails => messages}
+import forms.UserDetailsForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
@@ -24,42 +25,45 @@ class UserDetailsViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = views.html.client_details(
-    clientDetailsForm = ClientDetailsForm.clientDetailsForm.form,
+  def page(isEditMode: Boolean): _root_.play.twirl.api.HtmlFormat.Appendable = views.html.user_details(
+    userDetailsForm = UserDetailsForm.userDetailsForm.form,
     postAction = action,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(isEditMode: Boolean) = TestView(
-    name = "Client Details View",
+  def documentCore(isEditMode: Boolean): TestView = TestView(
+    name = "User Details View",
     title = messages.title,
     heading = messages.heading,
     page = page(isEditMode = isEditMode)
   )
 
-  "The Client Details view" should {
+  "The User Details view" should {
 
     val testPage = documentCore(isEditMode = false)
 
     testPage.mustHavePara(messages.line1)
 
-    val form = testPage.getForm("Client Details form")(actionCall = action)
+    val form = testPage.getForm("User Details form")(actionCall = action)
 
     form.mustHaveTextField(
-      name = ClientDetailsForm.clientFirstName,
-      label = messages.field1)
+      name = UserDetailsForm.userFirstName,
+      label = messages.field1
+    )
 
     form.mustHaveTextField(
-      name = ClientDetailsForm.clientLastName,
-      label = messages.field2)
+      name = UserDetailsForm.userLastName,
+      label = messages.field2
+    )
 
     form.mustHaveTextField(
-      name = ClientDetailsForm.clientNino,
+      name = UserDetailsForm.userNino,
       label = messages.field3,
-      hint = messages.formhint1_line1)
+      hint = messages.formhint1_line1
+    )
 
     form.mustHaveDateField(
-      id = "clientDateOfBirth",
+      id = "userDateOfBirth",
       legend = common.dateOfBirth,
       exampleDate = messages.formhint2)
 
@@ -67,7 +71,7 @@ class UserDetailsViewSpec extends ViewSpecTrait {
 
   }
 
-  "The Client Details view in edit mode" should {
+  "The User Details view in edit mode" should {
     val editModePage = documentCore(isEditMode = true)
 
     editModePage.mustHaveUpdateButton()

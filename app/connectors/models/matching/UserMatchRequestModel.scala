@@ -26,8 +26,7 @@ import uk.gov.hmrc.domain.Nino
 case class UserMatchRequestModel(firstName: String, lastName: String, dateOfBirth: LocalDate, nino: Nino)
 
 object UserMatchRequestModel {
-
-  implicit def requestConvert(userDetailsModel: UserDetailsModel): UserMatchRequestModel =
+  def apply(userDetailsModel: UserDetailsModel): UserMatchRequestModel =
     UserMatchRequestModel(
       userDetailsModel.firstName,
       userDetailsModel.lastName,

@@ -17,7 +17,8 @@
 package views
 
 import assets.MessageLookup
-import assets.MessageLookup.{Base => common, ConfirmClient => messages}
+import assets.MessageLookup.{Base => common, ConfirmUser => messages}
+import models.matching.UserDetailsModel
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
@@ -25,6 +26,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utils.{TestConstants, TestModels, UnitTestTrait}
+import views.html.helpers.ConfirmUserIdConstants._
 
 class CheckYourUserDetailsViewSpec extends UnitTestTrait {
 
@@ -32,17 +34,19 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
   val testLastName = "User"
   val testNino = TestConstants.testNino
   val testDob = TestModels.testStartDate
-  val testClientDetails = UserDetailsModel(
+  val testUserDetails = UserDetailsModel(
     testFirstName,
     testLastName,
     testNino,
     testDob)
 
-  lazy val postAction: Call = controllers.matching.routes.ConfirmClientController.submit()
+  lazy val postAction: Call = controllers.matching.routes.ConfirmUserController.submit()
   lazy val backUrl: String = "testBackUrl"
 
-  def page(): Html = views.html.check_your_client_details(
-    clientDetailsModel = testClientDetails,
+  val expectedEditLink = controllers.matching.routes.UserDetailsController.show(editMode = true).url
+
+  def page(): Html = views.html.check_your_user_details(
+    userDetailsModel = testUserDetails,
     postAction = postAction,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
@@ -104,7 +108,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
 
     }
 
-    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String]) = {
+    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String]): Unit = {
       val accountingPeriod = document().getElementById(sectionId)
       val question = document().getElementById(questionId(sectionId))
       val answer = document().getElementById(answerId(sectionId))
@@ -117,7 +121,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       question.text() shouldBe expectedQuestion
       answer.text() shouldBe expectedAnswer
       if (expectedEditLink.nonEmpty) {
-        editLink.attr("href") shouldBe expectedEditLink.get
+        editLink.attr("href") should include(expectedEditLink.get)
         editLink.text() should include(MessageLookup.Base.change)
         editLink.select("span").text() shouldBe expectedQuestion
         editLink.select("span").hasClass("visuallyhidden") shouldBe true
@@ -128,7 +132,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       val sectionId = FirstNameId
       val expectedQuestion = messages.firstName
       val expectedAnswer = testFirstName
-      val expectedEditLink = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+
 
       sectionTest(
         sectionId = sectionId,
@@ -142,7 +146,6 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       val sectionId = LastNameId
       val expectedQuestion = messages.lastName
       val expectedAnswer = testLastName
-      val expectedEditLink = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -156,7 +159,6 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       val sectionId = NinoId
       val expectedQuestion = messages.nino
       val expectedAnswer = testNino.toNinoDisplayFormat
-      val expectedEditLink = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -170,7 +172,6 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
       val sectionId = DobId
       val expectedQuestion = messages.dob
       val expectedAnswer = testDob.toCheckYourAnswersDateFormat
-      val expectedEditLink = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

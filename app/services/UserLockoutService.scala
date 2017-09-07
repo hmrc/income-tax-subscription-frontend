@@ -29,14 +29,14 @@ import scala.concurrent.Future
 class UserLockoutService @Inject()(userLockoutConnector: UserLockoutConnector,
                                    logging: Logging) {
 
-  def lockoutAgent(arn: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
-    logging.debug(s"Creating a lock for agent with arn=$arn")
-    userLockoutConnector.lockoutAgent(arn)
+  def lockoutUser(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
+    logging.debug(s"Creating a lock for agent with token=$token")
+    userLockoutConnector.lockoutUser(token)
   }
 
-  def getLockoutStatus(arn: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
-    logging.debug(s"Getting lockout status for arn=$arn")
-    userLockoutConnector.getLockoutStatus(arn)
+  def getLockoutStatus(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
+    logging.debug(s"Getting lockout status for token=$token")
+    userLockoutConnector.getLockoutStatus(token)
   }
 
 }
