@@ -54,8 +54,8 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       case Right(NotLockedOut) => f
       case Right(_: LockedOut) =>
         Future.successful(Redirect(controllers.matching.routes.UserDetailsLockoutController.show().url))
-    }).recover { case e =>
-      throw new InternalServerException("user details controller: " + e)
+    }).recover {
+      case e => throw new InternalServerException("user details controller: " + e)
     }
   }
 
@@ -72,51 +72,61 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-        for {
-        //todo redirect to user detail if it's not present
-          clientDetails <- keystoreService.fetchUserDetails().collect { case Some(details) => details }
-          client <- userMatching.matchClient(clientDetails)
-          result <- client match {
-            case Right(Some(userDetails)) =>
-              userDetails match {
-                case UserMatchSuccessResponseModel(_, _, _, nino, Some(utr)) =>
-                  Future.successful(
-                    Redirect(controllers.routes.HomeController.index())
-                      .addingToSession(
-                        NINO -> nino,
-                        UTR -> utr
-                      )
-                      .removingFromSession(FailedUserMatching)
-                  )
-                case UserMatchSuccessResponseModel(_, _, _, nino, _) =>
-                  Future.successful(
-                    Redirect(controllers.routes.HomeController.index())
-                      .addingToSession(NINO -> userDetails.nino)
-                  )
-              }
-            case Right(None) =>
-              val failedMatches = request.session.get(FailedUserMatching).fold(0)(_.toInt) + 1
-
-              if (failedMatches < applicationConfig.matchingAttempts) {
-                Future.successful(
-                  Redirect(routes.UserDetailsErrorController.show())
-                    .addingToSession(FailedUserMatching -> s"$failedMatches")
-                )
-              }
-              else {
-                val bearerToken = implicitly[HeaderCarrier].token.get
-                for {
-                  _ <- lockOutService.lockoutUser(bearerToken.value)
-                } yield Redirect(routes.UserDetailsLockoutController.show())
-                  .removingFromSession(FailedUserMatching)
-              }
-            case Left(_) =>
-              Future.successful(Redirect(routes.UserDetailsController.show()))
-          }
-        } yield result // todo display error page for recovery
+        keystoreService.fetchUserDetails() flatMap {
+          case None =>
+            Future.successful(Redirect(routes.UserDetailsController.show()))
+          case Some(userDetails) =>
+            matchUserDetails(userDetails)
+        }
       }
   }
 
+  private def matchUserDetails(userDetails: UserDetailsModel)(implicit request: Request[AnyContent]) = for {
+      user <- userMatching.matchUser(userDetails)
+      result <- user match {
+        case Right(Some(matchedDetails)) => handleMatchedUser(matchedDetails)
+        case Right(None) => handleFailedMatch
+        case Left(_) => Future.successful(Redirect(routes.UserDetailsController.show()))
+      }
+    } yield result
+
   lazy val backUrl: String = routes.UserDetailsController.show().url
 
+  private def handleFailedMatch(implicit request: Request[AnyContent]) = {
+    val failedMatches = request.session.get(FailedUserMatching).fold(0)(_.toInt) + 1
+
+    if (failedMatches < applicationConfig.matchingAttempts) {
+      Future.successful(
+        Redirect(routes.UserDetailsErrorController.show())
+          .addingToSession(FailedUserMatching -> s"$failedMatches")
+      )
+    }
+    else {
+      val bearerToken = implicitly[HeaderCarrier].token.get
+      for {
+        _ <- lockOutService.lockoutUser(bearerToken.value)
+      } yield Redirect(routes.UserDetailsLockoutController.show())
+        .removingFromSession(FailedUserMatching)
+    }
+  }
+
+  private def handleMatchedUser(matchedDetails: UserMatchSuccessResponseModel)(implicit request: Request[AnyContent]) = {
+    matchedDetails match {
+      case UserMatchSuccessResponseModel(_, _, _, nino, Some(utr)) =>
+        Future.successful(
+          Redirect(controllers.routes.HomeController.index())
+            .addingToSession(
+              NINO -> nino,
+              UTR -> utr
+            )
+            .removingFromSession(FailedUserMatching)
+        )
+      case UserMatchSuccessResponseModel(_, _, _, nino, _) =>
+        Future.successful(
+          Redirect(controllers.routes.HomeController.index())
+            .addingToSession(NINO -> matchedDetails.nino)
+        )
+    }
+  }
 }
+

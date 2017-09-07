@@ -27,31 +27,31 @@ class UserMatchingServiceSpec extends TestUserMatchingService {
 
     "return the user with nino and utr if authenticator response with ok with both ids" in {
       mockUserMatchSuccess(testUserDetails)
-      val result = TestUserMatchingService.matchClient(testUserDetails)
+      val result = TestUserMatchingService.matchUser(testUserDetails)
       await(result) mustBe Right(Some(testMatchSuccessModel))
     }
 
     "return the nino if authenticator response with ok with only nino" in {
       mockUserMatchNoUtr(testUserDetails)
-      val result = TestUserMatchingService.matchClient(testUserDetails)
+      val result = TestUserMatchingService.matchUser(testUserDetails)
       await(result) mustBe Right(Some(testMatchNoUtrModel))
     }
 
     "return None if authenticator response with Unauthorized but with a matching error message" in {
       mockUserMatchNotFound(testUserDetails)
-      val result = TestUserMatchingService.matchClient(testUserDetails)
+      val result = TestUserMatchingService.matchUser(testUserDetails)
       await(result) mustBe Right(None)
     }
 
     "return Left(error) if authenticator response with an error status" in {
       mockUserMatchFailure(testUserDetails)
-      val result = TestUserMatchingService.matchClient(testUserDetails)
+      val result = TestUserMatchingService.matchUser(testUserDetails)
       await(result) mustBe Left(UserMatchUnexpectedError)
     }
 
     "throw InternalServerException if authenticator response with an unexpected status" in {
       mockUserMatchException(testUserDetails)
-      val result = TestUserMatchingService.matchClient(testUserDetails)
+      val result = TestUserMatchingService.matchUser(testUserDetails)
 
       val e = intercept[Exception] {
         await(result)

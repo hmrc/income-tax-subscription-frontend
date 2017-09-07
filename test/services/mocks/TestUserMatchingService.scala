@@ -41,7 +41,7 @@ trait MockUserMatchingService extends MockTrait {
   private def mockUserMatch(userDetails: UserDetailsModel)
                            (response: Future[Either[UserMatchFailureResponseModel, Option[UserMatchSuccessResponseModel]]]): Unit =
     when(
-      mockUserMatchingService.matchClient(
+      mockUserMatchingService.matchUser(
         ArgumentMatchers.eq(userDetails)
       )(
         ArgumentMatchers.any[HeaderCarrier])

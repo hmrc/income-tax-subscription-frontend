@@ -43,7 +43,7 @@ class UserMatchingService @Inject()(val appConfig: AppConfig,
       case false => hc
     }
 
-  @inline def matchClient(userDetailsModel: UserDetailsModel)(implicit hc: HeaderCarrier): Future[MatchUserResponse] = {
+  @inline def matchUser(userDetailsModel: UserDetailsModel)(implicit hc: HeaderCarrier): Future[MatchUserResponse] = {
     authenticatorConnector.matchClient(userDetailsModel)(amendHCForTest)
   }
 }

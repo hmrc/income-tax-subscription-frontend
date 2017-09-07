@@ -89,6 +89,19 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     }
   }
 
+  "Calling the submit action of the confirmUserController with no keystore data" should {
+    def callSubmit(): Future[Result] = TestConfirmUserController.submit()(request)
+
+    "return the user details page" in {
+      setupMockKeystore(fetchUserDetails = None)
+      setupMockNotLockedOut(token)
+
+      val result = callSubmit()
+
+      redirectLocation(result) must contain(controllers.matching.routes.UserDetailsController.show().url)
+    }
+  }
+
   "Calling the submit action of the ConfirmUserController with an authorised user and valid submission" when {
 
     def callSubmit(): Future[Result] = TestConfirmUserController.submit()(request)
@@ -202,82 +215,5 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         }
       }
     }
-    //
-    //    "UserMatchingService returned NoUserMatched" should {
-    //      s"redirect user to ${controllers.matching.routes.UserDetailsErrorController.show().url}" in {
-    //        mockOrchestrateAgentQualificationFailure(token, NoUserMatched)
-    //        setupMockNotLockedOut(token)
-    //
-    //        val result = callSubmit()
-    //
-    //        status(result) mustBe SEE_OTHER
-    //        redirectLocation(result) mustBe Some(controllers.matching.routes.UserDetailsErrorController.show().url)
-    //      }
-    //    }
-    //
-    //
-    //    "UserMatchingService returned ApprovedAgent" should {
-    //      s"redirect user to ${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
-    //        mockOrchestrateAgentQualificationSuccess(token, nino)
-    //        setupMockNotLockedOut(token)
-    //
-    //        val result = callSubmit()
-    //
-    //        status(result) mustBe SEE_OTHER
-    //        redirectLocation(result) mustBe Some(controllers.routes.IncomeSourceController.showIncomeSource().url)
-    //      }
-    //    }
-    //  }
-
-    //  "An agent who is locked out" should {
-    //    s"be redirect to ${controllers.matching.routes.UserDetailsLockoutController.show().url} when calling show" in {
-    //      setupMockLockedOut(token)
-    //
-    //      val result = TestConfirmUserController.show()(request)
-    //
-    //      status(result) mustBe SEE_OTHER
-    //
-    //      redirectLocation(result).get mustBe controllers.matching.routes.UserDetailsLockoutController.show().url
-    //    }
-    //
-    //    s"be redirect to ${controllers.matching.routes.UserDetailsLockoutController.show().url} when calling submit" in {
-    //      setupMockLockedOut(token)
-    //
-    //      val result = TestConfirmUserController.submit()(request)
-    //
-    //      status(result) mustBe SEE_OTHER
-    //
-    //      redirectLocation(result).get mustBe controllers.matching.routes.UserDetailsLockoutController.show().url
-    //    }
-    //  }
-    //
-    //  "An agent who is not yet locked out" when {
-    //
-    //    "they fail client matching for the first time" should {
-    //      def callSubmit(): Future[Result] = TestConfirmUserController.submit()(request)
-    //
-    //      lazy val result = callSubmit()
-    //
-    //      s"have the ${ITSASessionKeys.FailedClientMatching} -> 1 added to session" in {
-    //        mockOrchestrateAgentQualificationFailure(token, NoUserMatched)
-    //        setupMockNotLockedOut(token)
-    //
-    //        await(result).session(request).get(ITSASessionKeys.FailedClientMatching) mustBe Some(1.toString)
-    //      }
-    //
-    //      s"redirect to ${controllers.matching.routes.UserDetailsErrorController.show().url}" in {
-    //        status(result) mustBe SEE_OTHER
-    //        redirectLocation(result) mustBe Some(controllers.matching.routes.UserDetailsErrorController.show().url)
-    //      }
-    //    }
-    //
-    //    "The back url" should {
-    //      s"point to ${controllers.matching.routes.UserDetailsController.show().url}" in {
-    //        TestConfirmUserController.backUrl mustBe controllers.matching.routes.UserDetailsController.show().url
-    //      }
-    //    }
-    //
-    //    authorisationTests()
-    //  }
   }
 }
