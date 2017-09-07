@@ -18,10 +18,8 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import auth.AuthPredicates
 import org.mockito.Mockito
 import play.api.data.Form
-import play.api.http.Status
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

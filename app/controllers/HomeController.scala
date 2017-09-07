@@ -69,6 +69,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
     (user.nino, user.utr) match {
       case (Some(_), Some(_)) => defaultAction
       case (Some(nino), None) =>
+        // todo if nino is in session but not in auth profile then don't call CID
         citizenDetailsService.lookupUtr(nino).flatMap {
           case Right(optResult) =>
             optResult match {
