@@ -21,54 +21,51 @@ import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
 import services.mocks.TestUserLockoutService
-import utils.TestConstants
 import utils.TestConstants._
 
 class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
-  val testArn: String = TestConstants.testNino
-
   "AgentLockoutService.lockoutAgent" should {
 
-    def call = await(TestUserLockoutService.lockoutUser(token = testArn))
+    def call = await(TestUserLockoutService.lockoutUser(userId = testUserId))
 
     "return the not locked out status" in {
-      setupMockLockCreated(testArn)
+      setupMockLockCreated(strippedUserId)
       call.right.value shouldBe testLockoutResponse
     }
 
     "return the error if lock status fails on bad request" in {
-      setupMockLockFailureResponse(testArn)
+      setupMockLockFailureResponse(strippedUserId)
       call.left.value shouldBe LockoutStatusFailureResponse(BAD_REQUEST)
     }
 
     "return the error if locked out throws an exception" in {
-      setupMockLockException(testArn)
+      setupMockLockException(strippedUserId)
       intercept[Exception](call) shouldBe testException
     }
   }
 
   "AgentLockoutService.getLockOutStatus" should {
 
-    def call = await(TestUserLockoutService.getLockoutStatus(token = testNino))
+    def call = await(TestUserLockoutService.getLockoutStatus(userId = testUserId))
 
     "return the not locked out status" in {
-      setupMockNotLockedOut(testArn)
+      setupMockNotLockedOut(strippedUserId)
       call.right.value shouldBe NotLockedOut
     }
 
     "return the locked out status" in {
-      setupMockLockedOut(testArn)
+      setupMockLockedOut(strippedUserId)
       call.right.value shouldBe testLockoutResponse
     }
 
     "return the error if lock status fails on bad request" in {
-      setupMockLockStatusFailureResponse(testArn)
+      setupMockLockStatusFailureResponse(strippedUserId)
       call.left.value shouldBe LockoutStatusFailureResponse(BAD_REQUEST)
     }
 
     "return the error if locked out throws an exception" in {
-      setupMockLockStatusException(testArn)
+      setupMockLockStatusException(strippedUserId)
       intercept[Exception](call) shouldBe testException
     }
   }

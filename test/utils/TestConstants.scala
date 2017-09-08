@@ -27,6 +27,7 @@ import connectors.models.subscription.{Both, SubscriptionFailureResponse, Subscr
 import models.DateModel
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
+import uk.gov.hmrc.play.http.UserId
 
 object TestConstants {
   /*
@@ -40,6 +41,9 @@ object TestConstants {
   lazy val ggServiceName = "HMRC-MTD-IT"
   lazy val testLockoutResponse = LockedOut(testNino, OffsetDateTime.now())
   lazy val testUtr: String = UUID.randomUUID().toString //Not an actual UTR
+
+  val strippedUserId = "1234567"
+  val testUserId = UserId(s"/auth/oid/$strippedUserId")
 
   val testFirstName = "Test"
   val testLastName = "Name"

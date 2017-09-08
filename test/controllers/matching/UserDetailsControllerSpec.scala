@@ -48,14 +48,14 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
     mockAuthService,
     mockUserLockoutService
   )
-  lazy val request = fakeRequest.withSession(SessionKeys.token -> testToken, ITSASessionKeys.GoHome -> "et")
+  lazy val request = fakeRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.GoHome -> "et")
 
-  "Calling the show action of the ClientDetailsController with an authorised user" should {
+  "Calling the show action of the UserDetailsController with an authorised user" should {
     lazy val result = await(TestUserDetailsController.show(isEditMode = false)(request))
 
     "return ok (200)" in {
       setupMockKeystore(fetchUserDetails = None)
-      setupMockNotLockedOut(testToken)
+      setupMockNotLockedOut(testUserId)
 
       status(result) must be(Status.OK)
 
@@ -96,7 +96,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
               fetchUserDetails = None,
               deleteAll = HttpResponse(OK)
             )
-            setupMockNotLockedOut(testToken)
+            setupMockNotLockedOut(testUserId)
 
             val goodResult = callSubmit(isEditMode = editMode)
 
@@ -116,7 +116,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
               fetchUserDetails = testUserDetails.copy(firstName = testUserDetails.firstName + "NOT"),
               deleteAll = HttpResponse(OK)
             )
-            setupMockNotLockedOut(testToken)
+            setupMockNotLockedOut(testUserId)
 
             val goodResult = callSubmit(isEditMode = editMode)
 
@@ -136,7 +136,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
               fetchUserDetails = testUserDetails,
               deleteAll = HttpResponse(OK)
             )
-            setupMockNotLockedOut(testToken)
+            setupMockNotLockedOut(testUserId)
 
             val goodResult = callSubmit(isEditMode = editMode)
 
@@ -164,7 +164,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
         "return a redirect status (BAD_REQUEST - 400)" in {
           setupMockKeystoreSaveFunctions()
-          setupMockNotLockedOut(testToken)
+          setupMockNotLockedOut(testUserId)
 
           val badResult = callSubmit(isEditMode = editMode)
 
@@ -175,7 +175,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
         }
 
         "return HTML" in {
-          setupMockNotLockedOut(testToken)
+          setupMockNotLockedOut(testUserId)
 
           val badResult = callSubmit(isEditMode = editMode)
 
@@ -184,7 +184,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
         }
 
         "render the 'Not subscribed to Agent Services page'" in {
-          setupMockNotLockedOut(testToken)
+          setupMockNotLockedOut(testUserId)
 
           val badResult = callSubmit(isEditMode = editMode)
           val document = Jsoup.parse(contentAsString(badResult))
@@ -198,14 +198,14 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
   "If the agent is locked out" should {
     s"calling show should redirect them to ${controllers.matching.routes.UserDetailsLockoutController.show().url}" in {
-      setupMockLockedOut(testToken)
+      setupMockLockedOut(testUserId)
       lazy val result = TestUserDetailsController.show(isEditMode = false)(request)
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get mustBe controllers.matching.routes.UserDetailsLockoutController.show().url
     }
 
     s"calling submit should redirect them to ${controllers.matching.routes.UserDetailsLockoutController.show().url}" in {
-      setupMockLockedOut(testToken)
+      setupMockLockedOut(testUserId)
       lazy val result = TestUserDetailsController.submit(isEditMode = false)(request)
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get mustBe controllers.matching.routes.UserDetailsLockoutController.show().url

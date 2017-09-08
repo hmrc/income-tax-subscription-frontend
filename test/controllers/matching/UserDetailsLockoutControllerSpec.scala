@@ -45,7 +45,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
     mockUserLockoutService
   )
 
-  lazy val request = fakeRequest.withSession(SessionKeys.token -> testToken, ITSASessionKeys.GoHome -> "et")
+  lazy val request = fakeRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.GoHome -> "et")
 
   "Calling the 'show' action of the UserDetailsLockoutController" when {
 
@@ -54,7 +54,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
       lazy val document = Jsoup.parse(contentAsString(result))
 
       "return 200" in {
-        setupMockLockedOut(testToken)
+        setupMockLockedOut(testUserId)
         status(result) must be(Status.OK)
 
         contentType(result) must be(Some("text/html"))
@@ -66,7 +66,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
 
     "the agent is not locked out" should {
       s"redirect to ${controllers.matching.routes.UserDetailsController.show().url}" in {
-        setupMockNotLockedOut(testToken)
+        setupMockNotLockedOut(testUserId)
 
         lazy val result = TestUserDetailsLockoutController.show(request)
 

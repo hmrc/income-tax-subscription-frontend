@@ -48,8 +48,11 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
     )
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
-    val bearerToken = implicitly[HeaderCarrier].token.get
-    (lockOutService.getLockoutStatus(bearerToken.value) flatMap {
+    val bearerToken = implicitly[HeaderCarrier].userId.get
+
+    println(bearerToken)
+
+    (lockOutService.getLockoutStatus(bearerToken) flatMap {
       case Right(NotLockedOut) => f
       case Right(_) => Future.successful(Redirect(controllers.matching.routes.UserDetailsLockoutController.show().url))
     }).recover { case e =>

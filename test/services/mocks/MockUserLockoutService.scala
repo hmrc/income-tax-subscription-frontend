@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
 import services.UserLockoutService
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.{HeaderCarrier, UserId}
 import utils.MockTrait
 import utils.TestConstants.{testException, testLockoutResponse}
 
@@ -38,37 +38,38 @@ trait MockUserLockoutService extends MockTrait {
     reset(mockUserLockoutService)
   }
 
-  private def mockLockoutAgent(bearerToken: String)(result: Future[LockoutStatusResponse]): Unit =
-    when(mockUserLockoutService.lockoutUser(ArgumentMatchers.eq(bearerToken))(ArgumentMatchers.any[HeaderCarrier]))
+  private def mockLockoutAgent(userId: UserId)(result: Future[LockoutStatusResponse]): Unit =
+    when(mockUserLockoutService.lockoutUser(UserId(ArgumentMatchers.eq(userId.value)))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  def setupMockLockCreated(bearerToken: String): Unit =
-    mockLockoutAgent(bearerToken)(Future.successful(Right(testLockoutResponse)))
+  def setupMockLockCreated(userId: UserId): Unit =
+    mockLockoutAgent(userId)(Future.successful(Right(testLockoutResponse)))
 
-  def setupMockLockFailureResponse(bearerToken: String): Unit =
-    mockLockoutAgent(bearerToken)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
+  def setupMockLockFailureResponse(userId: UserId): Unit =
+    mockLockoutAgent(userId)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
 
-  def setupMockLockException(bearerToken: String): Unit =
-    mockLockoutAgent(bearerToken)(Future.failed(testException))
+  def setupMockLockException(userId: UserId): Unit =
+    mockLockoutAgent(userId)(Future.failed(testException))
 
-  def verifyLockoutUser(bearerToken: String, count: Int): Unit =
-    verify(mockUserLockoutService, times(count)).lockoutUser(ArgumentMatchers.eq(bearerToken))(ArgumentMatchers.any[HeaderCarrier])
+  def verifyLockoutUser(userId: UserId, count: Int): Unit =
+    verify(mockUserLockoutService, times(count)).lockoutUser(UserId(ArgumentMatchers.eq(userId.value)))(ArgumentMatchers.any[HeaderCarrier])
 
-  private def mockGetLockoutStatus(bearerToken: String)(result: Future[LockoutStatusResponse]): Unit =
-    when(mockUserLockoutService.getLockoutStatus(ArgumentMatchers.eq(bearerToken))(ArgumentMatchers.any[HeaderCarrier]))
+  private def mockGetLockoutStatus(userId: UserId)(result: Future[LockoutStatusResponse]): Unit = {
+    when(mockUserLockoutService.getLockoutStatus(UserId(ArgumentMatchers.eq(userId.value)))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
+  }
 
-  def setupMockNotLockedOut(bearerToken: String): Unit =
-    mockGetLockoutStatus(bearerToken)(Future.successful(Right(NotLockedOut)))
+  def setupMockNotLockedOut(userId: UserId): Unit =
+    mockGetLockoutStatus(userId)(Future.successful(Right(NotLockedOut)))
 
-  def setupMockLockedOut(bearerToken: String): Unit =
-    mockGetLockoutStatus(bearerToken)(Future.successful(Right(testLockoutResponse)))
+  def setupMockLockedOut(userId: UserId): Unit =
+    mockGetLockoutStatus(userId)(Future.successful(Right(testLockoutResponse)))
 
-  def setupMockLockStatusFailureResponse(bearerToken: String): Unit =
-    mockGetLockoutStatus(bearerToken)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
+  def setupMockLockStatusFailureResponse(userId: UserId): Unit =
+    mockGetLockoutStatus(userId)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
 
-  def setupMockLockStatusException(bearerToken: String): Unit =
-    mockGetLockoutStatus(bearerToken)(Future.failed(testException))
+  def setupMockLockStatusException(userId: UserId): Unit =
+    mockGetLockoutStatus(userId)(Future.failed(testException))
 
 }
 

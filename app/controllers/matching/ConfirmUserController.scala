@@ -49,8 +49,8 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
     )
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
-    val bearerToken = implicitly[HeaderCarrier].token.get
-    (lockOutService.getLockoutStatus(bearerToken.value) flatMap {
+    val bearerToken = implicitly[HeaderCarrier].userId.get
+    (lockOutService.getLockoutStatus(bearerToken) flatMap {
       case Right(NotLockedOut) => f
       case Right(_: LockedOut) =>
         Future.successful(Redirect(controllers.matching.routes.UserDetailsLockoutController.show().url))
@@ -92,7 +92,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
 
   lazy val backUrl: String = routes.UserDetailsController.show().url
 
-  private def handleFailedMatch(implicit request: Request[AnyContent]) = {
+  private def handleFailedMatch(implicit request: Request[AnyContent]): Future[Result] = {
     val failedMatches = request.session.get(FailedUserMatching).fold(0)(_.toInt) + 1
 
     if (failedMatches < applicationConfig.matchingAttempts) {
@@ -102,15 +102,15 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       )
     }
     else {
-      val bearerToken = implicitly[HeaderCarrier].token.get
+      val bearerToken = implicitly[HeaderCarrier].userId.get
       for {
-        _ <- lockOutService.lockoutUser(bearerToken.value)
+        _ <- lockOutService.lockoutUser(bearerToken)
       } yield Redirect(routes.UserDetailsLockoutController.show())
         .removingFromSession(FailedUserMatching)
     }
   }
 
-  private def handleMatchedUser(matchedDetails: UserMatchSuccessResponseModel)(implicit request: Request[AnyContent]) = {
+  private def handleMatchedUser(matchedDetails: UserMatchSuccessResponseModel)(implicit request: Request[AnyContent]): Future[Result] = {
     matchedDetails match {
       case UserMatchSuccessResponseModel(_, _, _, nino, Some(utr)) =>
         Future.successful(

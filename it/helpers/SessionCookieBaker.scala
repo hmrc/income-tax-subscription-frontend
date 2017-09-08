@@ -51,7 +51,7 @@ object SessionCookieBaker {
     Map(
       SessionKeys.sessionId -> SessionId,
       SessionKeys.userId -> userId,
-      SessionKeys.token -> "token",
+      SessionKeys.authToken -> "token",
       SessionKeys.authProvider -> "GGW",
       SessionKeys.lastRequestTimestamp -> rollbackTimestamp,
       SessionKeys.authToken -> "auth",

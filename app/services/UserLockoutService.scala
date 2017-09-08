@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import connectors.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import connectors.matching.UserLockoutConnector
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.play.http.{HeaderCarrier, UserId}
 
 import scala.concurrent.Future
 
@@ -29,14 +29,19 @@ import scala.concurrent.Future
 class UserLockoutService @Inject()(userLockoutConnector: UserLockoutConnector,
                                    logging: Logging) {
 
-  def lockoutUser(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
-    logging.debug(s"Creating a lock for agent with token=$token")
-    userLockoutConnector.lockoutUser(token)
+  def lockoutUser(userId: UserId)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
+    val strippedId = stripUserId(userId)
+
+    logging.debug(s"Creating a lock for agent with token=$strippedId")
+    userLockoutConnector.lockoutUser(strippedId)
   }
 
-  def getLockoutStatus(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
-    logging.debug(s"Getting lockout status for token=$token")
-    userLockoutConnector.getLockoutStatus(token)
+  def getLockoutStatus(userId: UserId)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
+    val strippedId = stripUserId(userId)
+
+    logging.debug(s"Getting lockout status for token=$strippedId")
+    userLockoutConnector.getLockoutStatus(strippedId)
   }
 
+  private def stripUserId(userId: UserId): String = userId.value.replace("/auth/oid/", "")
 }

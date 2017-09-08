@@ -17,16 +17,14 @@
 package controllers.matching
 
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
 import org.scalatest.OptionValues
-import play.api.http.{HeaderNames, Status}
+import play.api.http.Status
 import play.api.mvc._
 import play.api.test.Helpers.{await, _}
-import services._
 import services.mocks._
-import uk.gov.hmrc.play.http.{HttpResponse, InternalServerException, SessionKeys}
-import utils.{SessionCookieBaker, TestConstants, TestModels}
+import uk.gov.hmrc.play.http.{InternalServerException, SessionKeys}
+import utils.TestConstants._
+import utils.{TestConstants, TestModels}
 
 import scala.concurrent.Future
 
@@ -56,7 +54,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
   val userDetails = TestModels.testUserDetails
   val token = TestConstants.testToken
 
-  lazy val request = fakeRequest.withSession(SessionKeys.token -> token, ITSASessionKeys.GoHome -> "et")
+  lazy val request = fakeRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.GoHome -> "et")
 
   "Calling the show action of the ConfirmUserController with an authorised user" should {
 
@@ -64,7 +62,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
     "when there are no client details store redirect them to client details" in {
       setupMockKeystore(fetchUserDetails = None)
-      setupMockNotLockedOut(token)
+      setupMockNotLockedOut(testUserId)
 
       val result = call
 
@@ -77,7 +75,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
     "if there is are client details return ok (200)" in {
       setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
-      setupMockNotLockedOut(token)
+      setupMockNotLockedOut(testUserId)
 
       val result = call
 
@@ -93,7 +91,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     def callSubmit(): Future[Result] = TestConfirmUserController.submit()(request)
 
     "return the user details page" in {
-      setupMockLockedOut(token)
+      setupMockLockedOut(testUserId)
 
       val result = callSubmit()
 
@@ -106,7 +104,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
     "return the user details page" in {
       setupMockKeystore(fetchUserDetails = None)
-      setupMockNotLockedOut(token)
+      setupMockNotLockedOut(testUserId)
 
       val result = callSubmit()
 
@@ -122,7 +120,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
       "return a InternalServerException" in {
         setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
         mockUserMatchException(userDetails)
-        setupMockNotLockedOut(token)
+        setupMockNotLockedOut(testUserId)
 
         val result = callSubmit()
 
@@ -134,7 +132,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
       s"redirect to the home controller with nino and sautr added to session" in {
         setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
         mockUserMatchSuccess(userDetails)
-        setupMockNotLockedOut(token)
+        setupMockNotLockedOut(testUserId)
 
         val result = callSubmit()
 
@@ -151,7 +149,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
       s"redirect to the home controller with nino added to session" in {
         setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
         mockUserMatchSuccessNoUtr(userDetails)
-        setupMockNotLockedOut(token)
+        setupMockNotLockedOut(testUserId)
 
         val result = callSubmit()
 
@@ -168,7 +166,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         "redirect to the user details page and increment the counter by 1" in {
           setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
           mockUserMatchFailure(userDetails)
-          setupMockNotLockedOut(token)
+          setupMockNotLockedOut(testUserId)
 
           val result = callSubmit()
 
@@ -183,14 +181,14 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
       "the lockout count is less than the maximum" should {
         "redirect to the user details page and increment the counter by 1" in {
           implicit val requestWithLockout = fakeRequest.withSession(
-            SessionKeys.token -> token,
+            SessionKeys.userId -> testUserId.value,
             ITSASessionKeys.GoHome -> "et",
             ITSASessionKeys.FailedUserMatching -> "1"
           )
 
           setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
           mockUserMatchFailure(userDetails)
-          setupMockNotLockedOut(token)
+          setupMockNotLockedOut(testUserId)
 
           val result = TestConfirmUserController.submit()(requestWithLockout)
 
@@ -205,15 +203,15 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
       "the lockout count reaches the maximum" should {
         "lockout the user and redirect to the locked out page" in {
           implicit val requestWithLockout = fakeRequest.withSession(
-            SessionKeys.token -> token,
+            SessionKeys.userId -> testUserId.value,
             ITSASessionKeys.GoHome -> "et",
             ITSASessionKeys.FailedUserMatching -> "3"
           )
 
           setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
           mockUserMatchFailure(userDetails)
-          setupMockNotLockedOut(token)
-          setupMockLockCreated(token)
+          setupMockNotLockedOut(testUserId)
+          setupMockLockCreated(testUserId)
 
           val result = TestConfirmUserController.submit()(requestWithLockout)
 
@@ -223,7 +221,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           val session = await(result).session
           session.get(ITSASessionKeys.FailedUserMatching) mustBe empty
 
-          verifyLockoutUser(token, 1)
+          verifyLockoutUser(testUserId, 1)
         }
       }
     }
