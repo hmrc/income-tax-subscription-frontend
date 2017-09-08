@@ -1,81 +1,97 @@
 # Assets
-GET         /assets/*file                     controllers.Assets.at(path="/public", file)
+GET         /assets/*file                 controllers.Assets.at(path="/public", file)
 
 # Home controller
-GET         /                                 controllers.HomeController.home
-GET         /index                            controllers.HomeController.index
+GET         /                             controllers.HomeController.home
+GET         /index                        controllers.HomeController.index
 
 # SignOut Controller
-GET         /logout                           controllers.SignOutController.signOut
+GET         /logout                       controllers.SignOutController.signOut
+
+# User Matching
+GET         /user-details                 controllers.matching.UserDetailsController.show(editMode: Boolean ?= false)
+POST        /user-details                 controllers.matching.UserDetailsController.submit(editMode: Boolean ?= false)
+
+# User Lockout
+GET         /error/lockout                controllers.matching.UserDetailsLockoutController.show
+POST        /error/lockout                controllers.matching.UserDetailsLockoutController.submit
+
+# Confirm User
+GET         /confirm-user                 controllers.matching.ConfirmUserController.show()
+POST        /confirm-user                 controllers.matching.ConfirmUserController.submit()
+
+# User Details Error
+GET         /error/user-details           controllers.matching.UserDetailsErrorController.show()
+POST        /error/user-details           controllers.matching.UserDetailsErrorController.submit()
 
 # Preferences routes
-GET         /preferences                      controllers.preferences.PreferencesController.checkPreferences
-GET         /callback                         controllers.preferences.PreferencesController.callback
-GET         /paperless-error                  controllers.preferences.PreferencesController.showGoBackToPreferences
-POST        /paperless-error                  controllers.preferences.PreferencesController.submitGoBackToPreferences
+GET         /preferences                  controllers.preferences.PreferencesController.checkPreferences
+GET         /callback                     controllers.preferences.PreferencesController.callback
+GET         /paperless-error              controllers.preferences.PreferencesController.showGoBackToPreferences
+POST        /paperless-error              controllers.preferences.PreferencesController.submitGoBackToPreferences
 
 # Income Source Routes
-GET         /income                           controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
-POST        /income                           controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
+GET         /income                       controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
+POST        /income                       controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
 
 # Summary Routes
-GET         /check-your-answers               controllers.CheckYourAnswersController.show
-POST        /check-your-answers               controllers.CheckYourAnswersController.submit
+GET         /check-your-answers           controllers.CheckYourAnswersController.show
+POST        /check-your-answers           controllers.CheckYourAnswersController.submit
 
 # Confirmation Routes
-GET         /confirmation                     controllers.ConfirmationController.showConfirmation
-GET         /confirmation/sign-out            controllers.ConfirmationController.signOut
+GET         /confirmation                 controllers.ConfirmationController.showConfirmation
+GET         /confirmation/sign-out        controllers.ConfirmationController.signOut
 
 # Session Timeout Route
-GET         /session-timeout                  controllers.SessionTimeoutController.timeout
+GET         /session-timeout              controllers.SessionTimeoutController.timeout
 
 # Feedback Routes
-GET         /feedback                         controllers.FeedbackController.show
-POST        /feedback                         controllers.FeedbackController.submit
-GET         /thankyou                         controllers.FeedbackController.thankyou
+GET         /feedback                     controllers.FeedbackController.show
+POST        /feedback                     controllers.FeedbackController.submit
+GET         /thankyou                     controllers.FeedbackController.thankyou
 
 # Terms Routes
-GET         /terms                            controllers.TermsController.showTerms()
-POST        /terms                            controllers.TermsController.submitTerms()
+GET         /terms                        controllers.TermsController.showTerms()
+POST        /terms                        controllers.TermsController.submitTerms()
 
 # Not Eligible Routes - CURRENTLY NOT USED (but kept if required at a later date)
-GET         /not-eligible                     controllers.NotEligibleController.showNotEligible
-POST        /not-eligible                     controllers.NotEligibleController.submitNotEligible
+GET         /not-eligible                 controllers.NotEligibleController.showNotEligible
+POST        /not-eligible                 controllers.NotEligibleController.submitNotEligible
 
 # Other Income Sources Routes
-GET         /income-other                     controllers.OtherIncomeController.showOtherIncome(editMode: Boolean ?= false)
-POST        /income-other                     controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
+GET         /income-other                 controllers.OtherIncomeController.showOtherIncome(editMode: Boolean ?= false)
+POST        /income-other                 controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
 
 # Already enrolled
-GET         /already-enrolled                 controllers.AlreadyEnrolledController.enrolled
+GET         /already-enrolled             controllers.AlreadyEnrolledController.enrolled
 
 # No NINO Routes
-GET         /error/no-nino                    controllers.NoNinoController.showNoNino
-POST        /error/no-nino                    controllers.NoNinoController.submitNoNino
+GET         /error/no-nino                controllers.NoNinoController.showNoNino
+POST        /error/no-nino                controllers.NoNinoController.submitNoNino
 
 # Main Income Error Routes
-GET         /error/main-income                controllers.MainIncomeErrorController.mainIncomeError
+GET         /error/main-income            controllers.MainIncomeErrorController.mainIncomeError
 
 # Other Income Error Routes
-GET         /error/other-income               controllers.OtherIncomeErrorController.showOtherIncomeError
-POST        /error/other-income               controllers.OtherIncomeErrorController.submitOtherIncomeError
+GET         /error/other-income           controllers.OtherIncomeErrorController.showOtherIncomeError
+POST        /error/other-income           controllers.OtherIncomeErrorController.submitOtherIncomeError
 
 # Affinity Group Error
-GET         /error/affinity-group              controllers.AffinityGroupErrorController.show
+GET         /error/affinity-group         controllers.AffinityGroupErrorController.show
 
 # IV Error
-GET         /error/iv-failed                  controllers.iv.IdentityVerificationController.ivFailed
+GET         /error/iv-failed              controllers.iv.IdentityVerificationController.ivFailed
 
 # Exit Survey
-GET         /exit-survey                      controllers.ExitSurveyController.show
-POST        /exit-survey                      controllers.ExitSurveyController.submit
+GET         /exit-survey                  controllers.ExitSurveyController.show
+POST        /exit-survey                  controllers.ExitSurveyController.submit
 
-GET         /feedback-submitted               controllers.ThankYouController.show
+GET         /feedback-submitted           controllers.ThankYouController.show
 
-GET         /sign-in                          controllers.SignInController.signIn
+GET         /sign-in                      controllers.SignInController.signIn
 
 # Claim Subscription
-GET         /claim-subscription               controllers.ClaimSubscriptionController.claim
+GET         /claim-subscription           controllers.ClaimSubscriptionController.claim
 
 # IV
-GET         /iv                               controllers.iv.IdentityVerificationController.gotoIV
+GET         /iv                           controllers.iv.IdentityVerificationController.gotoIV

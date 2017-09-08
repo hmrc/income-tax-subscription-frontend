@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package services
+package connectors
 
-object CacheConstants {
-  val IncomeSource = "IncomeSource"
-  val PropertyIncome = "PropertyIncome"
-  val SoleTrader = "SoleTrader"
-  val AccountingPeriodPrior = "AccountingPeriodPrior"
-  val RegisterNextAccountingPeriod = "RegisterNextAccountingPeriod"
-  val BusinessName = "BusinessName"
-  val AccountingPeriodDate = "AccountingPeriodDate"
-  val AccountingMethod = "AccountingMethod"
-  val Terms = "Terms"
-  val OtherIncome = "OtherIncome"
-  val NotEligible = "NotEligible"
-  val MtditId = "MtditId"
-  val UserDetails = "UserDetails"
+import connectors.mocks.TestAuthenticatorConnector
+import org.scalatest.EitherValues
+import play.api.test.Helpers._
+import uk.gov.hmrc.play.http.InternalServerException
+import utils.TestModels._
+
+class AuthenticatorConnectorSpec extends TestAuthenticatorConnector with EitherValues {
+
+  //TODO create connector level integration tests with Wiremock
 
 }

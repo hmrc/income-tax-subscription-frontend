@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package services
+package connectors.models.matching
 
-object CacheConstants {
-  val IncomeSource = "IncomeSource"
-  val PropertyIncome = "PropertyIncome"
-  val SoleTrader = "SoleTrader"
-  val AccountingPeriodPrior = "AccountingPeriodPrior"
-  val RegisterNextAccountingPeriod = "RegisterNextAccountingPeriod"
-  val BusinessName = "BusinessName"
-  val AccountingPeriodDate = "AccountingPeriodDate"
-  val AccountingMethod = "AccountingMethod"
-  val Terms = "Terms"
-  val OtherIncome = "OtherIncome"
-  val NotEligible = "NotEligible"
-  val MtditId = "MtditId"
-  val UserDetails = "UserDetails"
+import play.api.libs.json.Json
 
+
+case class LockOutRequest(timeoutSeconds: Int)
+
+object LockOutRequest {
+  implicit val format = Json.format[LockOutRequest]
 }
