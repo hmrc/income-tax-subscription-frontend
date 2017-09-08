@@ -38,18 +38,18 @@ trait MockUserLockoutService extends MockTrait {
     reset(mockUserLockoutService)
   }
 
-  private def mockLockoutAgent(userId: UserId)(result: Future[LockoutStatusResponse]): Unit =
+  private def mockLockoutUser(userId: UserId)(result: Future[LockoutStatusResponse]): Unit =
     when(mockUserLockoutService.lockoutUser(UserId(ArgumentMatchers.eq(userId.value)))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
   def setupMockLockCreated(userId: UserId): Unit =
-    mockLockoutAgent(userId)(Future.successful(Right(testLockoutResponse)))
+    mockLockoutUser(userId)(Future.successful(Right(testLockoutResponse)))
 
   def setupMockLockFailureResponse(userId: UserId): Unit =
-    mockLockoutAgent(userId)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
+    mockLockoutUser(userId)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
 
   def setupMockLockException(userId: UserId): Unit =
-    mockLockoutAgent(userId)(Future.failed(testException))
+    mockLockoutUser(userId)(Future.failed(testException))
 
   def verifyLockoutUser(userId: UserId, count: Int): Unit =
     verify(mockUserLockoutService, times(count)).lockoutUser(UserId(ArgumentMatchers.eq(userId.value)))(ArgumentMatchers.any[HeaderCarrier])
@@ -76,6 +76,6 @@ trait MockUserLockoutService extends MockTrait {
 
 trait TestUserLockoutService extends TestUserLockoutConnector {
 
-  object TestUserLockoutService extends UserLockoutService(mockAgentLockoutConnector, app.injector.instanceOf[Logging])
+  object TestUserLockoutService extends UserLockoutService(mockUserLockoutConnector, app.injector.instanceOf[Logging])
 
 }

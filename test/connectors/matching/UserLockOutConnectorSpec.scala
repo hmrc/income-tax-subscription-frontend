@@ -22,9 +22,9 @@ import utils.TestConstants.testNino
 
 class UserLockOutConnectorSpec extends UnitTestTrait with TestUserLockoutConnector{
 
-  "AgentLockOutConnector" should {
+  "UserLockOutConnector" should {
     "have the correct url" in {
-      TestAgentLockoutConnector.userLockoutUrl(testNino) must endWith(s"/income-tax-subscription/client-matching/lock/$testNino")
+      TestUserLockoutConnector.userLockoutUrl(testNino) must endWith(s"/income-tax-subscription/client-matching/lock/$testNino")
     }
   }
 

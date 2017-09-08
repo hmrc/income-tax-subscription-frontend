@@ -30,30 +30,30 @@ import utils.TestConstants._
 import scala.concurrent.Future
 
 trait TestUserLockoutConnector extends MockTrait with MockHttp {
-  val mockAgentLockoutConnector = mock[UserLockoutConnector]
+  val mockUserLockoutConnector = mock[UserLockoutConnector]
 
-  object TestAgentLockoutConnector extends UserLockoutConnector(
+  object TestUserLockoutConnector extends UserLockoutConnector(
     app.injector.instanceOf[AppConfig],
     mockHttpGet,
     mockHttpPost
   )
 
 
-  private def setupLockoutAgent(arn: String)(result: Future[LockoutStatusResponse]): Unit =
-    when(mockAgentLockoutConnector.lockoutUser(ArgumentMatchers.eq(arn))(ArgumentMatchers.any[HeaderCarrier]))
+  private def setupLockoutUser(arn: String)(result: Future[LockoutStatusResponse]): Unit =
+    when(mockUserLockoutConnector.lockoutUser(ArgumentMatchers.eq(arn))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
   def setupMockLockCreated(arn: String): Unit =
-    setupLockoutAgent(arn)(Future.successful(Right(testLockoutResponse)))
+    setupLockoutUser(arn)(Future.successful(Right(testLockoutResponse)))
 
   def setupMockLockFailureResponse(arn: String): Unit =
-    setupLockoutAgent(arn)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
+    setupLockoutUser(arn)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
 
   def setupMockLockException(arn: String): Unit =
-    setupLockoutAgent(arn)(Future.failed(testException))
+    setupLockoutUser(arn)(Future.failed(testException))
 
   private def setupMockGetLockoutStatus(arn: String)(result: Future[LockoutStatusResponse]): Unit =
-    when(mockAgentLockoutConnector.getLockoutStatus(ArgumentMatchers.eq(arn))(ArgumentMatchers.any[HeaderCarrier]))
+    when(mockUserLockoutConnector.getLockoutStatus(ArgumentMatchers.eq(arn))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
   def setupMockNotLockedOut(arn: String): Unit =

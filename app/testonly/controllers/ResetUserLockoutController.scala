@@ -31,7 +31,7 @@ class ResetUserLockoutController @Inject()(val baseConfig: BaseControllerConfig,
     for {
       reset <- resetUserLockoutConnector.resetLockout
     } yield reset.status match {
-      case OK => Ok("Agent lockout has been reset")
+      case OK => Ok("User lockout has been reset")
       case status => InternalServerError(s"Unexpected failure returned status=$status body=${reset.body}")
     }
   }

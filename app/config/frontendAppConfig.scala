@@ -35,7 +35,7 @@ trait AppConfig {
   val ggSignInContinueUrl: String
   val alreadyEnrolledUrl: String
   val subscriptionUrl: String
-  val clientMatchingUrl: String
+  val userMatchingUrl: String
   val authUrl: String
   val preferencesService: String
   val preferencesUrl: String
@@ -102,7 +102,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   // protected microservice
   protected lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
-  override lazy val clientMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
+  override lazy val userMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
 
   // Digital Preferences
   override lazy val preferencesService = baseUrl("preferences-frontend")

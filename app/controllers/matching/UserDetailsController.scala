@@ -56,7 +56,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
       case Right(NotLockedOut) => f
       case Right(_) => Future.successful(Redirect(controllers.matching.routes.UserDetailsLockoutController.show().url))
     }).recover { case e =>
-      throw new InternalServerException("client details controller: " + e)
+      throw new InternalServerException("user details controller: " + e)
     }
   }
 

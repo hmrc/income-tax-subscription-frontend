@@ -39,16 +39,16 @@ class AuthenticatorConnector @Inject()(appConfig: AppConfig,
 
   lazy val matchingEndpoint: String = appConfig.authenticatorUrl + "/authenticator/match"
 
-  def matchClient(userDetails: UserDetailsModel)(implicit hc: HeaderCarrier): Future[MatchUserResponse] = {
+  def matchUser(userDetails: UserDetailsModel)(implicit hc: HeaderCarrier): Future[MatchUserResponse] = {
     val request: UserMatchRequestModel = UserMatchRequestModel(userDetails)
 
     def logFailure(message: String): Unit = {
-      logging.warn(s"AuthenticatorConnector.matchClient unexpected response from authenticator: $message")
+      logging.warn(s"AuthenticatorConnector.matchUser unexpected response from authenticator: $message")
     }
 
     http.POST[UserMatchRequestModel, MatchUserResponse](matchingEndpoint, request).map {
       case Right(result) =>
-        logging.debug("AuthenticatorConnector.matchClient response received: " + result)
+        logging.debug("AuthenticatorConnector.matchUser response received: " + result)
         Right(result)
       case Left(error) =>
         logFailure(error.errors)

@@ -38,7 +38,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
     mockAuthService
   )
 
-  "Calling the 'show' action of the ClientDetailsErrorController" should {
+  "Calling the 'show' action of the UserDetailsErrorController" should {
 
     lazy val result = TestUserDetailsErrorController.show(fakeRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
@@ -52,7 +52,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
       charset(result) must be(Some("utf-8"))
     }
 
-    "render the 'Client Details Error page'" in {
+    "render the 'User Details Error page'" in {
       document.title mustBe messages.title
     }
 
@@ -62,7 +62,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
 
   }
 
-  "Calling the 'submit' action of the ClientDetailsErrorController" should {
+  "Calling the 'submit' action of the UserDetailsErrorController" should {
 
     lazy val result = TestUserDetailsErrorController.submit(fakeRequest)
 
@@ -70,7 +70,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
       status(result) must be(Status.SEE_OTHER)
     }
 
-    "Redirect to the 'Client details' page" in {
+    "Redirect to the 'User details' page" in {
       redirectLocation(result).get mustBe controllers.matching.routes.UserDetailsController.show().url
     }
 

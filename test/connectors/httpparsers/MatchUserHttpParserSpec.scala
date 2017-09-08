@@ -27,7 +27,7 @@ import utils.TestModels._
 import utils.UnitTestTrait
 
 class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
-  "MatchClientHttpReads" when {
+  "MatchUserHttpReads" when {
     "read" should {
       val testUrl = "/"
       val testMethod = "get"

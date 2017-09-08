@@ -37,32 +37,32 @@ trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
   object TestAuthenticatorConnector extends AuthenticatorConnector(
     appConfig, mockHttpPost, app.injector.instanceOf[Logging])
 
-  def setupMockMatchClient(clientDetailsModel: Option[UserDetailsModel])(status: Int, response: JsValue): Unit =
+  def setupMockMatchUser(userDetailsModel: Option[UserDetailsModel])(status: Int, response: JsValue): Unit =
     setupMockHttpPost(TestAuthenticatorConnector.matchingEndpoint,
-      clientDetailsModel map UserMatchRequestModel.apply)(status, response)
+      userDetailsModel map UserMatchRequestModel.apply)(status, response)
 
-  // use this function if we want to match on the ClientDetailsModel used in the parameter
-  val setupMockMatchClient: UserDetailsModel => ((Int, JsValue)) => Unit =
-    (userDetailsModel: UserDetailsModel) => (setupMockMatchClient(None) _).tupled
+  // use this function if we want to match on the UserDetailsModel used in the parameter
+  val setupMockMatchUser: UserDetailsModel => ((Int, JsValue)) => Unit =
+    (userDetailsModel: UserDetailsModel) => (setupMockMatchUser(None) _).tupled
 
-  // use this function if we don't care about what ClientDetailsModel is used in the parameter
-  val setupMatchClient: ((Int, JsValue)) => Unit =
-    (setupMockMatchClient(None) _).tupled
+  // use this function if we don't care about what UserDetailsModel is used in the parameter
+  val setupMatchUser: ((Int, JsValue)) => Unit =
+    (setupMockMatchUser(None) _).tupled
 
-  def matchClientMatched(nino: String = TestConstants.testNino): (Int, JsValue) = (OK,
+  def matchUserMatched(nino: String = TestConstants.testNino): (Int, JsValue) = (OK,
     UserMatchSuccessResponseModel.format.writes(testMatchSuccessModel.copy(nino = nino)))
 
-  val matchClientNoMatch: (Int, JsValue) = (UNAUTHORIZED,
+  val matchUserNoMatch: (Int, JsValue) = (UNAUTHORIZED,
     """{
       | "errors" : "CID returned no record"
       |}""".stripMargin: JsValue)
 
-  val matchClientUnexpectedFailure: (Int, JsValue) = (UNAUTHORIZED,
+  val matchUserUnexpectedFailure: (Int, JsValue) = (UNAUTHORIZED,
     """{
       | "errors" : "Internal error: unexpected result from matching"
       |}""".stripMargin: JsValue)
 
-  val matchClientUnexpectedStatus: (Int, JsValue) = (NOT_FOUND,
+  val matchUserUnexpectedStatus: (Int, JsValue) = (NOT_FOUND,
     """{}""".stripMargin: JsValue)
 }
 
@@ -74,7 +74,7 @@ trait MockAuthenticatiorConnector extends MockTrait {
   private def mockUserMatch(userDetails: UserDetailsModel)
                            (response: Future[Either[UserMatchFailureResponseModel, Option[UserMatchSuccessResponseModel]]]): Unit =
     when(
-      mockAuthenticatiorConnector.matchClient(
+      mockAuthenticatiorConnector.matchUser(
         ArgumentMatchers.eq(userDetails)
       )(
         ArgumentMatchers.any[HeaderCarrier])

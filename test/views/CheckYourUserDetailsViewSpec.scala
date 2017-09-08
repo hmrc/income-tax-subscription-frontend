@@ -69,7 +69,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
     section.attr("class") shouldBe "tabular-data__data-2"
   }
 
-  "Confirm Client page view" should {
+  "Confirm User page view" should {
 
     s"have a back buttong pointed to $backUrl" in {
       val backLink = document().select("#back")

@@ -32,7 +32,7 @@ class UserLockoutService @Inject()(userLockoutConnector: UserLockoutConnector,
   def lockoutUser(userId: UserId)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
     val strippedId = stripUserId(userId)
 
-    logging.debug(s"Creating a lock for agent with token=$strippedId")
+    logging.debug(s"Creating a lock for user with token=$strippedId")
     userLockoutConnector.lockoutUser(strippedId)
   }
 

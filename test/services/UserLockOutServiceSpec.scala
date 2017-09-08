@@ -25,7 +25,7 @@ import utils.TestConstants._
 
 class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
-  "AgentLockoutService.lockoutAgent" should {
+  "UserLockoutService.lockoutUser" should {
 
     def call = await(TestUserLockoutService.lockoutUser(userId = testUserId))
 
@@ -45,7 +45,7 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
     }
   }
 
-  "AgentLockoutService.getLockOutStatus" should {
+  "UserLockoutService.getLockOutStatus" should {
 
     def call = await(TestUserLockoutService.getLockoutStatus(userId = testUserId))
 

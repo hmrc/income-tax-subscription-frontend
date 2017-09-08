@@ -23,7 +23,7 @@ import utils.TestModels._
 
 class UserMatchingServiceSpec extends TestUserMatchingService {
 
-  "ClientMatchingService" should {
+  "UserMatchingService" should {
 
     "return the user with nino and utr if authenticator response with ok with both ids" in {
       mockUserMatchSuccess(testUserDetails)

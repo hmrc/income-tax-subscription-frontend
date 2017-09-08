@@ -60,7 +60,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
     def call = TestConfirmUserController.show()(request)
 
-    "when there are no client details store redirect them to client details" in {
+    "when there are no user details store redirect them to user details" in {
       setupMockKeystore(fetchUserDetails = None)
       setupMockNotLockedOut(testUserId)
 
@@ -73,7 +73,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
     }
 
-    "if there is are client details return ok (200)" in {
+    "if there is are user details return ok (200)" in {
       setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
       setupMockNotLockedOut(testUserId)
 

@@ -21,9 +21,9 @@ import utils.{TestModels, UnitTestTrait}
 
 class UserMatchRequestModelSpec extends UnitTestTrait {
 
-  "ClientMatchRequestModel" should {
+  "UserMatchRequestModel" should {
 
-    "implicitly convert from ClientDetailsModel" in {
+    "implicitly convert from UserDetailsModel" in {
       // nino is updated to add spaces, this is to test this conversion also removes all the spaces
       val input = TestModels.testUserDetails.copy(nino = " " + TestModels.testUserDetails.nino.toCharArray.mkString(" ") + " ")
       val converted: UserMatchRequestModel = UserMatchRequestModel(input)

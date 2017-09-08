@@ -35,7 +35,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
   with MockUserLockoutService {
 
-  override val controllerName: String = "ClientDetailsController"
+  override val controllerName: String = "UserDetailsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestUserDetailsController.show(isEditMode = false),
     "submit" -> TestUserDetailsController.submit(isEditMode = false)
@@ -74,7 +74,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
     s"when editMode=$editMode and" when {
 
-      "Calling the submit action of the ClientDetailsController with an authorised user and valid submission and" when {
+      "Calling the submit action of the UserDetailsController with an authorised user and valid submission and" when {
 
         val testUserDetails =
           UserDetailsModel(
@@ -150,7 +150,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
         }
       }
 
-      "Calling the submit action of the ClientDetailsController with an authorised user and invalid submission" should {
+      "Calling the submit action of the UserDetailsController with an authorised user and invalid submission" should {
 
         def callSubmit(isEditMode: Boolean) =
           TestUserDetailsController.submit(isEditMode = isEditMode)(
@@ -196,7 +196,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
   }
 
-  "If the agent is locked out" should {
+  "If the user is locked out" should {
     s"calling show should redirect them to ${controllers.matching.routes.UserDetailsLockoutController.show().url}" in {
       setupMockLockedOut(testUserId)
       lazy val result = TestUserDetailsController.show(isEditMode = false)(request)

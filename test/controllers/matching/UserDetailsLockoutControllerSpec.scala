@@ -49,7 +49,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
 
   "Calling the 'show' action of the UserDetailsLockoutController" when {
 
-    "the agent is locked out" should {
+    "the user is locked out" should {
       lazy val result = TestUserDetailsLockoutController.show(request)
       lazy val document = Jsoup.parse(contentAsString(result))
 
@@ -64,7 +64,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "the agent is not locked out" should {
+    "the user is not locked out" should {
       s"redirect to ${controllers.matching.routes.UserDetailsController.show().url}" in {
         setupMockNotLockedOut(testUserId)
 
