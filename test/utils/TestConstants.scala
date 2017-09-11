@@ -34,14 +34,13 @@ object TestConstants {
   * this nino is a constant, if you need a fresh one use TestModels.newNino
   */
   lazy val testNino: String = new Generator().nextNino.nino
-  lazy val testUtr: String = new Generator().nextAtedUtr.utr
+  lazy val testUtr: String = UUID.randomUUID().toString //Not an actual UTR
   lazy val testToken: String = "token"
   lazy val testMTDID = "XE0001234567890"
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
   lazy val testLockoutResponse = LockedOut(testNino, OffsetDateTime.now())
-  lazy val testUtr: String = UUID.randomUUID().toString //Not an actual UTR
 
   val strippedUserId = "1234567"
   val testUserId = UserId(s"/auth/oid/$strippedUserId")

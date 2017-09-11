@@ -51,7 +51,6 @@ trait AppConfig {
   val ggURL: String
   val ggAdminURL: String
   val ggAuthenticationURL: String
-  val hasEnabledTestOnlyRoutes: Boolean
   val identityVerificationURL: String
   val contactHmrcLink: String
   val citizenDetailsURL: String
@@ -144,11 +143,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val hasEnabledTestOnlyRoutes: Boolean =
     configuration.getString("application.router").get == "testOnlyDoNotUseInAppConf.Routes"
 
-
   override lazy val matchingAttempts: Int = loadConfig("lockout.maxAttempts").toInt
-
-  override lazy val hasEnabledTestOnlyRoutes: Boolean =
-    configuration.getString("application.router").get == "testOnlyDoNotUseInAppConf.Routes"
 
   override lazy val matchingLockOutSeconds: Int = loadConfig("lockout.lockOutSeconds").toInt
 
