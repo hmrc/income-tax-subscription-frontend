@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package services
+package connectors.matching
 
-object CacheConstants {
-  val IncomeSource = "IncomeSource"
-  val PropertyIncome = "PropertyIncome"
-  val SoleTrader = "SoleTrader"
-  val AccountingPeriodPrior = "AccountingPeriodPrior"
-  val RegisterNextAccountingPeriod = "RegisterNextAccountingPeriod"
-  val BusinessName = "BusinessName"
-  val AccountingPeriodDate = "AccountingPeriodDate"
-  val AccountingMethod = "AccountingMethod"
-  val Terms = "Terms"
-  val OtherIncome = "OtherIncome"
-  val NotEligible = "NotEligible"
-  val MtditId = "MtditId"
-  val UserDetails = "UserDetails"
+import connectors.mocks.TestUserLockoutConnector
+import utils.UnitTestTrait
+import utils.TestConstants.testNino
+
+class UserLockOutConnectorSpec extends UnitTestTrait with TestUserLockoutConnector{
+
+  "UserLockOutConnector" should {
+    "have the correct url" in {
+      TestUserLockoutConnector.userLockoutUrl(testNino) must endWith(s"/income-tax-subscription/client-matching/lock/$testNino")
+    }
+  }
 
 }

@@ -31,6 +31,12 @@ trait Implicits {
 
   implicit def EitherUtilRight[T, R <: T, L](right: R): Either[L, R] = Right(right)
 
+  implicit class StringNinoUtil(string: String) {
+    @inline def stripSpaces: String = string.toUpperCase().replace(" ", "")
+
+    def toNinoDisplayFormat: String = string.stripSpaces.split("(?<=\\G.{2})").reduce(_ + " " + _)
+  }
 }
+
 
 object Implicits extends Implicits

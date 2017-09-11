@@ -35,6 +35,7 @@ trait AppConfig {
   val ggSignInContinueUrl: String
   val alreadyEnrolledUrl: String
   val subscriptionUrl: String
+  val userMatchingUrl: String
   val authUrl: String
   val preferencesService: String
   val preferencesUrl: String
@@ -50,10 +51,14 @@ trait AppConfig {
   val ggURL: String
   val ggAdminURL: String
   val ggAuthenticationURL: String
+  val hasEnabledTestOnlyRoutes: Boolean
   val identityVerificationURL: String
   val contactHmrcLink: String
   val citizenDetailsURL: String
   val hasEnabledTestOnlyRoutes: Boolean
+  val matchingAttempts: Int
+  val matchingLockOutSeconds: Int
+  val authenticatorUrl: String
 }
 
 @Singleton
@@ -99,6 +104,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   // protected microservice
   protected lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
+  override lazy val userMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
 
   // Digital Preferences
   override lazy val preferencesService = baseUrl("preferences-frontend")
@@ -137,6 +143,16 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   */
   override lazy val hasEnabledTestOnlyRoutes: Boolean =
     configuration.getString("application.router").get == "testOnlyDoNotUseInAppConf.Routes"
+
+
+  override lazy val matchingAttempts: Int = loadConfig("lockout.maxAttempts").toInt
+
+  override lazy val hasEnabledTestOnlyRoutes: Boolean =
+    configuration.getString("application.router").get == "testOnlyDoNotUseInAppConf.Routes"
+
+  override lazy val matchingLockOutSeconds: Int = loadConfig("lockout.lockOutSeconds").toInt
+
+  override lazy val authenticatorUrl: String = baseUrl("authenticator")
 
 }
 

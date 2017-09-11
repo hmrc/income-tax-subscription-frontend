@@ -36,13 +36,18 @@ trait MockConfig extends AppConfig {
   override val preferencesUrl: String = ""
   override val baseUrl: String = ""
   override val authUrl: String = ""
+  override lazy val authenticatorUrl: String = ""
+  override val userMatchingUrl = "/income-tax-subscription/user-matching"
   override lazy val ggUrl = ""
   override lazy val ggSignOutUrl = s"$ggUrl/gg/sign-out?continue=$ggSignInContinueUrl"
   override lazy val btaUrl = "https://www.tax.service.gov.uk/business-account"
   override val showGuidance: Boolean = true
+  override lazy val hasEnabledTestOnlyRoutes = false
   override lazy val shutterPage = "https://www.tax.service.gov.uk/outage-income-tax-subscription/"
   override lazy val whitelistIps: Seq[String] = Seq("127.0.0.1")
   override lazy val ipExclusionList: Seq[Call] = Nil
+  override val matchingAttempts: Int = 3
+  override val matchingLockOutSeconds: Int = 60
 
   override val authURL: String = "/auth"
   override val ggAdminURL: String = "/gg-admin"

@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package services
+package views.html.helpers
 
-object CacheConstants {
-  val IncomeSource = "IncomeSource"
-  val PropertyIncome = "PropertyIncome"
-  val SoleTrader = "SoleTrader"
-  val AccountingPeriodPrior = "AccountingPeriodPrior"
-  val RegisterNextAccountingPeriod = "RegisterNextAccountingPeriod"
-  val BusinessName = "BusinessName"
-  val AccountingPeriodDate = "AccountingPeriodDate"
-  val AccountingMethod = "AccountingMethod"
-  val Terms = "Terms"
-  val OtherIncome = "OtherIncome"
-  val NotEligible = "NotEligible"
-  val MtditId = "MtditId"
-  val UserDetails = "UserDetails"
+object ConfirmUserIdConstants {
+
+  val DobId = "date-of-birth"
+  val FirstNameId = "first-name"
+  val LastNameId = "last-name"
+  val NinoId = "nino"
 
 }

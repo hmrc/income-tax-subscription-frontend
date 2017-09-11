@@ -22,4 +22,5 @@ object ITSASessionKeys {
   val RequestURI = "Request-URI"
   val NINO = "NINO"
   val UTR = "UTR"
+  val FailedUserMatching = "Failed-User-Matching"
 }

@@ -16,13 +16,18 @@
 
 package utils
 
+import java.time.OffsetDateTime
+import java.util.UUID
+
 import common.Constants.GovernmentGateway._
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
 import connectors.models.gg._
+import connectors.models.matching.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import connectors.models.subscription.{Both, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
 import models.DateModel
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
+import uk.gov.hmrc.play.http.UserId
 
 object TestConstants {
   /*
@@ -30,10 +35,19 @@ object TestConstants {
   */
   lazy val testNino: String = new Generator().nextNino.nino
   lazy val testUtr: String = new Generator().nextAtedUtr.utr
+  lazy val testToken: String = "token"
   lazy val testMTDID = "XE0001234567890"
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
+  lazy val testLockoutResponse = LockedOut(testNino, OffsetDateTime.now())
+  lazy val testUtr: String = UUID.randomUUID().toString //Not an actual UTR
+
+  val strippedUserId = "1234567"
+  val testUserId = UserId(s"/auth/oid/$strippedUserId")
+
+  val testFirstName = "Test"
+  val testLastName = "Name"
 
   val testUrl = "/"
 
@@ -78,4 +92,8 @@ object TestConstants {
   val testKnownFactsSuccess = Right(KnownFactsSuccess)
 
   val testKnownFactsFailure = Left(KnownFactsFailure(testErrorMessage))
+
+  val testMatchSuccess = Right(UserMatchSuccessResponseModel)
+
+  val testMatchFailure = Left(UserMatchFailureResponseModel)
 }

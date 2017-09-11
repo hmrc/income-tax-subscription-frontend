@@ -16,6 +16,7 @@ base.error_heading                                              = There''s a pro
 base.change                                                     = Change
 base.yes                                                        = Yes
 base.no                                                         = No
+base.go_back                                                    = Go back
 
 ## Front page
 frontpage.title                                                 = Sign up to report your income and expenses quarterly
@@ -207,6 +208,13 @@ error.contact_email.invalid                                     = The email is i
 error.accounting-method.empty                                   = You must select an option to continue
 error.accounting-method.invalid                                 = You must select an option to continue
 
+error.user_details.first_name.empty                           = Enter your first name
+error.user_details.last_name.empty                            = Enter your last name
+error.user_details.first_name.invalid                         = Enter a valid first name
+error.user_details.last_name.invalid                          = Enter a valid last name
+error.user_details.first_name.maxLength                       = Enter a first name that''s 105 characters or less
+error.user_details.last_name.maxLength                        = Enter a last name that''s 105 characters or less
+
 error.not-eligible.empty                                        = You must select an option to continue
 error.not-eligible.invalid                                      = You must select an option to continue
 
@@ -220,6 +228,37 @@ eligible.title                                                  = You can send d
 eligible.heading                                                = You can send digital updates
 eligible.line_1                                                 = Your answers mean you should be able to start sending HMRC digital updates after you sign up.
 eligible.line_2                                                 = You just need to enter a few more details.
+
+## User Details ##
+user-details.title                                              = Enter your details
+user-details.heading                                            = Enter your details
+user-details.line_1                                             = We will attempt to match these details against information we currently hold.
+user-details.field_1                                            = First name
+user-details.field_2                                            = Last name
+user-details.field_3                                            = National Insurance number
+user-details.field_4                                            = Date of birth
+user_details.formhint.1.line_1                                  = For example, ''QQ 12 34 56 C''.
+user-details.formhint.2                                         = For example, 10 12 1990
+
+# User details page
+user-details-error.title                                        = User match error
+user-details-error.heading                                      = We couldn''t confirm your details
+user-details-error.line_1                                       = The details you''ve entered are not on our system.
+
+# User Details Lockout
+user-details-lockout.title                                      = You''ve been locked out
+user-details-lockout.heading                                    = You''ve been locked out
+user-details-lockout.line_1                                     = To sign up for quarterly reporting, you''ll have to try again in {0}.
+
+# Check your details page
+user-details.summary.title                                      = Confirm your details
+user-details.summary.heading                                    = Check your answers
+user-details.summary.heading_hidden                             = before looking up your details
+user-details.summary.h2                                         = You''ve told us
+user-details.summary.first_name                                 = First name
+user-details.summary.last_name                                  = Last name
+user-details.summary.nino                                       = National Insurance number
+user-details.summary.dob                                        = Date of birth
 
 ## Not eligible page ##
 not-eligible.title                                              = You can''t send digital updates yet
