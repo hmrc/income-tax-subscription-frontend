@@ -19,10 +19,10 @@
 @(field: Field,
         label: Option[String] = None,
         parentForm: Option[Form[_]] = None,
-        formHint: Option[String] = None,
         maxLength: Option[Int] = None,
         labelClass: Option[String] = None,
-        isNumeric: Boolean = false
+        isNumeric: Boolean = false,
+        formHint: Option[Seq[String]] = None
 )(implicit messages: Messages)
 
 @import forms.validation.ErrorMessageHelper._
@@ -44,12 +44,13 @@
 <div class="form-group form-field@if(hasError) { form-field--error}">
     <label class='form-label @labelClass.fold("")(x => x)' for=@field.name>
         @label.fold(Html(""))(label => Html(label))
-        @formHint.fold(Html(""))(hint => hintText(hint))
+        @formHint.fold(Nil: Seq[Html])(_.map(hintText))
     </label>
     @fieldErrorHelper(field, parentForm)
     <input name=@field.name class="form-control" id=@field.name type="text"
         @maxLength.fold(Html(""))(max => Html(s"maxlength=$max"))
-        value="@field.value.fold("")(v => v)"
-        @if(isNumeric){pattern="[0-9]*" inputmode="numeric"}
+    value="@field.value.fold("")(v => v)"
+        @if(isNumeric) {
+            pattern="[0-9]*" inputmode="numeric"}
     >
 </div>

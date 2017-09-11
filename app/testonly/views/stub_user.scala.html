@@ -14,65 +14,67 @@
  * limitations under the License.
  *@
 
-@import models.matching._
-@import forms.UserDetailsForm._
+@import testonly.models.UserToStubModel
+@import testonly.forms.UserToStubForm._
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
 
-@(userDetailsForm: Form[UserDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(userToStubform: Form[UserToStubModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("user-details.title"), bodyClasses = None) {
+@views.html.templates.main_template(title = Messages("User stubbing service"), bodyClasses = None) {
 
-    @summaryErrorHelper(userDetailsForm)
+    @summaryErrorHelper(userToStubform)
 
-    <h1 class="heading-large">@Messages("user-details.heading")</h1>
-
-    <p>@Messages("user-details.line_1")</p>
+    <h1 class="heading-large">@Messages("User stubbing service")</h1>
 
     @form(action = postAction) {
 
         <div class="form-group">
             <div class="form-field-group">
             @inputHelper(
-                field = userDetailsForm(userFirstName),
+                field = userToStubform(userFirstName),
                 label = Messages("user-details.field_1"),
                 labelClass = "form-label-bold",
                 maxLength = nameMaxLength,
-                parentForm = userDetailsForm
+                parentForm = userToStubform
             )
             </div>
             <div class="form-field-group">
             @inputHelper(
-                field = userDetailsForm(userLastName),
+                field = userToStubform(userLastName),
                 label = Messages("user-details.field_2"),
                 labelClass = "form-label-bold",
                 maxLength = nameMaxLength,
-                parentForm = userDetailsForm
+                parentForm = userToStubform
             )
             </div>
             <div class="form-field-group">
             @inputHelper(
-                field = userDetailsForm(userNino),
+                field = userToStubform(userNino),
                 label = Messages("user-details.field_3"),
                 labelClass = "form-label-bold",
                 formHint = Seq(Messages("user_details.formhint.1.line_1")),
-                parentForm = userDetailsForm
+                parentForm = userToStubform
             )
             </div>
-
+            <div class="form-field-group">
+            @inputHelper(
+                field = userToStubform(userSautr),
+                label = "Self Assessment Unique Tax Reference",
+                labelClass = "form-label-bold",
+                formHint = Seq("For example, '1234546734'"),
+                parentForm = userToStubform
+            )
+            </div>
             @dateHelper(
-                field = userDetailsForm(userDateOfBirth),
+                field = userToStubform(userDateOfBirth),
                 label = Messages("user-details.field_4"),
-                parentForm = userDetailsForm,
+                parentForm = userToStubform,
                 hintText = Messages("user-details.formhint.2")
             )
         </div>
 
-        @if(isEditMode) {
-            @continueButton(Messages("base.update"))
-        } else {
-            @continueButton()
-        }
+        @continueButton("Stub user")
     }
 }

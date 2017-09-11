@@ -29,7 +29,7 @@ class InputHelperSpec extends UnitTestTrait {
   private def inputHelper(
                            field: Field,
                            label: Option[String],
-                           formHint: Option[String] = None,
+                           formHint: Option[Seq[String]] = None,
                            maxLength: Option[Int] = None,
                            labelClass: Option[String] = None,
                            isNumeric: Boolean = false
@@ -51,7 +51,7 @@ class InputHelperSpec extends UnitTestTrait {
       val testHint = "my test hint text"
       val testField = testForm(inputName)
       val maxLength = 10
-      val doc = inputHelper(testField, Some(testLabel), formHint = Some(testHint), maxLength = Some(maxLength)).doc
+      val doc = inputHelper(testField, Some(testLabel), formHint = Some(Seq(testHint)), maxLength = Some(maxLength)).doc
       doc.getElementsByTag("div").hasClass("form-group") shouldBe true
       doc.getElementsByTag("div").hasClass("form-field") shouldBe true
       doc.getElementsByTag("label").text() should include(testLabel)

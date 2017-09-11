@@ -17,12 +17,24 @@
 package auth
 
 import common.Constants
+import controllers.ITSASessionKeys
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, EnrolmentIdentifier, Enrolments}
 
 import scala.collection.immutable.::
 
 case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup]) {
-  lazy val nino: Option[String] = getEnrolment(Constants.ninoEnrolmentName)
+  def nino(implicit request: Request[AnyContent]): Option[String] =
+    getEnrolment(Constants.ninoEnrolmentName) match {
+      case None => request.session.get(ITSASessionKeys.NINO)
+      case x => x
+    }
+
+  def utr(implicit request: Request[AnyContent]): Option[String] =
+    getEnrolment(Constants.utrEnrolmentName) match {
+      case None => request.session.get(ITSASessionKeys.UTR)
+      case x => x
+    }
 
   lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
 

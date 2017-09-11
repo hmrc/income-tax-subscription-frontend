@@ -51,9 +51,10 @@ trait AppConfig {
   val ggURL: String
   val ggAdminURL: String
   val ggAuthenticationURL: String
-  val hasEnabledTestOnlyRoutes: Boolean
   val identityVerificationURL: String
   val contactHmrcLink: String
+  val citizenDetailsURL: String
+  val hasEnabledTestOnlyRoutes: Boolean
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
   val authenticatorUrl: String
@@ -128,10 +129,21 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val contactHmrcLink: String = loadConfig("contact-hmrc.url")
 
-  override lazy val matchingAttempts: Int = loadConfig("lockout.maxAttempts").toInt
+  override lazy val citizenDetailsURL: String = loadConfig("citizen-details.url")
 
+
+  /*
+  *  This checks to see if the testOnlyDoNotUseInAppConf route is set in configuration instead of the default prod.Routes
+  *  This flag can be used by the application to check if the test only routes are enabled. i.e. this flag can be used to
+  *  determine the service is not running in the prod environment
+  *
+  *  One usage of this is in ClientMatchingService where we determine if a "True-Client-IP" should be added for the purpose of
+  *  matching.
+  */
   override lazy val hasEnabledTestOnlyRoutes: Boolean =
     configuration.getString("application.router").get == "testOnlyDoNotUseInAppConf.Routes"
+
+  override lazy val matchingAttempts: Int = loadConfig("lockout.maxAttempts").toInt
 
   override lazy val matchingLockOutSeconds: Int = loadConfig("lockout.lockOutSeconds").toInt
 
