@@ -78,20 +78,6 @@ object KeystoreStub extends WireMockMethods {
       .thenReturn(Status.OK, "")
   }
 
-//  def stubKeystoreDelete(): Unit = {
-//    when(method = DELETE, uri = keystoreUri)
-//      .thenReturn(Status.OK, "")
-//  }
-//
-//  def verifyKeyStoreDelete(count: Option[Int] = None): Unit = {
-//    WiremockHelper.verifyDelete(keystoreUri, count)
-//  }
-//
-//  def verifyKeyStoreSave[T](id: String, body: T, count: Option[Int] = None)(implicit writer: Writes[T]): Unit = {
-//    import helpers.ImplicitConversions._
-//    WiremockHelper.verifyPut(putUri(id), Some((body: JsValue).toString()), count)
-//  }
-
   case class KeystoreData(id: String, data: Map[String, JsValue])
 
 }
