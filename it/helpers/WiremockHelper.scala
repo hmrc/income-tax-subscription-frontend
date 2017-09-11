@@ -44,6 +44,27 @@ object WiremockHelper extends Eventually with IntegrationPatience {
      verify(getRequestedFor(urlEqualTo(uri)))
   }
 
+  def verifyDelete(uri: String, count: Option[Int] = None): Unit = {
+    val countCondition = count match {
+      case Some(expectedCount) => exactly(expectedCount)
+      case _ => moreThanOrExactly(1)
+    }
+    verify(countCondition, deleteRequestedFor(urlEqualTo(uri)))
+  }
+
+  def verifyPut(uri: String, optBody: Option[String] = None, count: Option[Int] = None): Unit = {
+    val countCondition = count match {
+      case Some(expectedCount) => exactly(expectedCount)
+      case _ => moreThanOrExactly(1)
+    }
+    val uriMapping = putRequestedFor(urlEqualTo(uri))
+    val putRequest = optBody match {
+      case Some(body) => uriMapping.withRequestBody(equalTo(body))
+      case None => uriMapping
+    }
+    verify(countCondition, putRequest)
+  }
+
   def stubGet(url: String, status: Integer, body: String): StubMapping =
     stubFor(get(urlMatching(url))
       .willReturn(

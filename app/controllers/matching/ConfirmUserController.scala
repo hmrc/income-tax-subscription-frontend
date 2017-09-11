@@ -82,13 +82,13 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   private def matchUserDetails(userDetails: UserDetailsModel)(implicit request: Request[AnyContent]) = for {
-      user <- userMatching.matchUser(userDetails)
-      result <- user match {
-        case Right(Some(matchedDetails)) => handleMatchedUser(matchedDetails)
-        case Right(None) => handleFailedMatch
-        case Left(_) => Future.successful(Redirect(routes.UserDetailsController.show()))
-      }
-    } yield result
+    user <- userMatching.matchUser(userDetails)
+    result <- user match {
+      case Right(Some(matchedDetails)) => handleMatchedUser(matchedDetails)
+      case Right(None) => handleFailedMatch
+      case Left(error) => throw new InternalServerException(error.errors)
+    }
+  } yield result
 
   lazy val backUrl: String = routes.UserDetailsController.show().url
 
@@ -105,6 +105,8 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       val bearerToken = implicitly[HeaderCarrier].userId.get
       for {
         _ <- lockOutService.lockoutUser(bearerToken)
+          .filter(_.isRight)
+        _ <- keystoreService.deleteAll()
       } yield Redirect(routes.UserDetailsLockoutController.show())
         .removingFromSession(FailedUserMatching)
     }

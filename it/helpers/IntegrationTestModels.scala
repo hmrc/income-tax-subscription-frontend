@@ -3,9 +3,11 @@ package helpers
 
 import forms._
 import models._
+import models.matching.UserDetailsModel
 import play.api.libs.json.{JsValue, Json}
 import services.CacheConstants
 import uk.gov.hmrc.domain.Generator
+import IntegrationTestConstants._
 
 object IntegrationTestModels {
 
@@ -39,7 +41,8 @@ object IntegrationTestModels {
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
-      terms = Some(testTerms)
+      terms = Some(testTerms),
+      userDetails = Some(testUserDetails)
     )
 
   def keystoreData(incomeSource: Option[IncomeSourceModel] = None,
@@ -48,7 +51,8 @@ object IntegrationTestModels {
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
-                   terms: Option[Boolean] = None): Map[String, JsValue] = {
+                   terms: Option[Boolean] = None,
+                   userDetails: Option[UserDetailsModel] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++
@@ -56,7 +60,8 @@ object IntegrationTestModels {
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      terms.map(model => Terms -> Json.toJson(model))
+      terms.map(model => Terms -> Json.toJson(model)) ++
+      userDetails.map(model => UserDetails -> Json.toJson(model))
   }
 
   lazy val testIncomeSourceBusiness = IncomeSourceModel(IncomeSourceForm.option_business)
@@ -74,5 +79,7 @@ object IntegrationTestModels {
   lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
 
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
+
+  lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testStartDate)
 
 }
