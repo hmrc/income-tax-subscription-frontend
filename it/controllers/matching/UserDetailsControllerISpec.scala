@@ -28,6 +28,9 @@ import services.CacheConstants
 
 class UserDetailsControllerISpec extends ComponentSpecBase {
 
+  // TODO remove this when the routes are moved into prod.routes
+  override def config: Map[String, String] = super.config.+("application.router"->"testOnlyDoNotUseInAppConf.Routes")
+
   "GET /user-details" when {
     def fixture(agentLocked: Boolean): WSResponse = {
       Given("I setup the wiremock stubs")

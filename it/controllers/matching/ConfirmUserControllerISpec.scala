@@ -25,6 +25,9 @@ import play.api.http.Status._
 
 class ConfirmUserControllerISpec extends ComponentSpecBase {
 
+  // TODO remove this when the routes are moved into prod.routes
+  override def config: Map[String, String] = super.config.+("application.router"->"testOnlyDoNotUseInAppConf.Routes")
+
   "POST /confirm-user" when {
 
     "general error occured" should {

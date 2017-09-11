@@ -24,6 +24,9 @@ import play.api.i18n.Messages
 
 class UserDetailsLockoutControllerISpec extends ComponentSpecBase {
 
+  // TODO remove this when the routes are moved into prod.routes
+  override def config: Map[String, String] = super.config.+("application.router"->"testOnlyDoNotUseInAppConf.Routes")
+
   "GET /error/lockout" when {
     "the agent is still locked out" should {
       "show the locked out page" in {
