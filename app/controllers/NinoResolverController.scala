@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.matching
+package controllers
 
 import javax.inject.{Inject, Singleton}
 
@@ -23,22 +23,20 @@ import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService
-import utils.Implicits._
+
+import scala.concurrent.Future
+
 
 @Singleton
-class UserDetailsErrorController @Inject()(val baseConfig: BaseControllerConfig,
-                                           val messagesApi: MessagesApi,
-                                           val authService: AuthService
-                                            ) extends AuthenticatedController {
+class NinoResolverController @Inject()(val baseConfig: BaseControllerConfig,
+                                       val messagesApi: MessagesApi,
+                                       val authService: AuthService
+                                      ) extends AuthenticatedController {
 
-  lazy val show: Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
+  def resolveNino: Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
     implicit user =>
-      Ok(views.html.user_details_error(postAction = controllers.matching.routes.UserDetailsErrorController.submit()))
-  }
-
-  lazy val submit: Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
-    implicit user =>
-      Redirect(controllers.matching.routes.UserDetailsController.show())
+      if (baseConfig.applicationConfig.userMatchingFeature) Future.successful(Redirect(controllers.matching.routes.UserDetailsController.show()))
+      else Future.successful(Redirect(controllers.iv.routes.IdentityVerificationController.gotoIV()))
   }
 
 }

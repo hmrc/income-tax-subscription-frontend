@@ -63,9 +63,6 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
     // but for now the content on the no nino page will suffice
     lazy val gotoRegistration = Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
 
-    // TODO change this link to point to the user lookup routes
-    lazy val userLookUp = Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
-
     (user.nino, user.utr) match {
       case (Some(_), Some(_)) => defaultAction
       case (Some(nino), None) =>
@@ -79,7 +76,8 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
             }
           case _ => gotoRegistration
         }.recoverWith { case _ => error }
-      case (None, _) => userLookUp
+      case (None, _) => // n.b. This should not happen as the user have been redirected by the no nino predicates
+        Future.failed(new InternalServerException("HomeController.checkCID: unexpected user state"))
     }
   }
 

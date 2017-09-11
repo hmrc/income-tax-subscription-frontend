@@ -150,7 +150,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val authenticatorUrl: String = baseUrl("authenticator")
 
-  override lazy val userMatchingFeature: Boolean = false
+  override lazy val userMatchingFeature: Boolean = loadConfig("feature-switch.user-matching").toBoolean
 
 }
 

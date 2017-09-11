@@ -61,7 +61,7 @@ class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfi
     s"${if (h > 0) hs else ""}${if (m > 0) ms else ""}${if (s > 0) ss else ""}".trim
   }
 
-  lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
+  lazy val show: Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
     implicit user =>
       handleLockOut {
         val duration = Duration.ofSeconds(baseConfig.applicationConfig.matchingLockOutSeconds)
@@ -69,7 +69,7 @@ class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfi
       }
   }
 
-  lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
+  lazy val submit: Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
     implicit user =>
       Future.successful(Redirect(controllers.routes.SignOutController.signOut()))
   }

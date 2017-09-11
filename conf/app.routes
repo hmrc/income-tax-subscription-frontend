@@ -8,6 +8,9 @@ GET         /index                        controllers.HomeController.index
 # SignOut Controller
 GET         /logout                       controllers.SignOutController.signOut
 
+# NinoResolver Controller
+GET         /resolve-nino                 controllers.NinoResolverController.resolveNino
+
 # Preferences routes
 GET         /preferences                  controllers.preferences.PreferencesController.checkPreferences
 GET         /callback                     controllers.preferences.PreferencesController.callback

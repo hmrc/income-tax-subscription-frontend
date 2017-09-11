@@ -57,7 +57,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
 
     "return the no-nino error page where a nino enrolment does not exist" in {
-      await(ninoPredicate(FakeRequest())(blankUser).left.value) mustBe iv
+      await(ninoPredicate(FakeRequest())(blankUser).left.value) mustBe resolveNino
     }
   }
 
