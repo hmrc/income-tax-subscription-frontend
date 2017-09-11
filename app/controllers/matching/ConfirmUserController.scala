@@ -59,7 +59,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
     }
   }
 
-  def show(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(): Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
     implicit user =>
       handleLockOut {
         keystoreService.fetchUserDetails() map {
@@ -69,7 +69,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(): Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
     implicit user =>
       handleLockOut {
         keystoreService.fetchUserDetails() flatMap {

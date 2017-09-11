@@ -151,9 +151,19 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
     implicit lazy val request = fakeRequest
 
+    def callCheck() = TestNewFeaturesController.checkPreferences()(request)
+
     def callShow() = TestNewFeaturesController.showGoBackToPreferences()(request)
 
     def callSubmit() = TestNewFeaturesController.submitGoBackToPreferences()(request)
+
+    "Calling the checkPreferences controller should redirect us to income source" in {
+      val result = callCheck()
+
+      status(result) must be(Status.SEE_OTHER)
+
+      redirectLocation(result).get mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+    }
 
     "Calling the showGoBackToPreferences controller should redirect us to income source" in {
       val result = callShow()
