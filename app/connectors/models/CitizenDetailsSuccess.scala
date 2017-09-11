@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package common
+package connectors.models
 
-object Constants {
+import play.api.libs.json._
 
-  val mtdItsaEnrolmentName = "HMRC-MTD-IT"
-  val mtdItsaEnrolmentIdentifierKey = "MTDITID"
-  val ninoEnrolmentName = "HMRC-NI"
-  val ninoEnrolmentIdentifierKey = "NINO"
-  val utrEnrolmentName = "IR-SA"
-  val utrEnrolmentIdentifierKey = "UTR"
+case class CitizenDetailsSuccess(utr: Option[String])
 
-  object GovernmentGateway {
-    val MTDITID = "MTDITID"
-    val NINO = "NINO"
-    val ggPortalId = "Default"
-    val ggServiceName = "HMRC-MTD-IT"
-    val ggFriendlyName = "Making Tax Digital Income Tax Self-Assessment enrolment"
-  }
+object CitizenDetailsSuccess {
+
+  implicit val reader: Reads[CitizenDetailsSuccess] =
+    (JsPath \ "ids" \ "sautr").readNullable[String].map(CitizenDetailsSuccess.apply)
+
 }
+
+case class CitizenDetailsFailureResponse(status: Int) extends ConnectorError
+
+
+

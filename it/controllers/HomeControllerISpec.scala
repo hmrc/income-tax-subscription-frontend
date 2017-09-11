@@ -16,13 +16,13 @@
 
 package controllers
 
-import helpers.ComponentSpecBase
+import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.http.Status._
 import play.api.i18n.Messages
 import helpers.IntegrationTestConstants._
-import helpers.servicemocks.{AuthStub, KeystoreStub, SubscriptionStub}
+import helpers.servicemocks.{AuthStub, CitizenDetailsStub, KeystoreStub, SubscriptionStub}
 
 class HomeControllerISpec extends ComponentSpecBase {
 
@@ -44,91 +44,157 @@ class HomeControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/index" when {
 
-    "the user has a subscription" should {
-      "redirect to the claim subscription page" in {
+    "the user both nino and utr enrolments" when {
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        SubscriptionStub.stubGetSubscriptionFound()
-        KeystoreStub.stubPutMtditId()
+      "the user has a subscription" should {
+        "redirect to the claim subscription page" in {
 
-        When("GET /index is called")
-        val res = IncomeTaxSubscriptionFrontend.indexPage()
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          SubscriptionStub.stubGetSubscriptionFound()
+          KeystoreStub.stubPutMtditId()
 
-        Then("Should return a SEE OTHER with the claim subscription page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(claimSubscriptionURI)
-        )
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return a SEE OTHER with the claim subscription page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(claimSubscriptionURI)
+          )
+        }
       }
+
+      "the user does not have a subscription" should {
+        "redirect to the preferences page" in {
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          SubscriptionStub.stubGetNoSubscription()
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return a SEE OTHER and re-direct to the preferences page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(preferencesURI)
+          )
+        }
+      }
+
+      "the subscription call fails" should {
+        "return an internal server error" in {
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          SubscriptionStub.stubGetSubscriptionFail()
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return an INTERNAL_SERVER_ERROR")
+          res should have(
+            httpStatus(INTERNAL_SERVER_ERROR)
+          )
+        }
+      }
+
+      "auth returns an org affinity group" should {
+        "redirect to the wrong affinity group error page" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthOrgAffinity()
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return a SEE OTHER with the error affinity group page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(wrongAffinityURI)
+          )
+        }
+      }
+
+      "auth returns an org affinity group with no nino" should {
+        "redirect to the wrong affinity group error page" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthOrgAffinityNoEnrolments()
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return a SEE OTHER with the error affinity group page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(wrongAffinityURI)
+          )
+        }
+      }
+
     }
 
-    "the user does not have a subscription" should {
-      "redirect to the preferences page" in {
+    "the user only has a nino in enrolment" when {
+      "CID returned a record with UTR" should {
+        "continue normally" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthNoUtr()
+          CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
+          SubscriptionStub.stubGetNoSubscription()
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        SubscriptionStub.stubGetNoSubscription()
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-        When("GET /index is called")
-        val res = IncomeTaxSubscriptionFrontend.indexPage()
+          Then("Should return a SEE OTHER and re-direct to the preferences page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(preferencesURI)
+          )
 
-        Then("Should return a SEE OTHER and re-direct to the preferences page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(preferencesURI)
-        )
+          val cookie = SessionCookieCrumbler.getSessionMap(res)
+          cookie.keys should contain(ITSASessionKeys.UTR)
+          cookie(ITSASessionKeys.UTR) shouldBe testUtr
+        }
       }
-    }
 
-    "the subscription call fails" should {
-      "return an internal server error" in {
+      "CID returned a record with out a UTR" should {
+        "continue normally" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthNoUtr()
+          CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        SubscriptionStub.stubGetSubscriptionFail()
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-        When("GET /index is called")
-        val res = IncomeTaxSubscriptionFrontend.indexPage()
+          Then("Should return a SEE OTHER and re-direct to the no nino page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(noNinoURI)
+          )
 
-        Then("Should return an INTERNAL_SERVER_ERROR")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
+          val cookie = SessionCookieCrumbler.getSessionMap(res)
+          cookie.keys should not contain ITSASessionKeys.UTR
+        }
       }
-    }
 
+      "CID could not find the user" should {
+        "display error page" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthNoUtr()
+          CitizenDetailsStub.stubCIDNotFound(testNino)
 
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
 
-    "auth returns an org affinity group" should {
-      "redirect to the wrong affinity group error page" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthOrgAffinity()
+          Then("Should return an INTERNAL_SERVER_ERROR")
+          res should have(
+            httpStatus(INTERNAL_SERVER_ERROR),
+            pageTitle("Sorry, we are experiencing technical difficulties - 500")
+          )
 
-        When("GET /index is called")
-        val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-        Then("Should return a SEE OTHER with the error affinity group page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(wrongAffinityURI)
-        )
-      }
-    }
-
-    "auth returns an org affinity group with no nino" should {
-      "redirect to the wrong affinity group error page" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthOrgAffinityNoEnrolments()
-
-        When("GET /index is called")
-        val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-        Then("Should return a SEE OTHER with the error affinity group page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(wrongAffinityURI)
-        )
+          val cookie = SessionCookieCrumbler.getSessionMap(res)
+          cookie.keys should not contain ITSASessionKeys.UTR
+        }
       }
     }
 

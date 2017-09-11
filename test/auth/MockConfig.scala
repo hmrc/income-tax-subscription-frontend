@@ -42,7 +42,6 @@ trait MockConfig extends AppConfig {
   override lazy val ggSignOutUrl = s"$ggUrl/gg/sign-out?continue=$ggSignInContinueUrl"
   override lazy val btaUrl = "https://www.tax.service.gov.uk/business-account"
   override val showGuidance: Boolean = true
-  override lazy val hasEnabledTestOnlyRoutes = false
   override lazy val shutterPage = "https://www.tax.service.gov.uk/outage-income-tax-subscription/"
   override lazy val whitelistIps: Seq[String] = Seq("127.0.0.1")
   override lazy val ipExclusionList: Seq[Call] = Nil
@@ -57,6 +56,11 @@ trait MockConfig extends AppConfig {
   override val identityVerificationURL: String = ""
 
   override val contactHmrcLink: String = "https://www.gov.uk/contact-hmrc"
+
+  override val citizenDetailsURL: String = ""
+
+  override val hasEnabledTestOnlyRoutes: Boolean = false
+
 }
 
 object MockConfig extends MockConfig

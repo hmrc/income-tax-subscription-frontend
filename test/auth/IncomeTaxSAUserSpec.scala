@@ -17,27 +17,65 @@
 package auth
 
 import common.Constants
+import controllers.ITSASessionKeys
+import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
-import utils.TestConstants
+import utils.TestConstants.{testNino, testUtr}
 
 class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
-  "IncomeTaxSAUser" should {
-    lazy val user = IncomeTaxSAUser(
-      Enrolments(Set(
-        Enrolment(Constants.ninoEnrolmentName,
-          Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)),
-          "Activated",
-          L50
-        )
-      )),
-      None
-    )
+  "IncomeTaxSAUser" when {
+    "Nino and UTR are retrieved from auth" should {
+      implicit lazy val request = FakeRequest()
+      lazy val user = IncomeTaxSAUser(
+        Enrolments(
+          Set(
+            Enrolment(Constants.ninoEnrolmentName,
+              Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, testNino)),
+              "Activated",
+              L50
+            ),
+            Enrolment(Constants.utrEnrolmentName,
+              Seq(EnrolmentIdentifier(Constants.utrEnrolmentIdentifierKey, testUtr)),
+              "Activated",
+              L50
+            )
+          )
+        ),
+        None
+      )
 
-    s"have the expected NINO ${TestConstants.testNino}" in {
-      user.nino shouldBe Some(TestConstants.testNino)
+      s"have the expected NINO $testNino" in {
+        user.nino shouldBe Some(testNino)
+      }
+
+      s"have the expected UTR $testUtr" in {
+        user.utr shouldBe Some(testUtr)
+      }
+    }
+
+    "Nino and UTR are stored in session after being pulled from CID" should {
+      implicit lazy val request = FakeRequest().withSession(
+        ITSASessionKeys.NINO -> testNino,
+        ITSASessionKeys.UTR -> testUtr
+      )
+
+      lazy val user = IncomeTaxSAUser(
+        Enrolments(Set.empty),
+        None
+      )
+
+      s"have the expected NINO $testNino" in {
+        user.nino shouldBe Some(testNino)
+      }
+
+      s"have the expected UTR $testUtr" in {
+        user.utr shouldBe Some(testUtr)
+      }
     }
   }
+
+
 }

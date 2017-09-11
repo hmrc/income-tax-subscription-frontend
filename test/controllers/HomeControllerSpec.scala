@@ -24,7 +24,7 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockKeystoreService, MockSubscriptionService}
+import services.mocks.{MockCitizenDetailsService, MockKeystoreService, MockSubscriptionService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.TestConstants
 
@@ -33,7 +33,8 @@ import scala.concurrent.Future
 
 class HomeControllerSpec extends ControllerBaseSpec
   with MockSubscriptionService
-  with MockKeystoreService {
+  with MockKeystoreService
+  with MockCitizenDetailsService {
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -54,14 +55,16 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockSubscriptionService,
     MockKeystoreService,
     mockAuthService,
+    mockCitizenDetailsService,
     app.injector.instanceOf[Logging]
   )
 
   val testNino = TestConstants.testNino
+  val testUtr = TestConstants.testUtr
 
-  "Calling the home action of the Home controller with an authorised user" should {
+  "Calling the home action of the Home controller with an authorised user" when {
 
-    "If the start page (showGuidance) is enabled" should {
+    "the start page (showGuidance) is enabled" should {
 
       lazy val result = TestHomeController(showGuidance = true).home()(fakeRequest)
 
@@ -74,7 +77,7 @@ class HomeControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "If the start page (showGuidance) is disabled" should {
+    "the start page (showGuidance) is disabled" should {
       lazy val result = TestHomeController(showGuidance = false).home()(fakeRequest)
 
       "Return status SEE_OTHER (303) redirect" in {
@@ -87,7 +90,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the index action of the HomeController with an authorised user" should {
+  "Calling the index action of the HomeController with an authorised user with both utr and nino enrolments" should {
     def call() = TestHomeController(showGuidance = false).index()(fakeRequest)
 
     "redirect them to already subscribed page if they already has a subscription" in {
@@ -108,6 +111,81 @@ class HomeControllerSpec extends ControllerBaseSpec
     }
 
     // N.B. the subscribeNone case is covered below
+  }
+
+  "Calling the index action of the HomeController with an authorised user with only a nino enrolments" when {
+    def call() = TestHomeController(showGuidance = false).index()(fakeRequest)
+
+    def userSetup(): Unit = {
+      import org.mockito.Mockito._
+      reset(mockAuthService)
+      mockNinoRetrieval()
+    }
+
+    "user is found but their utr is not in CID" should {
+      //TODO to registration
+      "redirect the user to no nino page" in {
+        userSetup()
+        mockLookupUserWithoutUtr(testNino)
+
+        val result = call()
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe controllers.routes.NoNinoController.showNoNino().url
+
+        await(result).session(fakeRequest).get(ITSASessionKeys.UTR) mustBe None
+      }
+    }
+
+    "user is found and their utr is in CID" should {
+      "the user should be allowed to continue normally" in {
+        userSetup()
+        mockLookupUserWithUtr(testNino)(testUtr)
+
+        setupMockGetSubscriptionNotFound(testNino)
+
+        val result = call()
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+
+        await(result).session(fakeRequest).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+      }
+    }
+
+    "user is not found in CID" should {
+      "show error page" in {
+        userSetup()
+        mockLookupUserNotFound(testNino)
+
+        val result = call()
+
+        val e = intercept[InternalServerException] {
+          await(result)
+        }
+
+        e.message mustBe "HomeController.checkCID: unexpected error calling the citizen details service"
+      }
+    }
+  }
+
+  "Calling the index action of the HomeController with an authorised user with only a utr enrolments" should {
+    def call() = TestHomeController(showGuidance = false).index()(fakeRequest)
+
+    def userSetup(): Unit = {
+      import org.mockito.Mockito._
+      reset(mockAuthService)
+      mockUtrRetrieval()
+    }
+
+    // TODO change this to user look up routes (currently this functionality is provided by the auth predicates)
+    "redirect the user to iv" in {
+      userSetup()
+      val result = call()
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).get mustBe controllers.iv.routes.IdentityVerificationController.gotoIV().url
+    }
   }
 
   "Calling the index action of the HomeController with an authorised user who does not already have a subscription" should {

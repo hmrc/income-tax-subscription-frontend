@@ -38,12 +38,22 @@ object AuthStub extends WireMockMethods {
 
   def stubAuthSuccess(): StubMapping = {
     when(method = POST, uri = authoriseUri)
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ninoEnrolment, utrEnrolment))
+  }
+
+  def stubAuthNoNino(): StubMapping = {
+    when(method = POST, uri = authoriseUri)
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, utrEnrolment))
+  }
+
+  def stubAuthNoUtr(): StubMapping = {
+    when(method = POST, uri = authoriseUri)
       .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ninoEnrolment))
   }
 
   def stubEnrolled(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ninoEnrolment, mtdidEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ninoEnrolment, utrEnrolment, mtdidEnrolment))
   }
 
   def stubUnauthorised(): StubMapping = {
@@ -70,6 +80,17 @@ object AuthStub extends WireMockMethods {
         "value" -> testMTDID
       )
     )
+  )
+
+  private val utrEnrolment = Json.obj(
+    "key" -> utrEnrolmentName,
+    "identifiers" -> Json.arr(
+      Json.obj(
+        "key" -> utrEnrolmentIdentifierKey,
+        "value" -> testUtr
+      )
+    ),
+    "confidenceLevel" -> 200
   )
 
   private def successfulAuthResponse(affinityGroup: AffinityGroup, enrolments: JsObject*): JsObject =

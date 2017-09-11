@@ -37,7 +37,8 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
                                            val authService: AuthService
                                           ) extends AuthenticatedController {
 
-  val clear = Authenticated.async { implicit request =>
+  //N.b. asyncForIV is used because it doesn't check any predicates
+  val clear = Authenticated.asyncForIV { implicit request =>
     implicit user =>
       user.nino match {
         case None => throw new InternalServerException("clear preferences controller, no nino")

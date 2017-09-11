@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package common
+package testonly.models
 
-object Constants {
+//$COVERAGE-OFF$Disabling scoverage on this model as it is only intended to be used by the test only controller
 
-  val mtdItsaEnrolmentName = "HMRC-MTD-IT"
-  val mtdItsaEnrolmentIdentifierKey = "MTDITID"
-  val ninoEnrolmentName = "HMRC-NI"
-  val ninoEnrolmentIdentifierKey = "NINO"
-  val utrEnrolmentName = "IR-SA"
-  val utrEnrolmentIdentifierKey = "UTR"
+import models.DateModel
+import play.api.libs.json.Json
 
-  object GovernmentGateway {
-    val MTDITID = "MTDITID"
-    val NINO = "NINO"
-    val ggPortalId = "Default"
-    val ggServiceName = "HMRC-MTD-IT"
-    val ggFriendlyName = "Making Tax Digital Income Tax Self-Assessment enrolment"
-  }
+case class UserToStubModel(firstName: String, lastName: String, nino: String, sautr: Option[String], dateOfBirth: DateModel) {
+  def ninoFormatted: String = nino.toUpperCase().replace(" ", "")
 }
+
+object UserToStubModel {
+  implicit val format = Json.format[UserToStubModel]
+}
+
+// $COVERAGE-ON$

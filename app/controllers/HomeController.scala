@@ -21,11 +21,12 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import auth.{AuthenticatedController, IncomeTaxSAUser}
 import config.BaseControllerConfig
+import connectors.models.CitizenDetailsSuccess
 import connectors.models.subscription.SubscriptionSuccess
 import controllers.ITSASessionKeys._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.{AuthService, KeystoreService, SubscriptionService}
+import services.{AuthService, CitizenDetailsService, KeystoreService, SubscriptionService}
 import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 
@@ -37,6 +38,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                subscriptionService: SubscriptionService,
                                keystoreService: KeystoreService,
                                val authService: AuthService,
+                               citizenDetailsService: CitizenDetailsService,
                                logging: Logging
                               ) extends AuthenticatedController {
 
@@ -53,21 +55,49 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
     }
   }
 
-  private def checkAlreadySubscribed(default: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
-        subscriptionService.getSubscription(user.nino.get).flatMap {
-          case Right(None) => default
-          case Right(Some(SubscriptionSuccess(mtditId))) =>
-            keystoreService.saveSubscriptionId(mtditId) map { _ =>
-              Redirect(controllers.routes.ClaimSubscriptionController.claim())
+  private def checkCID(defaultAction: Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] = {
+
+    lazy val error = Future.failed(new InternalServerException("HomeController.checkCID: unexpected error calling the citizen details service"))
+
+    // TODO this condition will be changed to redirect to the registration service when it becomes available,
+    // but for now the content on the no nino page will suffice
+    lazy val gotoRegistration = Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
+
+    // TODO change this link to point to the user lookup routes
+    lazy val userLookUp = Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
+
+    (user.nino, user.utr) match {
+      case (Some(_), Some(_)) => defaultAction
+      case (Some(nino), None) =>
+        // todo if nino is in session but not in auth profile then don't call CID
+        citizenDetailsService.lookupUtr(nino).flatMap {
+          case Right(optResult) =>
+            optResult match {
+              case Some(CitizenDetailsSuccess(optUtr@Some(utr))) => defaultAction.flatMap(_.addingToSession(ITSASessionKeys.UTR -> utr))
+              case Some(CitizenDetailsSuccess(None)) => gotoRegistration
+              case _ => error
             }
-          case _ =>
-            Future.failed(new InternalServerException(s"HomeController.index: unexpected error calling the subscription service"))
+          case _ => gotoRegistration
+        }.recoverWith { case _ => error }
+      case (None, _) => userLookUp
+    }
+  }
+
+  private def checkAlreadySubscribed(default: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
+    subscriptionService.getSubscription(user.nino.get).flatMap {
+      case Right(None) => default
+      case Right(Some(SubscriptionSuccess(mtditId))) =>
+        keystoreService.saveSubscriptionId(mtditId) map { _ =>
+          Redirect(controllers.routes.ClaimSubscriptionController.claim())
         }
+      case _ =>
+        Future.failed(new InternalServerException(s"HomeController.index: unexpected error calling the subscription service"))
+    }
 
   def index: Action[AnyContent] = Authenticated.asyncForHomeController { implicit request =>
     implicit user =>
       val timestamp: String = java.time.LocalDateTime.now().toString
-      checkAlreadySubscribed(gotoPreferences.addingToSession(StartTime -> timestamp))
+      checkCID(checkAlreadySubscribed(gotoPreferences.addingToSession(StartTime -> timestamp)))
   }
 
   lazy val gotoPreferences = Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())

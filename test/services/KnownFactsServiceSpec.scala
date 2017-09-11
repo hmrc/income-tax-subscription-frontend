@@ -25,6 +25,7 @@ import utils.UnitTestTrait
 import scala.concurrent.Future
 
 class KnownFactsServiceSpec extends UnitTestTrait with TestKnownFactsService with ScalaFutures {
+
   "addKnownFacts" must {
     def result: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = TestKnownFactsService.addKnownFacts(testMTDID, testNino)
 
@@ -46,4 +47,5 @@ class KnownFactsServiceSpec extends UnitTestTrait with TestKnownFactsService wit
       whenReady(result.failed)(_ mustBe testException)
     }
   }
+
 }

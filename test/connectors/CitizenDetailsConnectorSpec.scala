@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package common
+package connectors
 
-object Constants {
+import connectors.mocks.TestCitizenDetailsConnector
+import utils.TestConstants.testNino
 
-  val mtdItsaEnrolmentName = "HMRC-MTD-IT"
-  val mtdItsaEnrolmentIdentifierKey = "MTDITID"
-  val ninoEnrolmentName = "HMRC-NI"
-  val ninoEnrolmentIdentifierKey = "NINO"
-  val utrEnrolmentName = "IR-SA"
-  val utrEnrolmentIdentifierKey = "UTR"
+class CitizenDetailsConnectorSpec extends TestCitizenDetailsConnector {
 
-  object GovernmentGateway {
-    val MTDITID = "MTDITID"
-    val NINO = "NINO"
-    val ggPortalId = "Default"
-    val ggServiceName = "HMRC-MTD-IT"
-    val ggFriendlyName = "Making Tax Digital Income Tax Self-Assessment enrolment"
+  "CitizenDetailsConnector.lookupUtrUrl" should {
+    "construct the correct url" in {
+      TestCitizenDetailsConnector.lookupUtrUrl(testNino) mustBe "/citizen-details/nino/" + testNino
+    }
   }
+
 }
