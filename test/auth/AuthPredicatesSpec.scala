@@ -25,8 +25,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
-import uk.gov.hmrc.play.http.NotFoundException
 import uk.gov.hmrc.play.http.SessionKeys._
+import uk.gov.hmrc.play.http.{InternalServerException, NotFoundException}
 import utils.UnitTestTrait
 
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
@@ -38,6 +38,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   val userWithNinoEnrolment = testUser(None, ninoEnrolment)
   val userWithMtditIdEnrolment = testUser(None, mtdidEnrolment)
   val userWithMtditIdEnrolmentAndNino = testUser(None, ninoEnrolment, mtdidEnrolment)
+  val userWithUtrButNoNino = testUser(None, utrEnrolment)
   val blankUser = testUser(None)
 
   val userWithIndividualAffinity = testUser(Some(AffinityGroup.Individual))
@@ -56,8 +57,12 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       ninoPredicate(FakeRequest())(userWithNinoEnrolment).right.value mustBe AuthPredicateSuccess
     }
 
-    "return the no-nino error page where a nino enrolment does not exist" in {
+    "redirect to resolve nino if nino enrolment does not exist" in {
       await(ninoPredicate(FakeRequest())(blankUser).left.value) mustBe resolveNino
+    }
+
+    "return an InternalServerException where a nino enrolment does not exists but a utr enrolment does" in {
+      intercept[InternalServerException](await(ninoPredicate(FakeRequest())(userWithUtrButNoNino).left.value))
     }
   }
 

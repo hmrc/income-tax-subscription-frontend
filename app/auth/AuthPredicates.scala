@@ -22,7 +22,7 @@ import common.Constants
 import controllers.ITSASessionKeys
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup
-import uk.gov.hmrc.play.http.NotFoundException
+import uk.gov.hmrc.play.http.{InternalServerException, NotFoundException}
 import uk.gov.hmrc.play.http.SessionKeys._
 
 import scala.concurrent.Future
@@ -36,10 +36,14 @@ object AuthPredicates extends Results {
   lazy val resolveNino: Result = Redirect(controllers.routes.NinoResolverController.resolveNino())
 
   val ninoPredicate: AuthPredicate = request => user =>
-    if (user.enrolments.getEnrolment(Constants.ninoEnrolmentName).isDefined) {
+    if (user.nino(request).isDefined) {
       Right(AuthPredicateSuccess)
     }
-    else Left(Future.successful(resolveNino))
+    else if (user.utr(request).isDefined) {
+      Left(Future.failed(new InternalServerException("AuthPredicates.ninoPredicate: unexpected user state, the user has a utr but no nino")))
+    } else {
+      Left(Future.successful(resolveNino))
+    }
 
   lazy val alreadyEnrolled: Result = Redirect(controllers.routes.AlreadyEnrolledController.enrolled())
 

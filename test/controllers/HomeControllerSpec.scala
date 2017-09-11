@@ -178,12 +178,14 @@ class HomeControllerSpec extends ControllerBaseSpec
       mockUtrRetrieval()
     }
 
-    "redirect the user to resolve nino" in {
+    // n.b. since gateway should have used the utr to look up the nino from CID during user login
+    "return an internal server error" in {
       userSetup()
+
       val result = call()
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe controllers.routes.NinoResolverController.resolveNino().url
+      val ex = intercept[InternalServerException](status(result))
+      ex.message mustBe "AuthPredicates.ninoPredicate: unexpected user state, the user has a utr but no nino"
     }
   }
 
