@@ -34,7 +34,6 @@ object AuthStub extends WireMockMethods {
       .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation))
   }
 
-  private val authIDs = "/uri/to/ids"
   private val authoriseUri = "/auth/authorise"
 
   def stubAuthSuccess(): StubMapping = {

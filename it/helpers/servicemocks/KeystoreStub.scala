@@ -20,6 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
+import helpers.WiremockHelper
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -61,6 +62,20 @@ object KeystoreStub extends WireMockMethods {
   def stubKeystoreSave[T](id: String, body: T)(implicit writer: Writes[T]): Unit = {
     when(method = PUT, uri = putUri(id))
       .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreData + (id -> Json.toJson(body))))
+  }
+
+  def verifyKeyStoreDelete(count: Option[Int] = None): Unit = {
+    WiremockHelper.verifyDelete(keystoreUri, count)
+  }
+
+  def verifyKeyStoreSave[T](id: String, body: T, count: Option[Int] = None)(implicit writer: Writes[T]): Unit = {
+    import helpers.ImplicitConversions._
+    WiremockHelper.verifyPut(putUri(id), Some((body: JsValue).toString()), count)
+  }
+
+  def stubKeystoreDelete(): Unit = {
+    when(method = DELETE, uri = keystoreUri)
+      .thenReturn(Status.OK, "")
   }
 
 //  def stubKeystoreDelete(): Unit = {

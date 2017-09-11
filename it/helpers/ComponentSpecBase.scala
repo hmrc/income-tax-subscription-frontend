@@ -19,11 +19,13 @@ package helpers
 import java.util.UUID
 
 import config.AppConfig
+import controllers.ITSASessionKeys
 import controllers.ITSASessionKeys.GoHome
 import forms._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
+import models.matching.UserDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -67,7 +69,9 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.government-gateway.host" -> mockHost,
     "microservice.services.government-gateway.port" -> mockPort,
     "microservice.services.gg-authentication.host" -> mockHost,
-    "microservice.services.gg-authentication.port" -> mockPort
+    "microservice.services.gg-authentication.port" -> mockPort,
+    "microservice.services.authenticator.host" -> mockHost,
+    "microservice.services.authenticator.port" -> mockPort
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -95,18 +99,22 @@ trait ComponentSpecBase extends UnitSpec
     super.afterAll()
   }
 
+  val defaultCookies = Map(
+    GoHome -> "et"
+  )
+
   object IncomeTaxSubscriptionFrontend {
     val csrfToken = UUID.randomUUID().toString
 
     def get(uri: String): WSResponse = await(
       buildClient(uri)
-        .withHeaders(HeaderNames.COOKIE -> getSessionCookie(Map(GoHome -> "et")))
+        .withHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(GoHome -> "et")))
         .get()
     )
 
-    def post(uri: String)(body: Map[String, Seq[String]]): WSResponse = await(
+    def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse = await(
       buildClient(uri)
-        .withHeaders(HeaderNames.COOKIE -> getSessionCookie(Map(GoHome -> "et")), "Csrf-Token" -> "nocheck")
+        .withHeaders(HeaderNames.COOKIE -> SessionCookieBaker.bakeSessionCookie(defaultCookies ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
     )
 
@@ -248,6 +256,29 @@ trait ComponentSpecBase extends UnitSpec
     }
 
     def iv(): WSResponse = get("/iv")
+
+    def showUserDetails(): WSResponse = get("/user-details")
+
+    def submitUserDetails(clientDetails: Option[UserDetailsModel]): WSResponse =
+      post("/user-details")(
+        clientDetails.fold(Map.empty: Map[String, Seq[String]])(
+          cd => toFormData(UserDetailsForm.userDetailsValidationForm, cd)
+        )
+      )
+
+    def showUserDetailsError(): WSResponse = get("/error/user-details")
+
+    def showUserDetailsLockout(): WSResponse = get("/error/lockout")
+
+    def submitUserDetailsLockout(): WSResponse = post("/error/lockout")(Map.empty)
+
+    def submitConfirmUser(previouslyFailedAttempts: Int = 0): WSResponse = {
+      val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
+        case 0 => Map.empty
+        case count => Map(ITSASessionKeys.FailedUserMatching -> previouslyFailedAttempts.toString)
+      }
+      post("/confirm-user", additionalCookies = failedAttemptCounter)(Map.empty)
+    }
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =

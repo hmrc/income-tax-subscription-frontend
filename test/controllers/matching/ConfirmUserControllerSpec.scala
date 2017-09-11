@@ -22,7 +22,7 @@ import play.api.http.Status
 import play.api.mvc._
 import play.api.test.Helpers.{await, _}
 import services.mocks._
-import uk.gov.hmrc.play.http.{InternalServerException, SessionKeys}
+import uk.gov.hmrc.play.http.{HttpResponse, InternalServerException, SessionKeys}
 import utils.TestConstants._
 import utils.{TestConstants, TestModels}
 
@@ -212,6 +212,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           mockUserMatchFailure(userDetails)
           setupMockNotLockedOut(testUserId)
           setupMockLockCreated(testUserId)
+          setupMockKeystore(deleteAll = HttpResponse(Status.OK))
 
           val result = TestConfirmUserController.submit()(requestWithLockout)
 

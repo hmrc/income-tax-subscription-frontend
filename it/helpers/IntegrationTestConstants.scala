@@ -28,11 +28,18 @@ object IntegrationTestConstants {
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
+  lazy val testUtr: String = s"${UUID.randomUUID()}"
+
+  val testUserIdStripped = "1234567890"
   val SessionId = s"stubbed-${UUID.randomUUID}"
-  val userId = "/auth/oid/1234567890"
+  val userId = s"/auth/oid/$testUserIdStripped"
+  val testFirstName = "Test"
+  val testLastName = "Name"
   val dateOfBirth = DateModel("01", "01", "1980")
 
+
   val baseURI = "/report-quarterly/income-and-expenses/sign-up"
+  val indexURI = s"$baseURI/index"
   val userDetailsURI = "/user-details"
   val confirmDetailsURI = "/confirm-details"
   val confirmationURI = s"$baseURI/confirmation"
@@ -58,6 +65,8 @@ object IntegrationTestConstants {
   val claimSubscriptionURI = s"$baseURI/claim-subscription"
   val wrongAffinityURI = s"$baseURI/error/affinity-group"
   val ivURI = s"$baseURI/iv"
+  val userLockedOutURI = s"$baseURI/error/lockout"
+  val userDetailsErrorURI = s"$baseURI/error/user-details"
 
   object Auth {
     def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(
