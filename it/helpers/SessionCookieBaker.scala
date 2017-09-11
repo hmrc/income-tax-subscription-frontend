@@ -59,7 +59,7 @@ object SessionCookieBaker {
     ) ++ additionalData
   }
 
-  def getSessionCookie(additionalData: Map[String, String] = Map(), timeStampRollback: Long = 0): String = {
+  def bakeSessionCookie(additionalData: Map[String, String] = Map(), timeStampRollback: Long = 0): String = {
     cookieValue(cookieData(additionalData, timeStampRollback))
   }
 }

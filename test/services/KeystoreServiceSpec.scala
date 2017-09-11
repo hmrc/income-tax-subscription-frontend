@@ -19,6 +19,7 @@ package services
 import config.SessionCache
 import models.BusinessNameModel
 import org.scalatest.Matchers._
+import play.api.http.Status
 import services.mocks.MockKeystoreService
 import uk.gov.hmrc.play.http.HttpResponse
 import utils.{TestModels, UnitTestTrait}
@@ -69,7 +70,7 @@ class KeystoreServiceSpec extends UnitTestTrait
     }
 
     "configure and verify remove all as specified" in {
-      val testDeleteAll = HttpResponse(200)
+      val testDeleteAll = HttpResponse(Status.OK)
       setupMockKeystore(deleteAll = testDeleteAll)
       for {
         response <- TestKeystore.keystoreService.deleteAll()

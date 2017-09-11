@@ -105,4 +105,7 @@ trait WireMockMethods {
   case object PUT extends HTTPMethod{
     override val wireMockMapping = put _
   }
+  case object DELETE extends HTTPMethod{
+    override val wireMockMapping = delete _
+  }
 }
