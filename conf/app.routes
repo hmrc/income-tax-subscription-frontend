@@ -8,22 +8,6 @@ GET         /index                        controllers.HomeController.index
 # SignOut Controller
 GET         /logout                       controllers.SignOutController.signOut
 
-# User Matching
-GET         /user-details                 controllers.matching.UserDetailsController.show(editMode: Boolean ?= false)
-POST        /user-details                 controllers.matching.UserDetailsController.submit(editMode: Boolean ?= false)
-
-# User Lockout
-GET         /error/lockout                controllers.matching.UserDetailsLockoutController.show
-POST        /error/lockout                controllers.matching.UserDetailsLockoutController.submit
-
-# Confirm User
-GET         /confirm-user                 controllers.matching.ConfirmUserController.show()
-POST        /confirm-user                 controllers.matching.ConfirmUserController.submit()
-
-# User Details Error
-GET         /error/user-details           controllers.matching.UserDetailsErrorController.show()
-POST        /error/user-details           controllers.matching.UserDetailsErrorController.submit()
-
 # Preferences routes
 GET         /preferences                  controllers.preferences.PreferencesController.checkPreferences
 GET         /callback                     controllers.preferences.PreferencesController.callback
