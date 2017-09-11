@@ -61,6 +61,8 @@ trait MockConfig extends AppConfig {
 
   override val hasEnabledTestOnlyRoutes: Boolean = false
 
+  override val userMatchingFeature: Boolean = false
+
 }
 
 object MockConfig extends MockConfig
