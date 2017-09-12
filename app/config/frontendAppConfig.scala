@@ -58,6 +58,7 @@ trait AppConfig {
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
   val authenticatorUrl: String
+  val userMatchingFeature: Boolean
 }
 
 @Singleton
@@ -148,6 +149,8 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val matchingLockOutSeconds: Int = loadConfig("lockout.lockOutSeconds").toInt
 
   override lazy val authenticatorUrl: String = baseUrl("authenticator")
+
+  override lazy val userMatchingFeature: Boolean = loadConfig("feature-switch.user-matching").toBoolean
 
 }
 

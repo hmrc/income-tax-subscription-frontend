@@ -55,16 +55,13 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
     }
   }
 
-  private def checkCID(defaultAction: Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] = {
+  private def checkCID(defaultAction: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] = {
 
     lazy val error = Future.failed(new InternalServerException("HomeController.checkCID: unexpected error calling the citizen details service"))
 
     // TODO this condition will be changed to redirect to the registration service when it becomes available,
     // but for now the content on the no nino page will suffice
     lazy val gotoRegistration = Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
-
-    // TODO change this link to point to the user lookup routes
-    lazy val userLookUp = Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
 
     (user.nino, user.utr) match {
       case (Some(_), Some(_)) => defaultAction
@@ -79,7 +76,8 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
             }
           case _ => gotoRegistration
         }.recoverWith { case _ => error }
-      case (None, _) => userLookUp
+      case (None, _) => // n.b. This should not happen as the user have been redirected by the no nino predicates
+        Future.failed(new InternalServerException("HomeController.checkCID: unexpected user state, the user has a utr but no nino"))
     }
   }
 

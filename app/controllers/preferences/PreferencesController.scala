@@ -28,6 +28,7 @@ import services.{AuthService, PreferencesService}
 import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
@@ -44,11 +45,13 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   def checkPreferences: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      preferencesService.checkPaperless.map {
-        case Right(Activated) => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
-        case Right(_) => gotoPreferences
-        case _ => throw new InternalServerException("Could not get paperless preferences")
-      }
+      if (baseConfig.applicationConfig.userMatchingFeature) Future.successful(Redirect(controllers.routes.IncomeSourceController.showIncomeSource()))
+      else
+        preferencesService.checkPaperless.map {
+          case Right(Activated) => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+          case Right(_) => gotoPreferences
+          case _ => throw new InternalServerException("Could not get paperless preferences")
+        }
   }
 
   def callback: Action[AnyContent] = Authenticated.async { implicit request =>
@@ -62,12 +65,14 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   def showGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Ok(view())
+      if (baseConfig.applicationConfig.userMatchingFeature) Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+      else Ok(view())
   }
 
   def submitGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      gotoPreferences
+      if (baseConfig.applicationConfig.userMatchingFeature) Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+      else gotoPreferences
   }
 
   @inline def gotoPreferences(implicit request: Request[AnyContent]): Result = Redirect(preferencesService.choosePaperlessUrl)

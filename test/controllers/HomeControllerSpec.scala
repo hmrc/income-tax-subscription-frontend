@@ -42,15 +42,15 @@ class HomeControllerSpec extends ControllerBaseSpec
     "index" -> TestHomeController(showGuidance = false).index()
   )
 
-  def mockBaseControllerConfig(showStartPage: Boolean): BaseControllerConfig = {
+  def mockBaseControllerConfig(showStartPage: Boolean, userMatchingFeature: Boolean): BaseControllerConfig = {
     val mockConfig = new MockConfig {
       override val showGuidance: Boolean = showStartPage
     }
     mockBaseControllerConfig(mockConfig)
   }
 
-  def TestHomeController(showGuidance: Boolean) = new HomeController(
-    mockBaseControllerConfig(showGuidance),
+  def TestHomeController(showGuidance: Boolean, userMatchingFeature: Boolean = false) = new HomeController(
+    mockBaseControllerConfig(showGuidance, userMatchingFeature),
     messagesApi,
     mockSubscriptionService,
     MockKeystoreService,
@@ -178,13 +178,14 @@ class HomeControllerSpec extends ControllerBaseSpec
       mockUtrRetrieval()
     }
 
-    // TODO change this to user look up routes (currently this functionality is provided by the auth predicates)
-    "redirect the user to iv" in {
+    // n.b. since gateway should have used the utr to look up the nino from CID during user login
+    "return an internal server error" in {
       userSetup()
+
       val result = call()
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe controllers.iv.routes.IdentityVerificationController.gotoIV().url
+      val ex = intercept[InternalServerException](status(result))
+      ex.message mustBe "AuthPredicates.ninoPredicate: unexpected user state, the user has a utr but no nino"
     }
   }
 
@@ -218,6 +219,34 @@ class HomeControllerSpec extends ControllerBaseSpec
 
       status(result) mustBe Status.SEE_OTHER
       redirectLocation(result).get mustBe controllers.routes.AffinityGroupErrorController.show().url
+    }
+  }
+
+  "If a user doesn't have a NINO" when {
+
+    def getResult(userMatchingFeature : Boolean): Future[Result] =
+      TestHomeController(showGuidance = false, userMatchingFeature = userMatchingFeature).index()(fakeRequest)
+
+    "userMatchingFeature in config is set to true" should {
+      "redirect them to user details" in {
+        mockIndividualWithNoEnrolments()
+
+        val result = getResult(userMatchingFeature = true)
+
+        status(result) mustBe Status.SEE_OTHER
+        redirectLocation(result).get mustBe controllers.routes.NinoResolverController.resolveNino().url
+      }
+    }
+
+    "userMatchingFeature in config is set to false" should {
+      "redirect them to iv" in {
+        mockIndividualWithNoEnrolments()
+
+        val result = getResult(userMatchingFeature = false)
+
+        status(result) mustBe Status.SEE_OTHER
+        redirectLocation(result).get mustBe controllers.routes.NinoResolverController.resolveNino().url
+      }
     }
   }
 

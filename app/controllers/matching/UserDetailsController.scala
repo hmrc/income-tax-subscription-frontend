@@ -58,7 +58,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
     }
   }
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
     implicit user =>
       handleLockOut {
         keystoreService.fetchUserDetails() map {
@@ -67,7 +67,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
     implicit user =>
       handleLockOut {
         UserDetailsForm.userDetailsForm.bindFromRequest.fold(
