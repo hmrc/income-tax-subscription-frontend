@@ -20,4 +20,3 @@ addSbtPlugin("org.lyranthe.sbt" % "partial-unification" % "1.0.0")
 
 resolvers += Resolver.bintrayRepo("hmrc", "releases")
 
-addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.5.0-M7")
