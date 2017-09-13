@@ -111,6 +111,10 @@ business.name.title                                             = Business name
 business.name.heading                                           = What''s the name of your business?
 business.name.line_1                                            = This is the business name you used to register for Self Assessment. If your business doesn''t have a name, enter your own name.
 
+## Business Phone number
+business.phone_number.title                                     = Business phone number
+business.phone_number.heading                                   = What''s your business telephone number?
+
 ## Terms and Conditions Messages
 terms.title                                                     = Terms of participation
 terms.heading                                                   = Terms of participation
@@ -200,6 +204,10 @@ error.business_accounting_period.maxEndDate                     = You must provi
 error.business_name.empty                                       = You must enter your Business name
 error.business_name.maxLength                                   = You can''t enter more than 105 characters for your Business name
 error.business_name.invalid                                     = The business name contains invalid characters
+
+error.business_phone_number.empty                               = You must enter your business phone number
+error.business_phone_number.maxLength                           = You can''t enter more than 24 characters for your business phone number
+error.business_phone_number.invalid                             = The business phone number contains invalid characters
 
 error.contact_email.empty                                       = Please enter a contact email
 error.contact_email.maxLength                                   = The email is too long

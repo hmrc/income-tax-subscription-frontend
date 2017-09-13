@@ -18,10 +18,9 @@ import com.google.inject.AbstractModule
 import config.{AppConfig, FrontendAppConfig}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.cache.client.SessionCache
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.ws._
-import uk.gov.hmrc.http.{ HttpDelete, HttpGet, HttpPatch, HttpPost, HttpPut }
 
 class Module extends AbstractModule {
 
