@@ -30,9 +30,9 @@ import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig
 import testonly.models.UserToStubModel
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 
 case class Value(value: String)

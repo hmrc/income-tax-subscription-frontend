@@ -19,9 +19,9 @@ package testonly.connectors
 import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpResponse }
 
 @Singleton
 class ResetUserLockoutConnector @Inject()(val appConfig: AppConfig,

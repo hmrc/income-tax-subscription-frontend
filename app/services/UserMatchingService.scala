@@ -23,9 +23,9 @@ import connectors.httpparsers.MatchUserHttpParser.MatchUserResponse
 import connectors.matching.AuthenticatorConnector
 import connectors.models.matching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import models.matching.UserDetailsModel
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 
 @Singleton

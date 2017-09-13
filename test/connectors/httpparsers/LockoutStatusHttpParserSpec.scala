@@ -23,9 +23,9 @@ import connectors.models.matching.{LockedOut, LockoutStatusFailureResponse, NotL
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.http.HttpResponse
 import utils.UnitTestTrait
 import utils.TestConstants._
+import uk.gov.hmrc.http.HttpResponse
 
 class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
   val testUri = "/"

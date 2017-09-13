@@ -25,10 +25,10 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.{AuthService, PreferencesService}
-import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.InternalServerException
 
 @Singleton
 class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,

@@ -23,10 +23,11 @@ import common.Constants
 import connectors.RawResponseReads
 import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig
-import uk.gov.hmrc.play.http._
 import uk.gov.hmrc.play.http.ws.WSHttp
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 @Singleton
 class DeEnrolmentConnector @Inject()(appConfig: TestOnlyAppConfig,

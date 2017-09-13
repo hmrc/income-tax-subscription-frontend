@@ -20,11 +20,12 @@ import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
 import connectors.models.subscription.SubscriptionRequest
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
 import connectors.httpparsers.SubscriptionResponseHttpParser._
 import connectors.httpparsers.GetSubscriptionResponseHttpParser._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpPost }
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 @Singleton
 class SubscriptionConnector @Inject()(val appConfig: AppConfig,

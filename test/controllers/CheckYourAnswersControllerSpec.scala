@@ -17,17 +17,14 @@
 package controllers
 
 import audit.Logging
-import auth._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.CacheConstants._
-import services.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService, MockSubscriptionService}
-import uk.gov.hmrc.play.http.InternalServerException
-import utils.TestModels._
-import utils.TestConstants._
 import services.CacheUtil._
+import services.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
+import uk.gov.hmrc.http.InternalServerException
+import utils.TestConstants._
+import utils.TestModels._
 
 class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
@@ -62,6 +59,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   "Calling the submit action of the CheckYourAnswersController with an authorised user" should {
 
     lazy val request = fakeRequest
+
     def call = TestCheckYourAnswersController.submit(request)
 
     "When the submission is successful" should {
@@ -74,7 +72,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
         //TODO - Test path header being sent to backend
-//        verifySubscriptionHeader(ITSASessionKeys.RequestURI -> request.uri)
+        //        verifySubscriptionHeader(ITSASessionKeys.RequestURI -> request.uri)
       }
 
       s"redirect to '${controllers.routes.ConfirmationController.showConfirmation().url}'" in {
@@ -98,7 +96,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       "return a internalServer error" in {
         setupMockKeystore(fetchAll = testCacheMapCustom(terms = None))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain (controllers.routes.TermsController.showTerms().url)
+        redirectLocation(result) must contain(controllers.routes.TermsController.showTerms().url)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
     }

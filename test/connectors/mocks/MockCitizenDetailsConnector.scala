@@ -24,11 +24,11 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import utils.TestConstants.testException
 import utils.{MockTrait, UnitTestTrait}
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet }
 
 
 trait MockCitizenDetailsConnector extends MockTrait {
@@ -40,8 +40,7 @@ trait MockCitizenDetailsConnector extends MockTrait {
       mockCitizenDetailsConnector.lookupUtr(
         ArgumentMatchers.eq(nino)
       )(
-        ArgumentMatchers.any[HeaderCarrier],
-        ArgumentMatchers.any[ExecutionContext]
+        ArgumentMatchers.any[HeaderCarrier]
       )
     ).thenReturn(response)
 

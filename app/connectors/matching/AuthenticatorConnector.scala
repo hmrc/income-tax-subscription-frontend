@@ -20,17 +20,14 @@ import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import config.AppConfig
-import connectors.RawResponseReads
 import connectors.httpparsers.MatchUserHttpParser._
-import connectors.models.matching.{UserMatchFailureResponseModel, UserMatchRequestModel, UserMatchSuccessResponseModel}
+import connectors.models.matching.UserMatchRequestModel
 import models.matching.UserDetailsModel
-import play.api.http.Status._
-import play.api.libs.json.{JsError, JsSuccess}
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse, InternalServerException}
-import utils.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpPost}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 @Singleton
 class AuthenticatorConnector @Inject()(appConfig: AppConfig,

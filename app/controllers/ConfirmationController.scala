@@ -27,9 +27,9 @@ import models.DateModel.dateConvert
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.{AuthService, KeystoreService}
-import uk.gov.hmrc.play.http.InternalServerException
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.InternalServerException
 
 @Singleton
 class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,

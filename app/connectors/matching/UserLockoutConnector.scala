@@ -21,15 +21,16 @@ import javax.inject.{Inject, Singleton}
 import config.AppConfig
 import connectors.httpparsers.LockoutStatusHttpParser._
 import connectors.models.matching.LockOutRequest
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
 
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost}
 
 @Singleton
 class UserLockoutConnector @Inject()(val appConfig: AppConfig,
                                      val httpGet: HttpGet,
                                      val httpPost: HttpPost
-                                      ) {
+                                    ) {
 
   def userLockoutUrl(token: String): String = appConfig.userMatchingUrl + UserLockoutConnector.tokenLockoutUri(token)
 

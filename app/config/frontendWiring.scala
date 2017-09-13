@@ -18,14 +18,18 @@ package config
 
 import javax.inject._
 
+import com.typesafe.config.Config
 import play.api.Application
 import uk.gov.hmrc.auth.core.PlayAuthConnector
-import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode, ServicesConfig}
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
-import uk.gov.hmrc.play.http.HttpPost
 import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.play.frontend.config.LoadAuditingConfig
+import uk.gov.hmrc.play.http.ws._
+
+import scala.concurrent.Future
 
 @Singleton
 class FrontendAuditConnector @Inject()(val app: Application) extends Auditing with AppName {
@@ -34,7 +38,10 @@ class FrontendAuditConnector @Inject()(val app: Application) extends Auditing wi
 }
 
 @Singleton
-class WSHttp @Inject()(val app: Application) extends uk.gov.hmrc.play.http.ws.WSHttp with AppName with RunMode {
+class WSHttp @Inject()(val app: Application)
+  extends uk.gov.hmrc.play.http.ws.WSHttp
+    with HttpGet with HttpPost with HttpPut with HttpDelete with HttpPatch
+    with AppName with RunMode {
   override val hooks = NoneRequired
 }
 
@@ -49,7 +56,7 @@ class SessionCache @Inject()(val app: Application,
 
 trait SessionCookieCryptoFilterWrapper {
 
-  def encryptCookieString(cookie: String) : String = {
+  def encryptCookieString(cookie: String): String = {
     SessionCookieCryptoFilter.encrypt(cookie)
   }
 }

@@ -28,7 +28,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService
 import testonly.connectors.DeEnrolmentConnector
-import uk.gov.hmrc.play.http.InternalServerException
+import uk.gov.hmrc.http.InternalServerException
 
 @Singleton
 class DeEnrolController @Inject()(val baseConfig: BaseControllerConfig,

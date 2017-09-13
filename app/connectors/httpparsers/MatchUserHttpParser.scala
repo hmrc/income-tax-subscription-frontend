@@ -19,7 +19,7 @@ package connectors.httpparsers
 import connectors.models.matching._
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess}
-import uk.gov.hmrc.play.http.{HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
 
 object MatchUserHttpParser {
   type MatchUserResponse = Either[UserMatchFailureResponseModel, Option[UserMatchSuccessResponseModel]]

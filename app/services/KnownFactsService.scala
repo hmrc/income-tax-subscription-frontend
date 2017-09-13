@@ -21,9 +21,9 @@ import javax.inject.{Inject, Singleton}
 import common.Constants.GovernmentGateway._
 import connectors.GGAdminConnector
 import connectors.models.gg._
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class KnownFactsService @Inject()(gGAdminConnector: GGAdminConnector) {

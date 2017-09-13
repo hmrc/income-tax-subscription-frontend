@@ -24,9 +24,9 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
+import uk.gov.hmrc.http.HeaderCarrier
 
 
 trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits {

@@ -23,10 +23,11 @@ import config.AppConfig
 import connectors.GGAuthenticationConnector._
 import connectors.models.authenticator._
 import play.api.http.Status._
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpResponse}
 
 @Singleton
 class GGAuthenticationConnector @Inject()(appConfig: AppConfig,

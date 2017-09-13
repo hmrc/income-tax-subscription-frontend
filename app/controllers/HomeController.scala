@@ -27,10 +27,10 @@ import controllers.ITSASessionKeys._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.{AuthService, CitizenDetailsService, KeystoreService, SubscriptionService}
-import uk.gov.hmrc.play.http.InternalServerException
 import utils.Implicits._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.InternalServerException
 
 @Singleton
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,

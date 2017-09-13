@@ -25,8 +25,8 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import services.mocks.MockUserLockoutService
-import uk.gov.hmrc.play.http.SessionKeys
 import utils.TestConstants._
+import uk.gov.hmrc.http.SessionKeys
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   with MockUserLockoutService {

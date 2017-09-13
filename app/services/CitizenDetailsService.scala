@@ -21,9 +21,9 @@ import javax.inject.{Inject, Singleton}
 import config.AppConfig
 import connectors.CitizenDetailsConnector
 import connectors.httpparsers.CitizenDetailsResponseHttpParser.GetCitizenDetailsResponse
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class CitizenDetailsService @Inject()(appConfig: AppConfig,
@@ -40,7 +40,7 @@ class CitizenDetailsService @Inject()(appConfig: AppConfig,
       case false => hc
     }
 
-  def lookupUtr(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetCitizenDetailsResponse] =
-    citizenDetailsConnector.lookupUtr(nino)(amendHCForTest, implicitly[ExecutionContext])
+  def lookupUtr(nino: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
+    citizenDetailsConnector.lookupUtr(nino)(amendHCForTest)
 
 }

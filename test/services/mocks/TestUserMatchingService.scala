@@ -22,12 +22,12 @@ import models.matching.UserDetailsModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.UserMatchingService
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.MockTrait
 import utils.TestConstants._
 import utils.TestModels._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait TestUserMatchingService extends MockAuthenticatiorConnector {
 

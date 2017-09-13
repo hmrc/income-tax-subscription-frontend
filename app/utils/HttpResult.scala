@@ -18,7 +18,7 @@ package utils
 
 import connectors.models.ConnectorError
 import play.api.libs.json.JsError
-import uk.gov.hmrc.play.http.{HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
 
 
 object HttpResult {

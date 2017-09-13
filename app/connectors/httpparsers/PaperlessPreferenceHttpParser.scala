@@ -19,8 +19,8 @@ package connectors.httpparsers
 import connectors.models.preferences.{PaperlessState, Unset}
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess}
-import uk.gov.hmrc.play.http.HttpResponse
 import utils.HttpResult.{HttpConnectorError, HttpResult, HttpResultParser}
+import uk.gov.hmrc.http.HttpResponse
 
 object PaperlessPreferenceHttpParser {
   implicit object PaperlessPreferenceHttpReads extends HttpResultParser[PaperlessState] {

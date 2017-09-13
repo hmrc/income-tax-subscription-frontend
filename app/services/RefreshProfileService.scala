@@ -20,9 +20,9 @@ import javax.inject.{Inject, Singleton}
 
 import connectors.GGAuthenticationConnector
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class RefreshProfileService @Inject()(ggAuthenticationConnector: GGAuthenticationConnector) {

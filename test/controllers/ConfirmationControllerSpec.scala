@@ -24,7 +24,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
-import uk.gov.hmrc.play.http.NotFoundException
+import uk.gov.hmrc.http.NotFoundException
 import utils.TestModels
 
 import scala.concurrent.Future

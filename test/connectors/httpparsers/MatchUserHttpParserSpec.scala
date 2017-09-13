@@ -21,10 +21,10 @@ import connectors.models.matching.{UserMatchFailureResponseModel, UserMatchSucce
 import org.scalatest.EitherValues
 import play.api.libs.json.{JsError, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.HttpResponse
 import utils.TestConstants._
 import utils.TestModels._
 import utils.UnitTestTrait
+import uk.gov.hmrc.http.HttpResponse
 
 class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
   "MatchUserHttpReads" when {

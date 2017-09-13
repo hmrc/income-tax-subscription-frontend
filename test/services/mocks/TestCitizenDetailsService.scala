@@ -22,11 +22,11 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status._
 import services.CitizenDetailsService
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.MockTrait
 import utils.TestConstants._
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait TestCitizenDetailsService extends MockCitizenDetailsConnector {
 
@@ -42,8 +42,7 @@ trait MockCitizenDetailsService extends MockTrait {
       mockCitizenDetailsService.lookupUtr(
         ArgumentMatchers.eq(nino)
       )(
-        ArgumentMatchers.any[HeaderCarrier],
-        ArgumentMatchers.any[ExecutionContext]
+        ArgumentMatchers.any[HeaderCarrier]
       )
     ).thenReturn(response)
 

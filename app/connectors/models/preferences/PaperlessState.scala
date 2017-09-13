@@ -17,7 +17,6 @@
 package connectors.models.preferences
 
 import connectors.models.ConnectorError
-import uk.gov.hmrc.play.http.HttpResponse
 import play.api.http.Status._
 import play.api.libs.json.{JsResult, JsSuccess, JsValue, Reads}
 

@@ -28,11 +28,13 @@ import connectors.models.preferences.{PaperlessPreferenceError, PaperlessState}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
-import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.http.{HttpGet, HttpPut}
 import utils.HttpResult._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
 
 @Singleton
 class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
@@ -59,8 +61,8 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
       case Left(error) =>
         logging.warn(s"PreferencesFrontendConnector#checkPaperless failed. Returned status:${error.httpResponse.status} body:${error.httpResponse.body}")
         Left(PaperlessPreferenceError)
-      }
     }
+  }
 }
 
 object PreferenceFrontendConnector {

@@ -22,11 +22,11 @@ import play.api.http.Status
 import play.api.mvc._
 import play.api.test.Helpers.{await, _}
 import services.mocks._
-import uk.gov.hmrc.play.http.{HttpResponse, InternalServerException, SessionKeys}
 import utils.TestConstants._
 import utils.{TestConstants, TestModels}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HttpResponse, InternalServerException, SessionKeys }
 
 class ConfirmUserControllerSpec extends ControllerBaseSpec
   with MockUserLockoutService with MockUserMatchingService with MockKeystoreService

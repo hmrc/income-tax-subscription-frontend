@@ -24,10 +24,10 @@ import play.api.Application
 import play.api.mvc.Results.{Forbidden, Redirect}
 import play.api.mvc.{Call, RequestHeader, Result}
 import uk.gov.hmrc.play.config.RunMode
-import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
 import scala.concurrent.Future
+import uk.gov.hmrc.play.frontend.filters.MicroserviceFilterSupport
 
 @Singleton
 class WhitelistFilter @Inject()(app: Application

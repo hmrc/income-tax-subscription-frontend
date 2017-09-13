@@ -24,8 +24,8 @@ import play.api.{Application, Configuration, Logger}
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{Audit, DataEvent}
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.HttpResult.HttpConnectorError
+import uk.gov.hmrc.http.HeaderCarrier
 
 case class LoggingConfig(heading: String)
 
@@ -37,7 +37,6 @@ object LoggingConfig {
 
 }
 
-import utils.JsonUtils._
 
 @Singleton
 class Logging @Inject()(application: Application,
@@ -63,7 +62,6 @@ class Logging @Inject()(application: Application,
       tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags(transactionName, path) ++ tags,
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails(detail.toSeq: _*)
     )
-    val pjs = packet: JsValue
     audit.sendDataEvent(packet)
   }
 

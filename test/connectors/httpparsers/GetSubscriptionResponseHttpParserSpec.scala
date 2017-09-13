@@ -21,9 +21,9 @@ import connectors.models.subscription.{SubscriptionFailureResponse, Subscription
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
-import uk.gov.hmrc.play.http.HttpResponse
 import utils.TestConstants._
 import utils.UnitTestTrait
+import uk.gov.hmrc.http.HttpResponse
 
 class GetSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "GET"
