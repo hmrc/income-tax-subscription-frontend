@@ -25,9 +25,9 @@ import connectors.models.matching.{LockedOut, NotLockedOut}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.{AuthService, UserLockoutService}
-import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, InternalServerException }
 
 
 class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfig,

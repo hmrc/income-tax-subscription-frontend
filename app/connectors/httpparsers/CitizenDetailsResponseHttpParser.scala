@@ -18,7 +18,7 @@ package connectors.httpparsers
 
 import connectors.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 import play.api.http.Status.{NOT_FOUND, OK}
-import uk.gov.hmrc.play.http.{HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
 
 
 object CitizenDetailsResponseHttpParser {

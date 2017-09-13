@@ -25,8 +25,8 @@ import connectors.preferences.PreferenceFrontendConnector
 import play.api.i18n.MessagesApi
 import services.AuthService
 import testonly.connectors.ClearPreferencesConnector
-import uk.gov.hmrc.play.http.{HttpGet, InternalServerException}
 import utils.Implicits._
+import uk.gov.hmrc.http.{ HttpGet, InternalServerException }
 
 @Singleton
 class ClearPreferencesController @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector,

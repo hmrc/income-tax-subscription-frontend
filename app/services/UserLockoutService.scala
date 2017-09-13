@@ -21,9 +21,9 @@ import javax.inject.{Inject, Singleton}
 import audit.Logging
 import connectors.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import connectors.matching.UserLockoutConnector
-import uk.gov.hmrc.play.http.{HeaderCarrier, UserId}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, UserId }
 
 @Singleton
 class UserLockoutService @Inject()(userLockoutConnector: UserLockoutConnector,

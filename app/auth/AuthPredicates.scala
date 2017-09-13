@@ -22,10 +22,10 @@ import common.Constants
 import controllers.ITSASessionKeys
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup
-import uk.gov.hmrc.play.http.{InternalServerException, NotFoundException}
-import uk.gov.hmrc.play.http.SessionKeys._
+import _root_.uk.gov.hmrc.http.SessionKeys._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ InternalServerException, NotFoundException }
 
 object AuthPredicates extends Results {
 

@@ -21,9 +21,9 @@ import connectors.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.http.HttpResponse
 import utils.TestConstants._
 import utils.UnitTestTrait
+import uk.gov.hmrc.http.HttpResponse
 
 class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "GET"

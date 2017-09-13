@@ -21,11 +21,11 @@ import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuc
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.RefreshProfileService
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.MockTrait
 import utils.TestConstants._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait TestRefreshProfileService extends MockGGAuthenticationConnector {
   object TestRefreshProfileService extends RefreshProfileService(mockGGAuthenticationConnector)

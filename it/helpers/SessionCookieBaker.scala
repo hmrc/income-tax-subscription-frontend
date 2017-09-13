@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 
 import play.api.libs.Crypto
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
-import uk.gov.hmrc.play.http.SessionKeys
+import uk.gov.hmrc.http.SessionKeys
 import IntegrationTestConstants._
 import controllers.ITSASessionKeys
 

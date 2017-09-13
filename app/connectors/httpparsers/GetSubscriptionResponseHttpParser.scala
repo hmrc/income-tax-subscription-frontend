@@ -18,7 +18,7 @@ package connectors.httpparsers
 
 import connectors.models.subscription._
 import play.api.http.Status._
-import uk.gov.hmrc.play.http.{HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
 
 object GetSubscriptionResponseHttpParser {
   type GetSubscriptionResponse = Either[SubscriptionFailureResponse, Option[SubscriptionSuccess]]

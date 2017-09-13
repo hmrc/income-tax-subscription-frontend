@@ -21,11 +21,11 @@ import javax.inject.{Inject, Singleton}
 import connectors.RawResponseReads
 import play.api.http.Status._
 import testonly.TestOnlyAppConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpDelete, HttpGet, HttpResponse}
 import utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpDelete, HttpGet, HttpResponse }
 
 @Singleton
 class ClearPreferencesConnector @Inject()(appConfig: TestOnlyAppConfig,

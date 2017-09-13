@@ -24,13 +24,13 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.JsonUtils._
 import utils.TestConstants.testException
 import utils.TestModels._
 import utils.{MockTrait, TestConstants, UnitTestTrait}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
 

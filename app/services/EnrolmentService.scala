@@ -21,9 +21,9 @@ import javax.inject.{Inject, Singleton}
 import common.Constants.GovernmentGateway._
 import connectors.GGConnector
 import connectors.models.gg._
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class EnrolmentService @Inject()(ggConnector: GGConnector) {

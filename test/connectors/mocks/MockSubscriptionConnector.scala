@@ -25,12 +25,12 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.JsonUtils._
 import utils.MockTrait
 import utils.TestConstants._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait MockSubscriptionConnector extends MockTrait {
   val mockSubscriptionConnector = mock[SubscriptionConnector]

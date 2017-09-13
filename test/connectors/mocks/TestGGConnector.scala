@@ -24,11 +24,11 @@ import org.mockito.Mockito._
 import play.api.Configuration
 import play.api.http.Status
 import play.api.libs.json.JsNull
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost}
 import utils.MockTrait
 import utils.TestConstants._
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpPost }
 
 trait MockGGConnector extends MockTrait {
   val mockGGConnector = mock[GGConnector]
@@ -39,7 +39,7 @@ trait MockGGConnector extends MockTrait {
   }
 
   private def mockEnrol(request: EnrolRequest)(response: Future[Either[EnrolFailure, EnrolSuccess.type]]): Unit =
-    when(mockGGConnector.enrol(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[ExecutionContext]))
+    when(mockGGConnector.enrol(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(response)
 
   def mockEnrolSuccess(request: EnrolRequest): Unit = mockEnrol(request)(Future.successful(Right(EnrolSuccess)))

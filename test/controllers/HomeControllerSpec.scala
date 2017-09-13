@@ -25,10 +25,10 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockCitizenDetailsService, MockKeystoreService, MockSubscriptionService}
-import uk.gov.hmrc.play.http.InternalServerException
 import utils.TestConstants
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.InternalServerException
 
 
 class HomeControllerSpec extends ControllerBaseSpec

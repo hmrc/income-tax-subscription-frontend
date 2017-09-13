@@ -23,11 +23,11 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status
 import play.api.libs.json.JsNull
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet, HttpPost}
 import utils.MockTrait
 import utils.TestConstants._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpPost }
 
 trait MockGGAuthenticationConnector extends MockTrait {
   val mockGGAuthenticationConnector = mock[GGAuthenticationConnector]

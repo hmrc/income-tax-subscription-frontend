@@ -23,10 +23,10 @@ import connectors.models.subscription._
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsString, Json}
-import uk.gov.hmrc.play.http.HttpResponse
 import utils.HttpResult.HttpConnectorError
 import utils.TestConstants._
 import utils.UnitTestTrait
+import uk.gov.hmrc.http.HttpResponse
 
 class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "POST"

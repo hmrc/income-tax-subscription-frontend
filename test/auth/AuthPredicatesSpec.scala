@@ -25,9 +25,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
-import uk.gov.hmrc.play.http.SessionKeys._
-import uk.gov.hmrc.play.http.{InternalServerException, NotFoundException}
+import _root_.uk.gov.hmrc.http.SessionKeys._
 import utils.UnitTestTrait
+import uk.gov.hmrc.http.{ InternalServerException, NotFoundException }
 
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
   private def testUser(affinityGroup: Option[AffinityGroup], enrolments: Enrolment*): IncomeTaxSAUser = IncomeTaxSAUser(

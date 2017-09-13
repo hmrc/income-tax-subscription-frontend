@@ -24,11 +24,11 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
 import services.UserLockoutService
-import uk.gov.hmrc.play.http.{HeaderCarrier, UserId}
 import utils.MockTrait
 import utils.TestConstants.{testException, testLockoutResponse}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, UserId }
 
 trait MockUserLockoutService extends MockTrait {
   val mockUserLockoutService = mock[UserLockoutService]

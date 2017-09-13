@@ -28,9 +28,9 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.{AuthService, KeystoreService, UserLockoutService}
-import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, InternalServerException }
 
 @Singleton
 class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,

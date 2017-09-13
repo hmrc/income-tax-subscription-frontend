@@ -19,10 +19,10 @@ package connectors
 import connectors.mocks.TestGGAuthenticationConnector
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.TestConstants._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 
 class GGAuthenticationConnectorSpec extends TestGGAuthenticationConnector with ScalaFutures with IntegrationPatience {

@@ -25,7 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.AuthService
 import uk.gov.hmrc.auth.core.Retrievals._
-import uk.gov.hmrc.auth.core.~
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.ExecutionContext.Implicits.global

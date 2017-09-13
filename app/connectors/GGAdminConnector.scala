@@ -25,10 +25,11 @@ import connectors.GGAdminConnector._
 import connectors.models.gg._
 import play.api.http.Status.OK
 import play.api.libs.json.Json.toJson
-import uk.gov.hmrc.play.http._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpPost, HttpResponse }
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 
 @Singleton

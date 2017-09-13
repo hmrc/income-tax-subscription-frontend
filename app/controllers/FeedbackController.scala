@@ -19,20 +19,19 @@ package controllers
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
-import config.AppConfig
+import config.{AppConfig, WSHttp}
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, RequestHeader}
 import play.twirl.api.Html
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
-import uk.gov.hmrc.play.http._
-import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.partials._
 import views.html.feedback.feedback_thankyou
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
@@ -59,7 +58,7 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
 
   def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit().url
 
-  protected def loadPartial(url: String)(implicit request: RequestHeader): HtmlPartial = ???
+  protected def loadPartial(url: String)(implicit request: RequestHeader, ec: ExecutionContext): HtmlPartial = ???
 
 
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =
@@ -83,7 +82,8 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
   def submit: Action[AnyContent] = UnauthorisedAction.async {
     implicit request =>
       request.body.asFormUrlEncoded.map { formData =>
-        httpPost.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(rds = readPartialsForm, hc = partialsReadyHeaderCarrier).map {
+        httpPost.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(
+          rds = readPartialsForm, hc = partialsReadyHeaderCarrier, ec = implicitly[ExecutionContext]).map {
           resp =>
             resp.status match {
               case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))

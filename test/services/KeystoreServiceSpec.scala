@@ -21,8 +21,8 @@ import models.BusinessNameModel
 import org.scalatest.Matchers._
 import play.api.http.Status
 import services.mocks.MockKeystoreService
-import uk.gov.hmrc.play.http.HttpResponse
 import utils.{TestModels, UnitTestTrait}
+import uk.gov.hmrc.http.HttpResponse
 
 class KeystoreServiceSpec extends UnitTestTrait
   with MockKeystoreService {

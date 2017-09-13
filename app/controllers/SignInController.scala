@@ -22,15 +22,15 @@ import config.FrontendAppConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
+import uk.gov.hmrc.play.frontend.config.AuthRedirects
 
 @Singleton
 class SignInController @Inject()(val appConfig: FrontendAppConfig,
                                  val config: Configuration,
-                                 val env: Environment) extends FrontendController with Redirects {
+                                 val env: Environment) extends FrontendController with AuthRedirects {
 
   val signIn: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(toGGLogin(appConfig.ggSignInContinueUrl))

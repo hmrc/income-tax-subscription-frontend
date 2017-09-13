@@ -26,11 +26,11 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
 import services.SubscriptionService
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.MockTrait
 import utils.TestConstants._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait MockSubscriptionService extends MockTrait {
   val mockSubscriptionService = mock[SubscriptionService]

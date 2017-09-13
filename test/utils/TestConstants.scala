@@ -27,7 +27,7 @@ import connectors.models.subscription.{Both, SubscriptionFailureResponse, Subscr
 import models.DateModel
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
-import uk.gov.hmrc.play.http.UserId
+import uk.gov.hmrc.http.UserId
 
 object TestConstants {
   /*

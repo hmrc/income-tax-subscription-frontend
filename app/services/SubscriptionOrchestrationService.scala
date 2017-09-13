@@ -24,9 +24,9 @@ import connectors.models.ConnectorError
 import connectors.models.authenticator.RefreshProfileResult
 import connectors.models.subscription.SubscriptionSuccess
 import models.SummaryModel
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class SubscriptionOrchestrationService @Inject() (subscriptionService: SubscriptionService,

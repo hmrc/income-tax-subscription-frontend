@@ -27,10 +27,10 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services._
-import uk.gov.hmrc.play.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
 import scala.util.Left
+import uk.gov.hmrc.http.{ HeaderCarrier, InternalServerException }
 
 @Singleton
 class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,

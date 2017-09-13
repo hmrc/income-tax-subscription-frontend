@@ -22,12 +22,13 @@ import _root_.utils.JsonUtils._
 import audit.Logging
 import config.AppConfig
 import connectors.GGConnector._
-import connectors.models.gg.{EnrolFailure, EnrolRequest, EnrolResponse, EnrolSuccess}
+import connectors.models.gg.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import play.api.http.Status.OK
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpPost, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpResponse}
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
 class GGConnector @Inject()(httpPost: HttpPost,
@@ -39,7 +40,7 @@ class GGConnector @Inject()(httpPost: HttpPost,
 
   val enrolUrl: String = governmentGatewayURL + enrolUri
 
-  def enrol(enrolmentRequest: EnrolRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
+  def enrol(enrolmentRequest: EnrolRequest)(implicit hc: HeaderCarrier): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
 
     lazy val requestDetails: Map[String, String] = Map("enrolRequest" -> (enrolmentRequest: JsValue).toString)
     logging.debug(s"Request:\n$requestDetails")

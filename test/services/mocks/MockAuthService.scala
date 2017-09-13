@@ -22,11 +22,13 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import services.AuthService
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L200
-import uk.gov.hmrc.auth.core.{~, _}
-import uk.gov.hmrc.play.http.HeaderCarrier
+import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.TestConstants
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
   self: Suite =>
@@ -43,7 +45,7 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
   def mockAuthSuccess(): Unit = {
     when(mockAuthService.authorised())
       .thenReturn(new mockAuthService.AuthorisedFunction(EmptyPredicate) {
-        override def apply[A](body: => Future[A])(implicit hc: HeaderCarrier) = body
+        override def apply[A](body: => Future[A])(implicit hc: HeaderCarrier, ec: ExecutionContext) = body
       })
   }
 
@@ -52,7 +54,7 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
       .thenReturn(
         new mockAuthService.AuthorisedFunction(EmptyPredicate) {
           override def retrieve[A](retrieval: Retrieval[A]) = new mockAuthService.AuthorisedFunctionWithResult[A](EmptyPredicate, retrieval) {
-            override def apply[B](body: A => Future[B])(implicit hc: HeaderCarrier): Future[B] = body.apply(retrievalValue.asInstanceOf[A])
+            override def apply[B](body: A => Future[B])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[B] = body.apply(retrievalValue.asInstanceOf[A])
           }
         })
   }
@@ -72,10 +74,10 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
   def mockAuthUnauthorised(exception: AuthorisationException = new InvalidBearerToken): Unit =
     when(mockAuthService.authorised())
       .thenReturn(new mockAuthService.AuthorisedFunction(EmptyPredicate) {
-        override def apply[A](body: => Future[A])(implicit hc: HeaderCarrier) = Future.failed(exception)
+        override def apply[A](body: => Future[A])(implicit hc: HeaderCarrier, ec: ExecutionContext) = Future.failed(exception)
 
         override def retrieve[A](retrieval: Retrieval[A]) = new mockAuthService.AuthorisedFunctionWithResult[A](EmptyPredicate, retrieval) {
-          override def apply[B](body: A => Future[B])(implicit hc: HeaderCarrier): Future[B] = Future.failed(exception)
+          override def apply[B](body: A => Future[B])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[B] = Future.failed(exception)
         }
       })
 

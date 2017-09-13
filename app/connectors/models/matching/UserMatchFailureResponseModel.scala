@@ -17,7 +17,7 @@
 package connectors.models.matching
 
 import play.api.libs.json.{JsError, Json}
-import uk.gov.hmrc.play.http.HttpResponse
+import uk.gov.hmrc.http.HttpResponse
 
 // the response from authenticator/match with message to indicate why matching failed
 case class UserMatchFailureResponseModel(errors: String)

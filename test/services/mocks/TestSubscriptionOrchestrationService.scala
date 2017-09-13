@@ -22,11 +22,11 @@ import models.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.SubscriptionOrchestrationService
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.MockTrait
 import utils.TestConstants._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait TestSubscriptionOrchestrationService extends MockSubscriptionService
   with MockKnownFactsService

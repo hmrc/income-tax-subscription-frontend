@@ -19,7 +19,6 @@ package connectors
 import connectors.mocks.TestAuthenticatorConnector
 import org.scalatest.EitherValues
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.http.InternalServerException
 import utils.TestModels._
 
 class AuthenticatorConnectorSpec extends TestAuthenticatorConnector with EitherValues {

@@ -22,8 +22,9 @@ import audit.Logging
 import config.AppConfig
 import connectors.httpparsers.CitizenDetailsResponseHttpParser._
 import connectors.models.CitizenDetailsFailureResponse
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet }
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -33,7 +34,7 @@ class CitizenDetailsConnector @Inject()(appConfig: AppConfig,
 
   def lookupUtrUrl(nino: String): String = appConfig.citizenDetailsURL + CitizenDetailsConnector.lookupUtrUri(nino)
 
-  def lookupUtr(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[GetCitizenDetailsResponse] =
+  def lookupUtr(nino: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
     httpGet.GET[GetCitizenDetailsResponse](lookupUtrUrl(nino)).map {
       case r@Right(Some(success)) =>
         logging.debug("CitizenDetailsConnector.lookupUtr successful, returned OK")

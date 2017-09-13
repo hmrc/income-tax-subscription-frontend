@@ -22,11 +22,11 @@ import connectors.models.gg._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.KnownFactsService
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.MockTrait
 import utils.TestConstants._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 trait TestKnownFactsService extends MockGGAdminConnector {
 

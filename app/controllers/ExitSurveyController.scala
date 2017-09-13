@@ -28,10 +28,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.Implicits._
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class ExitSurveyController @Inject()(val app: Application,

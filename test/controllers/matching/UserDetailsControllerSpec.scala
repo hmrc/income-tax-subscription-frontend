@@ -26,9 +26,9 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import services.mocks.{MockKeystoreService, MockUserLockoutService}
-import uk.gov.hmrc.play.http.{HttpResponse, SessionKeys}
 import utils.TestConstants._
 import utils.TestModels._
+import uk.gov.hmrc.http.{ HttpResponse, SessionKeys }
 
 
 class UserDetailsControllerSpec extends ControllerBaseSpec

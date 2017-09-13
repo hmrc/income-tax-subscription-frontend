@@ -24,9 +24,9 @@ import connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionRespons
 import connectors.models.subscription._
 import connectors.subscription.SubscriptionConnector
 import models.SummaryModel
-import uk.gov.hmrc.play.http.HeaderCarrier
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class SubscriptionService @Inject()(logging: Logging,

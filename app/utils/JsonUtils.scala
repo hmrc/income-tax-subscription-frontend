@@ -17,7 +17,7 @@
 package utils
 
 import play.api.libs.json._
-import uk.gov.hmrc.play.http.HttpResponse
+import uk.gov.hmrc.http.HttpResponse
 
 trait JsonUtils extends Implicits {
 
