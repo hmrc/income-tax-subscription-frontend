@@ -63,6 +63,8 @@ trait MockConfig extends AppConfig {
 
   override val userMatchingFeature: Boolean = false
 
+  override def storeNinoUrl(token: String): String = s"income-tax-subscription/identifier-mapping/$token"
+
 }
 
 object MockConfig extends MockConfig
