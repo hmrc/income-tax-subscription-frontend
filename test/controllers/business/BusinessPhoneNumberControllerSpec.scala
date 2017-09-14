@@ -16,6 +16,7 @@
 
 package controllers.business
 
+import auth.MockConfig
 import controllers.ControllerBaseSpec
 import forms.BusinessPhoneNumberForm
 import models.BusinessPhoneNumberModel
@@ -34,100 +35,128 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
     "submit" -> TestBusinessPhoneNumberController.submit(isEditMode = false)
   )
 
-  object TestBusinessPhoneNumberController extends BusinessPhoneNumberController(
-    MockBaseControllerConfig,
-    messagesApi,
-    MockKeystoreService,
-    mockAuthService
-  )
+  def createTestBusinessPhoneNumberController(setEnableRegistration: Boolean): BusinessPhoneNumberController =
+    new BusinessPhoneNumberController(
+      mockBaseControllerConfig(new MockConfig {
+        override val enableRegistration = setEnableRegistration
+      }),
+      messagesApi,
+      MockKeystoreService,
+      mockAuthService
+    )
 
-  "Calling the show action of the BusinessPhoneNumberController with an authorised user" should {
+  lazy val TestBusinessPhoneNumberController: BusinessPhoneNumberController =
+    createTestBusinessPhoneNumberController(setEnableRegistration = true)
 
-    lazy val result = TestBusinessPhoneNumberController.show(isEditMode = false)(fakeRequest)
+  "When registration is disabled" should {
+    lazy val TestBusinessPhoneNumberController: BusinessPhoneNumberController =
+      createTestBusinessPhoneNumberController(setEnableRegistration = false)
 
-    "return ok (200)" in {
-      setupMockKeystore(fetchBusinessPhoneNumber = None)
-
-      status(result) must be(Status.OK)
-
-      await(result)
-      verifyKeystore(fetchBusinessPhoneNumber = 1, saveBusinessPhoneNumber = 0)
-
-    }
-  }
-
-  "Calling the submit action of the BusinessPhoneNumberController with an authorised user and valid submission" should {
-
-    def callShow(isEditMode: Boolean) =
-      TestBusinessPhoneNumberController.submit(isEditMode = isEditMode)(
-        fakeRequest
-          .post(BusinessPhoneNumberForm.businessPhoneNumberForm.form, BusinessPhoneNumberModel(testPhoneNumber))
-      )
-
-    "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = false)
-
-        status(goodRequest) must be(Status.NOT_IMPLEMENTED)
-
-        await(goodRequest)
-        verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
-      }
-
-      // TODO update to the business address page when it's implemented
-      s"redirect to '${controllers.business.routes.BusinessAccountingMethodController.show().url}'" ignore {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = false)
-
-        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingMethodController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
+    "show" should {
+      "return NOT FOUND" in {
+        val result = TestBusinessPhoneNumberController.show(isEditMode = true)(fakeRequest)
+        status(result) must be(Status.NOT_FOUND)
       }
     }
 
-    "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = true)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
-      }
-
-      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = true)
-
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
+    "submit" should {
+      "return NOT FOUND" in {
+        val result = TestBusinessPhoneNumberController.submit(isEditMode = true)(fakeRequest)
+        status(result) must be(Status.NOT_FOUND)
       }
     }
   }
 
-  "Calling the submit action of the BusinessNameController with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessPhoneNumberController.submit(isEditMode = false)(fakeRequest)
+  "When registration is enabled" should {
 
-    "return a bad request status (400)" in {
-      status(badRequest) must be(Status.BAD_REQUEST)
+    "Calling the show action of the BusinessPhoneNumberController with an authorised user" should {
 
-      await(badRequest)
-      verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 0)
+      lazy val result = TestBusinessPhoneNumberController.show(isEditMode = false)(fakeRequest)
+
+      "return ok (200)" in {
+        setupMockKeystore(fetchBusinessPhoneNumber = None)
+
+        status(result) must be(Status.OK)
+
+        await(result)
+        verifyKeystore(fetchBusinessPhoneNumber = 1, saveBusinessPhoneNumber = 0)
+
+      }
     }
-  }
 
-  "The back url" should {
-    s"point to ${controllers.business.routes.BusinessNameController.showBusinessName().url}" in {
-      TestBusinessPhoneNumberController.backUrl mustBe controllers.business.routes.BusinessNameController.showBusinessName().url
+    "Calling the submit action of the BusinessPhoneNumberController with an authorised user and valid submission" should {
+
+      def callShow(isEditMode: Boolean) =
+        TestBusinessPhoneNumberController.submit(isEditMode = isEditMode)(
+          fakeRequest
+            .post(BusinessPhoneNumberForm.businessPhoneNumberForm.form, BusinessPhoneNumberModel(testPhoneNumber))
+        )
+
+      "When it is not in edit mode" should {
+        "return a redirect status (SEE_OTHER - 303)" in {
+          setupMockKeystoreSaveFunctions()
+
+          val goodRequest = callShow(isEditMode = false)
+
+          status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+
+          await(goodRequest)
+          verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
+        }
+
+        // TODO update to the business address page when it's implemented
+        s"redirect to '${controllers.business.routes.BusinessAccountingMethodController.show().url}'" ignore {
+          setupMockKeystoreSaveFunctions()
+
+          val goodRequest = callShow(isEditMode = false)
+
+          redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingMethodController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
+        }
+      }
+
+      "When it is in edit mode" should {
+        "return a redirect status (SEE_OTHER - 303)" in {
+          setupMockKeystoreSaveFunctions()
+
+          val goodRequest = callShow(isEditMode = true)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+
+          await(goodRequest)
+          verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
+        }
+
+        s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+          setupMockKeystoreSaveFunctions()
+
+          val goodRequest = callShow(isEditMode = true)
+
+          redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
+        }
+      }
+    }
+
+    "Calling the submit action of the BusinessNameController with an authorised user and invalid submission" should {
+      lazy val badRequest = TestBusinessPhoneNumberController.submit(isEditMode = false)(fakeRequest)
+
+      "return a bad request status (400)" in {
+        status(badRequest) must be(Status.BAD_REQUEST)
+
+        await(badRequest)
+        verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 0)
+      }
+    }
+
+    "The back url" should {
+      s"point to ${controllers.business.routes.BusinessNameController.showBusinessName().url}" in {
+        TestBusinessPhoneNumberController.backUrl mustBe controllers.business.routes.BusinessNameController.showBusinessName().url
+      }
     }
   }
 

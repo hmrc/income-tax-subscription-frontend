@@ -28,6 +28,9 @@ import services.CacheConstants
 
 class BusinessPhoneNumberControllerISpec extends ComponentSpecBase {
 
+  // TODO remove this when registration is enabled by default
+  override def config: Map[String, String] = super.config.+("feature-switch.enable-registration"->"true")
+
   "GET /report-quarterly/income-and-expenses/sign-up/business/phone-number" when {
 
     "keystore call fails" should {

@@ -18,7 +18,7 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.{AuthenticatedController, RegistrationController}
 import config.BaseControllerConfig
 import forms.BusinessPhoneNumberForm
 import models.BusinessPhoneNumberModel
@@ -35,7 +35,7 @@ class BusinessPhoneNumberController @Inject()(val baseConfig: BaseControllerConf
                                               val messagesApi: MessagesApi,
                                               val keystoreService: KeystoreService,
                                               val authService: AuthService
-                                             ) extends AuthenticatedController {
+                                             ) extends RegistrationController {
 
   def view(businessPhoneNumberForm: Form[BusinessPhoneNumberModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.business.business_phone_number(

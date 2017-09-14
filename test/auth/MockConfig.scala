@@ -63,6 +63,8 @@ trait MockConfig extends AppConfig {
 
   override val userMatchingFeature: Boolean = false
 
+  override val enableRegistration: Boolean = false
+
 }
 
 object MockConfig extends MockConfig
