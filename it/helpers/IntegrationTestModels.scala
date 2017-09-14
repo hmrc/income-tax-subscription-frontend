@@ -30,6 +30,7 @@ object IntegrationTestModels {
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
+  val testBusinessPhoneNumber = BusinessPhoneNumberModel("01234567890")
   val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
   val testTerms = true
 
@@ -40,6 +41,7 @@ object IntegrationTestModels {
       accountingPeriodPrior = Some(testAccountingPeriodPriorCurrent),
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
+      businessPhoneNumber = Some(testBusinessPhoneNumber),
       accountingMethod = Some(testAccountingMethod),
       terms = Some(testTerms),
       userDetails = Some(testUserDetails)
@@ -50,6 +52,7 @@ object IntegrationTestModels {
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
+                   businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
                    terms: Option[Boolean] = None,
                    userDetails: Option[UserDetailsModel] = None): Map[String, JsValue] = {
@@ -59,6 +62,7 @@ object IntegrationTestModels {
       accountingPeriodPrior.map(model => AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
+      businessPhoneNumber.map(model => BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       terms.map(model => Terms -> Json.toJson(model)) ++
       userDetails.map(model => UserDetails -> Json.toJson(model))
