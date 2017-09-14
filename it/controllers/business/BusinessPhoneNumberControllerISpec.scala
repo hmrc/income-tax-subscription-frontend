@@ -36,7 +36,7 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
 
-        When("GET /business/name is called")
+        When("GET /business/phone-number is called")
         val res = IncomeTaxSubscriptionFrontend.businessPhoneNumber()
 
         Then("return an internal server error")
