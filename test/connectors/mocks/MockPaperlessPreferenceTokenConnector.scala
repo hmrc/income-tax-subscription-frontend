@@ -25,9 +25,6 @@ import utils.MockTrait
 
 import scala.concurrent.Future
 
-/**
-  * Created by rob on 14/09/17.
-  */
 trait MockPaperlessPreferenceTokenConnector extends MockTrait {
   val mockPaperlessPreferenceTokenConnector = mock[PaperlessPreferenceTokenConnector]
 

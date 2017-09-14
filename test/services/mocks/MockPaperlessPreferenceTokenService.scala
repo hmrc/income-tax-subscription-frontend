@@ -27,9 +27,6 @@ import utils.TestConstants._
 
 import scala.concurrent.Future
 
-/**
-  * Created by rob on 14/09/17.
-  */
 trait MockPaperlessPreferenceTokenService extends MockTrait {
   val mockPaperlessPreferenceTokenService = mock[PaperlessPreferenceTokenService]
 
