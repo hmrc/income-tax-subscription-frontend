@@ -31,5 +31,5 @@ object CacheConstants {
   val NotEligible = "NotEligible"
   val MtditId = "MtditId"
   val UserDetails = "UserDetails"
-
+  val PaperlessPreferenceToken = "PaperlessPreferenceKey"
 }

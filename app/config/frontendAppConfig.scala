@@ -60,6 +60,7 @@ trait AppConfig {
   val authenticatorUrl: String
   val userMatchingFeature: Boolean
   val enableRegistration: Boolean
+  def storeNinoUrl(token: String): String
 }
 
 @Singleton
@@ -106,6 +107,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   protected lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
   override lazy val userMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
+  override def storeNinoUrl(token: String) = s"$protectedMicroServiceUrl/income-tax-subscription/identifier-mapping/$token"
 
   // Digital Preferences
   override lazy val preferencesService = baseUrl("preferences-frontend")

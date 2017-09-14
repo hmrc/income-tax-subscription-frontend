@@ -66,6 +66,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
                                          fetchUserDetails: MFO[UserDetailsModel] = DoNotConfigure,
+                                         fetchPaperlessPreferenceToken: MFO[String] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
@@ -80,6 +81,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[UserDetailsModel](UserDetails, fetchUserDetails)
     mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
+    mockFetchFromKeyStore[String](PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
 
     setupMockKeystoreSaveFunctions()
 
@@ -110,6 +112,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveAccountingPeriodPrior: Option[Int] = None,
                                       fetchUserDetails: Option[Int] = None,
                                       saveUserDetails: Option[Int] = None,
+                                      fetchPaperlessPreferenceToken: Option[Int] = None,
+                                      savePaperlessPreferenceToken: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
@@ -135,6 +139,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(AccountingPeriodPrior, saveAccountingPeriodPrior)
     verifyKeystoreFetch(UserDetails, fetchUserDetails)
     verifyKeystoreSave(UserDetails, saveUserDetails)
+    verifyKeystoreFetch(PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
+    verifyKeystoreSave(PaperlessPreferenceToken, savePaperlessPreferenceToken)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any(), ArgumentMatchers.any()))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any(), ArgumentMatchers.any()))

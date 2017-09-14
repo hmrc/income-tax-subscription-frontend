@@ -50,6 +50,8 @@ object TestConstants {
 
   val testPhoneNumber = "000 000 0000"
 
+  lazy val testPaperlessPreferenceToken = s"${UUID.randomUUID()}"
+
   val testUrl = "/"
 
   lazy val knownFactsRequest = KnownFactsRequest(
