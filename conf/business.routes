@@ -6,6 +6,10 @@ POST        /accounting-period-dates                controllers.business.Busines
 GET         /name                                   controllers.business.BusinessNameController.showBusinessName(editMode: Boolean ?= false)
 POST        /name                                   controllers.business.BusinessNameController.submitBusinessName(editMode: Boolean ?= false)
 
+#Phone Number Routes
+GET         /phone-number                           controllers.business.BusinessPhoneNumberController.show(editMode: Boolean ?= false)
+POST        /phone-number                           controllers.business.BusinessPhoneNumberController.submit(editMode: Boolean ?= false)
+
 #Income Type Routes
 GET         /accounting-method                      controllers.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /accounting-method                      controllers.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)

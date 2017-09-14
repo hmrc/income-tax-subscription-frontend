@@ -17,50 +17,51 @@
 package controllers.business
 
 import controllers.ControllerBaseSpec
-import forms.BusinessNameForm
-import models.BusinessNameModel
+import forms.BusinessPhoneNumberForm
+import models.BusinessPhoneNumberModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import utils.TestConstants._
 
-class BusinessNameControllerSpec extends ControllerBaseSpec
+class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
 
-  override val controllerName: String = "BusinessNameController"
+  override val controllerName: String = "BusinessPhoneNumberController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showBusinessName" -> TestBusinessNameController.showBusinessName(isEditMode = false),
-    "submitBusinessName" -> TestBusinessNameController.submitBusinessName(isEditMode = false)
+    "show" -> TestBusinessPhoneNumberController.show(isEditMode = false),
+    "submit" -> TestBusinessPhoneNumberController.submit(isEditMode = false)
   )
 
-  object TestBusinessNameController extends BusinessNameController(
+  object TestBusinessPhoneNumberController extends BusinessPhoneNumberController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
     mockAuthService
   )
 
-  "Calling the showBusinessName action of the BusinessNameController with an authorised user" should {
+  "Calling the show action of the BusinessPhoneNumberController with an authorised user" should {
 
-    lazy val result = TestBusinessNameController.showBusinessName(isEditMode = false)(fakeRequest)
+    lazy val result = TestBusinessPhoneNumberController.show(isEditMode = false)(fakeRequest)
 
     "return ok (200)" in {
-      setupMockKeystore(fetchBusinessName = None)
+      setupMockKeystore(fetchBusinessPhoneNumber = None)
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchBusinessName = 1, saveBusinessName = 0)
+      verifyKeystore(fetchBusinessPhoneNumber = 1, saveBusinessPhoneNumber = 0)
 
     }
   }
 
-  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and valid submission" should {
+  "Calling the submit action of the BusinessPhoneNumberController with an authorised user and valid submission" should {
 
     def callShow(isEditMode: Boolean) =
-      TestBusinessNameController.submitBusinessName(isEditMode = isEditMode)(
+      TestBusinessPhoneNumberController.submit(isEditMode = isEditMode)(
         fakeRequest
-          .post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
+          .post(BusinessPhoneNumberForm.businessPhoneNumberForm.form, BusinessPhoneNumberModel(testPhoneNumber))
       )
 
     "When it is not in edit mode" should {
@@ -69,13 +70,14 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callShow(isEditMode = false)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+        status(goodRequest) must be(Status.NOT_IMPLEMENTED)
 
         await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
       }
 
-      s"redirect to '${controllers.business.routes.BusinessAccountingMethodController.show().url}'" in {
+      // TODO update to the business address page when it's implemented
+      s"redirect to '${controllers.business.routes.BusinessAccountingMethodController.show().url}'" ignore {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
@@ -83,7 +85,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingMethodController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
       }
     }
 
@@ -96,7 +98,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
         status(goodRequest) must be(Status.SEE_OTHER)
 
         await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
       }
 
       s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
@@ -107,25 +109,25 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+        verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
       }
     }
   }
 
-  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessNameController.submitBusinessName(isEditMode = false)(fakeRequest)
+  "Calling the submit action of the BusinessNameController with an authorised user and invalid submission" should {
+    lazy val badRequest = TestBusinessPhoneNumberController.submit(isEditMode = false)(fakeRequest)
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchBusinessName = 0, saveBusinessName = 0)
+      verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 0)
     }
   }
 
   "The back url" should {
-    s"point to ${controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url}" in {
-      TestBusinessNameController.backUrl mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+    s"point to ${controllers.business.routes.BusinessNameController.showBusinessName().url}" in {
+      TestBusinessPhoneNumberController.backUrl mustBe controllers.business.routes.BusinessNameController.showBusinessName().url
     }
   }
 

@@ -24,12 +24,11 @@ import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.Messages.Implicits._
+import utils.TestConstants._
 
 class BusinessPhoneNumberFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   import BusinessPhoneNumberForm._
-
-  val testPhoneNumber = "000 000 0000"
 
   "The BusinessPhoneNumberForm" should {
     "transform the data to the case class" in {
