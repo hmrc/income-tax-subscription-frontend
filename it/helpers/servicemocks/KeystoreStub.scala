@@ -64,6 +64,11 @@ object KeystoreStub extends WireMockMethods {
       .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreData + (id -> Json.toJson(body))))
   }
 
+  def stubKeystoreSave(id: String): Unit = {
+    when(method = PUT, uri = putUri(id))
+      .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreData))
+  }
+
   def verifyKeyStoreDelete(count: Option[Int] = None): Unit = {
     WiremockHelper.verifyDelete(keystoreUri, count)
   }

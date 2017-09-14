@@ -48,6 +48,8 @@ object TestConstants {
   val testFirstName = "Test"
   val testLastName = "Name"
 
+  lazy val testPaperlessPreferenceToken = s"${UUID.randomUUID()}"
+
   val testUrl = "/"
 
   lazy val knownFactsRequest = KnownFactsRequest(

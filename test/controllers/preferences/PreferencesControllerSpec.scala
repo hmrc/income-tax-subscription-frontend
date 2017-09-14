@@ -25,10 +25,10 @@ import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockPreferencesService
+import services.mocks.{MockKeystoreService, MockPaperlessPreferenceTokenService, MockPreferencesService}
 import utils.TestConstants._
 
-class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesService {
+class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesService with MockKeystoreService with MockPaperlessPreferenceTokenService {
 
   override val controllerName: String = "PreferencesControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -40,20 +40,22 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
       mockBaseControllerConfig(appConfig),
       messagesApi,
       mockPreferencesService,
-      mockAuthService)
+      mockAuthService,
+      MockKeystoreService,
+      mockPaperlessPreferenceTokenService
+    )
   }
 
   lazy val TestPreferencesController = createTestForPreferences(MockConfig)
 
   "If newFeatures flag in config is false" when {
-
     "Calling the checkPreference action of the PreferencesController with an authorised user" should {
-
       implicit lazy val request = fakeRequest
 
       def result = TestPreferencesController.checkPreferences(request)
 
       "Redirect to Income Source if paperless is activated" in {
+        mockStoreNinoSuccess(testNino)
         mockCheckPaperlessActivated()
 
         status(result) must be(Status.SEE_OTHER)
@@ -61,6 +63,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
       }
 
       "Redirect to preferences service if paperless is deactivated" in {
+        mockStoreNinoSuccess(testNino)
         mockCheckPaperlessDeclined()
         mockChoosePaperlessUrl(testUrl)
 
@@ -69,13 +72,13 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
       }
 
       "Redirect to preferences service if paperless was previously unspecified" in {
+        mockStoreNinoSuccess(testNino)
         mockCheckPaperlessUnset()
         mockChoosePaperlessUrl(testUrl)
 
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result).get mustBe testUrl
       }
-
     }
 
     "Calling the callback action of the PreferencesController with an authorised user" should {
@@ -158,6 +161,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
     def callSubmit() = TestNewFeaturesController.submitGoBackToPreferences()(request)
 
     "Calling the checkPreferences controller should redirect us to income source" in {
+      mockStoreNinoSuccess(testNino)
       val result = callCheck()
 
       status(result) must be(Status.SEE_OTHER)

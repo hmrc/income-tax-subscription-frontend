@@ -105,6 +105,10 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveUserDetails(userDetails: UserDetailsModel)(implicit hc: HeaderCarrier, reads: Reads[UserDetailsModel]): FC =
     save[UserDetailsModel](UserDetails, userDetails)
 
+  def fetchPaperlessPreferenceToken()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] =
+    fetch[String](PaperlessPreferenceToken)
 
+  def savePaperlessPreferenceToken(token: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC =
+    save[String](PaperlessPreferenceToken, token)
 }
 

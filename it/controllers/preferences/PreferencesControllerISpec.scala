@@ -19,9 +19,11 @@ package controllers.preferences
 import config.AppConfig
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.servicemocks.{AuthStub, PreferencesStub}
+import helpers.servicemocks.{AuthStub, KeystoreStub, PreferencesStub, PreferencesTokenStub}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.i18n.Messages
+import play.api.libs.json.JsString
+import services.CacheConstants._
 
 class PreferencesControllerISpec extends ComponentSpecBase {
 
@@ -32,6 +34,8 @@ class PreferencesControllerISpec extends ComponentSpecBase {
     "where the user has previously accepted paperless where optedIn is set to True" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
       PreferencesStub.stubPaperlessActivated()
 
       When("GET /preferences is called")
@@ -47,6 +51,8 @@ class PreferencesControllerISpec extends ComponentSpecBase {
     "where the user has previously accepted paperless where optedIn is set to False" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
       PreferencesStub.stubPaperlessInactive()
 
       When("GET /preferences is called")
@@ -62,6 +68,8 @@ class PreferencesControllerISpec extends ComponentSpecBase {
     "where the user needs to be re-directed to set paperless options" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
       PreferencesStub.stubPaperlessPreconditionFail()
 
       When("GET /preferences is called")
@@ -77,6 +85,8 @@ class PreferencesControllerISpec extends ComponentSpecBase {
     "where the GET/preferences returns an error" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
       PreferencesStub.stubPaperlessError()
 
       When("GET /preferences is called")
@@ -86,6 +96,12 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       res should have(
         httpStatus(INTERNAL_SERVER_ERROR)
       )
+    }
+
+    "Where the user has already stored their NINO against a token" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      KeystoreStub.stubKeystoreData(Map(PaperlessPreferenceToken -> JsString(testPaperlessPreferenceToken)))
     }
   }
 
