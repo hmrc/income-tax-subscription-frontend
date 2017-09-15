@@ -81,6 +81,8 @@ object AuthPredicates extends Results {
 
   val subscriptionPredicates = defaultPredicates |+| mtdidPredicate |+| goHomePredicate
 
+  val registrationPredicates = defaultPredicates |+| mtdidPredicate |+| goHomePredicate
+
   val enrolledPredicates = defaultPredicates |+| enrolledPredicate
 
 }

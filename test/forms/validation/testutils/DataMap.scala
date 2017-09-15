@@ -24,6 +24,7 @@ import play.api.data.validation.{Constraint, Invalid}
 object DataMap {
 
   import forms.BusinessNameForm._
+  import forms.BusinessPhoneNumberForm._
   import forms.EmailForm._
   import forms.NotEligibleForm._
   import forms.submapping.DateMapping._
@@ -42,6 +43,8 @@ object DataMap {
   val emptyDate: String => DataMap = (prefix: String) => date(prefix)("", "", "")
 
   def busName(name: String): DataMap = Map(businessName -> name)
+
+  def busPhoneNumber(number: String): DataMap = Map(phoneNumber -> number)
 
   def accountingPeriodPrior(currentPeriodIsPrior: String): DataMap = Map(AccountingPeriodPriorForm.accountingPeriodPrior -> currentPeriodIsPrior)
 

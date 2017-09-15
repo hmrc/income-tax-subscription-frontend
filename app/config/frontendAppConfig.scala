@@ -59,6 +59,7 @@ trait AppConfig {
   val matchingLockOutSeconds: Int
   val authenticatorUrl: String
   val userMatchingFeature: Boolean
+  val enableRegistration: Boolean
   def storeNinoUrl(token: String): String
 }
 
@@ -153,6 +154,8 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val authenticatorUrl: String = baseUrl("authenticator")
 
   override lazy val userMatchingFeature: Boolean = loadConfig("feature-switch.user-matching").toBoolean
+
+  override lazy val enableRegistration: Boolean = loadConfig("feature-switch.enable-registration").toBoolean
 
 }
 

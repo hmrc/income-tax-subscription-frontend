@@ -27,10 +27,14 @@ object Patterns {
 
   val ninoRegex = """^((?!(BG|GB|KN|NK|NT|TN|ZZ)|(D|F|I|Q|U|V)[A-Z]|[A-Z](D|F|I|O|Q|U|V))[A-Z]{2})[0-9]{6}[A-D]$"""
 
+  val phoneNumberRegex = """^[A-Z0-9 )\/(*#-]+$"""
+
   def validText(text: String): Boolean = text matches iso8859_1Regex
 
   def validEmail(text: String): Boolean = text matches emailRegex
 
   def validNino(text: String): Boolean = text matches ninoRegex
+
+  def validPhoneNumber(text: String): Boolean = text matches phoneNumberRegex
 
 }

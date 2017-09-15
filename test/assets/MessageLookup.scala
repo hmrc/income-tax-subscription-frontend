@@ -143,6 +143,11 @@ object MessageLookup {
     val line_1 = "This is the business name you used to register for Self Assessment. If your business doesn't have a name, enter your own name."
   }
 
+  object BusinessPhoneNumber {
+    val title = "Business phone number"
+    val heading: String = "What's your business telephone number?"
+  }
+
   object AccountingMethod {
     val title = "Accounting method"
     val heading: String = "What method do you use for your accounting?"
@@ -319,6 +324,12 @@ object MessageLookup {
       val empty = "You must enter your Business name"
       val maxLength = "You can't enter more than 105 characters for your Business name"
       val invalid = "The business name contains invalid characters"
+    }
+
+    object BusinessPhoneNumber {
+      val empty = "You must enter your business phone number"
+      val maxLength = "You can't enter more than 24 characters for your business phone number"
+      val invalid = "The business phone number contains invalid characters"
     }
 
     object ContactEmail {

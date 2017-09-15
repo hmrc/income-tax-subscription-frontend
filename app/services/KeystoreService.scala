@@ -58,6 +58,12 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveBusinessName(businessName: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FC =
     save[BusinessNameModel](BusinessName, businessName)
 
+  def fetchBusinessPhoneNumber()(implicit hc: HeaderCarrier, reads: Reads[BusinessPhoneNumberModel]): FO[BusinessPhoneNumberModel] =
+    fetch[BusinessPhoneNumberModel](BusinessPhoneNumber)
+
+  def saveBusinessPhoneNumber(businessPhoneNumber: BusinessPhoneNumberModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessPhoneNumberModel]): FC =
+    save[BusinessPhoneNumberModel](BusinessPhoneNumber, businessPhoneNumber)
+
   def fetchAccountingPeriodDate()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FO[AccountingPeriodModel] =
     fetch[AccountingPeriodModel](AccountingPeriodDate)
 

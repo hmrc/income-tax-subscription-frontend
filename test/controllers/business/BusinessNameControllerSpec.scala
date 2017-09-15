@@ -16,13 +16,11 @@
 
 package controllers.business
 
-import auth._
 import controllers.ControllerBaseSpec
 import forms.BusinessNameForm
 import models.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 
@@ -121,7 +119,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 0)
+      verifyKeystore(fetchBusinessName = 0, saveBusinessName = 0)
     }
   }
 
