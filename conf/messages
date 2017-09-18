@@ -17,6 +17,11 @@ base.change                                                     = Change
 base.yes                                                        = Yes
 base.no                                                         = No
 base.go_back                                                    = Go back
+base.userResearch.title                                         = Help improve GOV.UK
+base.userResearch.link                                          = Answer some questions about yourself to join the research panel.
+## base.userResearch.text                                          = This link opens in a new tab. Please note that this service is not available in Welsh.
+base.dismissBanner                                              = No thanks
+base.dismissBanner.screenReader                                 = I don''t want to answer any questions about joining the research panel
 
 ## Front page
 frontpage.title                                                 = Sign up to report your income and expenses quarterly

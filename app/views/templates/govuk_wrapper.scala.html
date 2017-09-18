@@ -15,85 +15,105 @@
  *@
 
 @(appConfig: config.AppConfig,
-  title: String,
-  mainClass: Option[String] = None,
-  mainDataAttributes: Option[Html] = None,
-  bodyClasses: Option[String] = None,
-  sidebar: Html = HtmlFormat.empty,
-  contentHeader: Option[Html] = None,
-  mainContent: Html = HtmlFormat.empty,
-  serviceInfoContent: Html = HtmlFormat.empty,
-  scriptElem: Option[Html] = None,
-  showSignOutLink: Boolean = true,
-  overrideSignOutCall : Option[Call] = None
+        title: String,
+        mainClass: Option[String] = None,
+        mainDataAttributes: Option[Html] = None,
+        bodyClasses: Option[String] = None,
+        sidebar: Html = HtmlFormat.empty,
+        contentHeader: Option[Html] = None,
+        mainContent: Html = HtmlFormat.empty,
+        serviceInfoContent: Html = HtmlFormat.empty,
+        headStyle: Option[Html] = None,
+        scriptElem: Option[Html] = None,
+        showSignOutLink: Boolean = true,
+        overrideSignOutCall: Option[Call] = None,
+        isUserResearchBannerVisible: Boolean = true
 )(implicit request: Request[_], messages: Messages)
 
-@import layouts.{govuk_template => hmrcGovUkTemplate}
-@import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
-@import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
-@import views.html.helpers.phaseBanner
+    @import layouts.{govuk_template => hmrcGovUkTemplate}
+    @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
+    @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
+    @import views.html.helpers.phaseBanner
+    @import helpers.full_width_banner
+    @import helpers.full_width_banner_content_ur
 
-@head = {
+    @head = {
     @uiLayouts.head(
-      linkElem = None,
-      headScripts = None)
-    <meta name="format-detection" content="telephone=no" />
-}
+        linkElem = None,
+        headScripts = headStyle)
+        <meta name="format-detection" content="telephone=no" />
+    }
 
-@signOut = @{
-    overrideSignOutCall.fold(routes.SignOutController.signOut)(href => href)
-}
+    @signOut = @{
+        overrideSignOutCall.fold(routes.SignOutController.signOut)(href => href)
+    }
 
-@signOutLink = {
-  @if(showSignOutLink) {<li><a id="logOutNavHref" href=@signOut>@Messages("base.sign-out")</a></li>}
-}
+    @signOutLink = {
+    @if(showSignOutLink) {
+        <li><a id="logOutNavHref" href=@signOut>@Messages("base.sign-out")</a></li>
+    }
+    }
 
-@insideHeader = {
+    @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = Some(Messages("base.service_name")),
-      navTitleLink = None,
-      showBetaLink = false,
-      navLinks = Some(signOutLink))
-}
+        navTitle = Some(Messages("base.service_name")),
+        navTitleLink = None,
+        showBetaLink = false,
+        navLinks = Some(signOutLink))
+    }
 
-@afterHeader = {}
+    @afterHeader = {
+    @if(isUserResearchBannerVisible) {
 
-@bodyEnd = {
+        @full_width_banner(Some(full_width_banner_content_ur(
+            messages("base.userResearch.title"),
+            messages("base.userResearch.link"),
+            "https://signup.take-part-in-research.service.gov.uk/home?utm_campaign=MTDfBregistration&utm_source=Other&utm_medium=other&t=HMRC&id=31"
+        )
+        )
+        )
+    }
+    }
+
+    @bodyEnd = {
     @uiLayouts.footer(
-      analyticsToken = Some(appConfig.analyticsToken),
-      analyticsHost = appConfig.analyticsHost,
-      ssoUrl = None,
-      scriptElem = scriptElem,
-      gaCalls = None)
-}
+        analyticsToken = Some(appConfig.analyticsToken),
+        analyticsHost = appConfig.analyticsHost,
+        ssoUrl = None,
+        scriptElem = scriptElem,
+        gaCalls = None)
+    }
 
-@footerTop = {}
-@footerLinks = {}
+    @footerTop = {}
 
-@serviceInfo = {
+    @footerLinks = {}
+
+    @serviceInfo = {
     @uiLayouts.serviceInfo(
-      betaBanner = phaseBanner("BETA"),
-      includeGridWrapper = false,
-      serviceInfoContent = Some(serviceInfoContent))
-}
+        betaBanner = phaseBanner("BETA"),
+        includeGridWrapper = false,
+        serviceInfoContent = Some(serviceInfoContent))
+    }
 
-@mainContentHeader = {
+    @mainContentHeader = {
     @if(contentHeader.isDefined) {
         @uiLayouts.main_content_header(contentHeader = contentHeader.get)
     }
-}
+    }
 
-@getHelpForm = @{uiHelpers.reportAProblemLink(appConfig.reportAProblemPartialUrl, appConfig.reportAProblemNonJSUrl)}
+    @getHelpForm = @{
+        uiHelpers.reportAProblemLink(appConfig.reportAProblemPartialUrl, appConfig.reportAProblemNonJSUrl)
+    }
 
-@content = {
+    @content = {
     @uiLayouts.main_content(
-      article = mainContent,
-      mainClass = mainClass,
-      mainDataAttributes = mainDataAttributes,
-      mainContentHeader = mainContentHeader,
-      serviceInfo = serviceInfo,
-      getHelpForm = getHelpForm,
-      sidebar = sidebar)
-}
+        article = mainContent,
+        mainClass = mainClass,
+        mainDataAttributes = mainDataAttributes,
+        mainContentHeader = mainContentHeader,
+        serviceInfo = serviceInfo,
+        getHelpForm = getHelpForm,
+        sidebar = sidebar)
+    }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)
+    @hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)
