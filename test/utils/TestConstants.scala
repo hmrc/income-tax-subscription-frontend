@@ -52,7 +52,7 @@ object TestConstants {
 
   lazy val testPaperlessPreferenceToken = s"${UUID.randomUUID()}"
 
-  val testUrl = "/"
+  val testUrl = "/test/url/"
 
   lazy val knownFactsRequest = KnownFactsRequest(
     List(

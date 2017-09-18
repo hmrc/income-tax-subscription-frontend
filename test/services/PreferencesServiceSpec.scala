@@ -50,13 +50,13 @@ class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService w
     "return Declined if checkPaperless returns a 200 and indicated activation is false" in {
       mockCheckPaperlessDeclined()
 
-      await(TestPreferencesService.checkPaperless).right.value shouldBe Declined
+      await(TestPreferencesService.checkPaperless).right.value shouldBe Declined(testUrl)
     }
 
     "return Unset if checkPaperless returns a 412" in {
       mockCheckPaperlessUnset()
 
-      await(TestPreferencesService.checkPaperless).right.value shouldBe Unset
+      await(TestPreferencesService.checkPaperless).right.value shouldBe Unset(testUrl)
     }
 
     "return a failed future in checkPaperless returns a failed future" in {

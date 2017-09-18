@@ -79,6 +79,8 @@ object PreferenceFrontendConnector {
   def checkPaperlessUri(returnUrl: String)(implicit messages: Messages): String =
     s"""/paperless/activate?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
+  def newCheckPaperlessUri = ???
+
   def choosePaperlessUri(returnUrl: String)(implicit messages: Messages): String =
     s"""/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 

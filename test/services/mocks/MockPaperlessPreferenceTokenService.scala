@@ -17,12 +17,11 @@
 package services.mocks
 
 import connectors.mocks.MockPaperlessPreferenceTokenConnector
-import connectors.models.preferences.PaperlessPreferenceTokenResult.{PaperlessPreferenceTokenResult, PaperlessPreferenceTokenSuccess}
 import org.mockito.ArgumentMatchers
-import utils.MockTrait
 import org.mockito.Mockito._
 import services.PaperlessPreferenceTokenService
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.MockTrait
 import utils.TestConstants._
 
 import scala.concurrent.Future

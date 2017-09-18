@@ -41,9 +41,9 @@ trait MockPreferenceFrontendConnector extends MockTrait {
 
   def mockCheckPaperlessActivated(): Unit = mockCheckPaperless(Future.successful(Right(Activated)))
 
-  def mockCheckPaperlessDeclined(): Unit = mockCheckPaperless(Future.successful(Right(Declined)))
+  def mockCheckPaperlessDeclined(): Unit = mockCheckPaperless(Future.successful(Right(Declined(testUrl))))
 
-  def mockCheckPaperlessUnset(): Unit = mockCheckPaperless(Future.successful(Right(Unset)))
+  def mockCheckPaperlessUnset(): Unit = mockCheckPaperless(Future.successful(Right(Unset(testUrl))))
 
   def mockCheckPaperlessException(): Unit = mockCheckPaperless(Future.failed(testException))
 

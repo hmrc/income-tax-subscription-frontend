@@ -32,4 +32,6 @@ object Constants {
     val ggServiceName = "HMRC-MTD-IT"
     val ggFriendlyName = "Making Tax Digital Income Tax Self-Assessment enrolment"
   }
+
+  val preferencesServiceKey = "mtdfbit"
 }
