@@ -102,6 +102,16 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreData(Map(PaperlessPreferenceToken -> JsString(testPaperlessPreferenceToken)))
+      PreferencesStub.stubPaperlessActivated()
+
+      When("GET /preferences is called")
+      val res = IncomeTaxSubscriptionFrontend.preferences()
+
+      Then("Should return a SEE_OTHER with a re-direct location of income source page")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(incomeSourceURI)
+      )
     }
   }
 

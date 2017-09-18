@@ -49,7 +49,7 @@ object PreferencesStub extends WireMockMethods {
     val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
     val response = aResponse()
       .withStatus(Status.PRECONDITION_FAILED)
-      .withBody("{")
+      .withBody(preconditionFailedJson.toString())
     stubFor(mapping.willReturn(response))
   }
 
