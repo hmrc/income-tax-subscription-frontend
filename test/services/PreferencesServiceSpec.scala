@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.models.preferences.{Activated, Declined, Unset}
+import connectors.models.preferences.{Activated, Unset}
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.FakeRequest
@@ -34,26 +34,20 @@ class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService w
     "Provide the correct choosePaperlessUrl URL" in {
       mockChoosePaperlessUrl(testUrl)
 
-      TestPreferencesService.choosePaperlessUrl shouldBe testUrl
+      TestPreferencesService.defaultChoosePaperlessUrl shouldBe testUrl
     }
 
   }
 
   "TestPreferencesService.checkPaperless" should {
 
-    "return Activated if checkPaperless returns a 200 and indicated activation is true" in {
+    "return Activated if checkPaperless returns Activated" in {
       mockCheckPaperlessActivated(testToken)
 
       await(TestPreferencesService.checkPaperless(testToken)).right.value shouldBe Activated
     }
 
-    "return Declined if checkPaperless returns a 200 and indicated activation is false" in {
-      mockCheckPaperlessDeclined(testToken)
-
-      await(TestPreferencesService.checkPaperless(testToken)).right.value shouldBe Declined(testUrl)
-    }
-
-    "return Unset if checkPaperless returns a 412" in {
+    "return Unset if checkPaperless returns Unset" in {
       mockCheckPaperlessUnset(testToken)
 
       await(TestPreferencesService.checkPaperless(testToken)).right.value shouldBe Unset(testUrl)

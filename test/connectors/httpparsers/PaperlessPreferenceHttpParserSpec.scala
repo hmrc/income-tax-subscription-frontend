@@ -46,7 +46,7 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
 
         val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
-        res.right.value mustBe Declined(None)
+        res.right.value mustBe Unset(None)
       }
 
       s"parse a correctly formatted OK false response with a redirect url as Declined($testUrl)" in {
@@ -59,7 +59,7 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
 
         val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
-        res.right.value mustBe Declined(testUrl)
+        res.right.value mustBe Unset(testUrl)
       }
 
       "parse a correctly formatted PRECONDITION_FAILED false response as Unset" in {

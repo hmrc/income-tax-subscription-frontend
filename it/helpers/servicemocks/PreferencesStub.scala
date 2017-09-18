@@ -20,6 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
 import config.AppConfig
 import connectors.httpparsers.PaperlessPreferenceHttpParser
+import connectors.httpparsers.PaperlessPreferenceHttpParser._
 import connectors.preferences.PreferenceFrontendConnector
 import helpers.IntegrationTestConstants._
 import play.api.http.Status
@@ -45,6 +46,13 @@ object PreferencesStub extends WireMockMethods {
     stubFor(mapping.willReturn(response))
   }
 
+  def stubPaperlessInactiveWithUri()(implicit appConfig: AppConfig, messages: Messages): Unit = {
+    val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
+    val rBody = Json.obj("optedIn" -> false, redirectUserTo -> testUrl)
+    val response = aResponse().withStatus(Status.OK).withBody(rBody.toString)
+    stubFor(mapping.willReturn(response))
+  }
+
   def stubPaperlessPreconditionFail()(implicit appConfig: AppConfig, messages: Messages): Unit = {
     val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
     val response = aResponse()
@@ -59,5 +67,5 @@ object PreferencesStub extends WireMockMethods {
     stubFor(mapping.willReturn(response))
   }
 
-  val preconditionFailedJson = Json.obj(PaperlessPreferenceHttpParser.redirectUserTo -> testUrl)
+  val preconditionFailedJson = Json.obj(redirectUserTo -> testUrl)
 }

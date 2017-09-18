@@ -36,14 +36,12 @@ trait MockPreferencesService extends MockTrait {
 
   def mockCheckPaperlessActivated(token: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Activated)))
 
-  def mockCheckPaperlessDeclined(token: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Declined(testUrl))))
-
-  def mockCheckPaperlessUnset(token: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Unset(testUrl))))
+  def mockCheckPaperlessUnset(token: String, url: Option[String]): Unit = mockCheckPaperless(token)(Future.successful(Right(Unset(url))))
 
   def mockCheckPaperlessException(token: String): Unit = mockCheckPaperless(token)(Future.failed(testException))
 
   def mockChoosePaperlessUrl(url: String): Unit =
-    when(mockPreferencesService.choosePaperlessUrl(ArgumentMatchers.any[Request[AnyContent]]))
+    when(mockPreferencesService.defaultChoosePaperlessUrl(ArgumentMatchers.any[Request[AnyContent]]))
       .thenReturn(url)
 
 }

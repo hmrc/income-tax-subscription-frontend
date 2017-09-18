@@ -48,7 +48,25 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       )
     }
 
-    "where the user has previously accepted paperless where optedIn is set to False" in {
+    "where the user has previously accepted paperless where optedIn is set to false and no redirect location is returned" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
+      PreferencesStub.stubPaperlessInactive()
+
+      When("GET /preferences is called")
+      val res = IncomeTaxSubscriptionFrontend.preferences()
+
+      Then("Should return a SEE_OTHER with a re-direct location of choose paperless page")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(choosePaperlessURI)
+      )
+    }
+
+
+    "where the user has previously accepted paperless where optedIn is set to false and a redirect location is returned" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
@@ -75,10 +93,10 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
 
-      Then("Should return a SEE_OTHER with a re-direct location of choose paperless page")
+      Then("Should return a SEE_OTHER using the redirect location returned in the response")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(choosePaperlessURI)
+        redirectURI(testUrl)
       )
     }
 

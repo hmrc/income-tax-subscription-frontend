@@ -30,6 +30,6 @@ class PreferencesService @Inject()(preferenceFrontendConnector: PreferenceFronte
   @inline def checkPaperless(token: String)(implicit request: Request[AnyContent]): Future[Either[PaperlessPreferenceError.type, PaperlessState]] =
     preferenceFrontendConnector.checkPaperless(token)
 
-  @inline def choosePaperlessUrl(implicit request: Request[AnyContent]): String = preferenceFrontendConnector.choosePaperlessUrl
+  @inline def defaultChoosePaperlessUrl(implicit request: Request[AnyContent]): String = preferenceFrontendConnector.choosePaperlessUrl
 
 }

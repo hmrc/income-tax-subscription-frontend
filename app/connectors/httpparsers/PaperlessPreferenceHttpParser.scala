@@ -16,7 +16,7 @@
 
 package connectors.httpparsers
 
-import connectors.models.preferences.{Activated, Declined, PaperlessState, Unset}
+import connectors.models.preferences.{Activated, PaperlessState, Unset}
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.HttpResponse
@@ -32,9 +32,10 @@ object PaperlessPreferenceHttpParser {
         case OK =>
           val parsedJson = for {
             optedIn <- (response.json \ optedInKey).validate[Boolean]
+          //TODO Change this from option after the feature switch is removed
             redirectUrl <- (response.json \ redirectUserTo).validateOpt[String]
           } yield if (optedIn) Activated
-          else Declined(redirectUrl)
+          else Unset(redirectUrl)
 
           parsedJson match {
             case JsSuccess(paperlessResponse, _) => Right(paperlessResponse)
@@ -43,7 +44,7 @@ object PaperlessPreferenceHttpParser {
 
         case PRECONDITION_FAILED =>
           (response.json \ redirectUserTo).validate[String] match {
-            case JsSuccess(redirectUrl, _) => Right(Unset(redirectUrl))
+            case JsSuccess(redirectUrl, _) => Right(Unset(Some(redirectUrl)))
             case error: JsError => Left(HttpConnectorError(response, Some(error)))
           }
 

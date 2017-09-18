@@ -22,9 +22,7 @@ sealed trait PaperlessState
 
 case object Activated extends PaperlessState
 
-case class Declined(redirectUrl: Option[String]) extends PaperlessState
-
-case class Unset(redirectUrl: String) extends PaperlessState
+case class Unset(redirectUrl: Option[String]) extends PaperlessState
 
 case object PaperlessPreferenceError extends ConnectorError
 
