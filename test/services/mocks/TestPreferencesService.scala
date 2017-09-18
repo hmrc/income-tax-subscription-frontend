@@ -30,17 +30,17 @@ import scala.concurrent.Future
 trait MockPreferencesService extends MockTrait {
   val mockPreferencesService = mock[PreferencesService]
 
-  private def mockCheckPaperless(result: Future[Either[PaperlessPreferenceError.type, PaperlessState]]): Unit =
-    when(mockPreferencesService.checkPaperless(ArgumentMatchers.any[Request[AnyContent]]))
+  private def mockCheckPaperless(token: String)(result: Future[Either[PaperlessPreferenceError.type, PaperlessState]]): Unit =
+    when(mockPreferencesService.checkPaperless(ArgumentMatchers.eq(token))(ArgumentMatchers.any[Request[AnyContent]]))
       .thenReturn(result)
 
-  def mockCheckPaperlessActivated(): Unit = mockCheckPaperless(Future.successful(Right(Activated)))
+  def mockCheckPaperlessActivated(token: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Activated)))
 
-  def mockCheckPaperlessDeclined(): Unit = mockCheckPaperless(Future.successful(Right(Declined(testUrl))))
+  def mockCheckPaperlessDeclined(token: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Declined(testUrl))))
 
-  def mockCheckPaperlessUnset(): Unit = mockCheckPaperless(Future.successful(Right(Unset(testUrl))))
+  def mockCheckPaperlessUnset(token: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Unset(testUrl))))
 
-  def mockCheckPaperlessException(): Unit = mockCheckPaperless(Future.failed(testException))
+  def mockCheckPaperlessException(token: String): Unit = mockCheckPaperless(token)(Future.failed(testException))
 
   def mockChoosePaperlessUrl(url: String): Unit =
     when(mockPreferencesService.choosePaperlessUrl(ArgumentMatchers.any[Request[AnyContent]]))

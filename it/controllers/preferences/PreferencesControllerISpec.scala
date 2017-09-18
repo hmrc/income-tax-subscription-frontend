@@ -120,6 +120,8 @@ class PreferencesControllerISpec extends ComponentSpecBase {
     "where the user has previously accepted paperless where optedIn is set to False" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
       PreferencesStub.stubPaperlessInactive()
 
       When("GET /callback is called")

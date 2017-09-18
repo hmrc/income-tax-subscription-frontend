@@ -43,7 +43,8 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
       user.nino match {
         case None => throw new InternalServerException("clear preferences controller, no nino")
         case Some(nino) =>
-          preferenceFrontendConnector.checkPaperless.flatMap {
+          //TODO Update for the new API
+          preferenceFrontendConnector.checkPaperless("").flatMap {
             case Right(Activated) =>
               clearPreferencesConnector.clear(nino).map { response =>
                 response.status match {

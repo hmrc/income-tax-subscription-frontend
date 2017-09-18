@@ -61,7 +61,7 @@ trait AppConfig {
   val userMatchingFeature: Boolean
   val enableRegistration: Boolean
   def storeNinoUrl(token: String): String
-  val newPreferencesAPIFeature: Boolean
+  val newPreferencesApiEnabled: Boolean
 }
 
 @Singleton
@@ -158,6 +158,6 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val enableRegistration: Boolean = loadConfig("feature-switch.enable-registration").toBoolean
 
-  override val newPreferencesAPIFeature: Boolean = loadConfig("feature-switch.new-preferences-api").toBoolean
+  override val newPreferencesApiEnabled: Boolean = loadConfig("feature-switch.new-preferences-api").toBoolean
 }
 

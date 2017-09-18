@@ -33,11 +33,11 @@ class PaperlessPreferenceTokenServiceSpec extends UnitTestTrait with TestPaperle
     }
 
     "do not store the token when it is already present in keystore" in {
-      setupMockKeystore(fetchPaperlessPreferenceToken = testPaperlessPreferenceToken)
+      setupMockKeystore(fetchPaperlessPreferenceToken = testToken)
 
       val res = TestPaperlessPreferenceTokenService.storeNino(testNino)
 
-      await(res) mustBe testPaperlessPreferenceToken
+      await(res) mustBe testToken
     }
   }
 }

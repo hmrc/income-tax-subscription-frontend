@@ -35,7 +35,7 @@ object TestConstants {
   */
   lazy val testNino: String = new Generator().nextNino.nino
   lazy val testUtr: String = UUID.randomUUID().toString //Not an actual UTR
-  lazy val testToken: String = "token"
+  lazy val testToken: String = s"${UUID.randomUUID()}"
   lazy val testMTDID = "XE0001234567890"
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
@@ -49,8 +49,6 @@ object TestConstants {
   val testLastName = "Name"
 
   val testPhoneNumber = "000 000 0000"
-
-  lazy val testPaperlessPreferenceToken = s"${UUID.randomUUID()}"
 
   val testUrl = "/test/url/"
 

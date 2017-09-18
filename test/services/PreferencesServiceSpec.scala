@@ -42,27 +42,27 @@ class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService w
   "TestPreferencesService.checkPaperless" should {
 
     "return Activated if checkPaperless returns a 200 and indicated activation is true" in {
-      mockCheckPaperlessActivated()
+      mockCheckPaperlessActivated(testToken)
 
-      await(TestPreferencesService.checkPaperless).right.value shouldBe Activated
+      await(TestPreferencesService.checkPaperless(testToken)).right.value shouldBe Activated
     }
 
     "return Declined if checkPaperless returns a 200 and indicated activation is false" in {
-      mockCheckPaperlessDeclined()
+      mockCheckPaperlessDeclined(testToken)
 
-      await(TestPreferencesService.checkPaperless).right.value shouldBe Declined(testUrl)
+      await(TestPreferencesService.checkPaperless(testToken)).right.value shouldBe Declined(testUrl)
     }
 
     "return Unset if checkPaperless returns a 412" in {
-      mockCheckPaperlessUnset()
+      mockCheckPaperlessUnset(testToken)
 
-      await(TestPreferencesService.checkPaperless).right.value shouldBe Unset(testUrl)
+      await(TestPreferencesService.checkPaperless(testToken)).right.value shouldBe Unset(testUrl)
     }
 
     "return a failed future in checkPaperless returns a failed future" in {
-      mockCheckPaperlessException()
+      mockCheckPaperlessException(testToken)
 
-      intercept[Exception](await(TestPreferencesService.checkPaperless)) shouldBe testException
+      intercept[Exception](await(TestPreferencesService.checkPaperless(testToken))) shouldBe testException
     }
 
   }
