@@ -55,7 +55,7 @@ class NewPreferencesControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessInactiveWithUri()
+      PreferencesStub.newStubPaperlessInactiveWithUri()
 
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
@@ -124,7 +124,7 @@ class NewPreferencesControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessInactiveWithUri()
+      PreferencesStub.newStubPaperlessInactiveWithUri()
 
       When("GET /callback is called")
       val res = IncomeTaxSubscriptionFrontend.callback()
