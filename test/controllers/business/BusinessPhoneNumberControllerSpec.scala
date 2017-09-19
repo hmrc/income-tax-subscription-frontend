@@ -24,6 +24,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import uk.gov.hmrc.http.NotFoundException
 import utils.TestConstants._
 
 class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
@@ -55,14 +56,20 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
     "show" should {
       "return NOT FOUND" in {
         val result = TestBusinessPhoneNumberController.show(isEditMode = true)(fakeRequest)
-        status(result) must be(Status.NOT_FOUND)
+        val ex = intercept[NotFoundException] {
+          await(result)
+        }
+        ex.message must startWith("This page for registration is not yet avaiable to the public:")
       }
     }
 
     "submit" should {
       "return NOT FOUND" in {
         val result = TestBusinessPhoneNumberController.submit(isEditMode = true)(fakeRequest)
-        status(result) must be(Status.NOT_FOUND)
+        val ex = intercept[NotFoundException] {
+          await(result)
+        }
+        ex.message must startWith("This page for registration is not yet avaiable to the public:")
       }
     }
   }

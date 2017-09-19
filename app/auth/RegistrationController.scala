@@ -18,6 +18,7 @@ package auth
 
 import auth.AuthPredicates.registrationPredicates
 import play.api.mvc.{Action, AnyContent, Request, Result}
+import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
 
@@ -29,7 +30,7 @@ trait RegistrationController extends BaseFrontendController {
 
     val async: AuthenticatedAction =
       if (applicationConfig.enableRegistration) asyncInternal(registrationPredicates)
-      else ActionBody => Action.async(request => Future.successful(NotFound))
+      else ActionBody => Action.async(request => Future.failed(new NotFoundException("This page for registration is not yet avaiable to the public: " + request.uri)))
 
   }
 

@@ -16,7 +16,6 @@
 
 package controllers.business
 
-import auth._
 import controllers.ControllerBaseSpec
 import forms.AccountingPeriodPriorForm
 import forms.OtherIncomeForm._
@@ -24,8 +23,7 @@ import models.{AccountingPeriodPriorModel, OtherIncomeModel}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.FakeRequest
-import play.api.test.Helpers.{contentAsString, _}
+import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import utils.TestModels
 
