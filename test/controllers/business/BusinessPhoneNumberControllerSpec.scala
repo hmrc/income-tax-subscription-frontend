@@ -105,19 +105,18 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
 
           val goodRequest = callShow(isEditMode = false)
 
-          status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+          status(goodRequest) must be(Status.SEE_OTHER)
 
           await(goodRequest)
           verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
         }
 
-        // TODO update to the business address page when it's implemented
-        s"redirect to '${controllers.business.routes.BusinessAccountingMethodController.show().url}'" ignore {
+        s"redirect to '${controllers.business.routes.BusinessAddressController.init().url}'" in {
           setupMockKeystoreSaveFunctions()
 
           val goodRequest = callShow(isEditMode = false)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingMethodController.show().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAddressController.init().url)
 
           await(goodRequest)
           verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
