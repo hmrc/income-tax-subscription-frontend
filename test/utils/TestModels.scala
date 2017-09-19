@@ -17,6 +17,7 @@
 package utils
 
 
+import connectors.models.address.{Address, Country, ReturnedAddress}
 import connectors.models.matching.UserMatchSuccessResponseModel
 import forms._
 import models._
@@ -129,4 +130,8 @@ object TestModels extends Implicits {
     businessName = BusinessNameModel("ABC"),
     accountingMethod = AccountingMethodModel("Cash")
   )
+
+  val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
+
+  val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
 }

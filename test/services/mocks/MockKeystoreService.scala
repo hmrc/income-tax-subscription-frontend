@@ -16,6 +16,7 @@
 
 package services.mocks
 
+import connectors.models.address.Address
 import models._
 import models.matching.UserDetailsModel
 import org.mockito.ArgumentMatchers
@@ -58,6 +59,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchIncomeSource: MFO[IncomeSourceModel] = DoNotConfigure,
                                          fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
                                          fetchBusinessPhoneNumber: MFO[BusinessPhoneNumberModel] = DoNotConfigure,
+                                         fetchBusinessAddress: MFO[Address] = DoNotConfigure,
                                          fetchAccountingPeriodDate: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchAccountingMethod: MFO[AccountingMethodModel] = DoNotConfigure,
                                          fetchTerms: MFO[Boolean] = DoNotConfigure,
@@ -73,6 +75,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[IncomeSourceModel](IncomeSource, fetchIncomeSource)
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
     mockFetchFromKeyStore[BusinessPhoneNumberModel](BusinessPhoneNumber, fetchBusinessPhoneNumber)
+    mockFetchFromKeyStore[Address](BusinessAddress, fetchBusinessAddress)
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
     mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
     mockFetchFromKeyStore[Boolean](Terms, fetchTerms)
@@ -96,6 +99,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveBusinessName: Option[Int] = None,
                                       fetchBusinessPhoneNumber: Option[Int] = None,
                                       saveBusinessPhoneNumber: Option[Int] = None,
+                                      fetchBusinessAddress: Option[Int] = None,
+                                      saveBusinessAddress: Option[Int] = None,
                                       fetchAccountingPeriodDate: Option[Int] = None,
                                       saveAccountingPeriodDate: Option[Int] = None,
                                       fetchAccountingMethod: Option[Int] = None,
@@ -123,6 +128,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(BusinessName, saveBusinessName)
     verifyKeystoreFetch(BusinessPhoneNumber, fetchBusinessPhoneNumber)
     verifyKeystoreSave(BusinessPhoneNumber, saveBusinessPhoneNumber)
+    verifyKeystoreFetch(BusinessAddress, fetchBusinessAddress)
+    verifyKeystoreSave(BusinessAddress, saveBusinessAddress)
     verifyKeystoreFetch(AccountingPeriodDate, fetchAccountingPeriodDate)
     verifyKeystoreSave(AccountingPeriodDate, saveAccountingPeriodDate)
     verifyKeystoreFetch(AccountingMethod, fetchAccountingMethod)

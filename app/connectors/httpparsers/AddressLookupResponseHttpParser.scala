@@ -16,22 +16,39 @@
 
 package connectors.httpparsers
 
-import connectors.models.address.AddressLookupFailureResponse
+import connectors.models.address._
 import play.api.http.HeaderNames
-import play.api.http.Status.ACCEPTED
+import play.api.http.Status.{ACCEPTED, OK}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 
 object AddressLookupResponseHttpParser {
-  type InitAddressLookupResponseResponse = Either[AddressLookupFailureResponse, String]
+
+  type InitAddressLookupResponseResponse = Either[AddressLookupInitFailureResponse, String]
 
   implicit object InitAddressLookupHttpReads extends HttpReads[InitAddressLookupResponseResponse] {
     override def read(method: String, url: String, response: HttpResponse): InitAddressLookupResponseResponse = {
       response.status match {
         case ACCEPTED => Right(response.header(HeaderNames.LOCATION).fold("")(identity))
-        case status => Left(AddressLookupFailureResponse(status))
+        case status => Left(AddressLookupInitFailureResponse(status))
+      }
+    }
+  }
+
+  type ConfirmAddressLookupResponseResponse = Either[ReturnedAddressFailure, ReturnedAddress]
+
+  implicit object ConfirmAddressLookupHttpReads extends HttpReads[ConfirmAddressLookupResponseResponse] {
+    override def read(method: String, url: String, response: HttpResponse): ConfirmAddressLookupResponseResponse = {
+      response.status match {
+        case OK => Json.fromJson[ReturnedAddress](response.json).asOpt match {
+          case Some(address) => Right(address)
+          case _ => Left(MalformatAddressReturned)
+        }
+        case status => Left(UnexpectedStatusReturned(status))
       }
     }
   }
 
 }
+

@@ -17,12 +17,13 @@
 package connectors.mocks
 
 import connectors.address.AddressLookupConnector
-import connectors.models.address.{AddressLookupFailureResponse, AddressLookupRequest}
+import connectors.models.address._
 import org.mockito.Mockito._
 import org.mockito._
 import play.api.http.Status.BAD_REQUEST
 import utils.MockTrait
 import utils.TestConstants.testException
+import utils.TestModels.testReturnedAddress
 
 import scala.concurrent.Future
 
@@ -35,13 +36,23 @@ trait MockAddressLookupConnector extends MockTrait {
     reset(mockAddressLookupConnector)
   }
 
-  private def mockInit(request: AddressLookupRequest)(response: Future[Either[AddressLookupFailureResponse, String]]) =
+  private def mockInit(request: AddressLookupInitRequest)(response: Future[Either[AddressLookupInitFailureResponse, String]]) =
     when(mockAddressLookupConnector.init(ArgumentMatchers.eq(request))(ArgumentMatchers.any())).thenReturn(response)
 
-  def mockInitSuccess(request: AddressLookupRequest)(testRedirectionUrl: String) = mockInit(request)(Right(testRedirectionUrl))
+  def mockInitSuccess(request: AddressLookupInitRequest)(testRedirectionUrl: String) = mockInit(request)(Right(testRedirectionUrl))
 
-  def mockInitFailure(request: AddressLookupRequest) = mockInit(request)(Future.successful(Left(AddressLookupFailureResponse(BAD_REQUEST))))
+  def mockInitFailure(request: AddressLookupInitRequest) = mockInit(request)(Future.successful(Left(AddressLookupInitFailureResponse(BAD_REQUEST))))
 
-  def mockInitException(request: AddressLookupRequest) = mockInit(request)(Future.failed(testException))
+  def mockInitException(request: AddressLookupInitRequest) = mockInit(request)(Future.failed(testException))
+
+
+  private def mockRetrieveAddress(journeyId: String)(response: Future[Either[ReturnedAddressFailure, ReturnedAddress]]) =
+    when(mockAddressLookupConnector.retrieveAddress(ArgumentMatchers.eq(journeyId))(ArgumentMatchers.any())).thenReturn(response)
+
+  def mockRetrieveAddressSuccess(journeyId: String) = mockRetrieveAddress(journeyId)(Right(testReturnedAddress))
+
+  def MockRetrieveAddressFailure(journeyId: String) = mockRetrieveAddress(journeyId)(Left(UnexpectedStatusReturned(BAD_REQUEST)))
+
+  def MockRetrieveAddressException(journeyId: String) = mockRetrieveAddress(journeyId)(Future.failed(testException))
 
 }

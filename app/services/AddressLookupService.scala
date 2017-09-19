@@ -19,8 +19,8 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import connectors.address.AddressLookupConnector
-import connectors.httpparsers.AddressLookupResponseHttpParser.InitAddressLookupResponseResponse
-import connectors.models.address.AddressLookupRequest
+import connectors.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
+import connectors.models.address.AddressLookupInitRequest
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -28,7 +28,10 @@ import scala.concurrent.Future
 @Singleton
 class AddressLookupService @Inject()(addressLookupConnector: AddressLookupConnector) {
 
-  def init(initAddressLookup: AddressLookupRequest)(implicit hc: HeaderCarrier): Future[InitAddressLookupResponseResponse] =
+  def init(initAddressLookup: AddressLookupInitRequest)(implicit hc: HeaderCarrier): Future[InitAddressLookupResponseResponse] =
     addressLookupConnector.init(initAddressLookup)
+
+  def retrieveAddress(journeyId: String)(implicit hc: HeaderCarrier): Future[ConfirmAddressLookupResponseResponse] =
+    addressLookupConnector.retrieveAddress(journeyId)
 
 }

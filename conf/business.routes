@@ -24,4 +24,4 @@ POST        /register-next-accounting-period        controllers.business.Registe
 
 
 GET         /address                                controllers.business.BusinessAddressController.init()
-GET         /address/callback:id                    controllers.business.BusinessAddressController.callBack(id: String)
+GET         /address/callback                       controllers.business.BusinessAddressController.callBack(id: String)

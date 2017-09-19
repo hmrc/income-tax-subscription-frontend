@@ -16,22 +16,23 @@
 
 package services
 
-import connectors.httpparsers.AddressLookupResponseHttpParser.InitAddressLookupResponseResponse
-import connectors.models.address.{AddressLookupFailureResponse, AddressLookupRequest}
+import connectors.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
+import connectors.models.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, UnexpectedStatusReturned}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status.BAD_REQUEST
 import services.mocks.TestAddressLookupService
+import utils.TestModels._
 
 import scala.concurrent.Future
 
 
 class AddressLookupServiceSpec extends TestAddressLookupService with ScalaFutures {
 
-  val testContinueUrl = "testContinueUrl"
-  val testRedirectionUrl = "testRedirectionUrl"
-  val testRequest = AddressLookupRequest(testContinueUrl)
-
   "AddressLookupService.init" should {
+    val testContinueUrl = "testContinueUrl"
+    val testRedirectionUrl = "testRedirectionUrl"
+    val testRequest = AddressLookupInitRequest(testContinueUrl)
+
     def call: Future[InitAddressLookupResponseResponse] = TestAddressLookupService.init(testRequest)
 
     "return a success if the AddressLookupConnector returns a success" in {
@@ -47,7 +48,29 @@ class AddressLookupServiceSpec extends TestAddressLookupService with ScalaFuture
 
       val result = call
 
-      whenReady(result)(_ mustBe Left(AddressLookupFailureResponse(BAD_REQUEST)))
+      whenReady(result)(_ mustBe Left(AddressLookupInitFailureResponse(BAD_REQUEST)))
+    }
+  }
+
+  "AddressLookupService.retrieveAddress" should {
+    val testJourneyId = "1234567890"
+
+    def call: Future[ConfirmAddressLookupResponseResponse] = TestAddressLookupService.retrieveAddress(testJourneyId)
+
+    "return a success if the AddressLookupConnector returns a success" in {
+      mockRetrieveAddressSuccess(testJourneyId)
+
+      val result = call
+
+      whenReady(result)(_ mustBe Right(testReturnedAddress))
+    }
+
+    "return a failure if the AddressLookupConnector returns a failure" in {
+      MockRetrieveAddressFailure(testJourneyId)
+
+      val result = call
+
+      whenReady(result)(_ mustBe Left(UnexpectedStatusReturned(BAD_REQUEST)))
     }
 
   }

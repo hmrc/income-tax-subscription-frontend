@@ -60,21 +60,21 @@ case class EditPage(title: Option[String] = None,
                     showSearchAgainLink: Option[Boolean] = Some(false),
                     searchAgainLinkText: Option[String] = None)
 
-case class AddressLookupRequest(continueUrl: String,
-                                lookupPage: Option[LookupPage] = Some(LookupPage()),
-                                selectPage: Option[SelectPage] = Some(SelectPage()),
-                                confirmPage: Option[ConfirmPage] = Some(ConfirmPage()),
-                                editPage: Option[EditPage] = Some(EditPage()),
-                                homeNavHref: Option[String] = None,
-                                navTitle: Option[String] = None,
-                                additionalStylesheetUrl: Option[String] = None,
-                                showPhaseBanner: Option[Boolean] = Some(false), // if phase banner is shown, it will default to "beta" unless ...
-                                alphaPhase: Option[Boolean] = Some(false), // ... you set "alpha" to be true,
-                                phaseFeedbackLink: Option[String] = None,
-                                phaseBannerHtml: Option[String] = None,
-                                showBackButtons: Option[Boolean] = Some(false),
-                                includeHMRCBranding: Option[Boolean] = Some(true),
-                                deskProServiceName: Option[String] = None)
+case class AddressLookupInitRequest(continueUrl: String,
+                                    lookupPage: Option[LookupPage] = Some(LookupPage()),
+                                    selectPage: Option[SelectPage] = Some(SelectPage()),
+                                    confirmPage: Option[ConfirmPage] = Some(ConfirmPage()),
+                                    editPage: Option[EditPage] = Some(EditPage()),
+                                    homeNavHref: Option[String] = None,
+                                    navTitle: Option[String] = None,
+                                    additionalStylesheetUrl: Option[String] = None,
+                                    showPhaseBanner: Option[Boolean] = Some(false), // if phase banner is shown, it will default to "beta" unless ...
+                                    alphaPhase: Option[Boolean] = Some(false), // ... you set "alpha" to be true,
+                                    phaseFeedbackLink: Option[String] = None,
+                                    phaseBannerHtml: Option[String] = None,
+                                    showBackButtons: Option[Boolean] = Some(false),
+                                    includeHMRCBranding: Option[Boolean] = Some(true),
+                                    deskProServiceName: Option[String] = None)
 
 
 object EditPage {
@@ -93,9 +93,9 @@ object ConfirmPage {
   implicit val format = Json.format[ConfirmPage]
 }
 
-object AddressLookupRequest {
-  implicit val format = Json.format[AddressLookupRequest]
+object AddressLookupInitRequest {
+  implicit val format = Json.format[AddressLookupInitRequest]
 }
 
 
-case class AddressLookupFailureResponse(status: Int) extends ConnectorError
+case class AddressLookupInitFailureResponse(status: Int) extends ConnectorError
