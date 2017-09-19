@@ -16,23 +16,41 @@
 
 package connectors.httpparsers
 
-import connectors.models.preferences.{PaperlessState, Unset}
+import connectors.models.preferences.{Activated, PaperlessState, Unset}
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess}
-import utils.HttpResult.{HttpConnectorError, HttpResult, HttpResultParser}
 import uk.gov.hmrc.http.HttpResponse
+import utils.HttpResult.{HttpConnectorError, HttpResult, HttpResultParser}
 
 object PaperlessPreferenceHttpParser {
+  val optedInKey = "optedIn"
+  val redirectUserTo = "redirectUserTo"
+
   implicit object PaperlessPreferenceHttpReads extends HttpResultParser[PaperlessState] {
     override def read(method: String, url: String, response: HttpResponse): HttpResult[PaperlessState] = {
       response.status match {
-        case OK => response.json.validate[PaperlessState] match {
-          case JsSuccess(paperlessResponse, _) => Right(paperlessResponse)
-          case error: JsError => Left(HttpConnectorError(response, Some(error)))
-        }
-        case PRECONDITION_FAILED => Right(Unset)
+        case OK =>
+          val parsedJson = for {
+            optedIn <- (response.json \ optedInKey).validate[Boolean]
+          //TODO Change this from option after the feature switch is removed
+            redirectUrl <- (response.json \ redirectUserTo).validateOpt[String]
+          } yield if (optedIn) Activated
+          else Unset(redirectUrl)
+
+          parsedJson match {
+            case JsSuccess(paperlessResponse, _) => Right(paperlessResponse)
+            case error: JsError => Left(HttpConnectorError(response, Some(error)))
+          }
+
+        case PRECONDITION_FAILED =>
+          (response.json \ redirectUserTo).validate[String] match {
+            case JsSuccess(redirectUrl, _) => Right(Unset(Some(redirectUrl)))
+            case error: JsError => Left(HttpConnectorError(response, Some(error)))
+          }
+
         case status => Left(HttpConnectorError(response))
       }
     }
   }
+
 }

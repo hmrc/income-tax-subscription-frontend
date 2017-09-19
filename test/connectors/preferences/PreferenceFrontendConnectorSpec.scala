@@ -20,6 +20,7 @@ import connectors.mocks.TestPreferenceFrontendConnector
 import org.scalatest.Matchers._
 import play.api.test.FakeRequest
 import utils.UnitTestTrait
+import utils.TestConstants._
 
 class PreferenceFrontendConnectorSpec extends UnitTestTrait
   with TestPreferenceFrontendConnector {
@@ -29,7 +30,7 @@ class PreferenceFrontendConnectorSpec extends UnitTestTrait
   "PreferenceFrontendConnector" should {
 
     "Provide the correct checkPaperless URL" in {
-      TestPreferenceFrontendConnector.checkPaperlessUrl should include regex """^.*\/paperless\/activate\?returnUrl=(.*)&returnLinkText=(.*)$"""
+      TestPreferenceFrontendConnector.checkPaperlessUrl(testToken) should include regex """^.*\/paperless\/activate\?returnUrl=(.*)&returnLinkText=(.*)$"""
     }
 
     "Provide the correct choosePaperlessUrl URL" in {

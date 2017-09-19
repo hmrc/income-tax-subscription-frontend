@@ -18,17 +18,19 @@ package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
+import common.Constants._
 import config.AppConfig
+import connectors.httpparsers.PaperlessPreferenceHttpParser._
 import connectors.preferences.PreferenceFrontendConnector
-import helpers.IntegrationTestModels._
+import helpers.IntegrationTestConstants._
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 
 
 object PreferencesStub extends WireMockMethods {
-  def preferencesURI(implicit appConfig: AppConfig, messages: Messages) =
-    PreferenceFrontendConnector.checkPaperlessUri(returnUrl = PreferenceFrontendConnector.returnUrl(appConfig.baseUrl))
+
+  val newPreferencesUrl = s".*/paperless/activate/$preferencesServiceKey.*"
 
   def stubPaperlessActivated()(implicit appConfig: AppConfig, messages: Messages): Unit = {
     val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
@@ -44,9 +46,18 @@ object PreferencesStub extends WireMockMethods {
     stubFor(mapping.willReturn(response))
   }
 
+  def stubPaperlessInactiveWithUri()(implicit appConfig: AppConfig, messages: Messages): Unit = {
+    val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
+    val rBody = Json.obj("optedIn" -> false, redirectUserTo -> testUrl)
+    val response = aResponse().withStatus(Status.OK).withBody(rBody.toString)
+    stubFor(mapping.willReturn(response))
+  }
+
   def stubPaperlessPreconditionFail()(implicit appConfig: AppConfig, messages: Messages): Unit = {
     val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
-    val response = aResponse().withStatus(Status.PRECONDITION_FAILED)
+    val response = aResponse()
+      .withStatus(Status.PRECONDITION_FAILED)
+      .withBody(preconditionFailedJson.toString())
     stubFor(mapping.willReturn(response))
   }
 
@@ -56,4 +67,36 @@ object PreferencesStub extends WireMockMethods {
     stubFor(mapping.willReturn(response))
   }
 
+//  Feature Switch methods for new Preferences sign-up solution
+
+  def newStubPaperlessActivated()(implicit appConfig: AppConfig, messages: Messages): Unit = {
+    val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(newPreferencesUrl))
+    val rBody = Json.obj("optedIn" -> true)
+    val response = aResponse().withStatus(Status.OK).withBody(rBody.toString)
+    stubFor(mapping.willReturn(response))
+  }
+
+  def newStubPaperlessInactiveWithUri()(implicit appConfig: AppConfig, messages: Messages): Unit = {
+    val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(newPreferencesUrl))
+    val rBody = Json.obj("optedIn" -> false, redirectUserTo -> testUrl)
+    val response = aResponse().withStatus(Status.OK).withBody(rBody.toString)
+    stubFor(mapping.willReturn(response))
+  }
+
+  def newStubPaperlessPreconditionFail()(implicit appConfig: AppConfig, messages: Messages): Unit = {
+    val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(newPreferencesUrl))
+    val response = aResponse()
+      .withStatus(Status.PRECONDITION_FAILED)
+      .withBody(preconditionFailedJson.toString())
+    stubFor(mapping.willReturn(response))
+  }
+
+  def newStubPaperlessError()(implicit appConfig: AppConfig, messages: Messages): Unit = {
+    val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(newPreferencesUrl))
+    val response = aResponse().withStatus(Status.NOT_FOUND)
+    stubFor(mapping.willReturn(response))
+  }
+
+
+  val preconditionFailedJson = Json.obj(redirectUserTo -> testUrl)
 }

@@ -17,12 +17,11 @@
 package services.mocks
 
 import connectors.mocks.MockPaperlessPreferenceTokenConnector
-import connectors.models.preferences.PaperlessPreferenceTokenResult.{PaperlessPreferenceTokenResult, PaperlessPreferenceTokenSuccess}
 import org.mockito.ArgumentMatchers
-import utils.MockTrait
 import org.mockito.Mockito._
 import services.PaperlessPreferenceTokenService
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.MockTrait
 import utils.TestConstants._
 
 import scala.concurrent.Future
@@ -34,7 +33,7 @@ trait MockPaperlessPreferenceTokenService extends MockTrait {
     when(mockPaperlessPreferenceTokenService.storeNino(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  def mockStoreNinoSuccess(nino: String): Unit = mockStoreNino(nino)(Future.successful(testPaperlessPreferenceToken))
+  def mockStoreNinoSuccess(nino: String): Unit = mockStoreNino(nino)(Future.successful(testToken))
 
   def verifyStoreNino(nino: String): Unit = verify(mockPaperlessPreferenceTokenService)
     .storeNino(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier])

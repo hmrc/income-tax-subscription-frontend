@@ -30,8 +30,7 @@ import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.http.{HttpGet, HttpPut}
 import utils.HttpResult._
-
-import scala.concurrent.ExecutionContext.Implicits.global
+import common.Constants._
 import scala.concurrent.Future
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
@@ -46,17 +45,20 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
 
   lazy val returnUrl: String = PreferenceFrontendConnector.returnUrl(appConfig.baseUrl)
 
-  lazy val checkPaperlessUrl: String =
-    appConfig.preferencesService + PreferenceFrontendConnector.checkPaperlessUri(returnUrl = returnUrl)
+  def checkPaperlessUrl(token: String): String = if(appConfig.newPreferencesApiEnabled) {
+    appConfig.preferencesService + PreferenceFrontendConnector.newCheckPaperlessUri(returnUrl, token)
+  } else {
+    appConfig.preferencesService + PreferenceFrontendConnector.checkPaperlessUri(returnUrl)
+  }
 
   lazy val choosePaperlessUrl: String =
     appConfig.preferencesUrl + PreferenceFrontendConnector.choosePaperlessUri(returnUrl)
 
-  def checkPaperless(implicit request: Request[AnyContent]): Future[Either[PaperlessPreferenceError.type, PaperlessState]] = {
+  def checkPaperless(token: String)(implicit request: Request[AnyContent]): Future[Either[PaperlessPreferenceError.type, PaperlessState]] = {
     // The header carrier must include the current user's session in order to be authenticated by the preferences-frontend service
     // this header is converted implicitly by functions in config.ITSAHeaderCarrierForPartialsConverter which implements
     // uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
-    httpPut.PUT[String, HttpResult[PaperlessState]](checkPaperlessUrl, "") map {
+    httpPut.PUT[String, HttpResult[PaperlessState]](checkPaperlessUrl(token), "") map {
       case Right(paperlessState) => Right(paperlessState)
       case Left(error) =>
         logging.warn(s"PreferencesFrontendConnector#checkPaperless failed. Returned status:${error.httpResponse.status} body:${error.httpResponse.body}")
@@ -78,6 +80,9 @@ object PreferenceFrontendConnector {
 
   def checkPaperlessUri(returnUrl: String)(implicit messages: Messages): String =
     s"""/paperless/activate?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
+
+  def newCheckPaperlessUri(returnUrl: String, token: String)(implicit messages: Messages): String =
+    s"""/paperless/activate/$preferencesServiceKey/$token?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
   def choosePaperlessUri(returnUrl: String)(implicit messages: Messages): String =
     s"""/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""

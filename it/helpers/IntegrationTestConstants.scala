@@ -38,6 +38,7 @@ object IntegrationTestConstants {
   val dateOfBirth = DateModel("01", "01", "1980")
   val testPaperlessPreferenceToken = s"${UUID.randomUUID()}"
 
+  val testUrl = "/test/url/"
 
   val baseURI = "/report-quarterly/income-and-expenses/sign-up"
   val indexURI = s"$baseURI/index"

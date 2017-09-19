@@ -56,24 +56,23 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
       "Redirect to Income Source if paperless is activated" in {
         mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessActivated()
+        mockCheckPaperlessActivated(testToken)
 
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result).get must be(controllers.routes.IncomeSourceController.showIncomeSource().url)
       }
 
-      "Redirect to preferences service if paperless is deactivated" in {
+      "Redirect to returned preferences service if paperless was previously unspecified" in {
         mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessDeclined()
-        mockChoosePaperlessUrl(testUrl)
+        mockCheckPaperlessUnset(testToken, Some(testUrl))
 
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result).get mustBe testUrl
       }
 
-      "Redirect to preferences service if paperless was previously unspecified" in {
+      "Redirect to default location of preferences service if paperless was previously unspecified and no redirect url is returned" in {
         mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessUnset()
+        mockCheckPaperlessUnset(testToken, None)
         mockChoosePaperlessUrl(testUrl)
 
         status(result) must be(Status.SEE_OTHER)
@@ -88,21 +87,16 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
       def result = TestPreferencesController.callback(request)
 
       "Redirect to Terms and Conditions if paperless is activated" in {
-        mockCheckPaperlessActivated()
+        mockStoreNinoSuccess(testNino)
+        mockCheckPaperlessActivated(testToken)
 
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result).get must be(controllers.routes.IncomeSourceController.showIncomeSource().url)
       }
 
-      "Redirect to do you still want to continue page if paperless deactivated" in {
-        mockCheckPaperlessDeclined()
-
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get must be(routes.PreferencesController.showGoBackToPreferences().url)
-      }
-
       "Redirect to do you still want to continue page if paperless was previously unspecified" in {
-        mockCheckPaperlessUnset()
+        mockStoreNinoSuccess(testNino)
+        mockCheckPaperlessUnset(testToken, Some(testUrl))
 
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result).get must be(routes.PreferencesController.showGoBackToPreferences().url)
@@ -138,14 +132,14 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
       s"redirects to the correct url" in {
         val goodRequest = callShow()
-        redirectLocation(goodRequest) mustBe Some(TestPreferencesController.preferencesService.choosePaperlessUrl)
+        redirectLocation(goodRequest) mustBe Some(TestPreferencesController.preferencesService.defaultChoosePaperlessUrl)
 
         await(goodRequest)
       }
     }
   }
 
-  "If newFeatures flag in config is true" when {
+  "If userMatchingFeature flag in config is true" when {
     lazy val TestNewFeaturesController = createTestForPreferences(
       new MockConfig {
         override val userMatchingFeature = true

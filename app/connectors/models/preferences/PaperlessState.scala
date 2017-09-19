@@ -17,29 +17,12 @@
 package connectors.models.preferences
 
 import connectors.models.ConnectorError
-import play.api.http.Status._
-import play.api.libs.json.{JsResult, JsSuccess, JsValue, Reads}
 
 sealed trait PaperlessState
 
-object PaperlessState {
-
-  implicit object PaperlessStateJsonReads extends Reads[PaperlessState] {
-    override def reads(json: JsValue): JsResult[PaperlessState] = {
-      (json \ "optedIn").validate[Boolean] map {
-        case true => Activated
-        case false => Declined
-      }
-    }
-  }
-
-}
-
 case object Activated extends PaperlessState
 
-case object Declined extends PaperlessState
-
-case object Unset extends PaperlessState
+case class Unset(redirectUrl: Option[String]) extends PaperlessState
 
 case object PaperlessPreferenceError extends ConnectorError
 

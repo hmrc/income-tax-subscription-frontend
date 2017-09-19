@@ -16,21 +16,19 @@
 
 package controllers.preferences
 
-import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
 import auth.AuthenticatedController
 import config.BaseControllerConfig
-import connectors.models.preferences.Activated
-import connectors.models.preferences.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
+import connectors.models.preferences.{Activated, Unset}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services.{AuthService, KeystoreService, PaperlessPreferenceTokenService, PreferencesService}
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.http.InternalServerException
 
 @Singleton
 class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
@@ -54,9 +52,11 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
         res <- if (baseConfig.applicationConfig.userMatchingFeature) {
           Future.successful(Redirect(controllers.routes.IncomeSourceController.showIncomeSource()))
         } else {
-          preferencesService.checkPaperless.map {
+          preferencesService.checkPaperless(token).map {
             case Right(Activated) => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
-            case Right(_) => gotoPreferences
+            case Right(Unset(Some(url))) => Redirect(url)
+            //TODO Remove after feature switch is removed as redirect url will become non-optional
+            case Right(Unset(None)) => Redirect(preferencesService.defaultChoosePaperlessUrl)
             case _ => throw new InternalServerException("Could not get paperless preferences")
           }
         }
@@ -65,10 +65,13 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   def callback: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      preferencesService.checkPaperless.map {
-        case Right(Activated) => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
-        case Right(_) => Redirect(controllers.preferences.routes.PreferencesController.showGoBackToPreferences())
-        case _ => throw new InternalServerException("Could not get paperless preferences")
+      paperlessPreferenceTokenService.storeNino(user.nino.get) flatMap {
+        token =>
+          preferencesService.checkPaperless(token).map {
+            case Right(Activated) => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+            case Right(_) => Redirect(controllers.preferences.routes.PreferencesController.showGoBackToPreferences())
+            case _ => throw new InternalServerException("Could not get paperless preferences")
+          }
       }
   }
 
@@ -84,7 +87,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
       else gotoPreferences
   }
 
-  @inline def gotoPreferences(implicit request: Request[AnyContent]): Result = Redirect(preferencesService.choosePaperlessUrl)
+  @inline def gotoPreferences(implicit request: Request[AnyContent]): Result = Redirect(preferencesService.defaultChoosePaperlessUrl)
 
   def signOut(implicit request: Request[_]): Result = Redirect(controllers.routes.SignOutController.signOut())
 

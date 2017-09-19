@@ -25,7 +25,9 @@ import play.api.i18n.Messages
 import play.api.libs.json.JsString
 import services.CacheConstants._
 
-class PreferencesControllerISpec extends ComponentSpecBase {
+class NewPreferencesControllerISpec extends ComponentSpecBase {
+
+  override def config = super.config + ("feature-switch.new-preferences-api" -> "true")
 
   override implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
@@ -36,7 +38,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessActivated()
+      PreferencesStub.newStubPaperlessActivated()
 
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
@@ -48,30 +50,12 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       )
     }
 
-    "where the user has previously accepted paperless where optedIn is set to false and no redirect location is returned" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      PreferencesTokenStub.stubStoreNinoSuccess()
-      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessInactive()
-
-      When("GET /preferences is called")
-      val res = IncomeTaxSubscriptionFrontend.preferences()
-
-      Then("Should return a SEE_OTHER with a re-direct location of choose paperless page")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(choosePaperlessURI)
-      )
-    }
-
-
     "where the user has previously accepted paperless where optedIn is set to false and a redirect location is returned" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessInactiveWithUri()
+      PreferencesStub.newStubPaperlessInactiveWithUri()
 
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
@@ -88,7 +72,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessPreconditionFail()
+      PreferencesStub.newStubPaperlessPreconditionFail()
 
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
@@ -105,7 +89,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessError()
+      PreferencesStub.newStubPaperlessError()
 
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
@@ -120,7 +104,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreData(Map(PaperlessPreferenceToken -> JsString(testPaperlessPreferenceToken)))
-      PreferencesStub.stubPaperlessActivated()
+      PreferencesStub.newStubPaperlessActivated()
 
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
@@ -135,12 +119,12 @@ class PreferencesControllerISpec extends ComponentSpecBase {
 
   "GET /callback" should {
 
-    "where the user has previously accepted paperless where optedIn is set to False" in {
+    "where the user has previously accepted paperless where optedIn is set to False and redirect location returned" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessInactive()
+      PreferencesStub.newStubPaperlessInactiveWithUri()
 
       When("GET /callback is called")
       val res = IncomeTaxSubscriptionFrontend.callback()
