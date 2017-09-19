@@ -17,7 +17,6 @@
 package controllers.business
 
 import auth.MockConfig
-import connectors.models.address.AddressLookupInitRequest
 import controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -53,8 +52,7 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
 
   lazy val testContinueUrl = TestBusinessAddressController.continueUrl(fakeRequest)
   val testRedirectionUrl = "testRedirectionUrl"
-  lazy val testRequest = AddressLookupInitRequest(testContinueUrl)
-
+  lazy val testRequest = TestBusinessAddressController.initConfig(fakeRequest)
 
   "When registration is disabled" should {
     lazy val TestBusinessAddressController: BusinessAddressController =
@@ -134,6 +132,42 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
 
         verifyKeystore(saveBusinessAddress = 0)
       }
+    }
+
+  }
+
+  "the address lookup config" should {
+    import assets.MessageLookup.BusinessAddress._
+    lazy val conf = TestBusinessAddressController.initConfig(fakeRequest)
+
+    "should have the correct parameters" in {
+      conf.continueUrl mustBe TestBusinessAddressController.continueUrl(fakeRequest)
+      conf.showBackButtons mustBe Some(true)
+
+      val lookup = conf.lookupPage.get
+      lookup.heading mustBe Some(Lookup.heading)
+      lookup.filterLabel mustBe Some(Lookup.nameOrNimber)
+      lookup.submitLabel mustBe Some(Lookup.submit)
+      lookup.manualAddressLinkText mustBe Some(Lookup.enterManually)
+
+      val select = conf.selectPage.get
+      select.title mustBe Some(Select.title)
+      select.heading mustBe Some(Select.heading)
+      select.showSearchAgainLink mustBe Some(true)
+      select.editAddressLinkText mustBe Some(Select.edit)
+
+      val confirm = conf.confirmPage.get
+      confirm.heading mustBe Some(Confirm.heading)
+      confirm.showChangeLink mustBe Some(false)
+      confirm.showSearchAgainLink mustBe Some(true)
+      confirm.searchAgainLinkText mustBe Some(Confirm.change)
+
+      val edit = conf.editPage.get
+      edit.heading mustBe Some(Edit.heading)
+      edit.line1Label mustBe Some(Edit.addLine1)
+      edit.line2Label mustBe Some(Edit.addLine2)
+      edit.line3Label mustBe Some(Edit.addLine3)
+      edit.showSearchAgainLink mustBe Some(true)
     }
 
   }

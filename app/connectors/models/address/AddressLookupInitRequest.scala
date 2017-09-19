@@ -25,7 +25,7 @@ case class ConfirmPage(title: Option[String] = None,
                        infoSubheading: Option[String] = None,
                        infoMessage: Option[String] = None,
                        submitLabel: Option[String] = None,
-                       showSearchAgainLink: Option[Boolean] = Some(false),
+                       showSearchAgainLink: Option[Boolean] = Some(true),
                        searchAgainLinkText: Option[String] = None,
                        showChangeLink: Option[Boolean] = Some(false),
                        changeLinkText: Option[String] = None)
@@ -44,7 +44,7 @@ case class SelectPage(title: Option[String] = None,
                       proposalListLabel: Option[String] = None,
                       submitLabel: Option[String] = None,
                       proposalListLimit: Option[Int] = None,
-                      showSearchAgainLink: Option[Boolean] = Some(false),
+                      showSearchAgainLink: Option[Boolean] = Some(true),
                       searchAgainLinkText: Option[String] = None,
                       editAddressLinkText: Option[String] = None)
 
@@ -57,7 +57,7 @@ case class EditPage(title: Option[String] = None,
                     postcodeLabel: Option[String] = None,
                     countryLabel: Option[String] = None,
                     submitLabel: Option[String] = None,
-                    showSearchAgainLink: Option[Boolean] = Some(false),
+                    showSearchAgainLink: Option[Boolean] = Some(true),
                     searchAgainLinkText: Option[String] = None)
 
 case class AddressLookupInitRequest(continueUrl: String,
@@ -72,7 +72,7 @@ case class AddressLookupInitRequest(continueUrl: String,
                                     alphaPhase: Option[Boolean] = Some(false), // ... you set "alpha" to be true,
                                     phaseFeedbackLink: Option[String] = None,
                                     phaseBannerHtml: Option[String] = None,
-                                    showBackButtons: Option[Boolean] = Some(false),
+                                    showBackButtons: Option[Boolean] = Some(true),
                                     includeHMRCBranding: Option[Boolean] = Some(true),
                                     deskProServiceName: Option[String] = None)
 
