@@ -19,8 +19,8 @@ package services
 
 import javax.inject._
 
-import connectors.models.address.Address
 import models._
+import models.address.Address
 import models.matching.UserDetailsModel
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}

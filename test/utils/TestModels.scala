@@ -17,10 +17,11 @@
 package utils
 
 
-import connectors.models.address.{Address, Country, ReturnedAddress}
+import connectors.models.address.ReturnedAddress
 import connectors.models.matching.UserMatchSuccessResponseModel
 import forms._
 import models._
+import models.address.{Address, Country}
 import models.matching.UserDetailsModel
 import play.api.libs.json.{JsValue, Json}
 import services.CacheConstants

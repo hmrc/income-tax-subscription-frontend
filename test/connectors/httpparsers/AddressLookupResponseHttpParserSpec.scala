@@ -18,6 +18,7 @@ package connectors.httpparsers
 
 import connectors.httpparsers.AddressLookupResponseHttpParser._
 import connectors.models.address.{MalformatAddressReturned, UnexpectedStatusReturned, _}
+import models.address.{Address, Country}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsNull, Json}

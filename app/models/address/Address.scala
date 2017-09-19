@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package connectors.models.address
+package models.address
 
-import connectors.models.ConnectorError
-import models.address.Address
 import play.api.libs.json.Json
 
-case class ReturnedAddress(auditRef: String,
-                           id: Option[String] = None,
-                           address: Address = Address()) {
-  def toDescription: String = address.toDescription
+
+case class Address(lines: Option[List[String]] = None,
+                   postcode: Option[String] = None,
+                   country: Option[Country] = None) {
+  def toDescription: String =
+    (lines.getOrElse(List.empty) :+ postcode :+ country).mkString(", ") + "."
 }
 
-object ReturnedAddress {
-  implicit val format = Json.format[ReturnedAddress]
+object Address {
+  implicit val format = Json.format[Address]
 }
-
-sealed trait ReturnedAddressFailure extends ConnectorError
-
-case class UnexpectedStatusReturned(status: Int) extends ReturnedAddressFailure
-
-case object MalformatAddressReturned extends ReturnedAddressFailure
 

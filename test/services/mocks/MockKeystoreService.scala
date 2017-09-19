@@ -16,8 +16,8 @@
 
 package services.mocks
 
-import connectors.models.address.Address
 import models._
+import models.address.Address
 import models.matching.UserDetailsModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
