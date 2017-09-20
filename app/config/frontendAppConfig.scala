@@ -62,6 +62,7 @@ trait AppConfig {
   val enableRegistration: Boolean
   def storeNinoUrl(token: String): String
   val addressLookupFrontendURL: String
+  val newPreferencesApiEnabled: Boolean
 }
 
 @Singleton
@@ -160,5 +161,6 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val addressLookupFrontendURL: String = loadConfig("address-lookup-frontend.url")
 
+  override val newPreferencesApiEnabled: Boolean = loadConfig("feature-switch.new-preferences-api").toBoolean
 }
 

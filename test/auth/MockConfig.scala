@@ -69,6 +69,7 @@ trait MockConfig extends AppConfig {
 
   override lazy val addressLookupFrontendURL: String = ""
 
+  override val newPreferencesApiEnabled: Boolean = false
 }
 
 object MockConfig extends MockConfig

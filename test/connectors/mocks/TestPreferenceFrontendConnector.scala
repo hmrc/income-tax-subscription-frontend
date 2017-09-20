@@ -35,17 +35,15 @@ import scala.concurrent.Future
 trait MockPreferenceFrontendConnector extends MockTrait {
   val mockPreferenceFrontendConnector = mock[PreferenceFrontendConnector]
 
-  private def mockCheckPaperless(result: Future[Either[PaperlessPreferenceError.type, PaperlessState]]): Unit =
-    when(mockPreferenceFrontendConnector.checkPaperless(ArgumentMatchers.any[Request[AnyContent]]))
+  private def mockCheckPaperless(token: String)(result: Future[Either[PaperlessPreferenceError.type, PaperlessState]]): Unit =
+    when(mockPreferenceFrontendConnector.checkPaperless(ArgumentMatchers.eq(token))(ArgumentMatchers.any[Request[AnyContent]]))
       .thenReturn(result)
 
-  def mockCheckPaperlessActivated(): Unit = mockCheckPaperless(Future.successful(Right(Activated)))
+  def mockCheckPaperlessActivated(token: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Activated)))
 
-  def mockCheckPaperlessDeclined(): Unit = mockCheckPaperless(Future.successful(Right(Declined)))
+  def mockCheckPaperlessUnset(token: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Unset(testUrl))))
 
-  def mockCheckPaperlessUnset(): Unit = mockCheckPaperless(Future.successful(Right(Unset)))
-
-  def mockCheckPaperlessException(): Unit = mockCheckPaperless(Future.failed(testException))
+  def mockCheckPaperlessException(token: String): Unit = mockCheckPaperless(token)(Future.failed(testException))
 
   def mockChoosePaperlessUrl(url: String): Unit =
     when(mockPreferenceFrontendConnector.choosePaperlessUrl) thenReturn url
@@ -63,11 +61,11 @@ trait TestPreferenceFrontendConnector extends UnitTestTrait
     app.injector.instanceOf[Logging]
   )
 
-  def setupCheckPaperless(tuple: (Int, Option[JsValue]))(implicit request: Request[AnyContent]): Unit =
-    setupMockCheckPaperless(tuple._1, tuple._2)
+  def setupCheckPaperless(token: String)(tuple: (Int, Option[JsValue]))(implicit request: Request[AnyContent]): Unit =
+    setupMockCheckPaperless(token)(tuple._1, tuple._2)
 
-  def setupMockCheckPaperless(status: Int, response: Option[JsValue])(implicit request: Request[AnyContent]): Unit =
-    setupMockHttpPut[String](url = TestPreferenceFrontendConnector.checkPaperlessUrl, "")(status, response)
+  def setupMockCheckPaperless(token: String)(status: Int, response: Option[JsValue])(implicit request: Request[AnyContent]): Unit =
+    setupMockHttpPut[String](url = TestPreferenceFrontendConnector.checkPaperlessUrl(token), "")(status, response)
 
 
   private final val okResponseJson: Boolean => JsValue =

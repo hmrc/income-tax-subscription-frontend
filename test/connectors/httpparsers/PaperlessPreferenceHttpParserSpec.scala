@@ -30,32 +30,44 @@ import uk.gov.hmrc.http.HttpResponse
 
 class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "POST"
-  val testUri = "/"
 
   "PaperlessPreferenceHttpReads" when {
     "read" should {
       "parse a correctly formatted OK true response as Activated" in {
         val httpResponse = HttpResponse(OK, Some(Json.obj("optedIn" -> true)))
 
-        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUri, httpResponse)
+        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
         res.right.value mustBe Activated
       }
 
-      "parse a correctly formatted OK false response as Declined" in {
+      "parse a correctly formatted OK false response without a redirect url as Declined(None)" in {
         val httpResponse = HttpResponse(OK, Some(Json.obj("optedIn" -> false)))
 
-        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUri, httpResponse)
+        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
-        res.right.value mustBe Declined
+        res.right.value mustBe Unset(None)
       }
 
-      "parse a correctly formatted PRECONDITION_FAILED false response as Declined" in {
-        val httpResponse = HttpResponse(PRECONDITION_FAILED)
+      s"parse a correctly formatted OK false response with a redirect url as Declined($testUrl)" in {
+        val httpResponse = HttpResponse(OK, Some(
+          Json.obj(
+            "optedIn" -> false,
+            "redirectUserTo" -> testUrl
+          )
+        ))
 
-        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUri, httpResponse)
+        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
-        res.right.value mustBe Unset
+        res.right.value mustBe Unset(testUrl)
+      }
+
+      "parse a correctly formatted PRECONDITION_FAILED false response as Unset" in {
+        val httpResponse = HttpResponse(PRECONDITION_FAILED, Some(Json.obj("redirectUserTo" -> testUrl)))
+
+        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
+
+        res.right.value mustBe Unset(testUrl)
       }
 
       "parse an incorrectly formatted OK response as a PaperlessPreferenceError" in {
@@ -63,15 +75,26 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
 
         val httpResponse = HttpResponse(OK, Some(json))
 
-        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUri, httpResponse)
+        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
-        res.left.value mustBe HttpConnectorError(httpResponse, Some(json.validate[PaperlessState].asInstanceOf[JsError]))
+        res.left.value.httpResponse mustBe httpResponse
+      }
+
+
+      "parse an incorrectly formatted PRECONDITION_FAILED response as a PaperlessPreferenceError" in {
+        val json = Json.obj()
+
+        val httpResponse = HttpResponse(PRECONDITION_FAILED, Some(json))
+
+        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
+
+        res.left.value.httpResponse mustBe httpResponse
       }
 
       "parse any other http status as a SubscriptionFailureResponse" in {
         val httpResponse = HttpResponse(responseStatus = BAD_REQUEST, responseString = Some(testErrorMessage))
 
-        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUri, httpResponse)
+        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
 
         res.left.value mustBe HttpConnectorError(httpResponse)
       }
