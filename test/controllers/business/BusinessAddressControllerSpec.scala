@@ -16,8 +16,8 @@
 
 package controllers.business
 
-import auth.MockConfig
-import controllers.ControllerBaseSpec
+import auth.{MockConfig, Registration}
+import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{status, _}
@@ -37,6 +37,8 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
     "callBack" -> TestBusinessAddressController.callBack("")
   )
 
+  lazy val request = subscriptionRequest.withSession(ITSASessionKeys.JourneyStateKey -> Registration.name)
+
   def createTestBusinessAddressController(setEnableRegistration: Boolean) = new BusinessAddressController(
     mockBaseControllerConfig(new MockConfig {
       override val enableRegistration = setEnableRegistration
@@ -50,9 +52,9 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
   lazy val TestBusinessAddressController: BusinessAddressController =
     createTestBusinessAddressController(setEnableRegistration = true)
 
-  lazy val testContinueUrl = TestBusinessAddressController.continueUrl(fakeRequest)
+  lazy val testContinueUrl = TestBusinessAddressController.continueUrl(request)
   val testRedirectionUrl = "testRedirectionUrl"
-  lazy val testRequest = TestBusinessAddressController.initConfig(fakeRequest)
+  lazy val testRequest = TestBusinessAddressController.initConfig(request)
 
   "When registration is disabled" should {
     lazy val TestBusinessAddressController: BusinessAddressController =
@@ -60,21 +62,21 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
 
     "init" should {
       "return NOT FOUND" in {
-        val result = TestBusinessAddressController.init()(fakeRequest)
+        val result = TestBusinessAddressController.init()(request)
         val ex = intercept[NotFoundException] {
           await(result)
         }
-        ex.message must startWith("This page for registration is not yet avaiable to the public:")
+        ex.message must startWith("This page for registration is not yet available to the public:")
       }
     }
 
     "callBack" should {
       "return NOT FOUND" in {
-        val result = TestBusinessAddressController.callBack("")(fakeRequest)
+        val result = TestBusinessAddressController.callBack("")(request)
         val ex = intercept[NotFoundException] {
           await(result)
         }
-        ex.message must startWith("This page for registration is not yet avaiable to the public:")
+        ex.message must startWith("This page for registration is not yet available to the public:")
       }
     }
   }
@@ -82,7 +84,7 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
   "When registration is enabled" should {
 
     "TestBusinessAddressController.init" should {
-      def call: Future[Result] = TestBusinessAddressController.init()(fakeRequest)
+      def call: Future[Result] = TestBusinessAddressController.init()(request)
 
       "return SEE_OTHER if calls to init was successful" in {
         mockInitSuccess(testRequest)(testRedirectionUrl)
@@ -105,7 +107,7 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
     }
 
     "TestBusinessAddressController.callback" when {
-      def call(id: String): Future[Result] = TestBusinessAddressController.callBack(id)(fakeRequest)
+      def call(id: String): Future[Result] = TestBusinessAddressController.callBack(id)(request)
 
       val testId = "1234567890"
 
@@ -153,10 +155,10 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
 
   "the address lookup config" should {
     import assets.MessageLookup.BusinessAddress._
-    lazy val conf = TestBusinessAddressController.initConfig(fakeRequest)
+    lazy val conf = TestBusinessAddressController.initConfig(request)
 
     "should have the correct parameters" in {
-      conf.continueUrl mustBe TestBusinessAddressController.continueUrl(fakeRequest)
+      conf.continueUrl mustBe TestBusinessAddressController.continueUrl(request)
       conf.showBackButtons mustBe Some(true)
 
       val lookup = conf.lookupPage.get

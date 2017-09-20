@@ -119,7 +119,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def preferences(): WSResponse = get("/preferences")
 
-    def paperlessError(): WSResponse =get("/paperless-error")
+    def paperlessError(): WSResponse = get("/paperless-error")
 
     def callback(): WSResponse = get("/callback")
 
