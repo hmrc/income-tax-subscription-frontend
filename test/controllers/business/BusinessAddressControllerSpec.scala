@@ -104,36 +104,51 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
 
     }
 
-    "TestBusinessAddressController.callback" should {
+    "TestBusinessAddressController.callback" when {
       def call(id: String): Future[Result] = TestBusinessAddressController.callBack(id)(fakeRequest)
 
       val testId = "1234567890"
 
-      "fetch and persist the address if the call is successful" in {
-        mockRetrieveAddressSuccess(testId)
-        setupMockKeystoreSaveFunctions()
+      "an UK address is returned" should {
+        "fetch and persist the address if the call is successful" in {
+          mockRetrieveAddressSuccess(testId)
+          setupMockKeystoreSaveFunctions()
 
-        val result = call(testId)
+          val result = call(testId)
 
-        //TODO redirect to business start date when it becomes available
-        status(result) must be(Status.NOT_IMPLEMENTED)
+          //TODO redirect to business start date when it becomes available
+          status(result) must be(Status.NOT_IMPLEMENTED)
 
-        verifyKeystore(saveBusinessAddress = 1)
-      }
-
-      "return Technical difficulty if the fetch fails" in {
-        MockRetrieveAddressFailure(testId)
-
-        val result = call(testId)
-        val ex = intercept[InternalServerException] {
-          await(result)
+          verifyKeystore(saveBusinessAddress = 1)
         }
-        ex.message mustBe s"BusinessAddressController.callBack failed unexpectedly, status=$BAD_REQUEST"
 
-        verifyKeystore(saveBusinessAddress = 0)
+        "return Technical difficulty if the fetch fails" in {
+          MockRetrieveAddressFailure(testId)
+
+          val result = call(testId)
+          val ex = intercept[InternalServerException] {
+            await(result)
+          }
+          ex.message mustBe s"BusinessAddressController.callBack failed unexpectedly, status=$BAD_REQUEST"
+
+          verifyKeystore(saveBusinessAddress = 0)
+        }
       }
-    }
 
+      "a non UK address is returend" should {
+        // TODO goto the validation error page
+        "return Not implemented" in {
+          mockRetrieveAddressNoneUK(testId)
+
+          val result = call(testId)
+
+          status(result) mustBe NOT_IMPLEMENTED
+
+          verifyKeystore(saveBusinessAddress = 0)
+        }
+      }
+
+    }
   }
 
   "the address lookup config" should {

@@ -22,6 +22,7 @@ import auth.RegistrationController
 import config.BaseControllerConfig
 import connectors.RawResponseReads
 import connectors.models.address._
+import models.address.Address
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import services.{AddressLookupService, AuthService, KeystoreService}
@@ -84,10 +85,17 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
   def callBack(id: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       addressLookupService.retrieveAddress(id).flatMap {
-        // TODO goto business start page when it's available
-        case Right(address) => keystoreService.saveBusinessAddress(address.address).map {
-          _ => NotImplemented
-        }
+        case Right(ReturnedAddress(_, _, address)) =>
+          address.country.fold("GB")(_.code) match {
+            case Address.UKCountryCode =>
+              // TODO goto business start page when it's available
+              keystoreService.saveBusinessAddress(address).map {
+                _ => NotImplemented("Goto Business start")
+              }
+            case _ =>
+              // TODO handle if it's not an UK address when it's designed
+              Future.successful(NotImplemented("Not UK address"))
+          }
         case Left(UnexpectedStatusReturned(status)) =>
           Future.failed(new InternalServerException("BusinessAddressController.callBack failed unexpectedly, status=" + status))
         case Left(MalformatAddressReturned) =>
@@ -96,3 +104,4 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
 }
+

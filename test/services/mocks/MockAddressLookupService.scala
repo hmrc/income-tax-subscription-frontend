@@ -18,6 +18,7 @@ package services.mocks
 
 import connectors.mocks.MockAddressLookupConnector
 import connectors.models.address._
+import models.address.Country
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import play.api.http.Status.BAD_REQUEST
@@ -51,6 +52,13 @@ trait MockAddressLookupService extends MockTrait {
     when(mockAddressLookupService.retrieveAddress(ArgumentMatchers.eq(journeyId))(ArgumentMatchers.any())).thenReturn(response)
 
   def mockRetrieveAddressSuccess(journeyId: String) = mockRetrieveAddress(journeyId)(Right(testReturnedAddress))
+
+  def mockRetrieveAddressNoneUK(journeyId: String) =
+    mockRetrieveAddress(journeyId)(
+      Right(testReturnedAddress.copy(address =
+        testReturnedAddress.address.copy(country = Some(Country("NOTUK", "NOTUK"))))
+      )
+    )
 
   def MockRetrieveAddressFailure(journeyId: String) = mockRetrieveAddress(journeyId)(Left(UnexpectedStatusReturned(BAD_REQUEST)))
 

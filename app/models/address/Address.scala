@@ -28,5 +28,6 @@ case class Address(lines: Option[List[String]] = None,
 
 object Address {
   implicit val format = Json.format[Address]
+  val UKCountryCode = "GB"
 }
 
