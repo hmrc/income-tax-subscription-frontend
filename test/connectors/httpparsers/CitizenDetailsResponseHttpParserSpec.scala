@@ -73,7 +73,7 @@ class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValu
         res.right.value mustBe None
       }
 
-      "parse any other http status as a SubscriptionFailureResponse" in {
+      "parse any other http status as a CitizenDetailsFailureResponse" in {
         val httpResponse = HttpResponse(BAD_REQUEST)
 
         val res = GetCitizenDetailsHttpReads.read(testHttpVerb, testUri, httpResponse)

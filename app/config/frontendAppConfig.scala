@@ -61,6 +61,7 @@ trait AppConfig {
   val userMatchingFeature: Boolean
   val enableRegistration: Boolean
   def storeNinoUrl(token: String): String
+  val addressLookupFrontendURL: String
   val newPreferencesApiEnabled: Boolean
 }
 
@@ -108,6 +109,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   protected lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
   override lazy val userMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
+
   override def storeNinoUrl(token: String) = s"$protectedMicroServiceUrl/income-tax-subscription/identifier-mapping/$token"
 
   // Digital Preferences
@@ -136,7 +138,6 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val citizenDetailsURL: String = loadConfig("citizen-details.url")
 
-
   /*
   *  This checks to see if the testOnlyDoNotUseInAppConf route is set in configuration instead of the default prod.Routes
   *  This flag can be used by the application to check if the test only routes are enabled. i.e. this flag can be used to
@@ -157,6 +158,8 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val userMatchingFeature: Boolean = loadConfig("feature-switch.user-matching").toBoolean
 
   override lazy val enableRegistration: Boolean = loadConfig("feature-switch.enable-registration").toBoolean
+
+  override lazy val addressLookupFrontendURL: String = loadConfig("address-lookup-frontend.url")
 
   override val newPreferencesApiEnabled: Boolean = loadConfig("feature-switch.new-preferences-api").toBoolean
 }

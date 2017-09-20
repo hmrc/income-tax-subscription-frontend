@@ -148,6 +148,36 @@ object MessageLookup {
     val heading: String = "What's your business telephone number?"
   }
 
+  object BusinessAddress {
+
+    object Lookup {
+      val heading = "What's your business address?"
+      val nameOrNimber = "House name or number"
+      val submit = "Search address"
+      val enterManually = "Enter UK address manually"
+    }
+
+    object Select {
+      val title = "Choose an address"
+      val heading = "Choose an address"
+      val edit = "Edit address"
+
+    }
+
+    object Confirm {
+      val heading = "What's your business address?"
+      val change = "Change"
+    }
+
+    object Edit {
+      val heading = "Enter your address"
+      val addLine1 = "Address line 1"
+      val addLine2 = "Address line 2"
+      val addLine3 = "Address line 3"
+    }
+
+  }
+
   object AccountingMethod {
     val title = "Accounting method"
     val heading: String = "What method do you use for your accounting?"
