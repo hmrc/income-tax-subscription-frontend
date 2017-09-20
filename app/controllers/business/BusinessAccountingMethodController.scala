@@ -65,6 +65,6 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       )
   }
 
-  lazy val backUrl: String = controllers.business.routes.BusinessNameController.showBusinessName().url
+  lazy val backUrl: String = controllers.business.routes.BusinessAccountingPeriodDateController.show().url
 
 }

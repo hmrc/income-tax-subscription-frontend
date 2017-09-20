@@ -18,14 +18,12 @@ package controllers.business
 
 import controllers.ControllerBaseSpec
 import forms.AccountingPeriodPriorForm
-import forms.OtherIncomeForm._
-import models.{AccountingPeriodPriorModel, OtherIncomeModel}
+import models.AccountingPeriodPriorModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
-import utils.TestModels
 
 import scala.concurrent.Future
 
@@ -44,15 +42,11 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
     mockAuthService
   )
 
-  // answer to other income is only significant for testing the backurl.
-  val defaultOtherIncomeAnswer: OtherIncomeModel = TestModels.testOtherIncomeNo
-
   "Calling the show action of the BusinessAccountingPeriodPriorController with an authorised user" should {
 
     def result: Future[Result] = {
       setupMockKeystore(
-        fetchAccountingPeriodPrior = None,
-        fetchOtherIncome = defaultOtherIncomeAnswer
+        fetchAccountingPeriodPrior = None
       )
       TestAccountingPeriodPriorController.show(isEditMode = true)(subscriptionRequest)
     }
@@ -66,32 +60,17 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
       verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 0)
     }
 
-    s"The back url should point to '${controllers.routes.OtherIncomeController.showOtherIncome().url}'" in {
+    s"The back url should point to '${controllers.business.routes.BusinessNameController.show().url}'" in {
       val document = Jsoup.parse(contentAsString(result))
-      document.select("#back").attr("href") mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
+      document.select("#back").attr("href") mustBe controllers.business.routes.BusinessNameController.show().url
     }
   }
 
+
   "The back url" should {
-
-    def result(choice: String): Future[Result] = {
-      setupMockKeystore(
-        fetchAccountingPeriodPrior = None,
-        fetchOtherIncome = OtherIncomeModel(choice)
-      )
-      TestAccountingPeriodPriorController.show(isEditMode = false)(subscriptionRequest)
+    s"point to ${controllers.business.routes.BusinessNameController.show().url}" in {
+      TestAccountingPeriodPriorController.backUrl mustBe controllers.business.routes.BusinessNameController.show().url
     }
-
-    s"When the user previously answered yes to otherIncome, it should point to '${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
-      val document = Jsoup.parse(contentAsString(result(option_yes)))
-      document.select("#back").attr("href") mustBe controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
-    }
-
-    s"When the user previously answered no to otherIncome, it should point to '${controllers.routes.OtherIncomeController.showOtherIncome().url}'" in {
-      val document = Jsoup.parse(contentAsString(result(option_no)))
-      document.select("#back").attr("href") mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
-    }
-
   }
 
   "Calling the submit action of the BusinessAccountingPeriodPriorController with an authorised user and valid submission" when {
@@ -122,7 +101,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         setupMockKeystore(fetchAccountingPeriodPrior = None)
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+        redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
@@ -131,7 +110,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+        redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
@@ -170,7 +149,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         setupMockKeystore(fetchAccountingPeriodPrior = None)
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+        redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
@@ -188,7 +167,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+        redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
@@ -198,7 +177,6 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
   "Calling the submit action of the BusinessAccountingPeriodPriorController with an authorised user and invalid submission" should {
 
     def badRequest: Future[Result] = {
-      setupMockKeystore(fetchOtherIncome = defaultOtherIncomeAnswer)
       TestAccountingPeriodPriorController.submit(isEditMode = false)(subscriptionRequest)
     }
 

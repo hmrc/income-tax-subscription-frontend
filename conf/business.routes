@@ -1,10 +1,10 @@
 #Accounting Period Routes
-GET         /accounting-period-dates                controllers.business.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode: Boolean ?= false)
-POST        /accounting-period-dates                controllers.business.BusinessAccountingPeriodDateController.submitAccountingPeriod(editMode: Boolean ?= false)
+GET         /accounting-period-dates                controllers.business.BusinessAccountingPeriodDateController.show(editMode: Boolean ?= false)
+POST        /accounting-period-dates                controllers.business.BusinessAccountingPeriodDateController.submit(editMode: Boolean ?= false)
 
 #Name Routes
-GET         /name                                   controllers.business.BusinessNameController.showBusinessName(editMode: Boolean ?= false)
-POST        /name                                   controllers.business.BusinessNameController.submitBusinessName(editMode: Boolean ?= false)
+GET         /name                                   controllers.business.BusinessNameController.show(editMode: Boolean ?= false)
+POST        /name                                   controllers.business.BusinessNameController.submit(editMode: Boolean ?= false)
 
 #Phone Number Routes
 GET         /phone-number                           controllers.business.BusinessPhoneNumberController.show(editMode: Boolean ?= false)

@@ -130,10 +130,10 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         When("POST /income-other is called")
         val res = IncomeTaxSubscriptionFrontend.submitOtherIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of accounting period prior")
+        Then("Should return a SEE_OTHER with a redirect location of business name")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(accountingPeriodPriorURI)
+          redirectURI(businessNameURI)
         )
       }
 
@@ -149,10 +149,10 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         When("POST /income-other is called")
         val res = IncomeTaxSubscriptionFrontend.submitOtherIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of accounting period prior")
+        Then("Should return a SEE_OTHER with a redirect location of business name")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(accountingPeriodPriorURI)
+          redirectURI(businessNameURI)
         )
       }
 

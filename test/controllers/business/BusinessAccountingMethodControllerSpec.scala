@@ -16,15 +16,13 @@
 
 package controllers.business
 
-import auth._
 import controllers.ControllerBaseSpec
 import forms.AccountingMethodForm
 import models.AccountingMethodModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.{MockAuthService, MockKeystoreService}
+import services.mocks.MockKeystoreService
 
 class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -122,8 +120,8 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${controllers.business.routes.BusinessNameController.showBusinessName().url}" in {
-      TestBusinessAccountingMethodController.backUrl mustBe controllers.business.routes.BusinessNameController.showBusinessName().url
+    s"point to ${controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
+      TestBusinessAccountingMethodController.backUrl mustBe controllers.business.routes.BusinessAccountingPeriodDateController.show().url
     }
   }
 

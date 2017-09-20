@@ -35,8 +35,8 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "BusinessAccountingPeriodDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showSummary" -> TestBusinessAccountingPeriodController.showAccountingPeriod(isEditMode = false),
-    "submitSummary" -> TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = false)
+    "show" -> TestBusinessAccountingPeriodController.show(isEditMode = false),
+    "submit" -> TestBusinessAccountingPeriodController.submit(isEditMode = false)
   )
 
   object TestBusinessAccountingPeriodController extends BusinessAccountingPeriodDateController(
@@ -48,7 +48,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
   "Calling the showAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user with is current period as yes" should {
 
-    lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(isEditMode = false)(subscriptionRequest)
+    lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
       // required for backurl
@@ -67,9 +67,9 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the showAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user with is current period prior as no" should {
+  "Calling the show action of the BusinessAccountingPeriodDate with an authorised user with is current period prior as no" should {
 
-    lazy val result = TestBusinessAccountingPeriodController.showAccountingPeriod(isEditMode = false)(subscriptionRequest)
+    lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
       // required for backurl
@@ -88,9 +88,9 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
+  "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
 
-    def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = isEditMode)(subscriptionRequest
+    def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(subscriptionRequest
       .post(AccountingPeriodDateForm.accountingPeriodDateForm, AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("1", "4", "2018"))))
 
     "When it is not in edit mode" should {
@@ -106,13 +106,13 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
       }
 
-      s"redirect to '${controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
+      s"redirect to '${controllers.business.routes.BusinessAccountingMethodController.show().url}'" in {
         // required for backurl
         setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.showBusinessName().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingMethodController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
@@ -146,8 +146,8 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user and invalid submission" should {
-    lazy val badrequest = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = false)(subscriptionRequest)
+  "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and invalid submission" should {
+    lazy val badrequest = TestBusinessAccountingPeriodController.submit(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
       // required for backurl
