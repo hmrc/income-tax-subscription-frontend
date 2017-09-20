@@ -21,3 +21,7 @@ POST        /accounting-period-prior                controllers.business.Busines
 #Register Next Accounting Period Routes
 GET         /register-next-accounting-period        controllers.business.RegisterNextAccountingPeriodController.show
 POST        /register-next-accounting-period        controllers.business.RegisterNextAccountingPeriodController.submit
+
+
+GET         /address                                controllers.business.BusinessAddressController.init()
+GET         /address/callback                       controllers.business.BusinessAddressController.callBack(id: String)

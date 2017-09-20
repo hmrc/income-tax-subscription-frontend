@@ -61,7 +61,7 @@ class BusinessPhoneNumberController @Inject()(val baseConfig: BaseControllerConf
             if (isEditMode)
               Redirect(controllers.routes.CheckYourAnswersController.show())
             else
-              NotImplemented
+              Redirect(controllers.business.routes.BusinessAddressController.init())
             )
         }
       )

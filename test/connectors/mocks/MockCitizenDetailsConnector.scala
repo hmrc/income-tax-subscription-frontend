@@ -24,11 +24,11 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
 import utils.TestConstants.testException
 import utils.{MockTrait, UnitTestTrait}
 
-import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet }
+import scala.concurrent.Future
 
 
 trait MockCitizenDetailsConnector extends MockTrait {

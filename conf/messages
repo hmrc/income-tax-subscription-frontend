@@ -58,6 +58,24 @@ property.income.title                                           = How much was y
 property.income.heading                                         = How much was your income from property this year?
 property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
 
+# business address pages
+business.address.lookup.heading                                 = What''s your business address?
+business.address.lookup.name_or_number                          = House name or number
+business.address.lookup.submit                                  = Search address
+business.address.lookup.enter_manually                          = Enter UK address manually
+
+business.address.select.title                                   = Choose an address
+business.address.select.heading                                 = Choose an address
+business.address.select.edit                                    = Edit address
+
+business.address.confirm.heading                                = What''s your business address?
+business.address.confirm.change                                 = Change
+
+business.address.edit.heading                                   = Enter your address
+business.address.edit.add_line_1                                = Address line 1
+business.address.edit.add_line_2                                = Address line 2
+business.address.edit.add_line_3                                = Address line 3
+
 
 # Current Financial Period Prior page
 business.current_financial_period_prior.title                   = Business accounting period

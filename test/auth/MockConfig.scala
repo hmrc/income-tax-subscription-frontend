@@ -67,6 +67,8 @@ trait MockConfig extends AppConfig {
 
   override def storeNinoUrl(token: String): String = s"income-tax-subscription/identifier-mapping/$token"
 
+  override lazy val addressLookupFrontendURL: String = ""
+
   override val newPreferencesApiEnabled: Boolean = false
 }
 

@@ -114,10 +114,10 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase {
         When("POST /business/phone-number is called")
         val res = IncomeTaxSubscriptionFrontend.submitBusinessPhoneNumber(inEditMode = false, Some(userInput))
 
-        //TODO add redirectURI when implemented and change status to SEE_OTHER
-        Then("Should return a NOT_IMPLEMENTED")
+        Then("Should return a SEE_OTHER")
         res should have(
-          httpStatus(NOT_IMPLEMENTED)
+          httpStatus(SEE_OTHER),
+          redirectURI(controllers.business.routes.BusinessAddressController.init().url)
         )
       }
 

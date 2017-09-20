@@ -97,4 +97,5 @@ object TestConstants {
   val testMatchSuccess = Right(UserMatchSuccessResponseModel)
 
   val testMatchFailure = Left(UserMatchFailureResponseModel)
+
 }

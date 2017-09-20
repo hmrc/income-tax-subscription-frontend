@@ -17,9 +17,11 @@
 package utils
 
 
+import connectors.models.address.ReturnedAddress
 import connectors.models.matching.UserMatchSuccessResponseModel
 import forms._
 import models._
+import models.address.{Address, Country}
 import models.matching.UserDetailsModel
 import play.api.libs.json.{JsValue, Json}
 import services.CacheConstants
@@ -129,4 +131,8 @@ object TestModels extends Implicits {
     businessName = BusinessNameModel("ABC"),
     accountingMethod = AccountingMethodModel("Cash")
   )
+
+  val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
+
+  val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
 }
