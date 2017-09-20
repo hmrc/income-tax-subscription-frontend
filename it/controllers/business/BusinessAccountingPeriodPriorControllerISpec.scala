@@ -168,12 +168,14 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
       }
 
       "keystore call fails" in {
+        val userInput = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
+
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
 
         When("POST /business/accounting-period-prior is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessAccountingPeriodPrior(inEditMode = false, None)
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessAccountingPeriodPrior(inEditMode = false, Some(userInput))
 
         Then("Should return an internal server error")
         res should have(

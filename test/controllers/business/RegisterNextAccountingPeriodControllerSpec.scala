@@ -74,8 +74,8 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
         status(goodRequest) mustBe Status.SEE_OTHER
       }
 
-      s"redirect to ${controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url}" in {
-        redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+      s"redirect to ${controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
+        redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.show().url
       }
 
     }

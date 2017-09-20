@@ -67,10 +67,10 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
         When("POST /error/other-income is called")
         val res = IncomeTaxSubscriptionFrontend.submitOtherIncomeError()
 
-        Then("Should return a SEE_OTHER with a redirect location of accounting period prior")
+        Then("Should return a SEE_OTHER with a redirect location of business name")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(accountingPeriodPriorURI)
+          redirectURI(businessNameURI)
         )
       }
 
@@ -90,10 +90,10 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
         When("POST /error/other-income is called")
         val res = IncomeTaxSubscriptionFrontend.submitOtherIncomeError()
 
-        Then("Should return a SEE_OTHER with a redirect location of accounting period prior")
+        Then("Should return a SEE_OTHER with a redirect location of business name")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(accountingPeriodPriorURI)
+          redirectURI(businessNameURI)
         )
       }
 

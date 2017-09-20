@@ -192,10 +192,10 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         When("POST /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of business name")
+        Then("Should return a SEE_OTHER with a redirect location of accounting method")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(businessNameURI)
+          redirectURI(businessAccountingMethodURI)
         )
       }
 

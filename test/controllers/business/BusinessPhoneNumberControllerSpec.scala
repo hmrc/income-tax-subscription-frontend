@@ -162,8 +162,8 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
     }
 
     "The back url" should {
-      s"point to ${controllers.business.routes.BusinessNameController.showBusinessName().url}" in {
-        TestBusinessPhoneNumberController.backUrl mustBe controllers.business.routes.BusinessNameController.showBusinessName().url
+      s"point to ${controllers.business.routes.BusinessNameController.show().url}" in {
+        TestBusinessPhoneNumberController.backUrl mustBe controllers.business.routes.BusinessNameController.show().url
       }
     }
   }

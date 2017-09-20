@@ -43,13 +43,13 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, viewType: AccountingPeriodViewType)(implicit request: Request[_]): Html =
     views.html.business.accounting_period_date(
       form,
-      controllers.business.routes.BusinessAccountingPeriodDateController.submitAccountingPeriod(editMode = isEditMode),
+      controllers.business.routes.BusinessAccountingPeriodDateController.submit(editMode = isEditMode),
       backUrl,
       viewType,
       isEditMode
     )
 
-  def showAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
@@ -64,7 +64,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
         ))
   }
 
-  def submitAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       whichView.flatMap {
         viewType =>
@@ -80,7 +80,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
                 if (isEditMode)
                   Redirect(controllers.routes.CheckYourAnswersController.show())
                 else
-                  Redirect(controllers.business.routes.BusinessNameController.showBusinessName())
+                  Redirect(controllers.business.routes.BusinessAccountingMethodController.show())
                 )
           )
       }

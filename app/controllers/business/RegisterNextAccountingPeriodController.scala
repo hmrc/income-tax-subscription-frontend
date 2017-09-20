@@ -45,7 +45,7 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
 
   val submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Redirect(controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod())
+      Redirect(controllers.business.routes.BusinessAccountingPeriodDateController.show())
   }
 
 }

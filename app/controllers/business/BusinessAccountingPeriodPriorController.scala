@@ -39,14 +39,12 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
                                                        ) extends AuthenticatedController {
 
   def view(accountingPeriodPriorForm: Form[AccountingPeriodPriorModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] =
-    backUrl.map { backUrl =>
       views.html.business.accounting_period_prior(
         accountingPeriodPriorForm = accountingPeriodPriorForm,
         postAction = controllers.business.routes.BusinessAccountingPeriodPriorController.submit(editMode = isEditMode),
         backUrl = backUrl,
         isEditMode = isEditMode
       )
-    }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -77,14 +75,8 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
 
   def yes(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.RegisterNextAccountingPeriodController.show())
 
-  def no(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod())
+  def no(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.BusinessAccountingPeriodDateController.show())
 
-  def backUrl(implicit request: Request[_]): Future[String] = {
-    import forms.OtherIncomeForm._
-    keystoreService.fetchOtherIncome().map {
-      case Some(OtherIncomeModel(`option_yes`)) => controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
-      case _ => controllers.routes.OtherIncomeController.showOtherIncome().url
-    }
-  }
+  lazy val backUrl = controllers.business.routes.BusinessNameController.show().url
 
 }

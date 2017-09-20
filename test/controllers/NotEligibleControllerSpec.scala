@@ -20,7 +20,6 @@ import forms.NotEligibleForm
 import models.NotEligibleModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import utils.TestModels
@@ -69,7 +68,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessNameController.show().url
 
       await(goodRequest)
       verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1)
@@ -94,7 +93,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+      redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessNameController.show().url
 
       await(goodRequest)
       verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1)

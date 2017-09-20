@@ -67,6 +67,6 @@ class BusinessPhoneNumberController @Inject()(val baseConfig: BaseControllerConf
       )
   }
 
-  lazy val backUrl: String = controllers.business.routes.BusinessNameController.showBusinessName().url
+  lazy val backUrl: String = controllers.business.routes.BusinessNameController.show().url
 
 }

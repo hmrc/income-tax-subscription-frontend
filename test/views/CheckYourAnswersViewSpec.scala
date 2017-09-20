@@ -135,7 +135,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val expectedQuestion = messages.accounting_period
       val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
       val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
-      val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
+      val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -177,7 +177,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = BusinessNameId
       val expectedQuestion = messages.business_name
       val expectedAnswer = testBusinessName.businessName
-      val expectedEditLink = controllers.business.routes.BusinessNameController.showBusinessName(editMode = true).url
+      val expectedEditLink = controllers.business.routes.BusinessNameController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

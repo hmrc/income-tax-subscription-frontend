@@ -59,21 +59,21 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
+@businessName(name: BusinessNameModel) = @{
+    val rowName = BusinessNameId
+    val rowQuestion = Messages("summary.business_name")
+    val rowAnswer = name.businessName
+    val rowUrl = controllers.business.routes.BusinessNameController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
 @accountingPeriodDate(period: AccountingPeriodModel) = @{
     val rowName = AccountingPeriodDateId
     val rowQuestion = Messages("summary.accounting_period")
     val periodInMonth = period.startDate.diffInMonth(period.endDate)
     val rowAnswer = s"${period.startDate.toCheckYourAnswersDateFormat} to ${period.endDate.toCheckYourAnswersDateFormat}"
-    val rowUrl = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
+    val rowUrl = controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
-}
-
-@businessName(name: BusinessNameModel) = @{
-    val rowName = BusinessNameId
-    val rowQuestion = Messages("summary.business_name")
-    val rowAnswer = name.businessName
-    val rowUrl = controllers.business.routes.BusinessNameController.showBusinessName(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
 @accountingMethod(income: AccountingMethodModel) = @{
@@ -95,8 +95,8 @@
     <div class="form-group" data-metrics="itsa:incomeSource:@summaryModel.incomeSource.map(_.source)">
         @summaryModel.incomeSource.map(incomeSource)
         @summaryModel.otherIncome.map(otherIncome)
-        @summaryModel.accountingPeriod.map(accountingPeriodDate)
         @summaryModel.businessName.map(businessName)
+        @summaryModel.accountingPeriod.map(accountingPeriodDate)
         @summaryModel.accountingMethod.map(accountingMethod)
         <div class="divider--top--thick"></div>
     </div>

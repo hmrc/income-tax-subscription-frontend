@@ -18,19 +18,24 @@ package controllers.business
 
 import controllers.ControllerBaseSpec
 import forms.BusinessNameForm
-import models.BusinessNameModel
+import forms.OtherIncomeForm.{option_no, option_yes}
+import models.{BusinessNameModel, OtherIncomeModel}
+import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers._
+import play.api.mvc.{Action, AnyContent, Result}
+import play.api.test.Helpers.{contentAsString, _}
 import services.mocks.MockKeystoreService
+import utils.TestModels
+
+import scala.concurrent.Future
 
 class BusinessNameControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
 
   override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showBusinessName" -> TestBusinessNameController.showBusinessName(isEditMode = false),
-    "submitBusinessName" -> TestBusinessNameController.submitBusinessName(isEditMode = false)
+    "show" -> TestBusinessNameController.show(isEditMode = false),
+    "submit" -> TestBusinessNameController.submit(isEditMode = false)
   )
 
   object TestBusinessNameController extends BusinessNameController(
@@ -39,13 +44,18 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     MockKeystoreService,
     mockAuthService
   )
+  // answer to other income is only significant for testing the backurl.
+  val defaultOtherIncomeAnswer: OtherIncomeModel = TestModels.testOtherIncomeNo
 
-  "Calling the showBusinessName action of the BusinessNameController with an authorised user" should {
+  "Calling the show action of the BusinessNameController with an authorised user" should {
 
-    lazy val result = TestBusinessNameController.showBusinessName(isEditMode = false)(subscriptionRequest)
+    lazy val result = TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
-      setupMockKeystore(fetchBusinessName = None)
+      setupMockKeystore(
+        fetchBusinessName = None,
+        fetchOtherIncome = defaultOtherIncomeAnswer
+      )
 
       status(result) must be(Status.OK)
 
@@ -55,10 +65,10 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and valid submission" should {
+  "Calling the submit action of the BusinessNameController with an authorised user and valid submission" should {
 
     def callShow(isEditMode: Boolean) =
-      TestBusinessNameController.submitBusinessName(isEditMode = isEditMode)(
+      TestBusinessNameController.submit(isEditMode = isEditMode)(
         subscriptionRequest
           .post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
       )
@@ -75,12 +85,12 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
       }
 
-      s"redirect to '${controllers.business.routes.BusinessAccountingMethodController.show().url}'" in {
+      s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingMethodController.show().url)
+        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
@@ -112,10 +122,12 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessNameController.submitBusinessName(isEditMode = false)(subscriptionRequest)
+  "Calling the submit action of the BusinessNameController with an authorised user and invalid submission" should {
+    lazy val badRequest = TestBusinessNameController.submit(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
+      setupMockKeystore(fetchOtherIncome = defaultOtherIncomeAnswer)
+
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
@@ -123,10 +135,27 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
   }
 
+
   "The back url" should {
-    s"point to ${controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url}" in {
-      TestBusinessNameController.backUrl mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+
+    def result(choice: String): Future[Result] = {
+      setupMockKeystore(
+        fetchBusinessName = None,
+        fetchOtherIncome = OtherIncomeModel(choice)
+      )
+      TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
     }
+
+    s"When the user previously answered yes to otherIncome, it should point to '${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
+      val document = Jsoup.parse(contentAsString(result(option_yes)))
+      document.select("#back").attr("href") mustBe controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+    }
+
+    s"When the user previously answered no to otherIncome, it should point to '${controllers.routes.OtherIncomeController.showOtherIncome().url}'" in {
+      val document = Jsoup.parse(contentAsString(result(option_no)))
+      document.select("#back").attr("href") mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
+    }
+
   }
 
   authorisationTests()

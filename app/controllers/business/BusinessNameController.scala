@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import auth.AuthenticatedController
 import config.BaseControllerConfig
 import forms.BusinessNameForm
-import models.BusinessNameModel
+import models.{BusinessNameModel, OtherIncomeModel}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -37,36 +37,46 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        val authService: AuthService
                                       ) extends AuthenticatedController {
 
-  def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    views.html.business.business_name(
-      businessNameForm = businessNameForm,
-      postAction = controllers.business.routes.BusinessNameController.submitBusinessName(editMode = isEditMode),
-      backUrl = backUrl,
-      isEditMode
-    )
+  def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] =
+    backUrl.map { backUrl =>
+      views.html.business.business_name(
+        businessNameForm = businessNameForm,
+        postAction = controllers.business.routes.BusinessNameController.submit(editMode = isEditMode),
+        backUrl = backUrl,
+        isEditMode
+      )
+    }
 
-  def showBusinessName(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchBusinessName() map {
-        businessName => Ok(view(BusinessNameForm.businessNameForm.form.fill(businessName), isEditMode = isEditMode))
-      }
+      for {
+        businessName <- keystoreService.fetchBusinessName()
+        view <- view(BusinessNameForm.businessNameForm.form.fill(businessName), isEditMode = isEditMode)
+      } yield Ok(view)
   }
 
-  def submitBusinessName(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
+        formWithErrors =>
+          view(formWithErrors, isEditMode = isEditMode).map(BadRequest(_)),
         businessName => {
           keystoreService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
               Redirect(controllers.routes.CheckYourAnswersController.show())
             else
-              Redirect(controllers.business.routes.BusinessAccountingMethodController.show())
+              Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
             )
         }
       )
   }
 
-  lazy val backUrl: String = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+  def backUrl(implicit request: Request[_]): Future[String] = {
+    import forms.OtherIncomeForm._
+    keystoreService.fetchOtherIncome().map {
+      case Some(OtherIncomeModel(`option_yes`)) => controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+      case _ => controllers.routes.OtherIncomeController.showOtherIncome().url
+    }
+  }
 
 }
