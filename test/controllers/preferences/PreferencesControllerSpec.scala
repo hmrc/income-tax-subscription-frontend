@@ -50,7 +50,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
   "If newFeatures flag in config is false" when {
     "Calling the checkPreference action of the PreferencesController with an authorised user" should {
-      implicit lazy val request = fakeRequest
+      implicit lazy val request = subscriptionRequest
 
       def result = TestPreferencesController.checkPreferences(request)
 
@@ -82,7 +82,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
     "Calling the callback action of the PreferencesController with an authorised user" should {
 
-      implicit lazy val request = fakeRequest
+      implicit lazy val request = subscriptionRequest
 
       def result = TestPreferencesController.callback(request)
 
@@ -106,7 +106,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
     "Calling the showGoBackToPreferences action of the PreferencesController with an authorised user" should {
 
-      lazy val result = TestPreferencesController.showGoBackToPreferences()(fakeRequest)
+      lazy val result = TestPreferencesController.showGoBackToPreferences()(subscriptionRequest)
       lazy val document = Jsoup.parse(contentAsString(result))
 
 
@@ -120,7 +120,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
     }
 
     "Calling the submitGoBackToPreferences action of the PreferencesController with an authorised user with yes" should {
-      implicit lazy val request = fakeRequest
+      implicit lazy val request = subscriptionRequest
 
       def callShow() = TestPreferencesController.submitGoBackToPreferences()(request)
 
@@ -146,7 +146,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
       }
     )
 
-    implicit lazy val request = fakeRequest
+    implicit lazy val request = subscriptionRequest
 
     def callCheck() = TestNewFeaturesController.checkPreferences()(request)
 

@@ -66,7 +66,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
     "the start page (showGuidance) is enabled" should {
 
-      lazy val result = TestHomeController(showGuidance = true).home()(fakeRequest)
+      lazy val result = TestHomeController(showGuidance = true).home()(subscriptionRequest)
 
       "Return status OK (200)" in {
         status(result) must be(Status.OK)
@@ -78,7 +78,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     }
 
     "the start page (showGuidance) is disabled" should {
-      lazy val result = TestHomeController(showGuidance = false).home()(fakeRequest)
+      lazy val result = TestHomeController(showGuidance = false).home()(subscriptionRequest)
 
       "Return status SEE_OTHER (303) redirect" in {
         status(result) must be(Status.SEE_OTHER)
@@ -91,7 +91,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the index action of the HomeController with an authorised user with both utr and nino enrolments" should {
-    def call() = TestHomeController(showGuidance = false).index()(fakeRequest)
+    def call() = TestHomeController(showGuidance = false).index()(subscriptionRequest)
 
     "redirect them to already subscribed page if they already has a subscription" in {
       setupMockGetSubscriptionFound(testNino)
@@ -114,7 +114,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the index action of the HomeController with an authorised user with only a nino enrolments" when {
-    def call() = TestHomeController(showGuidance = false).index()(fakeRequest)
+    def call() = TestHomeController(showGuidance = false).index()(subscriptionRequest)
 
     def userSetup(): Unit = {
       import org.mockito.Mockito._
@@ -133,7 +133,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe controllers.routes.NoNinoController.showNoNino().url
 
-        await(result).session(fakeRequest).get(ITSASessionKeys.UTR) mustBe None
+        await(result).session(subscriptionRequest).get(ITSASessionKeys.UTR) mustBe None
       }
     }
 
@@ -149,7 +149,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
 
-        await(result).session(fakeRequest).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+        await(result).session(subscriptionRequest).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
       }
     }
 
@@ -170,7 +170,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the index action of the HomeController with an authorised user with only a utr enrolments" should {
-    def call() = TestHomeController(showGuidance = false).index()(fakeRequest)
+    def call() = TestHomeController(showGuidance = false).index()(subscriptionRequest)
 
     def userSetup(): Unit = {
       import org.mockito.Mockito._
@@ -191,7 +191,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
   "Calling the index action of the HomeController with an authorised user who does not already have a subscription" should {
 
-    def getResult: Future[Result] = TestHomeController(showGuidance = false).index()(fakeRequest)
+    def getResult: Future[Result] = TestHomeController(showGuidance = false).index()(subscriptionRequest)
 
     "redirect to check preferences if the user qualifies" in {
       setupMockGetSubscriptionNotFound(testNino)
@@ -225,7 +225,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   "If a user doesn't have a NINO" when {
 
     def getResult(userMatchingFeature : Boolean): Future[Result] =
-      TestHomeController(showGuidance = false, userMatchingFeature = userMatchingFeature).index()(fakeRequest)
+      TestHomeController(showGuidance = false, userMatchingFeature = userMatchingFeature).index()(subscriptionRequest)
 
     "userMatchingFeature in config is set to true" should {
       "redirect them to user details" in {

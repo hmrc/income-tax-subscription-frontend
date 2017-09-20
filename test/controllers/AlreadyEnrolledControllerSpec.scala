@@ -39,7 +39,7 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
     "return an OK with the error page" in {
       mockAuthEnrolled()
 
-      lazy val result = TestAlreadyEnrolledController.enrolled(fakeRequest)
+      lazy val result = TestAlreadyEnrolledController.enrolled(subscriptionRequest)
       lazy val document = Jsoup.parse(contentAsString(result))
 
       status(result) must be(Status.OK)

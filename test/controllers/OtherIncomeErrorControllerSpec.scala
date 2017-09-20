@@ -42,7 +42,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
 
   "Calling the showOtherIncomeError action of the OtherIncomeErrorController" should {
 
-    lazy val result = TestOtherIncomeErrorController.showOtherIncomeError(fakeRequest)
+    lazy val result = TestOtherIncomeErrorController.showOtherIncomeError(subscriptionRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -58,7 +58,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
 
   "Calling the submitOtherIncomeError action of the OtherIncomeError controller with an authorised user" should {
 
-    def callSubmit = TestOtherIncomeErrorController.submitOtherIncomeError(fakeRequest
+    def callSubmit = TestOtherIncomeErrorController.submitOtherIncomeError(subscriptionRequest
       .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
 
     "return a redirect status (SEE_OTHER - 303)" in {

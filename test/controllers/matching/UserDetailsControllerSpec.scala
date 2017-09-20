@@ -17,7 +17,7 @@
 package controllers.matching
 
 import assets.MessageLookup.{UserDetails => messages}
-import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import controllers.ControllerBaseSpec
 import forms.UserDetailsForm
 import models.DateModel
 import models.matching.UserDetailsModel
@@ -26,9 +26,8 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import services.mocks.{MockKeystoreService, MockUserLockoutService}
+import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
 import utils.TestConstants._
-import utils.TestModels._
-import uk.gov.hmrc.http.{ HttpResponse, SessionKeys }
 
 
 class UserDetailsControllerSpec extends ControllerBaseSpec
@@ -48,7 +47,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
     mockAuthService,
     mockUserLockoutService
   )
-  lazy val request = fakeRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.GoHome -> "et")
+  lazy val request = subscriptionRequest.withSession(SessionKeys.userId -> testUserId.value)
 
   "Calling the show action of the UserDetailsController with an authorised user" should {
     lazy val result = await(TestUserDetailsController.show(isEditMode = false)(request))

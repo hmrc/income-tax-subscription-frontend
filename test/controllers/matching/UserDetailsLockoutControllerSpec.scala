@@ -19,14 +19,14 @@ package controllers.matching
 import java.time.Duration
 
 import assets.MessageLookup.{UserDetailsLockout => messages}
-import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import services.mocks.MockUserLockoutService
-import utils.TestConstants._
 import uk.gov.hmrc.http.SessionKeys
+import utils.TestConstants._
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   with MockUserLockoutService {
@@ -45,7 +45,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
     mockUserLockoutService
   )
 
-  lazy val request = fakeRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.GoHome -> "et")
+  lazy val request = subscriptionRequest.withSession(SessionKeys.userId -> testUserId.value)
 
   "Calling the 'show' action of the UserDetailsLockoutController" when {
 

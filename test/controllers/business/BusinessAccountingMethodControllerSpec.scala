@@ -44,7 +44,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "Calling the show action of the BusinessAccountingMethod with an authorised user" should {
 
-    lazy val result = TestBusinessAccountingMethodController.show(isEditMode = false)(fakeRequest)
+    lazy val result = TestBusinessAccountingMethodController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
       setupMockKeystore(fetchAccountingMethod = None)
@@ -58,7 +58,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the BusinessAccountingMethod with an authorised user and valid submission" should {
 
-    def callShow(isEditMode: Boolean) = TestBusinessAccountingMethodController.submit(isEditMode = isEditMode)(fakeRequest
+    def callShow(isEditMode: Boolean) = TestBusinessAccountingMethodController.submit(isEditMode = isEditMode)(subscriptionRequest
       .post(AccountingMethodForm.accountingMethodForm, AccountingMethodModel(AccountingMethodForm.option_cash)))
 
     "When it is not in edit mode" should {
@@ -111,7 +111,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submit action of the BusinessAccountingMethod with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessAccountingMethodController.submit(isEditMode = false)(fakeRequest)
+    lazy val badRequest = TestBusinessAccountingMethodController.submit(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)

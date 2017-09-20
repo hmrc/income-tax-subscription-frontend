@@ -37,7 +37,7 @@ class MainIncomeErrorControllerSpec extends ControllerBaseSpec {
 
   "Calling the mainIncomeError action of the MainIncomeErrorController" should {
 
-    lazy val result = TestMainIncomeErrorController.mainIncomeError(fakeRequest)
+    lazy val result = TestMainIncomeErrorController.mainIncomeError(subscriptionRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {

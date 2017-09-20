@@ -34,7 +34,7 @@ class SignOutControllerSpec extends ControllerBaseSpec {
 
   "Authorised users" should {
     "be redirected to the gg signOut" in {
-      val result = TestSignOutController.signOut(fakeRequest)
+      val result = TestSignOutController.signOut(subscriptionRequest)
       status(result) shouldBe SEE_OTHER
       redirectLocation(result).get should be(appConfig.ggSignOutUrl)
     }

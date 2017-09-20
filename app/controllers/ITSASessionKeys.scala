@@ -17,10 +17,10 @@
 package controllers
 
 object ITSASessionKeys {
-  val GoHome = "HOME"
   val StartTime = "StartTime"
   val RequestURI = "Request-URI"
   val NINO = "NINO"
   val UTR = "UTR"
   val FailedUserMatching = "Failed-User-Matching"
+  val JourneyStateKey = "Journey-State"
 }

@@ -18,6 +18,7 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import auth.{JourneyState, SignUp}
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc._
@@ -38,7 +39,7 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
     authorisedRoutes.foreach {
       case (name, call) =>
         s"Calling the $name action of the $controllerName with an unauthorised user" should {
-          lazy val result = call(fakeRequest)
+          lazy val result = call(subscriptionRequest)
 
           "return an AuthorisationException" in {
             Mockito.reset(mockAuthService)
@@ -60,6 +61,8 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
       fakeRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
   }
 
-  lazy val fakeRequest = FakeRequest().withSession(ITSASessionKeys.GoHome -> "et")
+  lazy val subscriptionRequest = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> SignUp.name
+  )
 
 }

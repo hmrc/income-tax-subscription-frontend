@@ -19,7 +19,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
-import auth.{AuthenticatedController, IncomeTaxSAUser}
+import auth._
 import config.BaseControllerConfig
 import connectors.models.CitizenDetailsSuccess
 import connectors.models.subscription.SubscriptionSuccess
@@ -28,6 +28,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.{AuthService, CitizenDetailsService, KeystoreService, SubscriptionService}
 import utils.Implicits._
+import auth.JourneyState._
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.InternalServerException
@@ -40,7 +41,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                val authService: AuthService,
                                citizenDetailsService: CitizenDetailsService,
                                logging: Logging
-                              ) extends AuthenticatedController {
+                              ) extends StatelessController {
 
   lazy val showGuidance: Boolean = baseConfig.applicationConfig.showGuidance
 
@@ -61,7 +62,9 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
     // TODO this condition will be changed to redirect to the registration service when it becomes available,
     // but for now the content on the no nino page will suffice
-    lazy val gotoRegistration = Future.successful(Redirect(controllers.routes.NoNinoController.showNoNino()))
+    lazy val gotoRegistration = Future.successful(
+      Redirect(controllers.routes.NoNinoController.showNoNino())
+    )
 
     (user.nino, user.utr) match {
       case (Some(_), Some(_)) => defaultAction
@@ -86,16 +89,20 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       case Right(None) => default
       case Right(Some(SubscriptionSuccess(mtditId))) =>
         keystoreService.saveSubscriptionId(mtditId) map { _ =>
-          Redirect(controllers.routes.ClaimSubscriptionController.claim())
+          Redirect(controllers.routes.ClaimSubscriptionController.claim()).withJourneyState(SignUp)
         }
       case _ =>
         Future.failed(new InternalServerException(s"HomeController.index: unexpected error calling the subscription service"))
     }
 
-  def index: Action[AnyContent] = Authenticated.asyncForHomeController { implicit request =>
+  def index: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       val timestamp: String = java.time.LocalDateTime.now().toString
-      checkCID(checkAlreadySubscribed(gotoPreferences.addingToSession(StartTime -> timestamp)))
+      checkCID(
+        checkAlreadySubscribed(
+          gotoPreferences.addingToSession(StartTime -> timestamp).withJourneyState(SignUp)
+        )
+      )
   }
 
   lazy val gotoPreferences = Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())

@@ -48,7 +48,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
     s"When in isEditMode=$editMode" that {
 
       "Calling the showOtherIncome action of the OtherIncome controller with an authorised user" should {
-        lazy val result = TestOtherIncomeController.showOtherIncome(isEditMode = editMode)(fakeRequest)
+        lazy val result = TestOtherIncomeController.showOtherIncome(isEditMode = editMode)(subscriptionRequest)
 
         "return ok (200)" in {
           setupMockKeystore(fetchOtherIncome = None)
@@ -61,7 +61,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       }
 
       "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and saying yes to other income" when {
-        def callSubmit = TestOtherIncomeController.submitOtherIncome(isEditMode = editMode)(fakeRequest
+        def callSubmit = TestOtherIncomeController.submitOtherIncome(isEditMode = editMode)(subscriptionRequest
           .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_yes)))
 
         "there are no prior OtherIncome in the keystore then return a redirect status (SEE_OTHER - 303)" in {
@@ -137,7 +137,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
       "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and saying no to other income" should {
 
-        def callSubmit = TestOtherIncomeController.submitOtherIncome(isEditMode = editMode)(fakeRequest
+        def callSubmit = TestOtherIncomeController.submitOtherIncome(isEditMode = editMode)(subscriptionRequest
           .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
 
         s"there are no prior OtherIncome in the keystore then redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the business journey" in {
@@ -309,7 +309,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
         val dummy = "Invalid"
 
-        def badrequest = TestOtherIncomeController.submitOtherIncome(isEditMode = editMode)(fakeRequest
+        def badrequest = TestOtherIncomeController.submitOtherIncome(isEditMode = editMode)(subscriptionRequest
           .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(dummy)))
 
         "return a bad request status (400)" in {

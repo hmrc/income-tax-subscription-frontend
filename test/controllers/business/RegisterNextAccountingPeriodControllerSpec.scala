@@ -45,7 +45,7 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
   "Calling the show action of the RegisterNextAccountingPeriod with an authorised user" should {
 
     def result: Future[Result] = {
-      TestRegisterNextAccountingPeriodController.show(fakeRequest)
+      TestRegisterNextAccountingPeriodController.show(subscriptionRequest)
     }
 
     "return ok (200)" in {
@@ -61,7 +61,7 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
 
   "Calling the submit action of the RegisterNextAccountingPeriod with an authorised user and valid submission" when {
 
-    def callShow(): Future[Result] = TestRegisterNextAccountingPeriodController.submit(fakeRequest)
+    def callShow(): Future[Result] = TestRegisterNextAccountingPeriodController.submit(subscriptionRequest)
 
     "Option 'Yes' is selected" should {
 

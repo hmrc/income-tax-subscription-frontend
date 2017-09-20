@@ -35,7 +35,7 @@ class NoNinoControllerSpec extends ControllerBaseSpec {
 
   "Calling the showNoNino action of the NoNinoController" should {
 
-    lazy val result = TestNoNinoController.showNoNino(fakeRequest)
+    lazy val result = TestNoNinoController.showNoNino(subscriptionRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -54,7 +54,7 @@ class NoNinoControllerSpec extends ControllerBaseSpec {
 
   "Calling the submitNoNino action of the NoNinoController" should {
 
-    lazy val result = TestNoNinoController.submitNoNino(fakeRequest)
+    lazy val result = TestNoNinoController.submitNoNino(subscriptionRequest)
 
     "return SEE_OTHER" in {
       status(result) must be(Status.SEE_OTHER)

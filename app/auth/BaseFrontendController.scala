@@ -39,18 +39,24 @@ trait BaseFrontendController extends FrontendController with I18nSupport {
   type ActionBody = Request[AnyContent] => IncomeTaxSAUser => Future[Result]
   type AuthenticatedAction = ActionBody => Action[AnyContent]
 
-  protected def asyncInternal(predicate: AuthPredicate)(action: ActionBody): Action[AnyContent] =
-    Action.async { implicit request =>
-      authService.authorised().retrieve(allEnrolments and affinityGroup) {
-        case enrolments ~ affinity =>
-          implicit val user = IncomeTaxSAUser(enrolments, affinity)
+  protected trait AuthenticatedActions {
+    def apply(action: Request[AnyContent] => IncomeTaxSAUser => Result): Action[AnyContent] = async(action andThen (_ andThen Future.successful))
 
-          predicate.apply(request)(user) match {
-            case Right(AuthPredicateSuccess) => action(request)(user)
-            case Left(failureResult) => failureResult
-          }
+    protected def asyncInternal(predicate: AuthPredicate)(action: ActionBody): Action[AnyContent] =
+      Action.async { implicit request =>
+        authService.authorised().retrieve(allEnrolments and affinityGroup) {
+          case enrolments ~ affinity =>
+            implicit val user = IncomeTaxSAUser(enrolments, affinity)
+
+            predicate.apply(request)(user) match {
+              case Right(AuthPredicateSuccess) => action(request)(user)
+              case Left(failureResult) => failureResult
+            }
+        }
       }
-    }
+
+    def async: AuthenticatedAction
+  }
 
   implicit class FormUtil[T](form: Form[T]) {
     def fill(data: Option[T]): Form[T] = data.fold(form)(form.fill)
