@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package models.auth
+package auth
 
-import play.api.libs.json.Json
+import auth.AuthPredicates._
+import controllers.ITSASessionKeys
 
+import scala.concurrent.ExecutionContext.Implicits.global
 
-case class UserIds(internalId: String,
-                   externalId: String)
+trait StatelessController extends BaseFrontendController{
 
-object UserIds {
-  implicit val format = Json.format[UserIds]
+  object Authenticated extends AuthenticatedActions {
+
+    override val async: AuthenticatedAction = asyncInternal(homePredicates)
+
+  }
 }

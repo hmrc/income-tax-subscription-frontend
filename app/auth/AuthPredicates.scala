@@ -19,10 +19,11 @@ package auth
 import auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import cats.implicits._
 import common.Constants
-import controllers.ITSASessionKeys
+import controllers.ITSASessionKeys._
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup
 import _root_.uk.gov.hmrc.http.SessionKeys._
+import JourneyState._
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.{ InternalServerException, NotFoundException }
@@ -57,10 +58,6 @@ object AuthPredicates extends Results {
 
   lazy val homeRoute = Redirect(controllers.routes.HomeController.index())
 
-  val goHomePredicate: AuthPredicate = request => user =>
-    if (request.session.get(ITSASessionKeys.GoHome).nonEmpty) Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
-
   lazy val timeoutRoute = Redirect(controllers.routes.SessionTimeoutController.timeout())
 
   val timeoutPredicate: AuthPredicate = request => user =>
@@ -75,13 +72,25 @@ object AuthPredicates extends Results {
     if (user.affinityGroup contains AffinityGroup.Individual) Right(AuthPredicateSuccess)
     else Left(Future.successful(wrongAffinity))
 
+  val registrationJourneyPredicate: AuthPredicate = request => user =>
+    if(request.session.isInState(Registration)) Right(AuthPredicateSuccess)
+    else Left(Future.successful(homeRoute))
+
+  val signUpJourneyPredicate: AuthPredicate = request => user =>
+    if(request.session.isInState(Registration) || request.session.isInState(SignUp)) Right(AuthPredicateSuccess)
+    else Left(Future.successful(homeRoute))
+
+  val userMatchingJourneyPredicate: AuthPredicate = request => user =>
+    if(request.session.isInState(UserMatching)) Right(AuthPredicateSuccess)
+    else Left(Future.successful(homeRoute))
+
   val defaultPredicates = timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 
   val homePredicates = defaultPredicates |+| mtdidPredicate
 
-  val subscriptionPredicates = defaultPredicates |+| mtdidPredicate |+| goHomePredicate
+  val subscriptionPredicates = defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate
 
-  val registrationPredicates = defaultPredicates |+| mtdidPredicate |+| goHomePredicate
+  val registrationPredicates = defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate
 
   val enrolledPredicates = defaultPredicates |+| enrolledPredicate
 

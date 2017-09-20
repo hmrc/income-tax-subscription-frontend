@@ -34,7 +34,7 @@ class SignInControllerSpec extends ControllerBaseSpec {
   )
 
   "navigating to SignIn page" should {
-    lazy val result = TestSignInController.signIn(fakeRequest)
+    lazy val result = TestSignInController.signIn(subscriptionRequest)
 
     "return OK (303)" in {
       status(result) mustBe Status.SEE_OTHER

@@ -56,7 +56,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         fetchAccountingPeriodPrior = None,
         fetchOtherIncome = defaultOtherIncomeAnswer
       )
-      TestAccountingPeriodPriorController.show(isEditMode = true)(fakeRequest)
+      TestAccountingPeriodPriorController.show(isEditMode = true)(subscriptionRequest)
     }
 
     "return ok (200)" in {
@@ -81,7 +81,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         fetchAccountingPeriodPrior = None,
         fetchOtherIncome = OtherIncomeModel(choice)
       )
-      TestAccountingPeriodPriorController.show(isEditMode = false)(fakeRequest)
+      TestAccountingPeriodPriorController.show(isEditMode = false)(subscriptionRequest)
     }
 
     s"When the user previously answered yes to otherIncome, it should point to '${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
@@ -98,7 +98,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
   "Calling the submit action of the BusinessAccountingPeriodPriorController with an authorised user and valid submission" when {
 
-    def callShowCore(answer: String, isEditMode: Boolean): Future[Result] = TestAccountingPeriodPriorController.submit(isEditMode)(fakeRequest
+    def callShowCore(answer: String, isEditMode: Boolean): Future[Result] = TestAccountingPeriodPriorController.submit(isEditMode)(subscriptionRequest
       .post(AccountingPeriodPriorForm.accountingPeriodPriorForm, AccountingPeriodPriorModel(answer)))
 
     "Not in edit mode and " when {
@@ -201,7 +201,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
 
     def badRequest: Future[Result] = {
       setupMockKeystore(fetchOtherIncome = defaultOtherIncomeAnswer)
-      TestAccountingPeriodPriorController.submit(isEditMode = false)(fakeRequest)
+      TestAccountingPeriodPriorController.submit(isEditMode = false)(subscriptionRequest)
     }
 
     "return a bad request status (400)" in {

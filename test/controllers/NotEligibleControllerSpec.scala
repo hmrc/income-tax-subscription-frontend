@@ -43,7 +43,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
 
   "Calling the showNotEligible action of the NotEligible controller with an authorised user" should {
 
-    lazy val result = TestNotEligibleController.showNotEligible(fakeRequest)
+    lazy val result = TestNotEligibleController.showNotEligible(subscriptionRequest)
 
     "return ok (200)" in {
       // required for backurl
@@ -60,7 +60,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
 
   "Calling the showNotEligible action of the NotEligible controller with an authorised user and valid submission" should {
 
-    def callShow(option: String) = TestNotEligibleController.submitNotEligible(fakeRequest
+    def callShow(option: String) = TestNotEligibleController.submitNotEligible(subscriptionRequest
       .post(NotEligibleForm.notEligibleForm, NotEligibleModel(option)))
 
     "return a see other status (303) for SignUp on a business journey" in {
@@ -114,7 +114,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the showNotEligible action of the NotEligible controller with an authorised user and invalid submission" should {
-    lazy val badRequest = TestNotEligibleController.submitNotEligible(fakeRequest)
+    lazy val badRequest = TestNotEligibleController.submitNotEligible(subscriptionRequest)
 
     "return a bad request status (400)" in {
       // required for backurl
@@ -130,7 +130,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
   "The back url" should {
     s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-      await(TestNotEligibleController.backUrl(fakeRequest)) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+      await(TestNotEligibleController.backUrl(subscriptionRequest)) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
     }
   }
 

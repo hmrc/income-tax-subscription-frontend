@@ -20,11 +20,11 @@ import java.util.UUID
 
 import config.AppConfig
 import controllers.ITSASessionKeys
-import controllers.ITSASessionKeys.GoHome
 import forms._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
+import auth.{Registration, SignUp}
 import models.matching.UserDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -100,22 +100,18 @@ trait ComponentSpecBase extends UnitSpec
     super.afterAll()
   }
 
-  val defaultCookies = Map(
-    GoHome -> "et"
-  )
-
   object IncomeTaxSubscriptionFrontend {
     val csrfToken = UUID.randomUUID().toString
 
-    def get(uri: String): WSResponse = await(
+    def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse = await(
       buildClient(uri)
-        .withHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(GoHome -> "et")))
+        .withHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(ITSASessionKeys.JourneyStateKey -> SignUp.name) ++ additionalCookies))
         .get()
     )
 
     def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse = await(
       buildClient(uri)
-        .withHeaders(HeaderNames.COOKIE -> SessionCookieBaker.bakeSessionCookie(defaultCookies ++ additionalCookies), "Csrf-Token" -> "nocheck")
+        .withHeaders(HeaderNames.COOKIE -> SessionCookieBaker.bakeSessionCookie(Map(ITSASessionKeys.JourneyStateKey -> SignUp.name) ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
     )
 
@@ -177,7 +173,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessName(): WSResponse = get("/business/name")
 
-    def businessPhoneNumber(): WSResponse = get("/business/phone-number")
+    def businessPhoneNumber(): WSResponse = get("/business/phone-number", Map(ITSASessionKeys.JourneyStateKey -> Registration.name))
 
     def maintenance(): WSResponse = get("/error/maintenance")
 
@@ -250,7 +246,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitBusinessPhoneNumber(inEditMode: Boolean, request: Option[BusinessPhoneNumberModel]): WSResponse = {
       val uri = s"/business/phone-number?editMode=$inEditMode"
-      post(uri)(
+      post(uri, Map(ITSASessionKeys.JourneyStateKey -> Registration.name))(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             BusinessPhoneNumberForm.businessPhoneNumberValidationForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }

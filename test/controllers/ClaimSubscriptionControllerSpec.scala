@@ -45,7 +45,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeysto
       setupMockKeystore(fetchSubscriptionId = testMTDID)
       mockEnrolAndRefreshSuccess(testMTDID, testNino)
 
-      lazy val result = TestClaimSubscriptionController.claim(fakeRequest)
+      lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
 
       status(result) must be(Status.OK)
     }
@@ -54,7 +54,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeysto
       setupMockKeystore(fetchSubscriptionId = testMTDID)
       mockEnrolFailure(testMTDID, testNino)
 
-      lazy val result = TestClaimSubscriptionController.claim(fakeRequest)
+      lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
 
       intercept[InternalServerException](await(result))
     }
@@ -63,7 +63,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeysto
       setupMockKeystore(fetchSubscriptionId = testMTDID)
       mockRefreshFailure(testMTDID, testNino)
 
-      lazy val result = TestClaimSubscriptionController.claim(fakeRequest)
+      lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
 
       intercept[InternalServerException](await(result))
     }
@@ -71,7 +71,7 @@ class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeysto
     "return an error where keystore does not contain the MtditId" in {
       setupMockKeystore(fetchSubscriptionId = None)
 
-      lazy val result = TestClaimSubscriptionController.claim(fakeRequest)
+      lazy val result = TestClaimSubscriptionController.claim(subscriptionRequest)
 
       intercept[InternalServerException](await(result))
     }

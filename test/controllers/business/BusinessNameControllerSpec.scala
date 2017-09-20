@@ -42,7 +42,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
 
   "Calling the showBusinessName action of the BusinessNameController with an authorised user" should {
 
-    lazy val result = TestBusinessNameController.showBusinessName(isEditMode = false)(fakeRequest)
+    lazy val result = TestBusinessNameController.showBusinessName(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
       setupMockKeystore(fetchBusinessName = None)
@@ -59,7 +59,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
 
     def callShow(isEditMode: Boolean) =
       TestBusinessNameController.submitBusinessName(isEditMode = isEditMode)(
-        fakeRequest
+        subscriptionRequest
           .post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
       )
 
@@ -113,7 +113,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessNameController.submitBusinessName(isEditMode = false)(fakeRequest)
+    lazy val badRequest = TestBusinessNameController.submitBusinessName(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)

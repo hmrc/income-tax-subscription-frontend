@@ -33,7 +33,7 @@ class AffinityGroupErrorControllerSpec extends ControllerBaseSpec {
 
   "Calling the show action of the AffinityGroupErrorController" should {
 
-    lazy val result = TestAffinityGroupErrorController.show(fakeRequest)
+    lazy val result = TestAffinityGroupErrorController.show(subscriptionRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {

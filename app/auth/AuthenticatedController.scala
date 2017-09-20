@@ -18,28 +18,15 @@ package auth
 
 import auth.AuthPredicates._
 import controllers.ITSASessionKeys
-import play.api.mvc.{Action, AnyContent, Request, Result}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 trait AuthenticatedController extends BaseFrontendController{
 
-  object Authenticated {
-
-    def apply(action: Request[AnyContent] => IncomeTaxSAUser => Result): Action[AnyContent] = async(action andThen (_ andThen Future.successful))
-
+  object Authenticated extends AuthenticatedActions {
     val async: AuthenticatedAction = asyncInternal(subscriptionPredicates)
 
     val asyncEnrolled: AuthenticatedAction = asyncInternal(enrolledPredicates)
-
-    val asyncForHomeController: AuthenticatedAction = { actionBody: ActionBody =>
-      asyncInternal(homePredicates)({
-        implicit request =>
-          user =>
-            actionBody(request)(user) map (_.addingToSession(ITSASessionKeys.GoHome -> "et"))
-      })
-    }
 
     val asyncForIV: AuthenticatedAction = asyncInternal(emptyPredicate)
 

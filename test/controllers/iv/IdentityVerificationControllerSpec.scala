@@ -44,7 +44,7 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
   lazy val baseUrl: String = appConfig.baseUrl
 
   "IdentityVerificationController's url functions" should {
-    implicit lazy val request = fakeRequest
+    implicit lazy val request = subscriptionRequest
 
     "completionUri sets the correctly uri without a query string" in {
       val url = IdentityVerificationController.completionUri(baseUrl)
@@ -60,7 +60,7 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
     "return an SEE OTHER to the identity verification frontend" in {
       mockIndividualWithNoEnrolments()
 
-      val request = fakeRequest
+      val request = subscriptionRequest
 
       lazy val result = TestIdentityVerificationController.gotoIV(request)
 
@@ -78,7 +78,7 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
 
   "calling the ivError action" should {
     "return the iv_failed page" in {
-      val request = fakeRequest
+      val request = subscriptionRequest
 
       lazy val result = await(TestIdentityVerificationController.ivFailed(request))
       lazy val document = Jsoup.parse(contentAsString(result))

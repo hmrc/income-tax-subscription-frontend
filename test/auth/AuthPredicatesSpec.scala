@@ -47,9 +47,18 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   val defaultPredicateUser = testUser(Some(AffinityGroup.Individual), ninoEnrolment)
   val enrolledPredicateUser = testUser(Some(AffinityGroup.Individual), ninoEnrolment, mtdidEnrolment)
 
-  lazy val goneHomeRequest = FakeRequest().withSession(ITSASessionKeys.GoHome -> "et")
-  lazy val authorisedRequest = FakeRequest().withSession(ITSASessionKeys.GoHome -> "et", authToken -> "", lastRequestTimestamp -> "")
+  lazy val authorisedRequest = FakeRequest().withSession(
+    authToken -> "",
+    lastRequestTimestamp -> "",
+    ITSASessionKeys.JourneyStateKey -> SignUp.name
+  )
   lazy val homelessAuthorisedRequest = FakeRequest().withSession(authToken -> "", lastRequestTimestamp -> "")
+
+  lazy val registrationRequest = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> Registration.name)
+
+  lazy val signUpRequest = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> SignUp.name)
+
+  lazy val userMatchingRequest = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
 
   "ninoPredicate" should {
@@ -86,15 +95,6 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
   }
 
-  "goHomePredicate" should {
-    "return an AuthPredicateSuccess where the request session contains the GoHome flag" in {
-      goHomePredicate(goneHomeRequest)(blankUser).right.value mustBe AuthPredicateSuccess
-    }
-
-    "return the home page where the request session does not contain the GoHomeFlag" in {
-      await(goHomePredicate(FakeRequest())(blankUser).left.value) mustBe homeRoute
-    }
-  }
 
   "timeoutPredicate" should {
     "return an AuthPredicateSuccess where the lastRequestTimestamp is not set" in {
@@ -148,15 +148,15 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "subscriptionPredicates" should {
     "return an AuthPredicateSuccess where there is a nino, no mtditId, an individual affinity, the home session flag and an auth token" in {
-      defaultPredicates(authorisedRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
+      subscriptionPredicates(authorisedRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
     }
 
     "return the home page where the request session does not contain the GoHomeFlag" in {
-      await(goHomePredicate(homelessAuthorisedRequest)(defaultPredicateUser).left.value) mustBe homeRoute
+      await(subscriptionPredicates(homelessAuthorisedRequest)(defaultPredicateUser).left.value) mustBe homeRoute
     }
 
     "return the already-enrolled page where an mtdid enrolment already exists" in {
-      await(mtdidPredicate(authorisedRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
+      await(subscriptionPredicates(authorisedRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
     }
   }
 
@@ -177,6 +177,36 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
     "return the already-enrolled page where an mtdid enrolment already exists" in {
       await(mtdidPredicate(homelessAuthorisedRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
+    }
+  }
+
+  "registrationJourneyPredicate" should {
+    "return an AuthPredicateSuccess where a user has the JourneyState flag set to Registration" in {
+      registrationJourneyPredicate(registrationRequest)(blankUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return the index page for any other state" in {
+      await(registrationJourneyPredicate(FakeRequest())(blankUser).left.value) mustBe homeRoute
+    }
+  }
+
+  "signUpJourneyPredicate" should {
+    "return an AuthPredicateSuccess where a user has the JourneyState flag set to Registration" in {
+      signUpJourneyPredicate(signUpRequest)(blankUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return the index page for any other state" in {
+      await(signUpJourneyPredicate(FakeRequest())(blankUser).left.value) mustBe homeRoute
+    }
+  }
+
+  "userMatchingJourneyPredicate" should {
+    "return an AuthPredicateSuccess where a user has the JourneyState flag set to Registration" in {
+      userMatchingJourneyPredicate(userMatchingRequest)(blankUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return the index page for any other state" in {
+      await(userMatchingJourneyPredicate(FakeRequest())(blankUser).left.value) mustBe homeRoute
     }
   }
 }

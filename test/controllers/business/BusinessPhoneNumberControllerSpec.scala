@@ -16,14 +16,15 @@
 
 package controllers.business
 
-import auth.MockConfig
-import controllers.ControllerBaseSpec
+import auth.{MockConfig, Registration}
+import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import forms.BusinessPhoneNumberForm
 import models.BusinessPhoneNumberModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
+import uk.gov.hmrc.http.NotFoundException
 import utils.TestConstants._
 
 class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
@@ -48,21 +49,29 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
   lazy val TestBusinessPhoneNumberController: BusinessPhoneNumberController =
     createTestBusinessPhoneNumberController(setEnableRegistration = true)
 
+  lazy val request = subscriptionRequest.withSession(ITSASessionKeys.JourneyStateKey -> Registration.name)
+
   "When registration is disabled" should {
     lazy val TestBusinessPhoneNumberController: BusinessPhoneNumberController =
       createTestBusinessPhoneNumberController(setEnableRegistration = false)
 
     "show" should {
       "return NOT FOUND" in {
-        val result = TestBusinessPhoneNumberController.show(isEditMode = true)(fakeRequest)
-        status(result) must be(Status.NOT_FOUND)
+        val result = TestBusinessPhoneNumberController.show(isEditMode = true)(request)
+        val ex = intercept[NotFoundException] {
+          await(result)
+        }
+        ex.message must startWith("This page for registration is not yet available to the public:")
       }
     }
 
     "submit" should {
       "return NOT FOUND" in {
-        val result = TestBusinessPhoneNumberController.submit(isEditMode = true)(fakeRequest)
-        status(result) must be(Status.NOT_FOUND)
+        val result = TestBusinessPhoneNumberController.submit(isEditMode = true)(request)
+        val ex = intercept[NotFoundException] {
+          await(result)
+        }
+        ex.message must startWith("This page for registration is not yet available to the public:")
       }
     }
   }
@@ -71,7 +80,7 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
 
     "Calling the show action of the BusinessPhoneNumberController with an authorised user" should {
 
-      lazy val result = TestBusinessPhoneNumberController.show(isEditMode = false)(fakeRequest)
+      lazy val result = TestBusinessPhoneNumberController.show(isEditMode = false)(request)
 
       "return ok (200)" in {
         setupMockKeystore(fetchBusinessPhoneNumber = None)
@@ -88,7 +97,7 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
 
       def callShow(isEditMode: Boolean) =
         TestBusinessPhoneNumberController.submit(isEditMode = isEditMode)(
-          fakeRequest
+          request
             .post(BusinessPhoneNumberForm.businessPhoneNumberForm.form, BusinessPhoneNumberModel(testPhoneNumber))
         )
 
@@ -143,7 +152,7 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
     }
 
     "Calling the submit action of the BusinessNameController with an authorised user and invalid submission" should {
-      lazy val badRequest = TestBusinessPhoneNumberController.submit(isEditMode = false)(fakeRequest)
+      lazy val badRequest = TestBusinessPhoneNumberController.submit(isEditMode = false)(request)
 
       "return a bad request status (400)" in {
         status(badRequest) must be(Status.BAD_REQUEST)

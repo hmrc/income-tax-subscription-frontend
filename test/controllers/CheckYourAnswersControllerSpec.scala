@@ -47,7 +47,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" should {
 
-    lazy val result = TestCheckYourAnswersController.show(fakeRequest)
+    lazy val result = TestCheckYourAnswersController.show(subscriptionRequest)
 
     "return ok (200)" in {
       setupMockKeystore(fetchAll = testCacheMap)
@@ -58,7 +58,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the CheckYourAnswersController with an authorised user" should {
 
-    lazy val request = fakeRequest
+    lazy val request = subscriptionRequest
 
     def call = TestCheckYourAnswersController.submit(request)
 

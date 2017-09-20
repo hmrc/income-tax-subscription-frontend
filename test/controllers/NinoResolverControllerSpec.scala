@@ -38,7 +38,7 @@ class NinoResolverControllerSpec extends ControllerBaseSpec {
       lazy val callResolve = createTestNinoResolverController(
         new MockConfig {
           override val userMatchingFeature = true
-        }).resolveNino(fakeRequest)
+        }).resolveNino(subscriptionRequest)
 
       "go to user details" in {
         mockIndividualWithNoEnrolments()
@@ -54,7 +54,7 @@ class NinoResolverControllerSpec extends ControllerBaseSpec {
       lazy val callResolve = createTestNinoResolverController(
         new MockConfig {
           override val userMatchingFeature = false
-        }).resolveNino(fakeRequest)
+        }).resolveNino(subscriptionRequest)
 
       "go to IV" in {
         mockIndividualWithNoEnrolments()
