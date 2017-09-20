@@ -417,7 +417,7 @@ trait ViewSpecTrait extends UnitTestTrait {
       lazy val url = actionCall.url
       // this test is put in here because it doesn't make sense for it to be called on anything
       // other than a form
-      s"$formName must must a $method action to '$url'" in {
+      s"$formName in $name must must a $method action to '$url'" in {
         val formSelector = element.select(selector)
         formSelector.attr("method") mustBe method.toUpperCase
         formSelector.attr("action") mustBe url

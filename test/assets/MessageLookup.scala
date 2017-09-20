@@ -140,7 +140,15 @@ object MessageLookup {
   object BusinessName {
     val title = "Business name"
     val heading: String = "What's the name of your business?"
-    val line_1 = "This is the business name you used to register for Self Assessment. If your business doesn't have a name, enter your own name."
+
+    object SignUp {
+      val line_1 = "This is the business name you used to register for Self Assessment. If your business doesn't have a name, enter your own name."
+    }
+
+    object Registration {
+      val line_1 = "If your business doesn't have a name, enter your own name."
+    }
+
   }
 
   object BusinessPhoneNumber {

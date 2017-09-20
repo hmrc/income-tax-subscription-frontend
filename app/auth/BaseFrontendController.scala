@@ -17,10 +17,11 @@
 package auth
 
 import auth.AuthPredicate._
+import auth.JourneyState.{RequestFunctions, SessionFunctions}
 import config.BaseControllerConfig
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import services.AuthService
 import uk.gov.hmrc.auth.core.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
@@ -61,6 +62,9 @@ trait BaseFrontendController extends FrontendController with I18nSupport {
   implicit class FormUtil[T](form: Form[T]) {
     def fill(data: Option[T]): Form[T] = data.fold(form)(form.fill)
   }
+
+  implicit val cacheSessionFunctions: (Session) => SessionFunctions = JourneyState.SessionFunctions
+  implicit val cacheRequestFunctions: (Request[_]) => RequestFunctions = JourneyState.RequestFunctions
 
 }
 

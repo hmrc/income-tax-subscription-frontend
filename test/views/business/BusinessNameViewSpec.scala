@@ -27,43 +27,48 @@ class BusinessNameViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = views.html.business.business_name(
+  def page(isEditMode: Boolean, isRegistration: Boolean) = views.html.business.business_name(
     businessNameForm = BusinessNameForm.businessNameForm.form,
     postAction = action,
     backUrl = backUrl,
+    isRegistration = isRegistration,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(isEditMode: Boolean) = TestView(
-    name = "Business Name View",
+  def documentCore(isEditMode: Boolean, isRegistration: Boolean) = TestView(
+    name = s"Business Name View for ${if (isRegistration) "registration" else "sign up"}",
     title = messages.title,
     heading = messages.heading,
-    page = page(isEditMode = isEditMode)
+    page = page(isEditMode = isEditMode, isRegistration = isRegistration)
   )
 
   "The Business Name view" should {
+    for (isRegistration <- List(false, true)) {
+      val testPage = documentCore(isEditMode = false, isRegistration = isRegistration)
 
-    val testPage = documentCore(isEditMode = false)
+      testPage.mustHaveBackLinkTo(backUrl)
 
-    testPage.mustHaveBackLinkTo(backUrl)
+      if (isRegistration) testPage.mustHavePara(messages.Registration.line_1)
+      else testPage.mustHavePara(messages.SignUp.line_1)
 
-    testPage.mustHavePara(messages.line_1)
+      val form = testPage.getForm("Business Name form")(actionCall = action)
 
-    val form = testPage.getForm("Business Name form")(actionCall = action)
+      form.mustHaveTextField(
+        name = BusinessNameForm.businessName,
+        label = messages.heading,
+        showLabel = false)
 
-    form.mustHaveTextField(
-      name = BusinessNameForm.businessName,
-      label = messages.heading,
-      showLabel = false)
-
-    form.mustHaveContinueButton()
-
+      form.mustHaveContinueButton()
+    }
   }
 
   "The Business Name view in edit mode" should {
-    val editModePage = documentCore(isEditMode = true)
+    for (isRegistration <- List(false, true)) {
 
-    editModePage.mustHaveUpdateButton()
+      val editModePage = documentCore(isEditMode = true, isRegistration = isRegistration)
+
+      editModePage.mustHaveUpdateButton()
+    }
   }
 
 }
