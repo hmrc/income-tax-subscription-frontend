@@ -16,13 +16,11 @@
 
 package controllers
 
-import auth._
 import forms.IncomeSourceForm
 import models.IncomeSourceModel
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import utils.TestModels
@@ -106,18 +104,6 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         await(goodRequest)
         verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
       }
-
-      s"return a SEE OTHER (303) for 'Other' and goto ${controllers.routes.MainIncomeErrorController.mainIncomeError().url}" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(IncomeSourceForm.option_other, isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe controllers.routes.MainIncomeErrorController.mainIncomeError().url
-
-        await(goodRequest)
-        verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
-      }
     }
 
     "When it is in edit mode and user's selection has not changed" should {
@@ -149,18 +135,6 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
         val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = true)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe controllers.routes.CheckYourAnswersController.show().url
-
-        await(goodRequest)
-        verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
-      }
-
-      s"return a SEE OTHER (303) for 'Other' and goto ${controllers.routes.CheckYourAnswersController.show().url}" in {
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceOther)
-
-        val goodRequest = callShow(IncomeSourceForm.option_other, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe controllers.routes.CheckYourAnswersController.show().url
@@ -202,18 +176,6 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
-
-        await(goodRequest)
-        verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)
-      }
-
-      s"return a SEE OTHER (303) for 'Other' and goto ${controllers.routes.MainIncomeErrorController.mainIncomeError().url}" in {
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
-
-        val goodRequest = callShow(IncomeSourceForm.option_other, isEditMode = true)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe controllers.routes.MainIncomeErrorController.mainIncomeError().url
 
         await(goodRequest)
         verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)

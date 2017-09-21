@@ -56,9 +56,6 @@ GET         /already-enrolled             controllers.AlreadyEnrolledController.
 GET         /error/no-nino                controllers.NoNinoController.showNoNino
 POST        /error/no-nino                controllers.NoNinoController.submitNoNino
 
-# Main Income Error Routes
-GET         /error/main-income            controllers.MainIncomeErrorController.mainIncomeError
-
 # Other Income Error Routes
 GET         /error/other-income           controllers.OtherIncomeErrorController.showOtherIncomeError
 POST        /error/other-income           controllers.OtherIncomeErrorController.submitOtherIncomeError

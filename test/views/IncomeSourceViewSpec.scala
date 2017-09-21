@@ -45,8 +45,7 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
     )(
       IncomeSourceForm.option_business -> messages.business,
       IncomeSourceForm.option_property -> messages.property,
-      IncomeSourceForm.option_both -> messages.both,
-      IncomeSourceForm.option_other -> messages.other
+      IncomeSourceForm.option_both -> messages.both
     )
     form.mustHaveContinueButton()
 
