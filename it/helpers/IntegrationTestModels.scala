@@ -70,8 +70,6 @@ object IntegrationTestModels {
 
   lazy val testIncomeSourceBusiness = IncomeSourceModel(IncomeSourceForm.option_business)
 
-  lazy val testIncomeSourceOther = IncomeSourceModel(IncomeSourceForm.option_other)
-
   lazy val testIncomeSourceProperty = IncomeSourceModel(IncomeSourceForm.option_property)
 
   lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)

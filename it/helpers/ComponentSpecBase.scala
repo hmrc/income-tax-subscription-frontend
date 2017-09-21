@@ -129,8 +129,6 @@ trait ComponentSpecBase extends UnitSpec
 
     def otherIncome(): WSResponse = get("/income-other")
 
-    def mainIncomeError(): WSResponse = get("/error/main-income")
-
     def otherIncomeError(): WSResponse = get("/error/other-income")
 
     def terms(): WSResponse = get("/terms")
