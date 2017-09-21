@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
 
-@(businessNameForm: Form[BusinessNameModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(businessNameForm: Form[BusinessNameModel], postAction: Call, isRegistration: Boolean, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @views.html.templates.main_template(title = Messages("business.name.title"), bodyClasses = None) {
     @back_link(backUrl)
@@ -29,7 +29,7 @@
 
     <h1 class="heading-large">@Messages("business.name.heading")</h1>
 
-    <p>@Messages("business.name.line_1")</p>
+    <p>@if(isRegistration){ @Messages("business.name.registration.line_1") }else{ @Messages("business.name.signup.line_1") }</p>
 
     @form(action = postAction) {
 

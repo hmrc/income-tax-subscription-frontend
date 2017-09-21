@@ -16,17 +16,15 @@
 
 package auth
 
+import _root_.uk.gov.hmrc.http.SessionKeys._
 import auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
+import auth.JourneyState._
 import cats.implicits._
-import common.Constants
-import controllers.ITSASessionKeys._
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup
-import _root_.uk.gov.hmrc.http.SessionKeys._
-import JourneyState._
+import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ InternalServerException, NotFoundException }
 
 object AuthPredicates extends Results {
 

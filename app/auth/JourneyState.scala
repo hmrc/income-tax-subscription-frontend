@@ -17,7 +17,7 @@
 package auth
 
 import controllers.ITSASessionKeys
-import play.api.mvc.{RequestHeader, Result, Session}
+import play.api.mvc._
 
 sealed trait JourneyState {
   val name: String
@@ -36,11 +36,17 @@ object Registration extends JourneyState {
 }
 
 object JourneyState {
+
   implicit class SessionFunctions(session: Session) {
     def isInState(state: JourneyState): Boolean = session.get(ITSASessionKeys.JourneyStateKey) contains state.name
+  }
+
+  implicit class RequestFunctions(request: Request[_]) {
+    def isInState(state: JourneyState): Boolean = request.session.isInState(state)
   }
 
   implicit class ResultFunctions(result: Result) {
     def withJourneyState(state: JourneyState)(implicit header: RequestHeader): Result = result.addingToSession(ITSASessionKeys.JourneyStateKey -> state.name)
   }
+
 }

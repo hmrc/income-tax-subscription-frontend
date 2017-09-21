@@ -127,7 +127,8 @@ business.accounting_method.accruals                             = <span class="h
 ## Business Name
 business.name.title                                             = Business name
 business.name.heading                                           = What''s the name of your business?
-business.name.line_1                                            = This is the business name you used to register for Self Assessment. If your business doesn''t have a name, enter your own name.
+business.name.signup.line_1                                     = This is the business name you used to register for Self Assessment. If your business doesn''t have a name, enter your own name.
+business.name.registration.line_1                               = If your business doesn''t have a name, enter your own name.
 
 ## Business Phone number
 business.phone_number.title                                     = Business phone number

@@ -18,7 +18,7 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.{AuthenticatedController, Registration}
 import config.BaseControllerConfig
 import forms.BusinessNameForm
 import models.{BusinessNameModel, OtherIncomeModel}
@@ -37,11 +37,12 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        val authService: AuthService
                                       ) extends AuthenticatedController {
 
-  def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] =
+  def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Future[Html] =
     backUrl.map { backUrl =>
       views.html.business.business_name(
         businessNameForm = businessNameForm,
         postAction = controllers.business.routes.BusinessNameController.submit(editMode = isEditMode),
+        isRegistration = request.isInState(Registration),
         backUrl = backUrl,
         isEditMode
       )
@@ -60,14 +61,13 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
         formWithErrors =>
           view(formWithErrors, isEditMode = isEditMode).map(BadRequest(_)),
-        businessName => {
+        businessName =>
           keystoreService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
               Redirect(controllers.routes.CheckYourAnswersController.show())
             else
               Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
             )
-        }
       )
   }
 
