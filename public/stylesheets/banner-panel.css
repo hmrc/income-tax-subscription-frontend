@@ -1,30 +1,47 @@
 .banner-panel {
     display: none;
-    background-color: #005ea5;
-    color: #fff;
+    background-color: #dee0e2;
+    color: #0b0c0c;
 }
+
 .banner-panel--show {
     display: block;
 }
+
 .banner-panel__container {
-    padding: 20px .78947em;
+    padding: 10px .78947em;
     position: relative;
 }
+
 .banner-panel a {
-    color: #fff;
+    color: #0b0c0c;
 }
+
 .banner-panel__title {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 5px;
+    font-size: 16px;
+    font-weight: 700;
+    position: relative;
+    left: 15px;
+    line-height: 1.25;
+    /*margin-bottom: 0px;*/
 }
+
+.banner-panel__line {
+    font-size: 14px;
+    position: relative;
+    left: 15px;
+    /*font-weight: 600;*/
+    /*margin-top: 0px;*/
+}
+
 .banner-panel__close {
     color: #fff;
     font-size: 14px;
     position: absolute;
-    right: 15px;
-    top: 20px;
+    right: 25px;
+    bottom: 10px;
 }
+
 .banner-panel__small-copy {
     display: inline-block;
     font-size: 14px;
@@ -38,7 +55,25 @@
     .banner-panel__close {
         right: 35px;
     }
-    .banner-panel__container {
-        padding: 20px 30px 10px;
+
+    .banner-panel__title {
+        font-size: 19px;
+        left: 0%;
+        /*margin-bottom: 0px;*/
     }
+
+    .banner-panel__line {
+        left: 0px;
+        font-size: 16px;
+        font-weight: 400;
+    }
+
+    .banner-panel__close {
+        color: #fff;
+        font-size: 16px;
+        position: absolute;
+        right: 15px;
+        top: 10px;
+    }
+
 }
