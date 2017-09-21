@@ -23,6 +23,8 @@ case object CurrentAccountingPeriodView extends AccountingPeriodViewType
 
 case object NextAccountingPeriodView extends AccountingPeriodViewType
 
+case object RegistrationAccountingPeriodView extends AccountingPeriodViewType
+
 
 object AccountingPeriodViewType {
 

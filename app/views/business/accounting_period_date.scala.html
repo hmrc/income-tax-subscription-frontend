@@ -20,7 +20,7 @@
 @import helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
-@import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
+@import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView, RegistrationAccountingPeriodView}
 
 @(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, backUrl: String, viewType: AccountingPeriodViewType, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -34,20 +34,26 @@
     @if(isEditMode) {
         @Messages("accounting_period.heading")
     } else {
-        @if(viewType == CurrentAccountingPeriodView) {
-            @Messages("accounting_period.heading.current")
-        } else {
-            @Messages("accounting_period.heading.next")
+        @viewType match {
+            case CurrentAccountingPeriodView => {
+                @Messages("accounting_period.heading.current")
+            }
+            case NextAccountingPeriodView => {
+                @Messages("accounting_period.heading.next")
+            }
+            case RegistrationAccountingPeriodView => {
+                @Messages("accounting_period.heading.registration")
+            }
         }
     }
     </h1>
 
     <div class="form-group">
-        @if(viewType == CurrentAccountingPeriodView) {
-            <p>@Messages("accounting_period.line_1.current")</p>
-        } else {
-            <p>@Messages("accounting_period.line_1.next")</p>
-        }
+        <p>@viewType match {
+            case CurrentAccountingPeriodView => {@Messages("accounting_period.line_1.current")}
+            case NextAccountingPeriodView => {@Messages("accounting_period.line_1.next")}
+            case RegistrationAccountingPeriodView => {@Messages("accounting_period.line_1.registration")}
+        }</p>
     </div>
 
     @form(action = postAction) {
@@ -56,24 +62,28 @@
             field = accountingPeriodForm(startDate),
             label = Messages("base.startDate"),
             parentForm = accountingPeriodForm,
-            hintText =
-                    if(viewType == CurrentAccountingPeriodView) {
-                        Messages("accounting_period.exampleStartDate.current")
-                    } else {
-                        Messages("accounting_period.exampleStartDate.next")
-                    }
+            hintText = viewType match {
+                case CurrentAccountingPeriodView =>
+                    Messages("accounting_period.exampleStartDate.current")
+                case NextAccountingPeriodView =>
+                    Messages("accounting_period.exampleStartDate.next")
+                case RegistrationAccountingPeriodView =>
+                    Messages("accounting_period.exampleStartDate.registration")
+            }
         )
 
         @dateHelper(
             field = accountingPeriodForm(endDate),
             label = Messages("base.endDate"),
             parentForm = accountingPeriodForm,
-            hintText =
-                    if(viewType == CurrentAccountingPeriodView) {
-                        Messages("accounting_period.exampleEndDate.current")
-                    } else {
-                        Messages("accounting_period.exampleEndDate.next")
-                    }
+            hintText = viewType match {
+                case CurrentAccountingPeriodView =>
+                    Messages("accounting_period.exampleEndDate.current")
+                case NextAccountingPeriodView =>
+                    Messages("accounting_period.exampleEndDate.next")
+                case RegistrationAccountingPeriodView =>
+                    Messages("accounting_period.exampleEndDate.registration")
+            }
         )
 
         @if(isEditMode) {

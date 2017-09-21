@@ -18,7 +18,7 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.{AuthenticatedController, Registration}
 import config.BaseControllerConfig
 import forms._
 import models.AccountingPeriodModel
@@ -28,10 +28,10 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import services.{AuthService, KeystoreService}
+import uk.gov.hmrc.http.InternalServerException
 import utils.Implicits._
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.InternalServerException
 
 @Singleton
 class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseControllerConfig,
@@ -88,30 +88,32 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
   }
 
   def whichView(implicit request: Request[_]): Future[AccountingPeriodViewType] = {
-
-    keystoreService.fetchAccountingPeriodPrior().flatMap {
-      case Some(currentPeriodPrior) =>
-        currentPeriodPrior.currentPeriodIsPrior match {
-          case AccountingPeriodPriorForm.option_yes =>
-            NextAccountingPeriodView
-          case AccountingPeriodPriorForm.option_no =>
-            CurrentAccountingPeriodView
-        }
-      case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")
-    }
-  }
-
-  def backUrl(implicit request: Request[_]): Future[String] = {
-
-    keystoreService.fetchAccountingPeriodPrior() flatMap {
-      case Some(currentPeriodPrior) => currentPeriodPrior.currentPeriodIsPrior match {
-        case AccountingPeriodPriorForm.option_yes =>
-          controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-        case AccountingPeriodPriorForm.option_no =>
-          controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
+    if (request.isInState(Registration)) RegistrationAccountingPeriodView
+    else {
+      keystoreService.fetchAccountingPeriodPrior().flatMap {
+        case Some(currentPeriodPrior) =>
+          currentPeriodPrior.currentPeriodIsPrior match {
+            case AccountingPeriodPriorForm.option_yes =>
+              NextAccountingPeriodView
+            case AccountingPeriodPriorForm.option_no =>
+              CurrentAccountingPeriodView
+          }
+        case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")
       }
-      case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")
     }
   }
+
+  def backUrl(implicit request: Request[_]): Future[String] =
+    if (request.isInState(Registration)) controllers.business.routes.BusinessStartDateController.show().url
+    else
+      keystoreService.fetchAccountingPeriodPrior() flatMap {
+        case Some(currentPeriodPrior) => currentPeriodPrior.currentPeriodIsPrior match {
+          case AccountingPeriodPriorForm.option_yes =>
+            controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+          case AccountingPeriodPriorForm.option_no =>
+            controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
+        }
+        case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")
+      }
 
 }
