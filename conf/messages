@@ -76,6 +76,10 @@ business.address.edit.add_line_1                                = Address line 1
 business.address.edit.add_line_2                                = Address line 2
 business.address.edit.add_line_3                                = Address line 3
 
+# Business start date
+business.start_date.title                                        = Business start date
+business.start_date.heading                                      = When did your business start trading?
+business.start_date.exampleStartDate                             = For example, 1 4 2018
 
 # Current Financial Period Prior page
 business.current_financial_period_prior.title                   = Business accounting period

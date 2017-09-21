@@ -118,6 +118,12 @@ object MessageLookup {
 
   }
 
+  object BusinessStartDate {
+    val title = "Business start date"
+    val heading = "When did your business start trading?"
+    val exampleStartDate = "For example, 1 4 2018"
+  }
+
   object AccountingPeriod {
     val title = "Business accounting period"
     val heading_current = "What are the dates of your current accounting period?"
