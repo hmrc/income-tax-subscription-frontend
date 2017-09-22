@@ -34,6 +34,8 @@ object IntegrationTestModels {
   val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
   val testTerms = true
 
+  val testBusinessStartDate = BusinessStartDateModel(testStartDate)
+
   val fullKeystoreData: Map[String, JsValue] =
     keystoreData(
       incomeSource = Some(testIncomeSourceBoth),
