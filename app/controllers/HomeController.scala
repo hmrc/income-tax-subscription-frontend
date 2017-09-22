@@ -60,12 +60,6 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
     lazy val error = Future.failed(new InternalServerException("HomeController.checkCID: unexpected error calling the citizen details service"))
 
-    // TODO this condition will be changed to redirect to the registration service when it becomes available,
-    // but for now the content on the no nino page will suffice
-    lazy val gotoRegistration = Future.successful(
-      Redirect(controllers.routes.NoNinoController.showNoNino())
-    )
-
     (user.nino, user.utr) match {
       case (Some(_), Some(_)) => defaultAction
       case (Some(nino), None) =>
@@ -83,6 +77,16 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
         Future.failed(new InternalServerException("HomeController.checkCID: unexpected user state, the user has a utr but no nino"))
     }
   }
+
+  private def gotoRegistration(implicit request: Request[AnyContent]) = Future.successful(
+    if(applicationConfig.enableRegistration) {
+      gotoPreferences.withJourneyState(Registration)
+    }
+    else {
+      //TODO update this with the actual content for the error page
+      Redirect(controllers.routes.NoNinoController.showNoNino())
+    }
+  )
 
   private def checkAlreadySubscribed(default: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
     subscriptionService.getSubscription(user.nino.get).flatMap {

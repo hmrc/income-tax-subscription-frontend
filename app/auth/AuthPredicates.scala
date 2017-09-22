@@ -21,7 +21,7 @@ import auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import auth.JourneyState._
 import cats.implicits._
 import play.api.mvc.{Result, Results}
-import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 
 import scala.concurrent.Future
@@ -82,13 +82,19 @@ object AuthPredicates extends Results {
     if(request.session.isInState(UserMatching)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
+  val goToIv = Redirect(controllers.iv.routes.IdentityVerificationController.gotoIV())
+
+  val ivPredicate: AuthPredicate = request => user =>
+    if(request.session.isInState(Registration) && user.confidenceLevel < ConfidenceLevel.L200) Left(Future.successful(goToIv))
+    else Right(AuthPredicateSuccess)
+
   val defaultPredicates = timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 
   val homePredicates = defaultPredicates |+| mtdidPredicate
 
-  val subscriptionPredicates = defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate
+  val subscriptionPredicates = defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate |+| ivPredicate
 
-  val registrationPredicates = defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate
+  val registrationPredicates = defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
 
   val enrolledPredicates = defaultPredicates |+| enrolledPredicate
 
