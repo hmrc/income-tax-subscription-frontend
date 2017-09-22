@@ -24,7 +24,7 @@ import forms._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
-import auth.{Registration, SignUp}
+import auth.{JourneyState, Registration, SignUp}
 import models.matching.UserDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -37,6 +37,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.play.test.UnitSpec
+import IntegrationTestConstants._
 
 trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite
@@ -72,7 +73,8 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.gg-authentication.port" -> mockPort,
     "microservice.services.authenticator.host" -> mockHost,
     "microservice.services.authenticator.port" -> mockPort,
-    "citizen-details.url" -> mockUrl
+    "citizen-details.url" -> mockUrl,
+    "address-lookup-frontend.url" -> mockUrl
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -170,6 +172,10 @@ trait ComponentSpecBase extends UnitSpec
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 
     def businessName(): WSResponse = get("/business/name")
+
+    def businessAddress(state: JourneyState): WSResponse = get("/business/address", Map(ITSASessionKeys.JourneyStateKey -> state.name))
+
+    def businessAddressCallback(state: JourneyState): WSResponse = get(s"/business/address/callback?id=$testId", Map(ITSASessionKeys.JourneyStateKey -> state.name))
 
     def businessPhoneNumber(): WSResponse = get("/business/phone-number", Map(ITSASessionKeys.JourneyStateKey -> Registration.name))
 
