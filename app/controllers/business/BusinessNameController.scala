@@ -65,6 +65,8 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
           keystoreService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
               Redirect(controllers.routes.CheckYourAnswersController.show())
+            else if(request.isInState(Registration))
+              Redirect(controllers.business.routes.BusinessPhoneNumberController.show())
             else
               Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
             )
