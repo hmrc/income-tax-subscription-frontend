@@ -18,7 +18,7 @@ package controllers
 
 import assets.MessageLookup.FrontPage
 import audit.Logging
-import auth.MockConfig
+import auth.{MockConfig, Registration, SignUp}
 import config.BaseControllerConfig
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -42,15 +42,17 @@ class HomeControllerSpec extends ControllerBaseSpec
     "index" -> TestHomeController(showGuidance = false).index()
   )
 
-  def mockBaseControllerConfig(showStartPage: Boolean, userMatchingFeature: Boolean): BaseControllerConfig = {
+  def mockBaseControllerConfig(showStartPage: Boolean, userMatching: Boolean, registrationFeature: Boolean): BaseControllerConfig = {
     val mockConfig = new MockConfig {
       override val showGuidance: Boolean = showStartPage
+      override val userMatchingFeature: Boolean = userMatching
+      override val enableRegistration: Boolean = registrationFeature
     }
     mockBaseControllerConfig(mockConfig)
   }
 
-  def TestHomeController(showGuidance: Boolean, userMatchingFeature: Boolean = false) = new HomeController(
-    mockBaseControllerConfig(showGuidance, userMatchingFeature),
+  def TestHomeController(showGuidance: Boolean = true, userMatchingFeature: Boolean = false, registrationFeature: Boolean = false) = new HomeController(
+    mockBaseControllerConfig(showGuidance, userMatchingFeature, registrationFeature),
     messagesApi,
     mockSubscriptionService,
     MockKeystoreService,
@@ -122,18 +124,31 @@ class HomeControllerSpec extends ControllerBaseSpec
       mockNinoRetrieval()
     }
 
-    "user is found but their utr is not in CID" should {
-      //TODO to registration
-      "redirect the user to no nino page" in {
-        userSetup()
-        mockLookupUserWithoutUtr(testNino)
+    "user is found but their utr is not in CID" when {
+      "the registration feature flag is off" should {
+        //TODO to registration
+        "redirect the user to no nino page" in {
+          userSetup()
+          mockLookupUserWithoutUtr(testNino)
 
-        val result = call()
+          val result = call()
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe controllers.routes.NoNinoController.showNoNino().url
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe controllers.routes.NoNinoController.showNoNino().url
 
-        await(result).session(subscriptionRequest).get(ITSASessionKeys.UTR) mustBe None
+          await(result).session(subscriptionRequest).get(ITSASessionKeys.UTR) mustBe None
+        }
+      }
+      "the registration feature flag is on" should {
+        "redirect the user to the income source page with the Registration journey state added to session" in {
+          userSetup()
+
+          val result = TestHomeController(registrationFeature = true).index()(subscriptionRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+          await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
+        }
       }
     }
 

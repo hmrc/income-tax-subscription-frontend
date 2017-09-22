@@ -20,7 +20,7 @@ import common.Constants
 import controllers.ITSASessionKeys
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
-import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import utils.TestConstants.{testNino, testUtr}
 
@@ -29,18 +29,21 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
   "IncomeTaxSAUser" when {
     "Nino and UTR are retrieved from auth" should {
       implicit lazy val request = FakeRequest()
+
+      val confidenceLevel = L50
+
       lazy val user = IncomeTaxSAUser(
         Enrolments(
           Set(
             Enrolment(Constants.ninoEnrolmentName,
               Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, testNino)),
               "Activated",
-              L50
+              confidenceLevel
             ),
             Enrolment(Constants.utrEnrolmentName,
               Seq(EnrolmentIdentifier(Constants.utrEnrolmentIdentifierKey, testUtr)),
               "Activated",
-              L50
+              confidenceLevel
             )
           )
         ),
@@ -53,6 +56,10 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
       s"have the expected UTR $testUtr" in {
         user.utr shouldBe Some(testUtr)
+      }
+
+      s"have the confidence level of $confidenceLevel" in {
+        user.confidenceLevel shouldBe confidenceLevel
       }
     }
 
@@ -74,8 +81,10 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
       s"have the expected UTR $testUtr" in {
         user.utr shouldBe Some(testUtr)
       }
+
+      "have the default confidence level of 0" in {
+        user.confidenceLevel shouldBe ConfidenceLevel.L0
+      }
     }
   }
-
-
 }

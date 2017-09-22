@@ -19,7 +19,7 @@ package auth
 import common.Constants
 import controllers.ITSASessionKeys
 import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.auth.core._
 
 import scala.collection.immutable.::
 
@@ -35,6 +35,11 @@ case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[Affinit
       case None => request.session.get(ITSASessionKeys.UTR)
       case x => x
     }
+
+  lazy val confidenceLevel: ConfidenceLevel = enrolments.getEnrolment(Constants.ninoEnrolmentName) match {
+    case Some(enrolment) => enrolment.confidenceLevel
+    case None => ConfidenceLevel.L0
+  }
 
   lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
 

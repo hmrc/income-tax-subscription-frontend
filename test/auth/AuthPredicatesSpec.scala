@@ -209,4 +209,18 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       await(userMatchingJourneyPredicate(FakeRequest())(blankUser).left.value) mustBe homeRoute
     }
   }
+
+  "ivPredicate" should {
+    "return an AuthPredicateSuccess where a user has the Registration journey state and a confidence level of 200 or greater" in {
+      ivPredicate(registrationRequest)(defaultPredicateUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return an AuthPredicateSuccess where a user does not have the Registration journey state" in {
+      ivPredicate(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return the goToIv page where a user has the Registration journey state and a confidence level less than 200" in {
+      await(ivPredicate(registrationRequest)(blankUser).left.value) mustBe goToIv
+    }
+  }
 }
