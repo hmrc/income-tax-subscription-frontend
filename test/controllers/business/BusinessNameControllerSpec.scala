@@ -44,6 +44,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     MockKeystoreService,
     mockAuthService
   )
+
   // answer to other income is only significant for testing the backurl.
   val defaultOtherIncomeAnswer: OtherIncomeModel = TestModels.testOtherIncomeNo
 
@@ -65,31 +66,21 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submit action of the BusinessNameController with an authorised user and valid submission" should {
+  "Calling the submit action of the BusinessNameController with an authorised user on the sign up journey and valid submission" should {
 
-    def callShow(isEditMode: Boolean) =
+    def callShow(isEditMode: Boolean): Future[Result] =
       TestBusinessNameController.submit(isEditMode = isEditMode)(
         subscriptionRequest
           .post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
       )
 
     "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
+      s"return a redirect status (SEE_OTHER - 303) '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
-      }
-
-      s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}'" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = false)
-
         redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
         await(goodRequest)
@@ -98,22 +89,49 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
 
     "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
+      s"return a redirect status (SEE_OTHER - 303) to '${controllers.routes.CheckYourAnswersController.show().url}" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
       }
+    }
+  }
 
-      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+  "Calling the submit action of the BusinessNameController with an authorised user on the registration journey and valid submission" should {
+
+    def callShow(isEditMode: Boolean): Future[Result] =
+      TestBusinessNameController.submit(isEditMode = isEditMode)(
+        registrationRequest
+          .post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
+      )
+
+    "When it is not in edit mode" should {
+      s"return a redirect status (SEE_OTHER - 303) redirect to '${controllers.business.routes.BusinessPhoneNumberController.show().url}'" in {
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callShow(isEditMode = false)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessPhoneNumberController.show().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
+      }
+    }
+
+    "When it is in edit mode" should {
+      "return a redirect status (SEE_OTHER - 303) redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
+        status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
@@ -146,7 +164,9 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
       TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
     }
 
-    s"When the user previously answered yes to otherIncome, it should point to '${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
+    s"When the user previously answered yes to otherIncome, it should point to '${
+      controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+    }'" in {
       val document = Jsoup.parse(contentAsString(result(option_yes)))
       document.select("#back").attr("href") mustBe controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
     }
