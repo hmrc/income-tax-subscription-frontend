@@ -165,6 +165,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessAccountingPeriodDates(): WSResponse = get("/business/accounting-period-dates")
 
+    def businessStartDate(): WSResponse = get("/business/start-date", Map(ITSASessionKeys.JourneyStateKey -> Registration.name))
+
     def registerNextAccountingPeriod(): WSResponse = get("/business/register-next-accounting-period")
 
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
@@ -248,6 +250,16 @@ trait ComponentSpecBase extends UnitSpec
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             BusinessPhoneNumberForm.businessPhoneNumberValidationForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def submitBusinessStartDate(inEditMode: Boolean, request: Option[BusinessStartDateModel]): WSResponse = {
+      val uri = s"/business/start-date?editMode=$inEditMode"
+      post(uri, Map(ITSASessionKeys.JourneyStateKey -> Registration.name))(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            BusinessStartDateForm.businessStartDateForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
