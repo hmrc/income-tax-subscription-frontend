@@ -126,7 +126,6 @@ class HomeControllerSpec extends ControllerBaseSpec
 
     "user is found but their utr is not in CID" when {
       "the registration feature flag is off" should {
-        //TODO to registration
         "redirect the user to no nino page" in {
           userSetup()
           mockLookupUserWithoutUtr(testNino)
