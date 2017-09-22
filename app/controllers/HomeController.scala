@@ -80,7 +80,11 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
   private def gotoRegistration(implicit request: Request[AnyContent]) = Future.successful(
     if(applicationConfig.enableRegistration) {
-      gotoPreferences.withJourneyState(Registration)
+      val timestamp: String = java.time.LocalDateTime.now().toString
+
+      gotoPreferences
+        .addingToSession(StartTime -> timestamp)
+        .withJourneyState(Registration)
     }
     else {
       //TODO update this with the actual content for the error page
