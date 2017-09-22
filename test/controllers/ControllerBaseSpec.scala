@@ -18,7 +18,7 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import auth.{JourneyState, SignUp}
+import auth.{Registration, SignUp}
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc._
@@ -63,6 +63,10 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
 
   lazy val subscriptionRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> SignUp.name
+  )
+
+  lazy val registrationRequest = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> Registration.name
   )
 
 }

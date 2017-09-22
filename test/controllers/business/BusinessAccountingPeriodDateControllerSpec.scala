@@ -23,9 +23,7 @@ import forms.AccountingPeriodDateForm
 import models.{AccountingPeriodModel, DateModel}
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockKeystoreService
 import utils.TestModels
@@ -39,141 +37,233 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     "submit" -> TestBusinessAccountingPeriodController.submit(isEditMode = false)
   )
 
-  object TestBusinessAccountingPeriodController extends BusinessAccountingPeriodDateController(
-    MockBaseControllerConfig,
-    messagesApi,
-    MockKeystoreService,
-    mockAuthService
-  )
+  def createTestBusinessAccountingPeriodController(setEnableRegistration: Boolean): BusinessAccountingPeriodDateController =
+    new BusinessAccountingPeriodDateController(
+      mockBaseControllerConfig(new MockConfig {
+        override val enableRegistration = setEnableRegistration
+      }),
+      messagesApi,
+      MockKeystoreService,
+      mockAuthService
+    )
 
-  "Calling the showAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user with is current period as yes" should {
+  lazy val TestBusinessAccountingPeriodController: BusinessAccountingPeriodDateController =
+    createTestBusinessAccountingPeriodController(setEnableRegistration = false)
 
-    lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest)
+  "When the user is in the registration journey, BusinessAccountingPeriodDateController" when {
+    lazy val TestBusinessAccountingPeriodController: BusinessAccountingPeriodDateController =
+      createTestBusinessAccountingPeriodController(setEnableRegistration = true)
 
-    "return ok (200)" in {
-      // required for backurl
-      setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+    lazy val request = registrationRequest
 
-      status(result) must be(Status.OK)
+    "Calling the showAccountingPeriod action of the BusinessAccountingPeriodDate" should {
 
-      await(result)
-      verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 0)
+      lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(request)
 
-    }
+      "return ok (200)" in {
+        setupMockKeystore(fetchAccountingPeriodDate = None)
 
-    s"the rendered view should have the heading '${MessageLookup.AccountingPeriod.heading_current}'" in {
-      val document = Jsoup.parse(contentAsString(result))
-      document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading_current
-    }
-  }
+        status(result) must be(Status.OK)
 
-  "Calling the show action of the BusinessAccountingPeriodDate with an authorised user with is current period prior as no" should {
+        await(result)
+        verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 0)
 
-    lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest)
-
-    "return ok (200)" in {
-      // required for backurl
-      setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
-
-      status(result) must be(Status.OK)
-
-      await(result)
-      verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 0, fetchAccountingPeriodPrior = 2)
-
-    }
-
-    s"the rendered view should have the heading '${MessageLookup.AccountingPeriod.heading_next}'" in {
-      val document = Jsoup.parse(contentAsString(result))
-      document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading_next
-    }
-  }
-
-  "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
-
-    def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(subscriptionRequest
-      .post(AccountingPeriodDateForm.accountingPeriodDateForm, AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("1", "4", "2018"))))
-
-    "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        // required for backurl
-        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
-
-        val goodRequest = callShow(isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
       }
 
-      s"redirect to '${controllers.business.routes.BusinessAccountingMethodController.show().url}'" in {
-        // required for backurl
-        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
-
-        val goodRequest = callShow(isEditMode = false)
-
-        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingMethodController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+      s"the rendered view should have the heading '${MessageLookup.AccountingPeriod.heading_registration}'" in {
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading_registration
       }
     }
 
-    "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        // required for backurl
-        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+    "Calling the submit action of the BusinessAccountingPeriodDate with a valid submission" should {
 
-        val goodRequest = callShow(isEditMode = true)
+      def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(request
+        .post(AccountingPeriodDateForm.accountingPeriodDateForm, AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("1", "4", "2018"))))
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+      "When it is not in edit mode" should {
+        "return a redirect status (SEE_OTHER - 303)" in {
+          setupMockKeystoreSaveFunctions()
 
-        await(goodRequest)
-        verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+          val goodRequest = callShow(isEditMode = false)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingMethodController.show().url)
+
+          await(goodRequest)
+
+          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+        }
       }
 
-      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
-        // required for backurl
-        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+      "When it is in edit mode" should {
+        "return a redirect status (SEE_OTHER - 303)" in {
+          setupMockKeystoreSaveFunctions()
 
-        val goodRequest = callShow(isEditMode = true)
+          val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
 
-        await(goodRequest)
-        verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+        }
+      }
+    }
+
+    "Calling the submit action of the BusinessAccountingPeriodDate with an invalid submission" should {
+      lazy val badrequest = TestBusinessAccountingPeriodController.submit(isEditMode = false)(request)
+
+      "return a bad request status (400)" in {
+        status(badrequest) must be(Status.BAD_REQUEST)
+
+        await(badrequest)
+        verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 0)
+      }
+    }
+
+    "The back url" should {
+      s"point to ${controllers.business.routes.BusinessStartDateController.show().url}" in {
+        await(TestBusinessAccountingPeriodController.backUrl(request)) mustBe controllers.business.routes.BusinessStartDateController.show().url
       }
     }
   }
 
-  "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and invalid submission" should {
-    lazy val badrequest = TestBusinessAccountingPeriodController.submit(isEditMode = false)(subscriptionRequest)
+  "When the user is in the sign up journey, BusinessAccountingPeriodDateController" when {
 
-    "return a bad request status (400)" in {
-      // required for backurl
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+    lazy val request = subscriptionRequest
 
-      status(badrequest) must be(Status.BAD_REQUEST)
+    "Calling the showAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user with is current period as yes" should {
 
-      await(badrequest)
-      verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 0)
+      lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(request)
+
+      "return ok (200)" in {
+        // required for backurl
+        setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+
+        status(result) must be(Status.OK)
+
+        await(result)
+        verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 0)
+
+      }
+
+      s"the rendered view should have the heading '${MessageLookup.AccountingPeriod.heading_current}'" in {
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading_current
+      }
     }
+
+    "Calling the show action of the BusinessAccountingPeriodDate with an authorised user with is current period prior as no" should {
+
+      lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(request)
+
+      "return ok (200)" in {
+        // required for backurl
+        setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
+
+        status(result) must be(Status.OK)
+
+        await(result)
+        verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 0, fetchAccountingPeriodPrior = 2)
+
+      }
+
+      s"the rendered view should have the heading '${MessageLookup.AccountingPeriod.heading_next}'" in {
+        val document = Jsoup.parse(contentAsString(result))
+        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading_next
+      }
+    }
+
+    "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
+
+      def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(request
+        .post(AccountingPeriodDateForm.accountingPeriodDateForm, AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("1", "4", "2018"))))
+
+      "When it is not in edit mode" should {
+        "return a redirect status (SEE_OTHER - 303)" in {
+          // required for backurl
+          setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+
+          val goodRequest = callShow(isEditMode = false)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+        }
+
+        s"redirect to '${controllers.business.routes.BusinessAccountingMethodController.show().url}'" in {
+          // required for backurl
+          setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+
+          val goodRequest = callShow(isEditMode = false)
+
+          redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingMethodController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+        }
+      }
+
+      "When it is in edit mode" should {
+        "return a redirect status (SEE_OTHER - 303)" in {
+          // required for backurl
+          setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+
+          val goodRequest = callShow(isEditMode = true)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+        }
+
+        s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+          // required for backurl
+          setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+
+          val goodRequest = callShow(isEditMode = true)
+
+          redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+        }
+      }
+    }
+
+    "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and invalid submission" should {
+      lazy val badrequest = TestBusinessAccountingPeriodController.submit(isEditMode = false)(request)
+
+      "return a bad request status (400)" in {
+        // required for backurl
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+
+        status(badrequest) must be(Status.BAD_REQUEST)
+
+        await(badrequest)
+        verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 0)
+      }
+    }
+
+    "The back url when the user is submitting details for current period" should {
+      s"point to ${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}" in {
+        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+        await(TestBusinessAccountingPeriodController.backUrl(request)) mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
+        verifyKeystore(fetchAccountingPeriodPrior = 1)
+      }
+    }
+
+    "The back url when the user is submitting details for next period" should {
+      s"point to ${controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in {
+        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
+        await(TestBusinessAccountingPeriodController.backUrl(request)) mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+        verifyKeystore(fetchAccountingPeriodPrior = 1)
+      }
+    }
+
   }
 
-  "The back url when the user is submitting details for current period" should {
-    s"point to ${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}" in {
-      setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
-      await(TestBusinessAccountingPeriodController.backUrl(subscriptionRequest)) mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
-      verifyKeystore(fetchAccountingPeriodPrior = 1)
-    }
-  }
-
-  "The back url when the user is submitting details for next period" should {
-    s"point to ${controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in {
-      setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
-      await(TestBusinessAccountingPeriodController.backUrl(subscriptionRequest)) mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-      verifyKeystore(fetchAccountingPeriodPrior = 1)
-    }
-  }
-    authorisationTests()
-  }
+  authorisationTests()
+}

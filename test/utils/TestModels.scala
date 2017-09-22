@@ -39,8 +39,10 @@ object TestModels extends Implicits {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate = DateModel("01", "04", "2017")
+  val testStartDate = DateModel("06", "04", "2017")
   val testEndDate = DateModel("01", "04", "2018")
+
+  val testBusinessStartDate = BusinessStartDateModel(testStartDate)
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
   val testAccountingPeriod: AccountingPeriodModel =
@@ -117,9 +119,9 @@ object TestModels extends Implicits {
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, TestConstants.testNino, testStartDate)
 
-  lazy val testMatchSuccessModel  = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, Some(testUtr))
+  lazy val testMatchSuccessModel = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, Some(testUtr))
 
-  lazy val testMatchNoUtrModel  = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, None)
+  lazy val testMatchNoUtrModel = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, None)
 
   val testSummaryData = SummaryModel(
     incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),

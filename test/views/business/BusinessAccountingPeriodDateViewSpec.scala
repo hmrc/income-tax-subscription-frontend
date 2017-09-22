@@ -18,7 +18,7 @@ package views.business
 
 import assets.MessageLookup.{AccountingPeriod => messages, Base => common}
 import forms.AccountingPeriodDateForm
-import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
+import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView, RegistrationAccountingPeriodView}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
@@ -43,12 +43,13 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
       case (true, _) => messages.heading_editMode
       case (_, CurrentAccountingPeriodView) => messages.heading_current
       case (_, NextAccountingPeriodView) => messages.heading_next
+      case (_, RegistrationAccountingPeriodView) => messages.heading_registration
     },
     page = page(viewType = viewType, isEditMode = isEditMode)
   )
 
   "The Business Accounting Period Date view" should {
-    Seq(CurrentAccountingPeriodView, NextAccountingPeriodView).foreach {
+    Seq(CurrentAccountingPeriodView, NextAccountingPeriodView, RegistrationAccountingPeriodView).foreach {
       viewType =>
 
         val prefix = s"When the viewtype=$viewType"
@@ -63,7 +64,8 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 
         viewType match {
           case CurrentAccountingPeriodView => testPage.mustHavePara(messages.line_1_current)
-          case _ => testPage.mustHavePara(messages.line_1_next)
+          case NextAccountingPeriodView => testPage.mustHavePara(messages.line_1_next)
+          case RegistrationAccountingPeriodView => testPage.mustHavePara(messages.line_1_registration)
         }
 
         val form = testPage.getForm(s"$prefix Business Accounting Period Date form")(actionCall = action)
@@ -74,7 +76,8 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
           exampleDate =
             viewType match {
               case CurrentAccountingPeriodView => messages.exampleStartDate_current
-              case _ => messages.exampleStartDate_next
+              case NextAccountingPeriodView => messages.exampleStartDate_next
+              case RegistrationAccountingPeriodView => messages.exampleStartDate_registration
             }
         )
 
@@ -83,9 +86,10 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
           legend = common.endDate,
           exampleDate =
             viewType match {
-            case CurrentAccountingPeriodView => messages.exampleEndDate_current
-            case _ => messages.exampleEndDate_next
-          }
+              case CurrentAccountingPeriodView => messages.exampleEndDate_current
+              case NextAccountingPeriodView => messages.exampleEndDate_next
+              case RegistrationAccountingPeriodView => messages.exampleEndDate_registration
+            }
         )
 
         val editModePage = documentCore(

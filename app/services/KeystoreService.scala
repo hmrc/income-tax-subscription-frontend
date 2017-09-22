@@ -24,10 +24,10 @@ import models.address.Address
 import models.matching.UserDetailsModel
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 
 @Singleton
 class KeystoreService @Inject()(val session: SessionCache) {
@@ -70,6 +70,12 @@ class KeystoreService @Inject()(val session: SessionCache) {
 
   def saveBusinessAddress(address: Address)(implicit hc: HeaderCarrier, reads: Reads[Address]): FC =
     save[Address](BusinessAddress, address)
+
+  def fetchBusinessStartDate()(implicit hc: HeaderCarrier, reads: Reads[BusinessStartDateModel]): FO[BusinessStartDateModel] =
+    fetch[BusinessStartDateModel](BusinessStartDate)
+
+  def saveBusinessStartDate(businessStartDate: BusinessStartDateModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessStartDateModel]): FC =
+    save[BusinessStartDateModel](BusinessStartDate, businessStartDate)
 
   def fetchAccountingPeriodDate()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FO[AccountingPeriodModel] =
     fetch[AccountingPeriodModel](AccountingPeriodDate)

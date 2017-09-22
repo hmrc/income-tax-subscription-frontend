@@ -18,7 +18,7 @@ package forms
 
 import assets.MessageLookup
 import forms.validation.ErrorMessageFactory
-import forms.validation.testutils.{DataMap, _}
+import forms.validation.testutils._
 import models.BusinessPhoneNumberModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec

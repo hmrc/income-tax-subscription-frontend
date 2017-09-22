@@ -10,6 +10,10 @@ POST        /name                                   controllers.business.Busines
 GET         /phone-number                           controllers.business.BusinessPhoneNumberController.show(editMode: Boolean ?= false)
 POST        /phone-number                           controllers.business.BusinessPhoneNumberController.submit(editMode: Boolean ?= false)
 
+#Start Date Routes
+GET         /start-date                             controllers.business.BusinessStartDateController.show(editMode: Boolean ?= false)
+POST        /start-date                             controllers.business.BusinessStartDateController.submit(editMode: Boolean ?= false)
+
 #Income Type Routes
 GET         /accounting-method                      controllers.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /accounting-method                      controllers.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)

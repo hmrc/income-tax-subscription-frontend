@@ -88,9 +88,8 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
         case Right(ReturnedAddress(_, _, address)) =>
           address.country.fold("GB")(_.code) match {
             case Address.UKCountryCode =>
-              // TODO goto business start page when it's available
               keystoreService.saveBusinessAddress(address).map {
-                _ => NotImplemented("Goto Business start")
+                _ => Redirect(controllers.business.routes.BusinessStartDateController.show())
               }
             case _ =>
               // TODO handle if it's not an UK address when it's designed

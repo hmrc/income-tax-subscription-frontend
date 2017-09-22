@@ -118,8 +118,8 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
 
           val result = call(testId)
 
-          //TODO redirect to business start date when it becomes available
-          status(result) must be(Status.NOT_IMPLEMENTED)
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result).get mustBe controllers.business.routes.BusinessStartDateController.show().url
 
           verifyKeystore(saveBusinessAddress = 1)
         }

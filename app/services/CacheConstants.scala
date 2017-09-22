@@ -25,6 +25,7 @@ object CacheConstants {
   val BusinessName = "BusinessName"
   val BusinessPhoneNumber = "BusinessPhoneNumber"
   val BusinessAddress = "BusinessAddress"
+  val BusinessStartDate = "BusinessStartDate"
   val AccountingPeriodDate = "AccountingPeriodDate"
   val AccountingMethod = "AccountingMethod"
   val Terms = "Terms"
