@@ -16,11 +16,16 @@
 
 package models
 
+import models.address.Address
+
 
 case class SummaryModel(incomeSource: Option[IncomeSourceModel] = None,
                         otherIncome: Option[OtherIncomeModel] = None,
                         accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                         accountingPeriod: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,
+                        businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
+                        businessAddress: Option[Address] = None,
+                        businessStartDate: Option[BusinessStartDateModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
                         terms: Option[Boolean] = None)

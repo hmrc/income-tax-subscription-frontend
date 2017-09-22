@@ -18,6 +18,7 @@ package services
 
 import forms.IncomeSourceForm
 import models._
+import models.address.Address
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -37,6 +38,12 @@ object CacheUtil {
 
     def getBusinessName()(implicit read: Reads[BusinessNameModel]): Option[BusinessNameModel] = cacheMap.getEntry(BusinessName)
 
+    def getBusinessPhoneNumber()(implicit read: Reads[BusinessPhoneNumberModel]): Option[BusinessPhoneNumberModel] = cacheMap.getEntry(BusinessPhoneNumber)
+
+    def getBusinessAddress()(implicit read: Reads[Address]): Option[Address] = cacheMap.getEntry(BusinessAddress)
+
+    def getBusinessStartDate()(implicit read: Reads[BusinessStartDateModel]): Option[BusinessStartDateModel] = cacheMap.getEntry(BusinessStartDate)
+
     def getAccountingMethod()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
 
     def getTerms()(implicit read: Reads[Boolean]): Option[Boolean] = cacheMap.getEntry(Terms)
@@ -46,7 +53,10 @@ object CacheUtil {
                      oirc: Reads[OtherIncomeModel],
                      accP: Reads[AccountingPeriodPriorModel],
                      accD: Reads[AccountingPeriodModel],
-                     bus: Reads[BusinessNameModel],
+                     busName: Reads[BusinessNameModel],
+                     busPhone: Reads[BusinessPhoneNumberModel],
+                     busAdd: Reads[Address],
+                     busStart: Reads[BusinessStartDateModel],
                      accM: Reads[AccountingMethodModel],
                      ter: Reads[Boolean]): SummaryModel = {
       val incomeSource = getIncomeSource()
@@ -66,6 +76,9 @@ object CacheUtil {
                 getAccountingPeriodPrior(),
                 getAccountingPeriodDate(),
                 getBusinessName(),
+                getBusinessPhoneNumber(),
+                getBusinessAddress(),
+                getBusinessStartDate(),
                 getAccountingMethod(),
                 getTerms()
               )

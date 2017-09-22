@@ -238,8 +238,12 @@ object MessageLookup {
 
     val accounting_period_prior = "Did your current accounting period start before 1 April 2017?"
     val accounting_period = s"Your accounting period dates"
+    val accounting_period_registration = s"When's your current accounting period?"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "What's the name of your business?"
+    val business_phone_number = "What's your business telephone number?"
+    val business_address = "What's your business address?"
+    val business_start_date = "When did your business start trading?"
     val income_type = "What method do you use for your accounting?"
     val other_income = "Do you have any other sources of income?"
 

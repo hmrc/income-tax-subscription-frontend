@@ -19,6 +19,7 @@ package views
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
 import models._
+import models.address.Address
 import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
@@ -33,6 +34,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
   val testAccountingPeriod = AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))
   val testBusinessName = BusinessNameModel("test business name")
+  val testBusinessPhoneNumber: BusinessPhoneNumberModel = TestModels.testBusinessPhoneNumber
+  val testBusinessStartDate: BusinessStartDateModel = TestModels.testBusinessStartDate
+  val testBusinessAddress: Address = TestModels.testAddress
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
   val testOtherIncome: OtherIncomeModel = TestModels.testOtherIncomeNo
@@ -41,19 +45,24 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     otherIncome = testOtherIncome,
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
+    businessAddress = testBusinessAddress,
+    businessStartDate = testBusinessStartDate,
+    businessPhoneNumber = testBusinessPhoneNumber,
     accountingMethod = testAccountingMethod
   )
 
   lazy val postAction: Call = controllers.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.routes.TermsController.showTerms().url
 
-  def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Html = views.html.check_your_answers(
+  def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView, isRegistration: Boolean): Html = views.html.check_your_answers(
     summaryModel = testSummary,
+    isRegistration = isRegistration,
     postAction = postAction,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def document(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Document = page(accountingPeriodViewType).doc
+  def document(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView, isRegistration: Boolean = false): Document =
+    page(accountingPeriodViewType, isRegistration = isRegistration).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -84,11 +93,11 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     }
 
     s"have the heading (H1) '${messages.heading}'" in {
-      document().select("h1").text() must include (messages.heading)
+      document().select("h1").text() must include(messages.heading)
     }
 
     s"have visually hidden text as part of the (H1) '${messages.heading_hidden}'" in {
-      document().select("h1 span").text() must include (messages.heading_hidden)
+      document().select("h1 span").text() must include(messages.heading_hidden)
     }
 
     s"have the secondary heading (H2) '${messages.h2}'" in {
@@ -110,11 +119,13 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
     }
 
-    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String]) = {
-      val accountingPeriod = document().getElementById(sectionId)
-      val question = document().getElementById(questionId(sectionId))
-      val answer = document().getElementById(answerId(sectionId))
-      val editLink = document().getElementById(editLinkId(sectionId))
+    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String],
+                    accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView, isRegistration: Boolean = false): Unit = {
+      val doc = document(accountingPeriodViewType, isRegistration)
+      val accountingPeriod = doc.getElementById(sectionId)
+      val question = doc.getElementById(questionId(sectionId))
+      val answer = doc.getElementById(answerId(sectionId))
+      val editLink = doc.getElementById(editLinkId(sectionId))
 
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
@@ -124,25 +135,43 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       answer.text() shouldBe expectedAnswer
       if (expectedEditLink.nonEmpty) {
         editLink.attr("href") shouldBe expectedEditLink.get
-        editLink.text() should include (MessageLookup.Base.change)
+        editLink.text() should include(MessageLookup.Base.change)
         editLink.select("span").text() shouldBe expectedQuestion
         editLink.select("span").hasClass("visuallyhidden") shouldBe true
       }
     }
 
-    "display the correct info for the accounting period date" in {
-      val sectionId = AccountingPeriodDateId
-      val expectedQuestion = messages.accounting_period
-      val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
-      val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
-      val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+    "display the correct info for the accounting period date" when {
+      "the user is on the sign up journey" in {
+        val sectionId = AccountingPeriodDateId
+        val expectedQuestion = messages.accounting_period
+        val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
+        val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
+        val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
 
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink
+        )
+      }
+
+      "the user is on the registration journey" in {
+        val sectionId = AccountingPeriodDateId
+        val expectedQuestion = messages.accounting_period_registration
+        val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
+        val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
+        val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink,
+          isRegistration = true
+        )
+      }
     }
 
     "display the correct info for the income source" in {
@@ -178,6 +207,51 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val expectedQuestion = messages.business_name
       val expectedAnswer = testBusinessName.businessName
       val expectedEditLink = controllers.business.routes.BusinessNameController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )
+    }
+
+    "display the correct info for the business telephone" in {
+      val sectionId = BusinessPhoneNumberId
+      val expectedQuestion = messages.business_phone_number
+      val expectedAnswer = testBusinessPhoneNumber.phoneNumber
+      val expectedEditLink = controllers.business.routes.BusinessPhoneNumberController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )
+    }
+
+    "display the correct info for the business address" in {
+      val sectionId = BusinessAddressId
+      val expectedQuestion = messages.business_address
+      val expectedAnswer = testBusinessAddress.lines.get
+        .:+(testBusinessAddress.postcode.get)
+        .:+(testBusinessAddress.country.map(_.name).get)
+        .mkString(" ")
+      val expectedEditLink = controllers.business.routes.BusinessAddressController.init().url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )
+    }
+
+    "display the correct info for the business start date" in {
+      val sectionId = BusinessStartDateId
+      val expectedQuestion = messages.business_start_date
+      val expectedAnswer = testBusinessStartDate.startDate.toCheckYourAnswersDateFormat
+      val expectedEditLink = controllers.business.routes.BusinessStartDateController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
