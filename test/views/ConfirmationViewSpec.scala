@@ -17,11 +17,11 @@
 package views
 
 import assets.MessageLookup
+import forms.IncomeSourceForm
 import models.DateModel
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import utils.UnitTestTrait
 
 class ConfirmationViewSpec extends ViewSpecTrait {
 
@@ -29,18 +29,19 @@ class ConfirmationViewSpec extends ViewSpecTrait {
   val submissionDateValue = DateModel("1", "1", "2016")
   val duration: Int = 0
   val action = ViewSpecTrait.testCall
-  val incomeSource = "incomeSource"
+  val incomeSource = "Not both"
 
-  lazy val page = views.html.confirmation(
+  def page(incomeSource: String) = views.html.confirmation(
     subscriptionId = subscriptionIdValue,
     submissionDate = submissionDateValue,
     signOutAction = action,
     journeyDuration = duration,
     incomeSource = incomeSource
   )(FakeRequest(), applicationMessages, appConfig)
-  lazy val document = Jsoup.parse(page.body)
 
-  "The Confirmation view" should {
+  def document = Jsoup.parse(page(incomeSource).body)
+
+  "The Confirmation view for both income source" should {
 
     s"have the title '${MessageLookup.Confirmation.title}'" in {
       document.title() must be(MessageLookup.Confirmation.title)
@@ -92,9 +93,18 @@ class ConfirmationViewSpec extends ViewSpecTrait {
         document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para3)
       }
 
-      s"has an Agent Services account link '${MessageLookup.Confirmation.whatHappensNext.linkText}'" in {
-        document.select("#whatHappensNext a").text() mustBe MessageLookup.Confirmation.whatHappensNext.linkText
-        document.select("#whatHappensNext a").attr("href") mustBe appConfig.btaUrl
+      s"has a bullet point '${MessageLookup.Confirmation.whatHappensNext.bul1}'" in {
+        document.select("#whatHappensNext li").first().text() mustBe MessageLookup.Confirmation.whatHappensNext.bul1
+      }
+
+      s"has a bullet point to BTAk '${MessageLookup.Confirmation.whatHappensNext.bul2}'" in {
+        val bul2 = document.select("#whatHappensNext li").get(1)
+        bul2.text() mustBe MessageLookup.Confirmation.whatHappensNext.bul2
+        bul2.select("a").attr("href") mustBe appConfig.btaUrl
+      }
+
+      s"does not have a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para4}'" in {
+        document.select("#whatHappensNext p").text() must not include MessageLookup.Confirmation.whatHappensNext.para4
       }
 
     }
@@ -114,5 +124,11 @@ class ConfirmationViewSpec extends ViewSpecTrait {
       bannerSignout.attr("href") mustBe action.url
     }
 
+  }
+
+  "The Confirmation view for both income source" should {
+    s"have a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para4}'" in {
+      Jsoup.parse(page(IncomeSourceForm.option_both).body).select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para4)
+    }
   }
 }

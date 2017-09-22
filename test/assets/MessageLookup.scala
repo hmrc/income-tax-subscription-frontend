@@ -309,9 +309,11 @@ object MessageLookup {
     object whatHappensNext {
       val para1 = "If you forget your Government Gateway login details, we can use this reference number to help you retrieve them."
       val heading = "What happens next"
-      val para2 = "You must use accounting software to keep your accounts, and send a report to HMRC at least every quarter."
-      val linkText = "business tax account"
-      val para3 = s"You'll get an Income Tax estimate once you've submitted a report using your accounting software. From August 2017, you can view your estimate and report deadlines in your"
+      val para2 = "You must use accounting software to record your income and expenses and send a report to HM Revenue and Customs at least every quarter."
+      val para3 = "After you send a report you'll get an Income Tax estimate. You can view your estimate and report deadlines in your:"
+      val bul1 = "accounting software"
+      val bul2 = "business tax account"
+      val para4 = "It may take a few hours for them all to appear."
     }
 
   }

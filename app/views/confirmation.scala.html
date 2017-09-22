@@ -18,6 +18,7 @@
 @import models.DateModel
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import views.html.helpers._
+@import forms.IncomeSourceForm.option_both
 
 @(subscriptionId: String, submissionDate: DateModel, signOutAction: Call, journeyDuration: Int, incomeSource: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -42,7 +43,14 @@
         </div>
         <h2>@Messages("confirmation.whatHappensNext.heading")</h2>
         <p>@Messages("confirmation.whatHappensNext.para2")</p>
-        <p>@Html(Messages("confirmation.whatHappensNext.para3", appConfig.btaUrl))</p>
+        <p>@Messages("confirmation.whatHappensNext.para3")</p>
+        <ul class="bullets">
+            <li>@Messages("confirmation.whatHappensNext.bullet1")</li>
+            <li>@Html(Messages("confirmation.whatHappensNext.bullet2", appConfig.btaUrl))</li>
+        </ul>
+        @if(incomeSource == option_both) {
+            <p>@Messages("confirmation.whatHappensNext.para4")</p>
+        }
     </section>
 
     @form(action = signOutAction) {
