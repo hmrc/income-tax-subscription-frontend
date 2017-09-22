@@ -201,3 +201,107 @@ class HomeControllerISpec extends ComponentSpecBase {
   }
 
 }
+
+class HomeControllerISpecRegEnabled extends ComponentSpecBase {
+
+  override def config: Map[String, String] = super.config + ("feature-switch.enable-registration" -> "true")
+
+  "GET /report-quarterly/income-and-expenses/sign-up/index" when {
+
+    "the user both nino and utr enrolments" when {
+
+      "the user does not have a subscription" should {
+        "redirect to the preferences page" in {
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          SubscriptionStub.stubGetNoSubscription()
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return a SEE OTHER and re-direct to the preferences page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(preferencesURI)
+          )
+        }
+      }
+
+      "the subscription call fails" should {
+        "return an internal server error" in {
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          SubscriptionStub.stubGetSubscriptionFail()
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return an INTERNAL_SERVER_ERROR")
+          res should have(
+            httpStatus(INTERNAL_SERVER_ERROR)
+          )
+        }
+      }
+
+      "auth returns an org affinity group" should {
+        "redirect to the wrong affinity group error page" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthOrgAffinity()
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return a SEE OTHER with the error affinity group page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(wrongAffinityURI)
+          )
+        }
+      }
+
+      "auth returns an org affinity group with no nino" should {
+        "redirect to the wrong affinity group error page" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthOrgAffinityNoEnrolments()
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return a SEE OTHER with the error affinity group page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(wrongAffinityURI)
+          )
+        }
+      }
+
+    }
+
+    "the user only has a nino in enrolment" when {
+
+      "the user does not have a subscription" should {
+        "redirect to the preferences page" in {
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthNoUtr()
+          CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return a SEE OTHER and re-direct to the preferences page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(preferencesURI)
+          )
+        }
+      }
+
+    }
+
+  }
+
+
+}
