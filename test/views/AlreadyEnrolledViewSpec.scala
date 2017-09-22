@@ -79,15 +79,27 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
         document.select("#whatHappensNext h2").text() mustBe MessageLookup.Confirmation.whatHappensNext.heading
       }
 
+      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para2)
+      }
+
       s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para3}'" in {
         document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para3)
       }
 
-      s"has an Agent Services account link '${MessageLookup.Confirmation.whatHappensNext.linkText}'" in {
-        document.select("#whatHappensNext a").text() mustBe MessageLookup.Confirmation.whatHappensNext.linkText
-        document.select("#whatHappensNext a").attr("href") mustBe appConfig.btaUrl
+      s"has a bullet point '${MessageLookup.Confirmation.whatHappensNext.bul1}'" in {
+        document.select("#whatHappensNext li").first().text() mustBe MessageLookup.Confirmation.whatHappensNext.bul1
       }
 
+      s"has a bullet point to BTAk '${MessageLookup.Confirmation.whatHappensNext.bul2}'" in {
+        val bul2 = document.select("#whatHappensNext li").get(1)
+        bul2.text() mustBe MessageLookup.Confirmation.whatHappensNext.bul2
+        bul2.select("a").attr("href") mustBe appConfig.btaUrl
+      }
+
+      s"does not have a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para4}'" in {
+        document.select("#whatHappensNext p").text() must not include MessageLookup.Confirmation.whatHappensNext.para4
+      }
     }
 
     "have a sign out button" in {

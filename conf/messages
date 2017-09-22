@@ -204,8 +204,11 @@ confirmation.heading                                            = Sign up comple
 confirmation.banner.line_1                                      = Make a note of your Income Tax reference number:
 confirmation.whatHappensNext.para1                              = If you forget your Government Gateway login details, we can use this reference number to help you retrieve them.
 confirmation.whatHappensNext.heading                            = What happens next
-confirmation.whatHappensNext.para2                              = You must use accounting software to keep your accounts, and send a report to HMRC at least every quarter.
-confirmation.whatHappensNext.para3                              = You''ll get an Income Tax estimate once you''ve submitted a report using your accounting software. From August 2017, you can view your estimate and report deadlines in your <a id="bta" href="{0}">business tax account</a>.
+confirmation.whatHappensNext.para2                              = You must use accounting software to record your income and expenses and send a report to HM Revenue and Customs at least every quarter.
+confirmation.whatHappensNext.para3                              = After you send a report you’ll get an Income Tax estimate. You can view your estimate and report deadlines in your:
+confirmation.whatHappensNext.bullet1                            = accounting software
+confirmation.whatHappensNext.bullet2                            = <a id="bta" href="{0}">business tax account</a>
+confirmation.whatHappensNext.para4                              = It may take a few hours for them all to appear.
 confirmation.sign_out                                           = Sign out
 
 ## Errors ##
