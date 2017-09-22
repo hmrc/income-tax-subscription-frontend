@@ -42,7 +42,6 @@ object TestModels extends Implicits {
   val testStartDate = DateModel("06", "04", "2017")
   val testEndDate = DateModel("01", "04", "2018")
 
-  val testBusinessStartDate = BusinessStartDateModel(testStartDate)
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
   val testAccountingPeriod: AccountingPeriodModel =
@@ -53,6 +52,10 @@ object TestModels extends Implicits {
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
+  val testBusinessPhoneNumber = BusinessPhoneNumberModel("0")
+  val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
+  val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
+  val testBusinessStartDate = BusinessStartDateModel(testStartDate)
   val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
   val testTerms = true
 
@@ -64,6 +67,9 @@ object TestModels extends Implicits {
       accountingPeriodPrior = testAccountingPeriodPriorCurrent,
       accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
+      businessPhoneNumber = testBusinessPhoneNumber,
+      businessAddress = testAddress,
+      businessStartDate = testBusinessStartDate,
       accountingMethod = testAccountingMethod,
       terms = testTerms)
 
@@ -73,6 +79,9 @@ object TestModels extends Implicits {
                           accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                           businessName: Option[BusinessNameModel] = testBusinessName,
+                          businessPhoneNumber: Option[BusinessPhoneNumberModel] = testBusinessPhoneNumber,
+                          businessAddress: Option[Address] = testAddress,
+                          businessStartDate: Option[BusinessStartDateModel] = testBusinessStartDate,
                           accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
                           terms: Option[Boolean] = testTerms): CacheMap =
     testCacheMap(
@@ -81,6 +90,9 @@ object TestModels extends Implicits {
       accountingPeriodPrior = accountingPeriodPrior,
       accountingPeriodDate = accountingPeriodDate,
       businessName = businessName,
+      businessPhoneNumber = businessPhoneNumber,
+      businessAddress = businessAddress,
+      businessStartDate = businessStartDate,
       accountingMethod = accountingMethod,
       terms = terms)
 
@@ -89,6 +101,9 @@ object TestModels extends Implicits {
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
+                   businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
+                   businessAddress: Option[Address] = None,
+                   businessStartDate: Option[BusinessStartDateModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
                    terms: Option[Boolean] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
@@ -98,6 +113,9 @@ object TestModels extends Implicits {
       accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
+      businessPhoneNumber.fold(emptyMap)(model => Map(BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model))) ++
+      businessAddress.fold(emptyMap)(model => Map(BusinessAddress -> Address.format.writes(model))) ++
+      businessStartDate.fold(emptyMap)(model => Map(BusinessStartDate -> BusinessStartDateModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
       terms.fold(emptyMap)(model => Map(Terms -> Json.toJson(model)))
     CacheMap("", map)
@@ -132,7 +150,4 @@ object TestModels extends Implicits {
     accountingMethod = AccountingMethodModel("Cash")
   )
 
-  val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
-
-  val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
 }

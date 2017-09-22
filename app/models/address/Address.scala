@@ -23,7 +23,7 @@ case class Address(lines: Option[List[String]] = None,
                    postcode: Option[String] = None,
                    country: Option[Country] = None) {
   def toDescription: String =
-    (lines.getOrElse(List.empty) :+ postcode :+ country).mkString(", ") + "."
+    (lines.getOrElse(List.empty) :+ postcode.fold("")(identity) :+ country.fold("United Kingdom")(_.name)).mkString(", ") + "."
 }
 
 object Address {

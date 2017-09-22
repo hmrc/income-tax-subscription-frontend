@@ -19,7 +19,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
-import auth.{AuthenticatedController, IncomeTaxSAUser}
+import auth.{AuthenticatedController, IncomeTaxSAUser, Registration}
 import config.BaseControllerConfig
 import connectors.models.subscription.SubscriptionSuccess
 import play.api.i18n.MessagesApi
@@ -28,7 +28,7 @@ import services.{AuthService, KeystoreService, SubscriptionOrchestrationService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, InternalServerException }
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 @Singleton
 class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
@@ -47,6 +47,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
       cache =>
         Future.successful(
           Ok(views.html.check_your_answers(cache.getSummary,
+            isRegistration = request.isInState(Registration),
             controllers.routes.CheckYourAnswersController.submit(),
             backUrl = backUrl
           ))

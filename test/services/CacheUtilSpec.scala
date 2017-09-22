@@ -31,6 +31,9 @@ class CacheUtilSpec extends UnitTestTrait {
       emptyCacheMap.getIncomeSource() shouldBe None
       emptyCacheMap.getOtherIncome() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
+      emptyCacheMap.getBusinessPhoneNumber() shouldBe None
+      emptyCacheMap.getBusinessAddress() shouldBe None
+      emptyCacheMap.getBusinessStartDate() shouldBe None
       emptyCacheMap.getAccountingPeriodPrior() shouldBe None
       emptyCacheMap.getAccountingPeriodDate() shouldBe None
       emptyCacheMap.getAccountingMethod() shouldBe None
@@ -41,6 +44,9 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
       testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
+      testCacheMap.getBusinessPhoneNumber() shouldBe Some(testBusinessPhoneNumber)
+      testCacheMap.getBusinessAddress() shouldBe Some(testAddress)
+      testCacheMap.getBusinessStartDate() shouldBe Some(testBusinessStartDate)
       testCacheMap.getAccountingPeriodPrior() shouldBe Some(testAccountingPeriodPriorCurrent)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingMethod() shouldBe Some(testAccountingMethod)
@@ -55,6 +61,9 @@ class CacheUtilSpec extends UnitTestTrait {
           testAccountingPeriodPriorCurrent,
           testAccountingPeriod,
           testBusinessName,
+          testBusinessPhoneNumber,
+          testAddress,
+          testBusinessStartDate,
           testAccountingMethod,
           testTerms
         )
@@ -62,13 +71,16 @@ class CacheUtilSpec extends UnitTestTrait {
       // for the property only journey, this should only populate the subset of views
       // relevant to the journey
       val overPopulatedPropertyCacheMap =
-        testCacheMap(testIncomeSourceProperty,
-          testOtherIncomeNo,
-          testAccountingPeriodPriorCurrent,
-          testAccountingPeriod,
-          testBusinessName,
-          testAccountingMethod,
-          testTerms)
+      testCacheMap(testIncomeSourceProperty,
+        testOtherIncomeNo,
+        testAccountingPeriodPriorCurrent,
+        testAccountingPeriod,
+        testBusinessName,
+        testBusinessPhoneNumber,
+        testAddress,
+        testBusinessStartDate,
+        testAccountingMethod,
+        testTerms)
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceProperty,
