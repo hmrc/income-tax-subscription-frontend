@@ -202,7 +202,7 @@ class HomeControllerISpec extends ComponentSpecBase {
 
 }
 
-class HomeControllerISpecRegEnabled extends ComponentSpecBase {
+class HomeControllerRegEnabledISpec extends ComponentSpecBase {
 
   override def config: Map[String, String] = super.config + ("feature-switch.enable-registration" -> "true")
 
