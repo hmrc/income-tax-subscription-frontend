@@ -136,7 +136,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val contactHmrcLink: String = loadConfig("contact-hmrc.url")
 
-  override lazy val citizenDetailsURL: String = loadConfig("citizen-details.url")
+  override lazy val citizenDetailsURL: String = baseUrl("citizen-details")
 
   /*
   *  This checks to see if the testOnlyDoNotUseInAppConf route is set in configuration instead of the default prod.Routes

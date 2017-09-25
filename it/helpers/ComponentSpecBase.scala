@@ -73,7 +73,8 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.gg-authentication.port" -> mockPort,
     "microservice.services.authenticator.host" -> mockHost,
     "microservice.services.authenticator.port" -> mockPort,
-    "citizen-details.url" -> mockUrl,
+    "microservice.services.citizen-details.host" -> mockHost,
+    "microservice.services.citizen-details.port" -> mockPort,
     "address-lookup-frontend.url" -> mockUrl
   )
 
