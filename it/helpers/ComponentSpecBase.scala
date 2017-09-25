@@ -177,7 +177,14 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessAddress(state: JourneyState): WSResponse = get("/business/address", Map(ITSASessionKeys.JourneyStateKey -> state.name))
 
-    def businessAddressCallback(state: JourneyState): WSResponse = get(s"/business/address/callback?id=$testId", Map(ITSASessionKeys.JourneyStateKey -> state.name))
+    def submitBusinessAddress(state: JourneyState): WSResponse = post("/business/address", Map(ITSASessionKeys.JourneyStateKey -> state.name))(Map.empty)
+
+    def businessAddressInit(state: JourneyState): WSResponse = get("/business/address/init", Map(ITSASessionKeys.JourneyStateKey -> state.name))
+
+    def businessAddressCallback(editMode: Boolean, state: JourneyState): WSResponse = {
+      val url = s"/business/address/callback${if (editMode) "/edit" else ""}?id=$testId"
+      get(url, Map(ITSASessionKeys.JourneyStateKey -> state.name))
+    }
 
     def businessPhoneNumber(): WSResponse = get("/business/phone-number", Map(ITSASessionKeys.JourneyStateKey -> Registration.name))
 

@@ -30,5 +30,5 @@ POST        /register-next-accounting-period        controllers.business.Registe
 GET         /address                                controllers.business.BusinessAddressController.show(editMode: Boolean ?= false)
 POST        /address                                controllers.business.BusinessAddressController.submit(editMode: Boolean ?= false)
 GET         /address/init                           controllers.business.BusinessAddressController.init(editMode: Boolean ?= false)
-GET         /address/callback                       controllers.business.BusinessAddressController.callBack(editMode: Boolean = true, id: String)
-GET         /address/callback/edit                  controllers.business.BusinessAddressController.callBack(editMode: Boolean = false, id: String)
+GET         /address/callback                       controllers.business.BusinessAddressController.callBack(editMode: Boolean = false, id: String)
+GET         /address/callback/edit                  controllers.business.BusinessAddressController.callBack(editMode: Boolean = true, id: String)

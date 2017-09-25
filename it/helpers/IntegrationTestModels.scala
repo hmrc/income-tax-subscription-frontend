@@ -38,7 +38,9 @@ object IntegrationTestModels {
 
   val testBusinessStartDate = BusinessStartDateModel(testStartDate)
 
-  val fullKeystoreData: Map[String, JsValue] =
+  lazy val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
+
+  lazy val fullKeystoreData: Map[String, JsValue] =
     keystoreData(
       incomeSource = Some(testIncomeSourceBoth),
       otherIncome = Some(testOtherIncomeNo),
@@ -46,6 +48,7 @@ object IntegrationTestModels {
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       businessPhoneNumber = Some(testBusinessPhoneNumber),
+      businessAddress = Some(testAddress),
       accountingMethod = Some(testAccountingMethod),
       terms = Some(testTerms),
       userDetails = Some(testUserDetails)
@@ -57,6 +60,7 @@ object IntegrationTestModels {
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
+                   businessAddress: Option[Address] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
                    terms: Option[Boolean] = None,
                    userDetails: Option[UserDetailsModel] = None): Map[String, JsValue] = {
@@ -67,6 +71,7 @@ object IntegrationTestModels {
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       businessPhoneNumber.map(model => BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model)) ++
+      businessAddress.map(model => BusinessAddress -> Address.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       terms.map(model => Terms -> Json.toJson(model)) ++
       userDetails.map(model => UserDetails -> Json.toJson(model))
@@ -87,8 +92,6 @@ object IntegrationTestModels {
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testStartDate)
-
-  lazy val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
 
   lazy val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
 
