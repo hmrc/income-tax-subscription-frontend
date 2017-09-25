@@ -37,6 +37,7 @@ object IntegrationTestConstants {
   val testLastName = "Name"
   val dateOfBirth = DateModel("01", "01", "1980")
   val testPaperlessPreferenceToken = s"${UUID.randomUUID()}"
+  val testId = "12345"
 
   val testUrl = "/test/url/"
 
@@ -49,6 +50,7 @@ object IntegrationTestConstants {
   val incomeSourceURI = s"$baseURI/income"
   val otherIncomeURI = s"$baseURI/income-other"
   val businessNameURI = s"$baseURI/business/name"
+  val businessStartDateURI = s"$baseURI/business/start-date"
   val businessAccountingMethodURI = s"$baseURI/business/accounting-method"
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val errorOtherIncomeURI = s"$baseURI/error/other-income"

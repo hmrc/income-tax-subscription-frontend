@@ -8,6 +8,8 @@ import play.api.libs.json.{JsValue, Json}
 import services.CacheConstants
 import uk.gov.hmrc.domain.Generator
 import IntegrationTestConstants._
+import connectors.models.address.ReturnedAddress
+import models.address.{Address, Country}
 
 object IntegrationTestModels {
 
@@ -85,5 +87,9 @@ object IntegrationTestModels {
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testStartDate)
+
+  lazy val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
+
+  lazy val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
 
 }
