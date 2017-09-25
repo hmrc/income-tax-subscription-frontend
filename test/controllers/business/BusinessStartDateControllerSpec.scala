@@ -178,9 +178,9 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
       }
 
       // TODO change the end point when the edit page comes into play
-      s"When it not is not in edit mode, it should point to '${controllers.business.routes.BusinessAddressController.init().url}'" in {
+      s"When it not is not in edit mode, it should point to '${controllers.business.routes.BusinessAddressController.show().url}'" in {
         val document = Jsoup.parse(contentAsString(result(option_yes)))
-        document.select("#back").attr("href") mustBe controllers.business.routes.BusinessAddressController.init().url
+        document.select("#back").attr("href") mustBe controllers.business.routes.BusinessAddressController.show().url
       }
 
       s"WWhen it is in edit mode it should point to '${controllers.routes.CheckYourAnswersController.show().url}'" ignore {

@@ -21,6 +21,7 @@ import helpers.ComponentSpecBase
 import helpers.servicemocks.{AddressLookupStub, AuthStub, KeystoreStub}
 import play.api.http.Status._
 import helpers.IntegrationTestConstants._
+import play.api.i18n.Messages
 import services.CacheConstants.BusinessAddress
 
 class BusinessAddressControllerISpec extends ComponentSpecBase {
@@ -30,35 +31,36 @@ class BusinessAddressControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/address" when {
 
-    "call request successful" should {
-      "show the business address page" in {
+    "There is no address in keystore" should {
+      "redirect to business address init" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        AddressLookupStub.stubAddressSuccess()
+        KeystoreStub.stubEmptyKeystore()
 
         When("GET /business/address is called")
         val res = IncomeTaxSubscriptionFrontend.businessAddress(Registration)
 
-        Then(s"return a SEE_OTHER with a redirect location of $testUrl")
+        Then(s"return a SEE_OTHER with a redirect location of $businessAddressInitURI")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(testUrl)
+          redirectURI(businessAddressInitURI)
         )
       }
     }
 
-    "call request not successful" should {
-      "not show the business address page" in {
+    "There is an address in keystore" should {
+      "show the business address page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        AddressLookupStub.stubAddressFailure()
+        KeystoreStub.stubFullKeystore()
 
         When("GET /business/address is called")
         val res = IncomeTaxSubscriptionFrontend.businessAddress(Registration)
 
-        Then("return an internal server error")
+        Then(s"return a OK with the business address page")
         res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
+          httpStatus(OK),
+          pageTitle(Messages("business.address.title"))
         )
       }
     }
@@ -80,6 +82,58 @@ class BusinessAddressControllerISpec extends ComponentSpecBase {
     }
   }
 
+  "GET /report-quarterly/income-and-expenses/sign-up/business/address/init" when {
+
+    "call request successful" should {
+      "show the business address page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        AddressLookupStub.stubAddressSuccess()
+
+        When("GET /business/address/init is called")
+        val res = IncomeTaxSubscriptionFrontend.businessAddressInit(Registration)
+
+        Then(s"return a SEE_OTHER with a redirect location of $testUrl")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(testUrl)
+        )
+      }
+    }
+
+    "call request not successful" should {
+      "not show the business address page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        AddressLookupStub.stubAddressFailure()
+
+        When("GET /business/address/init is called")
+        val res = IncomeTaxSubscriptionFrontend.businessAddressInit(Registration)
+
+        Then("return an internal server error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
+
+    "state not in Registration" should {
+      "not show the business address page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        When("GET /business/address/init is called")
+        val res = IncomeTaxSubscriptionFrontend.businessAddressInit(SignUp)
+
+        Then("return a redirect location of indexURI")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(indexURI)
+        )
+      }
+    }
+  }
+
   "GET /report-quarterly/income-and-expenses/sign-up/business/address/callback" when {
 
     "call request successful" should {
@@ -90,7 +144,7 @@ class BusinessAddressControllerISpec extends ComponentSpecBase {
         KeystoreStub.stubKeystoreSave(BusinessAddress)
 
         When("GET /business/address/callback is called")
-        val res = IncomeTaxSubscriptionFrontend.businessAddressCallback(Registration)
+        val res = IncomeTaxSubscriptionFrontend.businessAddressCallback(editMode = false, Registration)
 
         Then(s"return a SEE_OTHER with a redirect location of $businessStartDateURI")
         res should have(
@@ -107,7 +161,7 @@ class BusinessAddressControllerISpec extends ComponentSpecBase {
         AddressLookupStub.stubAddressFetchFailure()
 
         When("GET /business/address/callback is called")
-        val res = IncomeTaxSubscriptionFrontend.businessAddressCallback(Registration)
+        val res = IncomeTaxSubscriptionFrontend.businessAddressCallback(editMode = false, Registration)
 
         Then("return an internal server error")
         res should have(
@@ -116,4 +170,5 @@ class BusinessAddressControllerISpec extends ComponentSpecBase {
       }
     }
   }
+
 }

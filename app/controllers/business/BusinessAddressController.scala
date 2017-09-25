@@ -25,6 +25,7 @@ import connectors.models.address._
 import models.address.Address
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.Html
 import services.{AddressLookupService, AuthService, KeystoreService}
 import uk.gov.hmrc.http.InternalServerException
 
@@ -39,11 +40,12 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
                                          ) extends RegistrationController with RawResponseReads {
 
 
-  private[controllers] def continueUrl(implicit request: Request[AnyContent]): String =
-    controllers.business.routes.BusinessAddressController.callBack("").absoluteURL().replace("""\?*.+$""", "")
+  private[controllers] def callbackUrl(editMode: Boolean)(implicit request: Request[AnyContent]): String =
+    controllers.business.routes.BusinessAddressController.callBack(editMode,"").absoluteURL().replace("""\?*.+$""", "")
 
-  private[controllers] def initConfig(implicit request: Request[AnyContent]): AddressLookupInitRequest =
-    AddressLookupInitRequest(continueUrl,
+  private[controllers] def initConfig(editMode: Boolean)(implicit request: Request[AnyContent]): AddressLookupInitRequest =
+    AddressLookupInitRequest(
+      callbackUrl(editMode),
       Some(LookupPage(
         heading = Some(Messages("business.address.lookup.heading")),
         filterLabel = Some(Messages("business.address.lookup.name_or_number")),
@@ -60,7 +62,8 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
       Some(
         ConfirmPage(
           heading = Some(Messages("business.address.confirm.heading")),
-          searchAgainLinkText = Some(Messages("business.address.confirm.change"))
+          searchAgainLinkText = Some(Messages("business.address.confirm.change")),
+          submitLabel = if (editMode) Some(Messages("base.update")) else None
         )
       ),
       Some(
@@ -73,23 +76,26 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
       )
     )
 
-
-  def init(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def init(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      addressLookupService.init(initConfig).flatMap {
+      addressLookupService.init(initConfig(editMode)).flatMap {
         case Right(url) => Future.successful(Redirect(url))
         case Left(err) => Future.failed(new InternalServerException("BusinessAddressController.init failed unexpectedly, status=" + err.status))
       }
   }
 
-  def callBack(id: String): Action[AnyContent] = Authenticated.async { implicit request =>
+  def callBack(editMode: Boolean, id: String): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       addressLookupService.retrieveAddress(id).flatMap {
         case Right(ReturnedAddress(_, _, address)) =>
           address.country.fold("GB")(_.code) match {
             case Address.UKCountryCode =>
               keystoreService.saveBusinessAddress(address).map {
-                _ => Redirect(controllers.business.routes.BusinessStartDateController.show())
+                _ =>
+                  if (editMode)
+                    Redirect(controllers.routes.CheckYourAnswersController.show())
+                  else
+                    Redirect(controllers.business.routes.BusinessStartDateController.show())
               }
             case _ =>
               // TODO handle if it's not an UK address when it's designed
@@ -100,6 +106,30 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
         case Left(MalformatAddressReturned) =>
           Future.failed(new InternalServerException("BusinessAddressController.callBack failed unexpectedly, malformed address retrieved"))
       }
+  }
+
+  def view(address: Address, backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
+    views.html.business.edit_business_address(
+      address,
+      controllers.business.routes.BusinessAddressController.submit(editMode = isEditMode),
+      backUrl,
+      editUrl = if (isEditMode) None else Some(controllers.business.routes.BusinessAddressController.init().url)
+    )
+
+  def show(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
+      keystoreService.fetchBusinessAddress() map {
+        case Some(address) => Ok(view(address, controllers.business.routes.BusinessPhoneNumberController.show().url, editMode))
+        case None => Redirect(controllers.business.routes.BusinessAddressController.init())
+      }
+  }
+
+  def submit(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
+      if (editMode)
+        Future.successful(Redirect(controllers.business.routes.BusinessAddressController.init(editMode = true)))
+      else
+        Future.successful(Redirect(controllers.business.routes.BusinessStartDateController.show()))
   }
 
 }

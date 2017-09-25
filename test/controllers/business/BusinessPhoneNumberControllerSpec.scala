@@ -113,12 +113,12 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
         }
 
-        s"redirect to '${controllers.business.routes.BusinessAddressController.init().url}'" in {
+        s"redirect to '${controllers.business.routes.BusinessAddressController.show().url}'" in {
           setupMockKeystoreSaveFunctions()
 
           val goodRequest = callShow(isEditMode = false)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAddressController.init().url)
+          redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAddressController.show().url)
 
           await(goodRequest)
           verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)

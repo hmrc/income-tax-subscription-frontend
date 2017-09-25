@@ -85,7 +85,7 @@
     val rowAnswer = address.lines.fold("")(_.map(l => s"</p>$l</p>").mkString("")) +
             address.postcode.fold("")(l => s"</p>$l</p>") +
             address.country.fold("")(l => s"</p>${l.name}</p>")
-    val rowUrl = controllers.business.routes.BusinessAddressController.init().url
+    val rowUrl = controllers.business.routes.BusinessAddressController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 

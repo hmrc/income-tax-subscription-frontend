@@ -237,7 +237,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         .:+(testBusinessAddress.postcode.get)
         .:+(testBusinessAddress.country.map(_.name).get)
         .mkString(" ")
-      val expectedEditLink = controllers.business.routes.BusinessAddressController.init().url
+      val expectedEditLink = controllers.business.routes.BusinessAddressController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

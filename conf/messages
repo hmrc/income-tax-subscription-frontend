@@ -64,6 +64,10 @@ property.income.heading                                         = How much was y
 property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
 
 # business address pages
+business.address.title                                          = Business address
+business.address.heading                                        = Your business address
+business.address.edit                                           = Edit address
+
 business.address.lookup.heading                                 = What''s your business address?
 business.address.lookup.name_or_number                          = House name or number
 business.address.lookup.submit                                  = Search address
