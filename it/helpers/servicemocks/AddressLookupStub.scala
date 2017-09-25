@@ -38,4 +38,8 @@ object AddressLookupStub extends WireMockMethods {
     when(method = GET, uri = addressFetchURI)
       .thenReturn(status = Status.OK, body = testReturnedAddress)
 
+  def stubAddressFetchFailure(): Unit =
+    when(method = GET, uri = addressFetchURI)
+      .thenReturn(status = Status.BAD_REQUEST)
+
 }

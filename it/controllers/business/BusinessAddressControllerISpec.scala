@@ -100,7 +100,20 @@ class BusinessAddressControllerISpec extends ComponentSpecBase {
       }
     }
 
+    "call request not successful" should {
+      "not redirect" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        AddressLookupStub.stubAddressFetchFailure()
 
+        When("GET /business/address/callback is called")
+        val res = IncomeTaxSubscriptionFrontend.businessAddressCallback(Registration)
 
+        Then("return an internal server error")
+        res should have(
+          httpStatus(INTERNAL_SERVER_ERROR)
+        )
+      }
+    }
   }
 }
