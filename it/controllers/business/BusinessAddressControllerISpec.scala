@@ -82,6 +82,68 @@ class BusinessAddressControllerISpec extends ComponentSpecBase {
     }
   }
 
+  "POST /report-quarterly/income-and-expenses/sign-up/business/address" when {
+
+    "when not in edit mode" should {
+      "redirect to accounting period dates" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        AddressLookupStub.stubAddressSuccess()
+
+        When("GET /business/address is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessAddress(editMode = false, Registration)
+
+        Then(s"return a SEE_OTHER with a redirect location of $businessStartDateURI")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(businessStartDateURI)
+        )
+      }
+    }
+
+    "when in edit mode" should {
+      "redirect to business address init" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        AddressLookupStub.stubAddressSuccess()
+
+        When("GET /business/address is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessAddress(editMode = true, Registration)
+
+        Then(s"return a SEE_OTHER with a redirect location of $businessAddressInitURI")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(businessAddressInitURI)
+        )
+      }
+    }
+
+    "state not in Registration" should {
+      "not show the business address page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+
+        When("GET /business/address is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessAddress(editMode = false, SignUp)
+
+        Then("return a redirect location of indexURI")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(indexURI)
+        )
+
+        When("GET /business/address?editMode=true is called")
+        val editRes = IncomeTaxSubscriptionFrontend.submitBusinessAddress(editMode = true, SignUp)
+
+        Then("return a redirect location of indexURI")
+        editRes should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(indexURI)
+        )
+      }
+    }
+  }
+
   "GET /report-quarterly/income-and-expenses/sign-up/business/address/init" when {
 
     "call request successful" should {

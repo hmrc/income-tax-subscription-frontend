@@ -177,7 +177,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessAddress(state: JourneyState): WSResponse = get("/business/address", Map(ITSASessionKeys.JourneyStateKey -> state.name))
 
-    def submitBusinessAddress(state: JourneyState): WSResponse = post("/business/address", Map(ITSASessionKeys.JourneyStateKey -> state.name))(Map.empty)
+    def submitBusinessAddress(editMode: Boolean, state: JourneyState): WSResponse =
+      post(s"/business/address${if(editMode) "?editMode=true" else ""}", Map(ITSASessionKeys.JourneyStateKey -> state.name))(Map.empty)
 
     def businessAddressInit(state: JourneyState): WSResponse = get("/business/address/init", Map(ITSASessionKeys.JourneyStateKey -> state.name))
 
