@@ -27,5 +27,8 @@ GET         /register-next-accounting-period        controllers.business.Registe
 POST        /register-next-accounting-period        controllers.business.RegisterNextAccountingPeriodController.submit
 
 
-GET         /address                                controllers.business.BusinessAddressController.init()
-GET         /address/callback                       controllers.business.BusinessAddressController.callBack(id: String)
+GET         /address                                controllers.business.BusinessAddressController.show(editMode: Boolean ?= false)
+POST        /address                                controllers.business.BusinessAddressController.submit(editMode: Boolean ?= false)
+GET         /address/init                           controllers.business.BusinessAddressController.init(editMode: Boolean ?= false)
+GET         /address/callback                       controllers.business.BusinessAddressController.callBack(editMode: Boolean = true, id: String)
+GET         /address/callback/edit                  controllers.business.BusinessAddressController.callBack(editMode: Boolean = false, id: String)

@@ -117,7 +117,7 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(controllers.business.routes.BusinessAddressController.init().url)
+          redirectURI(controllers.business.routes.BusinessAddressController.show().url)
         )
       }
 
