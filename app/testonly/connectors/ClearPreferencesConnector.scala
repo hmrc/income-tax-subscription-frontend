@@ -34,7 +34,7 @@ class ClearPreferencesConnector @Inject()(appConfig: TestOnlyAppConfig,
 
   val getEntityId: String => String = (nino: String) => appConfig.entityResolverURL + s"/entity-resolver/paye/$nino"
 
-  val clearPreferencesURL: String => String = (entityId: String) => appConfig.preferencesURL + s"/preferences-admin/$entityId"
+  val clearPreferencesURL: String => String = (entityId: String) => appConfig.preferencesUrl + s"/preferences-admin/$entityId"
 
   def clear(nino: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     httpGet.GET(getEntityId(nino)).flatMap { response =>
