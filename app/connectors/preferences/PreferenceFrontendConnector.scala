@@ -51,7 +51,7 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
     appConfig.preferencesFrontend + PreferenceFrontendConnector.checkPaperlessUri(returnUrl)
   }
 
-  lazy val choosePaperlessUrl: String =
+  def choosePaperlessUrl(implicit request: Request[AnyContent]): String =
     appConfig.preferencesFrontend + PreferenceFrontendConnector.choosePaperlessUri(returnUrl)
 
   def checkPaperless(token: String)(implicit request: Request[AnyContent]): Future[Either[PaperlessPreferenceError.type, PaperlessState]] = {

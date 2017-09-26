@@ -45,7 +45,7 @@ trait MockPreferenceFrontendConnector extends MockTrait {
 
   def mockCheckPaperlessException(token: String): Unit = mockCheckPaperless(token)(Future.failed(testException))
 
-  def mockChoosePaperlessUrl(url: String): Unit =
+  def mockChoosePaperlessUrl(url: String)(implicit request: Request[AnyContent]): Unit =
     when(mockPreferenceFrontendConnector.choosePaperlessUrl) thenReturn url
 
 }
