@@ -37,7 +37,7 @@ trait AppConfig {
   val subscriptionUrl: String
   val userMatchingUrl: String
   val authUrl: String
-  val preferencesService: String
+  val preferencesFrontend: String
   val preferencesUrl: String
   val baseUrl: String
   val ggUrl: String
@@ -113,7 +113,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override def storeNinoUrl(token: String) = s"$protectedMicroServiceUrl/income-tax-subscription/identifier-mapping/$token"
 
   // Digital Preferences
-  override lazy val preferencesService = baseUrl("preferences-frontend")
+  override lazy val preferencesFrontend = baseUrl("preferences-frontend")
   override lazy val preferencesUrl = baseUrl("preferences")
 
   // Enable or disable showing the guidance page or go straight to sign ups
