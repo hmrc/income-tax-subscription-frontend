@@ -32,7 +32,7 @@ trait MockConfig extends AppConfig {
   override val contactFrontendPartialBaseUrl: String = "/contact/partial"
   override val alreadyEnrolledUrl: String = "/already-enrolled"
   override val subscriptionUrl: String = "/income-tax-subscription/subscription"
-  override val preferencesService: String = ""
+  override val preferencesFrontend: String = ""
   override val preferencesUrl: String = ""
   override val baseUrl: String = ""
   override val authUrl: String = ""
