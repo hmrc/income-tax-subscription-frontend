@@ -159,7 +159,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val enableRegistration: Boolean = loadConfig("feature-switch.enable-registration").toBoolean
 
-  override lazy val addressLookupFrontendURL: String = loadConfig("address-lookup-frontend.url")
+  override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 
   override val newPreferencesApiEnabled: Boolean = loadConfig("feature-switch.new-preferences-api").toBoolean
 }
