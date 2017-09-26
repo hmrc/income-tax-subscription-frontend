@@ -114,7 +114,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   // Digital Preferences
   override lazy val preferencesService = baseUrl("preferences-frontend")
-  override lazy val preferencesUrl = loadConfig("preferences.url")
+  override lazy val preferencesUrl = baseUrl("preferences")
 
   // Enable or disable showing the guidance page or go straight to sign ups
   override lazy val showGuidance: Boolean = loadConfig("feature-switch.show-guidance").toBoolean
@@ -132,7 +132,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val ggURL = baseUrl("government-gateway")
   override lazy val ggAdminURL = baseUrl("gg-admin")
 
-  override lazy val identityVerificationURL: String = loadConfig("identity-verification-frontend.url")
+  override lazy val identityVerificationURL: String = baseUrl("identity-verification-frontend")
 
   override lazy val contactHmrcLink: String = loadConfig("contact-hmrc.url")
 
