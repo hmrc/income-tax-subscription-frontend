@@ -52,7 +52,7 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
   }
 
   lazy val choosePaperlessUrl: String =
-    appConfig.preferencesFrontend + PreferenceFrontendConnector.choosePaperlessUri(returnUrl)
+    appConfig.preferencesFrontendRedirect + PreferenceFrontendConnector.choosePaperlessUri(returnUrl)
 
   def checkPaperless(token: String)(implicit request: Request[AnyContent]): Future[Either[PaperlessPreferenceError.type, PaperlessState]] = {
     // The header carrier must include the current user's session in order to be authenticated by the preferences-frontend service
