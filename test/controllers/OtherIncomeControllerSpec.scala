@@ -326,9 +326,15 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
   }
 
 
-  "The back url" should {
+  "The back url not in edit mode" should {
     s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on other income page" in {
-      TestOtherIncomeController.backUrl mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+      TestOtherIncomeController.backUrl(isEditMode = false) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+    }
+  }
+
+  "The back url in edit mode" should {
+    s"point to ${controllers.routes.CheckYourAnswersController.show().url} on other income page" in {
+      TestOtherIncomeController.backUrl(isEditMode = true) mustBe controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

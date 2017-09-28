@@ -41,8 +41,8 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
     views.html.business.accounting_method(
       accountingMethodForm = accountingMethodForm,
       postAction = controllers.business.routes.BusinessAccountingMethodController.submit(editMode = isEditMode),
-      backUrl = backUrl,
-      isEditMode
+      isEditMode,
+      backUrl = backUrl(isEditMode)
     )
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -65,6 +65,10 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       )
   }
 
-  lazy val backUrl: String = controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+  def backUrl(isEditMode: Boolean): String =
+    if (isEditMode)
+      controllers.routes.CheckYourAnswersController.show().url
+    else
+      controllers.business.routes.BusinessAccountingPeriodDateController.show().url
 
 }

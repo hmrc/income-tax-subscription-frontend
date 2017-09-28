@@ -119,9 +119,15 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "The back url" should {
+  "The back url not in edit mode" should {
     s"point to ${controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-      TestBusinessAccountingMethodController.backUrl mustBe controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+      TestBusinessAccountingMethodController.backUrl(isEditMode = false) mustBe controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+    }
+  }
+
+  "The back url in edit mode" should {
+    s"point to ${controllers.routes.CheckYourAnswersController.show().url}" in {
+      TestBusinessAccountingMethodController.backUrl(isEditMode = true) mustBe controllers.routes.CheckYourAnswersController.show().url
     }
   }
 
