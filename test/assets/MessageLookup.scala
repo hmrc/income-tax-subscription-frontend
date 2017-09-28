@@ -443,7 +443,8 @@ object MessageLookup {
   object NoSA {
     val title = "You can't use this service yet"
     val heading = title
-    val line1 = "You need to register for Self Assessment before you can sign up for quarterly reporting."
+    val linkText = "register for Self Assessment"
+    val line1 = s"You need to $linkText before you can sign up for quarterly reporting."
   }
 
   object MainIncomeError {

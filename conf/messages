@@ -324,7 +324,7 @@ not-eligible.signout                                            = I don''t want 
 ## No SA page ##
 no-sa.title                                                     = You can''t use this service yet
 no-sa.heading                                                   = You can''t use this service yet
-no-sa.line_1                                                    = You need to <a href="{0}">register for Self Assessment</a> before you can sign up for quarterly reporting.
+no-sa.line_1                                                    = You need to <a id="sa-signup" href="{0}">register for Self Assessment</a> before you can sign up for quarterly reporting.
 
 ## Other income error page ##
 other-income-error.title                                        = You can only send quarterly reports on part of your income

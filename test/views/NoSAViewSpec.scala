@@ -38,6 +38,8 @@ class NoSAViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line1)
 
+    testPage.mustHaveALink(id = "sa-signup", messages.linkText, appConfig.signUpToSaLink)
+
     val form = testPage.getForm("No SA form")(actionCall = action)
 
     form.mustHaveSubmitButton(Base.signOut)

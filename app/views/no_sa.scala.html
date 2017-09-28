@@ -25,7 +25,7 @@
     <h1 class="heading-large">@Messages("no-sa.heading")</h1>
 
     <div class = "form-group">
-        <p>@Html(Messages("no-sa.line_1","https://www.gov.uk/log-in-file-self-assessment-tax-return/register-if-youre-not-self-employed"))</p>
+        <p>@Html(Messages("no-sa.line_1", appConfig.signUpToSaLink))</p>
     </div>
 
     @form(action = postAction) {
