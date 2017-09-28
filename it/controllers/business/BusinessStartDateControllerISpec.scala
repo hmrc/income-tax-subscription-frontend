@@ -16,22 +16,21 @@
 
 package controllers.business
 
-import forms._
+import config.featureswitch
+import config.featureswitch.FeatureSwitching
+import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import helpers.{ComponentSpecBase, IntegrationTestModels}
-import models._
 import play.api.http.Status._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import services.CacheConstants
 import services.CacheConstants._
 
-class BusinessStartDateControllerISpec extends ComponentSpecBase {
+class BusinessStartDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   // TODO remove this when registration is enabled by default
-  override def config: Map[String, String] = super.config + ("feature-switch.enable-registration" -> "true")
+  enable(featureswitch.Registration)
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/start-date" when {
 

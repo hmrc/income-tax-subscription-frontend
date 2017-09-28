@@ -17,17 +17,19 @@
 package controllers.business
 
 import auth.{Registration, SignUp}
+import config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.servicemocks.{AddressLookupStub, AuthStub, KeystoreStub}
 import play.api.http.Status._
 import helpers.IntegrationTestConstants._
 import play.api.i18n.Messages
 import services.CacheConstants.BusinessAddress
+import config.featureswitch
 
-class BusinessAddressControllerISpec extends ComponentSpecBase {
+class BusinessAddressControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   // TODO remove this when registration is enabled by default
-  override def config: Map[String, String] = super.config.+("feature-switch.enable-registration" -> "true")
+  enable(featureswitch.Registration)
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/address" when {
 

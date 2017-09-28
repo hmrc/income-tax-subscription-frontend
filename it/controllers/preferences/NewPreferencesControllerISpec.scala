@@ -16,7 +16,8 @@
 
 package controllers.preferences
 
-import config.AppConfig
+import config.featureswitch.FeatureSwitching
+import config.{AppConfig, featureswitch}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, PreferencesStub, PreferencesTokenStub}
@@ -25,9 +26,9 @@ import play.api.i18n.Messages
 import play.api.libs.json.JsString
 import services.CacheConstants._
 
-class NewPreferencesControllerISpec extends ComponentSpecBase {
+class NewPreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
-  override def config = super.config + ("feature-switch.new-preferences-api" -> "true")
+  enable(featureswitch.NewPreferencesApi)
 
   override implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 

@@ -16,6 +16,8 @@
 
 package controllers.business
 
+import config.featureswitch
+import config.featureswitch.FeatureSwitching
 import forms.IncomeSourceForm
 import helpers.IntegrationTestConstants.{checkYourAnswersURI, signInURI}
 import helpers.IntegrationTestModels._
@@ -26,10 +28,10 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 import services.CacheConstants
 
-class BusinessPhoneNumberControllerISpec extends ComponentSpecBase {
+class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   // TODO remove this when registration is enabled by default
-  override def config: Map[String, String] = super.config.+("feature-switch.enable-registration"->"true")
+  enable(featureswitch.Registration)
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/phone-number" when {
 
