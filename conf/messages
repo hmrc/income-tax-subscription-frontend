@@ -321,10 +321,10 @@ not-eligible.question                                           = Choose what yo
 not-eligible.signup                                             = I want to sign up
 not-eligible.signout                                            = I don''t want to sign up - sign me out
 
-## No NINO page ##
-no-nino.title                                                   = You can''t sign up for quarterly reporting yet
-no-nino.heading                                                 = You can''t sign up for quarterly reporting yet
-no-nino.line_1                                                  = You can sign up later in the year when this service is available to you.
+## No SA page ##
+no-sa.title                                                     = You can''t use this service yet
+no-sa.heading                                                   = You can''t use this service yet
+no-sa.line_1                                                    = You need to <a href="{0}">register for Self Assessment</a> before you can sign up for quarterly reporting.
 
 ## Other income error page ##
 other-income-error.title                                        = You can only send quarterly reports on part of your income

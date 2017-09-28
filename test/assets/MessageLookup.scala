@@ -440,10 +440,10 @@ object MessageLookup {
     val question = "Choose what you would like to do next"
   }
 
-  object NoNino {
-    val title = "You can't sign up for quarterly reporting yet"
+  object NoSA {
+    val title = "You can't use this service yet"
     val heading = title
-    val line1 = "You can sign up later in the year when this service is available to you."
+    val line1 = "You need to register for Self Assessment before you can sign up for quarterly reporting."
   }
 
   object MainIncomeError {

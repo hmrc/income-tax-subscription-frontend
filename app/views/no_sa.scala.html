@@ -20,12 +20,12 @@
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("no-nino.title"), bodyClasses = None, showSignOutLink = false) {
+@views.html.templates.main_template(title = Messages("no-sa.title"), bodyClasses = None, showSignOutLink = false) {
 
-    <h1 class="heading-large">@Messages("no-nino.heading")</h1>
+    <h1 class="heading-large">@Messages("no-sa.heading")</h1>
 
     <div class = "form-group">
-        <p>@Messages("no-nino.line_1")</p>
+        <p>@Html(Messages("no-sa.line_1","https://www.gov.uk/log-in-file-self-assessment-tax-return/register-if-youre-not-self-employed"))</p>
     </div>
 
     @form(action = postAction) {
