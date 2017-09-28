@@ -104,13 +104,10 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
   }
 
   def backUrl(isEditMode: Boolean)(implicit request: Request[_]): Future[String] =
-    if (request.isInState(Registration))
-      if (isEditMode)
-        controllers.routes.CheckYourAnswersController.show().url
-      else
-        controllers.business.routes.BusinessStartDateController.show().url
-    else if (isEditMode)
+    if (isEditMode)
       controllers.routes.CheckYourAnswersController.show().url
+    else if (request.isInState(Registration))
+        controllers.business.routes.BusinessStartDateController.show().url
     else
       keystoreService.fetchAccountingPeriodPrior() flatMap {
         case Some(currentPeriodPrior) => currentPeriodPrior.currentPeriodIsPrior match {
