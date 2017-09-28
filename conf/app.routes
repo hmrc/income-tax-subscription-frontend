@@ -53,8 +53,8 @@ POST        /income-other                 controllers.OtherIncomeController.subm
 GET         /already-enrolled             controllers.AlreadyEnrolledController.enrolled
 
 # No NINO Routes
-GET         /error/no-nino                controllers.NoNinoController.showNoNino
-POST        /error/no-nino                controllers.NoNinoController.submitNoNino
+GET         /register-for-SA              controllers.NoSAController.show
+POST        /register-for-SA              controllers.NoSAController.submit
 
 # Other Income Error Routes
 GET         /error/other-income           controllers.OtherIncomeErrorController.showOtherIncomeError

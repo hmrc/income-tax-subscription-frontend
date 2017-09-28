@@ -24,15 +24,15 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 @Singleton
-class NoNinoController @Inject()(implicit val applicationConfig: AppConfig,
-                                 val messagesApi: MessagesApi
+class NoSAController @Inject()(implicit val applicationConfig: AppConfig,
+                               val messagesApi: MessagesApi
                                 ) extends FrontendController with I18nSupport {
 
-  val showNoNino: Action[AnyContent] = Action {
-    implicit request => Ok(views.html.no_nino(postAction = controllers.routes.NoNinoController.submitNoNino()))
+  val show: Action[AnyContent] = Action {
+    implicit request => Ok(views.html.no_sa(postAction = controllers.routes.NoSAController.submit()))
   }
 
-  val submitNoNino: Action[AnyContent] = Action {
+  val submit: Action[AnyContent] = Action {
     implicit request => Redirect(controllers.routes.SignOutController.signOut())
   }
 

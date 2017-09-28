@@ -133,7 +133,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           val result = call()
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.routes.NoNinoController.showNoNino().url
+          redirectLocation(result).get mustBe controllers.routes.NoSAController.show().url
 
           await(result).session(subscriptionRequest).get(ITSASessionKeys.UTR) mustBe None
         }
