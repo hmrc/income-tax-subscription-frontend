@@ -18,6 +18,7 @@ package config
 
 import javax.inject.{Inject, Singleton}
 
+import config.featureswitch.{FeatureSwitching, Registration, UserMatching}
 import play.api.mvc.Call
 import play.api.{Application, Configuration}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -59,15 +60,15 @@ trait AppConfig {
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
   val authenticatorUrl: String
-  val userMatchingFeature: Boolean
-  val enableRegistration: Boolean
+  def userMatchingFeature: Boolean
+  def enableRegistration: Boolean
+  def newPreferencesApiEnabled: Boolean
   def storeNinoUrl(token: String): String
   val addressLookupFrontendURL: String
-  val newPreferencesApiEnabled: Boolean
 }
 
 @Singleton
-class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with ServicesConfig {
+class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with ServicesConfig with FeatureSwitching {
 
   protected val configuration: Configuration = app.configuration
 
@@ -159,12 +160,13 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val authenticatorUrl: String = baseUrl("authenticator")
 
-  override lazy val userMatchingFeature: Boolean = loadConfig("feature-switch.user-matching").toBoolean
+  override def userMatchingFeature: Boolean = isEnabled(featureswitch.UserMatching)
 
-  override lazy val enableRegistration: Boolean = loadConfig("feature-switch.enable-registration").toBoolean
+  override def enableRegistration: Boolean = isEnabled(featureswitch.Registration)
+
+  override def newPreferencesApiEnabled: Boolean = isEnabled(featureswitch.NewPreferencesApi)
 
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 
-  override val newPreferencesApiEnabled: Boolean = loadConfig("feature-switch.new-preferences-api").toBoolean
 }
 

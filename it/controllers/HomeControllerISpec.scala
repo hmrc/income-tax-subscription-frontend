@@ -16,6 +16,8 @@
 
 package controllers
 
+import config.featureswitch
+import config.featureswitch.FeatureSwitching
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -202,9 +204,9 @@ class HomeControllerISpec extends ComponentSpecBase {
 
 }
 
-class HomeControllerRegEnabledISpec extends ComponentSpecBase {
+class HomeControllerRegEnabledISpec extends ComponentSpecBase with FeatureSwitching {
 
-  override def config: Map[String, String] = super.config + ("feature-switch.enable-registration" -> "true")
+  enable(featureswitch.Registration)
 
   "GET /report-quarterly/income-and-expenses/sign-up/index" when {
 
