@@ -44,16 +44,16 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
     views.html.business.accounting_period_date(
       form,
       controllers.business.routes.BusinessAccountingPeriodDateController.submit(editMode = isEditMode),
-      backUrl,
       viewType,
-      isEditMode
+      isEditMode,
+      backUrl
     )
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
-        backUrl <- backUrl
+        backUrl <- backUrl(isEditMode)
         viewType <- whichView
       } yield
         Ok(view(
@@ -69,7 +69,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
       whichView.flatMap {
         viewType =>
           AccountingPeriodDateForm.accountingPeriodDateForm.bindFromRequest().fold(
-            formWithErrors => backUrl.map(backUrl => BadRequest(view(
+            formWithErrors => backUrl(isEditMode).map(backUrl => BadRequest(view(
               form = formWithErrors,
               backUrl = backUrl,
               isEditMode = isEditMode,
@@ -103,8 +103,14 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
     }
   }
 
-  def backUrl(implicit request: Request[_]): Future[String] =
-    if (request.isInState(Registration)) controllers.business.routes.BusinessStartDateController.show().url
+  def backUrl(isEditMode: Boolean)(implicit request: Request[_]): Future[String] =
+    if (request.isInState(Registration))
+      if (isEditMode)
+        controllers.routes.CheckYourAnswersController.show().url
+      else
+        controllers.business.routes.BusinessStartDateController.show().url
+    else if (isEditMode)
+      controllers.routes.CheckYourAnswersController.show().url
     else
       keystoreService.fetchAccountingPeriodPrior() flatMap {
         case Some(currentPeriodPrior) => currentPeriodPrior.currentPeriodIsPrior match {

@@ -124,7 +124,13 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
     "The back url" should {
       s"point to ${controllers.business.routes.BusinessStartDateController.show().url}" in {
-        await(TestBusinessAccountingPeriodController.backUrl(request)) mustBe controllers.business.routes.BusinessStartDateController.show().url
+        await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(request)) mustBe controllers.business.routes.BusinessStartDateController.show().url
+      }
+    }
+
+    "The back url in edit mode" should {
+      s"point to ${controllers.routes.CheckYourAnswersController.show().url}" in {
+        await(TestBusinessAccountingPeriodController.backUrl(isEditMode = true)(request)) mustBe controllers.routes.CheckYourAnswersController.show().url
       }
     }
   }
@@ -250,7 +256,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     "The back url when the user is submitting details for current period" should {
       s"point to ${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}" in {
         setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
-        await(TestBusinessAccountingPeriodController.backUrl(request)) mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
+        await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(request)) mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
         verifyKeystore(fetchAccountingPeriodPrior = 1)
       }
     }
@@ -258,7 +264,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     "The back url when the user is submitting details for next period" should {
       s"point to ${controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in {
         setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
-        await(TestBusinessAccountingPeriodController.backUrl(request)) mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+        await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(request)) mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
         verifyKeystore(fetchAccountingPeriodPrior = 1)
       }
     }

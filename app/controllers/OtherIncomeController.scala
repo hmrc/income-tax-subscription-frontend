@@ -45,15 +45,15 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
     views.html.other_income(
       otherIncomeForm = otherIncomeForm,
       postAction = controllers.routes.OtherIncomeController.submitOtherIncome(editMode = isEditMode),
-      backUrl = backUrl,
-      isEditMode = isEditMode
+      isEditMode = isEditMode,
+      backUrl = backUrl
     )
 
   def showOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         choice <- keystoreService.fetchOtherIncome()
-      } yield Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl, isEditMode))
+      } yield Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl(isEditMode), isEditMode))
   }
 
   def defaultRedirections(otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
@@ -80,7 +80,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
   def submitOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl, isEditMode = isEditMode)),
+        formWithErrors => BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl(isEditMode), isEditMode = isEditMode)),
         choice =>
           keystoreService.fetchOtherIncome().flatMap {
             previousOtherIncome =>
@@ -94,6 +94,10 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  lazy val backUrl: String = controllers.routes.IncomeSourceController.showIncomeSource().url
+  def backUrl(isEditMode: Boolean): String =
+    if (isEditMode)
+      controllers.routes.CheckYourAnswersController.show().url
+    else
+      controllers.routes.IncomeSourceController.showIncomeSource().url
 
 }

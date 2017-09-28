@@ -29,8 +29,8 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
   def page(isEditMode: Boolean) = views.html.business.accounting_method(
     accountingMethodForm = AccountingMethodForm.accountingMethodForm,
     postAction = action,
-    backUrl = backUrl,
-    isEditMode
+    isEditMode,
+      backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
   def documentCore(isEditMode: Boolean) = TestView(
