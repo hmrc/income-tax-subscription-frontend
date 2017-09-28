@@ -154,7 +154,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
   }
 
 
-  "The back url" should {
+  "The back url not in edit mode" should {
 
     def result(choice: String): Future[Result] = {
       setupMockKeystore(
@@ -175,7 +175,16 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
       val document = Jsoup.parse(contentAsString(result(option_no)))
       document.select("#back").attr("href") mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
     }
+  }
 
+  "The back url in edit mode" should {
+    s"point to ${controllers.routes.CheckYourAnswersController.show().url} on other income page" in {
+      def backUrl = TestBusinessNameController.backUrl(isEditMode = true)(subscriptionRequest)
+
+      val callBack = backUrl
+
+      await(callBack) mustBe controllers.routes.CheckYourAnswersController.show().url
+    }
   }
 
   authorisationTests()

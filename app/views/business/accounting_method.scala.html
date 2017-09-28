@@ -22,7 +22,7 @@
 @import helpers._
 @import config.AppConfig
 
-@(accountingMethodForm: Form[AccountingMethodModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingMethodForm: Form[AccountingMethodModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     Messages("business.accounting_method.heading")

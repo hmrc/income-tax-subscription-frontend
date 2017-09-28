@@ -38,13 +38,13 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                       ) extends AuthenticatedController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Future[Html] =
-    backUrl.map { backUrl =>
+    backUrl(isEditMode).map { backUrl =>
       views.html.business.business_name(
         businessNameForm = businessNameForm,
         postAction = controllers.business.routes.BusinessNameController.submit(editMode = isEditMode),
         isRegistration = request.isInState(Registration),
-        backUrl = backUrl,
-        isEditMode
+        isEditMode,
+        backUrl = backUrl
       )
     }
 
@@ -65,7 +65,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
           keystoreService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
               Redirect(controllers.routes.CheckYourAnswersController.show())
-            else if(request.isInState(Registration))
+            else if (request.isInState(Registration))
               Redirect(controllers.business.routes.BusinessPhoneNumberController.show())
             else
               Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
@@ -73,12 +73,15 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  def backUrl(implicit request: Request[_]): Future[String] = {
+  def backUrl(isEditMode: Boolean)(implicit request: Request[_]): Future[String] = {
     import forms.OtherIncomeForm._
-    keystoreService.fetchOtherIncome().map {
-      case Some(OtherIncomeModel(`option_yes`)) => controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
-      case _ => controllers.routes.OtherIncomeController.showOtherIncome().url
-    }
+    if (isEditMode)
+      Future.successful(controllers.routes.CheckYourAnswersController.show().url)
+    else
+      keystoreService.fetchOtherIncome().map {
+        case Some(OtherIncomeModel(`option_yes`)) => controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+        case _ => controllers.routes.OtherIncomeController.showOtherIncome().url
+      }
   }
 
 }

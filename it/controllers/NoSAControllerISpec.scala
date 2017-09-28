@@ -17,12 +17,12 @@
 package controllers
 
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{signInURI, signOutURI}
+import helpers.IntegrationTestConstants.signOutURI
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 
-class NoNinoControllerISpec extends ComponentSpecBase {
+class NoSAControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/error/no-nino" when {
 
@@ -31,27 +31,27 @@ class NoNinoControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        When("GET /error/no-nino is called")
-        val res = IncomeTaxSubscriptionFrontend.noNino()
+        When("GET /register-for-SA is called")
+        val res = IncomeTaxSubscriptionFrontend.noSA()
 
         Then("Should return a OK with the error main income page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("no-nino.title"))
+          pageTitle(Messages("no-sa.title"))
         )
       }
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/error/no-nino" when {
+  "POST /report-quarterly/income-and-expenses/sign-up/register-for-SA" when {
 
     "always" should {
       "proceed to sign out" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        When("POST /error/no-nino is called")
-        val res = IncomeTaxSubscriptionFrontend.submitNoNino()
+        When("POST /register-for-SA is called")
+        val res = IncomeTaxSubscriptionFrontend.submitNoSA()
 
         Then("Should return a SEE_OTHER with a redirect location of sign out")
         res should have(

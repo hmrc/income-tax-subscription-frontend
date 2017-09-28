@@ -16,20 +16,20 @@
 
 package views
 
-import assets.MessageLookup.{Base, NoNino => messages}
+import assets.MessageLookup.{Base, NoSA => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
-class NoNinoViewSpec extends ViewSpecTrait {
+class NoSAViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.no_nino(postAction = action)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = views.html.no_sa(postAction = action)(FakeRequest(), applicationMessages, appConfig)
 
-  "The No Nino view" should {
+  "The No SA view" should {
 
     val testPage = TestView(
-      name = "No Nino View",
+      name = "No SA View",
       title = messages.title,
       heading = messages.heading,
       page = page,
@@ -38,7 +38,9 @@ class NoNinoViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line1)
 
-    val form = testPage.getForm("Not Nino form")(actionCall = action)
+    testPage.mustHaveALink(id = "sa-signup", messages.linkText, appConfig.signUpToSaLink)
+
+    val form = testPage.getForm("No SA form")(actionCall = action)
 
     form.mustHaveSubmitButton(Base.signOut)
   }

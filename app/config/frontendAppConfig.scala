@@ -65,6 +65,8 @@ trait AppConfig {
   def newPreferencesApiEnabled: Boolean
   def storeNinoUrl(token: String): String
   val addressLookupFrontendURL: String
+  val newPreferencesApiEnabled: Boolean
+  val signUpToSaLink: String
 }
 
 @Singleton
@@ -168,5 +170,6 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 
+  override lazy val signUpToSaLink:String = loadConfig("sa-signup.url")
 }
 

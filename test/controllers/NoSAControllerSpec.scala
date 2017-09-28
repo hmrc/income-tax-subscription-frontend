@@ -20,22 +20,21 @@ import assets.MessageLookup
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-class NoNinoControllerSpec extends ControllerBaseSpec {
+class NoSAControllerSpec extends ControllerBaseSpec {
 
-  override val controllerName: String = "NoNinoController"
+  override val controllerName: String = "NoSAController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestNoNinoController extends NoNinoController()(
+  object TestNoSAController$ extends NoSAController()(
     MockBaseControllerConfig.applicationConfig,
     messagesApi
   )
 
-  "Calling the showNoNino action of the NoNinoController" should {
+  "Calling the show action of the NoSAController" should {
 
-    lazy val result = TestNoNinoController.showNoNino(subscriptionRequest)
+    lazy val result = TestNoSAController$.show(subscriptionRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -47,14 +46,14 @@ class NoNinoControllerSpec extends ControllerBaseSpec {
       charset(result) must be(Some("utf-8"))
     }
 
-    s"have the title '${MessageLookup.NoNino.title}'" in {
-      document.title() must be(MessageLookup.NoNino.title)
+    s"have the title '${MessageLookup.NoSA.title}'" in {
+      document.title() must be(MessageLookup.NoSA.title)
     }
   }
 
-  "Calling the submitNoNino action of the NoNinoController" should {
+  "Calling the submit action of the NoSAController" should {
 
-    lazy val result = TestNoNinoController.submitNoNino(subscriptionRequest)
+    lazy val result = TestNoSAController$.submit(subscriptionRequest)
 
     "return SEE_OTHER" in {
       status(result) must be(Status.SEE_OTHER)

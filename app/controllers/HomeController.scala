@@ -87,8 +87,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
         .withJourneyState(Registration)
     }
     else {
-      //TODO update this with the actual content for the error page
-      Redirect(controllers.routes.NoNinoController.showNoNino())
+      Redirect(controllers.routes.NoSAController.show())
     }
   )
 

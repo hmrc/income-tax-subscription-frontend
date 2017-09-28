@@ -171,7 +171,7 @@ class HomeControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE OTHER and re-direct to the no nino page")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(noNinoURI)
+            redirectURI(noSaURI)
           )
 
           val cookie = SessionCookieCrumbler.getSessionMap(res)
