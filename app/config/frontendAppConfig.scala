@@ -65,7 +65,6 @@ trait AppConfig {
   def newPreferencesApiEnabled: Boolean
   def storeNinoUrl(token: String): String
   val addressLookupFrontendURL: String
-  val newPreferencesApiEnabled: Boolean
   val signUpToSaLink: String
 }
 
