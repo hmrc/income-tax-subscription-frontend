@@ -161,9 +161,15 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "The back url" should {
+    "The back url when not in edit mode" should {
       s"point to ${controllers.business.routes.BusinessNameController.show().url}" in {
-        TestBusinessPhoneNumberController.backUrl mustBe controllers.business.routes.BusinessNameController.show().url
+        TestBusinessPhoneNumberController.backUrl(isEditMode = false) mustBe controllers.business.routes.BusinessNameController.show().url
+      }
+    }
+
+    "The back url when in edit mode" should {
+      s"point to ${controllers.routes.CheckYourAnswersController.show().url}" in {
+        TestBusinessPhoneNumberController.backUrl(isEditMode = true) mustBe controllers.routes.CheckYourAnswersController.show().url
       }
     }
   }

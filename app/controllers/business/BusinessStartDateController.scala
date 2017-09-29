@@ -68,8 +68,11 @@ class BusinessStartDateController @Inject()(val baseConfig: BaseControllerConfig
   }
 
   // TODO change the end point for linear journey when the edit page comes into play
-  // TODO go back to check your answers for edit journey
-  def backUrl(isEditMode: Boolean): String = controllers.business.routes.BusinessAddressController.show().url
+  def backUrl(isEditMode: Boolean): String =
+    if (isEditMode)
+      controllers.routes.CheckYourAnswersController.show().url
+    else
+      controllers.business.routes.BusinessAddressController.show().url
 
 }
 
