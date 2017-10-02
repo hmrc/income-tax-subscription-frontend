@@ -22,20 +22,20 @@
 
 @views.html.templates.main_template(title = Messages("Feature switch"), bodyClasses = None) {
     <form method="@action.method" action="@action.url">
+        @CSRF.formField
         <fieldset>
             <legend>
                 <h3 class="heading-medium">What features would you like to have enabled?</h3>
             </legend>
-            @CSRF.formField
+            <div class="form-group">
             @for(switch <- switchNames) {
-                <div class="form-group form-field">
-                    <label class ="lock-label selection-button-checkbox" for="@switch._1.name">
-                        <input type="checkbox" id="@switch._1.name" name="@switch._1.name" value="true" @{if(switch._2){"Checked"}}>
-                        @switch._1.displayText
-                    </label>
+                <div class="multiple-choice">
+                    <input type="checkbox" id="@switch._1.name" name="@switch._1.name" value="true" @{if(switch._2){"Checked"}}>
+                    <label for="@switch._1.name">@switch._1.displayText</label>
                 </div>
             }
-            <button type="submit">Update global settings</button>
+            </div>
         </fieldset>
+        <button type="submit">Update global settings</button>
     </form>
 }
