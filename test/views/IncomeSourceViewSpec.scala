@@ -23,11 +23,15 @@ import play.api.test.FakeRequest
 
 class IncomeSourceViewSpec extends ViewSpecTrait {
 
+  val backUrl = ViewSpecTrait.testBackUrl
+
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.income_source(
+  def page(isEditMode: Boolean) = views.html.income_source(
     incomeSourceForm = IncomeSourceForm.incomeSourceForm,
-    postAction = action
+    postAction = action,
+    backUrl = backUrl,
+    isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
   "The Income source view" should {
@@ -35,7 +39,7 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
       name = "Income source View",
       title = messages.title,
       heading = messages.heading,
-      page = page
+      page = page(isEditMode = false)
     )
 
     val form = testPage.getForm("Income source form")(actionCall = action)
