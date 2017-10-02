@@ -20,14 +20,22 @@
 
 @(switchNames: Map[FeatureSwitch, Boolean], action: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("Add known facts"), bodyClasses = None) {
+@views.html.templates.main_template(title = Messages("Feature switch"), bodyClasses = None) {
     <form method="@action.method" action="@action.url">
-        @CSRF.formField
-        @for(switch <- switchNames) {
-            @switch._1.name
-            <input type="checkbox" name="@switch._1.name" value="true" @{if(switch._2){"Checked"}}>
-            <br/>
-        }
-        <button type="submit">Update settings</button>
+        <fieldset>
+            <legend>
+                <h3 class="heading-medium">What features would you like to have enabled?</h3>
+            </legend>
+            @CSRF.formField
+            @for(switch <- switchNames) {
+                <div class="form-group form-field">
+                    <label class ="lock-label selection-button-checkbox" for="@switch._1.name">
+                        <input type="checkbox" id="@switch._1.name" name="@switch._1.name" value="true" @{if(switch._2){"Checked"}}>
+                        @switch._1.displayText
+                    </label>
+                </div>
+            }
+            <button type="submit">Update global settings</button>
+        </fieldset>
     </form>
 }
