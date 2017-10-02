@@ -41,8 +41,8 @@ class BusinessStartDateController @Inject()(val baseConfig: BaseControllerConfig
     views.html.business.business_start_date(
       businessStartDateForm = businessStartDateForm,
       postAction = controllers.business.routes.BusinessStartDateController.submit(editMode = isEditMode),
-      backUrl = backUrl(isEditMode),
-      isEditMode
+      isEditMode,
+      backUrl = backUrl(isEditMode)
     )
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
