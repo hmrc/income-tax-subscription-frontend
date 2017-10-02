@@ -177,14 +177,20 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
         TestBusinessStartDateController.show(isEditMode = false)(request)
       }
 
-      // TODO change the end point when the edit page comes into play
+      def resultEdit(choice: String): Future[Result] = {
+        setupMockKeystore(
+          fetchBusinessStartDate = None
+        )
+        TestBusinessStartDateController.show(isEditMode = true)(request)
+      }
+
       s"When it not is not in edit mode, it should point to '${controllers.business.routes.BusinessAddressController.show().url}'" in {
         val document = Jsoup.parse(contentAsString(result(option_yes)))
         document.select("#back").attr("href") mustBe controllers.business.routes.BusinessAddressController.show().url
       }
 
-      s"WWhen it is in edit mode it should point to '${controllers.routes.CheckYourAnswersController.show().url}'" ignore {
-        val document = Jsoup.parse(contentAsString(result(option_no)))
+      s"When it is in edit mode it should point to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+        val document = Jsoup.parse(contentAsString(resultEdit(option_no)))
         document.select("#back").attr("href") mustBe controllers.routes.CheckYourAnswersController.show().url
       }
 

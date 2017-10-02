@@ -41,8 +41,8 @@ class BusinessPhoneNumberController @Inject()(val baseConfig: BaseControllerConf
     views.html.business.business_phone_number(
       businessPhoneNumberForm = businessPhoneNumberForm,
       postAction = controllers.business.routes.BusinessPhoneNumberController.submit(editMode = isEditMode),
-      backUrl = backUrl,
-      isEditMode
+      isEditMode,
+      backUrl = backUrl(isEditMode)
     )
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -67,6 +67,10 @@ class BusinessPhoneNumberController @Inject()(val baseConfig: BaseControllerConf
       )
   }
 
-  lazy val backUrl: String = controllers.business.routes.BusinessNameController.show().url
+  def backUrl(isEditMode: Boolean): String =
+    if (isEditMode)
+      controllers.routes.CheckYourAnswersController.show().url
+    else
+      controllers.business.routes.BusinessNameController.show().url
 
 }
