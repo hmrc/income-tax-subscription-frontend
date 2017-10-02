@@ -23,6 +23,14 @@ sealed trait FeatureSwitch {
 
 object FeatureSwitch {
   val prefix = "feature-switch"
+
+  def apply(str:String) :FeatureSwitch = str match {
+    case UserMatching.name => UserMatching
+    case NewPreferencesApi.name => NewPreferencesApi
+    case Registration.name => Registration
+  }
+
+  val switches = Set(UserMatching, NewPreferencesApi, Registration)
 }
 
 object UserMatching extends FeatureSwitch {

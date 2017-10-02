@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package config.featureswitch
+@import testonly.models.KnownFactsModel
+@import testonly.forms.KnownFactsForm._
+@import helpers._
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import config.AppConfig
 
-trait FeatureSwitching {
-  val FEATURE_SWITCH_ON = "true"
-  val FEATURE_SWITCH_OFF = "false"
-
-
-  protected def isEnabled(featureSwitch: FeatureSwitch): Boolean =
-    sys.props get featureSwitch.name contains FEATURE_SWITCH_ON
-
-  protected def enable(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.name -> FEATURE_SWITCH_ON
-
-  protected def disable(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.name -> FEATURE_SWITCH_OFF
+@(switchNames: Map[String, Boolean])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@views.html.templates.main_template(title = Messages("Add known facts"), bodyClasses = None) {
+ <form>
+ @for(switch <- switchNames) {
+  @{switch._1}<input type="checkbox" name="switch" value="@{switch._1}"><br/>
+ }
+ </form>
 }
