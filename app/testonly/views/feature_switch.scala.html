@@ -14,17 +14,20 @@
  * limitations under the License.
  *@
 
-@import testonly.models.KnownFactsModel
-@import testonly.forms.KnownFactsForm._
-@import helpers._
-@import uk.gov.hmrc.play.views.html.helpers.form
 @import config.AppConfig
+@import config.featureswitch.FeatureSwitch
+@import helper._
 
-@(switchNames: Map[String, Boolean])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(switchNames: Map[FeatureSwitch, Boolean], action: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
 @views.html.templates.main_template(title = Messages("Add known facts"), bodyClasses = None) {
- <form>
- @for(switch <- switchNames) {
-  @{switch._1}<input type="checkbox" name="switch" value="@{switch._1}"><br/>
- }
- </form>
+    <form method="@action.method" action="@action.url">
+        @CSRF.formField
+        @for(switch <- switchNames) {
+            @switch._1.name
+            <input type="checkbox" name="@switch._1.name" value="true" @{if(switch._2){"Checked"}}>
+            <br/>
+        }
+        <button type="submit">Update settings</button>
+    </form>
 }

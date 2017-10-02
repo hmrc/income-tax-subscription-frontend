@@ -20,32 +20,39 @@ import javax.inject.Inject
 
 import auth.BaseFrontendController
 import config.BaseControllerConfig
+import config.featureswitch.FeatureSwitch._
 import config.featureswitch.{FeatureSwitch, FeatureSwitching}
-import play.api.data.validation.Constraint
-import play.api.data.{FormError, Mapping}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, Request}
 import play.twirl.api.Html
 import services.AuthService
-import FeatureSwitch._
 
 class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
                                         val baseConfig: BaseControllerConfig,
                                         val authService: AuthService)
   extends BaseFrontendController with FeatureSwitching with I18nSupport {
-  private def view(switchNames: Map[String, Boolean])(implicit request: Request[_]): Html = testonly.views.html.feature_switch(
-    switchNames = switchNames
+  private def view(switchNames: Map[FeatureSwitch, Boolean])(implicit request: Request[_]): Html = testonly.views.html.feature_switch(
+    switchNames = switchNames,
+    testonly.controllers.routes.FeatureSwitchController.submit()
   )
 
   lazy val show = Action { implicit req =>
     val featureSwitches = (switches map (switch => switch -> isEnabled(switch))).toMap
-
     Ok(view(featureSwitches))
   }
 
   lazy val submit = Action { implicit req =>
     val featureSwitches =
-      req.body.asFormUrlEncoded.fold(Map.empty[FeatureSwitch, Boolean])(_.map { case (k, v) => FeatureSwitch(k) -> v.head.toBoolean })
-    Ok(view(featureSwitches))
+      req.body.asFormUrlEncoded.fold(Map.empty[FeatureSwitch, Boolean])(_.filterNot(_._1 == "csrfToken").map {
+        case (k, v) => FeatureSwitch(k) -> v.head.toBoolean
+      })
+
+    switches.foreach(fs =>
+      if (featureSwitches.contains(fs)) enable(fs)
+      else disable(fs)
+    )
+
+    Redirect(testonly.controllers.routes.FeatureSwitchController.show())
   }
+
 }
