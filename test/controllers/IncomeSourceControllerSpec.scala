@@ -194,6 +194,12 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     }
   }
 
+  "The back url" should {
+    s"point to ${controllers.routes.CheckYourAnswersController.show().url} on income source page" in {
+      TestIncomeSourceController.backUrl mustBe controllers.routes.CheckYourAnswersController.show().url
+    }
+  }
+
   authorisationTests()
 
 }

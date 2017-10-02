@@ -37,18 +37,20 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val authService: AuthService
                                       ) extends AuthenticatedController {
 
-  def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    views.html.income_source(
-      incomeSourceForm = incomeSourceForm,
-      postAction = controllers.routes.IncomeSourceController.submitIncomeSource(editMode = isEditMode)
-    )
-
   def showIncomeSource(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.fetchIncomeSource() map {
         incomeSource => Ok(view(incomeSourceForm = IncomeSourceForm.incomeSourceForm.fill(incomeSource), isEditMode = isEditMode))
       }
   }
+
+  def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
+    views.html.income_source(
+      incomeSourceForm = incomeSourceForm,
+      postAction = controllers.routes.IncomeSourceController.submitIncomeSource(editMode = isEditMode),
+      isEditMode = isEditMode,
+      backUrl = backUrl
+    )
 
   def submitIncomeSource(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -86,4 +88,6 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
 
   def both(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.routes.OtherIncomeController.showOtherIncome()))
 
+  lazy val backUrl: String =
+      controllers.routes.CheckYourAnswersController.show().url
 }
