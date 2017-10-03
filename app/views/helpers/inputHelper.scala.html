@@ -47,7 +47,7 @@
         @formHint.fold(Nil: Seq[Html])(_.map(hintText))
     </label>
     @fieldErrorHelper(field, parentForm)
-    <input class="input--fullwidth" name=@field.name class="form-control" id=@field.name type="text"
+    <input name="@field.name" id="@field.name" type="text"
         @maxLength.fold(Html(""))(max => Html(s"maxlength=$max"))
     value="@field.value.fold("")(v => v)"
         @if(isNumeric) {
