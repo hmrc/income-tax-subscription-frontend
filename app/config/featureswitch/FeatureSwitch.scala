@@ -26,13 +26,14 @@ sealed trait FeatureSwitch {
 object FeatureSwitch {
   val prefix = "feature-switch"
 
+  val switches = Set(UserMatching, NewPreferencesApi, Registration)
+
   def apply(str: String): FeatureSwitch =
-    switches.filter(_.name == str).toList match {
-      case head :: Nil => head
-      case _ => throw new IllegalArgumentException("Invalid feature switch: " + str)
+    switches find (_.name == str) match {
+      case Some(switch) => switch
+      case None => throw new IllegalArgumentException("Invalid feature switch: " + str)
     }
 
-  val switches = Set(UserMatching, NewPreferencesApi, Registration)
 }
 
 object UserMatching extends FeatureSwitch {
