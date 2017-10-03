@@ -53,10 +53,8 @@
         @fieldErrorHelper(field, parentForm)
         @for((label,i) <- labels.zipWithIndex) {
             <div class="multiple-choice">
-                <label class="block-label selection-button-checkbox" for="@{field.name}-@i">
-                    <input id="@{field.name}-@i" name="@{field.name}[@i]" type="checkbox" value="@valueAttr(label)" @isChecked>
-                    @Html(label)
-                </label>
+                <label class="block-label selection-button-checkbox" for="@{field.name}-@i">@Html(label)</label>
+                <input id="@{field.name}-@i" name="@{field.name}[@i]" type="checkbox" value="@valueAttr(label)" @isChecked>
             </div>
         }
     </fieldset>

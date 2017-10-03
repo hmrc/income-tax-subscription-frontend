@@ -20,6 +20,7 @@ trait FeatureSwitching {
   val FEATURE_SWITCH_ON = "true"
   val FEATURE_SWITCH_OFF = "false"
 
+
   protected def isEnabled(featureSwitch: FeatureSwitch): Boolean =
     sys.props get featureSwitch.name contains FEATURE_SWITCH_ON
 

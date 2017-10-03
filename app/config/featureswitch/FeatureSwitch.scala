@@ -15,24 +15,38 @@
  */
 
 package config.featureswitch
+
 import FeatureSwitch.prefix
 
 sealed trait FeatureSwitch {
   val name: String
+  val displayText: String
 }
 
 object FeatureSwitch {
   val prefix = "feature-switch"
+
+  val switches = Set(UserMatching, NewPreferencesApi, Registration)
+
+  def apply(str: String): FeatureSwitch =
+    switches find (_.name == str) match {
+      case Some(switch) => switch
+      case None => throw new IllegalArgumentException("Invalid feature switch: " + str)
+    }
+
 }
 
 object UserMatching extends FeatureSwitch {
   val name = s"$prefix.user-matching"
+  val displayText = "User matching"
 }
 
 object NewPreferencesApi extends FeatureSwitch {
   val name = s"$prefix.new-preferences-api"
+  val displayText = "New preferences' API"
 }
 
 object Registration extends FeatureSwitch {
   val name = s"$prefix.enable-registration"
+  val displayText = "Registration journey"
 }

@@ -44,8 +44,7 @@ class CheckboxHelperSpec extends UnitTestTrait {
       val testField = testForm(checkedName)
 
       val doc = checkboxHelper(testField, testLabel).doc
-      doc.getElementsByTag("div").hasClass("form-group") shouldBe true
-      doc.getElementsByTag("div").hasClass("form-field") shouldBe true
+      doc.getElementsByTag("div").hasClass("multiple-choice") shouldBe true
       doc.getElementsByTag("label").text() should include(testLabel)
       val inputs = doc.getElementsByTag("input")
 
