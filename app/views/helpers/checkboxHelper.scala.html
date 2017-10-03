@@ -37,10 +37,8 @@
     }
 }
 
-<div class="form-group form-field@if(hasError) { form-field--error}">
+<div class="multiple-choice@if(hasError) { form-field--error}">
     @fieldErrorHelper(field, parentForm)
-    <label class="block-label selection-button-checkbox" for="@{field.name}">
-        <input id="@{field.name}" name="@{field.name}" type="checkbox" value="true" @isChecked>
-        @Html(label)
-    </label>
+    <input id="@{field.name}" name="@{field.name}" type="checkbox" value="true" @isChecked>
+    <label class="block-label selection-button-checkbox" for="@{field.name}">@Html(label)</label>
 </div>
