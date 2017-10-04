@@ -24,7 +24,7 @@ import forms._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
-import auth.{JourneyState, Registration, SignUp}
+import auth.{JourneyState, Registration, SignUp, UserMatching}
 import models.matching.UserDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -180,7 +180,7 @@ trait ComponentSpecBase extends UnitSpec
     def businessAddress(state: JourneyState): WSResponse = get("/business/address", Map(ITSASessionKeys.JourneyStateKey -> state.name))
 
     def submitBusinessAddress(editMode: Boolean, state: JourneyState): WSResponse =
-      post(s"/business/address${if(editMode) "?editMode=true" else ""}", Map(ITSASessionKeys.JourneyStateKey -> state.name))(Map.empty)
+      post(s"/business/address${if (editMode) "?editMode=true" else ""}", Map(ITSASessionKeys.JourneyStateKey -> state.name))(Map.empty)
 
     def businessAddressInit(state: JourneyState): WSResponse = get("/business/address/init", Map(ITSASessionKeys.JourneyStateKey -> state.name))
 
@@ -292,27 +292,27 @@ trait ComponentSpecBase extends UnitSpec
 
     def iv(): WSResponse = get("/iv")
 
-    def showUserDetails(): WSResponse = get("/user-details")
+    def showUserDetails(): WSResponse = get("/user-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
 
     def submitUserDetails(clientDetails: Option[UserDetailsModel]): WSResponse =
-      post("/user-details")(
+      post("/user-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))(
         clientDetails.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(UserDetailsForm.userDetailsValidationForm, cd)
         )
       )
 
-    def showUserDetailsError(): WSResponse = get("/error/user-details")
+    def showUserDetailsError(): WSResponse = get("/error/user-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
 
-    def showUserDetailsLockout(): WSResponse = get("/error/lockout")
+    def showUserDetailsLockout(): WSResponse = get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
 
-    def submitUserDetailsLockout(): WSResponse = post("/error/lockout")(Map.empty)
+    def submitUserDetailsLockout(): WSResponse = post("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))(Map.empty)
 
     def submitConfirmUser(previouslyFailedAttempts: Int = 0): WSResponse = {
       val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
         case 0 => Map.empty
         case count => Map(ITSASessionKeys.FailedUserMatching -> previouslyFailedAttempts.toString)
       }
-      post("/confirm-user", additionalCookies = failedAttemptCounter)(Map.empty)
+      post("/confirm-user", additionalCookies = Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name) ++ failedAttemptCounter)(Map.empty)
     }
   }
 

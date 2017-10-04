@@ -19,22 +19,22 @@ package controllers.matching
 import java.time.{Duration, LocalTime}
 import javax.inject.Inject
 
-import auth.{AuthenticatedController, IncomeTaxSAUser}
+import auth.{IncomeTaxSAUser, UserMatchingController}
 import config.BaseControllerConfig
 import connectors.models.matching.{LockedOut, NotLockedOut}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import services.{AuthService, UserLockoutService}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, InternalServerException }
 
 
 class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfig,
                                              val messagesApi: MessagesApi,
                                              val authService: AuthService,
                                              val lockoutService: UserLockoutService
-                                              ) extends AuthenticatedController {
+                                              ) extends UserMatchingController {
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
     val bearerToken = implicitly[HeaderCarrier].userId.get
@@ -61,7 +61,7 @@ class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfi
     s"${if (h > 0) hs else ""}${if (m > 0) ms else ""}${if (s > 0) ss else ""}".trim
   }
 
-  lazy val show: Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
+  lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
         val duration = Duration.ofSeconds(baseConfig.applicationConfig.matchingLockOutSeconds)
@@ -69,7 +69,7 @@ class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfi
       }
   }
 
-  lazy val submit: Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
+  lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Future.successful(Redirect(controllers.routes.SignOutController.signOut()))
   }

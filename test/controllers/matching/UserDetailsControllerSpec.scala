@@ -47,7 +47,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
     mockAuthService,
     mockUserLockoutService
   )
-  lazy val request = subscriptionRequest.withSession(SessionKeys.userId -> testUserId.value)
+  lazy val request = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value)
 
   "Calling the show action of the UserDetailsController with an authorised user" should {
     lazy val result = await(TestUserDetailsController.show(isEditMode = false)(request))

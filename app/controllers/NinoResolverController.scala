@@ -18,11 +18,12 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.{StatelessController, UserMatching}
 import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService
+import auth.JourneyState._
 
 import scala.concurrent.Future
 
@@ -31,11 +32,11 @@ import scala.concurrent.Future
 class NinoResolverController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val authService: AuthService
-                                      ) extends AuthenticatedController {
+                                      ) extends StatelessController {
 
-  def resolveNino: Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
+  def resolveNino: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     implicit user =>
-      if (baseConfig.applicationConfig.userMatchingFeature) Future.successful(Redirect(controllers.matching.routes.UserDetailsController.show()))
+      if (baseConfig.applicationConfig.userMatchingFeature) Future.successful(Redirect(controllers.matching.routes.UserDetailsController.show()).withJourneyState(UserMatching))
       else Future.successful(Redirect(controllers.iv.routes.IdentityVerificationController.gotoIV()))
   }
 

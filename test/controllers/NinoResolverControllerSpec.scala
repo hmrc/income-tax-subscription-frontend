@@ -16,7 +16,7 @@
 
 package controllers
 
-import auth.MockConfig
+import auth.{MockConfig, UserMatching}
 import config.AppConfig
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -48,6 +48,8 @@ class NinoResolverControllerSpec extends ControllerBaseSpec {
         status(result) mustBe Status.SEE_OTHER
 
         redirectLocation(result).get mustBe controllers.matching.routes.UserDetailsController.show().url
+
+        await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatching.name)
       }
     }
     "if userMatchingFeature is set to false" should {

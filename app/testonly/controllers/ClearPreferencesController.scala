@@ -18,15 +18,15 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.StatelessController
 import config.BaseControllerConfig
 import connectors.models.preferences.Activated
 import connectors.preferences.PreferenceFrontendConnector
 import play.api.i18n.MessagesApi
 import services.AuthService
 import testonly.connectors.ClearPreferencesConnector
+import uk.gov.hmrc.http.{HttpGet, InternalServerException}
 import utils.Implicits._
-import uk.gov.hmrc.http.{ HttpGet, InternalServerException }
 
 @Singleton
 class ClearPreferencesController @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector,
@@ -35,10 +35,10 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
                                            val messagesApi: MessagesApi,
                                            httpGet: HttpGet,
                                            val authService: AuthService
-                                          ) extends AuthenticatedController {
+                                          ) extends StatelessController {
 
-  //N.b. asyncForIV is used because it doesn't check any predicates
-  val clear = Authenticated.asyncForIV { implicit request =>
+  //N.b. asyncUnrestricted is used because it doesn't check any predicates
+  val clear = Authenticated.asyncUnrestricted { implicit request =>
     implicit user =>
       user.nino match {
         case None => throw new InternalServerException("clear preferences controller, no nino")

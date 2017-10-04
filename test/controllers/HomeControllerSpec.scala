@@ -181,6 +181,21 @@ class HomeControllerSpec extends ControllerBaseSpec
         e.message mustBe "HomeController.checkCID: unexpected error calling the citizen details service"
       }
     }
+
+    "calls to CID failed" should {
+      "show error page" in {
+        userSetup()
+        mockLookupFailure(testNino)
+
+        val result = call()
+
+        val e = intercept[InternalServerException] {
+          await(result)
+        }
+
+        e.message mustBe "HomeController.checkCID: unexpected error calling the citizen details service"
+      }
+    }
   }
 
   "Calling the index action of the HomeController with an authorised user with only a utr enrolments" should {

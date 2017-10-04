@@ -26,7 +26,7 @@ import utils.TestConstants._
 import utils.{TestConstants, TestModels}
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HttpResponse, InternalServerException, SessionKeys }
+import uk.gov.hmrc.http.{HttpResponse, InternalServerException, SessionKeys}
 
 class ConfirmUserControllerSpec extends ControllerBaseSpec
   with MockUserLockoutService with MockUserMatchingService with MockKeystoreService
@@ -54,7 +54,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
   val userDetails = TestModels.testUserDetails
   val token = TestConstants.testToken
 
-  lazy val request = subscriptionRequest.withSession(SessionKeys.userId -> testUserId.value)
+  lazy val request = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value)
 
   "Calling the show action of the ConfirmUserController with an authorised user" should {
 
@@ -142,6 +142,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         val session = await(result).session(request)
         session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
         session.get(ITSASessionKeys.UTR) must contain(TestConstants.testUtr)
+        session.get(ITSASessionKeys.JourneyStateKey) mustBe None
       }
     }
 
@@ -158,6 +159,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
         val session = await(result).session(request)
         session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
+        session.get(ITSASessionKeys.JourneyStateKey) mustBe None
       }
     }
 
@@ -180,7 +182,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
       "the lockout count is less than the maximum" should {
         "redirect to the user details page and increment the counter by 1" in {
-          implicit val requestWithLockout = subscriptionRequest.withSession(
+          implicit val requestWithLockout = request.withSession(
             SessionKeys.userId -> testUserId.value,
             ITSASessionKeys.FailedUserMatching -> "1"
           )
@@ -201,7 +203,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
       "the lockout count reaches the maximum" should {
         "lockout the user and redirect to the locked out page" in {
-          implicit val requestWithLockout = subscriptionRequest.withSession(
+          implicit val requestWithLockout = request.withSession(
             SessionKeys.userId -> testUserId.value,
             ITSASessionKeys.FailedUserMatching -> "3"
           )

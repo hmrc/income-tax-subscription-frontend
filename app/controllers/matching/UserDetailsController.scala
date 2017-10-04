@@ -18,7 +18,7 @@ package controllers.matching
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{AuthenticatedController, IncomeTaxSAUser}
+import auth.{AuthenticatedController, IncomeTaxSAUser, UserMatchingController}
 import config.BaseControllerConfig
 import connectors.models.matching.NotLockedOut
 import forms.UserDetailsForm
@@ -30,7 +30,7 @@ import play.twirl.api.Html
 import services.{AuthService, KeystoreService, UserLockoutService}
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, InternalServerException }
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 @Singleton
 class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
@@ -38,7 +38,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
                                         val keystoreService: KeystoreService,
                                         val authService: AuthService,
                                         val lockOutService: UserLockoutService
-                                       ) extends AuthenticatedController {
+                                       ) extends UserMatchingController {
 
   def view(userDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.user_details(
@@ -58,7 +58,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
     }
   }
 
-  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
         keystoreService.fetchUserDetails() map {
@@ -67,7 +67,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
         UserDetailsForm.userDetailsForm.bindFromRequest.fold(

@@ -18,7 +18,7 @@ package controllers.matching
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.{AuthenticatedController, UserMatchingController}
 import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -29,14 +29,14 @@ import utils.Implicits._
 class UserDetailsErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                            val messagesApi: MessagesApi,
                                            val authService: AuthService
-                                            ) extends AuthenticatedController {
+                                            ) extends UserMatchingController {
 
-  lazy val show: Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
+  lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Ok(views.html.user_details_error(postAction = controllers.matching.routes.UserDetailsErrorController.submit()))
   }
 
-  lazy val submit: Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
+  lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Redirect(controllers.matching.routes.UserDetailsController.show())
   }

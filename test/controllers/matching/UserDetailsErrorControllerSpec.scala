@@ -40,7 +40,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
 
   "Calling the 'show' action of the UserDetailsErrorController" should {
 
-    lazy val result = TestUserDetailsErrorController.show(subscriptionRequest)
+    lazy val result = TestUserDetailsErrorController.show(userMatchingRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -64,7 +64,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
 
   "Calling the 'submit' action of the UserDetailsErrorController" should {
 
-    lazy val result = TestUserDetailsErrorController.submit(subscriptionRequest)
+    lazy val result = TestUserDetailsErrorController.submit(userMatchingRequest)
 
     "return 303" in {
       status(result) must be(Status.SEE_OTHER)

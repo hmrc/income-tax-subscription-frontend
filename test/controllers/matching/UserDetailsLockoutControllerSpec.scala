@@ -45,7 +45,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
     mockUserLockoutService
   )
 
-  lazy val request = subscriptionRequest.withSession(SessionKeys.userId -> testUserId.value)
+  lazy val request = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value)
 
   "Calling the 'show' action of the UserDetailsLockoutController" when {
 

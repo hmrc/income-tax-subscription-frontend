@@ -27,5 +27,7 @@ trait StatelessController extends BaseFrontendController{
 
     override val async: AuthenticatedAction = asyncInternal(homePredicates)
 
+    val asyncUnrestricted: AuthenticatedAction = asyncInternal(emptyPredicate)
+
   }
 }

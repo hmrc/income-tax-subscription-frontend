@@ -19,7 +19,7 @@ package controllers.iv
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
-import auth.AuthenticatedController
+import auth.StatelessController
 import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -33,7 +33,7 @@ class IdentityVerificationController @Inject()(override val baseConfig: BaseCont
                                                override val messagesApi: MessagesApi,
                                                val authService: AuthService,
                                                logging: Logging
-                                              ) extends AuthenticatedController {
+                                              ) extends StatelessController {
 
   def identityVerificationUrl(implicit request: Request[AnyContent]): String =
     applicationConfig.identityVerificationURL +
@@ -42,7 +42,7 @@ class IdentityVerificationController @Inject()(override val baseConfig: BaseCont
         applicationConfig.baseUrl
       )
 
-  def gotoIV: Action[AnyContent] = Authenticated.asyncForIV {
+  def gotoIV: Action[AnyContent] = Authenticated.asyncUnrestricted {
     implicit user =>
       implicit request =>
         Future.successful(Redirect(identityVerificationUrl))

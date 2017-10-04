@@ -71,7 +71,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
               case Some(CitizenDetailsSuccess(None)) => gotoRegistration
               case _ => error
             }
-          case _ => gotoRegistration
+          case _ => error
         }.recoverWith { case _ => error }
       case (None, _) => // n.b. This should not happen as the user have been redirected by the no nino predicates
         Future.failed(new InternalServerException("HomeController.checkCID: unexpected user state, the user has a utr but no nino"))
