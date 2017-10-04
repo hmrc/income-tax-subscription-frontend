@@ -18,7 +18,7 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import auth.{Registration, SignUp, UserMatching}
+import auth.{Registration, SignUp, UserMatched, UserMatching}
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc._
@@ -26,6 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
+import utils.TestConstants
 
 trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
 
@@ -63,6 +64,17 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
 
   lazy val userMatchingRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> UserMatching.name
+  )
+
+  lazy val userMatchedRequestNoUtr = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> UserMatched.name,
+    ITSASessionKeys.NINO -> TestConstants.testNino
+  )
+
+  lazy val userMatchedRequest = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> UserMatched.name,
+    ITSASessionKeys.NINO -> TestConstants.testNino,
+    ITSASessionKeys.UTR -> TestConstants.testUtr
   )
 
   lazy val subscriptionRequest = FakeRequest().withSession(

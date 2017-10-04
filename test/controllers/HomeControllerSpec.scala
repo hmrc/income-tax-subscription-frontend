@@ -22,13 +22,13 @@ import auth.{MockConfig, Registration, SignUp}
 import config.BaseControllerConfig
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
 import services.mocks.{MockCitizenDetailsService, MockKeystoreService, MockSubscriptionService}
+import uk.gov.hmrc.http.InternalServerException
 import utils.TestConstants
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.InternalServerException
 
 
 class HomeControllerSpec extends ControllerBaseSpec
@@ -116,7 +116,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the index action of the HomeController with an authorised user with only a nino enrolments" when {
-    def call() = TestHomeController(showGuidance = false).index()(subscriptionRequest)
+    def call(request: Request[AnyContent] = subscriptionRequest) = TestHomeController(showGuidance = false).index()(request)
 
     def userSetup(): Unit = {
       import org.mockito.Mockito._
@@ -126,7 +126,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
     "user is found but their utr is not in CID" when {
       "the registration feature flag is off" should {
-        "redirect the user to no nino page" in {
+        "redirect the user to no SA page" in {
           userSetup()
           mockLookupUserWithoutUtr(testNino)
 
@@ -146,6 +146,54 @@ class HomeControllerSpec extends ControllerBaseSpec
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+          await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
+        }
+      }
+    }
+
+    "user had successfully been through user matching" when {
+      "a user with a UTR should be marked as sign up" in {
+        userSetup()
+
+        setupMockGetSubscriptionNotFound(testNino)
+
+        val request = userMatchedRequest
+        val result = call(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+
+        await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(SignUp.name)
+      }
+
+      "the registration feature flag is off" should {
+        "a user with no UTR should see the no sa page" in {
+          userSetup()
+
+          setupMockGetSubscriptionNotFound(testNino)
+
+          val request = userMatchedRequestNoUtr
+          val result = call(request)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe controllers.routes.NoSAController.show().url
+
+          await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) mustBe None
+        }
+      }
+
+      "the registration feature flag is on" should {
+        "a user with no UTR should be marked as registration" in {
+          userSetup()
+
+          setupMockGetSubscriptionNotFound(testNino)
+
+          val request = userMatchedRequestNoUtr
+          val result = TestHomeController(registrationFeature = true).index()(request)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+
           await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
         }
       }
@@ -253,7 +301,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
   "If a user doesn't have a NINO" when {
 
-    def getResult(userMatchingFeature : Boolean): Future[Result] =
+    def getResult(userMatchingFeature: Boolean): Future[Result] =
       TestHomeController(showGuidance = false, userMatchingFeature = userMatchingFeature).index()(subscriptionRequest)
 
     "userMatchingFeature in config is set to true" should {

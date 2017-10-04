@@ -18,20 +18,20 @@ package controllers.matching
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{AuthenticatedController, IncomeTaxSAUser, UserMatchingController}
+import auth.JourneyState._
+import auth.{IncomeTaxSAUser, UserMatched, UserMatchingController}
 import config.BaseControllerConfig
 import connectors.models.matching.{LockedOut, NotLockedOut, UserMatchSuccessResponseModel}
-import controllers.ITSASessionKeys
 import controllers.ITSASessionKeys._
 import models.matching.UserDetailsModel
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services._
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
 import scala.util.Left
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 @Singleton
 class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
@@ -129,7 +129,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
             .addingToSession(NINO -> matchedDetails.nino)
         )
     }
-  }.map(_.removingFromSession(FailedUserMatching, ITSASessionKeys.JourneyStateKey))
+  }.map(_.removingFromSession(FailedUserMatching).withJourneyState(UserMatched))
 
 }
 

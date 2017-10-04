@@ -16,6 +16,7 @@
 
 package controllers.matching
 
+import auth.UserMatched
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import org.scalatest.OptionValues
 import play.api.http.Status
@@ -142,7 +143,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         val session = await(result).session(request)
         session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
         session.get(ITSASessionKeys.UTR) must contain(TestConstants.testUtr)
-        session.get(ITSASessionKeys.JourneyStateKey) mustBe None
+        session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatched.name)
       }
     }
 
@@ -159,7 +160,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
         val session = await(result).session(request)
         session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
-        session.get(ITSASessionKeys.JourneyStateKey) mustBe None
+        session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatched.name)
       }
     }
 
