@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.PostSubmissionController
 import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import services.AuthService
@@ -29,8 +29,9 @@ import scala.concurrent.Future
 class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
                                           val messagesApi: MessagesApi,
                                           val authService: AuthService
-                                         ) extends AuthenticatedController {
-  val enrolled = Authenticated.asyncEnrolled {
+                                         ) extends PostSubmissionController {
+
+  val enrolled = Authenticated.async {
     implicit request =>
       implicit val headerCarrier = hc(request)
       user =>
@@ -43,4 +44,5 @@ class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
           )
         )
   }
+
 }

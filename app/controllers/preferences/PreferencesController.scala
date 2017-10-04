@@ -18,7 +18,7 @@ package controllers.preferences
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import connectors.models.preferences.{Activated, Unset}
 import play.api.i18n.MessagesApi
@@ -37,7 +37,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
                                       val authService: AuthService,
                                       keystoreService: KeystoreService,
                                       paperlessPreferenceTokenService: PaperlessPreferenceTokenService
-                                     ) extends AuthenticatedController {
+                                     ) extends SignUpController {
 
   def view()(implicit request: Request[AnyContent]): Html = {
     views.html.preferences.continue_registration(

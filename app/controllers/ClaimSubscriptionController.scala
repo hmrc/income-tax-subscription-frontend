@@ -19,7 +19,7 @@ package controllers
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.SignUpController
 import cats.data.EitherT
 import cats.implicits._
 import config.BaseControllerConfig
@@ -39,7 +39,7 @@ class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig
                                             val authService: AuthService,
                                             val subscriptionOrchestrationService: SubscriptionOrchestrationService,
                                             val keystoreService: KeystoreService
-                                           ) extends AuthenticatedController {
+                                           ) extends SignUpController {
   val claim: Action[AnyContent] = Authenticated.async {
     implicit request =>
       user =>

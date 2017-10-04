@@ -20,7 +20,7 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
@@ -40,7 +40,7 @@ class AuthUpdateController @Inject()(val baseConfig: BaseControllerConfig,
                                      val messagesApi: MessagesApi,
                                      val http: HttpPatch,
                                      val authService: AuthService
-                                    ) extends AuthenticatedController with I18nSupport {
+                                    ) extends SignUpController with I18nSupport {
 
   lazy val noAction = Future.successful("no actions taken")
   lazy val updated = Future.successful(Ok("updated"))

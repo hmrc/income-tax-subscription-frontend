@@ -18,7 +18,7 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import forms.AccountingPeriodPriorForm
 import models.{AccountingPeriodPriorModel, OtherIncomeModel}
@@ -36,7 +36,7 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
                                                         val messagesApi: MessagesApi,
                                                         val keystoreService: KeystoreService,
                                                         val authService: AuthService
-                                                       ) extends AuthenticatedController {
+                                                       ) extends SignUpController {
 
   def view(accountingPeriodPriorForm: Form[AccountingPeriodPriorModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] =
       views.html.business.accounting_period_prior(

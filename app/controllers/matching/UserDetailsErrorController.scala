@@ -18,7 +18,7 @@ package controllers.matching
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{AuthenticatedController, UserMatchingController}
+import auth.{SignUpController, UserMatchingController}
 import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}

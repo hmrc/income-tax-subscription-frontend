@@ -19,7 +19,7 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -36,7 +36,7 @@ class KnownFactsController @Inject()(val baseConfig: BaseControllerConfig,
                                      val messagesApi: MessagesApi,
                                      val authService: AuthService,
                                      knownFactsService: KnownFactsService
-                                    ) extends AuthenticatedController {
+                                    ) extends SignUpController {
 
   def view(form: Form[KnownFactsModel])(implicit request: Request[_]): Html =
     testonly.views.html.add_known_facts(

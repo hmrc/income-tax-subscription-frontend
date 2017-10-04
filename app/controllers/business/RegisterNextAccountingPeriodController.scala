@@ -18,7 +18,7 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -30,7 +30,7 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
                                                        val messagesApi: MessagesApi,
                                                        val keystoreService: KeystoreService,
                                                        val authService: AuthService
-                                                      ) extends AuthenticatedController {
+                                                      ) extends SignUpController {
 
   def view()(implicit request: Request[_]): Html =
     views.html.business.register_next_accounting_period(

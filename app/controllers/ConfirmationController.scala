@@ -21,7 +21,7 @@ import java.time.{LocalDate, LocalDateTime}
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
-import auth.AuthenticatedController
+import auth.PostSubmissionController
 import config.BaseControllerConfig
 import models.DateModel.dateConvert
 import play.api.i18n.MessagesApi
@@ -37,9 +37,9 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
                                        val keystoreService: KeystoreService,
                                        val logging: Logging,
                                        val authService: AuthService
-                                      ) extends AuthenticatedController {
+                                      ) extends PostSubmissionController {
 
-  val showConfirmation: Action[AnyContent] = Authenticated.asyncEnrolled { implicit request =>
+  val showConfirmation: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
       val endTime = java.time.LocalDateTime.now()
@@ -65,7 +65,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  val signOut: Action[AnyContent] = Authenticated.asyncEnrolled { implicit user =>
+  val signOut: Action[AnyContent] = Authenticated.async { implicit user =>
     implicit request => Future.successful(Redirect(routes.ExitSurveyController.show()).withNewSession)
   }
 

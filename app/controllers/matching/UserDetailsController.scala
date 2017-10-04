@@ -18,7 +18,7 @@ package controllers.matching
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{AuthenticatedController, IncomeTaxSAUser, UserMatchingController}
+import auth.{SignUpController, IncomeTaxSAUser, UserMatchingController}
 import config.BaseControllerConfig
 import connectors.models.matching.NotLockedOut
 import forms.UserDetailsForm

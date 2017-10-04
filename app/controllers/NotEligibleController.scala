@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import forms.{IncomeSourceForm, NotEligibleForm}
 import models.NotEligibleModel
@@ -36,7 +36,7 @@ class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val keystoreService: KeystoreService,
                                       val authService: AuthService
-                                     ) extends AuthenticatedController {
+                                     ) extends SignUpController {
 
   def view(notEligibleForm: Form[NotEligibleModel], backUrl: String)(implicit request: Request[_]): Html =
     views.html.not_eligible(

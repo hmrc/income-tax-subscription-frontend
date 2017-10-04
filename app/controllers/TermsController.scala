@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import forms.IncomeSourceForm
 import models.OtherIncomeModel
@@ -36,7 +36,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
                                 val messagesApi: MessagesApi,
                                 val keystoreService: KeystoreService,
                                 val authService: AuthService
-                               ) extends AuthenticatedController {
+                               ) extends SignUpController {
 
   def view(backUrl: String)(implicit request: Request[_]): Html =
     views.html.terms(

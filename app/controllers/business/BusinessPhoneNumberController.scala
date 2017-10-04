@@ -18,7 +18,7 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{AuthenticatedController, RegistrationController}
+import auth.{SignUpController, RegistrationController}
 import config.BaseControllerConfig
 import forms.BusinessPhoneNumberForm
 import models.BusinessPhoneNumberModel

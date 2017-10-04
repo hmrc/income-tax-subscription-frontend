@@ -19,7 +19,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import forms.IncomeSourceForm
 import play.api.i18n.MessagesApi
@@ -35,7 +35,7 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                            val keystoreService: KeystoreService,
                                            val logging: Logging,
                                            val authService: AuthService
-) extends AuthenticatedController {
+) extends SignUpController {
 
   val showOtherIncomeError = Action.async { implicit request =>
     Future.successful(Ok(views.html.other_income_error(postAction = controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(), backUrl)))
