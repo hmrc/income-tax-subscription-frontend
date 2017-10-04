@@ -176,7 +176,17 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
 
     "return the already-enrolled page where an mtdid enrolment already exists" in {
-      await(mtdidPredicate(homelessAuthorisedRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
+      await(homePredicates(homelessAuthorisedRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
+    }
+  }
+
+  "userMatchingPredicates" should {
+    "return an AuthPredicateSuccess where the user has no nino and has the JourneyState flag set to UserMatching" in {
+      userMatchingPredicates(userMatchingRequest)(userWithIndividualAffinity).right.value mustBe AuthPredicateSuccess
+    }
+
+    "return user to index if the user does not have the JourneyState flag set to UserMatching" in {
+      await(userMatchingPredicates(homelessAuthorisedRequest)(userWithIndividualAffinity).left.value) mustBe homeRoute
     }
   }
 
