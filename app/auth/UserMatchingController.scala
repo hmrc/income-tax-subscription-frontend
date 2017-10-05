@@ -17,17 +17,13 @@
 package auth
 
 import auth.AuthPredicates._
-import controllers.ITSASessionKeys
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-trait StatelessController extends BaseFrontendController{
+trait UserMatchingController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions {
 
-    override val async: AuthenticatedAction = asyncInternal(homePredicates)
-
-    val asyncUnrestricted: AuthenticatedAction = asyncInternal(emptyPredicate)
+    override val async: AuthenticatedAction = asyncInternal(userMatchingPredicates)
 
   }
+
 }

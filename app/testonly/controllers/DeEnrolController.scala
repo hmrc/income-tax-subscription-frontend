@@ -20,7 +20,7 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import connectors.GGAuthenticationConnector
 import connectors.models.authenticator.RefreshProfileSuccess
@@ -36,7 +36,7 @@ class DeEnrolController @Inject()(val baseConfig: BaseControllerConfig,
                                   val authService: AuthService,
                                   deEnrolmentConnector: DeEnrolmentConnector,
                                   ggAuthenticationConnector: GGAuthenticationConnector
-                                 ) extends AuthenticatedController {
+                                 ) extends SignUpController {
 
   val resetUsers = Action.async { implicit request =>
     for {

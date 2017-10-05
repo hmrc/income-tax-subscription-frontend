@@ -18,7 +18,7 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{AuthenticatedController, Registration}
+import auth.{SignUpController, Registration}
 import config.BaseControllerConfig
 import forms._
 import models.AccountingPeriodModel
@@ -38,7 +38,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
                                                        val messagesApi: MessagesApi,
                                                        val keystoreService: KeystoreService,
                                                        val authService: AuthService
-                                                      ) extends AuthenticatedController {
+                                                      ) extends SignUpController {
 
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, viewType: AccountingPeriodViewType)(implicit request: Request[_]): Html =
     views.html.business.accounting_period_date(

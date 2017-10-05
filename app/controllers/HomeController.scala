@@ -63,23 +63,25 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
     (user.nino, user.utr) match {
       case (Some(_), Some(_)) => defaultAction
       case (Some(nino), None) =>
-        // todo if nino is in session but not in auth profile then don't call CID
-        citizenDetailsService.lookupUtr(nino).flatMap {
-          case Right(optResult) =>
-            optResult match {
-              case Some(CitizenDetailsSuccess(optUtr@Some(utr))) => defaultAction.flatMap(_.addingToSession(ITSASessionKeys.UTR -> utr))
-              case Some(CitizenDetailsSuccess(None)) => gotoRegistration
-              case _ => error
-            }
-          case _ => gotoRegistration
-        }.recoverWith { case _ => error }
+        if (request.isInState(UserMatched)) gotoRegistration
+        else {
+          citizenDetailsService.lookupUtr(nino).flatMap {
+            case Right(optResult) =>
+              optResult match {
+                case Some(CitizenDetailsSuccess(optUtr@Some(utr))) => defaultAction.flatMap(_.addingToSession(ITSASessionKeys.UTR -> utr))
+                case Some(CitizenDetailsSuccess(None)) => gotoRegistration
+                case _ => error
+              }
+            case _ => error
+          }.recoverWith { case _ => error }
+        }
       case (None, _) => // n.b. This should not happen as the user have been redirected by the no nino predicates
         Future.failed(new InternalServerException("HomeController.checkCID: unexpected user state, the user has a utr but no nino"))
     }
   }
 
   private def gotoRegistration(implicit request: Request[AnyContent]) = Future.successful(
-    if(applicationConfig.enableRegistration) {
+    if (applicationConfig.enableRegistration) {
       val timestamp: String = java.time.LocalDateTime.now().toString
 
       gotoPreferences
@@ -87,7 +89,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
         .withJourneyState(Registration)
     }
     else {
-      Redirect(controllers.routes.NoSAController.show())
+      Redirect(controllers.routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey)
     }
   )
 

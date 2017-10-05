@@ -17,17 +17,11 @@
 package auth
 
 import auth.AuthPredicates._
-import controllers.ITSASessionKeys
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-trait StatelessController extends BaseFrontendController{
+trait PostSubmissionController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions {
-
-    override val async: AuthenticatedAction = asyncInternal(homePredicates)
-
-    val asyncUnrestricted: AuthenticatedAction = asyncInternal(emptyPredicate)
-
+    val async: AuthenticatedAction = asyncInternal(enrolledPredicates)
   }
+
 }

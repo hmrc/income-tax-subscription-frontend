@@ -18,7 +18,7 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import forms.AccountingMethodForm
 import models.AccountingMethodModel
@@ -35,7 +35,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
                                                    val authService: AuthService
-                                                  ) extends AuthenticatedController {
+                                                  ) extends SignUpController {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.business.accounting_method(

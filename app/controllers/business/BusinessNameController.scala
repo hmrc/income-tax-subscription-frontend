@@ -18,7 +18,7 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{AuthenticatedController, Registration}
+import auth.{SignUpController, Registration}
 import config.BaseControllerConfig
 import forms.BusinessNameForm
 import models.{BusinessNameModel, OtherIncomeModel}
@@ -35,7 +35,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService,
                                        val authService: AuthService
-                                      ) extends AuthenticatedController {
+                                      ) extends SignUpController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Future[Html] =
     backUrl(isEditMode).map { backUrl =>

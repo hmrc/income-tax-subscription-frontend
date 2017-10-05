@@ -18,7 +18,8 @@ package controllers.matching
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{AuthenticatedController, IncomeTaxSAUser}
+import auth.JourneyState._
+import auth.{IncomeTaxSAUser, UserMatched, UserMatchingController}
 import config.BaseControllerConfig
 import connectors.models.matching.{LockedOut, NotLockedOut, UserMatchSuccessResponseModel}
 import controllers.ITSASessionKeys._
@@ -27,10 +28,10 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import services._
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
 import scala.util.Left
-import uk.gov.hmrc.http.{ HeaderCarrier, InternalServerException }
 
 @Singleton
 class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
@@ -39,7 +40,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
                                       val authService: AuthService,
                                       val userMatching: UserMatchingService,
                                       val lockOutService: UserLockoutService
-                                     ) extends AuthenticatedController {
+                                     ) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     views.html.check_your_user_details(
@@ -59,7 +60,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
     }
   }
 
-  def show(): Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
+  def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
         keystoreService.fetchUserDetails() map {
@@ -69,7 +70,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  def submit(): Action[AnyContent] = Authenticated.asyncForIV { implicit request =>
+  def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
         keystoreService.fetchUserDetails() flatMap {
@@ -121,7 +122,6 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
               NINO -> nino,
               UTR -> utr
             )
-            .removingFromSession(FailedUserMatching)
         )
       case UserMatchSuccessResponseModel(_, _, _, nino, _) =>
         Future.successful(
@@ -129,6 +129,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
             .addingToSession(NINO -> matchedDetails.nino)
         )
     }
-  }
+  }.map(_.removingFromSession(FailedUserMatching).withJourneyState(UserMatched))
+
 }
 

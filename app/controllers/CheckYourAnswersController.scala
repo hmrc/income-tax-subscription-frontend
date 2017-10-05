@@ -19,7 +19,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
-import auth.{AuthenticatedController, IncomeTaxSAUser, Registration}
+import auth.{SignUpController, IncomeTaxSAUser, Registration}
 import config.BaseControllerConfig
 import connectors.models.subscription.SubscriptionSuccess
 import play.api.i18n.MessagesApi
@@ -37,7 +37,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val subscriptionService: SubscriptionOrchestrationService,
                                            val authService: AuthService,
                                            logging: Logging
-                                          ) extends AuthenticatedController {
+                                          ) extends SignUpController {
 
   import services.CacheUtil._
 

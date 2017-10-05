@@ -19,7 +19,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import forms.{IncomeSourceForm, OtherIncomeForm}
 import models.OtherIncomeModel
@@ -39,7 +39,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                       val keystoreService: KeystoreService,
                                       val logging: Logging,
                                       val authService: AuthService
-                                     ) extends AuthenticatedController {
+                                     ) extends SignUpController {
 
   def view(otherIncomeForm: Form[OtherIncomeModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.other_income(

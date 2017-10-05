@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
+import auth.SignUpController
 import config.BaseControllerConfig
 import forms.IncomeSourceForm
 import models.IncomeSourceModel
@@ -35,7 +35,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService,
                                        val authService: AuthService
-                                      ) extends AuthenticatedController {
+                                      ) extends SignUpController {
 
   def showIncomeSource(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

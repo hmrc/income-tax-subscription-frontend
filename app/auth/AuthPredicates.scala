@@ -90,6 +90,8 @@ object AuthPredicates extends Results {
 
   val homePredicates = defaultPredicates |+| mtdidPredicate
 
+  val userMatchingPredicates = timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| userMatchingJourneyPredicate
+
   val subscriptionPredicates = defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate |+| ivPredicate
 
   val registrationPredicates = defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
