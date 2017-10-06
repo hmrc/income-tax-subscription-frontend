@@ -30,7 +30,7 @@ import play.api.libs.json.Json
 
 object PreferencesStub extends WireMockMethods {
 
-  val newPreferencesUrl = s".*/paperless/activate/$preferencesServiceKey.*"
+  val newPreferencesUrl = s".*/paperless/activate-from-token/$preferencesServiceKey.*"
 
   def stubPaperlessActivated()(implicit appConfig: AppConfig, messages: Messages): Unit = {
     val mapping = PUT.wireMockMapping(WireMock.urlPathMatching(".*/paperless/activate.*"))
