@@ -24,13 +24,14 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Results._
 import play.api.mvc.{EssentialFilter, Request, RequestHeader, Result}
 import play.api.{Application, Configuration, Logger, Play}
+import play.filters.csrf.CSRFFilter
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{AuthorisationException, BearerTokenExpired, InsufficientEnrolments}
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.config.{AppName, ControllerConfig, RunMode}
 import uk.gov.hmrc.play.frontend.bootstrap.{DefaultFrontendGlobal, ShowErrorPage}
-import uk.gov.hmrc.play.frontend.filters.{FrontendAuditFilter, FrontendLoggingFilter, MicroserviceFilterSupport, RecoveryFilter}
+import uk.gov.hmrc.play.frontend.filters._
 
 
 object FrontendGlobal
@@ -42,8 +43,13 @@ object FrontendGlobal
 
   // this override removes the RecoveryFilter as the filter auto handles all status Not Found.
   // when upgrading bootstrap please ensure this is up to date without RecoveryFilter.
+  // it also allow marking routes to excludes csrf check, see https://dominikdorn.com/2014/07/playframework-2-3-global-csrf-protection-disable-csrf-selectively/
   override protected lazy val defaultFrontendFilters: Seq[EssentialFilter] = {
-    val coreFilters = super.defaultFrontendFilters.filterNot(f => f.equals(RecoveryFilter))
+
+    val csrfWithExclusion = new ExcludingCSRFFilter(csrfFilter)
+
+    val coreFilters = super.defaultFrontendFilters.filterNot(f => f.equals(RecoveryFilter) || f.isInstanceOf[CSRFFilter]) :+ csrfWithExclusion
+
     // this adds the whitelisting filter if it's enabled
     val ipWhitelistKey = "feature-switch.enable-ip-whitelisting"
     Play.current.configuration.getString(ipWhitelistKey).getOrElse(throw new Exception(s"Missing configuration key: $ipWhitelistKey")).toBoolean match {
