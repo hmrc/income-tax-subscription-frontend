@@ -7,18 +7,22 @@
 # !!!WARNING!!! Every route defined in this file MUST be prefixed with "/test-only/". This is because NGINX is blocking every uri containing the string "test-only" in production.
 # Failing to follow this rule may result in test routes deployed in production.
 
-GET        /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                testonly.controllers.MatchingStubController.show
-POST       /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                testonly.controllers.MatchingStubController.stubUser
-GET        /report-quarterly/income-and-expenses/sign-up/test-only/de-enrol                 testonly.controllers.DeEnrolController.deEnrol
-GET        /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts          testonly.controllers.KnownFactsController.show
-POST       /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts          testonly.controllers.KnownFactsController.submit
-GET        /report-quarterly/income-and-expenses/sign-up/test-only/reset-users              testonly.controllers.DeEnrolController.resetUsers
-GET        /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences        testonly.controllers.ClearPreferencesController.clear
-GET        /report-quarterly/income-and-expenses/sign-up/test-only/auth-update              testonly.controllers.AuthUpdateController.update
-GET        /report-quarterly/income-and-expenses/sign-up/test-only/reset-lockout            testonly.controllers.ResetUserLockoutController.resetLockout
-GET        /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch           testonly.controllers.FeatureSwitchController.show
-POST       /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch           testonly.controllers.FeatureSwitchController.submit
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                testonly.controllers.MatchingStubController.show
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                testonly.controllers.MatchingStubController.stubUser
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/de-enrol                 testonly.controllers.DeEnrolController.deEnrol
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts          testonly.controllers.KnownFactsController.show
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts          testonly.controllers.KnownFactsController.submit
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-users              testonly.controllers.DeEnrolController.resetUsers
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences        testonly.controllers.ClearPreferencesController.clear
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/auth-update              testonly.controllers.AuthUpdateController.update
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-lockout            testonly.controllers.ResetUserLockoutController.resetLockout
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch           testonly.controllers.FeatureSwitchController.show
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch           testonly.controllers.FeatureSwitchController.submit
+
+# NOCSRF
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/preferences-token        testonly.controllers.PreferenceTokenController.addToken()
+
 
 # Add all the application routes to the prod.routes file
-->         /                                                                    prod.Routes
-->         /report-quarterly/income-and-expenses/sign-up                        newFeatures.Routes
+->          /                                                                                prod.Routes
+->          /report-quarterly/income-and-expenses/sign-up                                    newFeatures.Routes
