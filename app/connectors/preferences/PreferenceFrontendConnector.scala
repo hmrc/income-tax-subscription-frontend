@@ -82,7 +82,7 @@ object PreferenceFrontendConnector {
     s"""/paperless/activate?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
   def newCheckPaperlessUri(returnUrl: String, token: String)(implicit messages: Messages): String =
-    s"""/paperless/activate/$preferencesServiceKey/$token?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
+    s"""/paperless/activate-from-token/$preferencesServiceKey/$token?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
   def choosePaperlessUri(returnUrl: String)(implicit messages: Messages): String =
     s"""/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
