@@ -8,9 +8,13 @@
 # Failing to follow this rule may result in test routes deployed in production.
 
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                testonly.controllers.MatchingStubController.show
+
+# NOCSRF
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                testonly.controllers.MatchingStubController.stubUser
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/de-enrol                 testonly.controllers.DeEnrolController.deEnrol
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts          testonly.controllers.KnownFactsController.show
+
+# NOCSRF
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts          testonly.controllers.KnownFactsController.submit
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-users              testonly.controllers.DeEnrolController.resetUsers
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences        testonly.controllers.ClearPreferencesController.clear
