@@ -17,6 +17,8 @@ GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-prefer
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/auth-update              testonly.controllers.AuthUpdateController.update
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-lockout            testonly.controllers.ResetUserLockoutController.resetLockout
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch           testonly.controllers.FeatureSwitchController.show
+
+# NOCSRF
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch           testonly.controllers.FeatureSwitchController.submit
 
 # NOCSRF
