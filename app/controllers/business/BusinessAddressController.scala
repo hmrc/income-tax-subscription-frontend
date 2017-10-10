@@ -20,7 +20,6 @@ import javax.inject.{Inject, Singleton}
 
 import auth.RegistrationController
 import config.BaseControllerConfig
-import connectors.RawResponseReads
 import connectors.models.address._
 import models.address.Address
 import play.api.i18n.{Messages, MessagesApi}
@@ -37,7 +36,7 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
                                           val authService: AuthService,
                                           addressLookupService: AddressLookupService,
                                           keystoreService: KeystoreService
-                                         ) extends RegistrationController with RawResponseReads {
+                                         ) extends RegistrationController {
 
 
   private[controllers] def callbackUrl(editMode: Boolean)(implicit request: Request[AnyContent]): String =
