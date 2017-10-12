@@ -23,7 +23,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.AuthService
-import uk.gov.hmrc.auth.core.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
@@ -45,9 +45,9 @@ trait BaseFrontendController extends FrontendController with I18nSupport {
 
     protected def asyncInternal(predicate: AuthPredicate)(action: ActionBody): Action[AnyContent] =
       Action.async { implicit request =>
-        authService.authorised().retrieve(allEnrolments and affinityGroup) {
-          case enrolments ~ affinity =>
-            implicit val user = IncomeTaxSAUser(enrolments, affinity)
+        authService.authorised().retrieve(allEnrolments and affinityGroup and confidenceLevel) {
+          case enrolments ~ affinity ~ confidence =>
+            implicit val user = IncomeTaxSAUser(enrolments, affinity, confidence)
 
             predicate.apply(request)(user) match {
               case Right(AuthPredicateSuccess) => action(request)(user)

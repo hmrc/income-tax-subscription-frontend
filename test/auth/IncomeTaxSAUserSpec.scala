@@ -37,17 +37,16 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
           Set(
             Enrolment(Constants.ninoEnrolmentName,
               Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, testNino)),
-              "Activated",
-              confidenceLevel
+              "Activated"
             ),
             Enrolment(Constants.utrEnrolmentName,
               Seq(EnrolmentIdentifier(Constants.utrEnrolmentIdentifierKey, testUtr)),
-              "Activated",
-              confidenceLevel
+              "Activated"
             )
           )
         ),
-        None
+        None,
+        confidenceLevel
       )
 
       s"have the expected NINO $testNino" in {
@@ -64,6 +63,8 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
     }
 
     "Nino and UTR are stored in session after being pulled from CID" should {
+      val confidenceLevel = ConfidenceLevel.L0
+
       implicit lazy val request = FakeRequest().withSession(
         ITSASessionKeys.NINO -> testNino,
         ITSASessionKeys.UTR -> testUtr
@@ -71,7 +72,8 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
       lazy val user = IncomeTaxSAUser(
         Enrolments(Set.empty),
-        None
+        None,
+        confidenceLevel
       )
 
       s"have the expected NINO $testNino" in {
@@ -80,10 +82,6 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
       s"have the expected UTR $testUtr" in {
         user.utr shouldBe Some(testUtr)
-      }
-
-      "have the default confidence level of 0" in {
-        user.confidenceLevel shouldBe ConfidenceLevel.L0
       }
     }
   }

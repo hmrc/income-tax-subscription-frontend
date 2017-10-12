@@ -16,6 +16,7 @@
 
 package auth
 
+import _root_.uk.gov.hmrc.http.SessionKeys._
 import auth.AuthPredicate.AuthPredicateSuccess
 import auth.AuthPredicates._
 import controllers.ITSASessionKeys
@@ -24,22 +25,26 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.mocks.MockAuthService
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
-import _root_.uk.gov.hmrc.http.SessionKeys._
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolment, Enrolments}
+import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utils.UnitTestTrait
-import uk.gov.hmrc.http.{ InternalServerException, NotFoundException }
 
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
-  private def testUser(affinityGroup: Option[AffinityGroup], enrolments: Enrolment*): IncomeTaxSAUser = IncomeTaxSAUser(
+
+  private def testUser(affinityGroup: Option[AffinityGroup], confidenceLevel: ConfidenceLevel, enrolments: Enrolment*): IncomeTaxSAUser = IncomeTaxSAUser(
     enrolments = Enrolments(enrolments.toSet),
-    affinityGroup = affinityGroup
+    affinityGroup = affinityGroup,
+    confidenceLevel
   )
+
+  private def testUser(affinityGroup: Option[AffinityGroup], enrolments: Enrolment*): IncomeTaxSAUser =
+    testUser(affinityGroup, testConfidenceLevel, enrolments: _*)
 
   val userWithNinoEnrolment = testUser(None, ninoEnrolment)
   val userWithMtditIdEnrolment = testUser(None, mtdidEnrolment)
   val userWithMtditIdEnrolmentAndNino = testUser(None, ninoEnrolment, mtdidEnrolment)
   val userWithUtrButNoNino = testUser(None, utrEnrolment)
-  val blankUser = testUser(None)
+  val blankUser = testUser(None, confidenceLevel = ConfidenceLevel.L0)
 
   val userWithIndividualAffinity = testUser(Some(AffinityGroup.Individual))
   val userWithOrganisationAffinity = testUser(Some(AffinityGroup.Organisation))
