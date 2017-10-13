@@ -24,7 +24,7 @@ private object AppDependencies {
   private val httpCachingCleintVersion = "7.0.0"
   private val playWhitelistFilterVersion = "2.0.0"
   private val wiremockVersion = "2.5.1"
-  private val authClientVersion = "0.2.0"
+  private val authClientVersion = "2.3.0"
   private val domainVersion = "4.1.0"
   private val catsVersion = "0.9.0"
 
