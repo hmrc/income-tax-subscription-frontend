@@ -18,9 +18,9 @@ package helpers.servicemocks
 
 import java.time.OffsetDateTime
 
-import connectors.models.matching.LockedOut
 import play.api.http.Status
 import helpers.IntegrationTestConstants._
+import usermatching.models.LockedOut
 
 
 object UserLockoutStub extends WireMockMethods {

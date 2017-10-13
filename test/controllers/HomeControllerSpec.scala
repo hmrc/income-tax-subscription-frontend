@@ -24,8 +24,9 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockCitizenDetailsService, MockKeystoreService, MockSubscriptionService}
+import services.mocks.{MockKeystoreService, MockSubscriptionService}
 import uk.gov.hmrc.http.InternalServerException
+import usermatching.services.mocks.MockCitizenDetailsService
 import utils.TestConstants
 
 import scala.concurrent.Future

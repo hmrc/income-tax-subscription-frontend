@@ -16,10 +16,10 @@
 
 package helpers.servicemocks
 
-import connectors.models.matching.{UserMatchFailureResponseModel, UserMatchRequestModel, UserMatchSuccessResponseModel}
+import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels
 import play.api.http.Status
-import helpers.IntegrationTestConstants._
+import usermatching.models.{UserMatchFailureResponseModel, UserMatchRequestModel, UserMatchSuccessResponseModel}
 
 object AuthenticatorStub extends WireMockMethods {
   def stubMatchFound(returnedNino: String): Unit = {

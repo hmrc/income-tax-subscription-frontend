@@ -47,7 +47,7 @@ class NinoResolverControllerSpec extends ControllerBaseSpec {
 
         status(result) mustBe Status.SEE_OTHER
 
-        redirectLocation(result).get mustBe controllers.matching.routes.UserDetailsController.show().url
+        redirectLocation(result).get mustBe usermatching.controllers.routes.UserDetailsController.show().url
 
         await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatching.name)
       }

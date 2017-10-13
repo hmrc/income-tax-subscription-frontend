@@ -3,13 +3,13 @@ package helpers
 
 import forms._
 import models._
-import models.matching.UserDetailsModel
 import play.api.libs.json.{JsValue, Json}
 import services.CacheConstants
 import uk.gov.hmrc.domain.Generator
 import IntegrationTestConstants._
 import connectors.models.address.ReturnedAddress
 import models.address.{Address, Country}
+import usermatching.models.UserDetailsModel
 
 object IntegrationTestModels {
 

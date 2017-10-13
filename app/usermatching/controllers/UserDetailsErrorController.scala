@@ -14,30 +14,33 @@
  * limitations under the License.
  */
 
-package controllers
+package usermatching.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{StatelessController, UserMatching}
+import auth.UserMatchingController
 import config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService
-import auth.JourneyState._
-
-import scala.concurrent.Future
-
+import utils.Implicits._
 
 @Singleton
-class NinoResolverController @Inject()(val baseConfig: BaseControllerConfig,
-                                       val messagesApi: MessagesApi,
-                                       val authService: AuthService
-                                      ) extends StatelessController {
+class UserDetailsErrorController @Inject()(val baseConfig: BaseControllerConfig,
+                                           val messagesApi: MessagesApi,
+                                           val authService: AuthService
+                                            ) extends UserMatchingController {
 
-  def resolveNino: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
+  lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (baseConfig.applicationConfig.userMatchingFeature) Future.successful(Redirect(usermatching.controllers.routes.UserDetailsController.show()).withJourneyState(UserMatching))
-      else Future.successful(Redirect(controllers.iv.routes.IdentityVerificationController.gotoIV()))
+      Ok(usermatching.views.html.user_details_error(
+        postAction = usermatching.controllers.routes.UserDetailsErrorController.submit())
+      )
+  }
+
+  lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
+      Redirect(usermatching.controllers.routes.UserDetailsController.show())
   }
 
 }

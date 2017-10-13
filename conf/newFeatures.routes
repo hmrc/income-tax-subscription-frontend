@@ -1,15 +1,15 @@
 # User Matching
-GET         /user-details                 controllers.matching.UserDetailsController.show(editMode: Boolean ?= false)
-POST        /user-details                 controllers.matching.UserDetailsController.submit(editMode: Boolean ?= false)
+GET         /user-details                 usermatching.controllers.UserDetailsController.show(editMode: Boolean ?= false)
+POST        /user-details                 usermatching.controllers.UserDetailsController.submit(editMode: Boolean ?= false)
 
 # User Lockout
-GET         /error/lockout                controllers.matching.UserDetailsLockoutController.show
-POST        /error/lockout                controllers.matching.UserDetailsLockoutController.submit
+GET         /error/lockout                usermatching.controllers.UserDetailsLockoutController.show
+POST        /error/lockout                usermatching.controllers.UserDetailsLockoutController.submit
 
 # Confirm User
-GET         /confirm-user                 controllers.matching.ConfirmUserController.show()
-POST        /confirm-user                 controllers.matching.ConfirmUserController.submit()
+GET         /confirm-user                 usermatching.controllers.ConfirmUserController.show()
+POST        /confirm-user                 usermatching.controllers.ConfirmUserController.submit()
 
 # User Details Error
-GET         /error/user-details           controllers.matching.UserDetailsErrorController.show()
-POST        /error/user-details           controllers.matching.UserDetailsErrorController.submit()
+GET         /error/user-details           usermatching.controllers.UserDetailsErrorController.show()
+POST        /error/user-details           usermatching.controllers.UserDetailsErrorController.submit()
