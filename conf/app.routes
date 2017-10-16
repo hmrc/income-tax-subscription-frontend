@@ -12,10 +12,10 @@ GET         /logout                       controllers.SignOutController.signOut
 GET         /resolve-nino                 controllers.NinoResolverController.resolveNino
 
 # Preferences routes
-GET         /preferences                  controllers.preferences.PreferencesController.checkPreferences
-GET         /callback                     controllers.preferences.PreferencesController.callback
-GET         /paperless-error              controllers.preferences.PreferencesController.showGoBackToPreferences
-POST        /paperless-error              controllers.preferences.PreferencesController.submitGoBackToPreferences
+GET         /preferences                  digitalcontact.controllers.PreferencesController.checkPreferences
+GET         /callback                     digitalcontact.controllers.PreferencesController.callback
+GET         /paperless-error              digitalcontact.controllers.PreferencesController.showGoBackToPreferences
+POST        /paperless-error              digitalcontact.controllers.PreferencesController.submitGoBackToPreferences
 
 # Income Source Routes
 GET         /income                       controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)

@@ -115,5 +115,5 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       )
   }
 
-  lazy val gotoPreferences = Redirect(controllers.preferences.routes.PreferencesController.checkPreferences())
+  lazy val gotoPreferences = Redirect(digitalcontact.controllers.routes.PreferencesController.checkPreferences())
 }

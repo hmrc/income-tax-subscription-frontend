@@ -146,7 +146,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           val result = TestHomeController(registrationFeature = true).index()(subscriptionRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+          redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
           await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
         }
       }
@@ -162,7 +162,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         val result = call(request)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+        redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
 
         await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(SignUp.name)
       }
@@ -193,7 +193,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           val result = TestHomeController(registrationFeature = true).index()(request)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+          redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
 
           await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
         }
@@ -210,7 +210,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         val result = call()
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+        redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
 
         await(result).session(subscriptionRequest).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
       }
@@ -278,7 +278,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
       status(result) must be(Status.SEE_OTHER)
 
-      redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+      redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
     }
 
     "redirect when auth returns an org affinity" in {
