@@ -24,8 +24,9 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockCitizenDetailsService, MockKeystoreService, MockSubscriptionService}
+import services.mocks.{MockKeystoreService, MockSubscriptionService}
 import uk.gov.hmrc.http.InternalServerException
+import usermatching.services.mocks.MockCitizenDetailsService
 import utils.TestConstants
 
 import scala.concurrent.Future
@@ -145,7 +146,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           val result = TestHomeController(registrationFeature = true).index()(subscriptionRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+          redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
           await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
         }
       }
@@ -161,7 +162,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         val result = call(request)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+        redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
 
         await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(SignUp.name)
       }
@@ -192,7 +193,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           val result = TestHomeController(registrationFeature = true).index()(request)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+          redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
 
           await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
         }
@@ -209,7 +210,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         val result = call()
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+        redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
 
         await(result).session(subscriptionRequest).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
       }
@@ -277,7 +278,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
       status(result) must be(Status.SEE_OTHER)
 
-      redirectLocation(result).get mustBe controllers.preferences.routes.PreferencesController.checkPreferences().url
+      redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
     }
 
     "redirect when auth returns an org affinity" in {
@@ -311,7 +312,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         val result = getResult(userMatchingFeature = true)
 
         status(result) mustBe Status.SEE_OTHER
-        redirectLocation(result).get mustBe controllers.routes.NinoResolverController.resolveNino().url
+        redirectLocation(result).get mustBe usermatching.controllers.routes.NinoResolverController.resolveNino().url
       }
     }
 
@@ -322,7 +323,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         val result = getResult(userMatchingFeature = false)
 
         status(result) mustBe Status.SEE_OTHER
-        redirectLocation(result).get mustBe controllers.routes.NinoResolverController.resolveNino().url
+        redirectLocation(result).get mustBe usermatching.controllers.routes.NinoResolverController.resolveNino().url
       }
     }
   }

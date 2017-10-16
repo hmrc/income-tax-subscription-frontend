@@ -18,12 +18,12 @@ package services.mocks
 
 import models._
 import models.address.Address
-import models.matching.UserDetailsModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import services.KeystoreService
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
+import usermatching.models.UserDetailsModel
 import utils.MockTrait
 
 import scala.concurrent.Future

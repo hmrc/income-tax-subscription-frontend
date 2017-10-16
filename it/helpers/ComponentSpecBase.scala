@@ -25,7 +25,6 @@ import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
 import auth.{JourneyState, Registration, SignUp, UserMatching}
-import models.matching.UserDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -38,6 +37,8 @@ import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.play.test.UnitSpec
 import IntegrationTestConstants._
+import usermatching.forms.UserDetailsForm
+import usermatching.models.UserDetailsModel
 
 trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite

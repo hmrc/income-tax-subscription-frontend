@@ -21,8 +21,8 @@ import javax.inject.Inject
 
 import auth.StatelessController
 import config.BaseControllerConfig
-import connectors.models.preferences.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
-import connectors.preferences.PaperlessPreferenceTokenConnector
+import digitalcontact.connectors.PaperlessPreferenceTokenConnector
+import digitalcontact.models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}

@@ -126,7 +126,7 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
 
     "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303) redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+      s"return a redirect status (SEE_OTHER - 303) redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)

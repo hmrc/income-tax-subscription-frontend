@@ -206,7 +206,7 @@ class HomeControllerISpec extends ComponentSpecBase {
 
 class HomeControllerRegEnabledISpec extends ComponentSpecBase with FeatureSwitching {
 
-  enable(featureswitch.Registration)
+  enable(featureswitch.RegistrationFeature)
 
   "GET /report-quarterly/income-and-expenses/sign-up/index" when {
 

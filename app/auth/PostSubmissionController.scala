@@ -21,7 +21,7 @@ import auth.AuthPredicates._
 trait PostSubmissionController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions {
-    val async: AuthenticatedAction = asyncInternal(enrolledPredicates)
+    override val async: AuthenticatedAction = asyncInternal(enrolledPredicates)
   }
 
 }

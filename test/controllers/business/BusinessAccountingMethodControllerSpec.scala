@@ -71,7 +71,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
 
-      s"redirect to '${controllers.preferences.routes.PreferencesController.checkPreferences().url}'" in {
+      s"redirect to '${digitalcontact.controllers.routes.PreferencesController.checkPreferences().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)

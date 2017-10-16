@@ -31,4 +31,3 @@ POST        /report-quarterly/income-and-expenses/sign-up/test-only/preferences-
 
 # Add all the application routes to the prod.routes file
 ->          /                                                                                prod.Routes
-->          /report-quarterly/income-and-expenses/sign-up                                    newFeatures.Routes

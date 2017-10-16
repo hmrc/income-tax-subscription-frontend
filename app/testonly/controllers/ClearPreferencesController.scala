@@ -20,8 +20,8 @@ import javax.inject.{Inject, Singleton}
 
 import auth.StatelessController
 import config.BaseControllerConfig
-import connectors.models.preferences.Activated
-import connectors.preferences.PreferenceFrontendConnector
+import digitalcontact.connectors.PreferenceFrontendConnector
+import digitalcontact.models.Activated
 import play.api.i18n.MessagesApi
 import services.AuthService
 import testonly.connectors.ClearPreferencesConnector

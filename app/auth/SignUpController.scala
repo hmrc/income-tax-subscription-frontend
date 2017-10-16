@@ -21,7 +21,7 @@ import auth.AuthPredicates._
 trait SignUpController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions {
-    val async: AuthenticatedAction = asyncInternal(subscriptionPredicates)
+    override val async: AuthenticatedAction = asyncInternal(subscriptionPredicates)
   }
 
 }
