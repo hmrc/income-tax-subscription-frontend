@@ -80,7 +80,7 @@ object AuthPredicates extends Results {
     if(request.session.isInState(UserMatching)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  lazy val goToIv = Redirect(controllers.iv.routes.IdentityVerificationController.gotoIV())
+  lazy val goToIv = Redirect(identityverification.controllers.routes.IdentityVerificationController.gotoIV())
 
   val ivPredicate: AuthPredicate = request => user =>
     if(request.session.isInState(Registration) && user.confidenceLevel < ConfidenceLevel.L200) Left(Future.successful(goToIv))

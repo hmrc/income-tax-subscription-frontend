@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.iv
+package identityverification.controllers
 
 import javax.inject.{Inject, Singleton}
 
@@ -49,7 +49,7 @@ class IdentityVerificationController @Inject()(override val baseConfig: BaseCont
   }
 
   def ivFailed: Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.iv.iv_failed(controllers.iv.routes.IdentityVerificationController.gotoIV().url))
+    Ok(identityverification.views.html.iv_failed(identityverification.controllers.routes.IdentityVerificationController.gotoIV().url))
   }
 }
 
@@ -57,7 +57,7 @@ object IdentityVerificationController {
 
   def completionUri(baseUrl: String): String = baseUrl + controllers.routes.HomeController.index().url
 
-  def failureUri(baseUrl: String): String = baseUrl + controllers.iv.routes.IdentityVerificationController.ivFailed().url
+  def failureUri(baseUrl: String): String = baseUrl + identityverification.controllers.routes.IdentityVerificationController.ivFailed().url
 
   def identityVerificationUrl(origin: String, baseUrl: String)(implicit request: Request[AnyContent]): String =
     s"/mdtp/uplift?origin=$origin&confidenceLevel=200&completionURL=${completionUri(baseUrl)}&failureURL=${failureUri(baseUrl)}"

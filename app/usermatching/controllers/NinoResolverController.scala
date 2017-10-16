@@ -42,7 +42,7 @@ class NinoResolverController @Inject()(val baseConfig: BaseControllerConfig,
         )
       }
       else {
-        Future.successful(Redirect(controllers.iv.routes.IdentityVerificationController.gotoIV()))
+        Future.successful(Redirect(identityverification.controllers.routes.IdentityVerificationController.gotoIV()))
       }
   }
 

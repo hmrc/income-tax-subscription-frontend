@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.iv
+package identityverification.views
 
 import assets.MessageLookup.{IvFailed => messages}
 import play.api.i18n.Messages.Implicits._
@@ -24,7 +24,7 @@ import views.ViewSpecTrait
 class IvFailedViewSpec extends ViewSpecTrait {
   val testUrl = "link/iv"
 
-  lazy val page = views.html.iv.iv_failed(testUrl)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = identityverification.views.html.iv_failed(testUrl)(FakeRequest(), applicationMessages, appConfig)
 
   "The IV failed view spec" should {
     val testPage = TestView(

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.iv
+package identityverification.controllers
 
 import assets.MessageLookup
 import audit.Logging
@@ -23,7 +23,6 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 
 class IdentityVerificationControllerSpec extends ControllerBaseSpec {
 
@@ -52,7 +51,7 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
     }
     "failureUri sets the correctly uri without a query string" in {
       val url = IdentityVerificationController.failureUri(baseUrl)
-      url must endWith(controllers.iv.routes.IdentityVerificationController.ivFailed().url)
+      url must endWith(identityverification.controllers.routes.IdentityVerificationController.ivFailed().url)
     }
   }
 
