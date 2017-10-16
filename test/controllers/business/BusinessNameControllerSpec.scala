@@ -89,13 +89,13 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
 
     "When it is in edit mode" should {
-      s"return a redirect status (SEE_OTHER - 303) to '${controllers.routes.CheckYourAnswersController.show().url}" in {
+      s"return a redirect status (SEE_OTHER - 303) to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
@@ -126,13 +126,13 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
 
     "When it is in edit mode" should {
-      s"return a redirect status (SEE_OTHER - 303) redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+      s"return a redirect status (SEE_OTHER - 303) redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
@@ -178,12 +178,12 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
   }
 
   "The back url in edit mode" should {
-    s"point to ${controllers.routes.CheckYourAnswersController.show().url} on other income page" in {
+    s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url} on other income page" in {
       def backUrl = TestBusinessNameController.backUrl(isEditMode = true)(subscriptionRequest)
 
       val callBack = backUrl
 
-      await(callBack) mustBe controllers.routes.CheckYourAnswersController.show().url
+      await(callBack) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

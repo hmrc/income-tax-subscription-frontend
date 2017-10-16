@@ -107,37 +107,37 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     }
 
     "When it is in edit mode and user's selection has not changed" should {
-      s"return an SEE OTHER (303) for business and goto ${controllers.routes.CheckYourAnswersController.show().url}" in {
+      s"return an SEE OTHER (303) for business and goto ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
         val goodRequest = callShow(IncomeSourceForm.option_business, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe controllers.routes.CheckYourAnswersController.show().url
+        redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
       }
 
-      s"return a SEE OTHER (303) for property and goto ${controllers.routes.CheckYourAnswersController.show()}" in {
+      s"return a SEE OTHER (303) for property and goto ${incometax.subscription.controllers.routes.CheckYourAnswersController.show()}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
 
         val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe controllers.routes.CheckYourAnswersController.show().url
+        redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
       }
 
-      s"return a SEE OTHER (303) for both and goto ${controllers.routes.CheckYourAnswersController.show().url}" in {
+      s"return a SEE OTHER (303) for both and goto ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
         val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe controllers.routes.CheckYourAnswersController.show().url
+        redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
@@ -195,8 +195,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${controllers.routes.CheckYourAnswersController.show().url} on income source page" in {
-      TestIncomeSourceController.backUrl mustBe controllers.routes.CheckYourAnswersController.show().url
+    s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url} on income source page" in {
+      TestIncomeSourceController.backUrl mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

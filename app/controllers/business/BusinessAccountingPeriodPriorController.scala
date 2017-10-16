@@ -62,7 +62,7 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
             somePreviousAnswer =>
               keystoreService.saveAccountingPeriodPrior(accountingPeriodPrior) flatMap { _ =>
                 if (somePreviousAnswer.fold(false)(previousAnswer => previousAnswer.equals(accountingPeriodPrior)) && isEditMode)
-                  Redirect(controllers.routes.CheckYourAnswersController.show())
+                  Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
                 else
                   accountingPeriodPrior.currentPeriodIsPrior match {
                     case AccountingPeriodPriorForm.option_yes => yes

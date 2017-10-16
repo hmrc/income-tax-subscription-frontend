@@ -74,7 +74,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
             } yield {
               // if what was persisted is the same as the new value then go straight back to summary
               if (oldIncomeSource.fold(false)(i => i.source.equals(incomeSource.source)))
-                Future.successful(Redirect(controllers.routes.CheckYourAnswersController.submit()))
+                Future.successful(Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.submit()))
               else // otherwise go back to the linear journey
                 linearJourney
             }).flatMap(x => x)
@@ -89,5 +89,5 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
   def both(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.routes.OtherIncomeController.showOtherIncome()))
 
   lazy val backUrl: String =
-      controllers.routes.CheckYourAnswersController.show().url
+    incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
 }

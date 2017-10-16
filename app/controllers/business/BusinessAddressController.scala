@@ -93,7 +93,7 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
               keystoreService.saveBusinessAddress(address).map {
                 _ =>
                   if (editMode)
-                    Redirect(controllers.routes.CheckYourAnswersController.show())
+                    Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
                   else
                     Redirect(controllers.business.routes.BusinessStartDateController.show())
               }

@@ -144,12 +144,12 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchBusinessStartDate = 0, saveBusinessStartDate = 1)
         }
 
-        s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+        s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
           setupMockKeystoreSaveFunctions()
 
           val goodRequest = callShow(isEditMode = true)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
 
           await(goodRequest)
           verifyKeystore(fetchBusinessStartDate = 0, saveBusinessStartDate = 1)
@@ -189,9 +189,9 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
         document.select("#back").attr("href") mustBe controllers.business.routes.BusinessAddressController.show().url
       }
 
-      s"When it is in edit mode it should point to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+      s"When it is in edit mode it should point to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
         val document = Jsoup.parse(contentAsString(resultEdit(option_no)))
-        document.select("#back").attr("href") mustBe controllers.routes.CheckYourAnswersController.show().url
+        document.select("#back").attr("href") mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
       }
 
     }

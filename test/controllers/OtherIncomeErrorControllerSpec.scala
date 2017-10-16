@@ -23,7 +23,6 @@ import models.OtherIncomeModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, _}
 import utils.TestModels
 
@@ -85,13 +84,13 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
       verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.routes.TermsController.showTerms().url}' on the property journey" in {
+    s"redirect to '${incometax.subscription.controllers.routes.TermsController.showTerms().url}' on the property journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+      redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.showTerms().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)

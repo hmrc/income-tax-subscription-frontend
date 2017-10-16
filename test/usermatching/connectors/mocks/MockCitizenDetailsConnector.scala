@@ -17,7 +17,7 @@
 package usermatching.connectors.mocks
 
 import core.audit.Logging
-import connectors.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
+import incometax.subscription.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach

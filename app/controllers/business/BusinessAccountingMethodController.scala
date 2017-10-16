@@ -58,8 +58,8 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
         formWithErrors => Future.successful(BadRequest(view(accountingMethodForm = formWithErrors, isEditMode = isEditMode))),
         accountingMethod => {
           keystoreService.saveAccountingMethod(accountingMethod) map (_ => isEditMode match {
-            case true => Redirect(controllers.routes.CheckYourAnswersController.show())
-            case _ => Redirect(controllers.routes.TermsController.showTerms())
+            case true => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+            case _ => Redirect(incometax.subscription.controllers.routes.TermsController.showTerms())
           })
         }
       )
@@ -67,7 +67,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
 
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode)
-      controllers.routes.CheckYourAnswersController.show().url
+      incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     else
       controllers.business.routes.BusinessAccountingPeriodDateController.show().url
 

@@ -132,7 +132,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe controllers.routes.CheckYourAnswersController.show().url
+        redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
@@ -158,7 +158,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec wit
         setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe controllers.routes.CheckYourAnswersController.show().url
+        redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }

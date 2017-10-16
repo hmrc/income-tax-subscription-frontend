@@ -19,9 +19,9 @@ package usermatching.services
 import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
-import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import uk.gov.hmrc.http.{HeaderCarrier, UserId}
 import usermatching.connectors.UserLockoutConnector
+import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 
 import scala.concurrent.Future
 

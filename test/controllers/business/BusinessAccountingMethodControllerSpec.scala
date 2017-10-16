@@ -76,7 +76,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+        redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.showTerms().url)
 
         await(goodRequest)
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
@@ -95,12 +95,12 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
 
-      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+      s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
@@ -126,8 +126,8 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   }
 
   "The back url in edit mode" should {
-    s"point to ${controllers.routes.CheckYourAnswersController.show().url}" in {
-      TestBusinessAccountingMethodController.backUrl(isEditMode = true) mustBe controllers.routes.CheckYourAnswersController.show().url
+    s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
+      TestBusinessAccountingMethodController.backUrl(isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

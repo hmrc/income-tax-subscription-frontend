@@ -177,7 +177,7 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
 
               status(result) must be(Status.SEE_OTHER)
               if (editMode)
-                redirectLocation(result).get mustBe controllers.routes.CheckYourAnswersController.show().url
+                redirectLocation(result).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
               else
                 redirectLocation(result).get mustBe controllers.business.routes.BusinessStartDateController.show().url
 

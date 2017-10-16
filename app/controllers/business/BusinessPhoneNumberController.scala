@@ -59,7 +59,7 @@ class BusinessPhoneNumberController @Inject()(val baseConfig: BaseControllerConf
         phoneNumber => {
           keystoreService.saveBusinessPhoneNumber(phoneNumber) map (_ =>
             if (isEditMode)
-              Redirect(controllers.routes.CheckYourAnswersController.show())
+              Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
             else
               Redirect(controllers.business.routes.BusinessAddressController.show())
             )
@@ -69,7 +69,7 @@ class BusinessPhoneNumberController @Inject()(val baseConfig: BaseControllerConf
 
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode)
-      controllers.routes.CheckYourAnswersController.show().url
+      incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     else
       controllers.business.routes.BusinessNameController.show().url
 

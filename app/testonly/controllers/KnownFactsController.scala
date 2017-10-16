@@ -22,11 +22,11 @@ import javax.inject.{Inject, Singleton}
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.AuthService
+import incometax.subscription.services.KnownFactsService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.KnownFactsService
 import testonly.forms.KnownFactsForm._
 import testonly.models.KnownFactsModel
 

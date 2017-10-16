@@ -103,7 +103,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
           val goodRequest = callShow(isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
 
           await(goodRequest)
           verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
@@ -129,8 +129,8 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     }
 
     "The back url in edit mode" should {
-      s"point to ${controllers.routes.CheckYourAnswersController.show().url}" in {
-        await(TestBusinessAccountingPeriodController.backUrl(isEditMode = true)(request)) mustBe controllers.routes.CheckYourAnswersController.show().url
+      s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
+        await(TestBusinessAccountingPeriodController.backUrl(isEditMode = true)(request)) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
       }
     }
   }
@@ -225,13 +225,13 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
         }
 
-        s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+        s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
           // required for backurl
           setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
 
           val goodRequest = callShow(isEditMode = true)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
 
           await(goodRequest)
           verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)

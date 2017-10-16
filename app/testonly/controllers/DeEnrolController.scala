@@ -20,11 +20,11 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import connectors.GGAuthenticationConnector
-import connectors.models.authenticator.RefreshProfileSuccess
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.AuthService
+import incometax.subscription.connectors.GGAuthenticationConnector
+import incometax.subscription.models.RefreshProfileSuccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import testonly.connectors.DeEnrolmentConnector
