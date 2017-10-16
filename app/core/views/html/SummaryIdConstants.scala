@@ -14,8 +14,20 @@
  * limitations under the License.
  */
 
-package views.html
+package core.views.html
 
-import utils.Implicits
+object SummaryIdConstants {
 
-package object helpers extends Implicits
+  val ReceiveEmail = "receiveEmail"
+  val IncomeSourceId = "incomeSource"
+  val OtherIncomeId = "otherIncome"
+  val AccountingPeriodPriorId = "accountingPeriodPrior"
+  val AccountingPeriodDateId = "accountingPeriodDate"
+  val BusinessNameId = "businessName"
+  val BusinessPhoneNumberId = "businessPhoneNumber"
+  val BusinessAddressId = "businessAddress"
+  val BusinessStartDateId = "businessStartDate"
+  val AccountingMethodId = "accountingMethod"
+  val TermsId = "terms"
+
+}

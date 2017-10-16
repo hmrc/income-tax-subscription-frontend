@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.helpers
+package core.views.helpers
 
 import assets.MessageLookup
 import core.forms.submapping.DateMapping._
@@ -28,7 +28,7 @@ import utils.UnitTestTrait
 class DateHelperSpec extends UnitTestTrait {
 
   private def dateHelper(field: Field, label: Option[String])
-  = views.html.helpers.dateHelper(field, label)(applicationMessages)
+  = core.views.html.helpers.dateHelper(field, label)(applicationMessages)
 
   val dateName = "testDate"
   val testForm = Form(

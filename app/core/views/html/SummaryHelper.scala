@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package views.html.helpers
+package core.views.html
 
-import forms.{IncomeSourceForm, AccountingMethodForm}
-import models.{IncomeSourceModel, AccountingMethodModel}
+import forms.{AccountingMethodForm, IncomeSourceForm}
+import models.{AccountingMethodModel, IncomeSourceModel}
 import play.api.i18n.Messages
 
 object SummaryHelper {

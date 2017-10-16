@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.helpers
+package core.views.helpers
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -27,7 +27,7 @@ import org.scalatest.Matchers._
 class AccordionHelperSpec extends PlaySpec with OneServerPerSuite {
 
   private def accordionHelper(label: String,content: Html)
-  = views.html.helpers.accordionHelper(label,content)(applicationMessages)
+  = core.views.html.helpers.accordionHelper(label,content)(applicationMessages)
 
   implicit class HtmlFormatUtil(html: Html) {
     def doc: Document = Jsoup.parse(html.body)

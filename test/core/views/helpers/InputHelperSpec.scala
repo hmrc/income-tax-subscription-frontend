@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.helpers
+package core.views.helpers
 
 import core.forms.validation.testutils.DataMap
 import org.scalatest.Matchers._
@@ -34,7 +34,7 @@ class InputHelperSpec extends UnitTestTrait {
                            labelClass: Option[String] = None,
                            isNumeric: Boolean = false
                          )
-  = views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength, labelClass = labelClass, isNumeric = isNumeric)(applicationMessages)
+  = core.views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength, labelClass = labelClass, isNumeric = isNumeric)(applicationMessages)
 
   case class TestData(input: String)
 

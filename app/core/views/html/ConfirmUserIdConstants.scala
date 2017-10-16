@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package views.html.helpers
+package core.views.html
 
-object SummaryIdConstants {
+object ConfirmUserIdConstants {
 
-  val ReceiveEmail = "receiveEmail"
-  val IncomeSourceId = "incomeSource"
-  val OtherIncomeId = "otherIncome"
-  val AccountingPeriodPriorId = "accountingPeriodPrior"
-  val AccountingPeriodDateId = "accountingPeriodDate"
-  val BusinessNameId = "businessName"
-  val BusinessPhoneNumberId = "businessPhoneNumber"
-  val BusinessAddressId = "businessAddress"
-  val BusinessStartDateId = "businessStartDate"
-  val AccountingMethodId = "accountingMethod"
-  val TermsId = "terms"
+  val DobId = "date-of-birth"
+  val FirstNameId = "first-name"
+  val LastNameId = "last-name"
+  val NinoId = "nino"
 
 }

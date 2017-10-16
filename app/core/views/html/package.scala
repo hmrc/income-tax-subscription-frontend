@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-package views.html.helpers
+package core.views.html
 
-object ConfirmUserIdConstants {
+import utils.Implicits
 
-  val DobId = "date-of-birth"
-  val FirstNameId = "first-name"
-  val LastNameId = "last-name"
-  val NinoId = "nino"
-
-}
+package object helpers extends Implicits

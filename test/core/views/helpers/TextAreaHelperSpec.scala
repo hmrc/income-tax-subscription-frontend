@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.helpers
+package core.views.helpers
 
 import core.forms.validation.testutils.DataMap
 import core.forms.validation.utils.MappingUtil._
@@ -32,7 +32,7 @@ class TextAreaHelperSpec extends UnitTestTrait {
                               cols: Option[Int] = None,
                               rows: Option[Int] = None
                             )
-  = views.html.helpers.textAreaHelper(field = field, maxLength = maxLength, cols = cols, rows = rows)(applicationMessages)
+  = core.views.html.helpers.textAreaHelper(field = field, maxLength = maxLength, cols = cols, rows = rows)(applicationMessages)
 
   case class TestData(input: String)
 

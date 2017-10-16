@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.helpers
+package core.views.helpers
 
 import assets.MessageLookup.{Base => common}
 import core.forms.validation.ErrorMessageFactory
@@ -31,7 +31,7 @@ import utils.UnitTestTrait
 class SummaryErrorHelperSpec extends UnitTestTrait {
 
   private def summaryErrorHelper(form: Form[_])
-  = views.html.helpers.summaryErrorHelper(form)(applicationMessages)
+  = core.views.html.helpers.summaryErrorHelper(form)(applicationMessages)
 
   case class TestData(field1: String, field2: String, field3: String)
 

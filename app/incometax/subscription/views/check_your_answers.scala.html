@@ -15,15 +15,15 @@
  *@
 
 @import models.SummaryModel
-@import helpers._
+@import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
 @import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
 
 @import models.address.Address
 @(summaryModel: SummaryModel, isRegistration:Boolean, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@import SummaryIdConstants._
-@import SummaryHelper._
+@import core.views.html.SummaryIdConstants._
+@import core.views.html.SummaryHelper._
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
     <div class="tabular-data__entry divider--top--thick" id="@field-row">

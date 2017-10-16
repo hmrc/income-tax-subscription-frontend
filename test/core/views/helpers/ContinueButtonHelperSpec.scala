@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.helpers
+package core.views.helpers
 
 import assets.MessageLookup
 import org.jsoup.Jsoup
@@ -23,7 +23,7 @@ import utils.UnitTestTrait
 
 class ContinueButtonHelperSpec extends UnitTestTrait {
 
-  val view = views.html.helpers.continueButton()(applicationMessages)
+  val view = core.views.html.helpers.continueButton()(applicationMessages)
   val html = Jsoup.parse(view.body)
 
   "The continue button helper" should {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.helpers
+package core.views.helpers
 
 import core.forms.validation.testutils.DataMap
 import org.scalatest.Matchers._
@@ -27,7 +27,7 @@ import core.forms.validation.utils.MappingUtil._
 class CheckboxHelperSpec extends UnitTestTrait {
 
   private def checkboxHelper(field: Field, label: String)
-  = views.html.helpers.checkboxHelper(field, label)(applicationMessages)
+  = core.views.html.helpers.checkboxHelper(field, label)(applicationMessages)
 
   case class TestData(checked: Boolean)
 
