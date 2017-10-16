@@ -22,8 +22,8 @@ import javax.inject.{Inject, Singleton}
 
 import auth.SignUpController
 import config.BaseControllerConfig
-import connectors.GGAuthenticationConnector
-import connectors.models.authenticator.RefreshProfileSuccess
+import incometax.subscription.connectors.GGAuthenticationConnector
+import incometax.subscription.models.RefreshProfileSuccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import services.AuthService

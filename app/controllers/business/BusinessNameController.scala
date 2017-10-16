@@ -64,7 +64,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
         businessName =>
           keystoreService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
-              Redirect(controllers.routes.CheckYourAnswersController.show())
+              Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
             else if (request.isInState(Registration))
               Redirect(controllers.business.routes.BusinessPhoneNumberController.show())
             else
@@ -76,7 +76,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
   def backUrl(isEditMode: Boolean)(implicit request: Request[_]): Future[String] = {
     import forms.OtherIncomeForm._
     if (isEditMode)
-      Future.successful(controllers.routes.CheckYourAnswersController.show().url)
+      Future.successful(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
     else
       keystoreService.fetchOtherIncome().map {
         case Some(OtherIncomeModel(`option_yes`)) => controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url

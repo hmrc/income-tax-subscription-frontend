@@ -16,10 +16,10 @@
 
 package forms
 
-import connectors.models.subscription.IncomeSourceType
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
+import incometax.subscription.models.IncomeSourceType
 import models.IncomeSourceModel
 import play.api.data.Form
 import play.api.data.Forms._

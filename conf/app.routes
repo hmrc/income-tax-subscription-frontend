@@ -22,12 +22,12 @@ GET         /income                       controllers.IncomeSourceController.sho
 POST        /income                       controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
 
 # Summary Routes
-GET         /check-your-answers           controllers.CheckYourAnswersController.show
-POST        /check-your-answers           controllers.CheckYourAnswersController.submit
+GET         /check-your-answers           incometax.subscription.controllers.CheckYourAnswersController.show
+POST        /check-your-answers           incometax.subscription.controllers.CheckYourAnswersController.submit
 
 # Confirmation Routes
-GET         /confirmation                 controllers.ConfirmationController.showConfirmation
-GET         /confirmation/sign-out        controllers.ConfirmationController.signOut
+GET         /confirmation                 incometax.subscription.controllers.ConfirmationController.showConfirmation
+GET         /confirmation/sign-out        incometax.subscription.controllers.ConfirmationController.signOut
 
 # Session Timeout Route
 GET         /session-timeout              controllers.SessionTimeoutController.timeout
@@ -38,8 +38,8 @@ POST        /feedback                     controllers.FeedbackController.submit
 GET         /thankyou                     controllers.FeedbackController.thankyou
 
 # Terms Routes
-GET         /terms                        controllers.TermsController.showTerms()
-POST        /terms                        controllers.TermsController.submitTerms()
+GET         /terms                        incometax.subscription.controllers.TermsController.showTerms()
+POST        /terms                        incometax.subscription.controllers.TermsController.submitTerms()
 
 # Not Eligible Routes - CURRENTLY NOT USED (but kept if required at a later date)
 GET         /not-eligible                 controllers.NotEligibleController.showNotEligible
@@ -64,7 +64,7 @@ POST        /error/other-income           controllers.OtherIncomeErrorController
 GET         /error/affinity-group         controllers.AffinityGroupErrorController.show
 
 # IV Error
-GET         /error/iv-failed              controllers.iv.IdentityVerificationController.ivFailed
+GET         /error/iv-failed              identityverification.controllers.IdentityVerificationController.ivFailed
 
 # Exit Survey
 GET         /exit-survey                  controllers.ExitSurveyController.show
@@ -75,10 +75,10 @@ GET         /feedback-submitted           controllers.ThankYouController.show
 GET         /sign-in                      controllers.SignInController.signIn
 
 # Claim Subscription
-GET         /claim-subscription           controllers.ClaimSubscriptionController.claim
+GET         /claim-subscription           incometax.subscription.controllers.ClaimSubscriptionController.claim
 
 # IV
-GET         /iv                           controllers.iv.IdentityVerificationController.gotoIV
+GET         /iv                           identityverification.controllers.IdentityVerificationController.gotoIV
 
 # User Matching
 GET         /user-details                 usermatching.controllers.UserDetailsController.show(editMode: Boolean ?= false)

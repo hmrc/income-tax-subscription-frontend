@@ -17,7 +17,7 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import connectors.GGAdminConnector
+import incometax.subscription.connectors.GGAdminConnector
 import play.api.http.Status._
 import play.api.libs.json.Json
 

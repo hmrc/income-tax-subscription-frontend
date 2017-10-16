@@ -74,7 +74,7 @@ class NinoResolverControllerSpec extends ControllerBaseSpec {
 
         status(result) mustBe Status.SEE_OTHER
 
-        redirectLocation(result).get mustBe controllers.iv.routes.IdentityVerificationController.gotoIV().url
+        redirectLocation(result).get mustBe identityverification.controllers.routes.IdentityVerificationController.gotoIV().url
       }
     }
   }

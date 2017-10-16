@@ -20,11 +20,12 @@ import assets.MessageLookup.FrontPage
 import audit.Logging
 import auth.{MockConfig, Registration, SignUp}
 import config.BaseControllerConfig
+import incometax.subscription.services.mocks.MockSubscriptionService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockKeystoreService, MockSubscriptionService}
+import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.mocks.MockCitizenDetailsService
 import utils.TestConstants
@@ -102,7 +103,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
       val result = call()
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get mustBe controllers.routes.ClaimSubscriptionController.claim().url
+      redirectLocation(result).get mustBe incometax.subscription.controllers.routes.ClaimSubscriptionController.claim().url
 
       verifyKeystore(saveSubscriptionId = 1)
     }

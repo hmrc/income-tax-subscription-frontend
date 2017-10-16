@@ -16,7 +16,7 @@
 
 package usermatching.services.mocks
 
-import connectors.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
+import incometax.subscription.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status._

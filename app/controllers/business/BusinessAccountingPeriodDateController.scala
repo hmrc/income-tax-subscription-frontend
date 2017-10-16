@@ -78,7 +78,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
             accountingPeriod =>
               keystoreService.saveAccountingPeriodDate(accountingPeriod) map (_ =>
                 if (isEditMode)
-                  Redirect(controllers.routes.CheckYourAnswersController.show())
+                  Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
                 else
                   Redirect(controllers.business.routes.BusinessAccountingMethodController.show())
                 )
@@ -105,7 +105,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
 
   def backUrl(isEditMode: Boolean)(implicit request: Request[_]): Future[String] =
     if (isEditMode)
-      controllers.routes.CheckYourAnswersController.show().url
+      incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     else if (request.isInState(Registration))
         controllers.business.routes.BusinessStartDateController.show().url
     else

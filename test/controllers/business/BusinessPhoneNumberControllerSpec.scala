@@ -137,12 +137,12 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
         }
 
-        s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+        s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
           setupMockKeystoreSaveFunctions()
 
           val goodRequest = callShow(isEditMode = true)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
 
           await(goodRequest)
           verifyKeystore(fetchBusinessPhoneNumber = 0, saveBusinessPhoneNumber = 1)
@@ -168,8 +168,8 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
     }
 
     "The back url when in edit mode" should {
-      s"point to ${controllers.routes.CheckYourAnswersController.show().url}" in {
-        TestBusinessPhoneNumberController.backUrl(isEditMode = true) mustBe controllers.routes.CheckYourAnswersController.show().url
+      s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
+        TestBusinessPhoneNumberController.backUrl(isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
       }
     }
   }
