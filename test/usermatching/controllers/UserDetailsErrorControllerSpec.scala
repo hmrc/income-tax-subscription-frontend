@@ -17,7 +17,7 @@
 package usermatching.controllers
 
 import assets.MessageLookup.{UserDetailsError => messages}
-import auth.{MockConfig, UserMatching}
+import core.auth.{MockConfig, UserMatching}
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import org.jsoup.Jsoup
 import play.api.http.Status

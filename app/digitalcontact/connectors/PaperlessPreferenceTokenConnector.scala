@@ -18,7 +18,7 @@ package digitalcontact.connectors
 
 import javax.inject.Inject
 
-import config.AppConfig
+import core.config.AppConfig
 import digitalcontact.models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenResult
 import digitalcontact.httpparsers.PaperlessPreferenceTokenResultHttpParser._
 import play.api.libs.json.{JsObject, Json}

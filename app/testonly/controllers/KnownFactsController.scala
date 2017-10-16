@@ -19,13 +19,14 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.SignUpController
-import config.BaseControllerConfig
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.{AuthService, KnownFactsService}
+import services.KnownFactsService
 import testonly.forms.KnownFactsForm._
 import testonly.models.KnownFactsModel
 

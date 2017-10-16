@@ -19,7 +19,7 @@ package utils
 import java.time.OffsetDateTime
 import java.util.UUID
 
-import common.Constants.GovernmentGateway._
+import core.Constants.GovernmentGateway._
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
 import connectors.models.gg._
 import connectors.models.subscription.{Both, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}

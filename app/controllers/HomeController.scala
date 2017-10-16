@@ -18,21 +18,22 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import auth._
-import config.BaseControllerConfig
 import connectors.models.CitizenDetailsSuccess
 import connectors.models.subscription.SubscriptionSuccess
 import controllers.ITSASessionKeys._
+import core.audit.Logging
+import core.auth.JourneyState._
+import core.auth._
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.{AuthService, KeystoreService, SubscriptionService}
-import utils.Implicits._
-import auth.JourneyState._
-
-import scala.concurrent.Future
+import services.SubscriptionService
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.CitizenDetailsService
+import utils.Implicits._
+
+import scala.concurrent.Future
 
 @Singleton
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,

@@ -16,14 +16,14 @@
 
 package controllers.business
 
-import auth.{MockConfig, Registration}
+import core.auth.{MockConfig, Registration}
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import core.services.mocks.MockKeystoreService
 import forms.BusinessPhoneNumberForm
 import models.BusinessPhoneNumberModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
 import utils.TestConstants._
 

@@ -20,13 +20,13 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.SignUpController
-import config.BaseControllerConfig
 import connectors.GGAuthenticationConnector
 import connectors.models.authenticator.RefreshProfileSuccess
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import services.AuthService
 import testonly.connectors.DeEnrolmentConnector
 import uk.gov.hmrc.http.InternalServerException
 

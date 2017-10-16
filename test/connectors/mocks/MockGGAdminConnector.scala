@@ -16,7 +16,7 @@
 
 package connectors.mocks
 
-import audit.Logging
+import core.audit.Logging
 import connectors.GGAdminConnector
 import connectors.models.gg.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess}
 import org.mockito.ArgumentMatchers

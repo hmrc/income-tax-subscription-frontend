@@ -16,7 +16,7 @@
 
 package connectors.mocks
 
-import audit.Logging
+import core.audit.Logging
 import connectors.GGConnector
 import connectors.models.gg.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import org.mockito.ArgumentMatchers

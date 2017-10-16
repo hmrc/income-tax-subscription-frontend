@@ -16,12 +16,13 @@
 
 package controllers
 
-import audit.Logging
+import core.audit.Logging
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.CacheUtil._
-import services.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
+import core.services.CacheUtil._
+import core.services.mocks.MockKeystoreService
+import services.mocks.MockSubscriptionOrchestrationService
 import uk.gov.hmrc.http.InternalServerException
 import utils.TestConstants._
 import utils.TestModels._

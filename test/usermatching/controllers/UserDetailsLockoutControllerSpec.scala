@@ -19,7 +19,7 @@ package usermatching.controllers
 import java.time.Duration
 
 import assets.MessageLookup.{UserDetailsLockout => messages}
-import auth.{MockConfig, UserMatching}
+import core.auth.{MockConfig, UserMatching}
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import org.jsoup.Jsoup
 import play.api.http.Status

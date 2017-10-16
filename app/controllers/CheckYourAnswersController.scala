@@ -18,17 +18,18 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import auth.{SignUpController, IncomeTaxSAUser, Registration}
-import config.BaseControllerConfig
 import connectors.models.subscription.SubscriptionSuccess
+import core.audit.Logging
+import core.auth.{IncomeTaxSAUser, Registration, SignUpController}
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Request, Result}
-import services.{AuthService, KeystoreService, SubscriptionOrchestrationService}
+import services.SubscriptionOrchestrationService
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 @Singleton
 class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
@@ -39,7 +40,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            logging: Logging
                                           ) extends SignUpController {
 
-  import services.CacheUtil._
+  import core.services.CacheUtil._
 
   lazy val backUrl: String = controllers.routes.TermsController.showTerms().url
   val show = journeySafeGuard { implicit user =>

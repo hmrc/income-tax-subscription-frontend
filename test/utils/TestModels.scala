@@ -17,12 +17,12 @@
 package utils
 
 
+import core.services.CacheConstants
 import connectors.models.address.ReturnedAddress
 import forms._
 import models._
 import models.address.{Address, Country}
 import play.api.libs.json.{JsValue, Json}
-import services.CacheConstants
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import usermatching.models.{UserDetailsModel, UserMatchSuccessResponseModel}

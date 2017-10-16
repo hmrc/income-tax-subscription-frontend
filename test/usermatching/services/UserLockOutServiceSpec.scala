@@ -19,6 +19,7 @@ package usermatching.services
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.UserId
 import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 import usermatching.services.mocks.TestUserLockoutService
 import utils.TestConstants._
@@ -30,6 +31,22 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
     def call = await(TestUserLockoutService.lockoutUser(userId = testUserId))
 
     "return the not locked out status" in {
+      def stripUserId(userId: UserId): String = userId.value.replace("/auth/oid/", "")
+println
+println
+println
+println
+println
+      println(testUserId)
+      println(strippedUserId)
+      println(testUserId.value)
+      println(stripUserId(testUserId))
+      println
+      println
+      println
+      println
+      println
+
       setupMockLockCreated(strippedUserId)
       call.right.value shouldBe testLockoutResponse
     }

@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import config.AppConfig
+import core.config.AppConfig
 import play.api.Application
 import play.api.mvc.Action
 import uk.gov.hmrc.play.config.RunMode

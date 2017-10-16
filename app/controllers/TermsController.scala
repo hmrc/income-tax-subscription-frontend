@@ -18,18 +18,18 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.SignUpController
-import config.BaseControllerConfig
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import forms.IncomeSourceForm
 import models.OtherIncomeModel
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
+import uk.gov.hmrc.http.InternalServerException
 import utils.Implicits._
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.InternalServerException
 
 @Singleton
 class TermsController @Inject()(val baseConfig: BaseControllerConfig,

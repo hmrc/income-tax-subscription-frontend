@@ -17,14 +17,15 @@
 package controllers
 
 import assets.MessageLookup.FrontPage
-import audit.Logging
-import auth.{MockConfig, Registration, SignUp}
-import config.BaseControllerConfig
+import core.audit.Logging
+import core.auth.{MockConfig, Registration, SignUp}
+import core.config.BaseControllerConfig
+import core.services.mocks.MockKeystoreService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
-import services.mocks.{MockKeystoreService, MockSubscriptionService}
+import services.mocks.MockSubscriptionService
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.mocks.MockCitizenDetailsService
 import utils.TestConstants
@@ -305,7 +306,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     def getResult(userMatchingFeature: Boolean): Future[Result] =
       TestHomeController(showGuidance = false, userMatchingFeature = userMatchingFeature).index()(subscriptionRequest)
 
-    "userMatchingFeature in config is set to true" should {
+    "userMatchingFeature in core.config is set to true" should {
       "redirect them to user details" in {
         mockIndividualWithNoEnrolments()
 
@@ -316,7 +317,7 @@ class HomeControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "userMatchingFeature in config is set to false" should {
+    "userMatchingFeature in core.config is set to false" should {
       "redirect them to iv" in {
         mockIndividualWithNoEnrolments()
 

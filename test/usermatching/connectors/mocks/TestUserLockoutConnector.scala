@@ -16,8 +16,8 @@
 
 package usermatching.connectors.mocks
 
-import config.AppConfig
 import connectors.mocks.MockHttp
+import core.config.AppConfig
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.BAD_REQUEST
@@ -30,15 +30,8 @@ import utils.TestConstants._
 
 import scala.concurrent.Future
 
-trait TestUserLockoutConnector extends MockTrait with MockHttp {
+trait MockUserLockoutConnector extends MockTrait {
   val mockUserLockoutConnector = mock[UserLockoutConnector]
-
-  object TestUserLockoutConnector extends UserLockoutConnector(
-    app.injector.instanceOf[AppConfig],
-    mockHttpGet,
-    mockHttpPost
-  )
-
 
   private def setupLockoutUser(arn: String)(result: Future[LockoutStatusResponse]): Unit =
     when(mockUserLockoutConnector.lockoutUser(ArgumentMatchers.eq(arn))(ArgumentMatchers.any[HeaderCarrier]))
@@ -68,5 +61,15 @@ trait TestUserLockoutConnector extends MockTrait with MockHttp {
 
   def setupMockLockStatusException(arn: String): Unit =
     setupMockGetLockoutStatus(arn)(Future.failed(testException))
+
+}
+
+trait TestUserLockoutConnector extends MockTrait with MockHttp {
+
+  object TestUserLockoutConnector extends UserLockoutConnector(
+    app.injector.instanceOf[AppConfig],
+    mockHttpGet,
+    mockHttpPost
+  )
 
 }

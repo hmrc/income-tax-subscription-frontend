@@ -17,15 +17,15 @@
 package controllers.business
 
 import assets.MessageLookup
-import auth._
+import core.auth._
 import controllers.ControllerBaseSpec
+import core.services.mocks.MockKeystoreService
 import forms.AccountingPeriodDateForm
 import models.{AccountingPeriodModel, DateModel}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
 import utils.TestModels
 
 class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec

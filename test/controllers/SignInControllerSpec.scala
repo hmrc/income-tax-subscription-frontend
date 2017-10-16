@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.FrontendAppConfig
+import core.config.FrontendAppConfig
 import org.mockito.Mockito
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

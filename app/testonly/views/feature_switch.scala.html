@@ -14,8 +14,8 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-@import config.featureswitch.FeatureSwitch
+@import core.config.AppConfig
+@import core.config.featureswitch.FeatureSwitch
 @import helper._
 
 @(switchNames: Map[FeatureSwitch, Boolean], action: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)

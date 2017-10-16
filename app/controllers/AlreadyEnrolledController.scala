@@ -18,10 +18,10 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.PostSubmissionController
-import config.BaseControllerConfig
+import core.auth.PostSubmissionController
+import core.services.AuthService
+import core.config.BaseControllerConfig
 import play.api.i18n.MessagesApi
-import services.AuthService
 
 import scala.concurrent.Future
 

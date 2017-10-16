@@ -16,13 +16,14 @@
 
 package controllers.business
 
-import auth.{MockConfig, Registration}
+import core.auth.{MockConfig, Registration}
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import core.services.mocks.MockKeystoreService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import services.mocks.{MockAddressLookupService, MockKeystoreService}
+import services.mocks.MockAddressLookupService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import utils.TestModels._
 
@@ -214,7 +215,7 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "the address lookup config" when {
+  "the address lookup core.config" when {
     import assets.MessageLookup.Base._
     import assets.MessageLookup.BusinessAddress._
 

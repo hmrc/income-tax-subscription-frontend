@@ -16,12 +16,12 @@
 
 package usermatching.services.mocks
 
-import audit.Logging
+import core.audit.Logging
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HeaderCarrier, UserId}
-import usermatching.connectors.mocks.TestUserLockoutConnector
+import usermatching.connectors.mocks.MockUserLockoutConnector
 import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 import usermatching.services.UserLockoutService
@@ -74,7 +74,7 @@ trait MockUserLockoutService extends MockTrait {
 }
 
 
-trait TestUserLockoutService extends TestUserLockoutConnector {
+trait TestUserLockoutService extends MockUserLockoutConnector {
 
   object TestUserLockoutService extends UserLockoutService(mockUserLockoutConnector, app.injector.instanceOf[Logging])
 

@@ -17,12 +17,12 @@
 package controllers.business
 
 import controllers.ControllerBaseSpec
+import core.services.mocks.MockKeystoreService
 import forms.AccountingMethodForm
 import models.AccountingMethodModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
 
 class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {

@@ -19,11 +19,11 @@ package usermatching.controllers
 import java.time.{Duration, LocalTime}
 import javax.inject.Inject
 
-import auth.{IncomeTaxSAUser, UserMatchingController}
-import config.BaseControllerConfig
+import core.auth.{IncomeTaxSAUser, UserMatchingController}
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.AuthService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.models.{LockedOut, NotLockedOut}
 import usermatching.services.UserLockoutService

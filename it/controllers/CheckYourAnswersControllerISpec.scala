@@ -21,7 +21,7 @@ import helpers.IntegrationTestModels._
 import helpers.servicemocks._
 import play.api.http.Status._
 import play.api.i18n.Messages
-import services.CacheConstants._
+import core.services.CacheConstants._
 import helpers.IntegrationTestConstants._
 
 

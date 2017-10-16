@@ -20,16 +20,16 @@ import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import auth.PostSubmissionController
-import config.BaseControllerConfig
+import core.audit.Logging
+import core.auth.PostSubmissionController
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import models.DateModel.dateConvert
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import services.{AuthService, KeystoreService}
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.InternalServerException
 
 @Singleton
 class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,

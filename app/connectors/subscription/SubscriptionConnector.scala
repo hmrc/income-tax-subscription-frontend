@@ -18,7 +18,7 @@ package connectors.subscription
 
 import javax.inject.{Inject, Singleton}
 
-import config.AppConfig
+import core.config.AppConfig
 import connectors.models.subscription.SubscriptionRequest
 import connectors.httpparsers.SubscriptionResponseHttpParser._
 import connectors.httpparsers.GetSubscriptionResponseHttpParser._

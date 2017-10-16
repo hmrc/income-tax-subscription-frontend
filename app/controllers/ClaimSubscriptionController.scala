@@ -16,22 +16,21 @@
 
 package controllers
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
-import auth.SignUpController
 import cats.data.EitherT
 import cats.implicits._
-import config.BaseControllerConfig
 import connectors.models.{ConnectorError, KeystoreMissingError}
-import models.DateModel._
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.CacheConstants.MtditId
+import core.services.{AuthService, KeystoreService}
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.CacheConstants.MtditId
-import services.{AuthService, KeystoreService, SubscriptionOrchestrationService}
+import play.api.mvc.{Action, AnyContent, Request}
+import services.SubscriptionOrchestrationService
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, InternalServerException }
 
 @Singleton
 class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig,

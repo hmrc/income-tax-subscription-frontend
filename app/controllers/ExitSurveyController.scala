@@ -18,8 +18,8 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import config.AppConfig
+import core.audit.Logging
+import core.config.AppConfig
 import forms.ExitSurveyForm
 import models.ExitSurveyModel
 import play.api.Application
@@ -27,11 +27,11 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.Implicits._
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class ExitSurveyController @Inject()(val app: Application,

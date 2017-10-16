@@ -19,8 +19,8 @@ package connectors
 import javax.inject.{Inject, Singleton}
 
 import _root_.utils.JsonUtils._
-import audit.Logging
-import config.AppConfig
+import core.audit.Logging
+import core.config.AppConfig
 import connectors.GGConnector._
 import connectors.models.gg.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import play.api.http.Status.OK

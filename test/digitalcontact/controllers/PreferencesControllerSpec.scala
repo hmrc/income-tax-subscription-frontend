@@ -16,9 +16,10 @@
 
 package digitalcontact.controllers
 
-import auth.MockConfig
-import config.AppConfig
+import core.auth.MockConfig
+import core.config.AppConfig
 import controllers.ControllerBaseSpec
+import core.services.mocks.MockKeystoreService
 import digitalcontact.services.mocks.{MockPaperlessPreferenceTokenService, MockPreferencesService}
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -26,7 +27,6 @@ import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
 import utils.TestConstants._
 
 class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesService with MockKeystoreService with MockPaperlessPreferenceTokenService {
@@ -49,7 +49,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
   lazy val TestPreferencesController = createTestForPreferences(MockConfig)
 
-  "If newFeatures flag in config is false" when {
+  "If newFeatures flag in core.config is false" when {
     "Calling the checkPreference action of the PreferencesController with an authorised user" should {
       implicit lazy val request = subscriptionRequest
 
@@ -140,7 +140,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
     }
   }
 
-  "If userMatchingFeature flag in config is true" when {
+  "If userMatchingFeature flag in core.config is true" when {
     lazy val TestNewFeaturesController = createTestForPreferences(
       new MockConfig {
         override val userMatchingFeature = true

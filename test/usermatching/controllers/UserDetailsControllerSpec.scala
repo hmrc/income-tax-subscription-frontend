@@ -17,14 +17,14 @@
 package usermatching.controllers
 
 import assets.MessageLookup.{UserDetails => messages}
-import auth.{MockConfig, UserMatching}
+import core.auth.{MockConfig, UserMatching}
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import core.services.mocks.MockKeystoreService
 import models.DateModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
-import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.{HttpResponse, NotFoundException, SessionKeys}
 import usermatching.forms.UserDetailsForm
 import usermatching.models.UserDetailsModel

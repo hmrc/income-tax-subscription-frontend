@@ -16,7 +16,7 @@
 
 package connectors.mocks
 
-import config.AppConfig
+import core.config.AppConfig
 import connectors.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.models.subscription._

@@ -16,6 +16,7 @@
 
 package controllers.business
 
+import core.services.CacheConstants
 import forms._
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import helpers.IntegrationTestConstants._
@@ -24,7 +25,6 @@ import helpers.servicemocks.{AuthStub, KeystoreStub}
 import models._
 import play.api.http.Status._
 import play.api.i18n.Messages
-import services.CacheConstants
 
 class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
 

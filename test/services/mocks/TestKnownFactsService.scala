@@ -16,7 +16,7 @@
 
 package services.mocks
 
-import common.Constants.GovernmentGateway._
+import core.Constants.GovernmentGateway._
 import connectors.mocks.MockGGAdminConnector
 import connectors.models.gg._
 import org.mockito.ArgumentMatchers

@@ -17,7 +17,7 @@
 package controllers
 
 import assets.MessageLookup
-import audit.Logging
+import core.audit.Logging
 import forms.ExitSurveyForm
 import models.ExitSurveyModel
 import org.jsoup.Jsoup
@@ -89,7 +89,7 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
   // a side effect async process call inside a unit return function
   // i.e. even if splunk fails these two tests would not fail
   // by separating the scenarios here we can at least manually examine the print outs for these respective tests
-  // but the test for the splunk audit itself must be done manually in QA
+  // but the test for the splunk core.audit itself must be done manually in QA
   "ExitSurveyController.submit" when {
 
     "received an empty request" should {

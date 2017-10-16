@@ -16,12 +16,12 @@
 
 package controllers
 
+import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import services.CacheConstants
 
 class TermsControllerISpec extends ComponentSpecBase {
 

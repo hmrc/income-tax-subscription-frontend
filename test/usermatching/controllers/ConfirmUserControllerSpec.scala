@@ -16,8 +16,9 @@
 
 package usermatching.controllers
 
-import auth.{MockConfig, UserMatched, UserMatching}
+import core.auth.{MockConfig, UserMatched, UserMatching}
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import core.services.mocks.MockKeystoreService
 import org.scalatest.OptionValues
 import play.api.http.Status
 import play.api.mvc._

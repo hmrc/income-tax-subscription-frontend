@@ -16,8 +16,8 @@
 
 package usermatching.controllers
 
-import auth.{MockConfig, UserMatching}
-import config.AppConfig
+import core.auth.{MockConfig, UserMatching}
+import core.config.AppConfig
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

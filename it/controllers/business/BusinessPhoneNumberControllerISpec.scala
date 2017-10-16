@@ -16,8 +16,9 @@
 
 package controllers.business
 
-import config.featureswitch
-import config.featureswitch.FeatureSwitching
+import core.services.CacheConstants
+import core.config.featureswitch
+import core.config.featureswitch.FeatureSwitching
 import forms.IncomeSourceForm
 import helpers.IntegrationTestConstants.{checkYourAnswersURI, signInURI}
 import helpers.IntegrationTestModels._
@@ -26,7 +27,6 @@ import helpers.{ComponentSpecBase, IntegrationTestModels}
 import models._
 import play.api.http.Status._
 import play.api.i18n.Messages
-import services.CacheConstants
 
 class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

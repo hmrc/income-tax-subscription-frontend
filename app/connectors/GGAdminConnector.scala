@@ -18,9 +18,9 @@ package connectors
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import common.Constants._
-import config.AppConfig
+import core.audit.Logging
+import core.Constants._
+import core.config.AppConfig
 import connectors.GGAdminConnector._
 import connectors.models.gg._
 import play.api.http.Status.OK

@@ -17,11 +17,12 @@
 package controllers
 
 import assets.MessageLookup.{AlreadyEnrolled => messages}
+import core.services.mocks.MockKeystoreService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.{MockKeystoreService, MockSubscriptionOrchestrationService}
+import services.mocks.MockSubscriptionOrchestrationService
 import utils.TestConstants._
 import uk.gov.hmrc.http.InternalServerException
 

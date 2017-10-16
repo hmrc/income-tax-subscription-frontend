@@ -18,12 +18,12 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.StatelessController
-import config.BaseControllerConfig
+import core.auth.StatelessController
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import digitalcontact.connectors.PreferenceFrontendConnector
 import digitalcontact.models.Activated
 import play.api.i18n.MessagesApi
-import services.AuthService
 import testonly.connectors.ClearPreferencesConnector
 import uk.gov.hmrc.http.{HttpGet, InternalServerException}
 import utils.Implicits._

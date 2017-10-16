@@ -16,14 +16,14 @@
 
 package digitalcontact.controllers
 
-import config.AppConfig
+import core.config.AppConfig
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, PreferencesStub, PreferencesTokenStub}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.libs.json.JsString
-import services.CacheConstants._
+import core.services.CacheConstants._
 
 class PreferencesControllerISpec extends ComponentSpecBase {
 

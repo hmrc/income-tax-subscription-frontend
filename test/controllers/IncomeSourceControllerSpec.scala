@@ -16,13 +16,13 @@
 
 package controllers
 
+import core.services.mocks.MockKeystoreService
 import forms.IncomeSourceForm
 import models.IncomeSourceModel
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
 import utils.TestModels
 
 class IncomeSourceControllerSpec extends ControllerBaseSpec

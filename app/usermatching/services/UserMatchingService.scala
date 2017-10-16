@@ -18,7 +18,7 @@ package usermatching.services
 
 import javax.inject.{Inject, Singleton}
 
-import config.AppConfig
+import core.config.AppConfig
 import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.connectors.AuthenticatorConnector
 import usermatching.httpparsers.MatchUserHttpParser.MatchUserResponse

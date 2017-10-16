@@ -18,15 +18,14 @@ package digitalcontact.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.SignUpController
-import config.BaseControllerConfig
-import digitalcontact.models.Unset
-import digitalcontact.models.Activated
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
+import digitalcontact.models.{Activated, Unset}
 import digitalcontact.services.{PaperlessPreferenceTokenService, PreferencesService}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.ExecutionContext.Implicits.global

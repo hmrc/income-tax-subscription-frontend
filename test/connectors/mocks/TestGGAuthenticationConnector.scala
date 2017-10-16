@@ -16,7 +16,7 @@
 
 package connectors.mocks
 
-import audit.Logging
+import core.audit.Logging
 import connectors.GGAuthenticationConnector
 import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
 import org.mockito.ArgumentMatchers

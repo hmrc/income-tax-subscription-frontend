@@ -18,7 +18,7 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
-import common.Constants.GovernmentGateway._
+import core.Constants.GovernmentGateway._
 import connectors.GGConnector
 import connectors.models.gg._
 

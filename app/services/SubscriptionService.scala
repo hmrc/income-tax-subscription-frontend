@@ -18,7 +18,7 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
+import core.audit.Logging
 import connectors.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.models.subscription._

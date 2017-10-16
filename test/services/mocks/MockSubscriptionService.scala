@@ -16,7 +16,7 @@
 
 package services.mocks
 
-import audit.Logging
+import core.audit.Logging
 import connectors.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import connectors.mocks.MockSubscriptionConnector

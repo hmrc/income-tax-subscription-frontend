@@ -18,8 +18,8 @@ package connectors
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import config.AppConfig
+import core.audit.Logging
+import core.config.AppConfig
 import connectors.GGAuthenticationConnector._
 import connectors.models.authenticator._
 import play.api.http.Status._

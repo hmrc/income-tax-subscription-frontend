@@ -16,7 +16,7 @@
 
 package usermatching.connectors.mocks
 
-import audit.Logging
+import core.audit.Logging
 import connectors.mocks.MockHttp
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when

@@ -18,14 +18,13 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import config.FrontendAppConfig
-import play.api.i18n.MessagesApi
+import core.config.FrontendAppConfig
 import play.api.mvc._
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.play.frontend.config.AuthRedirects
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
-import uk.gov.hmrc.play.frontend.config.AuthRedirects
 
 @Singleton
 class SignInController @Inject()(val appConfig: FrontendAppConfig,

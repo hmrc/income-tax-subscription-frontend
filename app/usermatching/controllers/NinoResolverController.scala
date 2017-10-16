@@ -18,12 +18,12 @@ package usermatching.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.JourneyState._
-import auth.{StatelessController, UserMatching}
-import config.BaseControllerConfig
+import core.auth.JourneyState._
+import core.auth.{StatelessController, UserMatching}
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import services.AuthService
 
 import scala.concurrent.Future
 
