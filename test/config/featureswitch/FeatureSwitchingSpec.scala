@@ -19,7 +19,7 @@ package config.featureswitch
 import uk.gov.hmrc.play.test.UnitSpec
 
 class FeatureSwitchingSpec extends UnitSpec with FeatureSwitching {
-  val testFeatureSwitch = UserMatching
+  val testFeatureSwitch = UserMatchingFeature
 
   "isEnabled" should {
     "return true when a feature switch is set" in {

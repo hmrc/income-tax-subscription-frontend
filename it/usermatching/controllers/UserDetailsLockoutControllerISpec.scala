@@ -16,16 +16,19 @@
 
 package usermatching.controllers
 
+import config.featureswitch.{FeatureSwitching, UserMatchingFeature}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, UserLockoutStub}
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 
-class UserDetailsLockoutControllerISpec extends ComponentSpecBase {
+class UserDetailsLockoutControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   // TODO remove this when the routes are moved into prod.routes
   override def config: Map[String, String] = super.config.+("application.router"->"testOnlyDoNotUseInAppConf.Routes")
+
+  enable(UserMatchingFeature)
 
   "GET /error/lockout" when {
     "the agent is still locked out" should {

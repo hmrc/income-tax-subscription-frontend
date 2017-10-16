@@ -16,6 +16,7 @@
 
 package usermatching.controllers
 
+import config.featureswitch.{FeatureSwitching, UserMatchingFeature}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, UserLockoutStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
@@ -26,10 +27,12 @@ import play.api.libs.ws.WSResponse
 import services.CacheConstants
 import usermatching.models.UserDetailsModel
 
-class UserDetailsControllerISpec extends ComponentSpecBase {
+class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   // TODO remove this when the routes are moved into prod.routes
   override def config: Map[String, String] = super.config.+("application.router"->"testOnlyDoNotUseInAppConf.Routes")
+
+  enable(UserMatchingFeature)
 
   "GET /user-details" when {
     def fixture(agentLocked: Boolean): WSResponse = {

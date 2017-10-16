@@ -28,7 +28,7 @@ import services.CacheConstants._
 
 class NewPreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
-  enable(featureswitch.NewPreferencesApi)
+  enable(featureswitch.NewPreferencesApiFeature)
 
   override implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 

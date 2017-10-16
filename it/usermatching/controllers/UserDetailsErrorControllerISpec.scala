@@ -16,15 +16,18 @@
 
 package usermatching.controllers
 
+import config.featureswitch.{FeatureSwitching, UserMatchingFeature}
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.OK
 import play.api.i18n.Messages
 
-class UserDetailsErrorControllerISpec extends ComponentSpecBase {
+class UserDetailsErrorControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   // TODO remove this when the routes are moved into prod.routes
   override def config: Map[String, String] = super.config.+("application.router"->"testOnlyDoNotUseInAppConf.Routes")
+
+  enable(UserMatchingFeature)
 
   "GET /error/user-details" should {
     "show the no matching user page" in {

@@ -18,7 +18,7 @@ package config
 
 import javax.inject.{Inject, Singleton}
 
-import config.featureswitch.{FeatureSwitching, Registration, UserMatching}
+import config.featureswitch.{FeatureSwitching, RegistrationFeature, UserMatchingFeature}
 import play.api.mvc.Call
 import play.api.{Application, Configuration}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -161,11 +161,11 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val authenticatorUrl: String = baseUrl("authenticator")
 
-  override def userMatchingFeature: Boolean = isEnabled(featureswitch.UserMatching)
+  override def userMatchingFeature: Boolean = isEnabled(featureswitch.UserMatchingFeature)
 
-  override def enableRegistration: Boolean = isEnabled(featureswitch.Registration)
+  override def enableRegistration: Boolean = isEnabled(featureswitch.RegistrationFeature)
 
-  override def newPreferencesApiEnabled: Boolean = isEnabled(featureswitch.NewPreferencesApi)
+  override def newPreferencesApiEnabled: Boolean = isEnabled(featureswitch.NewPreferencesApiFeature)
 
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 

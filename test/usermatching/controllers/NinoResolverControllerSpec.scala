@@ -25,7 +25,9 @@ import play.api.test.Helpers._
 
 class NinoResolverControllerSpec extends ControllerBaseSpec {
   override val controllerName: String = "NinoResolverController"
-  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
+  override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
+    "resolveNino" -> TestNinoResolverController.resolveNino
+  )
 
   def createTestNinoResolverController(appConfig: AppConfig): NinoResolverController =
     new NinoResolverController(
@@ -33,6 +35,11 @@ class NinoResolverControllerSpec extends ControllerBaseSpec {
       messagesApi,
       mockAuthService
     )
+
+  lazy val TestNinoResolverController = createTestNinoResolverController(
+    new MockConfig {
+      override val userMatchingFeature = true
+    })
 
   "NinoResolverController.resolveNino" when {
     "if userMatchingFeature is set to true" should {
@@ -53,6 +60,7 @@ class NinoResolverControllerSpec extends ControllerBaseSpec {
         await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatching.name)
       }
     }
+
     "if userMatchingFeature is set to false" should {
       lazy val callResolve = createTestNinoResolverController(
         new MockConfig {
@@ -69,6 +77,8 @@ class NinoResolverControllerSpec extends ControllerBaseSpec {
         redirectLocation(result).get mustBe controllers.iv.routes.IdentityVerificationController.gotoIV().url
       }
     }
-
   }
+
+  authorisationTests()
+
 }

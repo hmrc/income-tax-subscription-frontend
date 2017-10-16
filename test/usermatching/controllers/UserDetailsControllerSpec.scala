@@ -17,19 +17,19 @@
 package usermatching.controllers
 
 import assets.MessageLookup.{UserDetails => messages}
-import controllers.ControllerBaseSpec
+import auth.{MockConfig, UserMatching}
+import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import models.DateModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import services.mocks.MockKeystoreService
-import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
+import uk.gov.hmrc.http.{HttpResponse, NotFoundException, SessionKeys}
 import usermatching.forms.UserDetailsForm
 import usermatching.models.UserDetailsModel
 import usermatching.services.mocks.MockUserLockoutService
 import utils.TestConstants._
-
 
 class UserDetailsControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
@@ -41,175 +41,208 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
     "submit" -> TestUserDetailsController.submit(isEditMode = false)
   )
 
-  object TestUserDetailsController extends UserDetailsController(
-    MockBaseControllerConfig,
+  def createTestUserDetailsController(enableMatchingFeature: Boolean) = new UserDetailsController(
+    mockBaseControllerConfig(new MockConfig {
+      override val userMatchingFeature = enableMatchingFeature
+    }),
     messagesApi,
     MockKeystoreService,
     mockAuthService,
     mockUserLockoutService
   )
-  lazy val request = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value)
 
-  "Calling the show action of the UserDetailsController with an authorised user" should {
-    lazy val result = await(TestUserDetailsController.show(isEditMode = false)(request))
+  lazy val TestUserDetailsController = createTestUserDetailsController(enableMatchingFeature = true)
 
-    "return ok (200)" in {
-      setupMockKeystore(fetchUserDetails = None)
-      setupMockNotLockedOut(testUserId)
+  lazy val request = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
-      status(result) must be(Status.OK)
+  "When user matching is disabled" should {
+    lazy val TestUserDetailsController: UserDetailsController = createTestUserDetailsController(enableMatchingFeature = false)
 
-      verifyKeystore(fetchUserDetails = 1, saveUserDetails = 0, deleteAll = 0)
+    "show" should {
+      "return NOT FOUND" in {
+        val result = TestUserDetailsController.show(isEditMode = false)(request)
+        val ex = intercept[NotFoundException] {
+          await(result)
+        }
+        ex.message must startWith("This page for user matching is not yet available to the public:")
+      }
+    }
 
-      contentType(result) must be(Some("text/html"))
-      charset(result) must be(Some("utf-8"))
-
-      val document = Jsoup.parse(contentAsString(result))
-      document.title mustBe messages.title
+    "submit" should {
+      "return NOT FOUND" in {
+        val result = TestUserDetailsController.submit(isEditMode = false)(request)
+        val ex = intercept[NotFoundException] {
+          await(result)
+        }
+        ex.message must startWith("This page for user matching is not yet available to the public:")
+      }
     }
   }
 
+  "When user matching is disabled" should {
 
-  for (editMode <- Seq(true, false)) {
+    "Calling the show action of the UserDetailsController with an authorised user" should {
+      lazy val result = await(TestUserDetailsController.show(isEditMode = false)(request))
 
-    s"when editMode=$editMode and" when {
+      "return ok (200)" in {
+        setupMockKeystore(fetchUserDetails = None)
+        setupMockNotLockedOut(testUserId)
 
-      "Calling the submit action of the UserDetailsController with an authorised user and valid submission and" when {
+        status(result) must be(Status.OK)
 
-        val testUserDetails =
-          UserDetailsModel(
-            firstName = "Abc",
-            lastName = "Abc",
-            nino = testNino,
-            dateOfBirth = DateModel("01", "01", "1980")
-          )
+        verifyKeystore(fetchUserDetails = 1, saveUserDetails = 0, deleteAll = 0)
 
-        def callSubmit(isEditMode: Boolean) =
-          TestUserDetailsController.submit(isEditMode = isEditMode)(
-            request.post(UserDetailsForm.userDetailsForm.form, testUserDetails)
-          )
+        contentType(result) must be(Some("text/html"))
+        charset(result) must be(Some("utf-8"))
 
-        "there are no stored data" should {
+        val document = Jsoup.parse(contentAsString(result))
+        document.title mustBe messages.title
+      }
+    }
 
-          s"redirect to '${usermatching.controllers.routes.ConfirmUserController.show().url}" in {
-            setupMockKeystore(
-              fetchUserDetails = None,
-              deleteAll = HttpResponse(OK)
+
+    for (editMode <- Seq(true, false)) {
+
+      s"when editMode=$editMode and" when {
+
+        "Calling the submit action of the UserDetailsController with an authorised user and valid submission and" when {
+
+          val testUserDetails =
+            UserDetailsModel(
+              firstName = "Abc",
+              lastName = "Abc",
+              nino = testNino,
+              dateOfBirth = DateModel("01", "01", "1980")
             )
-            setupMockNotLockedOut(testUserId)
 
-            val goodResult = callSubmit(isEditMode = editMode)
+          def callSubmit(isEditMode: Boolean) =
+            TestUserDetailsController.submit(isEditMode = isEditMode)(
+              request.post(UserDetailsForm.userDetailsForm.form, testUserDetails)
+            )
 
-            status(goodResult) must be(Status.SEE_OTHER)
-            redirectLocation(goodResult) mustBe Some(usermatching.controllers.routes.ConfirmUserController.show().url)
+          "there are no stored data" should {
 
-            await(goodResult)
-            verifyKeystore(fetchUserDetails = 1, saveUserDetails = 1, deleteAll = 0)
+            s"redirect to '${usermatching.controllers.routes.ConfirmUserController.show().url}" in {
+              setupMockKeystore(
+                fetchUserDetails = None,
+                deleteAll = HttpResponse(OK)
+              )
+              setupMockNotLockedOut(testUserId)
+
+              val goodResult = callSubmit(isEditMode = editMode)
+
+              status(goodResult) must be(Status.SEE_OTHER)
+              redirectLocation(goodResult) mustBe Some(usermatching.controllers.routes.ConfirmUserController.show().url)
+
+              await(goodResult)
+              verifyKeystore(fetchUserDetails = 1, saveUserDetails = 1, deleteAll = 0)
+            }
+
           }
 
-        }
+          "stored user details is different to the new user details" should {
 
-        "stored user details is different to the new user details" should {
+            s"redirect to '${usermatching.controllers.routes.ConfirmUserController.show().url} and deleted all pre-existing entries in keystore" in {
+              setupMockKeystore(
+                fetchUserDetails = testUserDetails.copy(firstName = testUserDetails.firstName + "NOT"),
+                deleteAll = HttpResponse(OK)
+              )
+              setupMockNotLockedOut(testUserId)
 
-          s"redirect to '${usermatching.controllers.routes.ConfirmUserController.show().url} and deleted all pre-existing entries in keystore" in {
-            setupMockKeystore(
-              fetchUserDetails = testUserDetails.copy(firstName = testUserDetails.firstName + "NOT"),
-              deleteAll = HttpResponse(OK)
-            )
-            setupMockNotLockedOut(testUserId)
+              val goodResult = callSubmit(isEditMode = editMode)
 
-            val goodResult = callSubmit(isEditMode = editMode)
+              status(goodResult) must be(Status.SEE_OTHER)
+              redirectLocation(goodResult) mustBe Some(usermatching.controllers.routes.ConfirmUserController.show().url)
 
-            status(goodResult) must be(Status.SEE_OTHER)
-            redirectLocation(goodResult) mustBe Some(usermatching.controllers.routes.ConfirmUserController.show().url)
+              await(goodResult)
+              verifyKeystore(fetchUserDetails = 1, saveUserDetails = 1, deleteAll = 1)
+            }
 
-            await(goodResult)
-            verifyKeystore(fetchUserDetails = 1, saveUserDetails = 1, deleteAll = 1)
           }
 
+          "stored user details is the same as the new user details" should {
+
+            s"redirect to '${usermatching.controllers.routes.ConfirmUserController.show().url} but do not delete keystore" in {
+              setupMockKeystore(
+                fetchUserDetails = testUserDetails,
+                deleteAll = HttpResponse(OK)
+              )
+              setupMockNotLockedOut(testUserId)
+
+              val goodResult = callSubmit(isEditMode = editMode)
+
+              status(goodResult) must be(Status.SEE_OTHER)
+              redirectLocation(goodResult) mustBe Some(usermatching.controllers.routes.ConfirmUserController.show().url)
+
+              await(goodResult)
+              verifyKeystore(fetchUserDetails = 1, saveUserDetails = 0, deleteAll = 0)
+            }
+
+          }
         }
 
-        "stored user details is the same as the new user details" should {
+        "Calling the submit action of the UserDetailsController with an authorised user and invalid submission" should {
 
-          s"redirect to '${usermatching.controllers.routes.ConfirmUserController.show().url} but do not delete keystore" in {
-            setupMockKeystore(
-              fetchUserDetails = testUserDetails,
-              deleteAll = HttpResponse(OK)
+          def callSubmit(isEditMode: Boolean) =
+            TestUserDetailsController.submit(isEditMode = isEditMode)(
+              request
+                .post(UserDetailsForm.userDetailsForm.form, UserDetailsModel(
+                  firstName = "Abc",
+                  lastName = "Abc",
+                  nino = testNino,
+                  dateOfBirth = DateModel("00", "01", "1980")))
             )
+
+          "return a redirect status (BAD_REQUEST - 400)" in {
+            setupMockKeystoreSaveFunctions()
             setupMockNotLockedOut(testUserId)
 
-            val goodResult = callSubmit(isEditMode = editMode)
+            val badResult = callSubmit(isEditMode = editMode)
 
-            status(goodResult) must be(Status.SEE_OTHER)
-            redirectLocation(goodResult) mustBe Some(usermatching.controllers.routes.ConfirmUserController.show().url)
+            status(badResult) must be(Status.BAD_REQUEST)
 
-            await(goodResult)
-            verifyKeystore(fetchUserDetails = 1, saveUserDetails = 0, deleteAll = 0)
+            await(badResult)
+            verifyKeystore(fetchUserDetails = 0, saveUserDetails = 0, deleteAll = 0)
+          }
+
+          "return HTML" in {
+            setupMockNotLockedOut(testUserId)
+
+            val badResult = callSubmit(isEditMode = editMode)
+
+            contentType(badResult) must be(Some("text/html"))
+            charset(badResult) must be(Some("utf-8"))
+          }
+
+          "render the 'Not subscribed to Agent Services page'" in {
+            setupMockNotLockedOut(testUserId)
+
+            val badResult = callSubmit(isEditMode = editMode)
+            val document = Jsoup.parse(contentAsString(badResult))
+            document.title mustBe messages.title
           }
 
         }
       }
 
-      "Calling the submit action of the UserDetailsController with an authorised user and invalid submission" should {
+    }
 
-        def callSubmit(isEditMode: Boolean) =
-          TestUserDetailsController.submit(isEditMode = isEditMode)(
-            request
-              .post(UserDetailsForm.userDetailsForm.form, UserDetailsModel(
-                firstName = "Abc",
-                lastName = "Abc",
-                nino = testNino,
-                dateOfBirth = DateModel("00", "01", "1980")))
-          )
+    "If the user is locked out" should {
+      s"calling show should redirect them to ${usermatching.controllers.routes.UserDetailsLockoutController.show().url}" in {
+        setupMockLockedOut(testUserId)
+        lazy val result = TestUserDetailsController.show(isEditMode = false)(request)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe usermatching.controllers.routes.UserDetailsLockoutController.show().url
+      }
 
-        "return a redirect status (BAD_REQUEST - 400)" in {
-          setupMockKeystoreSaveFunctions()
-          setupMockNotLockedOut(testUserId)
-
-          val badResult = callSubmit(isEditMode = editMode)
-
-          status(badResult) must be(Status.BAD_REQUEST)
-
-          await(badResult)
-          verifyKeystore(fetchUserDetails = 0, saveUserDetails = 0, deleteAll = 0)
-        }
-
-        "return HTML" in {
-          setupMockNotLockedOut(testUserId)
-
-          val badResult = callSubmit(isEditMode = editMode)
-
-          contentType(badResult) must be(Some("text/html"))
-          charset(badResult) must be(Some("utf-8"))
-        }
-
-        "render the 'Not subscribed to Agent Services page'" in {
-          setupMockNotLockedOut(testUserId)
-
-          val badResult = callSubmit(isEditMode = editMode)
-          val document = Jsoup.parse(contentAsString(badResult))
-          document.title mustBe messages.title
-        }
-
+      s"calling submit should redirect them to ${usermatching.controllers.routes.UserDetailsLockoutController.show().url}" in {
+        setupMockLockedOut(testUserId)
+        lazy val result = TestUserDetailsController.submit(isEditMode = false)(request)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe usermatching.controllers.routes.UserDetailsLockoutController.show().url
       }
     }
 
-  }
-
-  "If the user is locked out" should {
-    s"calling show should redirect them to ${usermatching.controllers.routes.UserDetailsLockoutController.show().url}" in {
-      setupMockLockedOut(testUserId)
-      lazy val result = TestUserDetailsController.show(isEditMode = false)(request)
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe usermatching.controllers.routes.UserDetailsLockoutController.show().url
-    }
-
-    s"calling submit should redirect them to ${usermatching.controllers.routes.UserDetailsLockoutController.show().url}" in {
-      setupMockLockedOut(testUserId)
-      lazy val result = TestUserDetailsController.submit(isEditMode = false)(request)
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).get mustBe usermatching.controllers.routes.UserDetailsLockoutController.show().url
-    }
   }
 
   authorisationTests()

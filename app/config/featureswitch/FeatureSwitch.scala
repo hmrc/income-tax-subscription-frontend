@@ -16,7 +16,7 @@
 
 package config.featureswitch
 
-import FeatureSwitch.prefix
+import config.featureswitch.FeatureSwitch.prefix
 
 sealed trait FeatureSwitch {
   val name: String
@@ -26,7 +26,7 @@ sealed trait FeatureSwitch {
 object FeatureSwitch {
   val prefix = "feature-switch"
 
-  val switches = Set(UserMatching, NewPreferencesApi, Registration)
+  val switches = Set(UserMatchingFeature, NewPreferencesApiFeature, RegistrationFeature)
 
   def apply(str: String): FeatureSwitch =
     switches find (_.name == str) match {
@@ -36,17 +36,17 @@ object FeatureSwitch {
 
 }
 
-object UserMatching extends FeatureSwitch {
+object UserMatchingFeature extends FeatureSwitch {
   val name = s"$prefix.user-matching"
   val displayText = "User matching"
 }
 
-object NewPreferencesApi extends FeatureSwitch {
+object NewPreferencesApiFeature extends FeatureSwitch {
   val name = s"$prefix.new-preferences-api"
   val displayText = "New preferences' API"
 }
 
-object Registration extends FeatureSwitch {
+object RegistrationFeature extends FeatureSwitch {
   val name = s"$prefix.enable-registration"
   val displayText = "Registration journey"
 }
