@@ -17,12 +17,20 @@
 package auth
 
 import auth.AuthPredicates._
+import play.api.mvc.Action
+import uk.gov.hmrc.http.NotFoundException
+
+import scala.concurrent.Future
 
 trait UserMatchingController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions {
+    private val userMatchingUnavailableMessage = "This page for user matching is not yet available to the public: "
 
-    override val async: AuthenticatedAction = asyncInternal(userMatchingPredicates)
+    override def async: AuthenticatedAction =
+      if (applicationConfig.userMatchingFeature) asyncInternal(userMatchingPredicates)
+      else _ =>
+        Action.async(request => Future.failed(new NotFoundException(userMatchingUnavailableMessage + request.uri)))
 
   }
 

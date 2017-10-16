@@ -89,7 +89,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
 
             for {
               _ <- persist
-            } yield Redirect(routes.ConfirmUserController.show())
+            } yield Redirect(usermatching.controllers.routes.ConfirmUserController.show())
           }
         )
       }

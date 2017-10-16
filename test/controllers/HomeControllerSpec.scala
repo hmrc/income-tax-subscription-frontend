@@ -312,7 +312,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         val result = getResult(userMatchingFeature = true)
 
         status(result) mustBe Status.SEE_OTHER
-        redirectLocation(result).get mustBe controllers.routes.NinoResolverController.resolveNino().url
+        redirectLocation(result).get mustBe usermatching.controllers.routes.NinoResolverController.resolveNino().url
       }
     }
 
@@ -323,7 +323,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         val result = getResult(userMatchingFeature = false)
 
         status(result) mustBe Status.SEE_OTHER
-        redirectLocation(result).get mustBe controllers.routes.NinoResolverController.resolveNino().url
+        redirectLocation(result).get mustBe usermatching.controllers.routes.NinoResolverController.resolveNino().url
       }
     }
   }

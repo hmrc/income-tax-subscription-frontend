@@ -45,7 +45,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     usermatching.views.html.check_your_user_details(
       userDetailsModel,
-      routes.ConfirmUserController.submit(),
+      usermatching.controllers.routes.ConfirmUserController.submit(),
       backUrl
     )
 
@@ -65,7 +65,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       handleLockOut {
         keystoreService.fetchUserDetails() map {
           case Some(userDetails) => Ok(view(userDetails))
-          case _ => Redirect(routes.UserDetailsLockoutController.show())
+          case _ => Redirect(usermatching.controllers.routes.UserDetailsLockoutController.show())
         }
       }
   }
@@ -75,7 +75,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       handleLockOut {
         keystoreService.fetchUserDetails() flatMap {
           case None =>
-            Future.successful(Redirect(routes.UserDetailsController.show()))
+            Future.successful(Redirect(usermatching.controllers.routes.UserDetailsController.show()))
           case Some(userDetails) =>
             matchUserDetails(userDetails)
         }
@@ -91,14 +91,14 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
     }
   } yield result
 
-  lazy val backUrl: String = routes.UserDetailsController.show().url
+  lazy val backUrl: String = usermatching.controllers.routes.UserDetailsController.show().url
 
   private def handleFailedMatch(implicit request: Request[AnyContent]): Future[Result] = {
     val failedMatches = request.session.get(FailedUserMatching).fold(0)(_.toInt) + 1
 
     if (failedMatches < applicationConfig.matchingAttempts) {
       Future.successful(
-        Redirect(routes.UserDetailsErrorController.show())
+        Redirect(usermatching.controllers.routes.UserDetailsErrorController.show())
           .addingToSession(FailedUserMatching -> s"$failedMatches")
       )
     }
@@ -108,7 +108,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
         _ <- lockOutService.lockoutUser(bearerToken)
           .filter(_.isRight)
         _ <- keystoreService.deleteAll()
-      } yield Redirect(routes.UserDetailsLockoutController.show())
+      } yield Redirect(usermatching.controllers.routes.UserDetailsLockoutController.show())
         .removingFromSession(FailedUserMatching)
     }
   }

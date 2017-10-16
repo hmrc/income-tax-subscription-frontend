@@ -30,7 +30,7 @@ object AuthPredicates extends Results {
 
   val emptyPredicate: AuthPredicate = _ => _ => Right(AuthPredicateSuccess)
 
-  lazy val resolveNino: Result = Redirect(controllers.routes.NinoResolverController.resolveNino())
+  lazy val resolveNino: Result = Redirect(usermatching.controllers.routes.NinoResolverController.resolveNino())
 
   val ninoPredicate: AuthPredicate = request => user =>
     if (user.nino(request).isDefined) {

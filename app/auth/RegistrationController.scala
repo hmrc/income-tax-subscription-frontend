@@ -27,7 +27,7 @@ trait RegistrationController extends BaseFrontendController {
   object Authenticated extends AuthenticatedActions {
     private val registrationUnavailableMessage = "This page for registration is not yet available to the public: "
 
-    def async: AuthenticatedAction =
+    override def async: AuthenticatedAction =
       if (applicationConfig.enableRegistration) asyncInternal(registrationPredicates)
       else _ =>
         Action.async(request => Future.failed(new NotFoundException(registrationUnavailableMessage + request.uri)))
