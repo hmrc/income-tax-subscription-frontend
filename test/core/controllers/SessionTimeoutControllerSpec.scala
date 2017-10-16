@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package core.controllers
 
 import assets.MessageLookup
+import controllers.ControllerBaseSpec
+import core.controllers.SessionTimeoutController
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 class SessionTimeoutControllerSpec extends ControllerBaseSpec {

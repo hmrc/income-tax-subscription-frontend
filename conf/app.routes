@@ -6,7 +6,7 @@ GET         /                             controllers.HomeController.home
 GET         /index                        controllers.HomeController.index
 
 # SignOut Controller
-GET         /logout                       controllers.SignOutController.signOut
+GET         /logout                       core.controllers.SignOutController.signOut
 
 # NinoResolver Controller
 GET         /resolve-nino                 usermatching.controllers.NinoResolverController.resolveNino
@@ -30,7 +30,7 @@ GET         /confirmation                 incometax.subscription.controllers.Con
 GET         /confirmation/sign-out        incometax.subscription.controllers.ConfirmationController.signOut
 
 # Session Timeout Route
-GET         /session-timeout              controllers.SessionTimeoutController.timeout
+GET         /session-timeout              core.controllers.SessionTimeoutController.timeout
 
 # Feedback Routes
 GET         /feedback                     controllers.FeedbackController.show
@@ -72,7 +72,7 @@ POST        /exit-survey                  controllers.ExitSurveyController.submi
 
 GET         /feedback-submitted           controllers.ThankYouController.show
 
-GET         /sign-in                      controllers.SignInController.signIn
+GET         /sign-in                      core.controllers.SignInController.signIn
 
 # Claim Subscription
 GET         /claim-subscription           incometax.subscription.controllers.ClaimSubscriptionController.claim

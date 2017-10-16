@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package controllers
+package core.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import core.config.AppConfig
-import play.api.i18n.{I18nSupport, MessagesApi}
+import core.config.FrontendAppConfig
 import play.api.mvc._
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.play.frontend.config.AuthRedirects
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
 @Singleton
-class SessionTimeoutController @Inject()(implicit val applicationConfig: AppConfig,
-                                         val messagesApi: MessagesApi
-                                        ) extends FrontendController with I18nSupport {
+class SignInController @Inject()(val appConfig: FrontendAppConfig,
+                                 val config: Configuration,
+                                 val env: Environment) extends FrontendController with AuthRedirects {
 
-  val timeout = Action.async { implicit request =>
-    Future.successful(Ok(views.html.timeout.timeout()))
+  val signIn: Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(toGGLogin(appConfig.ggSignInContinueUrl))
   }
-
 }

@@ -39,7 +39,7 @@ class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
           Ok(
             views.html.enrolled.already_enrolled(
               subscriptionId = user.mtdItsaRef.get,
-              signOutAction = controllers.routes.SignOutController.signOut()
+              signOutAction = core.controllers.routes.SignOutController.signOut()
             )
           )
         )

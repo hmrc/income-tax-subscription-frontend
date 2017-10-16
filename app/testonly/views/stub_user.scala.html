@@ -22,7 +22,7 @@
 
 @(userToStubform: Form[UserToStubModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("User stubbing service"), bodyClasses = None) {
+@core.views.html.templates.main_template(title = Messages("User stubbing service"), bodyClasses = None) {
 
     @summaryErrorHelper(userToStubform)
 

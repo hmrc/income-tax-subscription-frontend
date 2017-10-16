@@ -41,4 +41,6 @@
     <link rel="stylesheet" href=@routes.Assets.at("stylesheets/banner-panel.css")>
 }
 
+@import core.views.html.templates.govuk_wrapper
+
 @govuk_wrapper(appConfig = appConfig, title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent, scriptElem = Some(defaultScriptElem), headStyle = Some(headStyle))

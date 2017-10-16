@@ -22,7 +22,7 @@
 
 @(businessPhoneNumberForm: Form[BusinessPhoneNumberModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("business.phone_number.title"), bodyClasses = None) {
+@core.views.html.templates.main_template(title = Messages("business.phone_number.title"), bodyClasses = None) {
     @back_link(backUrl)
 
     @summaryErrorHelper(businessPhoneNumberForm)

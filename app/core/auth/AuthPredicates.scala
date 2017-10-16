@@ -54,7 +54,7 @@ object AuthPredicates extends Results {
 
   lazy val homeRoute = Redirect(controllers.routes.HomeController.index())
 
-  lazy val timeoutRoute = Redirect(controllers.routes.SessionTimeoutController.timeout())
+  lazy val timeoutRoute = Redirect(core.controllers.routes.SessionTimeoutController.timeout())
 
   val timeoutPredicate: AuthPredicate = request => user =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {

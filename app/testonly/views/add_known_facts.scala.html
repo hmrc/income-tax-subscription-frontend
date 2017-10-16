@@ -22,7 +22,7 @@
 
 @(knownFactsForm: Form[KnownFactsModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("Add known facts"), bodyClasses = None) {
+@core.views.html.templates.main_template(title = Messages("Add known facts"), bodyClasses = None) {
 
     @summaryErrorHelper(knownFactsForm)
 

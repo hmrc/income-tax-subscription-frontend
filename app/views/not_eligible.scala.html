@@ -22,7 +22,7 @@
 @import core.views.html.RadioOption
 @(notEligibleForm: Form[NotEligibleModel], postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("not-eligible.title"), bodyClasses = None) {
+@core.views.html.templates.main_template(title = Messages("not-eligible.title"), bodyClasses = None) {
     @back_link(backUrl)
 
     @summaryErrorHelper(notEligibleForm)

@@ -38,7 +38,7 @@
     </ul>
 }
 
-@views.html.templates.main_template(title = Messages("business.accounting_method.title"), bodyClasses = None) {
+@core.views.html.templates.main_template(title = Messages("business.accounting_method.title"), bodyClasses = None) {
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingMethodForm)

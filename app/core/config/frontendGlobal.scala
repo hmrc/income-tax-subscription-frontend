@@ -64,7 +64,7 @@ object FrontendGlobal
   }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
-    views.html.templates.error_template(pageTitle, heading, message)(implicitly, implicitly, new FrontendAppConfig(Play.current))
+    core.views.html.templates.error_template(pageTitle, heading, message)(implicitly, implicitly, new FrontendAppConfig(Play.current))
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"microservice.metrics")
 
@@ -75,10 +75,10 @@ object FrontendGlobal
         super.resolveError(rh, ex)
       case _: BearerTokenExpired =>
         Logger.debug("[AuthenticationPredicate][async] Bearer Token Timed Out.")
-        Redirect(controllers.routes.SessionTimeoutController.timeout())
+        Redirect(core.controllers.routes.SessionTimeoutController.timeout())
       case _: AuthorisationException =>
         Logger.debug("[AuthenticationPredicate][async] Unauthorised request. Redirect to Sign In.")
-        Redirect(controllers.routes.SignInController.signIn())
+        Redirect(core.controllers.routes.SignInController.signIn())
       case _: NotFoundException =>
         NotFound(notFoundTemplate(Request(rh, "")))
       case _ =>

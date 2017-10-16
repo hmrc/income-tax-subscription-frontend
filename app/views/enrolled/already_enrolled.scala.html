@@ -24,7 +24,7 @@
 @scripts = {
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
 }
-@views.html.templates.main_template(title = Messages("already-enrolled.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction), scriptElem = scripts) {
+@core.views.html.templates.main_template(title = Messages("already-enrolled.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction), scriptElem = scripts) {
 
     <div class="form-group">
         <section id="confirmation-heading" class="transaction-banner--complete">

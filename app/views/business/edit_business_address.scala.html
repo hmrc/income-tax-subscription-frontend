@@ -29,7 +29,7 @@
     </p>@address.country.fold("")(_.name)</p>
 }
 
-@views.html.templates.main_template(title = Messages("business.address.title"), bodyClasses = None) {
+@core.views.html.templates.main_template(title = Messages("business.address.title"), bodyClasses = None) {
     @back_link(backUrl)
 
     <h1 class="heading-large">@Messages("business.address.heading")</h1>

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package core.controllers
 
+import controllers.ControllerBaseSpec
 import core.config.FrontendAppConfig
-import org.mockito.Mockito
+import core.controllers.SignInController
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

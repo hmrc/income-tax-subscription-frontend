@@ -23,7 +23,7 @@
 
 @(businessStartDateForm: Form[BusinessStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("business.start_date.title"), bodyClasses = None, scriptElem = None) {
+@core.views.html.templates.main_template(title = Messages("business.start_date.title"), bodyClasses = None, scriptElem = None) {
 
     @back_link(backUrl)
 

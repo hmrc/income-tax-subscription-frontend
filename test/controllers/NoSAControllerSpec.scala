@@ -59,8 +59,8 @@ class NoSAControllerSpec extends ControllerBaseSpec {
       status(result) must be(Status.SEE_OTHER)
     }
 
-    s"redirect to ${controllers.routes.SignOutController.signOut().url}" in {
-      redirectLocation(result).get mustBe controllers.routes.SignOutController.signOut().url
+    s"redirect to ${core.controllers.routes.SignOutController.signOut().url}" in {
+      redirectLocation(result).get mustBe core.controllers.routes.SignOutController.signOut().url
     }
 
   }

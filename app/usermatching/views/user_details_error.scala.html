@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import views.html.templates.main_template
+@import core.views.html.templates.main_template
 @import core.views.html.helpers._
 @import core.config.AppConfig
 
@@ -29,6 +29,6 @@
         @continueButton(Messages("base.go_back"))
     }
     </div>
-    <a id="sign-out" href="@controllers.routes.SignOutController.signOut().url">@Messages("base.sign-out")</a>
+    <a id="sign-out" href="@core.controllers.routes.SignOutController.signOut().url">@Messages("base.sign-out")</a>
 
 }

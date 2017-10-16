@@ -17,7 +17,6 @@
 @import models.IncomeSourceModel
 @import play.api.data.Form
 @import forms.IncomeSourceForm
-@import core.views.html.helpers.radioHelper
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 @import core.config.AppConfig
@@ -29,7 +28,7 @@
     Messages("income_source.heading")
 }
 
-@views.html.templates.main_template(title = Messages("income_source.title"), bodyClasses = None) {
+@core.views.html.templates.main_template(title = Messages("income_source.title"), bodyClasses = None) {
     @if(isEditMode) {
         @back_link(backUrl)
     }

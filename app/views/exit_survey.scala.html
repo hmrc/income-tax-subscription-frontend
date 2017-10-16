@@ -17,7 +17,6 @@
 @import models.ExitSurveyModel
 @import play.api.data.Form
 @import forms.ExitSurveyForm
-@import core.views.html.helpers.radioHelper
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 @import core.config.AppConfig
@@ -47,7 +46,7 @@
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-survey.js")"></script>
 }
 
-@views.html.templates.main_template(title = Messages("exit-survey.title"), bodyClasses = None, showSignOutLink = false, scriptElem = scripts) {
+@core.views.html.templates.main_template(title = Messages("exit-survey.title"), bodyClasses = None, showSignOutLink = false, scriptElem = scripts) {
 
     @summaryErrorHelper(exitSurveyForm)
 

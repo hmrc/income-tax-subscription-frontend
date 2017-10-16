@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package core.controllers
 
-import javax.inject.{Inject, Singleton}
-
-import core.config.AppConfig
-import play.api.Application
-import play.api.mvc.Action
-import uk.gov.hmrc.play.config.RunMode
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import com.google.inject.{Inject, Singleton}
+import controllers.AssetsBuilder
+import play.api.http.HttpErrorHandler
 
 @Singleton
-class SignOutController @Inject()(val app: Application,
-                                  val applicationConfig: AppConfig) extends FrontendController with RunMode {
-
-  val signOut = Action { implicit request =>
-    Redirect(applicationConfig.ggSignOutUrl)
-  }
-
-}
+class AssetsController @Inject()(errorHandler: HttpErrorHandler) extends AssetsBuilder(errorHandler)

@@ -33,7 +33,7 @@ class NoSAController @Inject()(implicit val applicationConfig: AppConfig,
   }
 
   val submit: Action[AnyContent] = Action {
-    implicit request => Redirect(controllers.routes.SignOutController.signOut())
+    implicit request => Redirect(core.controllers.routes.SignOutController.signOut())
   }
 
 }

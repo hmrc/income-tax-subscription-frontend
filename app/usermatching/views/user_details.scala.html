@@ -22,7 +22,7 @@
 
 @(userDetailsForm: Form[UserDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("user-details.title"), bodyClasses = None) {
+@core.views.html.templates.main_template(title = Messages("user-details.title"), bodyClasses = None) {
 
     @summaryErrorHelper(userDetailsForm)
 
