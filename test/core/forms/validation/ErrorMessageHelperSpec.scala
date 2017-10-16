@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.validation
+package core.forms.validation
 
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
@@ -24,7 +24,7 @@ import play.api.data.validation.{Valid, ValidationResult}
 
 class ErrorMessageHelperSpec extends PlaySpec with OneServerPerSuite {
 
-  import forms.validation.utils.ConstraintUtil._
+  import core.forms.validation.utils.ConstraintUtil._
 
   case class TestModel(testField1: String, testField2: String, testField3: String)
 

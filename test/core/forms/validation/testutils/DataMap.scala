@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package forms.validation.testutils
+package core.forms.validation.testutils
 
 import forms.AccountingPeriodPriorForm
-import forms.validation.ErrorMessageFactory
-import forms.validation.utils.ConstraintUtil.constraint
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.utils.ConstraintUtil.constraint
 import play.api.data.validation.{Constraint, Invalid}
 
 object DataMap {
@@ -27,7 +27,7 @@ object DataMap {
   import forms.BusinessPhoneNumberForm._
   import forms.EmailForm._
   import forms.NotEligibleForm._
-  import forms.submapping.DateMapping._
+  import core.forms.submapping.DateMapping._
   import forms.{AccountingMethodForm, IncomeSourceForm}
 
 

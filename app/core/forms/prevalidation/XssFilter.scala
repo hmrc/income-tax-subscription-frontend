@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.prevalidation
+package core.forms.prevalidation
 
 import java.util.regex.Pattern
 

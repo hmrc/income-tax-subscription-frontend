@@ -17,10 +17,10 @@
 package views.helpers
 
 import assets.MessageLookup.{Base => common}
-import forms.validation.ErrorMessageFactory
-import forms.validation.models.SummaryError
-import forms.validation.testutils.DataMap
-import forms.validation.utils.MappingUtil._
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.models.SummaryError
+import core.forms.validation.testutils.DataMap
+import core.forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.Forms.mapping

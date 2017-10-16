@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package forms.prevalidation
+package core.forms.prevalidation
 
-import forms.prevalidation.CaseOption.CaseOption
-import forms.prevalidation.TrimOption.TrimOption
+import core.forms.prevalidation.CaseOption.CaseOption
+import core.forms.prevalidation.TrimOption.TrimOption
 import play.api.data.Form
 import play.api.data.Forms._
 import utils.UnitTestTrait

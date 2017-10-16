@@ -20,7 +20,7 @@
         cols: Option[Int] = Some(45),
         rows: Option[Int] = Some(100)
 )(implicit messages: Messages)
-@import forms.validation.ErrorMessageHelper._
+@import core.forms.validation.ErrorMessageHelper._
 
 @textArea() = {
     <textarea @maxLength.fold("")(x => s"maxlength=$x data-char-field ") name="@field.name" id="@field.name" cols="@cols" rows="@rows"></textarea>

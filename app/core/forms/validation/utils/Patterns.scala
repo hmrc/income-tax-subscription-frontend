@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms.validation.utils
+package core.forms.validation.utils
 
 
 object Patterns {

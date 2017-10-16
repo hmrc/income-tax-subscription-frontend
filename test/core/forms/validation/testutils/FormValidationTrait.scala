@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package forms.validation.testutils
+package core.forms.validation.testutils
 
-import forms.validation.ErrorMessageHelper
-import forms.validation.models.{ErrorMessage, FieldError, SummaryError}
+import core.forms.validation.ErrorMessageHelper
+import core.forms.validation.models.{ErrorMessage, FieldError, SummaryError}
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.validation.Invalid

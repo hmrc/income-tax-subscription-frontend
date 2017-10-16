@@ -14,17 +14,7 @@
  * limitations under the License.
  */
 
-package forms.validation.models
-
-import play.api.i18n.Messages
+package core.forms.validation.models
 
 
-trait ErrorMessage {
-
-  def messageKey: String
-
-  def messageArgs: Seq[String]
-
-  def toText(implicit messages: Messages): String = messages.apply(messageKey, messageArgs: _*)
-
-}
+case class FieldError(messageKey: String, messageArgs: Seq[String] = Seq()) extends ErrorMessage

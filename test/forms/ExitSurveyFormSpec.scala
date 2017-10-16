@@ -17,8 +17,8 @@
 package forms
 
 import assets.MessageLookup
-import forms.validation.ErrorMessageFactory
-import forms.validation.testutils._
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.testutils._
 import models.ExitSurveyModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest

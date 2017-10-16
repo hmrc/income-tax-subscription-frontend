@@ -34,17 +34,17 @@ package testonly.forms
 
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 
-import _root_.forms.prevalidation.PreprocessedForm
-import _root_.forms.submapping.DateMapping.dateMapping
-import _root_.forms.validation.utils.ConstraintUtil._
-import _root_.forms.validation.utils.MappingUtil._
+import core.forms.prevalidation.PreprocessedForm
+import core.forms.submapping.DateMapping.dateMapping
+import core.forms.validation.utils.ConstraintUtil._
+import core.forms.validation.utils.MappingUtil._
 import _root_.testonly.models.UserToStubModel
-import forms.validation.ErrorMessageFactory
+import core.forms.validation.ErrorMessageFactory
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid, ValidationResult}
-import _root_.forms.validation.Constraints._
+import core.forms.validation.Constraints._
 
 import scala.util.Try
 
@@ -105,8 +105,8 @@ object UserToStubForm {
     )(UserToStubModel.apply)(UserToStubModel.unapply)
   )
 
-  import forms.prevalidation.CaseOption._
-  import forms.prevalidation.TrimOption._
+  import core.forms.prevalidation.CaseOption._
+  import core.forms.prevalidation.TrimOption._
 
   val userToStubForm = PreprocessedForm(
     validation = userDetailsValidationForm,

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package forms.validation
+package core.forms.validation
 
-import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils.Patterns
+import core.forms.validation.utils.ConstraintUtil._
+import core.forms.validation.utils.Patterns
 import play.api.data.validation.{Constraint, Valid}
 
 object Constraints {

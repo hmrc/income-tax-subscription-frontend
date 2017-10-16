@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package core.forms
 
 import play.api.data.Form
 

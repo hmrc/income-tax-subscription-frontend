@@ -14,6 +14,23 @@
  * limitations under the License.
  */
 
-package forms.validation.models
+package core.forms.submapping
 
-case class TargetIds(anchor: String, otherIds: String*)
+import core.forms.validation.utils.MappingUtil._
+import models.DateModel
+import play.api.data.Forms.mapping
+import play.api.data.Mapping
+
+object DateMapping {
+
+  val dateDay = "dateDay"
+  val dateMonth = "dateMonth"
+  val dateYear = "dateYear"
+
+  val dateMapping: Mapping[DateModel] = mapping(
+    dateDay -> oText.toText,
+    dateMonth -> oText.toText,
+    dateYear -> oText.toText
+  )(DateModel.apply)(DateModel.unapply)
+
+}

@@ -14,30 +14,17 @@
  * limitations under the License.
  */
 
-package forms.validation.utils
+package core.forms.validation.models
+
+import play.api.i18n.Messages
 
 
-import play.api.data.Forms._
-import play.api.data._
+trait ErrorMessage {
 
-object MappingUtil {
+  def messageKey: String
 
-  val oText: Mapping[Option[String]] = optional(text)
+  def messageArgs: Seq[String]
 
-  implicit class OTextUtil(mapping: Mapping[Option[String]]) {
-    def toText: Mapping[String] =
-      mapping.transform(
-        x => x.fold("")(x => x),
-        x => Some(x)
-      )
-
-    def toBoolean: Mapping[Boolean] = mapping.transform(
-      {
-        case Some("true") => true
-        case _ => false
-      },
-      x => Some(x.toString)
-    )
-  }
+  def toText(implicit messages: Messages): String = messages.apply(messageKey, messageArgs: _*)
 
 }

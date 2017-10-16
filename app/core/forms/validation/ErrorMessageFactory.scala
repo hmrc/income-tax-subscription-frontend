@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package forms.validation
+package core.forms.validation
 
-import forms.validation.models.{FieldError, SummaryError, TargetIds}
+import core.forms.validation.models.{FieldError, SummaryError, TargetIds}
 import play.api.data.validation.Invalid
 
 object ErrorMessageFactory {

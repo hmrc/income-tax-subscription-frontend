@@ -55,7 +55,7 @@ class KnownFactsController @Inject()(val baseConfig: BaseControllerConfig,
       knownFactsForm.form.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(form = formWithErrors))),
         knownFacts => {
-          import forms.prevalidation.trimAllFunc
+          import core.forms.prevalidation.trimAllFunc
           val nino = trimAllFunc(knownFacts.nino).toUpperCase()
           val mtdid = trimAllFunc(knownFacts.mtditid).toUpperCase()
 

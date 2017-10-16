@@ -20,7 +20,7 @@
     parentForm: Option[Form[_]] = None
 )(implicit messages: Messages)
 
-@import forms.validation.ErrorMessageHelper._
+@import core.forms.validation.ErrorMessageHelper._
 
 @isChecked = @{
     field.value.map {

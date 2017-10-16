@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package forms.validation
+package core.forms.validation
 
-import forms.validation.models.{FieldError, SummaryError}
+import core.forms.validation.models.{FieldError, SummaryError}
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.validation.Invalid
