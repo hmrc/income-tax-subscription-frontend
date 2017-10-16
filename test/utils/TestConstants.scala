@@ -20,9 +20,7 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 import common.Constants.GovernmentGateway._
-import connectors.models.authenticator.{RefreshProfileFailure, RefreshProfileSuccess}
-import connectors.models.gg._
-import connectors.models.subscription.{Both, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
+import incometax.subscription.models._
 import models.DateModel
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator

@@ -17,7 +17,7 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import connectors.GGAuthenticationConnector
+import incometax.subscription.connectors.GGAuthenticationConnector
 import play.api.http.Status._
 
 object GGAuthenticationStub extends WireMockMethods {

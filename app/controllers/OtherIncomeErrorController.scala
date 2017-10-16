@@ -48,7 +48,7 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
           case IncomeSourceForm.option_business =>
             Redirect(controllers.business.routes.BusinessNameController.show())
           case IncomeSourceForm.option_property =>
-            Redirect(controllers.routes.TermsController.showTerms())
+            Redirect(incometax.subscription.controllers.routes.TermsController.showTerms())
           case IncomeSourceForm.option_both =>
             Redirect(controllers.business.routes.BusinessNameController.show())
         }

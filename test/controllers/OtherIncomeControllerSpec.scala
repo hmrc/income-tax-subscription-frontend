@@ -97,7 +97,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         }
 
         def expectedRedirectionForSameInput =
-          if (editMode) controllers.routes.CheckYourAnswersController.show().url
+          if (editMode) incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
           else controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
 
         s"the previous OtherIncome entry in keystore is the same as the new input then redirect to '$expectedRedirectionForSameInput'" in {
@@ -156,7 +156,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
         }
 
-        s"there are no prior OtherIncome in the keystore then redirect to '${controllers.routes.TermsController.showTerms().url}' on the property journey" in {
+        s"there are no prior OtherIncome in the keystore then redirect to '${incometax.subscription.controllers.routes.TermsController.showTerms().url}' on the property journey" in {
 
           setupMockKeystore(
             fetchIncomeSource = TestModels.testIncomeSourceProperty,
@@ -167,7 +167,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
           status(goodRequest) must be(Status.SEE_OTHER)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.showTerms().url)
 
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
@@ -191,7 +191,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         }
 
         def expectedRedirectionForSameInput(noneEditModeUrl: String) =
-          if (editMode) controllers.routes.CheckYourAnswersController.show().url
+          if (editMode) incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
           else noneEditModeUrl
 
         s"the previous OtherIncome entry in keystore is the same as the new input then redirect to '${
@@ -214,7 +214,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         }
 
         s"the previous OtherIncome entry in keystore is the same as the new input then redirect to '${
-          expectedRedirectionForSameInput(controllers.routes.TermsController.showTerms().url)
+          expectedRedirectionForSameInput(incometax.subscription.controllers.routes.TermsController.showTerms().url)
         }' on the property journey" in {
 
           setupMockKeystore(
@@ -226,7 +226,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
           status(goodRequest) must be(Status.SEE_OTHER)
 
-          redirectLocation(goodRequest) mustBe Some(expectedRedirectionForSameInput(controllers.routes.TermsController.showTerms().url))
+          redirectLocation(goodRequest) mustBe Some(expectedRedirectionForSameInput(incometax.subscription.controllers.routes.TermsController.showTerms().url))
 
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = if (editMode) 0 else 1)
@@ -269,7 +269,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         }
 
 
-        s"the previous OtherIncome entry in keystore is the different from the new input then redirect to '${controllers.routes.TermsController.showTerms().url}' on the property journey" in {
+        s"the previous OtherIncome entry in keystore is the different from the new input then redirect to '${incometax.subscription.controllers.routes.TermsController.showTerms().url}' on the property journey" in {
 
           setupMockKeystore(
             fetchIncomeSource = TestModels.testIncomeSourceProperty,
@@ -280,7 +280,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
           status(goodRequest) must be(Status.SEE_OTHER)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.showTerms().url)
 
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
@@ -333,8 +333,8 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
   }
 
   "The back url in edit mode" should {
-    s"point to ${controllers.routes.CheckYourAnswersController.show().url} on other income page" in {
-      TestOtherIncomeController.backUrl(isEditMode = true) mustBe controllers.routes.CheckYourAnswersController.show().url
+    s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url} on other income page" in {
+      TestOtherIncomeController.backUrl(isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

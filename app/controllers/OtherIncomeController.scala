@@ -66,7 +66,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
             case IncomeSourceForm.option_business =>
               Redirect(controllers.business.routes.BusinessNameController.show())
             case IncomeSourceForm.option_property =>
-              Redirect(controllers.routes.TermsController.showTerms())
+              Redirect(incometax.subscription.controllers.routes.TermsController.showTerms())
             case IncomeSourceForm.option_both =>
               Redirect(controllers.business.routes.BusinessNameController.show())
           }
@@ -87,7 +87,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
               keystoreService.saveOtherIncome(choice).flatMap { _ =>
                 // if it's in update mode and the previous answer is the same as current then return to check your answers page
                 if (isEditMode && previousOtherIncome.fold(false)(old => old.equals(choice)))
-                  Redirect(controllers.routes.CheckYourAnswersController.show())
+                  Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
                 else defaultRedirections(choice)
               }
           }
@@ -96,7 +96,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
 
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode)
-      controllers.routes.CheckYourAnswersController.show().url
+      incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     else
       controllers.routes.IncomeSourceController.showIncomeSource().url
 

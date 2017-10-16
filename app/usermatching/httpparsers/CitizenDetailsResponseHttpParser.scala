@@ -16,7 +16,7 @@
 
 package usermatching.httpparsers
 
-import connectors.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
+import incometax.subscription.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 

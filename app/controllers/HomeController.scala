@@ -19,20 +19,20 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
+import auth.JourneyState._
 import auth._
 import config.BaseControllerConfig
-import connectors.models.CitizenDetailsSuccess
-import connectors.models.subscription.SubscriptionSuccess
 import controllers.ITSASessionKeys._
+import incometax.subscription.models.{CitizenDetailsSuccess, SubscriptionSuccess}
+import incometax.subscription.services.SubscriptionService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.{AuthService, KeystoreService, SubscriptionService}
-import utils.Implicits._
-import auth.JourneyState._
-
-import scala.concurrent.Future
+import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.CitizenDetailsService
+import utils.Implicits._
+
+import scala.concurrent.Future
 
 @Singleton
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
@@ -99,7 +99,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       case Right(None) => default
       case Right(Some(SubscriptionSuccess(mtditId))) =>
         keystoreService.saveSubscriptionId(mtditId) map { _ =>
-          Redirect(controllers.routes.ClaimSubscriptionController.claim()).withJourneyState(SignUp)
+          Redirect(incometax.subscription.controllers.routes.ClaimSubscriptionController.claim()).withJourneyState(SignUp)
         }
       case _ =>
         Future.failed(new InternalServerException(s"HomeController.index: unexpected error calling the subscription service"))
