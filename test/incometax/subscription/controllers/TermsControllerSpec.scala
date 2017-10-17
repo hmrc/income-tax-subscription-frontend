@@ -103,21 +103,21 @@ class TermsControllerSpec extends ControllerBaseSpec
       verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
     }
 
-    s"point to ${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url} on the property journey if they answered yes to other incomes" in {
+    s"point to ${incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url} on the property journey if they answered yes to other incomes" in {
       setupMockKeystore(
         fetchIncomeSource = TestModels.testIncomeSourceProperty,
         fetchOtherIncome = TestModels.testOtherIncomeYes
       )
-      await(TestTermsController.backUrl(subscriptionRequest)) mustBe controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+      await(TestTermsController.backUrl(subscriptionRequest)) mustBe incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
       verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
     }
 
-    s"point to ${controllers.routes.OtherIncomeController.showOtherIncome().url} on the property journey if they answered no to other incomes" in {
+    s"point to ${incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url} on the property journey if they answered no to other incomes" in {
       setupMockKeystore(
         fetchIncomeSource = TestModels.testIncomeSourceProperty,
         fetchOtherIncome = TestModels.testOtherIncomeNo
       )
-      await(TestTermsController.backUrl(subscriptionRequest)) mustBe controllers.routes.OtherIncomeController.showOtherIncome().url
+      await(TestTermsController.backUrl(subscriptionRequest)) mustBe incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
       verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
     }
 

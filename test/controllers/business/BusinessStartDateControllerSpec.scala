@@ -20,7 +20,7 @@ import core.auth.MockConfig
 import controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import forms.BusinessStartDateForm
-import forms.OtherIncomeForm.{option_no, option_yes}
+import incometax.incomesource.forms.OtherIncomeForm.{option_no, option_yes}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}

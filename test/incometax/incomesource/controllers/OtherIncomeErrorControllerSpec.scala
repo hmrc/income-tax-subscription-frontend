@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.incomesource.controllers
 
 import core.audit.Logging
 import core.services.mocks.MockKeystoreService
-import forms.OtherIncomeForm
-import models.OtherIncomeModel
+import controllers.ControllerBaseSpec
+import incometax.incomesource.forms.OtherIncomeForm
+import incometax.incomesource.models.OtherIncomeModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

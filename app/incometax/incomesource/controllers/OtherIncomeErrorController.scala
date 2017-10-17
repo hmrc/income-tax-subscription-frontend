@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.incomesource.controllers
 
 import javax.inject.{Inject, Singleton}
 
@@ -22,7 +22,7 @@ import core.audit.Logging
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import forms.IncomeSourceForm
+import incometax.incomesource.forms.IncomeSourceForm
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.InternalServerException
@@ -38,7 +38,10 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                           ) extends SignUpController {
 
   val showOtherIncomeError = Action.async { implicit request =>
-    Future.successful(Ok(views.html.other_income_error(postAction = controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(), backUrl)))
+    Future.successful(Ok(incometax.incomesource.views.html.other_income_error(
+          postAction = incometax.incomesource.controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(),
+          backUrl
+        )))
   }
 
   val submitOtherIncomeError: Action[AnyContent] = Authenticated.async { implicit request =>
@@ -59,7 +62,7 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  lazy val backUrl: String = controllers.routes.OtherIncomeController.showOtherIncome().url
+  lazy val backUrl: String = incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
 
 
 }

@@ -21,8 +21,8 @@ import javax.inject.{Inject, Singleton}
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import forms.IncomeSourceForm
-import models.OtherIncomeModel
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.models.OtherIncomeModel
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
@@ -65,12 +65,12 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         case IncomeSourceForm.option_both =>
           controllers.business.routes.BusinessAccountingMethodController.show().url
         case IncomeSourceForm.option_property =>
-          import forms.OtherIncomeForm._
+          import OtherIncomeForm._
           keystoreService.fetchOtherIncome() flatMap {
             case Some(OtherIncomeModel(`option_yes`)) =>
-              controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+              incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
             case Some(OtherIncomeModel(`option_no`)) =>
-              controllers.routes.OtherIncomeController.showOtherIncome().url
+              incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
             case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
           }
         case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")

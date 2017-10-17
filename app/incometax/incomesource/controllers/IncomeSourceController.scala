@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.incomesource.controllers
 
 import javax.inject.{Inject, Singleton}
 
+
+import incometax.incomesource.forms.IncomeSourceForm
+import incometax.incomesource.models.IncomeSourceModel
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import forms.IncomeSourceForm
-import models.IncomeSourceModel
+
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -45,9 +47,9 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    views.html.income_source(
+    incometax.incomesource.views.html.income_source(
       incomeSourceForm = incomeSourceForm,
-      postAction = controllers.routes.IncomeSourceController.submitIncomeSource(editMode = isEditMode),
+      postAction = incometax.incomesource.controllers.routes.IncomeSourceController.submitIncomeSource(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl
     )
@@ -82,11 +84,14 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  def business(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.routes.OtherIncomeController.showOtherIncome()))
+  def business(implicit request: Request[_]): Future[Result] =
+    Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome()))
 
-  def property(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.routes.OtherIncomeController.showOtherIncome()))
+  def property(implicit request: Request[_]): Future[Result] =
+    Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome()))
 
-  def both(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(controllers.routes.OtherIncomeController.showOtherIncome()))
+  def both(implicit request: Request[_]): Future[Result] =
+    Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome()))
 
   lazy val backUrl: String =
     incometax.subscription.controllers.routes.CheckYourAnswersController.show().url

@@ -14,11 +14,13 @@
  * limitations under the License.
  *@
 
-@import models.SummaryModel
+@import incometax.subscription.models.SummaryModel
+@import helpers._
 @import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
 @import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
+@import incometax.incomesource.models._
 
 @import models.address.Address
 @(summaryModel: SummaryModel, isRegistration:Boolean, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -51,7 +53,7 @@
     val rowName = IncomeSourceId
     val rowQuestion = Messages("summary.income_source")
     val rowAnswer = incomeSourceText(source)
-    val rowUrl = controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
+    val rowUrl = incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -59,7 +61,7 @@
     val rowName = OtherIncomeId
     val rowQuestion = Messages("summary.other_income")
     val rowAnswer = source.choice
-    val rowUrl = controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
+    val rowUrl = incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

@@ -22,7 +22,9 @@ import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import forms.BusinessNameForm
-import models.{BusinessNameModel, OtherIncomeModel}
+import incometax.incomesource.forms.OtherIncomeForm
+import incometax.incomesource.models.OtherIncomeModel
+import models.BusinessNameModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -74,13 +76,15 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   def backUrl(isEditMode: Boolean)(implicit request: Request[_]): Future[String] = {
-    import forms.OtherIncomeForm._
+    import OtherIncomeForm._
     if (isEditMode)
       Future.successful(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
     else
       keystoreService.fetchOtherIncome().map {
-        case Some(OtherIncomeModel(`option_yes`)) => controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
-        case _ => controllers.routes.OtherIncomeController.showOtherIncome().url
+        case Some(OtherIncomeModel(`option_yes`)) =>
+          incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+        case _ =>
+          incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
       }
   }
 

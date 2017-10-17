@@ -127,9 +127,9 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on business journey" in {
+    s"point to ${incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url} on business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-      await(TestNotEligibleController.backUrl(subscriptionRequest)) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+      await(TestNotEligibleController.backUrl(subscriptionRequest)) mustBe incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url
     }
   }
 

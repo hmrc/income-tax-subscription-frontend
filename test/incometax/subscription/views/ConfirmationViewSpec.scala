@@ -17,7 +17,7 @@
 package incometax.subscription.views
 
 import assets.MessageLookup
-import forms.IncomeSourceForm
+import incometax.incomesource.forms.IncomeSourceForm
 import models.DateModel
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._

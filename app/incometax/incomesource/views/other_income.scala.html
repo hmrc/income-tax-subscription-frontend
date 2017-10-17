@@ -17,8 +17,11 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 @import forms.NotEligibleForm
+@import config.AppConfig
+@import incometax.incomesource.models._
 @import core.config.AppConfig
 
+@import incometax.incomesource.forms.OtherIncomeForm
 @import forms.OtherIncomeForm
 @import core.views.html.RadioOption
 @(otherIncomeForm: Form[OtherIncomeModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)

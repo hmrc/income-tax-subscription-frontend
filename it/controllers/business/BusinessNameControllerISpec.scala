@@ -17,11 +17,12 @@
 package controllers.business
 
 import core.services.CacheConstants
-import forms.IncomeSourceForm
 import helpers.IntegrationTestConstants.{accountingPeriodPriorURI, checkYourAnswersURI, signInURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
+import incometax.incomesource.forms.IncomeSourceForm
+import incometax.incomesource.models.IncomeSourceModel
 import models._
 import play.api.http.Status._
 import play.api.i18n.Messages

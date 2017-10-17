@@ -8,6 +8,8 @@ import uk.gov.hmrc.domain.Generator
 import IntegrationTestConstants._
 import core.services.CacheConstants
 import connectors.models.address.ReturnedAddress
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import models.address.{Address, Country}
 import usermatching.models.UserDetailsModel
 
