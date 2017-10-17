@@ -16,7 +16,7 @@
 
 package usermatching.controllers
 
-import config.featureswitch.{FeatureSwitching, UserMatchingFeature}
+import core.config.featureswitch.{FeatureSwitching, UserMatchingFeature}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, UserLockoutStub}

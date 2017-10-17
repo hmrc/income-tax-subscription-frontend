@@ -16,14 +16,14 @@
 
 package incometax.incomesource.controllers
 
-import audit.Logging
 import controllers.ControllerBaseSpec
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.OtherIncomeModel
+import core.audit.Logging
+import core.services.mocks.MockKeystoreService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
 import utils.TestModels
 
 class OtherIncomeControllerSpec extends ControllerBaseSpec

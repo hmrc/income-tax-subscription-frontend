@@ -18,8 +18,9 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{Registration, SignUpController}
-import config.BaseControllerConfig
+import core.auth.{Registration, SignUpController}
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import forms.BusinessNameForm
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.OtherIncomeModel
@@ -28,7 +29,6 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
 
 import scala.concurrent.Future
 

@@ -17,7 +17,7 @@
 package controllers
 
 import assets.MessageLookup
-import audit.Logging
+import core.audit.Logging
 import forms.ExitSurveyForm
 import models.ExitSurveyModel
 import org.jsoup.Jsoup
@@ -89,7 +89,7 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
   // a side effect async process call inside a unit return function
   // i.e. even if splunk fails these two tests would not fail
   // by separating the scenarios here we can at least manually examine the print outs for these respective tests
-  // but the test for the splunk audit itself must be done manually in QA
+  // but the test for the splunk core.audit itself must be done manually in QA
   "ExitSurveyController.submit" when {
 
     "received an empty request" should {
@@ -99,8 +99,8 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
         status(result) must be(Status.SEE_OTHER)
       }
 
-      s"redirect to '${controllers.routes.ThankYouController.show().url}'" in {
-        redirectLocation(result) mustBe Some(controllers.routes.ThankYouController.show().url)
+      s"redirect to '${controllers.routes.ExitSurveyThankYouController.show().url}'" in {
+        redirectLocation(result) mustBe Some(controllers.routes.ExitSurveyThankYouController.show().url)
       }
     }
 
@@ -114,8 +114,8 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
         status(result) must be(Status.SEE_OTHER)
       }
 
-      s"redirect to '${controllers.routes.ThankYouController.show().url}'" in {
-        redirectLocation(result) mustBe Some(controllers.routes.ThankYouController.show().url)
+      s"redirect to '${controllers.routes.ExitSurveyThankYouController.show().url}'" in {
+        redirectLocation(result) mustBe Some(controllers.routes.ExitSurveyThankYouController.show().url)
       }
     }
   }

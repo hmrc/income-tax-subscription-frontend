@@ -6,7 +6,7 @@ GET         /                             controllers.HomeController.home
 GET         /index                        controllers.HomeController.index
 
 # SignOut Controller
-GET         /logout                       controllers.SignOutController.signOut
+GET         /logout                       core.controllers.SignOutController.signOut
 
 # NinoResolver Controller
 GET         /resolve-nino                 usermatching.controllers.NinoResolverController.resolveNino
@@ -30,12 +30,12 @@ GET         /confirmation                 incometax.subscription.controllers.Con
 GET         /confirmation/sign-out        incometax.subscription.controllers.ConfirmationController.signOut
 
 # Session Timeout Route
-GET         /session-timeout              controllers.SessionTimeoutController.timeout
+GET         /session-timeout              core.controllers.SessionTimeoutController.timeout
 
 # Feedback Routes
-GET         /feedback                     controllers.FeedbackController.show
-POST        /feedback                     controllers.FeedbackController.submit
-GET         /thankyou                     controllers.FeedbackController.thankyou
+GET         /feedback                     core.controllers.FeedbackController.show
+POST        /feedback                     core.controllers.FeedbackController.submit
+GET         /thankyou                     core.controllers.FeedbackController.thankyou
 
 # Terms Routes
 GET         /terms                        incometax.subscription.controllers.TermsController.showTerms()
@@ -70,9 +70,9 @@ GET         /error/iv-failed              identityverification.controllers.Ident
 GET         /exit-survey                  controllers.ExitSurveyController.show
 POST        /exit-survey                  controllers.ExitSurveyController.submit
 
-GET         /feedback-submitted           controllers.ThankYouController.show
+GET         /feedback-submitted           controllers.ExitSurveyThankYouController.show
 
-GET         /sign-in                      controllers.SignInController.signIn
+GET         /sign-in                      core.controllers.SignInController.signIn
 
 # Claim Subscription
 GET         /claim-subscription           incometax.subscription.controllers.ClaimSubscriptionController.claim

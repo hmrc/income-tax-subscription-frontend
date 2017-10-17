@@ -18,10 +18,10 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.PostSubmissionController
-import config.BaseControllerConfig
+import core.auth.PostSubmissionController
+import core.services.AuthService
+import core.config.BaseControllerConfig
 import play.api.i18n.MessagesApi
-import services.AuthService
 
 import scala.concurrent.Future
 
@@ -39,7 +39,7 @@ class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
           Ok(
             views.html.enrolled.already_enrolled(
               subscriptionId = user.mtdItsaRef.get,
-              signOutAction = controllers.routes.SignOutController.signOut()
+              signOutAction = core.controllers.routes.SignOutController.signOut()
             )
           )
         )

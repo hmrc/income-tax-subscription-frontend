@@ -16,16 +16,16 @@
 
 package incometax.subscription.controllers
 
+import core.services.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks._
 import play.api.http.Status._
 import play.api.i18n.Messages
-import services.CacheConstants._
 
 
-class CheckYourAnswersControllerISpec extends ComponentSpecBase{
+class CheckYourAnswersControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
     "keystore returns all data" should {
       "show the check your answers page" in {

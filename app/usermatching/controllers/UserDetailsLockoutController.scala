@@ -19,11 +19,11 @@ package usermatching.controllers
 import java.time.{Duration, LocalTime}
 import javax.inject.Inject
 
-import auth.{IncomeTaxSAUser, UserMatchingController}
-import config.BaseControllerConfig
+import core.auth.{IncomeTaxSAUser, UserMatchingController}
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import services.AuthService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.models.{LockedOut, NotLockedOut}
 import usermatching.services.UserLockoutService
@@ -74,7 +74,7 @@ class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfi
 
   lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Redirect(controllers.routes.SignOutController.signOut()))
+      Future.successful(Redirect(core.controllers.routes.SignOutController.signOut()))
   }
 
 }

@@ -16,7 +16,7 @@
 
 package incometax.subscription.services.mocks
 
-import common.Constants.GovernmentGateway.{ggServiceName, _}
+import core.Constants.GovernmentGateway.{ggServiceName, _}
 import incometax.subscription.connectors.mocks.MockGGConnector
 import incometax.subscription.models.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import incometax.subscription.services.EnrolmentService
@@ -57,6 +57,7 @@ trait MockEnrolmentService extends MockTrait {
   def mockEnrolSuccess(mtditid: String, nino: String): Unit = {
     mockEnrol(mtditid, nino)(Future.successful(testEnrolSuccess))
   }
+
   def mockEnrolFailure(mtditid: String, nino: String): Unit = {
     mockEnrol(mtditid, nino)(Future.successful(testEnrolFailure))
   }

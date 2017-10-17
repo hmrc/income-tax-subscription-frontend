@@ -18,6 +18,7 @@ package utils
 
 
 import connectors.models.address.ReturnedAddress
+import core.services.CacheConstants
 import forms._
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
@@ -25,7 +26,6 @@ import incometax.subscription.models.SummaryModel
 import models._
 import models.address.{Address, Country}
 import play.api.libs.json.{JsValue, Json}
-import services.CacheConstants
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import usermatching.models.{UserDetailsModel, UserMatchSuccessResponseModel}

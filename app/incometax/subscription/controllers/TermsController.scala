@@ -18,14 +18,14 @@ package incometax.subscription.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.SignUpController
-import config.BaseControllerConfig
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.OtherIncomeModel
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.InternalServerException
 import utils.Implicits._
 

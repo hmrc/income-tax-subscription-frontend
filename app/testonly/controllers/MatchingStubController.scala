@@ -18,7 +18,7 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import config.{AppConfig, BaseControllerConfig}
+import core.config.{AppConfig, BaseControllerConfig}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, Request}
@@ -26,9 +26,9 @@ import play.twirl.api.Html
 import testonly.connectors.{MatchingStubConnector, UserData}
 import testonly.forms.UserToStubForm
 import testonly.models.UserToStubModel
+import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.Implicits._
-import uk.gov.hmrc.http.InternalServerException
 
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 

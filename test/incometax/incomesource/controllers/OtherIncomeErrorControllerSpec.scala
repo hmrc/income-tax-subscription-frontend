@@ -16,7 +16,8 @@
 
 package incometax.incomesource.controllers
 
-import audit.Logging
+import core.audit.Logging
+import core.services.mocks.MockKeystoreService
 import controllers.ControllerBaseSpec
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.OtherIncomeModel
@@ -24,7 +25,6 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
-import services.mocks.MockKeystoreService
 import utils.TestModels
 
 class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystoreService {

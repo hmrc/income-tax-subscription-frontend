@@ -16,15 +16,15 @@
 
 package controllers.business
 
-import auth.{Registration, SignUp}
-import config.featureswitch.FeatureSwitching
+import core.auth.{Registration, SignUp}
+import core.config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.servicemocks.{AddressLookupStub, AuthStub, KeystoreStub}
 import play.api.http.Status._
 import helpers.IntegrationTestConstants._
 import play.api.i18n.Messages
-import services.CacheConstants.BusinessAddress
-import config.featureswitch
+import core.services.CacheConstants.BusinessAddress
+import core.config.featureswitch
 
 class BusinessAddressControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

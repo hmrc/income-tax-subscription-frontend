@@ -19,11 +19,11 @@ package incometax.incomesource.controllers
 import controllers.ControllerBaseSpec
 import incometax.incomesource.forms.IncomeSourceForm
 import incometax.incomesource.models.IncomeSourceModel
+import core.services.mocks.MockKeystoreService
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
 import utils.TestModels
 
 class IncomeSourceControllerSpec extends ControllerBaseSpec

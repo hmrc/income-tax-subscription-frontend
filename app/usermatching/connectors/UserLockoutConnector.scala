@@ -18,7 +18,7 @@ package usermatching.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import config.AppConfig
+import core.config.AppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import usermatching.httpparsers.LockoutStatusHttpParser._

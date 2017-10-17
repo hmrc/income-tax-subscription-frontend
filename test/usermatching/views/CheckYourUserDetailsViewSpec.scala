@@ -26,7 +26,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import usermatching.models.UserDetailsModel
 import utils.{TestConstants, TestModels, UnitTestTrait}
-import views.html.helpers.ConfirmUserIdConstants._
+import core.views.html.ConfirmUserIdConstants._
 
 class CheckYourUserDetailsViewSpec extends UnitTestTrait {
 

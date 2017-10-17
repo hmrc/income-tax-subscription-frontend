@@ -16,6 +16,7 @@
 
 package controllers.business
 
+import core.services.CacheConstants
 import helpers.IntegrationTestConstants.{accountingPeriodPriorURI, checkYourAnswersURI, signInURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
@@ -25,7 +26,6 @@ import incometax.incomesource.models.IncomeSourceModel
 import models._
 import play.api.http.Status._
 import play.api.i18n.Messages
-import services.CacheConstants
 
 class BusinessNameControllerISpec extends ComponentSpecBase {
 

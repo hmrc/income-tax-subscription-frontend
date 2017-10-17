@@ -18,15 +18,17 @@ package incometax.incomesource.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.SignUpController
-import config.BaseControllerConfig
+
 import incometax.incomesource.forms.IncomeSourceForm
 import incometax.incomesource.models.IncomeSourceModel
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
+
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
 
 import scala.concurrent.Future
 

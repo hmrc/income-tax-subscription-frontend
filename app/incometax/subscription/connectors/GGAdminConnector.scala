@@ -18,10 +18,10 @@ package incometax.subscription.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import common.Constants._
-import config.AppConfig
 import connectors.RawResponseReads
+import core.Constants._
+import core.audit.Logging
+import core.config.AppConfig
 import incometax.subscription.connectors.GGAdminConnector._
 import incometax.subscription.models.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess}
 import play.api.http.Status.OK

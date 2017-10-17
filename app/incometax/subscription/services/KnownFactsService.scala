@@ -18,7 +18,7 @@ package incometax.subscription.services
 
 import javax.inject.{Inject, Singleton}
 
-import common.Constants.GovernmentGateway._
+import core.Constants.GovernmentGateway._
 import incometax.subscription.connectors.GGAdminConnector
 import incometax.subscription.models.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, TypeValuePair}
 import uk.gov.hmrc.http.HeaderCarrier

@@ -16,9 +16,9 @@
 
 package incometax.incomesource.forms
 
-import forms.validation.ErrorMessageFactory
-import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils.MappingUtil._
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.utils.ConstraintUtil._
+import core.forms.validation.utils.MappingUtil._
 import incometax.incomesource.models.OtherIncomeModel
 import play.api.data.Form
 import play.api.data.Forms.mapping

@@ -16,12 +16,12 @@
 
 package controllers
 
+import core.services.mocks.MockKeystoreService
 import forms.NotEligibleForm
 import models.NotEligibleModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
 import utils.TestModels
 
 class NotEligibleControllerSpec extends ControllerBaseSpec

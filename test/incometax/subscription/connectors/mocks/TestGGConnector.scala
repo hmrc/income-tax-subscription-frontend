@@ -16,8 +16,8 @@
 
 package incometax.subscription.connectors.mocks
 
-import audit.Logging
 import connectors.mocks.MockHttp
+import core.audit.Logging
 import incometax.subscription.connectors.GGConnector
 import incometax.subscription.models.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import org.mockito.ArgumentMatchers

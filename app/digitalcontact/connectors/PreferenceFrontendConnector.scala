@@ -19,10 +19,10 @@ package digitalcontact.connectors
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import common.Constants._
-import config.AppConfig
-import config.ITSAHeaderCarrierForPartialsConverter._
+import core.audit.Logging
+import core.Constants._
+import core.config.AppConfig
+import core.config.ITSAHeaderCarrierForPartialsConverter._
 import connectors.RawResponseReads
 import digitalcontact.models.{PaperlessPreferenceError, PaperlessState}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -57,7 +57,7 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
 
   def checkPaperless(token: String)(implicit request: Request[AnyContent]): Future[Either[PaperlessPreferenceError.type, PaperlessState]] = {
     // The header carrier must include the current user's session in order to be authenticated by the preferences-frontend service
-    // this header is converted implicitly by functions in config.ITSAHeaderCarrierForPartialsConverter which implements
+    // this header is converted implicitly by functions in core.config.ITSAHeaderCarrierForPartialsConverter which implements
     // uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
     httpPut.PUT[String, HttpResult[PaperlessState]](checkPaperlessUrl(token), "") map {
       case Right(paperlessState) => Right(paperlessState)

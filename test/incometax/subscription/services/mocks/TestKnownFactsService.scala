@@ -16,7 +16,7 @@
 
 package incometax.subscription.services.mocks
 
-import common.Constants.GovernmentGateway._
+import core.Constants.GovernmentGateway._
 import incometax.subscription.connectors.mocks.MockGGAdminConnector
 import incometax.subscription.models.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, TypeValuePair}
 import incometax.subscription.services.KnownFactsService

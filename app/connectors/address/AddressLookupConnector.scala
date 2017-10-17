@@ -18,8 +18,8 @@ package connectors.address
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import config.AppConfig
+import core.audit.Logging
+import core.config.AppConfig
 import connectors.httpparsers.AddressLookupResponseHttpParser._
 import connectors.models.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, MalformatAddressReturned, UnexpectedStatusReturned}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost}

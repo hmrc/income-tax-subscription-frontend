@@ -30,7 +30,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import utils.{TestModels, UnitTestTrait}
-import views.html.helpers.SummaryIdConstants._
+import core.views.html.SummaryIdConstants._
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
 

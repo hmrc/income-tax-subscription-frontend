@@ -18,7 +18,7 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import config.BaseControllerConfig
+import core.config.BaseControllerConfig
 import play.api.mvc.{Action, AnyContent}
 import testonly.connectors.ResetUserLockoutConnector
 import uk.gov.hmrc.play.frontend.controller.FrontendController

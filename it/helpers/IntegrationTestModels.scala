@@ -4,9 +4,9 @@ package helpers
 import forms._
 import models._
 import play.api.libs.json.{JsValue, Json}
-import services.CacheConstants
 import uk.gov.hmrc.domain.Generator
 import IntegrationTestConstants._
+import core.services.CacheConstants
 import connectors.models.address.ReturnedAddress
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}

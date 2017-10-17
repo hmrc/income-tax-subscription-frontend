@@ -19,9 +19,9 @@ package digitalcontact.services
 import java.util.UUID
 import javax.inject.Inject
 
+import core.services.KeystoreService
 import digitalcontact.connectors.PaperlessPreferenceTokenConnector
 import digitalcontact.models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
-import services.KeystoreService
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.ExecutionContext.Implicits.global

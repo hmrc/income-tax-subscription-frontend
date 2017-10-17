@@ -17,6 +17,7 @@
 package controllers.business
 
 import controllers.ControllerBaseSpec
+import core.services.mocks.MockKeystoreService
 import forms.BusinessNameForm
 import incometax.incomesource.forms.OtherIncomeForm._
 import incometax.incomesource.models.OtherIncomeModel
@@ -25,7 +26,6 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
-import services.mocks.MockKeystoreService
 import utils.TestModels
 
 import scala.concurrent.Future

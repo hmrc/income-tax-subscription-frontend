@@ -18,15 +18,15 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.SignUpController
-import config.BaseControllerConfig
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import forms.AccountingPeriodPriorForm
 import models.AccountingPeriodPriorModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
 import utils.Implicits._
 
 import scala.concurrent.Future

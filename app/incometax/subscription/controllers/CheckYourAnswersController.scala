@@ -18,15 +18,15 @@ package incometax.subscription.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import auth.{IncomeTaxSAUser, Registration, SignUpController}
-import config.BaseControllerConfig
 import controllers.ITSASessionKeys
+import core.audit.Logging
+import core.auth.{IncomeTaxSAUser, Registration, SignUpController}
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionOrchestrationService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Request, Result}
-import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -41,7 +41,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            logging: Logging
                                           ) extends SignUpController {
 
-  import services.CacheUtil._
+  import core.services.CacheUtil._
 
   lazy val backUrl: String = incometax.subscription.controllers.routes.TermsController.showTerms().url
   val show = journeySafeGuard { implicit user =>

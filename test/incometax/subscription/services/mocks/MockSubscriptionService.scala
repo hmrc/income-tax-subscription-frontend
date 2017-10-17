@@ -16,7 +16,7 @@
 
 package incometax.subscription.services.mocks
 
-import audit.Logging
+import core.audit.Logging
 import incometax.subscription.connectors.mocks.MockSubscriptionConnector
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
@@ -65,6 +65,7 @@ trait MockSubscriptionService extends MockTrait {
 }
 
 trait TestSubscriptionService extends MockSubscriptionConnector {
+
   object TestSubscriptionService extends SubscriptionService(app.injector.instanceOf[Logging], mockSubscriptionConnector)
 
 }

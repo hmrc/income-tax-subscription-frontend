@@ -18,13 +18,13 @@ package usermatching.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{IncomeTaxSAUser, UserMatchingController}
-import config.BaseControllerConfig
+import core.auth.{IncomeTaxSAUser, UserMatchingController}
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.forms.UserDetailsForm
 import usermatching.models.{NotLockedOut, UserDetailsModel}

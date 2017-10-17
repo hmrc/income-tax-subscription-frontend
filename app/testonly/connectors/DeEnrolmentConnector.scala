@@ -19,7 +19,7 @@ package testonly.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import common.Constants
+import core.Constants
 import connectors.RawResponseReads
 import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig

@@ -16,15 +16,15 @@
 
 package controllers.business
 
-import auth.MockConfig
+import core.auth.MockConfig
 import controllers.ControllerBaseSpec
+import core.services.mocks.MockKeystoreService
 import forms.BusinessStartDateForm
 import incometax.incomesource.forms.OtherIncomeForm.{option_no, option_yes}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
-import services.mocks.MockKeystoreService
 import uk.gov.hmrc.http.NotFoundException
 import utils.TestModels.testBusinessStartDate
 

@@ -19,14 +19,14 @@ package testonly.controllers
 import java.util.UUID
 import javax.inject.Inject
 
-import auth.StatelessController
-import config.BaseControllerConfig
+import core.auth.StatelessController
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import digitalcontact.connectors.PaperlessPreferenceTokenConnector
 import digitalcontact.models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
-import services.AuthService
 import testonly.models.preferences.{AddTokenRequest, AddTokenResponse}
 import uk.gov.hmrc.http._
 
@@ -48,7 +48,7 @@ class PreferenceTokenController @Inject()(val baseConfig: BaseControllerConfig,
     }
   }
 
-  // n.b. this route must be marked with NOCSRF in the route config file
+  // n.b. this route must be marked with NOCSRF in the route core.config file
   def addToken(): Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     implicit user =>
       request.body.asJson flatMap (_.asOpt[AddTokenRequest]) match {

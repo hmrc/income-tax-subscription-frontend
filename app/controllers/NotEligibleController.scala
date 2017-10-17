@@ -18,19 +18,19 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.SignUpController
-import config.BaseControllerConfig
 import forms.NotEligibleForm
 import incometax.incomesource.forms.IncomeSourceForm
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import models.NotEligibleModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.InternalServerException
 
 @Singleton
 class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,

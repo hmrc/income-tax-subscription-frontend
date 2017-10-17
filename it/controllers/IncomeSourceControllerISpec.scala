@@ -16,6 +16,7 @@
 
 package controllers
 
+import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
@@ -24,7 +25,6 @@ import incometax.incomesource.forms.IncomeSourceForm
 import incometax.incomesource.models.IncomeSourceModel
 import play.api.http.Status._
 import play.api.i18n.Messages
-import services.CacheConstants
 
 class IncomeSourceControllerISpec extends ComponentSpecBase {
 

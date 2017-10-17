@@ -18,8 +18,9 @@ package controllers.business
 
 import javax.inject.{Inject, Singleton}
 
-import auth.{SignUpController, Registration}
-import config.BaseControllerConfig
+import core.auth.{Registration, SignUpController}
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import forms._
 import models.AccountingPeriodModel
 import models.enums._
@@ -27,7 +28,6 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.InternalServerException
 import utils.Implicits._
 

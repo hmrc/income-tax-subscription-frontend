@@ -16,11 +16,11 @@
 
 package testonly.forms
 
-import forms.prevalidation.PreprocessedForm
-import forms.validation.ErrorMessageFactory
-import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils.MappingUtil._
-import forms.validation.utils.Patterns
+import core.forms.prevalidation.PreprocessedForm
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.utils.ConstraintUtil._
+import core.forms.validation.utils.MappingUtil._
+import core.forms.validation.utils.Patterns
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid}
@@ -39,7 +39,7 @@ object KnownFactsForm {
 
   val ninoInvalid: Constraint[String] = constraint[String](
     nino => {
-      import forms.prevalidation.trimAllFunc
+      import core.forms.prevalidation.trimAllFunc
       lazy val invalidNino = ErrorMessageFactory.error("You must enter a valid nino")
       if (Patterns.validNino(trimAllFunc(nino).toUpperCase())) Valid else invalidNino
     }
@@ -54,7 +54,7 @@ object KnownFactsForm {
 
   val mtdidInvalid: Constraint[String] = constraint[String](
     mtdid => {
-      import forms.prevalidation.trimAllFunc
+      import core.forms.prevalidation.trimAllFunc
       lazy val invalidMtdid = ErrorMessageFactory.error("You must enter a valid MTD-ID")
       val id = trimAllFunc(mtdid)
       id.length match {

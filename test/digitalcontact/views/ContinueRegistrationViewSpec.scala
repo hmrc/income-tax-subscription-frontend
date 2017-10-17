@@ -41,7 +41,7 @@ class ContinueRegistrationViewSpec extends ViewSpecTrait {
 
     form.mustHaveGoBackButton()
 
-    testPage.mustHaveALink(id = "sign-out", href = controllers.routes.SignOutController.signOut().url, text = messages.signOut)
+    testPage.mustHaveALink(id = "sign-out", href = core.controllers.routes.SignOutController.signOut().url, text = messages.signOut)
 
   }
 }

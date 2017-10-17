@@ -16,8 +16,8 @@
 
 package controllers.business
 
-import config.featureswitch
-import config.featureswitch.FeatureSwitching
+import core.config.featureswitch
+import core.config.featureswitch.FeatureSwitching
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
@@ -25,7 +25,7 @@ import helpers.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status._
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import services.CacheConstants._
+import core.services.CacheConstants._
 
 class BusinessStartDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

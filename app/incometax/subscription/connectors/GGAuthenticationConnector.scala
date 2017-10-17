@@ -18,9 +18,9 @@ package incometax.subscription.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import config.AppConfig
 import connectors.RawResponseReads
+import core.audit.Logging
+import core.config.AppConfig
 import incometax.subscription.connectors.GGAuthenticationConnector._
 import incometax.subscription.models.{RefreshProfileFailure, RefreshProfileSuccess}
 import play.api.http.Status._

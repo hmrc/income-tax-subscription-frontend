@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
+@import core.config.AppConfig
+@import core.views.html.helpers._
 @import models.DateModel
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import views.html.helpers._
 @import forms.IncomeSourceForm.option_both
 
 @(subscriptionId: String, submissionDate: DateModel, signOutAction: Call, journeyDuration: Int, incomeSource: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -25,7 +25,7 @@
 @scripts = {
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
 }
-@views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction), scriptElem = scripts) {
+@core.views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction), scriptElem = scripts) {
 
     <div class="form-group" data-metrics="itsa:journey duration:@incomeSource:@journeyDuration">
         <section id="confirmation-heading" class="transaction-banner--complete">

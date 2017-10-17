@@ -16,12 +16,12 @@
 
 package usermatching.forms
 
-import forms.prevalidation.PreprocessedForm
-import forms.submapping.DateMapping.dateMapping
-import forms.validation.Constraints._
-import forms.validation.ErrorMessageFactory
-import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils.MappingUtil._
+import core.forms.prevalidation.PreprocessedForm
+import core.forms.submapping.DateMapping.dateMapping
+import core.forms.validation.Constraints._
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.utils.ConstraintUtil._
+import core.forms.validation.utils.MappingUtil._
 import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms._
@@ -84,8 +84,8 @@ object UserDetailsForm {
     )(UserDetailsModel.apply)(UserDetailsModel.unapply)
   )
 
-  import forms.prevalidation.CaseOption._
-  import forms.prevalidation.TrimOption._
+  import core.forms.prevalidation.CaseOption._
+  import core.forms.prevalidation.TrimOption._
 
   val userDetailsForm = PreprocessedForm(
     validation = userDetailsValidationForm,

@@ -18,8 +18,8 @@ package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
-import common.Constants._
-import config.AppConfig
+import core.Constants._
+import core.config.AppConfig
 import digitalcontact.httpparsers.PaperlessPreferenceHttpParser._
 import helpers.IntegrationTestConstants._
 import play.api.http.Status
