@@ -20,23 +20,22 @@ import assets.MessageLookup
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 
-class ThankYouControllerSpec extends ControllerBaseSpec {
+class ExitSurveyThankYouControllerSpec extends ControllerBaseSpec {
 
-  override val controllerName: String = "ThankYouController"
+  override val controllerName: String = "ExitSurveyThankYouController"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestThankYouController extends ThankYouController()(
+  object TestExitSurveyThankYouController extends ExitSurveyThankYouController()(
     appConfig,
     messagesApi
   )
 
-  "TestThankYouController.show" should {
-    lazy val result = TestThankYouController.show()(subscriptionRequest)
+  "ExitSurveyThankYouController.show" should {
+    lazy val result = TestExitSurveyThankYouController.show()(subscriptionRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return ok (200)" in {

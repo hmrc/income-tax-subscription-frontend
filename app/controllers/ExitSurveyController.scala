@@ -55,7 +55,7 @@ class ExitSurveyController @Inject()(val app: Application,
       formWithErrors => Future.successful(BadRequest(view(exitSurveyForm = formWithErrors))),
       survey => {
         submitSurvey(survey)
-        Redirect(routes.ThankYouController.show())
+        Redirect(routes.ExitSurveyThankYouController.show())
       }
     )
   }
