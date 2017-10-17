@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package core.controllers
 
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub

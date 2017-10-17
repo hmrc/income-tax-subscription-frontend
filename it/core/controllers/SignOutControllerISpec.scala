@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package controllers
+package core.controllers
 
 import helpers.ComponentSpecBase
+import helpers.IntegrationTestConstants._
 import helpers.servicemocks.AuthStub
-import play.api.http.Status.OK
-import play.api.i18n.Messages
+import play.api.http.Status.SEE_OTHER
 
-class ThankyouControllerISpec extends ComponentSpecBase {
+class SignOutControllerISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/thankyou" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/logout" when {
 
     "keystore not applicable" should {
-      "show the thankyou page" in {
+      "show the logout page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        When("GET /thankyou is called")
-        val res = IncomeTaxSubscriptionFrontend.thankYou()
+        When("GET /logout is called")
+        val res = IncomeTaxSubscriptionFrontend.signOut()
 
-        Then("Should return a OK with the thankyou page")
+        Then("Should return a SEE_OTHER with a redirect location of gg sign in")
         res should have(
-          httpStatus(OK),
-          pageTitle(Messages("feedback.thankyou.title"))
+          httpStatus(SEE_OTHER),
+          redirectURI(ggSignOutURI)
         )
       }
     }
