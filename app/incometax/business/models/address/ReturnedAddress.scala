@@ -17,7 +17,6 @@
 package incometax.business.models.address
 
 import core.connectors.models.ConnectorError
-import models.address.Address
 import play.api.libs.json.Json
 
 case class ReturnedAddress(auditRef: String,

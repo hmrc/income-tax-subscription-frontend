@@ -17,16 +17,16 @@
 package core.utils
 
 
-import incometax.business.models.address.ReturnedAddress
 import core.services.CacheConstants
+import core.utils.TestConstants._
 import forms._
+import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import models._
-import models.address.{Address, Country}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import usermatching.models.{UserDetailsModel, UserMatchSuccessResponseModel}
-import core.utils.TestConstants._
 
 
 object TestModels extends Implicits {

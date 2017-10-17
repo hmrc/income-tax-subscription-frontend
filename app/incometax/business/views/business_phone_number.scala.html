@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
 
+@import incometax.business.models.BusinessPhoneNumberModel
 @(businessPhoneNumberForm: Form[BusinessPhoneNumberModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @core.views.html.templates.main_template(title = Messages("business.phone_number.title"), bodyClasses = None) {

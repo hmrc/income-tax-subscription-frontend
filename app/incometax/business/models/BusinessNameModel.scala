@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package models.address
+package incometax.business.models
 
 import play.api.libs.json.Json
 
+case class BusinessNameModel(businessName: String)
 
-case class Address(lines: Option[List[String]] = None,
-                   postcode: Option[String] = None,
-                   country: Option[Country] = None) {
-  def toDescription: String =
-    (lines.getOrElse(List.empty) :+ postcode.fold("")(identity) :+ country.fold("United Kingdom")(_.name)).mkString(", ") + "."
+object BusinessNameModel {
+  implicit val format = Json.format[BusinessNameModel]
 }
-
-object Address {
-  implicit val format = Json.format[Address]
-  val UKCountryCode = "GB"
-}
-

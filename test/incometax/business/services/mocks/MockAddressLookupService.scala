@@ -16,16 +16,15 @@
 
 package incometax.business.services.mocks
 
-import incometax.business.models.address._
-import models.address.Country
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, when}
-import play.api.http.Status.BAD_REQUEST
-import incometax.business.services.AddressLookupService
 import core.utils.MockTrait
 import core.utils.TestConstants.testException
 import core.utils.TestModels.testReturnedAddress
 import incometax.business.connectors.mocks.MockAddressLookupConnector
+import incometax.business.models.address.{Country, _}
+import incometax.business.services.AddressLookupService
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.{reset, when}
+import play.api.http.Status.BAD_REQUEST
 
 import scala.concurrent.Future
 

@@ -21,12 +21,13 @@ import core.services.mocks.MockKeystoreService
 import forms.BusinessNameForm
 import forms.OtherIncomeForm.{option_no, option_yes}
 import incometax.business.controllers
-import models.{BusinessNameModel, OtherIncomeModel}
+import models.OtherIncomeModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
 import core.utils.TestModels
+import incometax.business.models.BusinessNameModel
 
 import scala.concurrent.Future
 

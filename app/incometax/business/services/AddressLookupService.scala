@@ -18,8 +18,8 @@ package incometax.business.services
 
 import javax.inject.{Inject, Singleton}
 
-import incometax.business.connectors.address.AddressLookupConnector
-import incometax.business.connectors.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
+import incometax.business.connectors.AddressLookupConnector
+import incometax.business.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
 import incometax.business.models.address.AddressLookupInitRequest
 import uk.gov.hmrc.http.HeaderCarrier
 

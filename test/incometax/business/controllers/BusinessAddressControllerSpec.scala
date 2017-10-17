@@ -20,13 +20,13 @@ import controllers.ITSASessionKeys
 import core.auth.{MockConfig, Registration}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
+import core.utils.TestModels._
+import incometax.business.services.mocks.MockAddressLookupService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import incometax.business.services.mocks.MockAddressLookupService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
-import core.utils.TestModels._
 
 import scala.concurrent.Future
 

@@ -19,7 +19,7 @@ package incometax.business.connectors.mocks
 import core.utils.MockTrait
 import core.utils.TestConstants.testException
 import core.utils.TestModels.testReturnedAddress
-import incometax.business.connectors.address.AddressLookupConnector
+import incometax.business.connectors.AddressLookupConnector
 import incometax.business.models.address._
 import org.mockito.Mockito._
 import org.mockito._

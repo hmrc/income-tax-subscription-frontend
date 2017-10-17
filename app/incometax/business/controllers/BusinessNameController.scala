@@ -23,7 +23,8 @@ import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import forms.BusinessNameForm
 import incometax.business.controllers
-import models.{BusinessNameModel, OtherIncomeModel}
+import incometax.business.models.BusinessNameModel
+import models.OtherIncomeModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}

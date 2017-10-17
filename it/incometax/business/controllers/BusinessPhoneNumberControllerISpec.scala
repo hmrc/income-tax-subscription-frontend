@@ -24,6 +24,7 @@ import helpers.IntegrationTestConstants.{checkYourAnswersURI, signInURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
+import incometax.business.models.BusinessPhoneNumberModel
 import models._
 import play.api.http.Status._
 import play.api.i18n.Messages

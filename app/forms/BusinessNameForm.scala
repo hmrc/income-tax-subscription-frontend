@@ -21,7 +21,7 @@ import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil._
 import core.forms.validation.utils.MappingUtil._
 import core.forms.validation.utils.Patterns
-import models.BusinessNameModel
+import incometax.business.models.BusinessNameModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid}

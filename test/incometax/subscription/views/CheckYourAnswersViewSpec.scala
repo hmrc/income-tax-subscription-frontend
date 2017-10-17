@@ -19,7 +19,6 @@ package incometax.subscription.views
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
 import models._
-import models.address.Address
 import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
@@ -29,6 +28,8 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import core.utils.{TestModels, UnitTestTrait}
 import core.views.html.SummaryIdConstants._
+import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+import incometax.business.models.address.Address
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
 

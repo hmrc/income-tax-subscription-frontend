@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package incometax.business.models.address
 
 import play.api.libs.json.Json
 
+case class Country(code: String, name: String)
 
-case class BusinessPhoneNumberModel(phoneNumber: String)
-
-object BusinessPhoneNumberModel {
-  implicit val format = Json.format[BusinessPhoneNumberModel]
+object Country {
+  implicit val format = Json.format[Country]
 }
+

@@ -18,9 +18,11 @@
 @import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
+@import incometax.business.models.address.Address
 @import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
-
-@import models.address.Address
+@import incometax.business.models.BusinessNameModel
+@import incometax.business.models.BusinessPhoneNumberModel
+@import incometax.business.models.BusinessStartDateModel
 @(summaryModel: SummaryModel, isRegistration:Boolean, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @import core.views.html.SummaryIdConstants._
 @import core.views.html.SummaryHelper._

@@ -19,12 +19,12 @@ package forms
 import assets.MessageLookup
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils._
-import models.BusinessPhoneNumberModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.Messages.Implicits._
 import core.utils.TestConstants._
+import incometax.business.models.BusinessPhoneNumberModel
 
 class BusinessPhoneNumberFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 

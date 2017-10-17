@@ -21,12 +21,12 @@ import core.auth.{MockConfig, Registration}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import forms.BusinessPhoneNumberForm
-import models.BusinessPhoneNumberModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.NotFoundException
 import core.utils.TestConstants._
+import incometax.business.models.BusinessPhoneNumberModel
 
 class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {

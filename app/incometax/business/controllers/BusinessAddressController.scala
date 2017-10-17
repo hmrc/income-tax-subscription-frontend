@@ -18,15 +18,14 @@ package incometax.business.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import incometax.business.models.address._
 import core.auth.RegistrationController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import models.address.Address
+import incometax.business.models.address.{Address, _}
+import incometax.business.services.AddressLookupService
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import incometax.business.services.AddressLookupService
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
@@ -41,7 +40,7 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
 
 
   private[controllers] def callbackUrl(editMode: Boolean)(implicit request: Request[AnyContent]): String =
-    incometax.business.controllers.routes.BusinessAddressController.callBack(editMode,"").absoluteURL().replace("""\?*.+$""", "")
+    incometax.business.controllers.routes.BusinessAddressController.callBack(editMode, "").absoluteURL().replace("""\?*.+$""", "")
 
   private[controllers] def initConfig(editMode: Boolean)(implicit request: Request[AnyContent]): AddressLookupInitRequest =
     AddressLookupInitRequest(

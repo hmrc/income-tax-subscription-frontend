@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package incometax.business.connectors.httpparsers
+package incometax.business.httpparsers
 
-import incometax.business.connectors.httpparsers.AddressLookupResponseHttpParser._
-import incometax.business.models.address.{MalformatAddressReturned, UnexpectedStatusReturned, _}
-import models.address.{Address, Country}
+import core.utils.UnitTestTrait
+import incometax.business.httpparsers.AddressLookupResponseHttpParser._
+import incometax.business.models.address._
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsNull, Json}
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.http.HttpResponse
-import core.utils.UnitTestTrait
 
 class AddressLookupResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "POST"

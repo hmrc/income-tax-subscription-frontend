@@ -16,7 +16,8 @@
 
 package models
 
-import models.address.Address
+import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+import incometax.business.models.address.Address
 
 
 case class SummaryModel(incomeSource: Option[IncomeSourceModel] = None,

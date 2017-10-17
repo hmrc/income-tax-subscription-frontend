@@ -37,6 +37,7 @@ import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.play.test.UnitSpec
 import IntegrationTestConstants._
+import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
 import usermatching.forms.UserDetailsForm
 import usermatching.models.UserDetailsModel
 

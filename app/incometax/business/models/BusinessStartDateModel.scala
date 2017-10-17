@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package models
+package incometax.business.models
 
+import models.DateModel
 import play.api.libs.json.Json
 
 case class BusinessStartDateModel(startDate: DateModel)
