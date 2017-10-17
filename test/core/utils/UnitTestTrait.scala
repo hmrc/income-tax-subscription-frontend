@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package core.utils
 
 import core.auth.MockConfig
 import core.config.AppConfig

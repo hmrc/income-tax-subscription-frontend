@@ -24,7 +24,7 @@ import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.Messages.Implicits._
-import utils.TestConstants._
+import core.utils.TestConstants._
 
 class BusinessPhoneNumberFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 

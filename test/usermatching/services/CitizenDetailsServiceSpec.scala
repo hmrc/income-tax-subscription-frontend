@@ -21,8 +21,8 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status.BAD_REQUEST
 import usermatching.httpparsers.CitizenDetailsResponseHttpParser.GetCitizenDetailsResponse
 import usermatching.services.mocks.TestCitizenDetailsService
-import utils.TestConstants._
-import utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 
 import scala.concurrent.Future
 

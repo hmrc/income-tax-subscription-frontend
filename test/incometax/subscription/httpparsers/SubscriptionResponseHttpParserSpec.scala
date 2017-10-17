@@ -22,8 +22,8 @@ import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
-import utils.TestConstants._
-import utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 
 class SubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "POST"

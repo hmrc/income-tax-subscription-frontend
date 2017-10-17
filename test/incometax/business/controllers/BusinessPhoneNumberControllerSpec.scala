@@ -25,7 +25,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.NotFoundException
-import utils.TestConstants._
+import core.utils.TestConstants._
 
 class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {

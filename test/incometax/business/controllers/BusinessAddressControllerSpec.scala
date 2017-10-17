@@ -25,7 +25,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
 import services.mocks.MockAddressLookupService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
-import utils.TestModels._
+import core.utils.TestModels._
 
 import scala.concurrent.Future
 

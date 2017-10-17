@@ -22,8 +22,8 @@ import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.TestConstants._
-import utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 
 class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService with EitherValues {
 

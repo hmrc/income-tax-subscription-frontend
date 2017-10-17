@@ -18,7 +18,7 @@ package controllers
 
 import core.auth.MockConfig
 import core.config.{AppConfig, BaseControllerConfig}
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 
 trait ControllerBaseTrait extends UnitTestTrait {

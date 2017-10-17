@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package core.utils
 
 import play.api.libs.json._
 import uk.gov.hmrc.http.HttpResponse

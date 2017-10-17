@@ -19,8 +19,8 @@ package connectors.models.subscription
 import incometax.subscription.models.{Business, IncomeSourceType, SubscriptionRequest}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.test.UnitSpec
-import utils.JsonUtils._
-import utils.TestConstants
+import core.utils.JsonUtils._
+import core.utils.TestConstants
 
 class FERequestSpec extends UnitSpec {
 

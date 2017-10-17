@@ -22,7 +22,7 @@ import play.api.mvc.{Action, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, Configuration}
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class WhiteListFilterSpec extends UnitTestTrait {
 

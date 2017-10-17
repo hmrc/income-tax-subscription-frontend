@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import uk.gov.hmrc.http.{NotFoundException, SessionKeys}
 import usermatching.services.mocks.MockUserLockoutService
-import utils.TestConstants._
+import core.utils.TestConstants._
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   with MockUserLockoutService {

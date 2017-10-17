@@ -20,7 +20,7 @@ import core.forms.prevalidation.CaseOption.CaseOption
 import core.forms.prevalidation.TrimOption.TrimOption
 import play.api.data.Form
 import play.api.data.Forms._
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class PrevalidationTest extends UnitTestTrait {
 

@@ -27,7 +27,7 @@ import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import utils.{TestModels, UnitTestTrait}
+import core.utils.{TestModels, UnitTestTrait}
 import core.views.html.SummaryIdConstants._
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {

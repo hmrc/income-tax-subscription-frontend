@@ -22,7 +22,7 @@ import models.BusinessNameModel
 import org.scalatest.Matchers._
 import play.api.http.Status
 import uk.gov.hmrc.http.HttpResponse
-import utils.{TestModels, UnitTestTrait}
+import core.utils.{TestModels, UnitTestTrait}
 
 class KeystoreServiceSpec extends UnitTestTrait
   with MockKeystoreService {

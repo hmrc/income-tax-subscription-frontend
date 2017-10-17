@@ -23,9 +23,9 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import play.api.http.Status.BAD_REQUEST
 import services.AddressLookupService
-import utils.MockTrait
-import utils.TestConstants.testException
-import utils.TestModels.testReturnedAddress
+import core.utils.MockTrait
+import core.utils.TestConstants.testException
+import core.utils.TestModels.testReturnedAddress
 
 import scala.concurrent.Future
 

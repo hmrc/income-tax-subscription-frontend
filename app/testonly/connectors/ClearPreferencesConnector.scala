@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import connectors.RawResponseReads
 import play.api.http.Status._
 import testonly.TestOnlyAppConfig
-import utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

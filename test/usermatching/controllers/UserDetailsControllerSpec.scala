@@ -29,7 +29,7 @@ import uk.gov.hmrc.http.{HttpResponse, NotFoundException, SessionKeys}
 import usermatching.forms.UserDetailsForm
 import usermatching.models.UserDetailsModel
 import usermatching.services.mocks.MockUserLockoutService
-import utils.TestConstants._
+import core.utils.TestConstants._
 
 class UserDetailsControllerSpec extends ControllerBaseSpec
   with MockKeystoreService

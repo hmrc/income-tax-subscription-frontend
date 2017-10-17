@@ -19,7 +19,7 @@ package core.views.helpers
 import assets.MessageLookup
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits.applicationMessages
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class ContinueButtonHelperSpec extends UnitTestTrait {
 

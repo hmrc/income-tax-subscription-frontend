@@ -97,7 +97,7 @@ object Request {
   implicit val format = Json.format[Request]
 }
 
-import utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

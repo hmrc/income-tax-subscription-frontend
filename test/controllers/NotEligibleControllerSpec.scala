@@ -22,7 +22,7 @@ import models.NotEligibleModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import utils.TestModels
+import core.utils.TestModels
 
 class NotEligibleControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {

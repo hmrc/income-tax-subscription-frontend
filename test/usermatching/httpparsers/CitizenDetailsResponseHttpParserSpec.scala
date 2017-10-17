@@ -22,8 +22,8 @@ import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpResponse
 import usermatching.httpparsers.CitizenDetailsResponseHttpParser.GetCitizenDetailsHttpReads
-import utils.TestConstants._
-import utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 
 class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "GET"

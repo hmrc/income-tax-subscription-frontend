@@ -21,9 +21,9 @@ import connectors.models.address._
 import org.mockito.Mockito._
 import org.mockito._
 import play.api.http.Status.BAD_REQUEST
-import utils.MockTrait
-import utils.TestConstants.testException
-import utils.TestModels.testReturnedAddress
+import core.utils.MockTrait
+import core.utils.TestConstants.testException
+import core.utils.TestModels.testReturnedAddress
 
 import scala.concurrent.Future
 

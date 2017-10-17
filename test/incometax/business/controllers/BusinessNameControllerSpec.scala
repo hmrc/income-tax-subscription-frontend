@@ -26,7 +26,7 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
-import utils.TestModels
+import core.utils.TestModels
 
 import scala.concurrent.Future
 

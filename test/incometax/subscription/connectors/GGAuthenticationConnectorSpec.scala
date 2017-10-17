@@ -20,7 +20,7 @@ import incometax.subscription.connectors.mocks.TestGGAuthenticationConnector
 import incometax.subscription.models.{RefreshProfileFailure, RefreshProfileSuccess}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.TestConstants._
+import core.utils.TestConstants._
 
 import scala.concurrent.Future
 

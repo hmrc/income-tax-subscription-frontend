@@ -21,9 +21,9 @@ import incometax.subscription.services.mocks.TestSubscriptionService
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
-import utils.TestConstants._
-import utils.TestModels._
-import utils.{TestConstants, TestModels}
+import core.utils.TestConstants._
+import core.utils.TestModels._
+import core.utils.{TestConstants, TestModels}
 
 
 class SubscriptionServiceSpec extends TestSubscriptionService with EitherValues {

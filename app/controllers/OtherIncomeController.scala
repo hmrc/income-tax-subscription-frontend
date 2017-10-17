@@ -29,7 +29,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
-import utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.Future
 

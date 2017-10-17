@@ -21,7 +21,7 @@ import core.services.mocks.MockKeystoreService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import utils.TestModels
+import core.utils.TestModels
 
 import scala.concurrent.Future
 

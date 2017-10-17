@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package core.utils
 
 import java.time.OffsetDateTime
 import java.util.UUID

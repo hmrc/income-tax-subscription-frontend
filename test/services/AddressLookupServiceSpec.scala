@@ -21,7 +21,7 @@ import connectors.models.address.{AddressLookupInitFailureResponse, AddressLooku
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status.BAD_REQUEST
 import services.mocks.TestAddressLookupService
-import utils.TestModels._
+import core.utils.TestModels._
 
 import scala.concurrent.Future
 

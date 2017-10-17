@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.Future
 

@@ -18,7 +18,7 @@ package usermatching.models
 
 import models._
 import play.api.libs.json.Json
-import utils.Implicits.StringNinoUtil
+import core.utils.Implicits.StringNinoUtil
 
 
 case class UserDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel) {

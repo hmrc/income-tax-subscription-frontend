@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.mocks.MockCitizenDetailsService
-import utils.TestConstants
+import core.utils.TestConstants
 
 import scala.concurrent.Future
 

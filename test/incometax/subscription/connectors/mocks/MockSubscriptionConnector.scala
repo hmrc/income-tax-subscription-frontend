@@ -27,8 +27,8 @@ import org.mockito.Mockito._
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.MockTrait
-import utils.TestConstants._
+import core.utils.MockTrait
+import core.utils.TestConstants._
 
 import scala.concurrent.Future
 

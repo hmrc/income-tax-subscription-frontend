@@ -30,7 +30,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.CitizenDetailsService
-import utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.Future
 

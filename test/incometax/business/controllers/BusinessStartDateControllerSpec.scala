@@ -26,7 +26,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.NotFoundException
-import utils.TestModels.testBusinessStartDate
+import core.utils.TestModels.testBusinessStartDate
 
 import scala.concurrent.Future
 

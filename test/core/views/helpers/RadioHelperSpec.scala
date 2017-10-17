@@ -23,7 +23,7 @@ import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits._
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class RadioHelperSpec extends UnitTestTrait {
 

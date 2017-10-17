@@ -23,7 +23,7 @@ import models.OtherIncomeModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import utils.TestModels
+import core.utils.TestModels
 
 class OtherIncomeControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {

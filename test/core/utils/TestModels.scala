@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package core.utils
 
 
 import connectors.models.address.ReturnedAddress
@@ -26,7 +26,7 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import usermatching.models.{UserDetailsModel, UserMatchSuccessResponseModel}
-import utils.TestConstants._
+import core.utils.TestConstants._
 
 
 object TestModels extends Implicits {

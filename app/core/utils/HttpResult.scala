@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package core.utils
 
 import connectors.models.ConnectorError
 import play.api.libs.json.JsError

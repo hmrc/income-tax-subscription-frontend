@@ -21,7 +21,7 @@ import digitalcontact.models.PaperlessPreferenceTokenResult.{PaperlessPreference
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.MockTrait
+import core.utils.MockTrait
 
 import scala.concurrent.Future
 

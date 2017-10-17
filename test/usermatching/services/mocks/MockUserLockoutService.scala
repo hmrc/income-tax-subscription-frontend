@@ -25,8 +25,8 @@ import usermatching.connectors.mocks.MockUserLockoutConnector
 import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 import usermatching.services.UserLockoutService
-import utils.MockTrait
-import utils.TestConstants.{testException, testLockoutResponse}
+import core.utils.MockTrait
+import core.utils.TestConstants.{testException, testLockoutResponse}
 
 import scala.concurrent.Future
 

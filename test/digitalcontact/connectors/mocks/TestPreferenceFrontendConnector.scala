@@ -27,9 +27,9 @@ import play.api.http.Status._
 import play.api.i18n.MessagesApi
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Request}
-import utils.JsonUtils._
-import utils.TestConstants._
-import utils.{MockTrait, UnitTestTrait}
+import core.utils.JsonUtils._
+import core.utils.TestConstants._
+import core.utils.{MockTrait, UnitTestTrait}
 
 import scala.concurrent.Future
 

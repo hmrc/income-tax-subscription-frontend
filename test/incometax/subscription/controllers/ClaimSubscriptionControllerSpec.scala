@@ -24,7 +24,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
-import utils.TestConstants._
+import core.utils.TestConstants._
 
 class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeystoreService with MockSubscriptionOrchestrationService {
 

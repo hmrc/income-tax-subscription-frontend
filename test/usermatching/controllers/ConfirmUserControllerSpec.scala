@@ -26,8 +26,8 @@ import play.api.test.Helpers.{await, _}
 import services.mocks._
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException, NotFoundException, SessionKeys}
 import usermatching.services.mocks.{MockUserLockoutService, MockUserMatchingService}
-import utils.TestConstants._
-import utils.{TestConstants, TestModels}
+import core.utils.TestConstants._
+import core.utils.{TestConstants, TestModels}
 
 import scala.concurrent.Future
 

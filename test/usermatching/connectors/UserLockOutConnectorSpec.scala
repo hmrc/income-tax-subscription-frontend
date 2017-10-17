@@ -17,8 +17,8 @@
 package usermatching.connectors
 
 import usermatching.connectors.mocks.TestUserLockoutConnector
-import utils.TestConstants.testNino
-import utils.UnitTestTrait
+import core.utils.TestConstants.testNino
+import core.utils.UnitTestTrait
 
 class UserLockOutConnectorSpec extends UnitTestTrait with TestUserLockoutConnector{
 

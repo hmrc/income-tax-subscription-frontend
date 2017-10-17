@@ -23,8 +23,8 @@ import play.api.http.Status._
 import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.connectors.mocks.MockCitizenDetailsConnector
 import usermatching.services.CitizenDetailsService
-import utils.MockTrait
-import utils.TestConstants._
+import core.utils.MockTrait
+import core.utils.TestConstants._
 
 import scala.concurrent.Future
 

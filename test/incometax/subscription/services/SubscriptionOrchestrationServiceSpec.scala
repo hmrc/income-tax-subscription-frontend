@@ -20,9 +20,9 @@ import connectors.models.ConnectorError
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.mocks.TestSubscriptionOrchestrationService
 import org.scalatest.concurrent.ScalaFutures
-import utils.TestConstants._
-import utils.TestModels._
-import utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.TestModels._
+import core.utils.UnitTestTrait
 
 import scala.concurrent.Future
 

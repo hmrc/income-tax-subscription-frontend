@@ -22,7 +22,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.UserId
 import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 import usermatching.services.mocks.TestUserLockoutService
-import utils.TestConstants._
+import core.utils.TestConstants._
 
 class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 

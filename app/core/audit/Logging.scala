@@ -24,7 +24,7 @@ import play.api.{Application, Configuration, Logger}
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{Audit, DataEvent}
-import utils.HttpResult.HttpConnectorError
+import core.utils.HttpResult.HttpConnectorError
 import uk.gov.hmrc.http.HeaderCarrier
 
 case class LoggingConfig(heading: String)

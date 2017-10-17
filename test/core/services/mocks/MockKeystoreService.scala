@@ -24,7 +24,7 @@ import org.mockito.Mockito._
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import usermatching.models.UserDetailsModel
-import utils.MockTrait
+import core.utils.MockTrait
 
 import scala.concurrent.Future
 

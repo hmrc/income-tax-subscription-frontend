@@ -24,7 +24,7 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 import play.api.libs.json.JsString
 import core.services.CacheConstants._
-import utils.JsonUtils._
+import core.utils.JsonUtils._
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
   "GET /confirmation" should {

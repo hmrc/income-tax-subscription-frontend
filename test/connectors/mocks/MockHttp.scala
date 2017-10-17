@@ -20,8 +20,8 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.libs.json.{JsString, JsValue}
 import uk.gov.hmrc.http.{HttpGet, HttpPost, HttpPut, HttpResponse}
-import utils.MockTrait
-import utils.TestConstants._
+import core.utils.MockTrait
+import core.utils.TestConstants._
 
 import scala.concurrent.Future
 

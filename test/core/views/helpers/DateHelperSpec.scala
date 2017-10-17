@@ -23,7 +23,7 @@ import models.DateModel
 import org.scalatest.Matchers._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class DateHelperSpec extends UnitTestTrait {
 

@@ -26,8 +26,8 @@ import play.api.Configuration
 import play.api.http.Status
 import play.api.libs.json.JsNull
 import uk.gov.hmrc.http.{HeaderCarrier, HttpPost}
-import utils.MockTrait
-import utils.TestConstants._
+import core.utils.MockTrait
+import core.utils.TestConstants._
 
 import scala.concurrent.Future
 

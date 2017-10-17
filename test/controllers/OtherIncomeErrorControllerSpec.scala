@@ -24,7 +24,7 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
-import utils.TestModels
+import core.utils.TestModels
 
 class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystoreService {
 

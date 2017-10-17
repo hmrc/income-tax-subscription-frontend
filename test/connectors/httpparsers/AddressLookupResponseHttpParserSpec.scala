@@ -24,7 +24,7 @@ import play.api.http.Status._
 import play.api.libs.json.{JsNull, Json}
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.http.HttpResponse
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class AddressLookupResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "POST"

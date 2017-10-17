@@ -27,7 +27,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.Future
 

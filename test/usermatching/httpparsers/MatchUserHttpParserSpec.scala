@@ -22,9 +22,9 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 import usermatching.httpparsers.MatchUserHttpParser.MatchUserHttpReads
 import usermatching.models.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel, UserMatchUnexpectedError}
-import utils.TestConstants._
-import utils.TestModels._
-import utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.TestModels._
+import core.utils.UnitTestTrait
 
 class MatchUserHttpParserSpec extends UnitTestTrait with EitherValues {
   "MatchUserHttpReads" when {

@@ -25,8 +25,8 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
 import usermatching.connectors.CitizenDetailsConnector
-import utils.TestConstants.testException
-import utils.{MockTrait, UnitTestTrait}
+import core.utils.TestConstants.testException
+import core.utils.{MockTrait, UnitTestTrait}
 
 import scala.concurrent.Future
 

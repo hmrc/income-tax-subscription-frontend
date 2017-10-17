@@ -25,8 +25,8 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
-import utils.TestConstants._
-import utils.TestModels._
+import core.utils.TestConstants._
+import core.utils.TestModels._
 
 class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   with MockKeystoreService

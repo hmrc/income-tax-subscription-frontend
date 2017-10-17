@@ -24,7 +24,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import uk.gov.hmrc.http.{NotFoundException, SessionKeys}
-import utils.TestConstants.testUserId
+import core.utils.TestConstants.testUserId
 
 class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
 
