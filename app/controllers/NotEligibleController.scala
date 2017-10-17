@@ -73,7 +73,7 @@ class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,
       case Some(incomeSource) =>
         incomeSource.source match {
           case IncomeSourceForm.option_business | IncomeSourceForm.option_both =>
-            Redirect(controllers.business.routes.BusinessNameController.show())
+            Redirect(incometax.subscription.controllers.business.routes.BusinessNameController.show())
           case IncomeSourceForm.option_property =>
             Redirect(digitalcontact.controllers.routes.PreferencesController.checkPreferences())
         }

@@ -17,7 +17,6 @@
 package core.controllers
 
 import controllers.ControllerBaseSpec
-import core.controllers.SignOutController
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

@@ -139,7 +139,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         def callSubmit = TestOtherIncomeController.submitOtherIncome(isEditMode = editMode)(subscriptionRequest
           .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
 
-        s"there are no prior OtherIncome in the keystore then redirect to '${controllers.business.routes.BusinessNameController.show().url}' on the business journey" in {
+        s"there are no prior OtherIncome in the keystore then redirect to '${incometax.subscription.controllers.business.routes.BusinessNameController.show().url}' on the business journey" in {
 
           setupMockKeystore(
             fetchIncomeSource = TestModels.testIncomeSourceBusiness,
@@ -150,7 +150,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
           status(goodRequest) must be(Status.SEE_OTHER)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.show().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.business.routes.BusinessNameController.show().url)
 
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
@@ -173,7 +173,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
         }
 
-        s"there are no prior OtherIncome in the keystore then redirect to '${controllers.business.routes.BusinessNameController.show().url}' on the both journey" in {
+        s"there are no prior OtherIncome in the keystore then redirect to '${incometax.subscription.controllers.business.routes.BusinessNameController.show().url}' on the both journey" in {
 
           setupMockKeystore(
             fetchIncomeSource = TestModels.testIncomeSourceBoth,
@@ -184,7 +184,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
           status(goodRequest) must be(Status.SEE_OTHER)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.show().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.business.routes.BusinessNameController.show().url)
 
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
@@ -195,7 +195,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           else noneEditModeUrl
 
         s"the previous OtherIncome entry in keystore is the same as the new input then redirect to '${
-          expectedRedirectionForSameInput(controllers.business.routes.BusinessNameController.show().url)
+          expectedRedirectionForSameInput(incometax.subscription.controllers.business.routes.BusinessNameController.show().url)
         }' on the business journey" in {
 
           setupMockKeystore(
@@ -207,7 +207,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
           status(goodRequest) must be(Status.SEE_OTHER)
 
-          redirectLocation(goodRequest) mustBe Some(expectedRedirectionForSameInput(controllers.business.routes.BusinessNameController.show().url))
+          redirectLocation(goodRequest) mustBe Some(expectedRedirectionForSameInput(incometax.subscription.controllers.business.routes.BusinessNameController.show().url))
 
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = if (editMode) 0 else 1)
@@ -233,7 +233,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         }
 
         s"the previous OtherIncome entry in keystore is the same as the new input then redirect to '${
-          expectedRedirectionForSameInput(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
+          expectedRedirectionForSameInput(incometax.subscription.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
         }' on the both journey" in {
 
           setupMockKeystore(
@@ -245,13 +245,13 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
           status(goodRequest) must be(Status.SEE_OTHER)
 
-          redirectLocation(goodRequest) mustBe Some(expectedRedirectionForSameInput(controllers.business.routes.BusinessNameController.show().url))
+          redirectLocation(goodRequest) mustBe Some(expectedRedirectionForSameInput(incometax.subscription.controllers.business.routes.BusinessNameController.show().url))
 
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = if (editMode) 0 else 1)
         }
 
-        s"the previous OtherIncome entry in keystore is the different from the new input then redirect to '${controllers.business.routes.BusinessNameController.show().url}' on the business journey" in {
+        s"the previous OtherIncome entry in keystore is the different from the new input then redirect to '${incometax.subscription.controllers.business.routes.BusinessNameController.show().url}' on the business journey" in {
 
           setupMockKeystore(
             fetchIncomeSource = TestModels.testIncomeSourceBusiness,
@@ -262,7 +262,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
           status(goodRequest) must be(Status.SEE_OTHER)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.show().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.business.routes.BusinessNameController.show().url)
 
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
@@ -286,7 +286,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
         }
 
-        s"the previous OtherIncome entry in keystore is the different from the new input then redirect to '${controllers.business.routes.BusinessNameController.show().url}' on the both journey" in {
+        s"the previous OtherIncome entry in keystore is the different from the new input then redirect to '${incometax.subscription.controllers.business.routes.BusinessNameController.show().url}' on the both journey" in {
 
           setupMockKeystore(
             fetchIncomeSource = TestModels.testIncomeSourceBoth,
@@ -297,7 +297,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
           status(goodRequest) must be(Status.SEE_OTHER)
 
-          redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.show().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.business.routes.BusinessNameController.show().url)
 
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)

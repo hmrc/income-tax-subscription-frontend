@@ -148,7 +148,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         val expectedQuestion = messages.accounting_period
         val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
         val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
-        val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+        val expectedEditLink = incometax.subscription.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
@@ -163,7 +163,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         val expectedQuestion = messages.accounting_period_registration
         val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
         val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
-        val expectedEditLink = controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+        val expectedEditLink = incometax.subscription.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
@@ -207,7 +207,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = BusinessNameId
       val expectedQuestion = messages.business_name
       val expectedAnswer = testBusinessName.businessName
-      val expectedEditLink = controllers.business.routes.BusinessNameController.show(editMode = true).url
+      val expectedEditLink = incometax.subscription.controllers.business.routes.BusinessNameController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -221,7 +221,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = BusinessPhoneNumberId
       val expectedQuestion = messages.business_phone_number
       val expectedAnswer = testBusinessPhoneNumber.phoneNumber
-      val expectedEditLink = controllers.business.routes.BusinessPhoneNumberController.show(editMode = true).url
+      val expectedEditLink = incometax.subscription.controllers.business.routes.BusinessPhoneNumberController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -238,7 +238,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         .:+(testBusinessAddress.postcode.get)
         .:+(testBusinessAddress.country.map(_.name).get)
         .mkString(" ")
-      val expectedEditLink = controllers.business.routes.BusinessAddressController.show(editMode = true).url
+      val expectedEditLink = incometax.subscription.controllers.business.routes.BusinessAddressController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -252,7 +252,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = BusinessStartDateId
       val expectedQuestion = messages.business_start_date
       val expectedAnswer = testBusinessStartDate.startDate.toCheckYourAnswersDateFormat
-      val expectedEditLink = controllers.business.routes.BusinessStartDateController.show(editMode = true).url
+      val expectedEditLink = incometax.subscription.controllers.business.routes.BusinessStartDateController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -266,7 +266,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = AccountingMethodId
       val expectedQuestion = messages.income_type
       val expectedAnswer = messages.AccountingMethod.cash
-      val expectedEditLink = controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
+      val expectedEditLink = incometax.subscription.controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
