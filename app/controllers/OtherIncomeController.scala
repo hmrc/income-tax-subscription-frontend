@@ -64,11 +64,11 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
         keystoreService.fetchIncomeSource() map {
           case Some(incomeSource) => incomeSource.source match {
             case IncomeSourceForm.option_business =>
-              Redirect(incometax.subscription.controllers.business.routes.BusinessNameController.show())
+              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
             case IncomeSourceForm.option_property =>
               Redirect(incometax.subscription.controllers.routes.TermsController.showTerms())
             case IncomeSourceForm.option_both =>
-              Redirect(incometax.subscription.controllers.business.routes.BusinessNameController.show())
+              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
           }
           case _ =>
             logging.info("Tried to submit other income when no data found in Keystore for income source")

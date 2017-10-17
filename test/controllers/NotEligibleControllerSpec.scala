@@ -68,7 +68,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.business.routes.BusinessNameController.show().url
+      redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessNameController.show().url
 
       await(goodRequest)
       verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1)
@@ -93,7 +93,7 @@ class NotEligibleControllerSpec extends ControllerBaseSpec
       val goodRequest = callShow(NotEligibleForm.option_signup)
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.business.routes.BusinessNameController.show().url
+      redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessNameController.show().url
 
       await(goodRequest)
       verifyKeystore(fetchNotEligible = 0, saveNotEligible = 1)

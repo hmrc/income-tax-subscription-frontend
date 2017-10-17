@@ -67,7 +67,7 @@
     val rowName = BusinessNameId
     val rowQuestion = Messages("summary.business_name")
     val rowAnswer = name.businessName
-    val rowUrl = incometax.subscription.controllers.business.routes.BusinessNameController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessNameController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -75,7 +75,7 @@
     val rowName = BusinessPhoneNumberId
     val rowQuestion = Messages("summary.business_phone")
     val rowAnswer = phoneNumber.phoneNumber
-    val rowUrl = incometax.subscription.controllers.business.routes.BusinessPhoneNumberController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessPhoneNumberController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -85,7 +85,7 @@
     val rowAnswer = address.lines.fold("")(_.map(l => s"</p>$l</p>").mkString("")) +
             address.postcode.fold("")(l => s"</p>$l</p>") +
             address.country.fold("")(l => s"</p>${l.name}</p>")
-    val rowUrl = incometax.subscription.controllers.business.routes.BusinessAddressController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessAddressController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
@@ -93,7 +93,7 @@
     val rowName = BusinessStartDateId
     val rowQuestion = Messages("summary.business_start_date")
     val rowAnswer = startDate.startDate.toCheckYourAnswersDateFormat
-    val rowUrl = incometax.subscription.controllers.business.routes.BusinessStartDateController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessStartDateController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -104,7 +104,7 @@
         else Messages("summary.accounting_period")
     val periodInMonth = period.startDate.diffInMonth(period.endDate)
     val rowAnswer = s"${period.startDate.toCheckYourAnswersDateFormat} to ${period.endDate.toCheckYourAnswersDateFormat}"
-    val rowUrl = incometax.subscription.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
@@ -112,7 +112,7 @@
     val rowName = AccountingMethodId
     val rowQuestion = Messages("summary.income_type")
     val rowAnswer = accountingMethodText(income)
-    val rowUrl = incometax.subscription.controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessAccountingMethodController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

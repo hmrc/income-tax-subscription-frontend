@@ -61,9 +61,9 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
     keystoreService.fetchIncomeSource() flatMap {
       case Some(source) => source.source match {
         case IncomeSourceForm.option_business =>
-          incometax.subscription.controllers.business.routes.BusinessAccountingMethodController.show().url
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
         case IncomeSourceForm.option_both =>
-          incometax.subscription.controllers.business.routes.BusinessAccountingMethodController.show().url
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
         case IncomeSourceForm.option_property =>
           import forms.OtherIncomeForm._
           keystoreService.fetchOtherIncome() flatMap {

@@ -1,34 +1,34 @@
 #Accounting Period Routes
-GET         /accounting-period-dates                incometax.subscription.controllers.business.BusinessAccountingPeriodDateController.show(editMode: Boolean ?= false)
-POST        /accounting-period-dates                incometax.subscription.controllers.business.BusinessAccountingPeriodDateController.submit(editMode: Boolean ?= false)
+GET         /accounting-period-dates                incometax.business.controllers.BusinessAccountingPeriodDateController.show(editMode: Boolean ?= false)
+POST        /accounting-period-dates                incometax.business.controllers.BusinessAccountingPeriodDateController.submit(editMode: Boolean ?= false)
 
 #Name Routes
-GET         /name                                   incometax.subscription.controllers.business.BusinessNameController.show(editMode: Boolean ?= false)
-POST        /name                                   incometax.subscription.controllers.business.BusinessNameController.submit(editMode: Boolean ?= false)
+GET         /name                                   incometax.business.controllers.BusinessNameController.show(editMode: Boolean ?= false)
+POST        /name                                   incometax.business.controllers.BusinessNameController.submit(editMode: Boolean ?= false)
 
 #Phone Number Routes
-GET         /phone-number                           incometax.subscription.controllers.business.BusinessPhoneNumberController.show(editMode: Boolean ?= false)
-POST        /phone-number                           incometax.subscription.controllers.business.BusinessPhoneNumberController.submit(editMode: Boolean ?= false)
+GET         /phone-number                           incometax.business.controllers.BusinessPhoneNumberController.show(editMode: Boolean ?= false)
+POST        /phone-number                           incometax.business.controllers.BusinessPhoneNumberController.submit(editMode: Boolean ?= false)
 
 #Start Date Routes
-GET         /start-date                             incometax.subscription.controllers.business.BusinessStartDateController.show(editMode: Boolean ?= false)
-POST        /start-date                             incometax.subscription.controllers.business.BusinessStartDateController.submit(editMode: Boolean ?= false)
+GET         /start-date                             incometax.business.controllers.BusinessStartDateController.show(editMode: Boolean ?= false)
+POST        /start-date                             incometax.business.controllers.BusinessStartDateController.submit(editMode: Boolean ?= false)
 
 #Income Type Routes
-GET         /accounting-method                      incometax.subscription.controllers.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
-POST        /accounting-method                      incometax.subscription.controllers.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
+GET         /accounting-method                      incometax.business.controllers.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /accounting-method                      incometax.business.controllers.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
 
 #Current Financial Period Prior Routes
-GET         /accounting-period-prior                incometax.subscription.controllers.business.BusinessAccountingPeriodPriorController.show(editMode: Boolean ?= false)
-POST        /accounting-period-prior                incometax.subscription.controllers.business.BusinessAccountingPeriodPriorController.submit(editMode: Boolean ?= false)
+GET         /accounting-period-prior                incometax.business.controllers.BusinessAccountingPeriodPriorController.show(editMode: Boolean ?= false)
+POST        /accounting-period-prior                incometax.business.controllers.BusinessAccountingPeriodPriorController.submit(editMode: Boolean ?= false)
 
 #Register Next Accounting Period Routes
-GET         /register-next-accounting-period        incometax.subscription.controllers.business.RegisterNextAccountingPeriodController.show
-POST        /register-next-accounting-period        incometax.subscription.controllers.business.RegisterNextAccountingPeriodController.submit
+GET         /register-next-accounting-period        incometax.business.controllers.RegisterNextAccountingPeriodController.show
+POST        /register-next-accounting-period        incometax.business.controllers.RegisterNextAccountingPeriodController.submit
 
 
-GET         /address                                incometax.subscription.controllers.business.BusinessAddressController.show(editMode: Boolean ?= false)
-POST        /address                                incometax.subscription.controllers.business.BusinessAddressController.submit(editMode: Boolean ?= false)
-GET         /address/init                           incometax.subscription.controllers.business.BusinessAddressController.init(editMode: Boolean ?= false)
-GET         /address/callback                       incometax.subscription.controllers.business.BusinessAddressController.callBack(editMode: Boolean = false, id: String)
-GET         /address/callback/edit                  incometax.subscription.controllers.business.BusinessAddressController.callBack(editMode: Boolean = true, id: String)
+GET         /address                                incometax.business.controllers.BusinessAddressController.show(editMode: Boolean ?= false)
+POST        /address                                incometax.business.controllers.BusinessAddressController.submit(editMode: Boolean ?= false)
+GET         /address/init                           incometax.business.controllers.BusinessAddressController.init(editMode: Boolean ?= false)
+GET         /address/callback                       incometax.business.controllers.BusinessAddressController.callBack(editMode: Boolean = false, id: String)
+GET         /address/callback/edit                  incometax.business.controllers.BusinessAddressController.callBack(editMode: Boolean = true, id: String)
