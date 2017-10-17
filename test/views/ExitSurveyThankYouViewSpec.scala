@@ -21,13 +21,13 @@ import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.test.FakeRequest
 
 
-class ThankYouViewSpec extends ViewSpecTrait {
+class ExitSurveyThankYouViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.feedback_thank_you()(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = views.html.exit_survey_thank_you()(FakeRequest(), applicationMessages, appConfig)
 
-  "The Thank You Page view" should {
+  "The exit survey's Thank You Page view" should {
 
     val testPage = TestView(
       name = "Thank You Page",
