@@ -19,7 +19,7 @@ package usermatching.controllers
 import java.time.Duration
 
 import assets.MessageLookup.{UserDetailsLockout => messages}
-import auth.{MockConfig, UserMatching}
+import core.auth.{MockConfig, UserMatching}
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -116,8 +116,8 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
         status(result) must be(Status.SEE_OTHER)
       }
 
-      "Redirect to the 'User details' page" in {
-        redirectLocation(result).get mustBe controllers.routes.SignOutController.signOut().url
+      "Redirect to the 'sign out'" in {
+        redirectLocation(result).get mustBe core.controllers.routes.SignOutController.signOut().url
       }
 
     }

@@ -16,14 +16,14 @@
 
 package controllers
 
-import audit.Logging
+import core.audit.Logging
+import core.services.mocks.MockKeystoreService
 import forms.OtherIncomeForm
 import models.OtherIncomeModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
-import services.mocks.MockKeystoreService
 import utils.TestModels
 
 class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystoreService {

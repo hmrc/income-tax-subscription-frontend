@@ -38,7 +38,7 @@ class AffinityGroupErrorViewSpec extends ViewSpecTrait {
     val div = testPage.getById("affinity div", "signOut")
     val para = div.selectHead("affinity link", "p")
 
-    para.mustHaveALink("sign in using a different type of account.", controllers.routes.SignOutController.signOut().url)
+    para.mustHaveALink("sign in using a different type of account.", core.controllers.routes.SignOutController.signOut().url)
   }
 
 }

@@ -17,10 +17,10 @@
 package incometax.subscription.controllers
 
 import controllers.ControllerBaseSpec
+import core.services.mocks.MockKeystoreService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import services.mocks.MockKeystoreService
 import utils.TestModels
 
 import scala.concurrent.Future

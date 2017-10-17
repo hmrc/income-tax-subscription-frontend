@@ -20,14 +20,14 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.SignUpController
-import config.BaseControllerConfig
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import services.AuthService
+import uk.gov.hmrc.http.HttpPatch
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HttpPatch
 
 
 /**

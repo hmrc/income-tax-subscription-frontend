@@ -18,13 +18,13 @@ package helpers
 
 import java.util.UUID
 
-import config.AppConfig
+import core.config.AppConfig
 import controllers.ITSASessionKeys
 import forms._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import models._
-import auth.{JourneyState, Registration, SignUp, UserMatching}
+import core.auth.{JourneyState, Registration, SignUp, UserMatching}
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite

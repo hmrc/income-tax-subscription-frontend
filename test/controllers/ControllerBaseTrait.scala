@@ -16,8 +16,8 @@
 
 package controllers
 
-import auth.MockConfig
-import config.{AppConfig, BaseControllerConfig}
+import core.auth.MockConfig
+import core.config.{AppConfig, BaseControllerConfig}
 import utils.UnitTestTrait
 
 

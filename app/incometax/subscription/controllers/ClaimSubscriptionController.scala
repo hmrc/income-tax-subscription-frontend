@@ -18,16 +18,16 @@ package incometax.subscription.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.SignUpController
 import cats.data.EitherT
 import cats.implicits._
-import config.BaseControllerConfig
 import connectors.models.{ConnectorError, KeystoreMissingError}
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.CacheConstants.MtditId
+import core.services.{AuthService, KeystoreService}
 import incometax.subscription.services.SubscriptionOrchestrationService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
-import services.CacheConstants.MtditId
-import services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
@@ -57,5 +57,5 @@ class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig
   private def confirmationPage(id: String)(implicit request: Request[AnyContent]) = views.html.enrolled.already_enrolled(
     subscriptionId = id,
     routes.ConfirmationController.signOut()
-   )
+  )
 }

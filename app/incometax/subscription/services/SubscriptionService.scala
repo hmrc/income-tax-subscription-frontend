@@ -18,7 +18,7 @@ package incometax.subscription.services
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
+import core.audit.Logging
 import incometax.subscription.connectors.SubscriptionConnector
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse

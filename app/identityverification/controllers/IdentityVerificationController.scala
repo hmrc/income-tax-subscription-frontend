@@ -18,12 +18,12 @@ package identityverification.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import auth.StatelessController
-import config.BaseControllerConfig
+import core.audit.Logging
+import core.auth.StatelessController
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
-import services.AuthService
 
 import scala.concurrent.Future
 

@@ -16,6 +16,7 @@
 
 package controllers
 
+import core.services.CacheConstants
 import forms.{IncomeSourceForm, OtherIncomeForm}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -24,7 +25,6 @@ import helpers.servicemocks.{AuthStub, KeystoreStub}
 import models.{IncomeSourceModel, OtherIncomeModel}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import services.CacheConstants
 
 class OtherIncomeControllerISpec extends ComponentSpecBase {
 

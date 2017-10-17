@@ -28,7 +28,9 @@ import utils.TestConstants._
 import scala.concurrent.Future
 
 trait TestRefreshProfileService extends MockGGAuthenticationConnector {
+
   object TestRefreshProfileService extends RefreshProfileService(mockGGAuthenticationConnector)
+
 }
 
 trait MockRefreshProfileService extends MockTrait {

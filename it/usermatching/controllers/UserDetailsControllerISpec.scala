@@ -16,7 +16,8 @@
 
 package usermatching.controllers
 
-import config.featureswitch.{FeatureSwitching, UserMatchingFeature}
+import core.services.CacheConstants
+import core.config.featureswitch.{FeatureSwitching, UserMatchingFeature}
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, UserLockoutStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
@@ -24,7 +25,6 @@ import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
-import services.CacheConstants
 import usermatching.models.UserDetailsModel
 
 class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching {

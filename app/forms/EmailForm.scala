@@ -16,10 +16,10 @@
 
 package forms
 
-import forms.validation.ErrorMessageFactory
-import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils.MappingUtil._
-import forms.validation.utils.Patterns
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.utils.ConstraintUtil._
+import core.forms.validation.utils.MappingUtil._
+import core.forms.validation.utils.Patterns
 import models.EmailModel
 import play.api.data.Form
 import play.api.data.Forms._

@@ -21,7 +21,7 @@ import helpers.IntegrationTestConstants.testMTDID
 import helpers.servicemocks._
 import play.api.http.Status._
 import play.api.libs.json.Json.toJson
-import services.CacheConstants.MtditId
+import core.services.CacheConstants.MtditId
 
 
 class ClaimSubscriptionControllerISpec extends ComponentSpecBase {

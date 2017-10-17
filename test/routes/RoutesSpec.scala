@@ -25,7 +25,7 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Timeout routes
   "The URL for the timeout.timeout action" should {
     s"be equal to $contextRoute/session-timeout" in {
-      controllers.routes.SessionTimeoutController.timeout().url must be(s"$contextRoute/session-timeout")
+      core.controllers.routes.SessionTimeoutController.timeout().url must be(s"$contextRoute/session-timeout")
     }
   }
 

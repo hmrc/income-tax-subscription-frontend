@@ -17,7 +17,7 @@
 package usermatching.controllers
 
 import assets.MessageLookup.{UserDetailsError => messages}
-import auth.{MockConfig, UserMatching}
+import core.auth.{MockConfig, UserMatching}
 import controllers.{ControllerBaseSpec, ITSASessionKeys}
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -91,8 +91,8 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
         document.title mustBe messages.title
       }
 
-      s"the page must have a link to ${controllers.routes.SignOutController.signOut().url}" in {
-        document.select("#sign-out").attr("href") mustBe controllers.routes.SignOutController.signOut().url
+      s"the page must have a link to ${core.controllers.routes.SignOutController.signOut().url}" in {
+        document.select("#sign-out").attr("href") mustBe core.controllers.routes.SignOutController.signOut().url
       }
 
     }

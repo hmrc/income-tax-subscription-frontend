@@ -18,7 +18,7 @@ package incometax.subscription.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import config.AppConfig
+import core.config.AppConfig
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser._
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser._
 import incometax.subscription.models.SubscriptionRequest

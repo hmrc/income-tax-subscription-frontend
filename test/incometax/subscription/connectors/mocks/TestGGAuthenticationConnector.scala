@@ -16,8 +16,8 @@
 
 package incometax.subscription.connectors.mocks
 
-import audit.Logging
 import connectors.mocks.MockHttp
+import core.audit.Logging
 import incometax.subscription.connectors.GGAuthenticationConnector
 import incometax.subscription.models.{RefreshProfileFailure, RefreshProfileSuccess}
 import org.mockito.ArgumentMatchers

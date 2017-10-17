@@ -16,8 +16,8 @@
 
 package controllers
 
-import config.featureswitch
-import config.featureswitch.FeatureSwitching
+import core.config.featureswitch
+import core.config.featureswitch.FeatureSwitching
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import org.jsoup.Jsoup
 import play.api.http.Status

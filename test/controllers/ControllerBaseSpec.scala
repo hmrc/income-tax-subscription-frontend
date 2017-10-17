@@ -18,13 +18,13 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import auth.{Registration, SignUp, UserMatched, UserMatching}
+import core.auth.{Registration, SignUp, UserMatched, UserMatching}
+import core.services.mocks.MockAuthService
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.mocks.MockAuthService
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 import utils.TestConstants
 

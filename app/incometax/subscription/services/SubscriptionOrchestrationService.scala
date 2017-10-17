@@ -28,11 +28,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SubscriptionOrchestrationService @Inject() (subscriptionService: SubscriptionService,
-                                                  knownFactsService: KnownFactsService,
-                                                  enrolmentService: EnrolmentService,
-                                                  refreshProfileService: RefreshProfileService
-                                                 ) (implicit ec: ExecutionContext){
+class SubscriptionOrchestrationService @Inject()(subscriptionService: SubscriptionService,
+                                                 knownFactsService: KnownFactsService,
+                                                 enrolmentService: EnrolmentService,
+                                                 refreshProfileService: RefreshProfileService
+                                                )(implicit ec: ExecutionContext) {
 
   def createSubscription(nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
     val res = for {

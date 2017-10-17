@@ -46,7 +46,7 @@ class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
       messages.line_2
     )
 
-    testPage.mustHaveALink(id = "sign-out", href = controllers.routes.SignOutController.signOut().url, text = messages.signOut)
+    testPage.mustHaveALink(id = "sign-out", href = core.controllers.routes.SignOutController.signOut().url, text = messages.signOut)
 
     val form = testPage.getForm("Register Next Accounting Period form")(actionCall = action)
 

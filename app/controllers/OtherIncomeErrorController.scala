@@ -18,16 +18,16 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import auth.SignUpController
-import config.BaseControllerConfig
+import core.audit.Logging
+import core.auth.SignUpController
+import core.config.BaseControllerConfig
+import core.services.{AuthService, KeystoreService}
 import forms.IncomeSourceForm
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import services.{AuthService, KeystoreService}
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.InternalServerException
 
 @Singleton
 class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
@@ -35,7 +35,7 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                            val keystoreService: KeystoreService,
                                            val logging: Logging,
                                            val authService: AuthService
-) extends SignUpController {
+                                          ) extends SignUpController {
 
   val showOtherIncomeError = Action.async { implicit request =>
     Future.successful(Ok(views.html.other_income_error(postAction = controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(), backUrl)))

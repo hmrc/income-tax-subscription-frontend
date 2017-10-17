@@ -41,7 +41,7 @@ class UserDetailsErrorViewSpec extends ViewSpecTrait {
 
     form.mustHaveSubmitButton(commonMessages.goBack)
 
-    testPage.mustHaveALink("sign-out", commonMessages.signOut, controllers.routes.SignOutController.signOut().url)
+    testPage.mustHaveALink("sign-out", commonMessages.signOut, core.controllers.routes.SignOutController.signOut().url)
 
   }
 }

@@ -19,7 +19,7 @@ package utils
 import java.time.OffsetDateTime
 import java.util.UUID
 
-import common.Constants.GovernmentGateway._
+import core.Constants.GovernmentGateway._
 import incometax.subscription.models._
 import models.DateModel
 import play.api.http.Status._
@@ -32,7 +32,8 @@ object TestConstants {
   * this nino is a constant, if you need a fresh one use TestModels.newNino
   */
   lazy val testNino: String = new Generator().nextNino.nino
-  lazy val testUtr: String = UUID.randomUUID().toString //Not an actual UTR
+  lazy val testUtr: String = UUID.randomUUID().toString
+  //Not an actual UTR
   lazy val testToken: String = s"${UUID.randomUUID()}"
   lazy val testMTDID = "XE0001234567890"
   lazy val startDate = DateModel("05", "04", "2017")

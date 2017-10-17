@@ -18,14 +18,14 @@ package testonly.controllers
 
 import javax.inject.Inject
 
-import auth.BaseFrontendController
-import config.BaseControllerConfig
-import config.featureswitch.FeatureSwitch._
-import config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import core.auth.BaseFrontendController
+import core.config.BaseControllerConfig
+import core.config.featureswitch.FeatureSwitch._
+import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import core.services.AuthService
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, Request}
 import play.twirl.api.Html
-import services.AuthService
 
 class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
                                         val baseConfig: BaseControllerConfig,

@@ -16,6 +16,7 @@
 
 package controllers.business
 
+import core.services.CacheConstants
 import forms.AccountingPeriodPriorForm
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -23,7 +24,6 @@ import helpers.servicemocks.{AuthStub, KeystoreStub}
 import models.AccountingPeriodPriorModel
 import play.api.http.Status._
 import play.api.i18n.Messages
-import services.CacheConstants
 
 class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
 

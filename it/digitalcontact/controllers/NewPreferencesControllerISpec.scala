@@ -16,15 +16,15 @@
 
 package digitalcontact.controllers
 
-import config.featureswitch.FeatureSwitching
-import config.{AppConfig, featureswitch}
+import core.config.featureswitch.FeatureSwitching
+import core.config.{AppConfig, featureswitch}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, PreferencesStub, PreferencesTokenStub}
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.libs.json.JsString
-import services.CacheConstants._
+import core.services.CacheConstants._
 
 class NewPreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching {
 

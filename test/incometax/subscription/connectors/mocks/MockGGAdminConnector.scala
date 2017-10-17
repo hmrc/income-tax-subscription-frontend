@@ -16,8 +16,8 @@
 
 package incometax.subscription.connectors.mocks
 
-import audit.Logging
 import connectors.mocks.MockHttp
+import core.audit.Logging
 import incometax.subscription.connectors.GGAdminConnector
 import incometax.subscription.models.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess}
 import org.mockito.ArgumentMatchers

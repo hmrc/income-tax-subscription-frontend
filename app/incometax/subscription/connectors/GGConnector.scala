@@ -19,15 +19,15 @@ package incometax.subscription.connectors
 import javax.inject.{Inject, Singleton}
 
 import _root_.utils.JsonUtils._
-import audit.Logging
-import config.AppConfig
 import connectors.RawResponseReads
+import core.audit.Logging
+import core.config.AppConfig
+import incometax.subscription.connectors.GGConnector._
 import incometax.subscription.models.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import play.api.http.Status.OK
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpResponse}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import GGConnector._
 
 import scala.concurrent.Future
 
