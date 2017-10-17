@@ -60,7 +60,7 @@
     }
 
     .banner-panel__line {
-        left: 0px;
+        left: 0%;
         font-size: 16px;
         font-weight: 400;
     }
@@ -69,8 +69,8 @@
         color: #fff;
         font-size: 16px;
         position: absolute;
-        right: 65px;
-        top: 10px;
+        right: 6%;
+        top: 15%;
     }
     .banner-panel__container {
         padding: 10px 2.78947em;
