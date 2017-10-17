@@ -17,6 +17,8 @@
 package core.forms.validation.testutils
 
 import forms.AccountingPeriodPriorForm
+
+import incometax.incomesource.forms.IncomeSourceForm
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil.constraint
 import play.api.data.validation.{Constraint, Invalid}
@@ -28,7 +30,7 @@ object DataMap {
   import forms.EmailForm._
   import forms.NotEligibleForm._
   import core.forms.submapping.DateMapping._
-  import forms.{AccountingMethodForm, IncomeSourceForm}
+  import forms.AccountingMethodForm
 
 
   type DataMap = Map[String, String]

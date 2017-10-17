@@ -19,13 +19,13 @@ package incometax.business.controllers
 import core.config.featureswitch
 import core.config.featureswitch.FeatureSwitching
 import core.services.CacheConstants
-import forms.IncomeSourceForm
 import helpers.IntegrationTestConstants.{checkYourAnswersURI, signInURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import incometax.business.models.BusinessPhoneNumberModel
-import models._
+import incometax.incomesource.forms.IncomeSourceForm
+import incometax.incomesource.models.IncomeSourceModel
 import play.api.http.Status._
 import play.api.i18n.Messages
 

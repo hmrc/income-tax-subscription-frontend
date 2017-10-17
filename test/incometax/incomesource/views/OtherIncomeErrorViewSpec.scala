@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package views
+package incometax.incomesource.views
 
 import assets.MessageLookup.{OtherIncomeError => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import views.ViewSpecTrait
 
 class OtherIncomeErrorViewSpec extends ViewSpecTrait {
 
@@ -26,7 +27,13 @@ class OtherIncomeErrorViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.other_income_error(postAction = action, backUrl = backUrl)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = incometax.incomesource.views.html.other_income_error(
+    postAction = action,
+    backUrl = backUrl)(
+    FakeRequest(),
+    applicationMessages,
+    appConfig
+  )
 
   "The Main Income Error view" should {
 

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.incomesource.controllers
 
 import core.audit.Logging
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
-import forms.OtherIncomeForm
-import models.OtherIncomeModel
+import core.utils.TestModels
+import incometax.incomesource.forms.OtherIncomeForm
+import incometax.incomesource.models.OtherIncomeModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
-import core.utils.TestModels
 
 class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystoreService {
 

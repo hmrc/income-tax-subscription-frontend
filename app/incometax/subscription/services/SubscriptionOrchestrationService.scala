@@ -21,8 +21,7 @@ import javax.inject.{Inject, Singleton}
 import cats.data.EitherT
 import cats.implicits._
 import core.connectors.models.ConnectorError
-import incometax.subscription.models.{RefreshProfileResult, SubscriptionSuccess}
-import models.SummaryModel
+import incometax.subscription.models.{RefreshProfileResult, SubscriptionSuccess, SummaryModel}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}

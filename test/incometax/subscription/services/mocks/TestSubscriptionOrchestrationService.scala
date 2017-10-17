@@ -18,8 +18,8 @@ package incometax.subscription.services.mocks
 
 import core.connectors.models.ConnectorError
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
+import incometax.subscription.models.SummaryModel
 import incometax.subscription.services.SubscriptionOrchestrationService
-import models.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier

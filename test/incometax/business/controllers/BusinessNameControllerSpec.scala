@@ -18,16 +18,15 @@ package incometax.business.controllers
 
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
+import core.utils.TestModels
 import forms.BusinessNameForm
-import forms.OtherIncomeForm.{option_no, option_yes}
-import incometax.business.controllers
-import models.OtherIncomeModel
+import incometax.business.models.BusinessNameModel
+import incometax.incomesource.forms.OtherIncomeForm._
+import incometax.incomesource.models.OtherIncomeModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
-import core.utils.TestModels
-import incometax.business.models.BusinessNameModel
 
 import scala.concurrent.Future
 
@@ -166,14 +165,14 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
       TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
     }
 
-    s"When the user previously answered yes to otherIncome, it should point to '${_root_.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
+    s"When the user previously answered yes to otherIncome, it should point to '${incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
       val document = Jsoup.parse(contentAsString(result(option_yes)))
-      document.select("#back").attr("href") mustBe _root_.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+      document.select("#back").attr("href") mustBe incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
     }
 
-    s"When the user previously answered no to otherIncome, it should point to '${_root_.controllers.routes.OtherIncomeController.showOtherIncome().url}'" in {
+    s"When the user previously answered no to otherIncome, it should point to '${incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url}'" in {
       val document = Jsoup.parse(contentAsString(result(option_no)))
-      document.select("#back").attr("href") mustBe _root_.controllers.routes.OtherIncomeController.showOtherIncome().url
+      document.select("#back").attr("href") mustBe incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
     }
   }
 

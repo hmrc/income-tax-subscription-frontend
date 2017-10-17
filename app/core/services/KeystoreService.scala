@@ -20,6 +20,7 @@ import javax.inject._
 
 import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
 import incometax.business.models.address.Address
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import models._
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}

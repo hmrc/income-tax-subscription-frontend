@@ -16,7 +16,9 @@
 
 package core.services
 
-import forms.IncomeSourceForm
+import incometax.incomesource.forms.IncomeSourceForm
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.subscription.models.SummaryModel
 import models._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap

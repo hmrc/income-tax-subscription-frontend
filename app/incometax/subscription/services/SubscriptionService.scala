@@ -22,8 +22,7 @@ import core.audit.Logging
 import incometax.subscription.connectors.SubscriptionConnector
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import incometax.subscription.models.{IncomeSourceType, SubscriptionRequest}
-import models.SummaryModel
+import incometax.subscription.models.{IncomeSourceType, SubscriptionRequest, SummaryModel}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

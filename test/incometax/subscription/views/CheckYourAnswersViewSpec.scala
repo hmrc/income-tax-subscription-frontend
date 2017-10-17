@@ -18,6 +18,8 @@ package incometax.subscription.views
 
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.subscription.models.SummaryModel
 import models._
 import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 import org.jsoup.nodes.{Document, Element}
@@ -180,7 +182,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = IncomeSourceId
       val expectedQuestion = messages.income_source
       val expectedAnswer = MessageLookup.Summary.IncomeSource.both
-      val expectedEditLink = controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
+      val expectedEditLink = incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -194,7 +196,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = OtherIncomeId
       val expectedQuestion = messages.other_income
       val expectedAnswer = MessageLookup.OtherIncome.no
-      val expectedEditLink = controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
+      val expectedEditLink = incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

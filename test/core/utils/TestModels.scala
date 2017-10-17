@@ -22,6 +22,9 @@ import core.utils.TestConstants._
 import forms._
 import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.subscription.models.SummaryModel
 import models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator

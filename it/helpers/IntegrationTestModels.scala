@@ -6,6 +6,8 @@ import forms._
 import helpers.IntegrationTestConstants._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator

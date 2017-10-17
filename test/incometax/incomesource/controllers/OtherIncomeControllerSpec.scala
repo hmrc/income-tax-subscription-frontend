@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.incomesource.controllers
 
 import core.audit.Logging
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
-import forms.OtherIncomeForm
-import models.OtherIncomeModel
+import core.utils.TestModels
+import incometax.incomesource.forms.OtherIncomeForm
+import incometax.incomesource.models.OtherIncomeModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import core.utils.TestModels
 
 class OtherIncomeControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -75,12 +75,12 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
         }
 
-        s"there are no prior OtherIncome in the keystore then redirect to '${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
+        s"there are no prior OtherIncome in the keystore then redirect to '${incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
           setupMockKeystore(fetchOtherIncome = None)
 
           val goodRequest = callSubmit
 
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url)
 
           await(goodRequest)
           verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
@@ -99,7 +99,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
         def expectedRedirectionForSameInput =
           if (editMode) incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
-          else controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+          else incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
 
         s"the previous OtherIncome entry in keystore is the same as the new input then redirect to '$expectedRedirectionForSameInput'" in {
           setupMockKeystore(fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_yes))
@@ -123,12 +123,12 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
         }
 
-        s"the previous OtherIncome entry in keystore is the different from the new input then redirect to '${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
+        s"the previous OtherIncome entry in keystore is the different from the new input then redirect to '${incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
           setupMockKeystore(fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no))
 
           val goodRequest = callSubmit
 
-          redirectLocation(goodRequest) mustBe Some(controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url)
 
           await(goodRequest)
           verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
@@ -328,8 +328,8 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
 
   "The back url not in edit mode" should {
-    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on other income page" in {
-      TestOtherIncomeController.backUrl(isEditMode = false) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+    s"point to ${incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url} on other income page" in {
+      TestOtherIncomeController.backUrl(isEditMode = false) mustBe incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url
     }
   }
 

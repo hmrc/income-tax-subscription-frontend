@@ -17,6 +17,7 @@
 package core.services.mocks
 
 import core.services.KeystoreService
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
