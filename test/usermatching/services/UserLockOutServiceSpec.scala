@@ -32,21 +32,6 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
     "return the not locked out status" in {
       def stripUserId(userId: UserId): String = userId.value.replace("/auth/oid/", "")
-println
-println
-println
-println
-println
-      println(testUserId)
-      println(strippedUserId)
-      println(testUserId.value)
-      println(stripUserId(testUserId))
-      println
-      println
-      println
-      println
-      println
-
       setupMockLockCreated(strippedUserId)
       call.right.value shouldBe testLockoutResponse
     }
