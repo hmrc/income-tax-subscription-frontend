@@ -20,7 +20,8 @@ import javax.inject.{Inject, Singleton}
 
 import auth.SignUpController
 import config.BaseControllerConfig
-import forms.{IncomeSourceForm, NotEligibleForm}
+import forms.NotEligibleForm
+import incometax.incomesource.forms.IncomeSourceForm
 import models.NotEligibleModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -83,6 +84,7 @@ class NotEligibleController @Inject()(val baseConfig: BaseControllerConfig,
 
   def signOut(implicit request: Request[_]): Future[Result] = Future.successful(NotImplemented)
 
-  def backUrl(implicit request: Request[_]): Future[String] = Future.successful(controllers.routes.IncomeSourceController.showIncomeSource().url)
+  def backUrl(implicit request: Request[_]): Future[String] =
+    Future.successful(incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url)
 
 }

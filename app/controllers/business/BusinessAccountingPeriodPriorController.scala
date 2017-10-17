@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import auth.SignUpController
 import config.BaseControllerConfig
 import forms.AccountingPeriodPriorForm
-import models.{AccountingPeriodPriorModel, OtherIncomeModel}
+import models.AccountingPeriodPriorModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}

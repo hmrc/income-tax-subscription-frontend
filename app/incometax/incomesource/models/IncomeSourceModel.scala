@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models
+package incometax.incomesource.models
 
 import play.api.libs.json.Json
 

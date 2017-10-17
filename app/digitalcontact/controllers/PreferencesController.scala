@@ -52,10 +52,12 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
       for {
         token <- paperlessPreferenceTokenService.storeNino(user.nino.get)
         res <- if (baseConfig.applicationConfig.userMatchingFeature) {
-          Future.successful(Redirect(controllers.routes.IncomeSourceController.showIncomeSource()))
+          Future.successful(Redirect(
+            incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource()))
         } else {
           preferencesService.checkPaperless(token).map {
-            case Right(Activated) => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+            case Right(Activated) => Redirect(
+              incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource())
             case Right(Unset(Some(url))) => Redirect(url)
             //TODO Remove after feature switch is removed as redirect url will become non-optional
             case Right(Unset(None)) => Redirect(preferencesService.defaultChoosePaperlessUrl)
@@ -70,7 +72,8 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
       paperlessPreferenceTokenService.storeNino(user.nino.get) flatMap {
         token =>
           preferencesService.checkPaperless(token).map {
-            case Right(Activated) => Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+            case Right(Activated) => Redirect(
+              incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource())
             case Right(_) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
             case _ => throw new InternalServerException("Could not get paperless preferences")
           }
@@ -79,13 +82,15 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   def showGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      if (baseConfig.applicationConfig.userMatchingFeature) Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+      if (baseConfig.applicationConfig.userMatchingFeature) Redirect(
+        incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource())
       else Ok(view())
   }
 
   def submitGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      if (baseConfig.applicationConfig.userMatchingFeature) Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+      if (baseConfig.applicationConfig.userMatchingFeature) Redirect(
+        incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource())
       else gotoPreferences
   }
 

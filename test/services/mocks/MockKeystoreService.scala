@@ -16,6 +16,7 @@
 
 package services.mocks
 
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import models._
 import models.address.Address
 import org.mockito.ArgumentMatchers

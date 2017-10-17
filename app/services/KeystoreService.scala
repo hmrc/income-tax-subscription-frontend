@@ -19,6 +19,7 @@ package services
 
 import javax.inject._
 
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import models._
 import models.address.Address
 import play.api.libs.json.{Reads, Writes}

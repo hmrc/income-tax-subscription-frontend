@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package models
+package incometax.subscription.models
 
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import models.address.Address
-
+import models.{AccountingMethodModel, _}
 
 case class SummaryModel(incomeSource: Option[IncomeSourceModel] = None,
                         otherIncome: Option[OtherIncomeModel] = None,

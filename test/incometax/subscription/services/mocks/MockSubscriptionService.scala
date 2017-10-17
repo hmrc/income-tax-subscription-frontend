@@ -20,9 +20,8 @@ import audit.Logging
 import incometax.subscription.connectors.mocks.MockSubscriptionConnector
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import incometax.subscription.models.{SubscriptionFailureResponse, SubscriptionSuccess}
+import incometax.subscription.models.{SubscriptionFailureResponse, SubscriptionSuccess, SummaryModel}
 import incometax.subscription.services.SubscriptionService
-import models.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._

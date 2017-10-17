@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package incometax.incomesource.forms
 
 import assets.MessageLookup
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.{DataMap, _}
-import models.OtherIncomeModel
+import incometax.incomesource.models.OtherIncomeModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._

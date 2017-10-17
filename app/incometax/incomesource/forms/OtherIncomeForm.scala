@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package incometax.incomesource.forms
 
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
-import models.OtherIncomeModel
+import incometax.incomesource.models.OtherIncomeModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Valid}

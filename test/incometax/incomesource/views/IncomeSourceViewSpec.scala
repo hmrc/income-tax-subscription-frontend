@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package views
+package incometax.incomesource.views
 
 import assets.MessageLookup.{IncomeSource => messages}
-import forms.IncomeSourceForm
+import incometax.incomesource.forms.IncomeSourceForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import views.ViewSpecTrait
 
 class IncomeSourceViewSpec extends ViewSpecTrait {
 
@@ -27,7 +28,7 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = views.html.income_source(
+  def page(isEditMode: Boolean) = incometax.incomesource.views.html.income_source(
     incomeSourceForm = IncomeSourceForm.incomeSourceForm,
     postAction = action,
     backUrl = backUrl,

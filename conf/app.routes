@@ -18,8 +18,8 @@ GET         /paperless-error              digitalcontact.controllers.Preferences
 POST        /paperless-error              digitalcontact.controllers.PreferencesController.submitGoBackToPreferences
 
 # Income Source Routes
-GET         /income                       controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
-POST        /income                       controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
+GET         /income                       incometax.incomesource.controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
+POST        /income                       incometax.incomesource.controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
 
 # Summary Routes
 GET         /check-your-answers           incometax.subscription.controllers.CheckYourAnswersController.show
@@ -46,8 +46,8 @@ GET         /not-eligible                 controllers.NotEligibleController.show
 POST        /not-eligible                 controllers.NotEligibleController.submitNotEligible
 
 # Other Income Sources Routes
-GET         /income-other                 controllers.OtherIncomeController.showOtherIncome(editMode: Boolean ?= false)
-POST        /income-other                 controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
+GET         /income-other                 incometax.incomesource.controllers.OtherIncomeController.showOtherIncome(editMode: Boolean ?= false)
+POST        /income-other                 incometax.incomesource.controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
 
 # Already enrolled
 GET         /already-enrolled             controllers.AlreadyEnrolledController.enrolled
@@ -57,8 +57,8 @@ GET         /register-for-SA              controllers.NoSAController.show
 POST        /register-for-SA              controllers.NoSAController.submit
 
 # Other Income Error Routes
-GET         /error/other-income           controllers.OtherIncomeErrorController.showOtherIncomeError
-POST        /error/other-income           controllers.OtherIncomeErrorController.submitOtherIncomeError
+GET         /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.showOtherIncomeError
+POST        /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.submitOtherIncomeError
 
 # Affinity Group Error
 GET         /error/affinity-group         controllers.AffinityGroupErrorController.show

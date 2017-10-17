@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.incomesource.controllers
 
 import javax.inject.{Inject, Singleton}
 
 import audit.Logging
 import auth.SignUpController
 import config.BaseControllerConfig
-import forms.{IncomeSourceForm, OtherIncomeForm}
-import models.OtherIncomeModel
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.models.OtherIncomeModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -42,9 +42,9 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                      ) extends SignUpController {
 
   def view(otherIncomeForm: Form[OtherIncomeModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
-    views.html.other_income(
+    incometax.incomesource.views.html.other_income(
       otherIncomeForm = otherIncomeForm,
-      postAction = controllers.routes.OtherIncomeController.submitOtherIncome(editMode = isEditMode),
+      postAction = incometax.incomesource.controllers.routes.OtherIncomeController.submitOtherIncome(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl
     )
@@ -59,7 +59,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
   def defaultRedirections(otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
     otherIncomeModel.choice match {
       case OtherIncomeForm.option_yes =>
-        Redirect(controllers.routes.OtherIncomeErrorController.showOtherIncomeError())
+        Redirect(incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError())
       case OtherIncomeForm.option_no =>
         keystoreService.fetchIncomeSource() map {
           case Some(incomeSource) => incomeSource.source match {
@@ -86,7 +86,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
             previousOtherIncome =>
               keystoreService.saveOtherIncome(choice).flatMap { _ =>
                 // if it's in update mode and the previous answer is the same as current then return to check your answers page
-                if (isEditMode && previousOtherIncome.fold(false)(old => old.equals(choice)))
+                if (isEditMode && previousOtherIncome.contains(choice))
                   Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
                 else defaultRedirections(choice)
               }
@@ -98,6 +98,6 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
     if (isEditMode)
       incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     else
-      controllers.routes.IncomeSourceController.showIncomeSource().url
+      incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url
 
 }

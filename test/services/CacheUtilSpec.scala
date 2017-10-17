@@ -16,6 +16,7 @@
 
 package services
 
+import incometax.subscription.models.SummaryModel
 import models._
 import org.scalatest.Matchers._
 import utils.UnitTestTrait
