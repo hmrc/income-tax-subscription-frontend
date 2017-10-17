@@ -17,6 +17,7 @@
 package controllers
 
 import assets.MessageLookup
+import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

@@ -12,7 +12,7 @@ This is a Scala/Play frontend web UI that provides screens for an existing SA In
   
 ...on a quarterly bases and move away from the yearly Self-Assessment Tax Return.
 
-### Running the subscription services locally
+### Running the subscription incometax.business.services locally
 
 You will need [sbt](http://www.scala-sbt.org/)
 
@@ -55,7 +55,7 @@ You will need [sbt](http://www.scala-sbt.org/)
 
    `sbt "run 9560" -Dapplication.router=testOnlyDoNotUseInAppConf.Routes`
 
-7) **Start the stubbed services:**
+7) **Start the stubbed incometax.business.services:**
 
    `sm --start INCOME_TAX_SUBSCRIPTION_STUBS -f`
 

@@ -16,7 +16,6 @@
 
 package core.controllers
 
-import controllers.ControllerBaseSpec
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

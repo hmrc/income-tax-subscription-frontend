@@ -20,6 +20,7 @@ import assets.MessageLookup.FrontPage
 import core.audit.Logging
 import core.auth.{MockConfig, Registration, SignUp}
 import core.config.BaseControllerConfig
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import incometax.subscription.services.mocks.MockSubscriptionService
 import org.jsoup.Jsoup

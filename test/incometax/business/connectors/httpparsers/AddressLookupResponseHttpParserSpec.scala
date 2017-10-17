@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package connectors.httpparsers
+package incometax.business.connectors.httpparsers
 
-import connectors.httpparsers.AddressLookupResponseHttpParser._
-import connectors.models.address.{MalformatAddressReturned, UnexpectedStatusReturned, _}
+import incometax.business.connectors.httpparsers.AddressLookupResponseHttpParser._
+import incometax.business.models.address.{MalformatAddressReturned, UnexpectedStatusReturned, _}
 import models.address.{Address, Country}
 import org.scalatest.EitherValues
 import play.api.http.Status._

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package connectors.httpparsers
+package incometax.business.connectors.httpparsers
 
-import connectors.models.address._
+import incometax.business.models.address._
 import play.api.http.HeaderNames
 import play.api.http.Status.{ACCEPTED, OK}
 import play.api.libs.json.Json

@@ -18,7 +18,7 @@ package digitalcontact.connectors.mocks
 
 import core.audit.Logging
 import core.config.AppConfig
-import connectors.mocks.MockHttp
+import core.connectors.mocks.MockHttp
 import digitalcontact.connectors.PreferenceFrontendConnector
 import digitalcontact.models.{Activated, PaperlessPreferenceError, PaperlessState, Unset}
 import org.mockito.ArgumentMatchers

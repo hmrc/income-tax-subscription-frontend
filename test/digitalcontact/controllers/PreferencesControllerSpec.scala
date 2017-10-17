@@ -18,7 +18,7 @@ package digitalcontact.controllers
 
 import core.auth.MockConfig
 import core.config.AppConfig
-import controllers.ControllerBaseSpec
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import digitalcontact.services.mocks.{MockPaperlessPreferenceTokenService, MockPreferencesService}
 import org.jsoup.Jsoup

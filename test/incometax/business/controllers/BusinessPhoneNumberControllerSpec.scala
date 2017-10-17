@@ -16,8 +16,9 @@
 
 package incometax.business.controllers
 
-import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import controllers.ITSASessionKeys
 import core.auth.{MockConfig, Registration}
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import forms.BusinessPhoneNumberForm
 import models.BusinessPhoneNumberModel

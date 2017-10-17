@@ -7,7 +7,7 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import IntegrationTestConstants._
 import core.services.CacheConstants
-import connectors.models.address.ReturnedAddress
+import incometax.business.models.address.ReturnedAddress
 import models.address.{Address, Country}
 import usermatching.models.UserDetailsModel
 

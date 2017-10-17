@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package connectors.address
+package incometax.business.connectors.address
 
 import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
 import core.config.AppConfig
-import connectors.httpparsers.AddressLookupResponseHttpParser._
-import connectors.models.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, MalformatAddressReturned, UnexpectedStatusReturned}
+import incometax.business.connectors.httpparsers.AddressLookupResponseHttpParser._
+import incometax.business.models.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, MalformatAddressReturned, UnexpectedStatusReturned}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 

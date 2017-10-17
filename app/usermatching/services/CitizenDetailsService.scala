@@ -31,7 +31,7 @@ class CitizenDetailsService @Inject()(appConfig: AppConfig,
 
   /* N.B. this is header update is to be used in conjunction with the test only route
 *  MatchingStubController
-*  the True-Client-IP must match the testId in in testonly.connectors.Request sent
+*  the True-Client-IP must match the testId in in testonly.core.connectors.Request sent
 *  The hc must not be edited in production
 */
   def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =

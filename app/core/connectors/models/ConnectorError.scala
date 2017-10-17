@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 
-//$COVERAGE-OFF$Disabling scoverage on this test only trait as it is only required by our acceptance test
+package core.connectors.models
 
-package connectors
-
-import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
-
-trait RawResponseReads {
-
-  implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
-    override def read(method: String, url: String, response: HttpResponse) = response
-  }
-
-}
-
-// $COVERAGE-ON$
+trait ConnectorError

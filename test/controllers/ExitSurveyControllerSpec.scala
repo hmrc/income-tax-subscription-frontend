@@ -18,6 +18,7 @@ package controllers
 
 import assets.MessageLookup
 import core.audit.Logging
+import core.controllers.ControllerBaseSpec
 import forms.ExitSurveyForm
 import models.ExitSurveyModel
 import org.jsoup.Jsoup

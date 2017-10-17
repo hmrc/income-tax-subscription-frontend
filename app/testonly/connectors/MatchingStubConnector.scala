@@ -23,7 +23,7 @@ import java.time.format.{DateTimeFormatter, ResolverStyle}
 import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
-import connectors.RawResponseReads
+import core.connectors.RawResponseReads
 import models.DateModel
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}

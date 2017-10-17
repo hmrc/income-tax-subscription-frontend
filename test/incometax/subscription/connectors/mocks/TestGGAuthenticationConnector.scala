@@ -16,7 +16,7 @@
 
 package incometax.subscription.connectors.mocks
 
-import connectors.mocks.MockHttp
+import core.connectors.mocks.MockHttp
 import core.audit.Logging
 import incometax.subscription.connectors.GGAuthenticationConnector
 import incometax.subscription.models.{RefreshProfileFailure, RefreshProfileSuccess}

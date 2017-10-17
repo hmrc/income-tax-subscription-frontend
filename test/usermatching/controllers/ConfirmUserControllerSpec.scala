@@ -17,13 +17,14 @@
 package usermatching.controllers
 
 import core.auth.{MockConfig, UserMatched, UserMatching}
-import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import controllers.ITSASessionKeys
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import org.scalatest.OptionValues
 import play.api.http.Status
 import play.api.mvc._
 import play.api.test.Helpers.{await, _}
-import services.mocks._
+import incometax.business.services.mocks._
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException, NotFoundException, SessionKeys}
 import usermatching.services.mocks.{MockUserLockoutService, MockUserMatchingService}
 import core.utils.TestConstants._

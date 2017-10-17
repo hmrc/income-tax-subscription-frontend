@@ -16,7 +16,6 @@
 
 package core.controllers
 
-import controllers.ControllerBaseSpec
 import core.config.FrontendAppConfig
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

@@ -23,7 +23,7 @@ import core.audit.Logging
 import core.Constants._
 import core.config.AppConfig
 import core.config.ITSAHeaderCarrierForPartialsConverter._
-import connectors.RawResponseReads
+import core.connectors.RawResponseReads
 import digitalcontact.models.{PaperlessPreferenceError, PaperlessState}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}

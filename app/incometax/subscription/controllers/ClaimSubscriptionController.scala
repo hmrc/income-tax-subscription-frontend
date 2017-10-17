@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import cats.data.EitherT
 import cats.implicits._
-import connectors.models.{ConnectorError, KeystoreMissingError}
+import core.connectors.models.{ConnectorError, KeystoreMissingError}
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.CacheConstants.MtditId

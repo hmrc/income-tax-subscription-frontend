@@ -17,7 +17,7 @@
 package usermatching.connectors.mocks
 
 import core.audit.Logging
-import connectors.mocks.MockHttp
+import core.connectors.mocks.MockHttp
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package services
+package incometax.business.services
 
-import connectors.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
-import connectors.models.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, UnexpectedStatusReturned}
+import incometax.business.connectors.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
+import incometax.business.models.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, UnexpectedStatusReturned}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status.BAD_REQUEST
-import services.mocks.TestAddressLookupService
+import incometax.business.services.mocks.TestAddressLookupService
 import core.utils.TestModels._
 
 import scala.concurrent.Future

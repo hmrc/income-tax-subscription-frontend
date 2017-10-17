@@ -18,8 +18,9 @@ package incometax.subscription.controllers
 
 import java.time.LocalDateTime
 
-import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import controllers.ITSASessionKeys
 import core.audit.Logging
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent, Result}

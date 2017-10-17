@@ -16,7 +16,7 @@
 
 package incometax.subscription.services
 
-import connectors.models.ConnectorError
+import core.connectors.models.ConnectorError
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.mocks.TestSubscriptionOrchestrationService
 import org.scalatest.concurrent.ScalaFutures
@@ -33,7 +33,7 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
       TestSubscriptionOrchestrationService.createSubscription(testNino, testSummaryData)
 
-    "return a success when all services succeed" in {
+    "return a success when all incometax.business.services succeed" in {
       mockCreateSubscriptionSuccess(testNino, testSummaryData)
       mockAddKnownFactsSuccess(testMTDID, testNino)
       mockEnrolSuccess(testMTDID, testNino)

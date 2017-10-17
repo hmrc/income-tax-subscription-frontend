@@ -17,7 +17,7 @@
 package core.utils
 
 
-import connectors.models.address.ReturnedAddress
+import incometax.business.models.address.ReturnedAddress
 import core.services.CacheConstants
 import forms._
 import models._

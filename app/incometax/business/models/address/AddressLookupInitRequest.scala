@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package connectors.models.address
+package incometax.business.models.address
 
-import connectors.models.ConnectorError
+import core.connectors.models.ConnectorError
 import play.api.libs.json.Json
 
 case class ConfirmPage(title: Option[String] = None,

@@ -16,7 +16,7 @@
 
 package incometax.subscription.services.mocks
 
-import connectors.models.ConnectorError
+import core.connectors.models.ConnectorError
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import incometax.subscription.services.SubscriptionOrchestrationService
 import models.SummaryModel

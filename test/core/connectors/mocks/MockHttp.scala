@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package connectors.mocks
+package core.connectors.mocks
 
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._

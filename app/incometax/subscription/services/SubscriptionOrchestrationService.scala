@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import cats.data.EitherT
 import cats.implicits._
-import connectors.models.ConnectorError
+import core.connectors.models.ConnectorError
 import incometax.subscription.models.{RefreshProfileResult, SubscriptionSuccess}
 import models.SummaryModel
 import uk.gov.hmrc.http.HeaderCarrier

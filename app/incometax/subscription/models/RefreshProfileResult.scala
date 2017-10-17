@@ -16,7 +16,7 @@
 
 package incometax.subscription.models
 
-import connectors.models.ConnectorError
+import core.connectors.models.ConnectorError
 
 sealed trait RefreshProfileResult
 

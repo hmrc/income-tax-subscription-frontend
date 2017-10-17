@@ -16,7 +16,7 @@
 
 package incometax.business.controllers
 
-import controllers.ControllerBaseSpec
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import forms.AccountingPeriodPriorForm
 import models.AccountingPeriodPriorModel

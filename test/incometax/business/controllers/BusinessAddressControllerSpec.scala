@@ -16,14 +16,15 @@
 
 package incometax.business.controllers
 
-import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import controllers.ITSASessionKeys
 import core.auth.{MockConfig, Registration}
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{status, _}
-import services.mocks.MockAddressLookupService
+import incometax.business.services.mocks.MockAddressLookupService
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import core.utils.TestModels._
 

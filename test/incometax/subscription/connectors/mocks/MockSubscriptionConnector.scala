@@ -16,7 +16,7 @@
 
 package incometax.subscription.connectors.mocks
 
-import connectors.mocks.MockHttp
+import core.connectors.mocks.MockHttp
 import core.config.AppConfig
 import incometax.subscription.connectors.SubscriptionConnector
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse

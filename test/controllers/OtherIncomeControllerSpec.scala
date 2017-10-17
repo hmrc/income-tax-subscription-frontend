@@ -17,6 +17,7 @@
 package controllers
 
 import core.audit.Logging
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import forms.OtherIncomeForm
 import models.OtherIncomeModel

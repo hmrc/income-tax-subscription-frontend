@@ -16,7 +16,7 @@
 
 package incometax.business.controllers
 
-import controllers.ControllerBaseSpec
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import org.jsoup.Jsoup
 import play.api.http.Status

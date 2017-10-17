@@ -17,7 +17,7 @@
 package incometax.subscription.controllers
 
 import assets.MessageLookup.{AlreadyEnrolled => messages}
-import controllers.ControllerBaseSpec
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
 import play.api.http.Status

@@ -17,8 +17,8 @@
 package incometax.business.controllers
 
 import assets.MessageLookup
-import controllers.ControllerBaseSpec
 import core.auth._
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import forms.AccountingPeriodDateForm
 import models.{AccountingPeriodModel, DateModel}

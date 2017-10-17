@@ -14,30 +14,33 @@
  * limitations under the License.
  */
 
-package connectors.mocks
+package incometax.business.services.mocks
 
-import connectors.address.AddressLookupConnector
-import connectors.models.address._
-import org.mockito.Mockito._
-import org.mockito._
+import incometax.business.models.address._
+import models.address.Country
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.{reset, when}
 import play.api.http.Status.BAD_REQUEST
+import incometax.business.services.AddressLookupService
 import core.utils.MockTrait
 import core.utils.TestConstants.testException
 import core.utils.TestModels.testReturnedAddress
+import incometax.business.connectors.mocks.MockAddressLookupConnector
 
 import scala.concurrent.Future
 
-trait MockAddressLookupConnector extends MockTrait {
 
-  val mockAddressLookupConnector = mock[AddressLookupConnector]
+trait MockAddressLookupService extends MockTrait {
+
+  val mockAddressLookupService = mock[AddressLookupService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockAddressLookupConnector)
+    reset(mockAddressLookupService)
   }
 
   private def mockInit(request: AddressLookupInitRequest)(response: Future[Either[AddressLookupInitFailureResponse, String]]) =
-    when(mockAddressLookupConnector.init(ArgumentMatchers.eq(request))(ArgumentMatchers.any())).thenReturn(response)
+    when(mockAddressLookupService.init(ArgumentMatchers.eq(request))(ArgumentMatchers.any())).thenReturn(response)
 
   def mockInitSuccess(request: AddressLookupInitRequest)(testRedirectionUrl: String) = mockInit(request)(Right(testRedirectionUrl))
 
@@ -45,14 +48,29 @@ trait MockAddressLookupConnector extends MockTrait {
 
   def mockInitException(request: AddressLookupInitRequest) = mockInit(request)(Future.failed(testException))
 
-
   private def mockRetrieveAddress(journeyId: String)(response: Future[Either[ReturnedAddressFailure, ReturnedAddress]]) =
-    when(mockAddressLookupConnector.retrieveAddress(ArgumentMatchers.eq(journeyId))(ArgumentMatchers.any())).thenReturn(response)
+    when(mockAddressLookupService.retrieveAddress(ArgumentMatchers.eq(journeyId))(ArgumentMatchers.any())).thenReturn(response)
 
   def mockRetrieveAddressSuccess(journeyId: String) = mockRetrieveAddress(journeyId)(Right(testReturnedAddress))
+
+  def mockRetrieveAddressNoneUK(journeyId: String) =
+    mockRetrieveAddress(journeyId)(
+      Right(testReturnedAddress.copy(address =
+        testReturnedAddress.address.copy(country = Some(Country("NOTUK", "NOTUK"))))
+      )
+    )
 
   def MockRetrieveAddressFailure(journeyId: String) = mockRetrieveAddress(journeyId)(Left(UnexpectedStatusReturned(BAD_REQUEST)))
 
   def MockRetrieveAddressException(journeyId: String) = mockRetrieveAddress(journeyId)(Future.failed(testException))
+
+}
+
+
+trait TestAddressLookupService extends MockAddressLookupConnector {
+
+  object TestAddressLookupService extends AddressLookupService(
+    mockAddressLookupConnector
+  )
 
 }

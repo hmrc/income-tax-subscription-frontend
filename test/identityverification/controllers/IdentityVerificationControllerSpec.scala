@@ -18,7 +18,7 @@ package identityverification.controllers
 
 import assets.MessageLookup
 import core.audit.Logging
-import controllers.ControllerBaseSpec
+import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

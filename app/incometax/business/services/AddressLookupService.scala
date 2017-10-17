@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package services
+package incometax.business.services
 
 import javax.inject.{Inject, Singleton}
 
-import connectors.address.AddressLookupConnector
-import connectors.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
-import connectors.models.address.AddressLookupInitRequest
+import incometax.business.connectors.address.AddressLookupConnector
+import incometax.business.connectors.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
+import incometax.business.models.address.AddressLookupInitRequest
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-package connectors.models
+package core.connectors.models
 
-trait ConnectorError
+case class KeystoreMissingError(key: String) extends ConnectorError

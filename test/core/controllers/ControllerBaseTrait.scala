@@ -14,6 +14,20 @@
  * limitations under the License.
  */
 
-package connectors.models
+package core.controllers
 
-case class KeystoreMissingError(key: String) extends ConnectorError
+import core.auth.MockConfig
+import core.config.{AppConfig, BaseControllerConfig}
+import core.utils.UnitTestTrait
+
+
+trait ControllerBaseTrait extends UnitTestTrait {
+
+  def mockBaseControllerConfig(appConfig: AppConfig): BaseControllerConfig = new BaseControllerConfig(
+    applicationConfig = appConfig) {
+    override lazy val postSignInRedirectUrl = appConfig.ggSignInContinueUrl
+  }
+
+  lazy val MockBaseControllerConfig = mockBaseControllerConfig(MockConfig)
+
+}

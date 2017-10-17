@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package connectors.models.subscription
+package incometax.subscription.models
 
 import incometax.subscription.models.{Business, IncomeSourceType, SubscriptionRequest}
 import play.api.libs.json.{JsValue, Json}

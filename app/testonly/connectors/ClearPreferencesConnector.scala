@@ -18,7 +18,7 @@ package testonly.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import connectors.RawResponseReads
+import core.connectors.RawResponseReads
 import play.api.http.Status._
 import testonly.TestOnlyAppConfig
 import core.utils.Implicits._

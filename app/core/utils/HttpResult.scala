@@ -16,7 +16,7 @@
 
 package core.utils
 
-import connectors.models.ConnectorError
+import core.connectors.models.ConnectorError
 import play.api.libs.json.JsError
 import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
 

@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package controllers
+package core.controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import controllers.ITSASessionKeys
 import core.auth.{Registration, SignUp, UserMatched, UserMatching}
 import core.services.mocks.MockAuthService
+import core.utils.TestConstants
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
-import core.utils.TestConstants
 
 trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
 

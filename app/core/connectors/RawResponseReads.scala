@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package controllers
+//$COVERAGE-OFF$Disabling scoverage on this test only trait as it is only required by our acceptance test
 
-import core.auth.MockConfig
-import core.config.{AppConfig, BaseControllerConfig}
-import core.utils.UnitTestTrait
+package core.connectors
 
+import uk.gov.hmrc.http.{ HttpReads, HttpResponse }
 
-trait ControllerBaseTrait extends UnitTestTrait {
+trait RawResponseReads {
 
-  def mockBaseControllerConfig(appConfig: AppConfig): BaseControllerConfig = new BaseControllerConfig(
-    applicationConfig = appConfig) {
-    override lazy val postSignInRedirectUrl = appConfig.ggSignInContinueUrl
+  implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
+    override def read(method: String, url: String, response: HttpResponse) = response
   }
 
-  lazy val MockBaseControllerConfig = mockBaseControllerConfig(MockConfig)
-
 }
+
+// $COVERAGE-ON$

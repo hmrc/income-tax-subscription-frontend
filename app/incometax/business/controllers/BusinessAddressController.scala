@@ -18,7 +18,7 @@ package incometax.business.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import connectors.models.address._
+import incometax.business.models.address._
 import core.auth.RegistrationController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
@@ -26,7 +26,7 @@ import models.address.Address
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.AddressLookupService
+import incometax.business.services.AddressLookupService
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future

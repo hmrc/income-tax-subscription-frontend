@@ -16,6 +16,7 @@
 
 package controllers
 
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import forms.NotEligibleForm
 import models.NotEligibleModel
