@@ -17,9 +17,9 @@
 package incometax.subscription.views
 
 import assets.MessageLookup.{ThankYou => messages}
+import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 
 class ExitSurveyThankYouViewSpec extends ViewSpecTrait {

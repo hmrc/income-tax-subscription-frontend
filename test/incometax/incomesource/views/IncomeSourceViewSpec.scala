@@ -17,10 +17,10 @@
 package incometax.incomesource.views
 
 import assets.MessageLookup.{IncomeSource => messages}
+import core.views.ViewSpecTrait
 import incometax.incomesource.forms.IncomeSourceForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 class IncomeSourceViewSpec extends ViewSpecTrait {
 

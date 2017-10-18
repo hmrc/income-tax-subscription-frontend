@@ -20,9 +20,9 @@ import javax.inject.{Inject, Singleton}
 
 import cats.data.EitherT
 import cats.implicits._
-import core.connectors.models.{ConnectorError, KeystoreMissingError}
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
+import core.connectors.models.{ConnectorError, KeystoreMissingError}
 import core.services.CacheConstants.MtditId
 import core.services.{AuthService, KeystoreService}
 import incometax.subscription.services.SubscriptionOrchestrationService
@@ -54,8 +54,9 @@ class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig
   private def getMtditId()(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] =
     keystoreService.fetchSubscriptionId() map (_.toRight(left = KeystoreMissingError(MtditId)))
 
-  private def confirmationPage(id: String)(implicit request: Request[AnyContent]) = views.html.enrolled.already_enrolled(
-    subscriptionId = id,
-    routes.ConfirmationController.signOut()
-  )
+  private def confirmationPage(id: String)(implicit request: Request[AnyContent]) =
+    incometax.subscription.views.html.enrolled.already_enrolled(
+      subscriptionId = id,
+      routes.ConfirmationController.signOut()
+    )
 }

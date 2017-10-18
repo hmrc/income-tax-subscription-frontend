@@ -17,11 +17,11 @@
 package incometax.business.views
 
 import assets.MessageLookup.{AccountingPeriod => messages, Base => common}
+import core.views.ViewSpecTrait
 import incometax.business.forms.AccountingPeriodDateForm
 import incometax.business.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView, RegistrationAccountingPeriodView}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 

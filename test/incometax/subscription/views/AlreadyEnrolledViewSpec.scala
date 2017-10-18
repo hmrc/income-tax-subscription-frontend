@@ -17,35 +17,29 @@
 package incometax.subscription.views
 
 import assets.MessageLookup
+import assets.MessageLookup.{AlreadyEnrolled => messages, Base => common}
 import core.models.DateModel
 import core.views.ViewSpecTrait
-import incometax.incomesource.forms.IncomeSourceForm
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
-class ConfirmationViewSpec extends ViewSpecTrait {
+class AlreadyEnrolledViewSpec extends ViewSpecTrait {
 
   val subscriptionIdValue = "000-032407"
   val submissionDateValue = DateModel("1", "1", "2016")
-  val duration: Int = 0
   val action = ViewSpecTrait.testCall
-  val incomeSource = "Not both"
 
-  def page(incomeSource: String) = incometax.subscription.views.html.confirmation(
+  lazy val page = incometax.subscription.views.html.enrolled.already_enrolled(
     subscriptionId = subscriptionIdValue,
-    submissionDate = submissionDateValue,
-    signOutAction = action,
-    journeyDuration = duration,
-    incomeSource = incomeSource
+    signOutAction = action
   )(FakeRequest(), applicationMessages, appConfig)
+  lazy val document = Jsoup.parse(page.body)
 
-  def document = Jsoup.parse(page(incomeSource).body)
-
-  "The Confirmation view for both income source" should {
+  "The Confirmation view" should {
 
     s"have the title '${MessageLookup.Confirmation.title}'" in {
-      document.title() must be(MessageLookup.Confirmation.title)
+      document.title() must be(MessageLookup.AlreadyEnrolled.title)
     }
 
     "have a successful transaction confirmation banner" which {
@@ -59,7 +53,7 @@ class ConfirmationViewSpec extends ViewSpecTrait {
         lazy val heading = document.select("H1")
 
         s"has the text '${MessageLookup.Confirmation.heading}'" in {
-          heading.text() mustBe MessageLookup.Confirmation.heading
+          heading.text() mustBe MessageLookup.AlreadyEnrolled.heading
         }
 
         "has the class 'transaction-banner__heading'" in {
@@ -107,7 +101,6 @@ class ConfirmationViewSpec extends ViewSpecTrait {
       s"does not have a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para4}'" in {
         document.select("#whatHappensNext p").text() must not include MessageLookup.Confirmation.whatHappensNext.para4
       }
-
     }
 
     "have a sign out button" in {
@@ -125,11 +118,5 @@ class ConfirmationViewSpec extends ViewSpecTrait {
       bannerSignout.attr("href") mustBe action.url
     }
 
-  }
-
-  "The Confirmation view for both income source" should {
-    s"have a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para4}'" in {
-      Jsoup.parse(page(IncomeSourceForm.option_both).body).select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para4)
-    }
   }
 }

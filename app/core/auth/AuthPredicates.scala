@@ -42,7 +42,7 @@ object AuthPredicates extends Results {
       Left(Future.successful(resolveNino))
     }
 
-  lazy val alreadyEnrolled: Result = Redirect(controllers.routes.AlreadyEnrolledController.enrolled())
+  lazy val alreadyEnrolled: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.enrolled())
 
   val mtdidPredicate: AuthPredicate = request => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)

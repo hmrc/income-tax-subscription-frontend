@@ -17,10 +17,10 @@
 package incometax.business.views
 
 import assets.MessageLookup.Business.{AccountingPeriodPrior => messages}
+import core.views.ViewSpecTrait
 import incometax.business.forms.AccountingPeriodPriorForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 class BusinessAccountingPeriodPriorViewSpec extends ViewSpecTrait {
 

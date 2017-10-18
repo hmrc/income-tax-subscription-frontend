@@ -17,9 +17,9 @@
 package incometax.business.views
 
 import assets.MessageLookup.Business.{RegisterNextAccountingPeriod => messages}
+import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
 

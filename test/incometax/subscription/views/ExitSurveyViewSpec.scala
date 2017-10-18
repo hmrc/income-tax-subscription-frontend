@@ -17,10 +17,10 @@
 package incometax.subscription.views
 
 import assets.MessageLookup.{Base => common, ExitSurvey => messages}
+import core.views.ViewSpecTrait
 import incometax.subscription.forms.ExitSurveyForm
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 
 class ExitSurveyViewSpec extends ViewSpecTrait {

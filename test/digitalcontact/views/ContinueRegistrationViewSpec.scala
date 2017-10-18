@@ -17,9 +17,9 @@
 package digitalcontact.views
 
 import assets.MessageLookup.{PreferencesCallBack => messages}
+import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 class ContinueRegistrationViewSpec extends ViewSpecTrait {
 

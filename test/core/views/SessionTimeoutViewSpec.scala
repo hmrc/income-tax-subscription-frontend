@@ -19,7 +19,6 @@ package core.views
 import assets.MessageLookup.{Timeout => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 class SessionTimeoutViewSpec extends ViewSpecTrait {
 

@@ -17,9 +17,9 @@
 package incometax.subscription.views
 
 import assets.MessageLookup.{Terms => messages}
+import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 class TermsViewSpec extends ViewSpecTrait {
 

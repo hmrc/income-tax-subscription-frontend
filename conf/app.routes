@@ -46,7 +46,7 @@ GET         /income-other                 incometax.incomesource.controllers.Oth
 POST        /income-other                 incometax.incomesource.controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
 
 # Already enrolled
-GET         /already-enrolled             controllers.AlreadyEnrolledController.enrolled
+GET         /already-enrolled             incometax.subscription.controllers.AlreadyEnrolledController.enrolled
 
 # No NINO Routes
 GET         /register-for-SA              usermatching.controllers.NoSAController.show
