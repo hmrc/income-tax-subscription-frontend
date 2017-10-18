@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package usermatching.controllers
 
 import javax.inject.{Inject, Singleton}
 
@@ -29,7 +29,7 @@ class NoSAController @Inject()(implicit val applicationConfig: AppConfig,
                                 ) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action {
-    implicit request => Ok(views.html.no_sa(postAction = controllers.routes.NoSAController.submit()))
+    implicit request => Ok(usermatching.views.html.no_sa(postAction = routes.NoSAController.submit()))
   }
 
   val submit: Action[AnyContent] = Action {

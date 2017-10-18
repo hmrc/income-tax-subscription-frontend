@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package views
+package incometax.subscription.views
 
 import assets.MessageLookup.{Base => common, ExitSurvey => messages}
 import incometax.subscription.forms.ExitSurveyForm
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.test.FakeRequest
+import views.ViewSpecTrait
 
 
 class ExitSurveyViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.exit_survey(
+  lazy val page = incometax.subscription.views.html.exit_survey(
     exitSurveyForm = ExitSurveyForm.exitSurveyForm.form,
     postAction = action
   )(FakeRequest(), applicationMessages, appConfig)

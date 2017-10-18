@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package usermatching.controllers
 
 import assets.MessageLookup.FrontPage
 import core.ITSASessionKeys
@@ -23,14 +23,14 @@ import core.auth.{MockConfig, Registration, SignUp}
 import core.config.BaseControllerConfig
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
+import core.utils.TestConstants
 import incometax.subscription.services.mocks.MockSubscriptionService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import play.api.test.Helpers._
+import play.api.test.Helpers.{await, contentAsString, _}
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.mocks.MockCitizenDetailsService
-import core.utils.TestConstants
 
 import scala.concurrent.Future
 
@@ -91,7 +91,7 @@ class HomeControllerSpec extends ControllerBaseSpec
       }
 
       "Redirect to the 'Index' page" in {
-        redirectLocation(result).get mustBe controllers.routes.HomeController.index().url
+        redirectLocation(result).get mustBe usermatching.controllers.routes.HomeController.index().url
       }
     }
   }
@@ -137,7 +137,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           val result = call()
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.routes.NoSAController.show().url
+          redirectLocation(result).get mustBe usermatching.controllers.routes.NoSAController.show().url
 
           await(result).session(subscriptionRequest).get(ITSASessionKeys.UTR) mustBe None
         }
@@ -180,7 +180,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           val result = call(request)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.routes.NoSAController.show().url
+          redirectLocation(result).get mustBe usermatching.controllers.routes.NoSAController.show().url
 
           await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) mustBe None
         }
@@ -290,7 +290,7 @@ class HomeControllerSpec extends ControllerBaseSpec
       val result = getResult
 
       status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result).get mustBe controllers.routes.AffinityGroupErrorController.show().url
+      redirectLocation(result).get mustBe usermatching.controllers.routes.AffinityGroupErrorController.show().url
     }
 
     "redirect when auth returns no affinity" in {
@@ -299,7 +299,7 @@ class HomeControllerSpec extends ControllerBaseSpec
       val result = getResult
 
       status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result).get mustBe controllers.routes.AffinityGroupErrorController.show().url
+      redirectLocation(result).get mustBe usermatching.controllers.routes.AffinityGroupErrorController.show().url
     }
   }
 

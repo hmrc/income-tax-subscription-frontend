@@ -19,7 +19,7 @@ package incometax.subscription.forms
 import assets.MessageLookup
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils._
-import models.ExitSurveyModel
+import incometax.subscription.models.ExitSurveyModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerTest
 import play.api.i18n.Messages.Implicits._

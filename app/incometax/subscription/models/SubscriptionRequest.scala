@@ -16,7 +16,7 @@
 
 package incometax.subscription.models
 
-import models.DateModel
+import core.models.DateModel
 import play.api.libs.json.Json
 
 case class SubscriptionRequest(nino: String,

@@ -311,15 +311,6 @@ user-details.summary.last_name                                  = Last name
 user-details.summary.nino                                       = National Insurance number
 user-details.summary.dob                                        = Date of birth
 
-## Not eligible page ##
-not-eligible.title                                              = You can''t send digital updates yet
-not-eligible.heading                                            = You can''t send digital updates yet
-not-eligible.line_1                                             = Your answers mean you''re not eligible to send digital updates to HMRC right now.
-not-eligible.line_2                                             = You can still sign up for the service. HMRC are working to make digital updates available for all sole traders in the coming months. If you sign up now, you will be able to send digital updates to HMRC when you become eligible.
-not-eligible.line_3                                             = If you choose to sign up, we''ll ask you a few questions about your income and contact details.
-not-eligible.question                                           = Choose what you would like to do next
-not-eligible.signup                                             = I want to sign up
-not-eligible.signout                                            = I don''t want to sign up - sign me out
 
 ## No SA page ##
 no-sa.title                                                     = You can''t use this service yet

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package usermatching.controllers
 
 import javax.inject.{Inject, Singleton}
 
@@ -29,7 +29,7 @@ class AffinityGroupErrorController @Inject()(implicit val applicationConfig: App
                                             ) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.affinity_group_error())
+    Ok(usermatching.views.html.affinity_group_error())
   }
 
 }

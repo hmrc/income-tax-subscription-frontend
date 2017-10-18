@@ -20,8 +20,8 @@ import assets.MessageLookup.{UserDetails => messages}
 import core.ITSASessionKeys
 import core.auth.{MockConfig, UserMatching}
 import core.controllers.ControllerBaseSpec
+import core.models.DateModel
 import core.services.mocks.MockKeystoreService
-import models.DateModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

@@ -19,8 +19,8 @@ package incometax.business.controllers
 import assets.MessageLookup
 import core.auth._
 import core.controllers.ControllerBaseSpec
+import core.models.DateModel
 import core.services.mocks.MockKeystoreService
-import models.DateModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

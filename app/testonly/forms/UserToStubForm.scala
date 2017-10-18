@@ -40,11 +40,11 @@ import core.forms.validation.utils.ConstraintUtil._
 import core.forms.validation.utils.MappingUtil._
 import _root_.testonly.models.UserToStubModel
 import core.forms.validation.ErrorMessageFactory
-import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid, ValidationResult}
 import core.forms.validation.Constraints._
+import core.models.DateModel
 
 import scala.util.Try
 

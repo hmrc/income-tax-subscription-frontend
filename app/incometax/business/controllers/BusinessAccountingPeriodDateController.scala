@@ -21,16 +21,15 @@ import javax.inject.{Inject, Singleton}
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import forms._
+import core.utils.Implicits._
+import incometax.business.forms.{AccountingPeriodDateForm, AccountingPeriodPriorForm}
+import incometax.business.models.AccountingPeriodModel
 import incometax.business.models.enums._
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
-import core.utils.Implicits._
-import incometax.business.forms.{AccountingPeriodDateForm, AccountingPeriodPriorForm}
-import incometax.business.models.AccountingPeriodModel
 
 import scala.concurrent.Future
 

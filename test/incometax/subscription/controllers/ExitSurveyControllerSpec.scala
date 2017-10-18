@@ -20,7 +20,7 @@ import assets.MessageLookup
 import core.audit.Logging
 import core.controllers.ControllerBaseSpec
 import incometax.subscription.forms.ExitSurveyForm
-import models.ExitSurveyModel
+import incometax.subscription.models.ExitSurveyModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

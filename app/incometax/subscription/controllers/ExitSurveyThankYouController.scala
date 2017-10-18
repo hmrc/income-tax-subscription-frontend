@@ -29,7 +29,7 @@ class ExitSurveyThankYouController @Inject()(implicit val applicationConfig: App
                                             ) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.exit_survey_thank_you())
+    Ok(incometax.subscription.views.html.exit_survey_thank_you())
   }
 
 }

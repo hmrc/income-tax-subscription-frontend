@@ -20,8 +20,8 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 import core.Constants.GovernmentGateway._
+import core.models.DateModel
 import incometax.subscription.models._
-import models.DateModel
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.UserId

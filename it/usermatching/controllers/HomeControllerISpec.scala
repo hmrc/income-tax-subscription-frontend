@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package controllers
+package usermatching.controllers
 
 import core.ITSASessionKeys
 import core.config.featureswitch
 import core.config.featureswitch.FeatureSwitching
+import helpers.IntegrationTestConstants._
+import helpers.servicemocks.{AuthStub, CitizenDetailsStub, KeystoreStub, SubscriptionStub}
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.http.Status._
 import play.api.i18n.Messages
-import helpers.IntegrationTestConstants._
-import helpers.servicemocks.{AuthStub, CitizenDetailsStub, KeystoreStub, SubscriptionStub}
 
 class HomeControllerISpec extends ComponentSpecBase {
 

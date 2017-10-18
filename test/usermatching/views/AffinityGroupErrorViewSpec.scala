@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package views
+package usermatching.views
 
 import assets.MessageLookup.{AffinityGroup => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import views.ViewSpecTrait
 
 class AffinityGroupErrorViewSpec extends ViewSpecTrait {
 
-  lazy val page = views.html.affinity_group_error()(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = usermatching.views.html.affinity_group_error()(FakeRequest(), applicationMessages, appConfig)
 
   "The Affinity Group Error view" should {
 

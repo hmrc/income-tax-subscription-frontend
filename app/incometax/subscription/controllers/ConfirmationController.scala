@@ -25,7 +25,7 @@ import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import models.DateModel.dateConvert
+import core.models.DateModel.dateConvert
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.InternalServerException

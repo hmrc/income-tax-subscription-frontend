@@ -18,7 +18,7 @@ package views
 
 import assets.MessageLookup
 import assets.MessageLookup.{AlreadyEnrolled => messages, Base => common}
-import models.DateModel
+import core.models.DateModel
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest

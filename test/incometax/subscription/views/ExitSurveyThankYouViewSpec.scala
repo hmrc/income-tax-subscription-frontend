@@ -14,30 +14,34 @@
  * limitations under the License.
  */
 
-package views
+package incometax.subscription.views
 
-import assets.MessageLookup.{Timeout => messages}
-import play.api.i18n.Messages.Implicits._
+import assets.MessageLookup.{ThankYou => messages}
+import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.test.FakeRequest
+import views.ViewSpecTrait
 
-class SessionTimeoutViewSpec extends ViewSpecTrait {
 
-  lazy val page = core.views.html.timeout.timeout()(FakeRequest(), applicationMessages, appConfig)
+class ExitSurveyThankYouViewSpec extends ViewSpecTrait {
 
-  "The Session timeout view" should {
+  val action = ViewSpecTrait.testCall
+
+  lazy val page = incometax.subscription.views.html.exit_survey_thank_you()(FakeRequest(), applicationMessages, appConfig)
+
+  "The exit survey's Thank You Page view" should {
 
     val testPage = TestView(
-      name = "Session timeout view",
+      name = "Thank You Page",
       title = messages.title,
       heading = messages.heading,
       page = page,
-      showSignOutInBanner = false)
+      showSignOutInBanner = false
+    )
 
-    testPage.mustHavePara(messages.returnToHome)
+    testPage.mustHavePara(messages.line_1)
 
-    val para = testPage.selectHead("return home paragraph", "p")
+    testPage.mustHaveALink("gotoGovUK", messages.gotoGovUk, "https://www.gov.uk")
 
-    para.mustHaveALink("sign in", controllers.routes.HomeController.index().url)
   }
 
 }

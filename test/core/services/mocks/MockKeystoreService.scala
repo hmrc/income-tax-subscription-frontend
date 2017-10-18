@@ -66,7 +66,6 @@ trait MockKeystoreService extends MockTrait {
                                          fetchAccountingPeriodDate: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchAccountingMethod: MFO[AccountingMethodModel] = DoNotConfigure,
                                          fetchTerms: MFO[Boolean] = DoNotConfigure,
-                                         fetchNotEligible: MFO[NotEligibleModel] = DoNotConfigure,
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
@@ -83,7 +82,6 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
     mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
     mockFetchFromKeyStore[Boolean](Terms, fetchTerms)
-    mockFetchFromKeyStore[NotEligibleModel](NotEligible, fetchNotEligible)
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[UserDetailsModel](UserDetails, fetchUserDetails)
@@ -113,8 +111,6 @@ trait MockKeystoreService extends MockTrait {
                                       saveAccountingMethod: Option[Int] = None,
                                       fetchTerms: Option[Int] = None,
                                       saveTerms: Option[Int] = None,
-                                      fetchNotEligible: Option[Int] = None,
-                                      saveNotEligible: Option[Int] = None,
                                       fetchOtherIncome: Option[Int] = None,
                                       saveOtherIncome: Option[Int] = None,
                                       fetchSubscriptionId: Option[Int] = None,
@@ -144,8 +140,6 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(AccountingMethod, saveAccountingMethod)
     verifyKeystoreFetch(Terms, fetchTerms)
     verifyKeystoreSave(Terms, saveTerms)
-    verifyKeystoreFetch(NotEligible, fetchNotEligible)
-    verifyKeystoreSave(NotEligible, saveNotEligible)
     verifyKeystoreFetch(OtherIncome, fetchOtherIncome)
     verifyKeystoreSave(OtherIncome, saveOtherIncome)
     verifyKeystoreFetch(MtditId, fetchSubscriptionId)

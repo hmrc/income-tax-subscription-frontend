@@ -18,6 +18,7 @@ package incometax.subscription.views
 
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
+import core.models.DateModel
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import incometax.subscription.models.SummaryModel
 import models._

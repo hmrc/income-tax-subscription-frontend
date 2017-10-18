@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package usermatching.controllers
 
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.signOutURI

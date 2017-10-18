@@ -16,7 +16,7 @@
 
 package incometax.business.models
 
-import models.DateModel
+import core.models.DateModel
 import play.api.libs.json.Json
 
 

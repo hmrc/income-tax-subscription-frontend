@@ -18,7 +18,7 @@ package helpers
 
 import java.util.UUID
 
-import models.DateModel
+import core.models.DateModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 

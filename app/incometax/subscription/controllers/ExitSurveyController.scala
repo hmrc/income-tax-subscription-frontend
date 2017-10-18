@@ -22,7 +22,7 @@ import core.audit.Logging
 import core.config.AppConfig
 import core.utils.Implicits._
 import incometax.subscription.forms.ExitSurveyForm
-import models.ExitSurveyModel
+import incometax.subscription.models.ExitSurveyModel
 import play.api.Application
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -41,7 +41,7 @@ class ExitSurveyController @Inject()(val app: Application,
                                     ) extends FrontendController with I18nSupport {
 
   def view(exitSurveyForm: Form[ExitSurveyModel])(implicit request: Request[_]): Html =
-    views.html.exit_survey(
+    incometax.subscription.views.html.exit_survey(
       exitSurveyForm = exitSurveyForm,
       routes.ExitSurveyController.submit()
     )

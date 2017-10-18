@@ -20,8 +20,8 @@ import assets.MessageLookup
 import core.forms.submapping.DateMapping
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
+import core.models.DateModel
 import incometax.business.models.BusinessStartDateModel
-import models.DateModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite

@@ -17,9 +17,9 @@
 package incometax.incomesource.forms
 
 import assets.MessageLookup
-import incometax.incomesource.models.OtherIncomeModel
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
+import incometax.incomesource.models.OtherIncomeModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
@@ -52,21 +52,21 @@ class OtherIncomeFormSpec extends PlaySpec with OneAppPerTest {
       val emptyTest0 = otherIncomeForm.bind(emptyInput0)
       emptyTest0 assert choice hasExpectedErrors empty
 
-      val emptyInput = DataMap.notEligibleChoice("")
+      val emptyInput = DataMap.otherIncome("")
       val emptyTest = otherIncomeForm.bind(emptyInput)
       emptyTest assert choice hasExpectedErrors empty
 
-      val invalidInput = DataMap.notEligibleChoice("α")
+      val invalidInput = DataMap.otherIncome("α")
       val invalidTest = otherIncomeForm.bind(invalidInput)
       invalidTest assert choice hasExpectedErrors invalid
     }
 
     "The following submission should be valid" in {
-      val testsYes = DataMap.notEligibleChoice(option_yes)
+      val testsYes = DataMap.otherIncome(option_yes)
       otherIncomeForm isValidFor testsYes
-      val testsNo = DataMap.notEligibleChoice(option_no)
+      val testsNo = DataMap.otherIncome(option_no)
       otherIncomeForm isValidFor testsNo
     }
 
-}
+  }
 }

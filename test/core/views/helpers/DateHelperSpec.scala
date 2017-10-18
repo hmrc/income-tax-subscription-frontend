@@ -19,7 +19,7 @@ package core.views.helpers
 import assets.MessageLookup
 import core.forms.submapping.DateMapping._
 import core.forms.validation.testutils.DataMap
-import models.DateModel
+import core.models.DateModel
 import org.scalatest.Matchers._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages

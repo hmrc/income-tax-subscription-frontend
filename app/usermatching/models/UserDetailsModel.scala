@@ -16,6 +16,7 @@
 
 package usermatching.models
 
+import core.models.DateModel
 import models._
 import play.api.libs.json.Json
 import core.utils.Implicits.StringNinoUtil

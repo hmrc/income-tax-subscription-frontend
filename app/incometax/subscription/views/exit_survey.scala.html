@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import models.ExitSurveyModel
 @import play.api.data.Form
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 @import core.config.AppConfig
 @import core.views.html.RadioOption
 @import incometax.subscription.forms.ExitSurveyForm
+@import incometax.subscription.models.ExitSurveyModel
 @(exitSurveyForm: Form[ExitSurveyModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question(text: String) = {
@@ -40,9 +40,9 @@
 }
 
 @scripts = {
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery.min.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/jquery-ui.min.js")"></script>
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-survey.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("../../../../public/javascripts/jquery.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("../../../../public/javascripts/jquery-ui.min.js")"></script>
+    <script type="text/javascript" src="@routes.Assets.at("../../../../public/javascripts/ga-survey.js")"></script>
 }
 
 @core.views.html.templates.main_template(title = Messages("exit-survey.title"), bodyClasses = None, showSignOutLink = false, scriptElem = scripts) {

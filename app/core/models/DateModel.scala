@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models
+package core.models
 
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, ResolverStyle}

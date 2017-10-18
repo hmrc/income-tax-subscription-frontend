@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package usermatching.controllers
 
 import assets.MessageLookup
 import core.controllers.ControllerBaseSpec

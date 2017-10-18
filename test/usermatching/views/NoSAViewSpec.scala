@@ -14,33 +14,35 @@
  * limitations under the License.
  */
 
-package views
+package usermatching.views
 
-import assets.MessageLookup.{ThankYou => messages}
-import play.api.i18n.Messages.Implicits.applicationMessages
+import assets.MessageLookup.{Base, NoSA => messages}
+import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import views.ViewSpecTrait
 
-
-class ExitSurveyThankYouViewSpec extends ViewSpecTrait {
+class NoSAViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.exit_survey_thank_you()(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = usermatching.views.html.no_sa(postAction = action)(FakeRequest(), applicationMessages, appConfig)
 
-  "The exit survey's Thank You Page view" should {
+  "The No SA view" should {
 
     val testPage = TestView(
-      name = "Thank You Page",
+      name = "No SA View",
       title = messages.title,
       heading = messages.heading,
       page = page,
       showSignOutInBanner = false
     )
 
-    testPage.mustHavePara(messages.line_1)
+    testPage.mustHavePara(messages.line1)
 
-    testPage.mustHaveALink("gotoGovUK", messages.gotoGovUk, "https://www.gov.uk")
+    testPage.mustHaveALink(id = "sa-signup", messages.linkText, appConfig.signUpToSaLink)
 
+    val form = testPage.getForm("No SA form")(actionCall = action)
+
+    form.mustHaveSubmitButton(Base.signOut)
   }
-
 }

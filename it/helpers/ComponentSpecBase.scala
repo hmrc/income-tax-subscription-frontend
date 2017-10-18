@@ -18,12 +18,16 @@ package helpers
 
 import java.util.UUID
 
+import core.ITSASessionKeys
+import core.auth.{JourneyState, Registration, SignUp, UserMatching}
 import core.config.AppConfig
-import forms._
+import helpers.IntegrationTestConstants._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import models._
-import core.auth.{JourneyState, Registration, SignUp, UserMatching}
+import incometax.business.forms._
+import incometax.business.models._
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -35,12 +39,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.play.test.UnitSpec
-import IntegrationTestConstants._
-import core.ITSASessionKeys
-import incometax.business.forms._
-import incometax.business.models._
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import usermatching.forms.UserDetailsForm
 import usermatching.models.UserDetailsModel
 

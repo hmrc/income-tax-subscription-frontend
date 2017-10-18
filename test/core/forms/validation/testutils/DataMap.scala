@@ -26,10 +26,9 @@ object DataMap {
 
   import incometax.business.forms.BusinessNameForm._
   import incometax.business.forms.BusinessPhoneNumberForm._
-  import forms.NotEligibleForm._
   import core.forms.submapping.DateMapping._
   import incometax.business.forms.AccountingMethodForm
-
+  import incometax.incomesource.forms.OtherIncomeForm
 
   type DataMap = Map[String, String]
 
@@ -52,7 +51,7 @@ object DataMap {
 
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 
-  def notEligibleChoice(iType: String): DataMap = Map(choice -> iType)
+  def otherIncome(iType: String): DataMap = Map(OtherIncomeForm.choice -> iType)
 
   val alwaysFailInvalid: Invalid = ErrorMessageFactory.error("always fail")
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package usermatching.controllers
 
 import javax.inject.{Inject, Singleton}
 
@@ -49,7 +49,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
   lazy val showGuidance: Boolean = baseConfig.applicationConfig.showGuidance
 
   def home: Action[AnyContent] = Action { implicit request =>
-    val redirect = controllers.routes.HomeController.index()
+    val redirect = routes.HomeController.index()
 
     showGuidance match {
       case true =>
@@ -92,7 +92,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
         .withJourneyState(Registration)
     }
     else {
-      Redirect(controllers.routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey)
+      Redirect(routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey)
     }
   )
 

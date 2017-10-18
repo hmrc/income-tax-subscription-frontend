@@ -14,34 +14,31 @@
  * limitations under the License.
  */
 
-package views
+package core.views
 
-import assets.MessageLookup.{Base, NoSA => messages}
+import assets.MessageLookup.{Timeout => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import views.ViewSpecTrait
 
-class NoSAViewSpec extends ViewSpecTrait {
+class SessionTimeoutViewSpec extends ViewSpecTrait {
 
-  val action = ViewSpecTrait.testCall
+  lazy val page = core.views.html.timeout.timeout()(FakeRequest(), applicationMessages, appConfig)
 
-  lazy val page = views.html.no_sa(postAction = action)(FakeRequest(), applicationMessages, appConfig)
-
-  "The No SA view" should {
+  "The Session timeout view" should {
 
     val testPage = TestView(
-      name = "No SA View",
+      name = "Session timeout view",
       title = messages.title,
       heading = messages.heading,
       page = page,
-      showSignOutInBanner = false
-    )
+      showSignOutInBanner = false)
 
-    testPage.mustHavePara(messages.line1)
+    testPage.mustHavePara(messages.returnToHome)
 
-    testPage.mustHaveALink(id = "sa-signup", messages.linkText, appConfig.signUpToSaLink)
+    val para = testPage.selectHead("return home paragraph", "p")
 
-    val form = testPage.getForm("No SA form")(actionCall = action)
-
-    form.mustHaveSubmitButton(Base.signOut)
+    para.mustHaveALink("sign in", usermatching.controllers.routes.HomeController.index().url)
   }
+
 }

@@ -16,7 +16,7 @@
 
 package helpers
 
-import models.DateModel
+import core.models.DateModel
 import org.jsoup.Jsoup
 import org.scalatest.matchers._
 import play.api.libs.json.Reads

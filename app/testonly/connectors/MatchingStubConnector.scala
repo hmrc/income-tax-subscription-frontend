@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
 import core.connectors.RawResponseReads
-import models.DateModel
+import core.models.DateModel
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig
@@ -32,7 +32,7 @@ import testonly.models.UserToStubModel
 import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 
 case class Value(value: String)
