@@ -25,13 +25,14 @@ import core.auth.JourneyState._
 import core.auth._
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import incometax.subscription.models.{CitizenDetailsSuccess, SubscriptionSuccess}
+import core.utils.Implicits._
+import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
+import usermatching.models.CitizenDetailsSuccess
 import usermatching.services.CitizenDetailsService
-import core.utils.Implicits._
 
 import scala.concurrent.Future
 

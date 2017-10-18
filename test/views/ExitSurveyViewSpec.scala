@@ -17,7 +17,7 @@
 package views
 
 import assets.MessageLookup.{Base => common, ExitSurvey => messages}
-import forms.ExitSurveyForm
+import incometax.subscription.forms.ExitSurveyForm
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.test.FakeRequest
 

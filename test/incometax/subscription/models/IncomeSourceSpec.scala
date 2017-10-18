@@ -16,7 +16,6 @@
 
 package incometax.subscription.models
 
-import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.libs.json.{JsString, JsValue, Json}
 import uk.gov.hmrc.play.test.UnitSpec
 

@@ -20,10 +20,10 @@ import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
 import core.config.AppConfig
-import incometax.subscription.models.CitizenDetailsFailureResponse
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import usermatching.httpparsers.CitizenDetailsResponseHttpParser._
+import usermatching.models.CitizenDetailsFailureResponse
 
 import scala.concurrent.Future
 

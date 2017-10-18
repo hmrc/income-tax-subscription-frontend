@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.subscription.controllers
 
 import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
 import core.config.AppConfig
-import forms.ExitSurveyForm
+import core.utils.Implicits._
+import incometax.subscription.forms.ExitSurveyForm
 import models.ExitSurveyModel
 import play.api.Application
 import play.api.data.Form
@@ -29,7 +30,6 @@ import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import core.utils.Implicits._
 
 import scala.concurrent.Future
 

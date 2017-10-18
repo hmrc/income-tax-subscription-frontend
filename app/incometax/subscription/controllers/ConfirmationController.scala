@@ -67,7 +67,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   val signOut: Action[AnyContent] = Authenticated.async { implicit user =>
-    implicit request => Future.successful(Redirect(controllers.routes.ExitSurveyController.show()).withNewSession)
+    implicit request => Future.successful(Redirect(routes.ExitSurveyController.show()).withNewSession)
   }
 
 }

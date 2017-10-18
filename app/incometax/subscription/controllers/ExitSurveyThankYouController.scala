@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.subscription.controllers
 
 import javax.inject.{Inject, Singleton}
 
@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 @Singleton
 class ExitSurveyThankYouController @Inject()(implicit val applicationConfig: AppConfig,
                                              val messagesApi: MessagesApi
-                                  ) extends FrontendController with I18nSupport {
+                                            ) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action { implicit request =>
     Ok(views.html.exit_survey_thank_you())

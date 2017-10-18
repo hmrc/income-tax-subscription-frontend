@@ -16,10 +16,10 @@
 
 package incometax.subscription.connectors
 
+import core.utils.TestConstants._
 import incometax.subscription.connectors.mocks.TestGGConnector
 import incometax.subscription.models.{EnrolFailure, EnrolSuccess}
 import org.scalatest.concurrent.ScalaFutures
-import core.utils.TestConstants._
 
 import scala.concurrent.Future
 

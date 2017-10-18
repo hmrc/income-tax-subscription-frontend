@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.subscription.controllers
 
 import assets.MessageLookup
 import core.audit.Logging
 import core.controllers.ControllerBaseSpec
-import forms.ExitSurveyForm
+import incometax.subscription.forms.ExitSurveyForm
 import models.ExitSurveyModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 
@@ -100,8 +99,8 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
         status(result) must be(Status.SEE_OTHER)
       }
 
-      s"redirect to '${controllers.routes.ExitSurveyThankYouController.show().url}'" in {
-        redirectLocation(result) mustBe Some(controllers.routes.ExitSurveyThankYouController.show().url)
+      s"redirect to '${routes.ExitSurveyThankYouController.show().url}'" in {
+        redirectLocation(result) mustBe Some(routes.ExitSurveyThankYouController.show().url)
       }
     }
 
@@ -115,8 +114,8 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
         status(result) must be(Status.SEE_OTHER)
       }
 
-      s"redirect to '${controllers.routes.ExitSurveyThankYouController.show().url}'" in {
-        redirectLocation(result) mustBe Some(controllers.routes.ExitSurveyThankYouController.show().url)
+      s"redirect to '${routes.ExitSurveyThankYouController.show().url}'" in {
+        redirectLocation(result) mustBe Some(routes.ExitSurveyThankYouController.show().url)
       }
     }
   }

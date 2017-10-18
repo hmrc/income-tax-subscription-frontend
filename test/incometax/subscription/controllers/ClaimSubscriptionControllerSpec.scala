@@ -19,12 +19,12 @@ package incometax.subscription.controllers
 import assets.MessageLookup.{AlreadyEnrolled => messages}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
+import core.utils.TestConstants._
 import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
-import core.utils.TestConstants._
 
 class ClaimSubscriptionControllerSpec extends ControllerBaseSpec with MockKeystoreService with MockSubscriptionOrchestrationService {
 

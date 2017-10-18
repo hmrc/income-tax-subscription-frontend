@@ -16,13 +16,13 @@
 
 package usermatching.services
 
-import incometax.subscription.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status.BAD_REQUEST
 import usermatching.httpparsers.CitizenDetailsResponseHttpParser.GetCitizenDetailsResponse
+import usermatching.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 import usermatching.services.mocks.TestCitizenDetailsService
-import core.utils.TestConstants._
-import core.utils.UnitTestTrait
 
 import scala.concurrent.Future
 

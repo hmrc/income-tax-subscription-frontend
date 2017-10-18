@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package incometax.subscription.forms
 
 import assets.MessageLookup
 import core.forms.validation.ErrorMessageFactory
@@ -26,7 +26,7 @@ import play.api.i18n.Messages.Implicits._
 
 class ExitSurveyFormSpec extends PlaySpec with GuiceOneAppPerTest {
 
-  import ExitSurveyForm._
+  import incometax.subscription.forms.ExitSurveyForm._
 
   "ExitSurveyForm" should {
 

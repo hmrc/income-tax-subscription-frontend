@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package incometax.subscription.forms
 
 import core.forms.prevalidation.PreprocessedForm
 import core.forms.validation.ErrorMessageFactory

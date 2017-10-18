@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package incometax.subscription.models
+package usermatching.models
 
 import core.connectors.models.ConnectorError
 import play.api.libs.json._
