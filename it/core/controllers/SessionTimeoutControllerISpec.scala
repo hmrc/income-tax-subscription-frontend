@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package controllers
+package core.controllers
 
-import core.services.CacheConstants
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
-import helpers.servicemocks.{AuthStub, KeystoreStub}
-import play.api.http.Status.{OK, SEE_OTHER}
+import helpers.servicemocks.AuthStub
+import play.api.http.Status.OK
 import play.api.i18n.Messages
 
 class SessionTimeoutControllerISpec extends ComponentSpecBase {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.incomesource.controllers
 
 import core.services.CacheConstants
 import helpers.ComponentSpecBase

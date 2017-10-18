@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.subscription.controllers
 
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
