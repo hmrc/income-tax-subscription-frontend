@@ -16,8 +16,8 @@
 
 package usermatching.controllers
 
+import core.ITSASessionKeys
 import core.auth.{MockConfig, UserMatched, UserMatching}
-import controllers.ITSASessionKeys
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import org.scalatest.OptionValues

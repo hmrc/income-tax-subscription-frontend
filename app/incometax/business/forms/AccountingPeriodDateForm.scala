@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package incometax.business.forms
 
 import java.time.LocalDate
 
@@ -22,7 +22,8 @@ import core.forms.submapping.DateMapping._
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.models.TargetIds
 import core.forms.validation.utils.ConstraintUtil._
-import models.{AccountingPeriodModel, DateModel}
+import incometax.business.models.AccountingPeriodModel
+import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Valid, ValidationResult}

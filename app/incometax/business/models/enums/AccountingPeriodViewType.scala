@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.enums
+package incometax.business.models.enums
 
 
 sealed trait AccountingPeriodViewType
@@ -28,8 +28,8 @@ case object RegistrationAccountingPeriodView extends AccountingPeriodViewType
 
 object AccountingPeriodViewType {
 
-  import forms.AccountingPeriodPriorForm
-  import models.AccountingPeriodPriorModel
+  import incometax.business.forms.AccountingPeriodPriorForm
+  import incometax.business.models.AccountingPeriodPriorModel
 
   implicit def conv(accountingPeriodPrior: AccountingPeriodPriorModel): AccountingPeriodViewType =
     accountingPeriodPrior.currentPeriodIsPrior match {

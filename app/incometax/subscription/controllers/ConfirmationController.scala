@@ -20,7 +20,7 @@ import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 import javax.inject.{Inject, Singleton}
 
-import controllers.ITSASessionKeys
+import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig

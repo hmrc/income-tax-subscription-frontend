@@ -18,8 +18,8 @@ package incometax.business.controllers
 
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
-import forms.AccountingMethodForm
-import models.AccountingMethodModel
+import incometax.business.forms.AccountingMethodForm
+import incometax.business.models.AccountingMethodModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

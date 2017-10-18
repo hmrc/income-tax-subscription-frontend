@@ -21,7 +21,7 @@ import assets.MessageLookup.{Summary => messages}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import incometax.subscription.models.SummaryModel
 import models._
-import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
+import incometax.business.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
@@ -30,7 +30,7 @@ import play.api.test.FakeRequest
 import play.twirl.api.Html
 import core.utils.{TestModels, UnitTestTrait}
 import core.views.html.SummaryIdConstants._
-import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+import incometax.business.models._
 import incometax.business.models.address.Address
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {

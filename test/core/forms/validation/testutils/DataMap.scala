@@ -16,21 +16,19 @@
 
 package core.forms.validation.testutils
 
-import forms.AccountingPeriodPriorForm
-
 import incometax.incomesource.forms.IncomeSourceForm
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil.constraint
+import incometax.business.forms.AccountingPeriodPriorForm
 import play.api.data.validation.{Constraint, Invalid}
 
 object DataMap {
 
-  import forms.BusinessNameForm._
-  import forms.BusinessPhoneNumberForm._
-  import forms.EmailForm._
+  import incometax.business.forms.BusinessNameForm._
+  import incometax.business.forms.BusinessPhoneNumberForm._
   import forms.NotEligibleForm._
   import core.forms.submapping.DateMapping._
-  import forms.AccountingMethodForm
+  import incometax.business.forms.AccountingMethodForm
 
 
   type DataMap = Map[String, String]
@@ -55,8 +53,6 @@ object DataMap {
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 
   def notEligibleChoice(iType: String): DataMap = Map(choice -> iType)
-
-  def email(email: String): DataMap = Map(emailAddress -> email)
 
   val alwaysFailInvalid: Invalid = ErrorMessageFactory.error("always fail")
 

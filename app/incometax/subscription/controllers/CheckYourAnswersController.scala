@@ -18,7 +18,7 @@ package incometax.subscription.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import controllers.ITSASessionKeys
+import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.{IncomeTaxSAUser, Registration, SignUpController}
 import core.config.BaseControllerConfig

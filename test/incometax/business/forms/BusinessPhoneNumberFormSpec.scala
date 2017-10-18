@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package forms
+package incometax.business.forms
 
 import assets.MessageLookup
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils._
+import core.utils.TestConstants._
+import incometax.business.models.BusinessPhoneNumberModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.Messages.Implicits._
-import core.utils.TestConstants._
-import incometax.business.models.BusinessPhoneNumberModel
 
 class BusinessPhoneNumberFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
-  import BusinessPhoneNumberForm._
+  import incometax.business.forms.BusinessPhoneNumberForm._
 
   "The BusinessPhoneNumberForm" should {
     "transform the data to the case class" in {

@@ -17,11 +17,11 @@
 package incometax.business.controllers
 
 import core.services.CacheConstants
-import forms.AccountingPeriodPriorForm
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import models.AccountingPeriodPriorModel
+import incometax.business.forms.AccountingPeriodPriorForm
+import incometax.business.models.AccountingPeriodPriorModel
 import play.api.http.Status._
 import play.api.i18n.Messages
 

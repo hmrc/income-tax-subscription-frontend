@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package incometax.business.forms
 
 import assets.MessageLookup
 import core.forms.validation.ErrorMessageFactory
@@ -27,7 +27,7 @@ import play.api.i18n.Messages.Implicits._
 
 class BusinessNameFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
-  import BusinessNameForm._
+  import incometax.business.forms.BusinessNameForm._
 
   "The businessNameForm" should {
     "transform the data to the case class" in {

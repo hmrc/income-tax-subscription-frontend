@@ -21,8 +21,8 @@ import javax.inject.{Inject, Singleton}
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import forms.AccountingMethodForm
-import models.AccountingMethodModel
+import incometax.business.forms.AccountingMethodForm
+import incometax.business.models.AccountingMethodModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}

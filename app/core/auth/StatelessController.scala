@@ -16,8 +16,8 @@
 
 package core.auth
 
+import core.ITSASessionKeys
 import core.auth.AuthPredicates._
-import controllers.ITSASessionKeys
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

@@ -23,7 +23,7 @@ import models._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 import CacheConstants._
-import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+import incometax.business.models._
 import incometax.business.models.address.Address
 
 

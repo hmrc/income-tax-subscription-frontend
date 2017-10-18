@@ -16,8 +16,7 @@
 
 package core.auth
 
-import core.Constants
-import controllers.ITSASessionKeys
+import core.{Constants, ITSASessionKeys}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}

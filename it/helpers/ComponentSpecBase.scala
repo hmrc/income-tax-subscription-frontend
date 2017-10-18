@@ -19,7 +19,6 @@ package helpers
 import java.util.UUID
 
 import core.config.AppConfig
-import controllers.ITSASessionKeys
 import forms._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
@@ -37,7 +36,9 @@ import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.play.test.UnitSpec
 import IntegrationTestConstants._
-import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+import core.ITSASessionKeys
+import incometax.business.forms._
+import incometax.business.models._
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import usermatching.forms.UserDetailsForm

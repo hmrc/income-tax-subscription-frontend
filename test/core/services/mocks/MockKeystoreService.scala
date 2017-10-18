@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import usermatching.models.UserDetailsModel
 import core.utils.MockTrait
-import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+import incometax.business.models._
 import incometax.business.models.address.Address
 
 import scala.concurrent.Future

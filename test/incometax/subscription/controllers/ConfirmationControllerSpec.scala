@@ -18,7 +18,7 @@ package incometax.subscription.controllers
 
 import java.time.LocalDateTime
 
-import controllers.ITSASessionKeys
+import core.ITSASessionKeys
 import core.audit.Logging
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService

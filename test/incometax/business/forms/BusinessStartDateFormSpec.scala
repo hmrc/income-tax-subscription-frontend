@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package forms
+package incometax.business.forms
 
 import assets.MessageLookup
 import core.forms.submapping.DateMapping
@@ -29,8 +29,8 @@ import play.api.i18n.Messages.Implicits._
 
 class BusinessStartDateFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
-  import BusinessStartDateForm._
   import DateMapping._
+  import incometax.business.forms.BusinessStartDateForm._
 
   "The BusinessStartDateForm" should {
     "transform a valid request to the date form case class" in {

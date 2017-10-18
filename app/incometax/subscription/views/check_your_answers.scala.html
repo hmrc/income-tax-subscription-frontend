@@ -22,6 +22,8 @@
 @import incometax.subscription.models.SummaryModel
 @import uk.gov.hmrc.play.views.html.helpers.form
 
+@import incometax.business.models.AccountingMethodModel
+@import incometax.business.models.AccountingPeriodModel
 @(summaryModel: SummaryModel, isRegistration: Boolean, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
     @import core.views.html.SummaryHelper._
     @import core.views.html.SummaryIdConstants._

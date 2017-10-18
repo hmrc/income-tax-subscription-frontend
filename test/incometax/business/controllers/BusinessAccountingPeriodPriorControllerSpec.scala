@@ -18,8 +18,8 @@ package incometax.business.controllers
 
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
-import forms.AccountingPeriodPriorForm
-import models.AccountingPeriodPriorModel
+import incometax.business.forms.AccountingPeriodPriorForm
+import incometax.business.models.AccountingPeriodPriorModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}

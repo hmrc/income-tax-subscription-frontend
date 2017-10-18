@@ -19,7 +19,7 @@ package core.utils
 import java.net.URLEncoder
 import java.time.LocalDateTime
 
-import controllers.ITSASessionKeys
+import core.ITSASessionKeys
 import play.api.libs.Crypto
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, PlainText}
 import uk.gov.hmrc.http.SessionKeys

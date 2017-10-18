@@ -16,8 +16,8 @@
 
 package usermatching.controllers
 
+import core.ITSASessionKeys
 import core.config.featureswitch.{FeatureSwitching, UserMatchingFeature}
-import controllers.ITSASessionKeys
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}

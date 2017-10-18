@@ -17,7 +17,7 @@
 package incometax.business.views
 
 import assets.MessageLookup.{BusinessName => messages}
-import forms.BusinessNameForm
+import incometax.business.forms.BusinessNameForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import views.ViewSpecTrait

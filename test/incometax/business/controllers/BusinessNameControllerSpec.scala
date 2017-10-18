@@ -19,7 +19,7 @@ package incometax.business.controllers
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
-import forms.BusinessNameForm
+import incometax.business.forms.BusinessNameForm
 import incometax.business.models.BusinessNameModel
 import incometax.incomesource.forms.OtherIncomeForm._
 import incometax.incomesource.models.OtherIncomeModel

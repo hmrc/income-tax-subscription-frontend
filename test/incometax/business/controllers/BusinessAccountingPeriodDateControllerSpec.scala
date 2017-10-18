@@ -20,13 +20,14 @@ import assets.MessageLookup
 import core.auth._
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
-import forms.AccountingPeriodDateForm
-import models.{AccountingPeriodModel, DateModel}
+import models.DateModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import core.utils.TestModels
+import incometax.business.forms.AccountingPeriodDateForm
+import incometax.business.models.AccountingPeriodModel
 
 class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {

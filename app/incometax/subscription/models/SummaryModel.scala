@@ -17,7 +17,7 @@
 package incometax.subscription.models
 
 import incometax.business.models.address.Address
-import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+import incometax.business.models._
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import models._
 

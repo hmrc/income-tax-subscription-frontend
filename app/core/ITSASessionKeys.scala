@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package core
 
-import play.api.libs.json.Json
-
-case class AccountingMethodModel(accountingMethod: String)
-
-object AccountingMethodModel {
-  implicit val format = Json.format[AccountingMethodModel]
+object ITSASessionKeys {
+  val StartTime = "StartTime"
+  val RequestURI = "Request-URI"
+  val NINO = "NINO"
+  val UTR = "UTR"
+  val FailedUserMatching = "Failed-User-Matching"
+  val JourneyStateKey = "Journey-State"
 }

@@ -17,6 +17,7 @@
 package controllers
 
 import assets.MessageLookup.FrontPage
+import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.{MockConfig, Registration, SignUp}
 import core.config.BaseControllerConfig

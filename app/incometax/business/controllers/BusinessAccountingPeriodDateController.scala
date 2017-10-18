@@ -22,14 +22,15 @@ import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import forms._
-import models.AccountingPeriodModel
-import models.enums._
+import incometax.business.models.enums._
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 import core.utils.Implicits._
+import incometax.business.forms.{AccountingPeriodDateForm, AccountingPeriodPriorForm}
+import incometax.business.models.AccountingPeriodModel
 
 import scala.concurrent.Future
 

@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package forms
+package incometax.business.forms
 
 import assets.MessageLookup
 import core.forms.submapping.DateMapping
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
-import models.{AccountingPeriodModel, DateModel}
+import incometax.business.models.AccountingPeriodModel
+import models.DateModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 
 class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
 
-  import AccountingPeriodDateForm._
   import DateMapping._
+  import incometax.business.forms.AccountingPeriodDateForm._
 
   "The AccountingPeriodDateForm" should {
     "transform a valid request to the date form case class" in {

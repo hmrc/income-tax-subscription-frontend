@@ -18,7 +18,7 @@ package usermatching.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import controllers.ITSASessionKeys._
+import core.ITSASessionKeys._
 import core.auth.JourneyState._
 import core.auth.{IncomeTaxSAUser, UserMatched, UserMatchingController}
 import core.config.BaseControllerConfig

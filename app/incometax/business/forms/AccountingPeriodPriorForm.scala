@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package incometax.business.forms
 
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil._
 import core.forms.validation.utils.MappingUtil._
-import models.AccountingPeriodPriorModel
+import incometax.business.models.AccountingPeriodPriorModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid}

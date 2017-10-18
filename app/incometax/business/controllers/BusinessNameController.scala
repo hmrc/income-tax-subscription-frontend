@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import forms.BusinessNameForm
+import incometax.business.forms.BusinessNameForm
 import incometax.business.models.BusinessNameModel
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.OtherIncomeModel

@@ -22,6 +22,8 @@ import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
+import incometax.business.forms.AccountingPeriodPriorForm
+import incometax.business.models.{AccountingPeriodModel, AccountingPeriodPriorModel}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import models._

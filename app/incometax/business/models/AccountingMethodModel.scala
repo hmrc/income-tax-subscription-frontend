@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package incometax.business.models
 
 import play.api.libs.json.Json
 
+case class AccountingMethodModel(accountingMethod: String)
 
-case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel)
-
-object AccountingPeriodModel {
-  implicit val format = Json.format[AccountingPeriodModel]
+object AccountingMethodModel {
+  implicit val format = Json.format[AccountingMethodModel]
 }

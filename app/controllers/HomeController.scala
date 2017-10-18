@@ -18,7 +18,8 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import controllers.ITSASessionKeys._
+import core.ITSASessionKeys
+import core.ITSASessionKeys._
 import core.audit.Logging
 import core.auth.JourneyState._
 import core.auth._

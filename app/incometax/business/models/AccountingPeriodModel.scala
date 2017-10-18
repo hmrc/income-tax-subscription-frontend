@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package incometax.business.models
 
-object ITSASessionKeys {
-  val StartTime = "StartTime"
-  val RequestURI = "Request-URI"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val FailedUserMatching = "Failed-User-Matching"
-  val JourneyStateKey = "Journey-State"
+import models.DateModel
+import play.api.libs.json.Json
+
+
+case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel)
+
+object AccountingPeriodModel {
+  implicit val format = Json.format[AccountingPeriodModel]
 }

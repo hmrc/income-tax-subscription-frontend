@@ -18,7 +18,7 @@ package core.controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import controllers.ITSASessionKeys
+import core.ITSASessionKeys
 import core.auth.{Registration, SignUp, UserMatched, UserMatching}
 import core.services.mocks.MockAuthService
 import core.utils.TestConstants

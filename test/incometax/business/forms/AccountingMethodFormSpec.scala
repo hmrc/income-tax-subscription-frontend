@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package incometax.business.forms
 
 import assets.MessageLookup
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
-import models.AccountingMethodModel
+import incometax.business.models.AccountingMethodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 
 class AccountingMethodFormSpec extends PlaySpec with OneAppPerTest {
 
-  import AccountingMethodForm._
+  import incometax.business.forms.AccountingMethodForm._
 
   "The AccountingMethodForm" should {
     "transform the request to the form case class" in {

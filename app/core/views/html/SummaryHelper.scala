@@ -16,10 +16,10 @@
 
 package core.views.html
 
-import forms.AccountingMethodForm
+import incometax.business.forms.AccountingMethodForm
+import incometax.business.models.AccountingMethodModel
 import incometax.incomesource.forms.IncomeSourceForm
 import incometax.incomesource.models.IncomeSourceModel
-import models.AccountingMethodModel
 import play.api.i18n.Messages
 
 object SummaryHelper {

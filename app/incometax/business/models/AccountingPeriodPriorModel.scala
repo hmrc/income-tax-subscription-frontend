@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package incometax.business.models
 
 import play.api.libs.json.Json
 
-case class EmailModel(emailAddress: String)
+case class AccountingPeriodPriorModel(currentPeriodIsPrior: String)
 
-object EmailModel{
-  implicit val format = Json.format[EmailModel]
+object AccountingPeriodPriorModel {
+  implicit val format = Json.format[AccountingPeriodPriorModel]
 }
