@@ -20,7 +20,7 @@ import digitalcontact.models.{Activated, PaperlessState, Unset}
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.HttpResponse
-import utils.HttpResult.{HttpConnectorError, HttpResult, HttpResultParser}
+import core.utils.HttpResult.{HttpConnectorError, HttpResult, HttpResultParser}
 
 object PaperlessPreferenceHttpParser {
   val optedInKey = "optedIn"

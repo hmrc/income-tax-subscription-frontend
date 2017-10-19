@@ -18,7 +18,7 @@ package identityverification.controllers
 
 import assets.MessageLookup
 import core.audit.Logging
-import controllers.ControllerBaseSpec
+import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -47,7 +47,7 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
 
     "completionUri sets the correctly uri without a query string" in {
       val url = IdentityVerificationController.completionUri(baseUrl)
-      url must endWith(controllers.routes.HomeController.index().url)
+      url must endWith(usermatching.controllers.routes.HomeController.index().url)
     }
     "failureUri sets the correctly uri without a query string" in {
       val url = IdentityVerificationController.failureUri(baseUrl)

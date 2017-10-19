@@ -16,7 +16,7 @@
 
 package incometax.subscription.connectors.mocks
 
-import connectors.mocks.MockHttp
+import core.connectors.mocks.MockHttp
 import core.audit.Logging
 import incometax.subscription.connectors.GGAdminConnector
 import incometax.subscription.models.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess}
@@ -25,8 +25,8 @@ import org.mockito.Mockito._
 import play.api.http.Status
 import play.api.libs.json._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost}
-import utils.MockTrait
-import utils.TestConstants._
+import core.utils.MockTrait
+import core.utils.TestConstants._
 
 import scala.concurrent.Future
 

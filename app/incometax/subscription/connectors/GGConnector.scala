@@ -18,8 +18,8 @@ package incometax.subscription.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import _root_.utils.JsonUtils._
-import connectors.RawResponseReads
+import core.utils.JsonUtils._
+import core.connectors.RawResponseReads
 import core.audit.Logging
 import core.config.AppConfig
 import incometax.subscription.connectors.GGConnector._

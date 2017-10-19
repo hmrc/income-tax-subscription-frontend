@@ -19,8 +19,8 @@ package digitalcontact.connectors
 import digitalcontact.connectors.mocks.TestPreferenceFrontendConnector
 import org.scalatest.Matchers._
 import play.api.test.FakeRequest
-import utils.TestConstants._
-import utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 
 class PreferenceFrontendConnectorSpec extends UnitTestTrait
   with TestPreferenceFrontendConnector {

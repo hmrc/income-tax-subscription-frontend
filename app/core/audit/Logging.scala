@@ -18,13 +18,13 @@ package core.audit
 
 import javax.inject.{Inject, Singleton}
 
-import connectors.models.ConnectorError
+import core.connectors.models.ConnectorError
 import play.api.libs.json.JsValue
 import play.api.{Application, Configuration, Logger}
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{Audit, DataEvent}
-import utils.HttpResult.HttpConnectorError
+import core.utils.HttpResult.HttpConnectorError
 import uk.gov.hmrc.http.HeaderCarrier
 
 case class LoggingConfig(heading: String)

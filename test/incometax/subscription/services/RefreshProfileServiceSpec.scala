@@ -19,8 +19,8 @@ package incometax.subscription.services
 import incometax.subscription.models.{RefreshProfileFailure, RefreshProfileSuccess}
 import incometax.subscription.services.mocks.TestRefreshProfileService
 import org.scalatest.concurrent.ScalaFutures
-import utils.TestConstants._
-import utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 
 import scala.concurrent.Future
 

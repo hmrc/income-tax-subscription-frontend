@@ -20,7 +20,7 @@ package testonly.connectors
 import javax.inject.{Inject, Singleton}
 
 import core.Constants
-import connectors.RawResponseReads
+import core.connectors.RawResponseReads
 import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.play.http.ws.WSHttp

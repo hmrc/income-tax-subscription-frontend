@@ -18,7 +18,7 @@ package digitalcontact.controllers
 
 import core.auth.MockConfig
 import core.config.AppConfig
-import controllers.ControllerBaseSpec
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import digitalcontact.services.mocks.{MockPaperlessPreferenceTokenService, MockPreferencesService}
 import org.jsoup.Jsoup
@@ -27,7 +27,7 @@ import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import utils.TestConstants._
+import core.utils.TestConstants._
 
 class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesService with MockKeystoreService with MockPaperlessPreferenceTokenService {
 

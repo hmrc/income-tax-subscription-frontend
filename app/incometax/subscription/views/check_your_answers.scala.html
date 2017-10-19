@@ -14,17 +14,19 @@
  * limitations under the License.
  *@
 
-@import incometax.subscription.models.SummaryModel
-@import core.views.html.helpers._
-@import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
-@import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
+@import core.views.html.helpers._
+@import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+@import incometax.business.models.address.Address
 @import incometax.incomesource.models._
+@import incometax.subscription.models.SummaryModel
+@import uk.gov.hmrc.play.views.html.helpers.form
 
-@import models.address.Address
-@(summaryModel: SummaryModel, isRegistration:Boolean, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@import core.views.html.SummaryIdConstants._
-@import core.views.html.SummaryHelper._
+@import incometax.business.models.AccountingMethodModel
+@import incometax.business.models.AccountingPeriodModel
+@(summaryModel: SummaryModel, isRegistration: Boolean, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+    @import core.views.html.SummaryHelper._
+    @import core.views.html.SummaryIdConstants._
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
     <div class="tabular-data__entry divider--top--thick" id="@field-row">
@@ -68,7 +70,7 @@
     val rowName = BusinessNameId
     val rowQuestion = Messages("summary.business_name")
     val rowAnswer = name.businessName
-    val rowUrl = controllers.business.routes.BusinessNameController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessNameController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -76,7 +78,7 @@
     val rowName = BusinessPhoneNumberId
     val rowQuestion = Messages("summary.business_phone")
     val rowAnswer = phoneNumber.phoneNumber
-    val rowUrl = controllers.business.routes.BusinessPhoneNumberController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessPhoneNumberController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -86,7 +88,7 @@
     val rowAnswer = address.lines.fold("")(_.map(l => s"</p>$l</p>").mkString("")) +
             address.postcode.fold("")(l => s"</p>$l</p>") +
             address.country.fold("")(l => s"</p>${l.name}</p>")
-    val rowUrl = controllers.business.routes.BusinessAddressController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessAddressController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
@@ -94,7 +96,7 @@
     val rowName = BusinessStartDateId
     val rowQuestion = Messages("summary.business_start_date")
     val rowAnswer = startDate.startDate.toCheckYourAnswersDateFormat
-    val rowUrl = controllers.business.routes.BusinessStartDateController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessStartDateController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -105,7 +107,7 @@
         else Messages("summary.accounting_period")
     val periodInMonth = period.startDate.diffInMonth(period.endDate)
     val rowAnswer = s"${period.startDate.toCheckYourAnswersDateFormat} to ${period.endDate.toCheckYourAnswersDateFormat}"
-    val rowUrl = controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
@@ -113,7 +115,7 @@
     val rowName = AccountingMethodId
     val rowQuestion = Messages("summary.income_type")
     val rowAnswer = accountingMethodText(income)
-    val rowUrl = controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
+    val rowUrl = incometax.business.controllers.routes.BusinessAccountingMethodController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

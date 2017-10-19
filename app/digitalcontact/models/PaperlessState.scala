@@ -16,7 +16,7 @@
 
 package digitalcontact.models
 
-import connectors.models.ConnectorError
+import core.connectors.models.ConnectorError
 
 sealed trait PaperlessState
 

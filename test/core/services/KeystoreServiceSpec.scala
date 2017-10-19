@@ -18,11 +18,11 @@ package core.services
 
 import core.config.SessionCache
 import core.services.mocks.MockKeystoreService
-import models.BusinessNameModel
 import org.scalatest.Matchers._
 import play.api.http.Status
 import uk.gov.hmrc.http.HttpResponse
-import utils.{TestModels, UnitTestTrait}
+import core.utils.{TestModels, UnitTestTrait}
+import incometax.business.models.BusinessNameModel
 
 class KeystoreServiceSpec extends UnitTestTrait
   with MockKeystoreService {

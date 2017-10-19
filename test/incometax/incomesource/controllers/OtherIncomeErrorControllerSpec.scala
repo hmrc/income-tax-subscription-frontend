@@ -17,15 +17,15 @@
 package incometax.incomesource.controllers
 
 import core.audit.Logging
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
-import controllers.ControllerBaseSpec
+import core.utils.TestModels
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.OtherIncomeModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
-import utils.TestModels
 
 class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystoreService {
 
@@ -73,13 +73,13 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
       verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.business.routes.BusinessNameController.show().url}' on the business journey" in {
+    s"redirect to '${incometax.business.controllers.routes.BusinessNameController.show().url}' on the business journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.show().url)
+      redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessNameController.show().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)
@@ -97,13 +97,13 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
       verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.business.routes.BusinessNameController.show().url}' on the both journey" in {
+    s"redirect to '${incometax.business.controllers.routes.BusinessNameController.show().url}' on the both journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.show().url)
+      redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessNameController.show().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)

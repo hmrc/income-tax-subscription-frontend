@@ -23,7 +23,7 @@ import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import utils.Implicits._
+import core.utils.Implicits._
 
 @Singleton
 class UserDetailsErrorController @Inject()(val baseConfig: BaseControllerConfig,

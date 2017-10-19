@@ -2,8 +2,8 @@
 GET         /assets/*file                 controllers.Assets.at(path="/public", file)
 
 # Home controller
-GET         /                             controllers.HomeController.home
-GET         /index                        controllers.HomeController.index
+GET         /                             usermatching.controllers.HomeController.home
+GET         /index                        usermatching.controllers.HomeController.index
 
 # SignOut Controller
 GET         /logout                       core.controllers.SignOutController.signOut
@@ -41,36 +41,32 @@ GET         /thankyou                     core.controllers.FeedbackController.th
 GET         /terms                        incometax.subscription.controllers.TermsController.showTerms()
 POST        /terms                        incometax.subscription.controllers.TermsController.submitTerms()
 
-# Not Eligible Routes - CURRENTLY NOT USED (but kept if required at a later date)
-GET         /not-eligible                 controllers.NotEligibleController.showNotEligible
-POST        /not-eligible                 controllers.NotEligibleController.submitNotEligible
-
 # Other Income Sources Routes
 GET         /income-other                 incometax.incomesource.controllers.OtherIncomeController.showOtherIncome(editMode: Boolean ?= false)
 POST        /income-other                 incometax.incomesource.controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
 
 # Already enrolled
-GET         /already-enrolled             controllers.AlreadyEnrolledController.enrolled
+GET         /already-enrolled             incometax.subscription.controllers.AlreadyEnrolledController.enrolled
 
 # No NINO Routes
-GET         /register-for-SA              controllers.NoSAController.show
-POST        /register-for-SA              controllers.NoSAController.submit
+GET         /register-for-SA              usermatching.controllers.NoSAController.show
+POST        /register-for-SA              usermatching.controllers.NoSAController.submit
 
 # Other Income Error Routes
 GET         /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.showOtherIncomeError
 POST        /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.submitOtherIncomeError
 
 # Affinity Group Error
-GET         /error/affinity-group         controllers.AffinityGroupErrorController.show
+GET         /error/affinity-group         usermatching.controllers.AffinityGroupErrorController.show
 
 # IV Error
 GET         /error/iv-failed              identityverification.controllers.IdentityVerificationController.ivFailed
 
 # Exit Survey
-GET         /exit-survey                  controllers.ExitSurveyController.show
-POST        /exit-survey                  controllers.ExitSurveyController.submit
+GET         /exit-survey                  incometax.subscription.controllers.ExitSurveyController.show
+POST        /exit-survey                  incometax.subscription.controllers.ExitSurveyController.submit
 
-GET         /feedback-submitted           controllers.ExitSurveyThankYouController.show
+GET         /feedback-submitted           incometax.subscription.controllers.ExitSurveyThankYouController.show
 
 GET         /sign-in                      core.controllers.SignInController.signIn
 

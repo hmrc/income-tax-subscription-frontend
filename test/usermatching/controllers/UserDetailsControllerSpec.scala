@@ -17,10 +17,11 @@
 package usermatching.controllers
 
 import assets.MessageLookup.{UserDetails => messages}
+import core.ITSASessionKeys
 import core.auth.{MockConfig, UserMatching}
-import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import core.controllers.ControllerBaseSpec
+import core.models.DateModel
 import core.services.mocks.MockKeystoreService
-import models.DateModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -29,7 +30,7 @@ import uk.gov.hmrc.http.{HttpResponse, NotFoundException, SessionKeys}
 import usermatching.forms.UserDetailsForm
 import usermatching.models.UserDetailsModel
 import usermatching.services.mocks.MockUserLockoutService
-import utils.TestConstants._
+import core.utils.TestConstants._
 
 class UserDetailsControllerSpec extends ControllerBaseSpec
   with MockKeystoreService

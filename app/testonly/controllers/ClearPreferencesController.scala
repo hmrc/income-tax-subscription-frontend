@@ -26,7 +26,7 @@ import digitalcontact.models.Activated
 import play.api.i18n.MessagesApi
 import testonly.connectors.ClearPreferencesConnector
 import uk.gov.hmrc.http.{HttpGet, InternalServerException}
-import utils.Implicits._
+import core.utils.Implicits._
 
 @Singleton
 class ClearPreferencesController @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector,

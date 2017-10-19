@@ -16,6 +16,6 @@
 
 package core.views.html
 
-import utils.Implicits
+import core.utils.Implicits
 
 package object helpers extends Implicits

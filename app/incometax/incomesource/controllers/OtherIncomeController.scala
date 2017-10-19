@@ -18,19 +18,18 @@ package incometax.incomesource.controllers
 
 import javax.inject.{Inject, Singleton}
 
-
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.OtherIncomeModel
 import core.audit.Logging
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
+import core.utils.Implicits._
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.models.OtherIncomeModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
-import utils.Implicits._
 
 import scala.concurrent.Future
 
@@ -65,11 +64,11 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
         keystoreService.fetchIncomeSource() map {
           case Some(incomeSource) => incomeSource.source match {
             case IncomeSourceForm.option_business =>
-              Redirect(controllers.business.routes.BusinessNameController.show())
+              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
             case IncomeSourceForm.option_property =>
               Redirect(incometax.subscription.controllers.routes.TermsController.showTerms())
             case IncomeSourceForm.option_both =>
-              Redirect(controllers.business.routes.BusinessNameController.show())
+              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
           }
           case _ =>
             logging.info("Tried to submit other income when no data found in Keystore for income source")

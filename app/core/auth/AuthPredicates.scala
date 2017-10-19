@@ -42,7 +42,7 @@ object AuthPredicates extends Results {
       Left(Future.successful(resolveNino))
     }
 
-  lazy val alreadyEnrolled: Result = Redirect(controllers.routes.AlreadyEnrolledController.enrolled())
+  lazy val alreadyEnrolled: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.enrolled())
 
   val mtdidPredicate: AuthPredicate = request => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
@@ -52,7 +52,7 @@ object AuthPredicates extends Results {
     if (user.mtdItsaRef.nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.enrolledPredicate")))
 
-  lazy val homeRoute = Redirect(controllers.routes.HomeController.index())
+  lazy val homeRoute = Redirect(usermatching.controllers.routes.HomeController.index())
 
   lazy val timeoutRoute = Redirect(core.controllers.routes.SessionTimeoutController.timeout())
 
@@ -62,7 +62,7 @@ object AuthPredicates extends Results {
     }
     else Right(AuthPredicateSuccess)
 
-  lazy val wrongAffinity: Result = Redirect(controllers.routes.AffinityGroupErrorController.show())
+  lazy val wrongAffinity: Result = Redirect(usermatching.controllers.routes.AffinityGroupErrorController.show())
 
   val affinityPredicate: AuthPredicate = request => user =>
     if (user.affinityGroup contains AffinityGroup.Individual) Right(AuthPredicateSuccess)

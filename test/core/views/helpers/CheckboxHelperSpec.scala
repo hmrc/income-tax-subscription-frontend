@@ -21,7 +21,7 @@ import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 import core.forms.validation.utils.MappingUtil._
 
 class CheckboxHelperSpec extends UnitTestTrait {

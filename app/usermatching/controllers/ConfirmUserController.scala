@@ -18,7 +18,7 @@ package usermatching.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import controllers.ITSASessionKeys._
+import core.ITSASessionKeys._
 import core.auth.JourneyState._
 import core.auth.{IncomeTaxSAUser, UserMatched, UserMatchingController}
 import core.config.BaseControllerConfig
@@ -117,7 +117,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
     matchedDetails match {
       case UserMatchSuccessResponseModel(_, _, _, nino, Some(utr)) =>
         Future.successful(
-          Redirect(controllers.routes.HomeController.index())
+          Redirect(routes.HomeController.index())
             .addingToSession(
               NINO -> nino,
               UTR -> utr
@@ -125,7 +125,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
         )
       case UserMatchSuccessResponseModel(_, _, _, nino, _) =>
         Future.successful(
-          Redirect(controllers.routes.HomeController.index())
+          Redirect(routes.HomeController.index())
             .addingToSession(NINO -> matchedDetails.nino)
         )
     }

@@ -18,15 +18,16 @@ package incometax.subscription.controllers
 
 import java.time.LocalDateTime
 
-import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import core.ITSASessionKeys
 import core.audit.Logging
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
+import core.utils.TestModels
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.NotFoundException
-import utils.TestModels
 
 import scala.concurrent.Future
 

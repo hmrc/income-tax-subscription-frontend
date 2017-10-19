@@ -21,7 +21,7 @@ import digitalcontact.models.PaperlessPreferenceTokenResult.{PaperlessPreference
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import uk.gov.hmrc.http.HttpResponse
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class PaperlessPreferenceTokenHttpParserSpec extends UnitTestTrait with EitherValues  {
   val testHttpVerb = "POST"

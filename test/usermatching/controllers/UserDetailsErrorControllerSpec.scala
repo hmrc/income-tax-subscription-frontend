@@ -17,14 +17,15 @@
 package usermatching.controllers
 
 import assets.MessageLookup.{UserDetailsError => messages}
+import core.ITSASessionKeys
 import core.auth.{MockConfig, UserMatching}
-import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import uk.gov.hmrc.http.{NotFoundException, SessionKeys}
-import utils.TestConstants.testUserId
+import core.utils.TestConstants.testUserId
 
 class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
 

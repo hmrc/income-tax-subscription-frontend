@@ -18,9 +18,10 @@ package core.services
 
 import javax.inject._
 
+import incometax.business.models._
+import incometax.business.models.address.Address
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import models._
-import models.address.Address
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
@@ -100,12 +101,6 @@ class KeystoreService @Inject()(val session: SessionCache) {
 
   def saveOtherIncome(otherIncome: OtherIncomeModel)(implicit hc: HeaderCarrier, reads: Reads[OtherIncomeModel]): FC =
     save[OtherIncomeModel](OtherIncome, otherIncome)
-
-  def fetchNotEligible()(implicit hc: HeaderCarrier, reads: Reads[NotEligibleModel]): FO[NotEligibleModel] =
-    fetch[NotEligibleModel](NotEligible)
-
-  def saveNotEligible(choice: NotEligibleModel)(implicit hc: HeaderCarrier, reads: Reads[NotEligibleModel]): FC =
-    save[NotEligibleModel](NotEligible, choice)
 
   def fetchSubscriptionId()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = fetch[String](MtditId)
 

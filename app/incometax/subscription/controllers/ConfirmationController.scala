@@ -20,12 +20,12 @@ import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 import javax.inject.{Inject, Singleton}
 
-import controllers.ITSASessionKeys
+import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import models.DateModel.dateConvert
+import core.models.DateModel.dateConvert
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.InternalServerException
@@ -67,7 +67,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   val signOut: Action[AnyContent] = Authenticated.async { implicit user =>
-    implicit request => Future.successful(Redirect(controllers.routes.ExitSurveyController.show()).withNewSession)
+    implicit request => Future.successful(Redirect(routes.ExitSurveyController.show()).withNewSession)
   }
 
 }

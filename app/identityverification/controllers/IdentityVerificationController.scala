@@ -55,7 +55,7 @@ class IdentityVerificationController @Inject()(override val baseConfig: BaseCont
 
 object IdentityVerificationController {
 
-  def completionUri(baseUrl: String): String = baseUrl + controllers.routes.HomeController.index().url
+  def completionUri(baseUrl: String): String = baseUrl + usermatching.controllers.routes.HomeController.index().url
 
   def failureUri(baseUrl: String): String = baseUrl + identityverification.controllers.routes.IdentityVerificationController.ivFailed().url
 

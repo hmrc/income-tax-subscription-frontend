@@ -141,12 +141,6 @@ object MessageLookup {
     val exampleEndDate_registration = "For example, 5 4 2018"
   }
 
-  object ContactEmail {
-    val title = "Enter your email address"
-    val heading: String = title
-    val line_1 = "We'll use this to get in touch with updates about your estimated Income Tax calculations."
-  }
-
   object BusinessName {
     val title = "Business name"
     val heading: String = "What's the name of your business?"
@@ -427,17 +421,6 @@ object MessageLookup {
     val heading: String = title
     val line_1 = "Your answers mean you should be able to start sending HMRC digital updates after you sign up."
     val line_2 = "You just need to enter a few more details."
-  }
-
-  object Not_Eligible {
-    val title = "You can't send digital updates yet"
-    val heading: String = title
-    val line_1 = "Your answers mean you're not eligible to send digital updates to HMRC right now."
-    val line_2 = "You can still sign up for the service. HMRC are working to make digital updates available for all sole traders in the coming months. If you sign up now, you will be able to send digital updates to HMRC when you become eligible."
-    val line_3 = "If you choose to sign up, we'll ask you a few questions about your income and contact details."
-    val signUp = "I want to sign up"
-    val signOut = "I don't want to sign up - sign me out"
-    val question = "Choose what you would like to do next"
   }
 
   object NoSA {

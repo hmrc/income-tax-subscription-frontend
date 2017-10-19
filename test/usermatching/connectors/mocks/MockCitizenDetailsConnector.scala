@@ -17,7 +17,8 @@
 package usermatching.connectors.mocks
 
 import core.audit.Logging
-import incometax.subscription.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
+import core.utils.TestConstants.testException
+import core.utils.{MockTrait, UnitTestTrait}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
@@ -25,8 +26,7 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet}
 import usermatching.connectors.CitizenDetailsConnector
-import utils.TestConstants.testException
-import utils.{MockTrait, UnitTestTrait}
+import usermatching.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 
 import scala.concurrent.Future
 

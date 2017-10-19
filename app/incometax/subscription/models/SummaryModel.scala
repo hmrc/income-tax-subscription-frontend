@@ -16,9 +16,10 @@
 
 package incometax.subscription.models
 
+import incometax.business.models.address.Address
+import incometax.business.models._
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import models.address.Address
-import models.{AccountingMethodModel, _}
+import models._
 
 case class SummaryModel(incomeSource: Option[IncomeSourceModel] = None,
                         otherIncome: Option[OtherIncomeModel] = None,

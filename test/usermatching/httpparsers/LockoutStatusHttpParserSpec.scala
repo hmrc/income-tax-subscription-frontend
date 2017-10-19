@@ -24,8 +24,8 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpResponse
 import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusHttpReads
 import usermatching.models.{LockedOut, LockoutStatusFailureResponse, NotLockedOut}
-import utils.TestConstants._
-import utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 
 class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
   val testUri = "/"

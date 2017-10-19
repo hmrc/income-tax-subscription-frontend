@@ -17,7 +17,7 @@
 package usermatching.connectors.mocks
 
 import core.audit.Logging
-import connectors.mocks.MockHttp
+import core.connectors.mocks.MockHttp
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
@@ -25,10 +25,10 @@ import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.connectors.AuthenticatorConnector
 import usermatching.models._
-import utils.JsonUtils._
-import utils.TestConstants.testException
-import utils.TestModels._
-import utils.{MockTrait, TestConstants, UnitTestTrait}
+import core.utils.JsonUtils._
+import core.utils.TestConstants.testException
+import core.utils.TestModels._
+import core.utils.{MockTrait, TestConstants, UnitTestTrait}
 
 import scala.concurrent.Future
 

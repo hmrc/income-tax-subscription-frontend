@@ -19,7 +19,7 @@ package usermatching.services
 import play.api.test.Helpers._
 import usermatching.models.UserMatchUnexpectedError
 import usermatching.services.mocks.TestUserMatchingService
-import utils.TestModels._
+import core.utils.TestModels._
 
 class UserMatchingServiceSpec extends TestUserMatchingService {
 

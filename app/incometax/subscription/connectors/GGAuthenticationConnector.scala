@@ -18,7 +18,7 @@ package incometax.subscription.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import connectors.RawResponseReads
+import core.connectors.RawResponseReads
 import core.audit.Logging
 import core.config.AppConfig
 import incometax.subscription.connectors.GGAuthenticationConnector._

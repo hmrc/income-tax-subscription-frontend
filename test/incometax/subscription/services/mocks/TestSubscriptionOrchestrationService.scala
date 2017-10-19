@@ -16,15 +16,15 @@
 
 package incometax.subscription.services.mocks
 
-import connectors.models.ConnectorError
+import core.connectors.models.ConnectorError
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import incometax.subscription.models.SummaryModel
 import incometax.subscription.services.SubscriptionOrchestrationService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.MockTrait
-import utils.TestConstants._
+import core.utils.MockTrait
+import core.utils.TestConstants._
 
 import scala.concurrent.Future
 

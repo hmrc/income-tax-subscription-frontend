@@ -19,6 +19,7 @@ package models
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+import core.models.DateModel
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import org.scalatest.Matchers._
 

@@ -1,0 +1,55 @@
+@*
+ * Copyright 2017 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import core.config.AppConfig
+@import core.models.DateModel
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import core.views.html.helpers._
+
+@(subscriptionId: String, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@scripts = {
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
+}
+@core.views.html.templates.main_template(title = Messages("already-enrolled.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction), scriptElem = scripts) {
+
+    <div class="form-group">
+        <section id="confirmation-heading" class="transaction-banner--complete">
+            <h1 class="transaction-banner__heading" style="color: #fff">@Messages("already-enrolled.heading")</h1>
+            <p>@Messages("confirmation.banner.line_1")</p>
+            <p>
+                <span id="subscription-id-value" class="h3-heading">@subscriptionId</span>
+            </p>
+        </section>
+    </div>
+
+    <section class="form-group" id="whatHappensNext">
+        <div class="form-group">
+            <p>@Messages("confirmation.whatHappensNext.para1")</p>
+        </div>
+        <h2>@Messages("confirmation.whatHappensNext.heading")</h2>
+        <p>@Messages("confirmation.whatHappensNext.para2")</p>
+        <p>@Messages("confirmation.whatHappensNext.para3")</p>
+        <ul class="bullets">
+            <li>@Messages("confirmation.whatHappensNext.bullet1")</li>
+            <li>@Html(Messages("confirmation.whatHappensNext.bullet2", appConfig.btaUrl))</li>
+        </ul>
+    </section>
+
+    @form(action = signOutAction) {
+        @signOutButton(Messages("confirmation.sign_out"))
+    }
+}

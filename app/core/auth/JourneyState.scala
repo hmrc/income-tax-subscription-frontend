@@ -16,7 +16,7 @@
 
 package core.auth
 
-import controllers.ITSASessionKeys
+import core.ITSASessionKeys
 import play.api.mvc._
 
 sealed trait JourneyState {

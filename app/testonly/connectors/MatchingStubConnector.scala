@@ -23,8 +23,8 @@ import java.time.format.{DateTimeFormatter, ResolverStyle}
 import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
-import connectors.RawResponseReads
-import models.DateModel
+import core.connectors.RawResponseReads
+import core.models.DateModel
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig
@@ -32,7 +32,7 @@ import testonly.models.UserToStubModel
 import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 
 case class Value(value: String)
@@ -97,7 +97,7 @@ object Request {
   implicit val format = Json.format[Request]
 }
 
-import utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

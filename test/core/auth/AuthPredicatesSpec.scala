@@ -17,9 +17,9 @@
 package core.auth
 
 import _root_.uk.gov.hmrc.http.SessionKeys._
+import core.ITSASessionKeys
 import core.auth.AuthPredicate.AuthPredicateSuccess
 import core.auth.AuthPredicates._
-import controllers.ITSASessionKeys
 import core.services.mocks.MockAuthService
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
@@ -27,7 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolment, Enrolments}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
 

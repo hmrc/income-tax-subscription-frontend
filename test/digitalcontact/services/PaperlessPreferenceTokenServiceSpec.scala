@@ -18,8 +18,8 @@ package digitalcontact.services
 
 import digitalcontact.services.mocks.TestPaperlessPreferenceTokenService
 import play.api.test.Helpers._
-import utils.TestConstants._
-import utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 
 class PaperlessPreferenceTokenServiceSpec extends UnitTestTrait with TestPaperlessPreferenceTokenService {
   "storeNino" should {

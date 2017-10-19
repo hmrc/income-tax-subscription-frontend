@@ -19,8 +19,8 @@ package incometax.subscription.services
 import incometax.subscription.models.{EnrolFailure, EnrolSuccess}
 import incometax.subscription.services.mocks.TestEnrolmentService
 import org.scalatest.concurrent.ScalaFutures
-import utils.TestConstants._
-import utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 
 import scala.concurrent.Future
 

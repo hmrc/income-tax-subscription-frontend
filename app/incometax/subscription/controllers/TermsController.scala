@@ -27,7 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
-import utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.Future
 
@@ -61,9 +61,9 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
     keystoreService.fetchIncomeSource() flatMap {
       case Some(source) => source.source match {
         case IncomeSourceForm.option_business =>
-          controllers.business.routes.BusinessAccountingMethodController.show().url
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
         case IncomeSourceForm.option_both =>
-          controllers.business.routes.BusinessAccountingMethodController.show().url
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
         case IncomeSourceForm.option_property =>
           import OtherIncomeForm._
           keystoreService.fetchOtherIncome() flatMap {

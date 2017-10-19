@@ -17,12 +17,12 @@
 package incometax.subscription.views
 
 import assets.MessageLookup
+import core.models.DateModel
+import core.views.ViewSpecTrait
 import incometax.incomesource.forms.IncomeSourceForm
-import models.DateModel
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import views.ViewSpecTrait
 
 class ConfirmationViewSpec extends ViewSpecTrait {
 

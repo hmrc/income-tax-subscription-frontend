@@ -1,16 +1,17 @@
 
 package helpers
 
-import forms._
+import core.models.DateModel
+import core.services.CacheConstants
+import helpers.IntegrationTestConstants._
+import incometax.business.forms.{AccountingMethodForm, AccountingPeriodPriorForm}
+import incometax.business.models.address.{Address, Country, ReturnedAddress}
+import incometax.business.models._
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
-import IntegrationTestConstants._
-import core.services.CacheConstants
-import connectors.models.address.ReturnedAddress
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import models.address.{Address, Country}
 import usermatching.models.UserDetailsModel
 
 object IntegrationTestModels {

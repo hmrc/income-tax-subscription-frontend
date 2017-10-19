@@ -16,10 +16,10 @@
 
 package incometax.subscription.connectors
 
+import core.utils.TestConstants._
 import incometax.subscription.connectors.mocks.TestSubscriptionConnector
 import org.scalatest.Matchers._
 import org.scalatest.{EitherValues, OptionValues}
-import utils.TestConstants._
 
 class SubscriptionConnectorSpec extends TestSubscriptionConnector with EitherValues with OptionValues {
   "SubscriptionConnector.subscribe" should {

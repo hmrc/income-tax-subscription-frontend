@@ -22,9 +22,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.connectors.mocks.MockAuthenticatiorConnector
 import usermatching.models.{UserDetailsModel, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import usermatching.services.UserMatchingService
-import utils.MockTrait
-import utils.TestConstants._
-import utils.TestModels._
+import core.utils.MockTrait
+import core.utils.TestConstants._
+import core.utils.TestModels._
 
 import scala.concurrent.Future
 

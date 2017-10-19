@@ -16,8 +16,7 @@
 
 package core.auth
 
-import core.Constants
-import controllers.ITSASessionKeys
+import core.{Constants, ITSASessionKeys}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
 

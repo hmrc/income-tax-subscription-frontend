@@ -16,12 +16,12 @@
 
 package incometax.subscription.controllers
 
-import controllers.ControllerBaseSpec
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
+import core.utils.TestModels
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import utils.TestModels
 
 import scala.concurrent.Future
 
@@ -91,15 +91,15 @@ class TermsControllerSpec extends ControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${controllers.business.routes.BusinessAccountingMethodController.show().url} on the business journey" in {
+    s"point to ${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url} on the business journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-      await(TestTermsController.backUrl(subscriptionRequest)) mustBe controllers.business.routes.BusinessAccountingMethodController.show().url
+      await(TestTermsController.backUrl(subscriptionRequest)) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
       verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
     }
 
-    s"point to ${controllers.business.routes.BusinessAccountingMethodController.show().url} on the both journey" in {
+    s"point to ${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url} on the both journey" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
-      await(TestTermsController.backUrl(subscriptionRequest)) mustBe controllers.business.routes.BusinessAccountingMethodController.show().url
+      await(TestTermsController.backUrl(subscriptionRequest)) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
       verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
     }
 

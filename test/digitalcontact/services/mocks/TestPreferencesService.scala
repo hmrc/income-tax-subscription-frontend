@@ -22,8 +22,8 @@ import digitalcontact.services.PreferencesService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.mvc.{AnyContent, Request}
-import utils.TestConstants._
-import utils.{MockTrait, UnitTestTrait}
+import core.utils.TestConstants._
+import core.utils.{MockTrait, UnitTestTrait}
 
 import scala.concurrent.Future
 

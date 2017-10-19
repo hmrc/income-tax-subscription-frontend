@@ -25,7 +25,7 @@ import play.api.data.Forms.mapping
 import play.api.data.validation.Invalid
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class FieldErrorHelperSpec extends UnitTestTrait {
 

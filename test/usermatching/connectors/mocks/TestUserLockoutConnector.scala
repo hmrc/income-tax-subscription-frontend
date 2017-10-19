@@ -16,7 +16,7 @@
 
 package usermatching.connectors.mocks
 
-import connectors.mocks.MockHttp
+import core.connectors.mocks.MockHttp
 import core.config.AppConfig
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -25,8 +25,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.connectors.UserLockoutConnector
 import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
-import utils.MockTrait
-import utils.TestConstants._
+import core.utils.MockTrait
+import core.utils.TestConstants._
 
 import scala.concurrent.Future
 

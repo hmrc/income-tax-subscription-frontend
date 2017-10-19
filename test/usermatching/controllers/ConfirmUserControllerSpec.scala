@@ -16,18 +16,18 @@
 
 package usermatching.controllers
 
+import core.ITSASessionKeys
 import core.auth.{MockConfig, UserMatched, UserMatching}
-import controllers.{ControllerBaseSpec, ITSASessionKeys}
+import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
+import core.utils.TestConstants._
+import core.utils.{TestConstants, TestModels}
 import org.scalatest.OptionValues
 import play.api.http.Status
 import play.api.mvc._
 import play.api.test.Helpers.{await, _}
-import services.mocks._
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException, NotFoundException, SessionKeys}
 import usermatching.services.mocks.{MockUserLockoutService, MockUserMatchingService}
-import utils.TestConstants._
-import utils.{TestConstants, TestModels}
 
 import scala.concurrent.Future
 
@@ -170,7 +170,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           val result = callSubmit()
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.HomeController.index().url)
+          redirectLocation(result) mustBe Some(routes.HomeController.index().url)
 
           val session = await(result).session(request)
           session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
@@ -188,7 +188,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           val result = callSubmit()
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.HomeController.index().url)
+          redirectLocation(result) mustBe Some(routes.HomeController.index().url)
 
           val session = await(result).session(request)
           session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)

@@ -19,12 +19,12 @@ package core.services
 import incometax.subscription.models.SummaryModel
 import models._
 import org.scalatest.Matchers._
-import utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class CacheUtilSpec extends UnitTestTrait {
 
   import core.services.CacheUtil._
-  import utils.TestModels._
+  import core.utils.TestModels._
 
   "CacheUtil" should {
 

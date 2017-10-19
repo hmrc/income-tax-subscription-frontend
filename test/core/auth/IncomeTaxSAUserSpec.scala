@@ -16,13 +16,12 @@
 
 package core.auth
 
-import core.Constants
-import controllers.ITSASessionKeys
+import core.{Constants, ITSASessionKeys}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
-import utils.TestConstants.{testNino, testUtr}
+import core.utils.TestConstants.{testNino, testUtr}
 
 class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 

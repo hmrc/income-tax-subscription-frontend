@@ -16,9 +16,7 @@
 
 package core.controllers
 
-import controllers.ControllerBaseSpec
 import core.config.FrontendAppConfig
-import core.controllers.SignInController
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

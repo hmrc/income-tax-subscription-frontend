@@ -20,10 +20,11 @@ import incometax.incomesource.forms.IncomeSourceForm
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import incometax.subscription.models.SummaryModel
 import models._
-import models.address.Address
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 import CacheConstants._
+import incometax.business.models._
+import incometax.business.models.address.Address
 
 
 object CacheUtil {
