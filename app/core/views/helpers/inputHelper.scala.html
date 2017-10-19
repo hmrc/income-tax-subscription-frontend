@@ -20,6 +20,7 @@
         label: Option[String] = None,
         parentForm: Option[Form[_]] = None,
         maxLength: Option[Int] = None,
+        divClass: Option[String] = None,
         labelClass: Option[String] = None,
         isNumeric: Boolean = false,
         formHint: Option[Seq[String]] = None
@@ -41,7 +42,7 @@
     }
 }
 
-<div class="form-group form-field@if(hasError) { form-field--error}">
+<div class="form-group form-field@divClass.map(cls => s" $cls")@if(hasError) { form-field--error}">
     <label class='form-label @labelClass.fold("")(x => x)' for=@field.name>
         @label.fold(Html(""))(label => Html(label))
         @formHint.fold(Nil: Seq[Html])(_.map(hintText))
