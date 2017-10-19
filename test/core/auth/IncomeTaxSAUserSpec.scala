@@ -16,12 +16,12 @@
 
 package core.auth
 
+import core.utils.TestConstants.{testNino, testUtr}
 import core.{Constants, ITSASessionKeys}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
-import core.utils.TestConstants.{testNino, testUtr}
 
 class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
@@ -36,16 +36,17 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
           Set(
             Enrolment(Constants.ninoEnrolmentName,
               Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, testNino)),
-              "Activated"
+              "Activated",
+              confidenceLevel
             ),
             Enrolment(Constants.utrEnrolmentName,
               Seq(EnrolmentIdentifier(Constants.utrEnrolmentIdentifierKey, testUtr)),
-              "Activated"
+              "Activated",
+              confidenceLevel
             )
           )
         ),
-        None,
-        confidenceLevel
+        None
       )
 
       s"have the expected NINO $testNino" in {
@@ -71,8 +72,7 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
       lazy val user = IncomeTaxSAUser(
         Enrolments(Set.empty),
-        None,
-        confidenceLevel
+        None
       )
 
       s"have the expected NINO $testNino" in {
@@ -81,6 +81,10 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
       s"have the expected UTR $testUtr" in {
         user.utr shouldBe Some(testUtr)
+      }
+
+      "have the default confidence level of 0" in {
+        user.confidenceLevel shouldBe ConfidenceLevel.L0
       }
     }
   }
