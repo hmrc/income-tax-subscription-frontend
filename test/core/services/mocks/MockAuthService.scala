@@ -17,10 +17,11 @@
 package core.services.mocks
 
 import core.Constants
-import core.services.AuthService
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
+import core.services.AuthService
+import uk.gov.hmrc.auth.core.ConfidenceLevel.L200
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
@@ -58,17 +59,17 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
         })
   }
 
-  def mockNinoAndUtrRetrieval(): Unit = mockRetrievalSuccess(new ~(new ~(Enrolments(Set(ninoEnrolment, utrEnrolment)), Some(AffinityGroup.Individual)), testConfidenceLevel))
+  def mockNinoAndUtrRetrieval(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment, utrEnrolment)), Some(AffinityGroup.Individual)))
 
-  def mockUtrRetrieval(): Unit = mockRetrievalSuccess(new ~(new ~(Enrolments(Set(utrEnrolment)), Some(AffinityGroup.Individual)), testConfidenceLevel))
+  def mockUtrRetrieval(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(utrEnrolment)), Some(AffinityGroup.Individual)))
 
-  def mockNinoRetrieval(): Unit = mockRetrievalSuccess(new ~(new ~(Enrolments(Set(ninoEnrolment)), Some(AffinityGroup.Individual)), testConfidenceLevel))
+  def mockNinoRetrieval(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment)), Some(AffinityGroup.Individual)))
 
-  def mockNinoRetrievalWithOrg(): Unit = mockRetrievalSuccess(new ~(new ~(Enrolments(Set(ninoEnrolment)), Some(AffinityGroup.Organisation)), testConfidenceLevel))
+  def mockNinoRetrievalWithOrg(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment)), Some(AffinityGroup.Organisation)))
 
-  def mockNinoRetrievalWithNoAffinity(): Unit = mockRetrievalSuccess(new ~(new ~(Enrolments(Set(ninoEnrolment)), None), testConfidenceLevel))
+  def mockNinoRetrievalWithNoAffinity(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment)), None))
 
-  def mockIndividualWithNoEnrolments(): Unit = mockRetrievalSuccess(new ~(new ~(Enrolments(Set.empty), Some(AffinityGroup.Individual)), testConfidenceLevel))
+  def mockIndividualWithNoEnrolments(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set.empty), Some(AffinityGroup.Individual)))
 
   def mockAuthUnauthorised(exception: AuthorisationException = new InvalidBearerToken): Unit =
     when(mockAuthService.authorised())
@@ -80,26 +81,26 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
         }
       })
 
-  def mockAuthEnrolled(): Unit = mockRetrievalSuccess(new ~(new ~(Enrolments(Set(ninoEnrolment, utrEnrolment, mtdidEnrolment)), Some(AffinityGroup.Individual)), testConfidenceLevel))
+  def mockAuthEnrolled(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(ninoEnrolment, utrEnrolment, mtdidEnrolment)), Some(AffinityGroup.Individual)))
 
   val ninoEnrolment = Enrolment(
     Constants.ninoEnrolmentName,
     Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, TestConstants.testNino)),
-    "Activated"
+    "Activated",
+    L200
   )
 
   val mtdidEnrolment = Enrolment(
     Constants.mtdItsaEnrolmentName,
     Seq(EnrolmentIdentifier(Constants.mtdItsaEnrolmentIdentifierKey, TestConstants.testMTDID)),
-    "Activated"
+    "Activated",
+    L200
   )
 
   val utrEnrolment = Enrolment(
     Constants.utrEnrolmentName,
     Seq(EnrolmentIdentifier(Constants.utrEnrolmentIdentifierKey, TestConstants.testUtr)),
-    "Activated"
+    "Activated",
+    L200
   )
-
-  val testConfidenceLevel = ConfidenceLevel.L200
-
 }

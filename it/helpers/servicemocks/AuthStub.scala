@@ -21,39 +21,39 @@ import core.Constants._
 import helpers.IntegrationTestConstants._
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
+import uk.gov.hmrc.auth.core.AffinityGroup
 
 object AuthStub extends WireMockMethods {
   def stubAuthOrgAffinity(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation, ConfidenceLevel.L200, ninoEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation, ninoEnrolment))
   }
 
   def stubAuthOrgAffinityNoEnrolments(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation, ConfidenceLevel.L200))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Organisation))
   }
 
   private val authoriseUri = "/auth/authorise"
 
   def stubAuthSuccess(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L200, ninoEnrolment, utrEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ninoEnrolment, utrEnrolment))
   }
 
   def stubAuthNoNino(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L200, utrEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, utrEnrolment))
   }
 
   def stubAuthNoUtr(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L200, ninoEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ninoEnrolment))
   }
 
   def stubEnrolled(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ConfidenceLevel.L200, ninoEnrolment, utrEnrolment, mtdidEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Individual, ninoEnrolment, utrEnrolment, mtdidEnrolment))
   }
 
   def stubUnauthorised(): StubMapping = {
@@ -68,7 +68,8 @@ object AuthStub extends WireMockMethods {
         "key" -> ninoEnrolmentIdentifierKey,
         "value" -> testNino
       )
-    )
+    ),
+    "confidenceLevel" -> 200
   )
 
   private val mtdidEnrolment = Json.obj(
@@ -78,7 +79,8 @@ object AuthStub extends WireMockMethods {
         "key" -> mtdItsaEnrolmentIdentifierKey,
         "value" -> testMTDID
       )
-    )
+    ),
+    "confidenceLevel" -> 200
   )
 
   private val utrEnrolment = Json.obj(
@@ -88,14 +90,14 @@ object AuthStub extends WireMockMethods {
         "key" -> utrEnrolmentIdentifierKey,
         "value" -> testUtr
       )
-    )
+    ),
+    "confidenceLevel" -> 200
   )
 
-  private def successfulAuthResponse(affinityGroup: AffinityGroup, confidenceLevel: ConfidenceLevel, enrolments: JsObject*): JsObject =
+  private def successfulAuthResponse(affinityGroup: AffinityGroup, enrolments: JsObject*): JsObject =
   //Written out manually as the json writer for Enrolment doesn't match the reader
     Json.obj(
       "allEnrolments" -> enrolments,
-      "affinityGroup" -> affinityGroup,
-      "confidenceLevel" -> confidenceLevel
+      "affinityGroup" -> affinityGroup
     )
 }
