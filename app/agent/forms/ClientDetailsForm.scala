@@ -16,17 +16,17 @@
 
 package agent.forms
 
-import forms.prevalidation.PreprocessedForm
-import forms.submapping.DateMapping.dateMapping
-import forms.validation.ErrorMessageFactory
-import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils.MappingUtil._
-import models.DateModel
-import models.agent.ClientDetailsModel
+import agent.forms.prevalidation.PreprocessedForm
+import agent.forms.submapping.DateMapping.dateMapping
+import agent.forms.validation.Constraints._
+import agent.forms.validation.ErrorMessageFactory
+import agent.forms.validation.utils.ConstraintUtil._
+import agent.forms.validation.utils.MappingUtil._
+import agent.models.DateModel
+import agent.models.agent.ClientDetailsModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid, ValidationResult}
-import validation.Constraints._
 
 import scala.util.Try
 
@@ -84,8 +84,8 @@ object ClientDetailsForm {
     )(ClientDetailsModel.apply)(ClientDetailsModel.unapply)
   )
 
-  import forms.prevalidation.TrimOption._
-  import forms.prevalidation.CaseOption._
+  import agent.forms.prevalidation.CaseOption._
+  import agent.forms.prevalidation.TrimOption._
 
   val clientDetailsForm = PreprocessedForm(
     validation = clientDetailsValidationForm,

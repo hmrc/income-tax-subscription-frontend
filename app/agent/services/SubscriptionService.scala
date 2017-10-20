@@ -18,12 +18,12 @@ package agent.services
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import connectors.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
-import connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import connectors.models.subscription._
-import connectors.subscription.SubscriptionConnector
-import models.SummaryModel
+import agent.audit.Logging
+import agent.connectors.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import agent.connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
+import agent.connectors.models.subscription._
+import agent.connectors.subscription.SubscriptionConnector
+import agent.models.SummaryModel
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier

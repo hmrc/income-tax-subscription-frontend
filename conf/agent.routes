@@ -1,0 +1,79 @@
+# Home controller
+GET         /                                       agent.controllers.HomeController.home
+GET         /index                                  agent.controllers.HomeController.index
+
+# SignOut Controller
+GET         /logout                                 agent.controllers.SignOutController.signOut
+
+# Income Source Routes
+GET         /income                                 agent.controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
+POST        /income                                 agent.controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
+
+# Summary Routes
+GET         /check-your-answers                     agent.controllers.CheckYourAnswersController.show
+POST        /check-your-answers                     agent.controllers.CheckYourAnswersController.submit
+
+# Confirmation Routes
+GET         /confirmation                           agent.controllers.ConfirmationController.showConfirmation
+
+# Session Timeout Route
+GET         /session-timeout                        agent.controllers.SessionTimeoutController.timeout
+
+# Feedback Routes
+GET         /feedback                               agent.controllers.FeedbackController.show
+POST        /feedback                               agent.controllers.FeedbackController.submit
+GET         /thankyou                               agent.controllers.FeedbackController.thankyou
+
+# Terms Routes
+GET         /terms                                  agent.controllers.TermsController.showTerms()
+POST        /terms                                  agent.controllers.TermsController.submitTerms()
+
+# Other Income Sources Routes
+GET         /income-other                           agent.controllers.OtherIncomeController.showOtherIncome(editMode: Boolean ?= false)
+POST        /income-other                           agent.controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
+
+# Main Income Error Routes
+GET         /error/main-income                      agent.controllers.MainIncomeErrorController.mainIncomeError
+
+# Other Income Error Routes
+GET         /error/other-income                     agent.controllers.OtherIncomeErrorController.showOtherIncomeError
+POST        /error/other-income                     agent.controllers.OtherIncomeErrorController.submitOtherIncomeError
+
+#
+GET         /error/client-already-subscribed        agent.controllers.ClientAlreadySubscribedController.show
+POST        /error/client-already-subscribed        agent.controllers.ClientAlreadySubscribedController.submit
+
+# Home controller
+GET         /not-enrolled-agent-services            agent.controllers.NotEnrolledAgentServicesController.show
+
+# Client Matching
+GET         /client-details                         agent.controllers.matching.ClientDetailsController.show(editMode: Boolean ?= false)
+POST        /client-details                         agent.controllers.matching.ClientDetailsController.submit(editMode: Boolean ?= false)
+
+# Check your client's details
+GET         /confirm-client                         agent.controllers.matching.ConfirmClientController.show
+POST        /confirm-client                         agent.controllers.matching.ConfirmClientController.submit
+
+# Client not matched routes
+GET         /error/client-details                   agent.controllers.matching.ClientDetailsErrorController.show
+POST        /error/client-details                   agent.controllers.matching.ClientDetailsErrorController.submit
+
+# Client Lockout
+GET         /error/lockout                          agent.controllers.matching.ClientDetailsLockoutController.show
+POST        /error/lockout                          agent.controllers.matching.ClientDetailsLockoutController.submit
+
+#
+GET         /error/no-client-relationship           agent.controllers.NoClientRelationshipController.show
+POST        /error/no-client-relationship           agent.controllers.NoClientRelationshipController.submit
+
+# add another client
+GET         /add-another                            agent.controllers.AddAnotherClientController.addAnother()
+
+# Exit Survey
+GET         /exit-survey                            agent.controllers.ExitSurveyController.show
+POST        /exit-survey                            agent.controllers.ExitSurveyController.submit
+
+GET         /feedback-submitted                     agent.controllers.ThankYouController.show
+
+GET         /sign-in                                agent.controllers.SignInController.signIn
+

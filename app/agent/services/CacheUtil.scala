@@ -16,18 +16,16 @@
 
 package agent.services
 
-import forms.IncomeSourceForm
-import models._
-import models.agent._
+import agent.forms.IncomeSourceForm
+import agent.models._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.Implicits._
 
 object CacheUtil {
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
 
-    import services.CacheConstants._
+    import CacheConstants._
 
     def getNino()(implicit read: Reads[String]): Option[String] = cacheMap.getEntry(MatchedNino)
 

@@ -20,13 +20,13 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.config.AppConfig
-import agent.connectors.RawResponseReads
 import agent.connectors.models.matching.{ClientMatchFailureResponseModel, ClientMatchRequestModel, ClientMatchSuccessResponseModel}
 import agent.models.agent.ClientDetailsModel
+import core.connectors.RawResponseReads
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpResponse, InternalServerException}
-import agent.utils.Implicits._
+import core.utils.Implicits._
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
@@ -54,7 +54,7 @@ class AuthenticatorConnector @Inject()(appConfig: AppConfig,
             logging.debug("AuthenticatorConnector.matchClient response received: " + response.body)
             ClientMatchSuccessResponseModel.format.reads(response.json).fold(
               invalid => logFailure(OK, response),
-              valid => valid.nino
+              valid => Some(valid.nino)
             )
           case UNAUTHORIZED => // this end point should always return UNAUTHORIZED when there is a failure
             response.json.validate[ClientMatchFailureResponseModel] match {

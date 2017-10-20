@@ -19,7 +19,9 @@ package agent.controllers
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
-import agent.config.{AppConfig, AuthConnector}
+import agent.config.AppConfig
+import agent.views.html.feedback.feedback_thankyou
+import core.config.AuthConnector
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -29,7 +31,6 @@ import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.partials._
-import agent.views.html.feedback.feedback_thankyou
 
 import scala.concurrent.{ExecutionContext, Future}
 

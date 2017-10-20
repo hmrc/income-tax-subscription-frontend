@@ -14,15 +14,15 @@
  * limitations under the License.
  *@
 
-@import testonly.models.ClientToStubModel
-@import testonly.forms.ClientToStubForm._
-@import helpers._
+@import agent.testonly.models.ClientToStubModel
+@import agent.testonly.forms.ClientToStubForm._
+@import agent.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import config.AppConfig
+@import agent.config.AppConfig
 
 @(clientToStubform: Form[ClientToStubModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("User stubbing service"), bodyClasses = None) {
+@agent.views.html.templates.main_template(title = Messages("User stubbing service"), bodyClasses = None) {
 
     @summaryErrorHelper(clientToStubform)
 

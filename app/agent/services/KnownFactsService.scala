@@ -18,9 +18,9 @@ package agent.services
 
 import javax.inject.{Inject, Singleton}
 
-import common.Constants._
-import connectors.GGAdminConnector
-import connectors.models.gg._
+import agent.common.Constants._
+import agent.connectors.GGAdminConnector
+import agent.connectors.models.gg._
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier

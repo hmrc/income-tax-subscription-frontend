@@ -40,7 +40,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     agent.views.html.business.business_name(
       businessNameForm = businessNameForm,
-      postAction = controllers.business.routes.BusinessNameController.submitBusinessName(editMode = isEditMode),
+      postAction = agent.controllers.business.routes.BusinessNameController.submitBusinessName(editMode = isEditMode),
       isEditMode,
       backUrl = backUrl(isEditMode)
     )
@@ -59,9 +59,9 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
         businessName => {
           keystoreService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
-              Redirect(controllers.routes.CheckYourAnswersController.show())
+              Redirect(agent.controllers.routes.CheckYourAnswersController.show())
             else
-              Redirect(controllers.business.routes.BusinessAccountingMethodController.show())
+              Redirect(agent.controllers.business.routes.BusinessAccountingMethodController.show())
             )
         }
       )
@@ -69,8 +69,8 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
 
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode)
-      controllers.routes.CheckYourAnswersController.show.url
+      agent.controllers.routes.CheckYourAnswersController.show.url
     else
-      controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+      agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
 
 }

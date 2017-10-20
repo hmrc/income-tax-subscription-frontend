@@ -18,7 +18,7 @@ package agent.testonly.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import config.AppConfig
+import agent.config.AppConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpResponse}

@@ -18,11 +18,11 @@ package agent.services
 
 import javax.inject.{Inject, Singleton}
 
-import audit.AuditingService
-import audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
-import connectors.models.subscription.SubscriptionSuccess
-import models.agent.ClientDetailsModel
-import utils.Implicits._
+import agent.audit.AuditingService
+import agent.audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
+import agent.connectors.models.subscription.SubscriptionSuccess
+import agent.models.agent.ClientDetailsModel
+import core.utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -66,10 +66,10 @@ class AgentQualificationService @Inject()(clientMatchingService: ClientMatchingS
         clientMatchingService.matchClient(cd)
           .collect {
             case Some(nino) =>
-              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = true), controllers.matching.routes.ConfirmClientController.submit().url)
+              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = true), agent.controllers.matching.routes.ConfirmClientController.submit().url)
               Right(ApprovedAgent(nino))
             case None =>
-              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = false), controllers.matching.routes.ConfirmClientController.submit().url)
+              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = false), agent.controllers.matching.routes.ConfirmClientController.submit().url)
               Left(NoClientMatched)
           }
           .recoverWith { case _ => Left(UnexpectedFailure) }

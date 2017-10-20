@@ -18,9 +18,9 @@ package agent.services
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import connectors.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import connectors.matching.AgentLockoutConnector
+import agent.audit.Logging
+import agent.connectors.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
+import agent.connectors.matching.AgentLockoutConnector
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier

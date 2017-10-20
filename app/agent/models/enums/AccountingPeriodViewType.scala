@@ -25,8 +25,8 @@ case object NextAccountingPeriodView extends AccountingPeriodViewType
 
 object AccountingPeriodViewType {
 
-  import forms.AccountingPeriodPriorForm
-  import models.AccountingPeriodPriorModel
+  import agent.forms.AccountingPeriodPriorForm
+  import agent.models.AccountingPeriodPriorModel
 
   implicit def conv(accountingPeriodPrior: AccountingPeriodPriorModel): AccountingPeriodViewType =
     accountingPeriodPrior.currentPeriodIsPrior match {

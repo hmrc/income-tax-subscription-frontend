@@ -31,7 +31,7 @@ class SessionTimeoutController @Inject()(implicit val applicationConfig: AppConf
                                         ) extends FrontendController with I18nSupport {
 
   val timeout = Action.async { implicit request =>
-    Future.successful(Ok(views.html.timeout.timeout()))
+    Future.successful(Ok(agent.views.html.timeout.timeout()))
   }
 
 }

@@ -19,8 +19,8 @@
 
 @(form: Form[_])(implicit messages: Messages)
 
-@import forms.validation.ErrorMessageHelper._
-@import forms.validation.models._
+@import agent.forms.validation.ErrorMessageHelper._
+@import agent.forms.validation.models._
 
 @errors = @{
     getSummaryErrors(form)

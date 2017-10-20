@@ -31,13 +31,13 @@ object AuthPredicates extends Results {
 
   val emptyPredicate: AuthPredicate = _ => _ => Right(AuthPredicateSuccess)
 
-  lazy val noArnRoute: Result = Redirect(controllers.routes.NotEnrolledAgentServicesController.show())
+  lazy val noArnRoute: Result = Redirect(agent.controllers.routes.NotEnrolledAgentServicesController.show())
 
-  lazy val confirmationRoute: Result = Redirect(controllers.routes.ConfirmationController.showConfirmation())
+  lazy val confirmationRoute: Result = Redirect(agent.controllers.routes.ConfirmationController.showConfirmation())
 
-  lazy val timeoutRoute = Redirect(controllers.routes.SessionTimeoutController.timeout())
+  lazy val timeoutRoute = Redirect(agent.controllers.routes.SessionTimeoutController.timeout())
 
-  lazy val homeRoute = Redirect(controllers.routes.HomeController.index())
+  lazy val homeRoute = Redirect(agent.controllers.routes.HomeController.index())
 
 
   val notSubmitted: AuthPredicate = request => user =>

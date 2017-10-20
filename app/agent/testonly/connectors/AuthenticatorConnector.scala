@@ -20,7 +20,7 @@ package agent.testonly.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import connectors.RawResponseReads
+import core.connectors.RawResponseReads
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.play.http.ws.WSHttp
 

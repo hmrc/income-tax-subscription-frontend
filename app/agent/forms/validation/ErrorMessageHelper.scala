@@ -16,7 +16,7 @@
 
 package agent.forms.validation
 
-import forms.validation.models.{FieldError, SummaryError, TargetIds}
+import agent.forms.validation.models.{FieldError, SummaryError, TargetIds}
 import play.api.data.{Field, Form, FormError}
 
 

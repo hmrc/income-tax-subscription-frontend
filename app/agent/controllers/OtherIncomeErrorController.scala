@@ -38,7 +38,7 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
                                           ) extends AuthenticatedController {
 
   val showOtherIncomeError = Action.async { implicit request =>
-    Future.successful(Ok(views.html.other_income_error(postAction = controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(), backUrl)))
+    Future.successful(Ok(agent.views.html.other_income_error(postAction = agent.controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(), backUrl)))
   }
 
   val submitOtherIncomeError: Action[AnyContent] = Authenticated.async { implicit request =>
@@ -46,11 +46,11 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
       keystoreService.fetchIncomeSource() map {
         case Some(incomeSource) => incomeSource.source match {
           case IncomeSourceForm.option_business =>
-            Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+            Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
           case IncomeSourceForm.option_property =>
-            Redirect(controllers.routes.TermsController.showTerms())
+            Redirect(agent.controllers.routes.TermsController.showTerms())
           case IncomeSourceForm.option_both =>
-            Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+            Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
         }
         case _ =>
           logging.info("Tried to submit 'other income error' when no data found in Keystore for 'income source'")
@@ -58,7 +58,7 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
       }
   }
 
-  lazy val backUrl: String = controllers.routes.OtherIncomeController.showOtherIncome().url
+  lazy val backUrl: String = agent.controllers.routes.OtherIncomeController.showOtherIncome().url
 
 
 }

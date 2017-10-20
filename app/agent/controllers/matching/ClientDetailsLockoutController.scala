@@ -25,7 +25,7 @@ import agent.connectors.models.matching.{LockedOut, NotLockedOut}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import agent.services.{AgentLockoutService, AuthService}
-import agent.utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.InternalServerException
@@ -65,13 +65,13 @@ class ClientDetailsLockoutController @Inject()(val baseConfig: BaseControllerCon
     implicit user =>
       handleLockOut {
         val duration = Duration.ofSeconds(baseConfig.applicationConfig.matchingLockOutSeconds)
-        Ok(views.html.client_details_lockout(postAction = agent.controllers.matching.routes.ClientDetailsLockoutController.submit(), durationText(duration)))
+        Ok(agent.views.html.client_details_lockout(postAction = agent.controllers.matching.routes.ClientDetailsLockoutController.submit(), durationText(duration)))
       }
   }
 
   lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Redirect(controllers.routes.SignOutController.signOut())
+      Redirect(agent.controllers.routes.SignOutController.signOut())
   }
 
 }

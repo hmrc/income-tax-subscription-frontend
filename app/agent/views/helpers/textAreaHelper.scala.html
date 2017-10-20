@@ -14,13 +14,15 @@
  * limitations under the License.
  *@
 
+@import agent.views.html.helpers._
+
 @(field: Field,
         parentForm: Option[Form[_]] = None,
         maxLength: Option[Int] = None,
         cols: Option[Int] = Some(45),
         rows: Option[Int] = Some(100)
 )(implicit messages: Messages)
-@import forms.validation.ErrorMessageHelper._
+@import agent.forms.validation.ErrorMessageHelper._
 
 @textArea() = {
     <textarea @maxLength.fold("")(x => s"maxlength=$x data-char-field ") name="@field.name" id="@field.name" cols="@cols" rows="@rows"></textarea>

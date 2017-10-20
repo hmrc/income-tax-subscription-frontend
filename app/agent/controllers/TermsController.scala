@@ -18,16 +18,16 @@ package agent.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import auth.AuthenticatedController
-import config.BaseControllerConfig
-import forms.IncomeSourceForm
-import models.OtherIncomeModel
+import agent.auth.AuthenticatedController
+import agent.config.BaseControllerConfig
+import agent.forms.IncomeSourceForm
+import agent.models.OtherIncomeModel
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
+import agent.services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.InternalServerException
-import utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.Future
 
@@ -39,8 +39,8 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
                                ) extends AuthenticatedController {
 
   def view(backUrl: String)(implicit request: Request[_]): Html =
-    views.html.terms(
-      postAction = controllers.routes.TermsController.submitTerms(),
+    agent.views.html.terms(
+      postAction = agent.controllers.routes.TermsController.submitTerms(),
       backUrl
     )
 
@@ -54,7 +54,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
   def submitTerms(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.saveTerms(terms = true) map (
-        _ => Redirect(controllers.routes.CheckYourAnswersController.show()))
+        _ => Redirect(agent.controllers.routes.CheckYourAnswersController.show()))
 
 
   }
@@ -63,16 +63,16 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
     keystoreService.fetchIncomeSource() flatMap {
       case Some(source) => source.source match {
         case IncomeSourceForm.option_business =>
-          controllers.business.routes.BusinessAccountingMethodController.show().url
+          agent.controllers.business.routes.BusinessAccountingMethodController.show().url
         case IncomeSourceForm.option_both =>
-          controllers.business.routes.BusinessAccountingMethodController.show().url
+          agent.controllers.business.routes.BusinessAccountingMethodController.show().url
         case IncomeSourceForm.option_property =>
-          import forms.OtherIncomeForm._
+          import agent.forms.OtherIncomeForm._
           keystoreService.fetchOtherIncome() flatMap {
             case Some(OtherIncomeModel(`option_yes`)) =>
-              controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+              agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
             case Some(OtherIncomeModel(`option_no`)) =>
-              controllers.routes.OtherIncomeController.showOtherIncome().url
+              agent.controllers.routes.OtherIncomeController.showOtherIncome().url
             case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
           }
         case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")

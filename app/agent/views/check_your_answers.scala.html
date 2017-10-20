@@ -14,23 +14,25 @@
  * limitations under the License.
  *@
 
-@import models.SummaryModel
-@import helpers._
+@import _root_.agent.models.{SummaryModel, IncomeSourceModel, OtherIncomeModel, AccountingPeriodModel, BusinessNameModel, AccountingMethodModel}
+@import agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
+@import agent.config.AppConfig
+@import agent.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import config.AppConfig
-@import models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
 
 @(summaryModel: SummaryModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @import SummaryIdConstants._
-@import SummaryHelper._
+@import agent.views.html.helpers.SummaryHelper._
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
     <div class="tabular-data__entry divider--top--thick" id="@field-row">
         <span class="tabular-data__heading tabular-data__heading--label" id="@field-question">
-            @question
+        @question
         </span>
         <div class="tabular-data__data-1" id="@field-answer">
-            @if(enableHtml) {@Html(answer)} else {@answer}
+        @if(enableHtml) {@Html(answer)} else {
+            @answer
+        }
         </div>
         @changeUrl match {
             case Some(url) => {
@@ -47,7 +49,7 @@
     val rowName = IncomeSourceId
     val rowQuestion = Messages("summary.income_source")
     val rowAnswer = incomeSourceText(source)
-    val rowUrl = controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
+    val rowUrl = agent.controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -55,7 +57,7 @@
     val rowName = OtherIncomeId
     val rowQuestion = Messages("summary.other_income")
     val rowAnswer = source.choice
-    val rowUrl = controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
+    val rowUrl = agent.controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -64,7 +66,7 @@
     val rowQuestion = Messages("summary.accounting_period")
     val periodInMonth = period.startDate.diffInMonth(period.endDate)
     val rowAnswer = s"${period.startDate.toCheckYourAnswersDateFormat} to ${period.endDate.toCheckYourAnswersDateFormat}"
-    val rowUrl = controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
+    val rowUrl = agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
@@ -72,7 +74,7 @@
     val rowName = BusinessNameId
     val rowQuestion = Messages("summary.business_name")
     val rowAnswer = name.businessName
-    val rowUrl = controllers.business.routes.BusinessNameController.showBusinessName(editMode = true).url
+    val rowUrl = agent.controllers.business.routes.BusinessNameController.showBusinessName(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -80,11 +82,11 @@
     val rowName = AccountingMethodId
     val rowQuestion = Messages("summary.income_type")
     val rowAnswer = accountingMethodText(income)
-    val rowUrl = controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
+    val rowUrl = agent.controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None, articleLayout = false) {
+@agent.views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None, articleLayout = false) {
 
     @back_link(backUrl)
 

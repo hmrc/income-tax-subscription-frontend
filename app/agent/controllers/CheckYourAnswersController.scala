@@ -63,7 +63,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     implicit request =>
       cache =>
         Future.successful(
-          Ok(views.html.check_your_answers(
+          Ok(agent.views.html.check_your_answers(
             cache.getSummary,
             agent.controllers.routes.CheckYourAnswersController.submit(),
             backUrl = backUrl

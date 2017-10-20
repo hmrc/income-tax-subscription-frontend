@@ -26,7 +26,7 @@ import agent.controllers.ITSASessionKeys._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import agent.services.AuthService
-import agent.utils.Implicits._
+import core.utils.Implicits._
 
 @Singleton
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
@@ -39,7 +39,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
   def home: Action[AnyContent] = Action.async { implicit request =>
     showGuidance match {
-      case true => Ok(agent.views.html.agent_frontpage(controllers.routes.HomeController.index()))
+      case true => Ok(agent.views.html.agent_frontpage(agent.controllers.routes.HomeController.index()))
       case _ => Redirect(agent.controllers.routes.HomeController.index())
     }
   }

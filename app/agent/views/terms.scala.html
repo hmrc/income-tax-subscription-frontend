@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import models._
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import views.html.helpers._
-@import config.AppConfig
+@import agent.views.html.helpers._
+@import agent.config.AppConfig
 
 @(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.templates.main_template(title = Messages("terms.title"), bodyClasses = None) {
+@agent.views.html.templates.main_template(title = Messages("terms.title"), bodyClasses = None) {
     @back_link(backUrl)
 
     <h1 class="heading-large">@Messages("terms.heading")</h1>
