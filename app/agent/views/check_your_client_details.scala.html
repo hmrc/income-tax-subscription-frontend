@@ -1,0 +1,97 @@
+@*
+ * Copyright 2017 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.agent.ClientDetailsModel
+@import helpers._
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import config.AppConfig
+
+@(clientDetailsModel: ClientDetailsModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@import ConfirmClientIdConstants._
+
+@summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
+    <div class="tabular-data__entry divider--top--thick" id="@field-row">
+        <span class="tabular-data__heading tabular-data__heading--label" id="@field-question">
+            @question
+        </span>
+        <div class="tabular-data__data-1" id="@field-answer">
+            @if(enableHtml) {@Html(answer)} else {@answer}
+        </div>
+        @changeUrl match {
+            case Some(url) => {
+                <a class="tabular-data__data-2" data-journey-click="itsa:changeLink:@field" href="@url" id="@field-edit">@Messages("base.change") <span class="visuallyhidden">@question</span> </a>
+            }
+            case _ => {
+                <div class="tabular-data__data-2"></div>
+            }
+        }
+    </div>
+}
+
+@firstName(clientDetailsModel: ClientDetailsModel) = @{
+    val rowName = FirstNameId
+    val rowQuestion = Messages("client-details.summary.first_name")
+    val rowAnswer = clientDetailsModel.firstName
+    val rowUrl = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@lastName(clientDetailsModel: ClientDetailsModel) = @{
+    val rowName = LastNameId
+    val rowQuestion = Messages("client-details.summary.last_name")
+    val rowAnswer = clientDetailsModel.lastName
+    val rowUrl = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@nino(clientDetailsModel: ClientDetailsModel) = @{
+    val rowName = NinoId
+    val rowQuestion = Messages("client-details.summary.nino")
+    val rowAnswer = clientDetailsModel.ninoInDisplayFormat
+    val rowUrl = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@dob(clientDetailsModel: ClientDetailsModel) = @{
+    val rowName = DobId
+    val rowQuestion = Messages("client-details.summary.dob")
+    val rowAnswer = clientDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat
+    val rowUrl = controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+
+@views.html.templates.main_template(title = Messages("client-details.summary.title"), bodyClasses = None, articleLayout = false) {
+
+    @back_link(backUrl)
+
+    <h1 class="heading-large">@Messages("client-details.summary.heading") <span class="visuallyhidden">@Messages("client-details.summary.heading_hidden")</span></h1>
+
+    <h2 class="heading-medium">@Html(Messages("client-details.summary.h2"))</h2>
+
+    <div class="form-group">
+        @firstName(clientDetailsModel)
+        @lastName(clientDetailsModel)
+        @nino(clientDetailsModel)
+        @dob(clientDetailsModel)
+        <div class="divider--top--thick"></div>
+    </div>
+
+    @form(action = postAction) {
+        @continueButton()
+    }
+
+}
