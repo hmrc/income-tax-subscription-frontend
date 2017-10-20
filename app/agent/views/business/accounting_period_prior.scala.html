@@ -14,13 +14,13 @@
  * limitations under the License.
  *@
 
-@import models.AccountingPeriodPriorModel
+@import agent.models.AccountingPeriodPriorModel
 @import play.api.data.Form
-@import forms.AccountingPeriodPriorForm
-@import helpers.radioHelper
+@import agent.forms.AccountingPeriodPriorForm
+@import agent.views.html.helpers.radioHelper
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import helpers._
-@import config.AppConfig
+@import agent.views.html.helpers._
+@import agent.config.AppConfig
 
 @(accountingPeriodPriorForm: Form[AccountingPeriodPriorModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -33,7 +33,7 @@
     <p>@Messages("business.current_financial_period_prior.accordion.line2")</p>
 }
 
-@views.html.templates.main_template(title = Messages("business.current_financial_period_prior.title"), bodyClasses = None) {
+@agent.views.html.templates.main_template(title = Messages("business.current_financial_period_prior.title"), bodyClasses = None) {
 
     @back_link(backUrl)
 

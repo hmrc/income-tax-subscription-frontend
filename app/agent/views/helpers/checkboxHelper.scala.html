@@ -15,12 +15,14 @@
  *@
 
 @import play.api.data.Field
+@import agent.views.html.helpers._
+
 @(field: Field,
         label: String,
         parentForm: Option[Form[_]] = None
 )(implicit messages: Messages)
 
-@import forms.validation.ErrorMessageHelper._
+@import agent.forms.validation.ErrorMessageHelper._
 
 @isChecked = @{
     field.value.map {

@@ -37,6 +37,7 @@ class Module extends AbstractModule {
     bind(classOf[HttpPatch]).to(classOf[core.config.WSHttp]).asEagerSingleton()
     bind(classOf[WSHttp]).to(classOf[core.config.WSHttp]).asEagerSingleton()
     bind(classOf[AppConfig]).to(classOf[FrontendAppConfig]).asEagerSingleton()
+    bind(classOf[agent.config.AppConfig]).to(classOf[agent.config.FrontendAppConfig]).asEagerSingleton()
 
     bind(classOf[AuthConnector]).to(classOf[core.config.AuthConnector])
     bind(classOf[AuditConnector]).to(classOf[core.config.FrontendAuditConnector])

@@ -16,10 +16,10 @@
 
 package agent.forms
 
-import forms.validation.ErrorMessageFactory
-import forms.validation.utils.ConstraintUtil._
-import forms.validation.utils.MappingUtil._
-import models.AccountingMethodModel
+import agent.forms.validation.ErrorMessageFactory
+import agent.forms.validation.utils.ConstraintUtil._
+import agent.forms.validation.utils.MappingUtil._
+import agent.models.AccountingMethodModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid}

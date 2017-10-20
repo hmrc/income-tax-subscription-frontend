@@ -27,7 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import agent.services.{AuthService, KeystoreService}
-import agent.utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.Future
 
@@ -42,7 +42,7 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
     backUrl.map { backUrl =>
       agent.views.html.business.accounting_period_prior(
         accountingPeriodPriorForm = accountingPeriodPriorForm,
-        postAction = controllers.business.routes.BusinessAccountingPeriodPriorController.submit(editMode = isEditMode),
+        postAction = agent.controllers.business.routes.BusinessAccountingPeriodPriorController.submit(editMode = isEditMode),
         backUrl = backUrl,
         isEditMode = isEditMode
       )
@@ -64,7 +64,7 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
             somePreviousAnswer =>
               keystoreService.saveAccountingPeriodPrior(accountingPeriodPrior) flatMap { _ =>
                 if (somePreviousAnswer.fold(false)(previousAnswer => previousAnswer.equals(accountingPeriodPrior)) && isEditMode)
-                  Redirect(controllers.routes.CheckYourAnswersController.show())
+                  Redirect(agent.controllers.routes.CheckYourAnswersController.show())
                 else
                   accountingPeriodPrior.currentPeriodIsPrior match {
                     case AccountingPeriodPriorForm.option_yes => yes
@@ -75,15 +75,15 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
       )
   }
 
-  def yes(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.RegisterNextAccountingPeriodController.show())
+  def yes(implicit request: Request[_]): Future[Result] = Redirect(agent.controllers.business.routes.RegisterNextAccountingPeriodController.show())
 
-  def no(implicit request: Request[_]): Future[Result] = Redirect(controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod())
+  def no(implicit request: Request[_]): Future[Result] = Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod())
 
   def backUrl(implicit request: Request[_]): Future[String] = {
-    import forms.OtherIncomeForm._
+    import agent.forms.OtherIncomeForm._
     keystoreService.fetchOtherIncome().map {
-      case Some(OtherIncomeModel(`option_yes`)) => controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
-      case _ => controllers.routes.OtherIncomeController.showOtherIncome().url
+      case Some(OtherIncomeModel(`option_yes`)) => agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+      case _ => agent.controllers.routes.OtherIncomeController.showOtherIncome().url
     }
   }
 

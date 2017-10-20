@@ -43,14 +43,14 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
   def view(clientDetailsForm: Form[ClientDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     agent.views.html.client_details(
       clientDetailsForm,
-      controllers.matching.routes.ClientDetailsController.submit(editMode = isEditMode),
+      agent.controllers.matching.routes.ClientDetailsController.submit(editMode = isEditMode),
       isEditMode
     )
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
     (lockOutService.getLockoutStatus(user.arn.get) flatMap {
       case Right(NotLockedOut) => f
-      case Right(_) => Future.successful(Redirect(controllers.matching.routes.ClientDetailsLockoutController.show().url))
+      case Right(_) => Future.successful(Redirect(agent.controllers.matching.routes.ClientDetailsLockoutController.show().url))
     }).recover { case e =>
       throw new InternalServerException("client details controller: " + e)
     }

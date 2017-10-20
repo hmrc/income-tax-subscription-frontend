@@ -21,6 +21,7 @@ import javax.inject.{Inject, Singleton}
 import agent.audit.Logging
 import agent.common.Constants._
 import agent.config.AppConfig
+import core.connectors.RawResponseReads
 import play.api.http.Status
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._

@@ -16,9 +16,9 @@
 
 package agent.models.agent
 
-import models._
+import agent.models.DateModel
 import play.api.libs.json.Json
-import utils.Implicits.StringNinoUtil
+import core.utils.Implicits._
 
 case class ClientDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel) {
 

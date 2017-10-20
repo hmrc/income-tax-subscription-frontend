@@ -18,7 +18,7 @@ package agent.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import config.AppConfig
+import agent.config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -29,7 +29,7 @@ class ThankYouController @Inject()(implicit val applicationConfig: AppConfig,
                                   ) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action { implicit request =>
-    Ok(views.html.feedback_thank_you())
+    Ok(agent.views.html.feedback_thank_you())
   }
 
 }

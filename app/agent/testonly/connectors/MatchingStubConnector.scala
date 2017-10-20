@@ -22,18 +22,17 @@ import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, ResolverStyle}
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import connectors.RawResponseReads
-import models.DateModel
-import models.agent.ClientDetailsModel
+import agent.audit.Logging
+import agent.models.DateModel
+import agent.testonly.TestOnlyAppConfig
+import agent.testonly.models.ClientToStubModel
+import core.connectors.RawResponseReads
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import testonly.TestOnlyAppConfig
-import testonly.models.ClientToStubModel
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
 
 case class Value(value: String)
@@ -98,7 +97,7 @@ object Request {
   implicit val format = Json.format[Request]
 }
 
-import utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -127,7 +126,7 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
               s"""MatchingStubConnector.newUser failure:
                  | Request {
                  |   dynamicStubUrl: $dynamicStubUrl
-                 |   hc.headers: ${hc.headers.map{case (a,b)=>s"a$a: $b"}.mkString("\n")}
+                 |   hc.headers: ${hc.headers.map { case (a, b) => s"a$a: $b" }.mkString("\n")}
                  |   json: ${UserData.format.writes(userData): JsValue}
                  | }
                  | Response: status=$status, body=${response.body}""".stripMargin)

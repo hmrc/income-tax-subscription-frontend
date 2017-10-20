@@ -15,6 +15,8 @@
  *@
 
 @import play.api.data.Field
+@import agent.views.html.helpers._
+
 @(field: Field,
         legend: String,
         labels: Seq[String],
@@ -22,7 +24,7 @@
         useTextForValue: Boolean = false
 )(implicit messages: Messages)
 
-@import forms.validation.ErrorMessageHelper._
+@import agent.forms.validation.ErrorMessageHelper._
 
 @isChecked = @{
     field.value.map {

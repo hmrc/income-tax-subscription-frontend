@@ -19,13 +19,12 @@ package agent.testonly.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import connectors.RawResponseReads
+import core.connectors.RawResponseReads
 import testonly.TestOnlyAppConfig
-import uk.gov.hmrc.play.http._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 @Singleton
 class DeEnrolmentConnector @Inject()(appConfig: TestOnlyAppConfig,

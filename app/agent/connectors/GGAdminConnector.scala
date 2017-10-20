@@ -23,6 +23,7 @@ import agent.common.Constants
 import agent.config.AppConfig
 import agent.connectors.GGAdminConnector._
 import agent.connectors.models.gg.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess}
+import core.connectors.RawResponseReads
 import play.api.http.Status.OK
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpResponse}

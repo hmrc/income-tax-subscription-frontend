@@ -20,10 +20,10 @@ import javax.inject.{Inject, Singleton}
 
 import cats.data.EitherT
 import cats.implicits._
-import connectors.models.ConnectorError
-import connectors.models.gg.KnownFactsSuccess
-import connectors.models.subscription.SubscriptionSuccess
-import models.SummaryModel
+import agent.connectors.models.ConnectorError
+import agent.connectors.models.gg.KnownFactsSuccess
+import agent.connectors.models.subscription.SubscriptionSuccess
+import agent.models.SummaryModel
 
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HeaderCarrier

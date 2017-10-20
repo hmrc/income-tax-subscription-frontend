@@ -15,8 +15,8 @@
  *@
 
 @import uk.gov.hmrc.play.partials.CachedStaticHtmlPartialRetriever
-@import views.html.templates.main_template
-@import config.AppConfig
+@import agent.views.html.templates.main_template
+@import agent.config.AppConfig
 @import scala.concurrent.ExecutionContext
 
 @(partialUrl: String, redirectUrl: String)(implicit request: Request[_], cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever

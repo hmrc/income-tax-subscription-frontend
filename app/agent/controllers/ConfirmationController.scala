@@ -42,11 +42,11 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
     implicit user =>
       keystoreService.fetchSubscriptionId.map {
         case Some(id) =>
-          Ok(views.html.confirmation(
+          Ok(agent.views.html.confirmation(
             subscriptionId = id,
             submissionDate = dateConvert(LocalDate.now()),
-            controllers.routes.AddAnotherClientController.addAnother(),
-            controllers.routes.ExitSurveyController.show()
+            agent.controllers.routes.AddAnotherClientController.addAnother(),
+            agent.controllers.routes.ExitSurveyController.show()
           ))
         case _ =>
           logging.info("User attempted to view confirmation with no subscriptionId stored in Keystore")

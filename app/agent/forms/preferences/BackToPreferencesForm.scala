@@ -16,10 +16,10 @@
 
 package agent.forms.preferences
 
-import forms.validation.ErrorMessageFactory
-import forms.validation.utils.ConstraintUtil.constraint
-import forms.validation.utils.MappingUtil._
-import models.preferences.BackToPreferencesModel
+import agent.forms.validation.ErrorMessageFactory
+import agent.forms.validation.utils.ConstraintUtil.constraint
+import agent.forms.validation.utils.MappingUtil._
+import agent.models.preferences.BackToPreferencesModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Valid}

@@ -40,7 +40,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     agent.views.html.business.accounting_method(
       accountingMethodForm = accountingMethodForm,
-      postAction = controllers.business.routes.BusinessAccountingMethodController.submit(editMode = isEditMode),
+      postAction = agent.controllers.business.routes.BusinessAccountingMethodController.submit(editMode = isEditMode),
       isEditMode,
       backUrl = backUrl(isEditMode)
     )
@@ -58,8 +58,8 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
         formWithErrors => Future.successful(BadRequest(view(accountingMethodForm = formWithErrors, isEditMode = isEditMode))),
         accountingMethod => {
           keystoreService.saveAccountingMethod(accountingMethod) map (_ => isEditMode match {
-            case true => Redirect(controllers.routes.CheckYourAnswersController.show())
-            case _ => Redirect(controllers.routes.TermsController.showTerms())
+            case true => Redirect(agent.controllers.routes.CheckYourAnswersController.show())
+            case _ => Redirect(agent.controllers.routes.TermsController.showTerms())
           })
         }
       )
@@ -67,8 +67,8 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
 
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode)
-      controllers.routes.CheckYourAnswersController.show().url
+      agent.controllers.routes.CheckYourAnswersController.show().url
     else
-      controllers.business.routes.BusinessNameController.showBusinessName().url
+      agent.controllers.business.routes.BusinessNameController.showBusinessName().url
 
 }

@@ -23,7 +23,7 @@ import agent.config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import agent.services.AuthService
-import agent.utils.Implicits._
+import core.utils.Implicits._
 
 @Singleton
 class ClientDetailsErrorController @Inject()(val baseConfig: BaseControllerConfig,
@@ -33,12 +33,12 @@ class ClientDetailsErrorController @Inject()(val baseConfig: BaseControllerConfi
 
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Ok(views.html.client_details_error(postAction = controllers.matching.routes.ClientDetailsErrorController.submit()))
+      Ok(agent.views.html.client_details_error(postAction = agent.controllers.matching.routes.ClientDetailsErrorController.submit()))
   }
 
   lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Redirect(controllers.matching.routes.ClientDetailsController.show())
+      Redirect(agent.controllers.matching.routes.ClientDetailsController.show())
   }
 
 }

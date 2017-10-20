@@ -18,18 +18,18 @@ package agent.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import audit.Logging
-import auth.AuthenticatedController
-import config.BaseControllerConfig
-import forms.{IncomeSourceForm, OtherIncomeForm}
-import models.{IncomeSourceModel, OtherIncomeModel}
+import agent.audit.Logging
+import agent.auth.AuthenticatedController
+import agent.config.BaseControllerConfig
+import agent.forms.{IncomeSourceForm, OtherIncomeForm}
+import agent.models.{IncomeSourceModel, OtherIncomeModel}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import services.{AuthService, KeystoreService}
+import agent.services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.InternalServerException
-import utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.Future
 
@@ -42,10 +42,10 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                      ) extends AuthenticatedController {
 
   def view(otherIncomeForm: Form[OtherIncomeModel], incomeSource: String, isEditMode: Boolean, backUrl: String)(implicit request: Request[_]): Html =
-    views.html.other_income(
+    agent.views.html.other_income(
       otherIncomeForm = otherIncomeForm,
       incomeSource = incomeSource,
-      postAction = controllers.routes.OtherIncomeController.submitOtherIncome(editMode = isEditMode),
+      postAction = agent.controllers.routes.OtherIncomeController.submitOtherIncome(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl
     )
@@ -59,23 +59,23 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
         case (Some(IncomeSourceModel(incomeSource)), _) =>
           Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), incomeSource, isEditMode, backUrl(isEditMode)))
         case _ =>
-          Redirect(controllers.routes.IncomeSourceController.showIncomeSource())
+          Redirect(agent.controllers.routes.IncomeSourceController.showIncomeSource())
       }
   }
 
   def defaultRedirections(optIncomeSource: Option[IncomeSourceModel], otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
     otherIncomeModel.choice match {
       case OtherIncomeForm.option_yes =>
-        Redirect(controllers.routes.OtherIncomeErrorController.showOtherIncomeError())
+        Redirect(agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError())
       case OtherIncomeForm.option_no =>
         optIncomeSource match {
           case Some(incomeSource) => incomeSource.source match {
             case IncomeSourceForm.option_business =>
-              Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+              Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
             case IncomeSourceForm.option_property =>
-              Redirect(controllers.routes.TermsController.showTerms())
+              Redirect(agent.controllers.routes.TermsController.showTerms())
             case IncomeSourceForm.option_both =>
-              Redirect(controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+              Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
           }
           case _ =>
             logging.info("Tried to submit other income when no data found in Keystore for income source")
@@ -96,20 +96,20 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                   keystoreService.saveOtherIncome(choice).flatMap { _ =>
                     // if it's in update mode and the previous answer is the same as current then return to check your answers page
                     if (isEditMode && previousOtherIncome.fold(false)(old => old.equals(choice)))
-                      Future.successful(Redirect(controllers.routes.CheckYourAnswersController.show()))
+                      Future.successful(Redirect(agent.controllers.routes.CheckYourAnswersController.show()))
                     else defaultRedirections(optIncomeSource, choice)
                   }
               }
           )
         case _ =>
-          Future.successful(Redirect(controllers.routes.IncomeSourceController.showIncomeSource()))
+          Future.successful(Redirect(agent.controllers.routes.IncomeSourceController.showIncomeSource()))
       }
   }
 
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode)
-      controllers.routes.CheckYourAnswersController.show().url
+      agent.controllers.routes.CheckYourAnswersController.show().url
     else
-      controllers.routes.IncomeSourceController.showIncomeSource().url
+      agent.controllers.routes.IncomeSourceController.showIncomeSource().url
 
 }

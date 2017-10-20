@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import agent.services.{AuthService, KeystoreService}
 import uk.gov.hmrc.http.InternalServerException
-import agent.utils.Implicits._
+import core.utils.Implicits._
 
 import scala.concurrent.Future
 
@@ -43,7 +43,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, viewType: AccountingPeriodViewType)(implicit request: Request[_]): Html =
     agent.views.html.business.accounting_period_date(
       form,
-      controllers.business.routes.BusinessAccountingPeriodDateController.submitAccountingPeriod(editMode = isEditMode),
+      agent.controllers.business.routes.BusinessAccountingPeriodDateController.submitAccountingPeriod(editMode = isEditMode),
       isEditMode,
       backUrl,
       viewType
@@ -78,9 +78,9 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
             accountingPeriod =>
               keystoreService.saveAccountingPeriodDate(accountingPeriod) map (_ =>
                 if (isEditMode)
-                  Redirect(controllers.routes.CheckYourAnswersController.show())
+                  Redirect(agent.controllers.routes.CheckYourAnswersController.show())
                 else
-                  Redirect(controllers.business.routes.BusinessNameController.showBusinessName())
+                  Redirect(agent.controllers.business.routes.BusinessNameController.showBusinessName())
                 )
           )
       }
@@ -104,14 +104,14 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
   def backUrl(isEditMode: Boolean)(implicit request: Request[_]): Future[String] = {
 
     if (isEditMode)
-      controllers.routes.CheckYourAnswersController.show().url
+      agent.controllers.routes.CheckYourAnswersController.show().url
     else
       keystoreService.fetchAccountingPeriodPrior() flatMap {
         case Some(currentPeriodPrior) => currentPeriodPrior.currentPeriodIsPrior match {
           case AccountingPeriodPriorForm.option_yes =>
-            controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+            agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
           case AccountingPeriodPriorForm.option_no =>
-            controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
+            agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
         }
         case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")
       }

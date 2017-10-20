@@ -18,16 +18,16 @@ package agent.testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import config.{AppConfig, BaseControllerConfig}
+import agent.config.{AppConfig, BaseControllerConfig}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, Request}
 import play.twirl.api.Html
-import testonly.connectors.{MatchingStubConnector, UserData}
-import testonly.forms.ClientToStubForm
-import testonly.models.ClientToStubModel
+import agent.testonly.connectors.{MatchingStubConnector, UserData}
+import agent.testonly.forms.ClientToStubForm
+import agent.testonly.models.ClientToStubModel
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils.Implicits._
+import core.utils.Implicits._
 import uk.gov.hmrc.http.InternalServerException
 
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
@@ -41,9 +41,9 @@ class MatchingStubController @Inject()(val baseConfig: BaseControllerConfig,
   implicit lazy val appConfig: AppConfig = baseConfig.applicationConfig
 
   def view(clientToStubForm: Form[ClientToStubModel])(implicit request: Request[_]): Html =
-    testonly.views.html.stub_client(
+    agent.testonly.views.html.stub_client(
       clientToStubForm,
-      routes.MatchingStubController.stubClient()
+      agent.testonly.controllers.routes.MatchingStubController.stubClient()
     )
 
   def show = Action.async { implicit request =>
@@ -55,7 +55,7 @@ class MatchingStubController @Inject()(val baseConfig: BaseControllerConfig,
       formWithErrors => BadRequest(view(formWithErrors)),
       clientDetails =>
         matchingStubConnector.newUser(clientDetails) map {
-          case true => Ok(testonly.views.html.show_stubbed_details(clientDetails))
+          case true => Ok(agent.testonly.views.html.show_stubbed_details(clientDetails))
           case _ => throw new InternalServerException("calls to matching-stub failed")
         }
     )

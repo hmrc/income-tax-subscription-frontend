@@ -18,9 +18,9 @@ package agent.services
 
 import javax.inject.{Inject, Singleton}
 
-import config.AppConfig
-import connectors.matching.AuthenticatorConnector
-import models.agent.ClientDetailsModel
+import agent.config.AppConfig
+import agent.connectors.matching.AuthenticatorConnector
+import agent.models.agent.ClientDetailsModel
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier

@@ -24,7 +24,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import agent.services.{AuthService, KeystoreService}
-import agent.utils.Implicits._
+import core.utils.Implicits._
 
 @Singleton
 class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseControllerConfig,
@@ -35,8 +35,8 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
 
   def view()(implicit request: Request[_]): Html =
     agent.views.html.business.register_next_accounting_period(
-      postAction = controllers.business.routes.RegisterNextAccountingPeriodController.submit(),
-      backUrl = controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
+      postAction = agent.controllers.business.routes.RegisterNextAccountingPeriodController.submit(),
+      backUrl = agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
     )
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
@@ -45,6 +45,6 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Redirect(controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod())
+      Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod())
   }
 }

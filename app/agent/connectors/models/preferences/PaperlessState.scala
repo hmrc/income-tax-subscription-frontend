@@ -25,7 +25,7 @@ sealed trait PaperlessState {
 
 object PaperlessState {
 
-  import agent.utils.Implicits.{EitherUtilLeft, EitherUtilRight}
+  import core.utils.Implicits.{EitherUtilLeft, EitherUtilRight}
 
   val Paperless = "optedIn"
 
