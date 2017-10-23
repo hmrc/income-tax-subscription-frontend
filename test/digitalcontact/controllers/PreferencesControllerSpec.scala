@@ -33,7 +33,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
   override val controllerName: String = "PreferencesControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "checkPreference" -> TestPreferencesController.checkPreferences
+    "checkPreference" -> createTestForPreferences(MockConfig).checkPreferences
   )
 
   def createTestForPreferences(appConfig: AppConfig): PreferencesController = {
@@ -47,103 +47,116 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
     )
   }
 
-  lazy val TestPreferencesController = createTestForPreferences(MockConfig)
 
-  "If newFeatures flag in core.config is false" when {
-    "Calling the checkPreference action of the PreferencesController with an authorised user" should {
-      implicit lazy val request = subscriptionRequest
-
-      def result = TestPreferencesController.checkPreferences(request)
-
-      "Redirect to Income Source if paperless is activated" in {
-        mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessActivated(testToken)
-
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url)
-      }
-
-      "Redirect to returned preferences service if paperless was previously unspecified" in {
-        mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessUnset(testToken, Some(testUrl))
-
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get mustBe testUrl
-      }
-
-      "Redirect to default location of preferences service if paperless was previously unspecified and no redirect url is returned" in {
-        mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessUnset(testToken, None)
-        mockChoosePaperlessUrl(testUrl)
-
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get mustBe testUrl
-      }
+  Seq(
+    new MockConfig {
+      override val userMatchingFeature = false
+      override val newPreferencesApiEnabled = false
+    },
+    new MockConfig {
+      override val userMatchingFeature = true
+      override val newPreferencesApiEnabled = true
     }
+  ) foreach { config =>
 
-    "Calling the callback action of the PreferencesController with an authorised user" should {
+    lazy val TestPreferencesController = createTestForPreferences(config)
 
-      implicit lazy val request = subscriptionRequest
+    s"If newFeatures flag in core.config is ${config.userMatchingFeature} and the newPreferencesApiEnabled is ${config.newPreferencesApiEnabled}" when {
+      "Calling the checkPreference action of the PreferencesController with an authorised user" should {
+        implicit lazy val request = subscriptionRequest
+        def result = TestPreferencesController.checkPreferences(request)
 
-      def result = TestPreferencesController.callback(request)
+        "Redirect to Income Source if paperless is activated" in {
+          mockStoreNinoSuccess(testNino)
+          mockCheckPaperlessActivated(testToken)
 
-      "Redirect to Terms and Conditions if paperless is activated" in {
-        mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessActivated(testToken)
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url)
+        }
 
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url)
+        "Redirect to returned preferences service if paperless was previously unspecified" in {
+          mockStoreNinoSuccess(testNino)
+          mockCheckPaperlessUnset(testToken, Some(testUrl))
+
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result).get mustBe testUrl
+        }
+
+        "Redirect to default location of preferences service if paperless was previously unspecified and no redirect url is returned" in {
+          mockStoreNinoSuccess(testNino)
+          mockCheckPaperlessUnset(testToken, None)
+          mockChoosePaperlessUrl(testUrl)
+
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result).get mustBe testUrl
+        }
       }
 
-      "Redirect to do you still want to continue page if paperless was previously unspecified" in {
-        mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessUnset(testToken, Some(testUrl))
+      "Calling the callback action of the PreferencesController with an authorised user" should {
 
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get must be(routes.PreferencesController.showGoBackToPreferences().url)
+        implicit lazy val request = subscriptionRequest
+
+        def result = TestPreferencesController.callback(request)
+
+        "Redirect to Terms and Conditions if paperless is activated" in {
+          mockStoreNinoSuccess(testNino)
+          mockCheckPaperlessActivated(testToken)
+
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url)
+        }
+
+        "Redirect to do you still want to continue page if paperless was previously unspecified" in {
+          mockStoreNinoSuccess(testNino)
+          mockCheckPaperlessUnset(testToken, Some(testUrl))
+
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result).get must be(routes.PreferencesController.showGoBackToPreferences().url)
+        }
+
       }
 
-    }
+      "Calling the showGoBackToPreferences action of the PreferencesController with an authorised user" should {
 
-    "Calling the showGoBackToPreferences action of the PreferencesController with an authorised user" should {
-
-      lazy val result = TestPreferencesController.showGoBackToPreferences()(subscriptionRequest)
-      lazy val document = Jsoup.parse(contentAsString(result))
+        lazy val result = TestPreferencesController.showGoBackToPreferences()(subscriptionRequest)
+        lazy val document = Jsoup.parse(contentAsString(result))
 
 
-      "return status (200)" in {
-        status(result) must be(Status.OK)
+        "return status (200)" in {
+          status(result) must be(Status.OK)
+        }
+
+        "render the Contact Email address view" in {
+          document.title() mustBe Messages("preferences_callback.title")
+        }
       }
 
-      "render the Contact Email address view" in {
-        document.title() mustBe Messages("preferences_callback.title")
-      }
-    }
+      "Calling the submitGoBackToPreferences action of the PreferencesController with an authorised user with yes" should {
+        implicit lazy val request = subscriptionRequest
 
-    "Calling the submitGoBackToPreferences action of the PreferencesController with an authorised user with yes" should {
-      implicit lazy val request = subscriptionRequest
+        def callShow() = TestPreferencesController.submitGoBackToPreferences()(request)
 
-      def callShow() = TestPreferencesController.submitGoBackToPreferences()(request)
+        "return a redirect status (SEE_OTHER - 303)" in {
+          val goodRequest = callShow()
 
-      "return a redirect status (SEE_OTHER - 303)" in {
-        val goodRequest = callShow()
+          status(goodRequest) must be(Status.SEE_OTHER)
+        }
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-      }
+        s"redirects to the correct url" in {
+          val goodRequest = callShow()
+          redirectLocation(goodRequest) mustBe Some(TestPreferencesController.preferencesService.defaultChoosePaperlessUrl)
 
-      s"redirects to the correct url" in {
-        val goodRequest = callShow()
-        redirectLocation(goodRequest) mustBe Some(TestPreferencesController.preferencesService.defaultChoosePaperlessUrl)
-
-        await(goodRequest)
+          await(goodRequest)
+        }
       }
     }
   }
 
-  "If userMatchingFeature flag in core.config is true" when {
+  "If userMatchingFeature flag in core.config is true but newPreferencesAPI is not enabled" when {
     lazy val TestNewFeaturesController = createTestForPreferences(
       new MockConfig {
         override val userMatchingFeature = true
+        override val newPreferencesApiEnabled = false
       }
     )
 
