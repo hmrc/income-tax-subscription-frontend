@@ -16,7 +16,6 @@
 
 package core.auth
 
-import core.auth.AuthPredicates._
 import play.api.mvc.Action
 import uk.gov.hmrc.http.NotFoundException
 

@@ -16,8 +16,7 @@
 
 package core.auth
 
-import core.auth.AuthPredicates.registrationPredicates
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.Action
 import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future

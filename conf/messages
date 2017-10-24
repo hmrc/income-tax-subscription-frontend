@@ -363,8 +363,7 @@ feedback.thankyou.title                                         = Feedback recei
 ## Affinity Group Error
 affinity-group-error.title                                      = You can''t use this service
 affinity-group-error.heading                                    = You can''t use this service
-affinity-group-error.line1                                      = You can only use this service if you have an individual Government Gateway account.
-affinity-group-error.line2                                      = To sign up for quarterly reporting, you''ll need to <a id="sign-out" href="{0}">sign in using a different type of account.</a>
+affinity-group-error.line1                                      = To sign up for quarterly reporting with these sign in details, you need to <a id="agent-service" href="{0}">use our agent service.</a>
 
 ## IV Error
 iv-error.title                                                  = We''re unable to confirm your identity

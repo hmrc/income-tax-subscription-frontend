@@ -16,8 +16,6 @@
 
 package core.auth
 
-import core.auth.AuthPredicates._
-
 trait SignUpController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions {

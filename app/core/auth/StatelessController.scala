@@ -16,11 +16,6 @@
 
 package core.auth
 
-import core.ITSASessionKeys
-import core.auth.AuthPredicates._
-
-import scala.concurrent.ExecutionContext.Implicits.global
-
 trait StatelessController extends BaseFrontendController{
 
   object Authenticated extends AuthenticatedActions {

@@ -17,7 +17,8 @@
 package usermatching.controllers
 
 import core.ITSASessionKeys
-import core.auth.{MockConfig, UserMatched, UserMatching}
+import core.auth.{UserMatched, UserMatching}
+import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants._
