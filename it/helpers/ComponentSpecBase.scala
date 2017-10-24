@@ -317,6 +317,8 @@ trait ComponentSpecBase extends UnitSpec
       }
       post("/confirm-user", additionalCookies = Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name) ++ failedAttemptCounter)(Map.empty)
     }
+
+    def showAffinityGroupError(): WSResponse = get("/error/affinity-group")
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
