@@ -162,7 +162,10 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
 
-    def submitPaperlessError(): WSResponse = post("/paperless-error")(Map.empty)
+    def submitPaperlessError(sessionKeys: Map[String, String] = Map.empty): WSResponse = post(
+      uri = "/paperless-error",
+      additionalCookies = sessionKeys
+    )(Map.empty)
 
     def submitTerms(): WSResponse = post("/terms")(Map.empty)
 

@@ -16,6 +16,7 @@
 
 package digitalcontact.controllers
 
+import core.ITSASessionKeys
 import core.config.{AppConfig, MockConfig}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
@@ -105,12 +106,13 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
           redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url)
         }
 
-        "Redirect to do you still want to continue page if paperless was previously unspecified" in {
+        "Redirect to the preferences error page if paperless preferences was not selected" in {
           mockStoreNinoSuccess(testNino)
           mockCheckPaperlessUnset(testToken, Some(testUrl))
 
           status(result) must be(Status.SEE_OTHER)
           redirectLocation(result).get must be(routes.PreferencesController.showGoBackToPreferences().url)
+          session(result).get(ITSASessionKeys.PreferencesRedirectUrl) must contain(testUrl)
         }
 
       }
@@ -145,6 +147,21 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
           val goodRequest = callShow()
           redirectLocation(goodRequest) mustBe Some(TestPreferencesController.preferencesService.defaultChoosePaperlessUrl)
 
+          await(goodRequest)
+        }
+      }
+
+      "Calling the submitGoBackToPreferences action of the PreferencesController with an authorised user with the redirect url in the session" should {
+        implicit lazy val request = subscriptionRequest
+
+        def callShow() = TestPreferencesController.submitGoBackToPreferences()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
+
+        "use the redirect location from the session" in {
+          val goodRequest = callShow()
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(testUrl)
+          session(goodRequest).get(ITSASessionKeys.PreferencesRedirectUrl) mustBe empty
           await(goodRequest)
         }
       }

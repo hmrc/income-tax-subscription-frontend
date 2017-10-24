@@ -23,4 +23,5 @@ object ITSASessionKeys {
   val UTR = "UTR"
   val FailedUserMatching = "Failed-User-Matching"
   val JourneyStateKey = "Journey-State"
+  val PreferencesRedirectUrl = "Preferences-Redirect-Url"
 }

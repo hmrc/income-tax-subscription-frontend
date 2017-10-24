@@ -18,6 +18,7 @@ package digitalcontact.controllers
 
 import javax.inject.{Inject, Singleton}
 
+import core.ITSASessionKeys
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
@@ -75,7 +76,9 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
         token =>
           preferencesService.checkPaperless(token).map {
             case Right(Activated) => goToIncomeSource
-            case Right(_) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
+            case Right(Unset(Some(url))) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
+              .addingToSession(ITSASessionKeys.PreferencesRedirectUrl -> url)
+            case Right(Unset(None)) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
             case _ => throw new InternalServerException("Could not get paperless preferences")
           }
       }
@@ -93,7 +96,12 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
       else gotoPreferences
   }
 
-  @inline def gotoPreferences(implicit request: Request[AnyContent]): Result = Redirect(preferencesService.defaultChoosePaperlessUrl)
+  @inline def gotoPreferences(implicit request: Request[AnyContent]): Result =
+    request.session.get(ITSASessionKeys.PreferencesRedirectUrl) match {
+      case Some(redirectUrl) => Redirect(redirectUrl)
+        .removingFromSession(ITSASessionKeys.PreferencesRedirectUrl)
+      case None => Redirect(preferencesService.defaultChoosePaperlessUrl)
+    }
 
   def signOut(implicit request: Request[_]): Result = Redirect(core.controllers.routes.SignOutController.signOut())
 
