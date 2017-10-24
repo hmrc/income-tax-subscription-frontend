@@ -317,11 +317,15 @@ object MessageLookup {
   }
 
   object AffinityGroup {
-    val linkId: String = "agent-service"
     val title = "You can't use this service"
     val heading = "You can't use this service"
-    val linkText = "use our agent service."
-    val line1 = s"To sign up for quarterly reporting with these sign in details, you need to $linkText"
+    val line1 = "You can only use this service if you have an individual Government Gateway account."
+    val line2 = """To sign up for quarterly reporting, you'll need to sign in using a different type of account."""
+    object Agent {
+      val linkId: String = "agent-service"
+      val linkText = "use our agent service."
+      val line1 = s"To sign up for quarterly reporting with these sign in details, you need to $linkText"
+    }
   }
 
   object Error {
