@@ -16,6 +16,7 @@
 
 package digitalcontact
 
+import core.ITSASessionKeys
 import core.config.AppConfig
 import core.services.CacheConstants._
 import helpers.ComponentSpecBase
@@ -183,6 +184,20 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(choosePaperlessURI)
+      )
+    }
+
+    "where the POST /paperless-error is called and the redirect url has been stored in session" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+
+      When("POST /paperless-error is called")
+      val res = IncomeTaxSubscriptionFrontend.submitPaperlessError(Map(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
+
+      Then("Should return a SEE_OTHER with a re-direct location of choose paperless page")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(testUrl)
       )
     }
   }
