@@ -30,12 +30,12 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait BaseFrontendController extends FrontendController with I18nSupport {
+trait BaseFrontendController extends FrontendController with I18nSupport with AuthPredicates {
 
   val authService: AuthService
   val baseConfig: BaseControllerConfig
 
-  lazy implicit val applicationConfig = baseConfig.applicationConfig
+  override lazy implicit val applicationConfig = baseConfig.applicationConfig
 
   type ActionBody = Request[AnyContent] => IncomeTaxSAUser => Future[Result]
   type AuthenticatedAction = ActionBody => Action[AnyContent]

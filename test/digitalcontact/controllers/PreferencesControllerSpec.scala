@@ -16,8 +16,7 @@
 
 package digitalcontact.controllers
 
-import core.auth.MockConfig
-import core.config.AppConfig
+import core.config.{AppConfig, MockConfig}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import digitalcontact.services.mocks.{MockPaperlessPreferenceTokenService, MockPreferencesService}

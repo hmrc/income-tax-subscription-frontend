@@ -18,7 +18,8 @@ package usermatching.controllers
 
 import assets.MessageLookup.{UserDetails => messages}
 import core.ITSASessionKeys
-import core.auth.{MockConfig, UserMatching}
+import core.auth.UserMatching
+import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
 import core.models.DateModel
 import core.services.mocks.MockKeystoreService

@@ -66,6 +66,7 @@ trait AppConfig {
   def storeNinoUrl(token: String): String
   val addressLookupFrontendURL: String
   val signUpToSaLink: String
+  val agentSignUpUrl: String
 }
 
 @Singleton
@@ -114,6 +115,10 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val userMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
 
   override def storeNinoUrl(token: String) = s"$protectedMicroServiceUrl/income-tax-subscription/identifier-mapping/$token"
+
+  //agent frontend
+  protected lazy val agentFrontendUrl = loadConfig("income-tax-subscription-agent-frontend.url")
+  override lazy val agentSignUpUrl = s"$agentFrontendUrl/report-quarterly/income-and-expenses/sign-up/client"
 
   // Digital Preferences
   override lazy val preferencesFrontend = baseUrl("preferences-frontend")

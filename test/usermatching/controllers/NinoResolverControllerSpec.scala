@@ -17,8 +17,8 @@
 package usermatching.controllers
 
 import core.ITSASessionKeys
-import core.auth.{MockConfig, UserMatching}
-import core.config.AppConfig
+import core.auth.UserMatching
+import core.config.{AppConfig, MockConfig}
 import core.controllers.ControllerBaseSpec
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -27,7 +27,7 @@ import play.api.test.Helpers._
 class NinoResolverControllerSpec extends ControllerBaseSpec {
   override val controllerName: String = "NinoResolverController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "resolveNino" -> TestNinoResolverController.resolveNino
+    "resolveNino" -> TestNinoResolverController.resolveNinoAction
   )
 
   def createTestNinoResolverController(appConfig: AppConfig): NinoResolverController =
@@ -47,7 +47,7 @@ class NinoResolverControllerSpec extends ControllerBaseSpec {
       lazy val callResolve = createTestNinoResolverController(
         new MockConfig {
           override val userMatchingFeature = true
-        }).resolveNino(subscriptionRequest)
+        }).resolveNinoAction(subscriptionRequest)
 
       "go to user details" in {
         mockIndividualWithNoEnrolments()
@@ -66,7 +66,7 @@ class NinoResolverControllerSpec extends ControllerBaseSpec {
       lazy val callResolve = createTestNinoResolverController(
         new MockConfig {
           override val userMatchingFeature = false
-        }).resolveNino(subscriptionRequest)
+        }).resolveNinoAction(subscriptionRequest)
 
       "go to IV" in {
         mockIndividualWithNoEnrolments()

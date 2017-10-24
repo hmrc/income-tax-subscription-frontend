@@ -16,7 +16,7 @@
 
 package incometax.business.controllers
 
-import core.auth.MockConfig
+import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import incometax.incomesource.forms.OtherIncomeForm.{option_no, option_yes}

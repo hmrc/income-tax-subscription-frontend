@@ -19,7 +19,7 @@ package core.auth
 import _root_.uk.gov.hmrc.http.SessionKeys._
 import core.ITSASessionKeys
 import core.auth.AuthPredicate.AuthPredicateSuccess
-import core.auth.AuthPredicates._
+import core.config.{AppConfig, MockConfig}
 import core.services.mocks.MockAuthService
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
@@ -30,6 +30,12 @@ import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 import core.utils.UnitTestTrait
 
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
+
+  val authPredicates = new AuthPredicates {
+    override val applicationConfig = appConfig
+  }
+
+  import authPredicates._
 
   private def testUser(affinityGroup: Option[AffinityGroup], enrolments: Enrolment*): IncomeTaxSAUser = IncomeTaxSAUser(
     enrolments = Enrolments(enrolments.toSet),
@@ -121,6 +127,16 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
     "return the wrong-affinity page where there is no affinity group" in {
       await(affinityPredicate(FakeRequest())(blankUser).left.value) mustBe wrongAffinity
+    }
+
+    "return an AuthPredicateSuccess where the affinity group is organisation and the user matching feature is enabled" in {
+      val predicates = new AuthPredicates {
+        override val applicationConfig: AppConfig = new MockConfig {
+          override val userMatchingFeature = true
+        }
+      }
+
+      predicates.affinityPredicate(FakeRequest())(userWithOrganisationAffinity).right.value mustBe AuthPredicateSuccess
     }
   }
 

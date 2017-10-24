@@ -17,7 +17,8 @@
 package incometax.business.controllers
 
 import core.ITSASessionKeys
-import core.auth.{MockConfig, Registration}
+import core.auth.Registration
+import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import play.api.http.Status

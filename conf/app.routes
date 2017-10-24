@@ -9,7 +9,7 @@ GET         /index                        usermatching.controllers.HomeControlle
 GET         /logout                       core.controllers.SignOutController.signOut
 
 # NinoResolver Controller
-GET         /resolve-nino                 usermatching.controllers.NinoResolverController.resolveNino
+GET         /resolve-nino                 usermatching.controllers.NinoResolverController.resolveNinoAction
 
 # Preferences routes
 GET         /preferences                  digitalcontact.controllers.PreferencesController.checkPreferences

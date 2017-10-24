@@ -34,7 +34,7 @@ class NinoResolverController @Inject()(val baseConfig: BaseControllerConfig,
                                        val authService: AuthService
                                       ) extends StatelessController {
 
-  def resolveNino: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
+  def resolveNinoAction: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     implicit user =>
       if (baseConfig.applicationConfig.userMatchingFeature) {
         Future.successful(
