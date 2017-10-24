@@ -21,9 +21,9 @@ import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
-class AffinityGroupErrorViewSpec extends ViewSpecTrait {
+class AgentAffinityGroupErrorViewSpec extends ViewSpecTrait {
 
-  lazy val page = usermatching.views.html.affinity_group_error()(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = usermatching.views.html.agent_affinity_group_error()(FakeRequest(), applicationMessages, appConfig)
 
   "The Affinity Group Error view" should {
 
@@ -33,12 +33,9 @@ class AffinityGroupErrorViewSpec extends ViewSpecTrait {
       heading = messages.heading,
       page = page)
 
-    testPage.mustHavePara(messages.line1)
-    testPage.mustHavePara(messages.line2)
+    testPage.mustHavePara(messages.Agent.line1)
+    testPage.mustHaveALink(messages.Agent.linkId, messages.Agent.linkText, appConfig.agentSignUpUrl)
 
-    val div = testPage.getById("affinity div", "signOut")
-    val para = div.selectHead("affinity link", "p")
-
-    para.mustHaveALink("sign in using a different type of account.", core.controllers.routes.SignOutController.signOut().url)
   }
+
 }

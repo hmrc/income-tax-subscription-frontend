@@ -29,7 +29,8 @@ class AffinityGroupErrorController @Inject()(implicit val applicationConfig: App
                                             ) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action { implicit request =>
-    Ok(usermatching.views.html.affinity_group_error())
+    if(applicationConfig.userMatchingFeature) Ok(usermatching.views.html.agent_affinity_group_error())
+    else Ok(usermatching.views.html.affinity_group_error())
   }
 
 }
