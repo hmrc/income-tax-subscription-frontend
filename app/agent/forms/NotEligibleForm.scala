@@ -32,14 +32,14 @@ object NotEligibleForm {
 
   val choiceEmpty: Constraint[String] = constraint[String](
     income => {
-      lazy val emptyIncome = ErrorMessageFactory.error("error.not-eligible.empty")
+      lazy val emptyIncome = ErrorMessageFactory.error("agent.error.not-eligible.empty")
       if (income.isEmpty) emptyIncome else Valid
     }
   )
 
   val choiceInvalid: Constraint[String] = constraint[String](
     income => {
-      lazy val invalidName = ErrorMessageFactory.error("error.not-eligible.invalid")
+      lazy val invalidName = ErrorMessageFactory.error("agent.error.not-eligible.invalid")
       income match {
         case `option_signup` | `option_signout` => Valid
         case _ => invalidName

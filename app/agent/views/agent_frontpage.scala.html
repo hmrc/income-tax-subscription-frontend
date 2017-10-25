@@ -21,57 +21,57 @@
 
 @(getAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("frontpage.title"), bodyClasses = None, showSignOutLink = false) {
+@main_template(title = Messages("agent.frontpage.title"), bodyClasses = None, showSignOutLink = false) {
 
     <header class="page-header">
-        <h1>@Messages("frontpage.heading")</h1>
+        <h1>@Messages("agent.frontpage.heading")</h1>
     </header>
 
     <div class="form-group">
-        <p>@Html(Messages("frontpage.para_1"))</p>
+        <p>@Html(Messages("agent.frontpage.para_1"))</p>
 
         <ul class="list list-bullet">
-            <li>@Messages("frontpage.bullet_1")</li>
-            <li>@Messages("frontpage.bullet_2")</li>
+            <li>@Messages("agent.frontpage.bullet_1")</li>
+            <li>@Messages("agent.frontpage.bullet_2")</li>
         </ul>
 
-        <p>@Html(Messages("frontpage.para_2"))</p>
+        <p>@Html(Messages("agent.frontpage.para_2"))</p>
 
         <ul class="list list-bullet">
-            <li>@Messages("frontpage.bullet_3")</li>
-            <li>@Messages("frontpage.bullet_4")</li>
-            <li>@Messages("frontpage.bullet_5")</li>
+            <li>@Messages("agent.frontpage.bullet_3")</li>
+            <li>@Messages("agent.frontpage.bullet_4")</li>
+            <li>@Messages("agent.frontpage.bullet_5")</li>
         </ul>
 
-        <p>@Html(Messages("frontpage.para_3"))</p>
+        <p>@Html(Messages("agent.frontpage.para_3"))</p>
     </div>
 
     <div class="form-group">
-        <h2 class="heading-medium">@Messages("frontpage.sub_heading_1")</h2>
-        <p>@Html(Messages("frontpage.para_4"))</p>
+        <h2 class="heading-medium">@Messages("agent.frontpage.sub_heading_1")</h2>
+        <p>@Html(Messages("agent.frontpage.para_4"))</p>
 
         @form(action = getAction) {
-            @startButton(Messages("base.start-now"))
+            @startButton(Messages("agent.base.start-now"))
         }
     </div>
 
-    <h2 class="heading-medium">@Messages("frontpage.sub_heading_2")</h2>
+    <h2 class="heading-medium">@Messages("agent.frontpage.sub_heading_2")</h2>
 
     <div id="beforeYouStart">
         <div class="form-group">
-             <p>@Html(Messages("frontpage.para_5"))</p>
+             <p>@Html(Messages("agent.frontpage.para_5"))</p>
         </div>
         <ul class="list list-bullet">
-            <li>@Messages("frontpage.bullet_6")</li>
-            <li>@Messages("frontpage.bullet_7")</li>
-            <li>@Messages("frontpage.bullet_8")</li>
+            <li>@Messages("agent.frontpage.bullet_6")</li>
+            <li>@Messages("agent.frontpage.bullet_7")</li>
+            <li>@Messages("agent.frontpage.bullet_8")</li>
         </ul>
 
-        <p>@Html(Messages("frontpage.para_6"))</p>
+        <p>@Html(Messages("agent.frontpage.para_6"))</p>
 
         <ul class="list list-bullet">
-            <li>@Html(Messages("frontpage.bullet_9", appConfig.agentAccountUrl))</li>
-            <li>@Html(Messages("frontpage.bullet_10", appConfig.agentAuthUrl))</li>
+            <li>@Html(Messages("agent.frontpage.bullet_9", appConfig.agentAccountUrl))</li>
+            <li>@Html(Messages("agent.frontpage.bullet_10", appConfig.agentAuthUrl))</li>
         </ul>
     </div>
 }

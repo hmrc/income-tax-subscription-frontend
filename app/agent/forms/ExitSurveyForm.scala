@@ -33,7 +33,7 @@ object ExitSurveyForm {
 
   val nameTooLong: Constraint[Option[String]] = constraint[Option[String]] {
     case Some(name) if name.trim.length > improvementsMaxLength =>
-      ErrorMessageFactory.error("error.survey-feedback.maxLength")
+      ErrorMessageFactory.error("agent.error.survey-feedback.maxLength")
     case _ => Valid
   }
 

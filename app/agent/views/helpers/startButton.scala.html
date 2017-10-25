@@ -16,4 +16,4 @@
 
 @(alternativeText: Option[String] = None)(implicit messages: Messages)
 
-<button class="button button--get-started" type="submit" id="start-button">@alternativeText.fold(Messages("base.start-now"))(x => x)</button>
+<button class="button button--get-started" type="submit" id="start-button">@alternativeText.fold(Messages("agent.base.start-now"))(x => x)</button>

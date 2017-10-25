@@ -23,28 +23,28 @@
 
 @(otherIncomeForm: Form[OtherIncomeModel], incomeSource:String, postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-    @agent.views.html.templates.main_template(title = Messages("income-other.title"), bodyClasses = None) {
+    @agent.views.html.templates.main_template(title = Messages("agent.income-other.title"), bodyClasses = None) {
         @back_link(backUrl)
 
         @summaryErrorHelper(otherIncomeForm)
 
-        <h1 class="heading-large">@Messages("income-other.heading")</h1>
+        <h1 class="heading-large">@Messages("agent.income-other.heading")</h1>
 
         <div class="form-group">
-            <p>@Messages("income-other.para1")</p>
+            <p>@Messages("agent.income-other.para1")</p>
             <ul class="bullets">
                 @incomeSource match {
                     case `option_property` => {
-                        <li>@Messages("income-other.bullet1Property")</li>
+                        <li>@Messages("agent.income-other.bullet1Property")</li>
                     }
                     case _ => {
-                        <li>@Messages("income-other.bullet1Default")</li>
+                        <li>@Messages("agent.income-other.bullet1Default")</li>
                     }
                 }
-                <li>@Messages("income-other.bullet2")</li>
-                <li>@Messages("income-other.bullet3")</li>
-                <li>@Messages("income-other.bullet4")</li>
-                <li>@Messages("income-other.bullet5")</li>
+                <li>@Messages("agent.income-other.bullet2")</li>
+                <li>@Messages("agent.income-other.bullet3")</li>
+                <li>@Messages("agent.income-other.bullet4")</li>
+                <li>@Messages("agent.income-other.bullet5")</li>
             </ul>
         </div>
 
@@ -52,17 +52,17 @@
 
             @radioHelper(
                 field = otherIncomeForm(OtherIncomeForm.choice),
-                legend = Messages("income-other.heading"),
+                legend = Messages("agent.income-other.heading"),
                 inline = true,
                 options = Seq(
-                    RadioOption(OtherIncomeForm.option_yes, Messages("income-other.yes")),
-                    RadioOption(OtherIncomeForm.option_no, Messages("income-other.no"))
+                    RadioOption(OtherIncomeForm.option_yes, Messages("agent.income-other.yes")),
+                    RadioOption(OtherIncomeForm.option_no, Messages("agent.income-other.no"))
                 ),
                 parentForm = otherIncomeForm
             )
 
             @if(isEditMode) {
-                @continueButton(Messages("base.update"))
+                @continueButton(Messages("agent.base.update"))
             } else {
                 @continueButton()
             }

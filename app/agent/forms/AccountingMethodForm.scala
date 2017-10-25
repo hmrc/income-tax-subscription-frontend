@@ -32,14 +32,14 @@ object AccountingMethodForm {
 
   val incomeEmpty: Constraint[String] = constraint[String](
     income => {
-      lazy val emptyIncome = ErrorMessageFactory.error("error.accounting-method.empty")
+      lazy val emptyIncome = ErrorMessageFactory.error("agent.error.accounting-method.empty")
       if (income.isEmpty) emptyIncome else Valid
     }
   )
 
   val incomeInvalid: Constraint[String] = constraint[String](
     income => {
-      lazy val invalidIncome = ErrorMessageFactory.error("error.accounting-method.invalid")
+      lazy val invalidIncome = ErrorMessageFactory.error("agent.error.accounting-method.invalid")
       income match {
         case `option_cash` | `option_accruals` => Valid
         case _ => invalidIncome

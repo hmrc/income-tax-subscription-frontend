@@ -34,7 +34,7 @@ object Constraints {
     x => if (Patterns.validText(x.trim)) Valid else ErrorMessageFactory.error(msgKey)
   )
 
-  val emptyNino: Constraint[String] = nonEmpty("error.nino.empty")
+  val emptyNino: Constraint[String] = nonEmpty("agent.error.nino.empty")
 
   // N.B. this regex is updated to force the user to also enter the suffix
   // the suffix is required because the service we currently call to perform the lookup does not remove it safely
@@ -43,7 +43,7 @@ object Constraints {
   """^((?!(BG|GB|KN|NK|NT|TN|ZZ)|(D|F|I|Q|U|V)[A-Z]|[A-Z](D|F|I|O|Q|U|V))[A-Z]{2})[0-9]{6}[A-D]$"""
 
   val validateNino: Constraint[String] = {
-    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else ErrorMessageFactory.error("error.nino.invalid"))
+    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else ErrorMessageFactory.error("agent.error.nino.invalid"))
   }
 
 }

@@ -34,21 +34,21 @@ object BusinessNameForm {
 
   val nameEmpty: Constraint[String] = constraint[String](
     name => {
-      lazy val emptyName = ErrorMessageFactory.error("error.business_name.empty")
+      lazy val emptyName = ErrorMessageFactory.error("agent.error.business_name.empty")
       if (name.isEmpty) emptyName else Valid
     }
   )
 
   val nameTooLong: Constraint[String] = constraint[String](
     name => {
-      lazy val tooLong = ErrorMessageFactory.error("error.business_name.maxLength")
+      lazy val tooLong = ErrorMessageFactory.error("agent.error.business_name.maxLength")
       if (name.trim.length > businessNameMaxLength) tooLong else Valid
     }
   )
 
   val nameInvalid: Constraint[String] = constraint[String](
     name => {
-      lazy val invalidName = ErrorMessageFactory.error("error.business_name.invalid")
+      lazy val invalidName = ErrorMessageFactory.error("agent.error.business_name.invalid")
       if (Patterns.validText(name.trim)) Valid else invalidName
     }
   )

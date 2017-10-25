@@ -47,7 +47,7 @@
 
         @dateHelper(
             field = accountingPeriodForm(startDate),
-            label = Messages("base.startDate"),
+            label = Messages("agent.base.startDate"),
             parentForm = accountingPeriodForm,
             hintText =
                     if(viewType == CurrentAccountingPeriodView) {
@@ -59,7 +59,7 @@
 
         @dateHelper(
             field = accountingPeriodForm(endDate),
-            label = Messages("base.endDate"),
+            label = Messages("agent.base.endDate"),
             parentForm = accountingPeriodForm,
             hintText =
                     if(viewType == CurrentAccountingPeriodView) {
@@ -70,7 +70,7 @@
         )
 
         @if(isEditMode) {
-            @continueButton(Messages("base.update"))
+            @continueButton(Messages("agent.base.update"))
         } else {
             @continueButton()
         }

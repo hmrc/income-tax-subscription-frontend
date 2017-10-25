@@ -32,21 +32,21 @@ object EmailForm {
 
   val emailEmpty: Constraint[String] = constraint[String](
     email => {
-      lazy val emptyName = ErrorMessageFactory.error("error.contact_email.empty")
+      lazy val emptyName = ErrorMessageFactory.error("agent.error.contact_email.empty")
       if (email.isEmpty) emptyName else Valid
     }
   )
 
   val emailTooLong: Constraint[String] = constraint[String](
     email => {
-      lazy val tooLong = ErrorMessageFactory.error("error.contact_email.maxLength")
+      lazy val tooLong = ErrorMessageFactory.error("agent.error.contact_email.maxLength")
       if (email.trim.length > emailMaxLength) tooLong else Valid
     }
   )
 
   val emailInvalid: Constraint[String] = constraint[String](
     email => {
-      lazy val invalidName = ErrorMessageFactory.error("error.contact_email.invalid")
+      lazy val invalidName = ErrorMessageFactory.error("agent.error.contact_email.invalid")
       if (Patterns.validEmail(email.trim)) Valid else invalidName
     }
   )

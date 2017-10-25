@@ -59,7 +59,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
       "output the appropriate error messages for the start date" when {
 
         "a date is not supplied" in {
-          val empty = ErrorMessageFactory.error("error.start_date.empty")
+          val empty = ErrorMessageFactory.error("agent.error.start_date.empty")
           empty fieldErrorIs MessageLookup.Error.StartDate.empty
           empty summaryErrorIs MessageLookup.Error.StartDate.empty
 
@@ -68,7 +68,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
         }
 
         "it is a date with invalid characters" in {
-          val invalidChar = ErrorMessageFactory.error("error.start_date.invalid_chars")
+          val invalidChar = ErrorMessageFactory.error("agent.error.start_date.invalid_chars")
           invalidChar fieldErrorIs MessageLookup.Error.StartDate.invalid_chars
           invalidChar summaryErrorIs MessageLookup.Error.StartDate.invalid_chars
 
@@ -77,7 +77,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
         }
 
         "it is an invalid date" in {
-          val invalid = ErrorMessageFactory.error("error.start_date.invalid")
+          val invalid = ErrorMessageFactory.error("agent.error.start_date.invalid")
           invalid fieldErrorIs MessageLookup.Error.StartDate.invalid
           invalid summaryErrorIs MessageLookup.Error.StartDate.invalid
 
@@ -87,7 +87,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
 
 
         "it is before the 6 April 2017" in {
-          val beforeMin = ErrorMessageFactory.error("error.business_accounting_period.minStartDate")
+          val beforeMin = ErrorMessageFactory.error("agent.error.business_accounting_period.minStartDate")
           beforeMin fieldErrorIs MessageLookup.Error.BusinessAccountingPeriod.minStartDate
           beforeMin summaryErrorIs MessageLookup.Error.BusinessAccountingPeriod.minStartDate
 
@@ -103,7 +103,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
       "output an appropriate error for the end date" when {
 
         "a date is not supplied" in {
-          val empty = ErrorMessageFactory.error("error.end_date.empty")
+          val empty = ErrorMessageFactory.error("agent.error.end_date.empty")
           empty fieldErrorIs MessageLookup.Error.EndDate.empty
           empty summaryErrorIs MessageLookup.Error.EndDate.empty
 
@@ -118,7 +118,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
         }
 
         "it is a date with invalid characters" in {
-          val invalidChar = ErrorMessageFactory.error("error.end_date.invalid_chars")
+          val invalidChar = ErrorMessageFactory.error("agent.error.end_date.invalid_chars")
           invalidChar fieldErrorIs MessageLookup.Error.EndDate.invalid_chars
           invalidChar summaryErrorIs MessageLookup.Error.EndDate.invalid_chars
 
@@ -127,7 +127,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
         }
 
         "it is an invalid date" in {
-          val invalid = ErrorMessageFactory.error("error.end_date.invalid")
+          val invalid = ErrorMessageFactory.error("agent.error.end_date.invalid")
           invalid fieldErrorIs MessageLookup.Error.EndDate.invalid
           invalid summaryErrorIs MessageLookup.Error.EndDate.invalid
 
@@ -137,7 +137,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
         }
 
         "it is before the start date" in {
-          val violation = ErrorMessageFactory.error("error.end_date_violation")
+          val violation = ErrorMessageFactory.error("agent.error.end_date_violation")
           violation fieldErrorIs MessageLookup.Error.EndDate.end_violation
           violation summaryErrorIs MessageLookup.Error.EndDate.end_violation
 
@@ -147,7 +147,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
         }
 
         "it is more than 24 months after the start date" in {
-          val violation = ErrorMessageFactory.error("error.business_accounting_period.maxEndDate")
+          val violation = ErrorMessageFactory.error("agent.error.business_accounting_period.maxEndDate")
           violation fieldErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate
           violation summaryErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate
 

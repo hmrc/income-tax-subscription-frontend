@@ -46,19 +46,19 @@
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-survey.js")"></script>
 }
 
-@agent.views.html.templates.main_template(title = Messages("exit-survey.title"), bodyClasses = None, showSignOutLink = false, scriptElem = scripts) {
+@agent.views.html.templates.main_template(title = Messages("agent.exit-survey.title"), bodyClasses = None, showSignOutLink = false, scriptElem = scripts) {
 
     @summaryErrorHelper(exitSurveyForm)
 
-    <h1 class="heading-xlarge">@Messages("exit-survey.heading")</h1>
+    <h1 class="heading-xlarge">@Messages("agent.exit-survey.heading")</h1>
 
     @form(action = postAction) {
 
         <div class="form-group">
-            @question(Messages("exit-survey.q1"))
+            @question(Messages("agent.exit-survey.q1"))
             @radioHelper(
                 field = exitSurveyForm(ExitSurveyForm.satisfaction),
-                legend = Messages("exit-survey.q1"),
+                legend = Messages("agent.exit-survey.q1"),
                 options = loadRadioOptions("exit-survey.q1.option"),
                 parentForm = exitSurveyForm,
                 useTextForValue = true
@@ -66,15 +66,15 @@
         </div>
 
         <div class="form-group">
-            @question(Messages("exit-survey.q2"))
-            <p>@Messages("exit-survey.line_1")</p>
+            @question(Messages("agent.exit-survey.q2"))
+            <p>@Messages("agent.exit-survey.line_1")</p>
             @textAreaHelper(
                 field = exitSurveyForm(ExitSurveyForm.improvements),
                 maxLength = ExitSurveyForm.improvementsMaxLength
             )
         </div>
 
-        @continueButton(Messages("exit-survey.submit"))
+        @continueButton(Messages("agent.exit-survey.submit"))
     }
 
 }

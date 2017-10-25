@@ -35,14 +35,14 @@ object IncomeSourceForm {
 
   val sourceEmpty: Constraint[String] = constraint[String](
     source => {
-      lazy val emptySource = ErrorMessageFactory.error("error.income_source.empty")
+      lazy val emptySource = ErrorMessageFactory.error("agent.error.income_source.empty")
       if (source.isEmpty) emptySource else Valid
     }
   )
 
   val sourceInvalid: Constraint[String] = constraint[String](
     source => {
-      lazy val invalidSource = ErrorMessageFactory.error("error.income_source.invalid")
+      lazy val invalidSource = ErrorMessageFactory.error("agent.error.income_source.invalid")
       source match {
         case `option_business` | `option_property` | `option_both` | `option_other` => Valid
         case _ => invalidSource

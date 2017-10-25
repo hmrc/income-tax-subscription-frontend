@@ -32,14 +32,14 @@ object AccountingPeriodPriorForm {
 
   val nonEmpty: Constraint[String] = constraint[String](
     source => {
-      lazy val emptySource = ErrorMessageFactory.error("error.business.current_financial_period_prior.empty")
+      lazy val emptySource = ErrorMessageFactory.error("agent.error.business.current_financial_period_prior.empty")
       if (source.isEmpty) emptySource else Valid
     }
   )
 
   val validOption: Constraint[String] = constraint[String](
     source => {
-      lazy val invalidSource = ErrorMessageFactory.error("error.business.current_financial_period_prior.invalid")
+      lazy val invalidSource = ErrorMessageFactory.error("agent.error.business.current_financial_period_prior.invalid")
       source match {
         case `option_yes` | `option_no` => Valid
         case _ => invalidSource

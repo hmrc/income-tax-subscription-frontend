@@ -23,14 +23,14 @@ import play.api.i18n.Messages
 object SummaryHelper {
 
   def accountingMethodText(src: AccountingMethodModel)(implicit messages: Messages): String = src.accountingMethod match {
-    case AccountingMethodForm.option_cash => Messages("summary.income_type.cash")
-    case AccountingMethodForm.option_accruals => Messages("summary.income_type.accruals")
+    case AccountingMethodForm.option_cash => Messages("agent.summary.income_type.cash")
+    case AccountingMethodForm.option_accruals => Messages("agent.summary.income_type.accruals")
   }
 
   def incomeSourceText(src: IncomeSourceModel)(implicit messages: Messages): String = src.source match {
-    case IncomeSourceForm.option_business => Messages("summary.income_source.business")
-    case IncomeSourceForm.option_property => Messages("summary.income_source.property")
-    case IncomeSourceForm.option_both => Messages("summary.income_source.both")
+    case IncomeSourceForm.option_business => Messages("agent.summary.income_source.business")
+    case IncomeSourceForm.option_property => Messages("agent.summary.income_source.property")
+    case IncomeSourceForm.option_both => Messages("agent.summary.income_source.both")
   }
 
 }

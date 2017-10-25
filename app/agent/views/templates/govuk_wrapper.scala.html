@@ -45,12 +45,12 @@
 }
 
 @signOutLink = {
-  @if(showSignOutLink) {<li><a id="logOutNavHref" href=@signOut>@Messages("base.sign-out")</a></li>}
+  @if(showSignOutLink) {<li><a id="logOutNavHref" href=@signOut>@Messages("agent.base.sign-out")</a></li>}
 }
 
 @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = Some(Messages("base.service_name")),
+      navTitle = Some(Messages("agent.base.service_name")),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(signOutLink))

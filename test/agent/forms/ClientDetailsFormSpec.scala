@@ -64,7 +64,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       "when testing the first name" should {
 
         "error if no name is supplied" in {
-          val errors = ErrorMessageFactory.error("error.client_details.first_name.empty")
+          val errors = ErrorMessageFactory.error("agent.error.client_details.first_name.empty")
           errors fieldErrorIs MessageLookup.Error.ClientDetails.firstNameEmpty
           errors summaryErrorIs MessageLookup.Error.ClientDetails.firstNameEmpty
           val testInput = setupTestData(fname = "")
@@ -72,7 +72,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if an invalid name is supplied" in {
-          val errors = ErrorMessageFactory.error("error.client_details.first_name.invalid")
+          val errors = ErrorMessageFactory.error("agent.error.client_details.first_name.invalid")
           errors fieldErrorIs MessageLookup.Error.ClientDetails.firstNameInvalid
           errors summaryErrorIs MessageLookup.Error.ClientDetails.firstNameInvalid
           val testInput = setupTestData(fname = "␢")
@@ -80,7 +80,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if a name which is too long is supplied" in {
-          val errors = ErrorMessageFactory.error("error.client_details.first_name.maxLength")
+          val errors = ErrorMessageFactory.error("agent.error.client_details.first_name.maxLength")
           errors fieldErrorIs MessageLookup.Error.ClientDetails.firstNameMaxLength
           errors summaryErrorIs MessageLookup.Error.ClientDetails.firstNameMaxLength
           val testInput = setupTestData(fname = "abc" * 100)
@@ -92,7 +92,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       "when testing the last name" should {
 
         "Error if no last name is supplied" in {
-          val errors = ErrorMessageFactory.error("error.client_details.last_name.empty")
+          val errors = ErrorMessageFactory.error("agent.error.client_details.last_name.empty")
           errors fieldErrorIs MessageLookup.Error.ClientDetails.lastNameEmpty
           errors summaryErrorIs MessageLookup.Error.ClientDetails.lastNameEmpty
           val testInput = setupTestData(lname = "")
@@ -100,7 +100,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "Error if an invalid last name is supplied" in {
-          val errors = ErrorMessageFactory.error("error.client_details.last_name.invalid")
+          val errors = ErrorMessageFactory.error("agent.error.client_details.last_name.invalid")
           errors fieldErrorIs MessageLookup.Error.ClientDetails.lastNameInvalid
           errors summaryErrorIs MessageLookup.Error.ClientDetails.lastNameInvalid
           val testInput = setupTestData(lname = "␢")
@@ -108,7 +108,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if a name which is too long is supplied" in {
-          val errors = ErrorMessageFactory.error("error.client_details.last_name.maxLength")
+          val errors = ErrorMessageFactory.error("agent.error.client_details.last_name.maxLength")
           errors fieldErrorIs MessageLookup.Error.ClientDetails.lastNameMaxLength
           errors summaryErrorIs MessageLookup.Error.ClientDetails.lastNameMaxLength
           val testInput = setupTestData(lname = "abc" * 100)
@@ -120,7 +120,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       "when testing the NINO" should {
 
         "error if no NINO is supplied" in {
-          val errors = ErrorMessageFactory.error("error.nino.empty")
+          val errors = ErrorMessageFactory.error("agent.error.nino.empty")
           errors fieldErrorIs MessageLookup.Error.Nino.empty
           errors summaryErrorIs MessageLookup.Error.Nino.empty
           val testInput = setupTestData(nino = "")
@@ -128,7 +128,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if an invalid NINO is supplied" in {
-          val errors = ErrorMessageFactory.error("error.nino.invalid")
+          val errors = ErrorMessageFactory.error("agent.error.nino.invalid")
           errors fieldErrorIs MessageLookup.Error.Nino.invalid
           errors summaryErrorIs MessageLookup.Error.Nino.invalid
           val testInput = setupTestData(nino = "3456677")
@@ -140,7 +140,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
       "when testing the DoB" should {
 
         "error if no DoB is supplied" in {
-          val errors = ErrorMessageFactory.error("error.dob_date.empty")
+          val errors = ErrorMessageFactory.error("agent.error.dob_date.empty")
           errors fieldErrorIs MessageLookup.Error.DOBDate.empty
           errors summaryErrorIs MessageLookup.Error.DOBDate.empty
           val testInput = setupTestData(dob = DateModel("","",""))
@@ -148,7 +148,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if a none numeric day is supplied" in {
-          val errors = ErrorMessageFactory.error("error.dob_date.invalid_chars")
+          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid_chars")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid_chars
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid_chars
           val testInput = setupTestData(dob = DateModel("aa","10","1990"))
@@ -156,7 +156,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if a none numeric month is supplied" in {
-          val errors = ErrorMessageFactory.error("error.dob_date.invalid_chars")
+          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid_chars")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid_chars
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid_chars
           val testInput = setupTestData(dob = DateModel("01","aa","1990"))
@@ -164,7 +164,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if a none numeric year is supplied" in {
-          val errors = ErrorMessageFactory.error("error.dob_date.invalid_chars")
+          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid_chars")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid_chars
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid_chars
           val testInput = setupTestData(dob = DateModel("01","12","aa"))
@@ -172,7 +172,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if an invalid numeric day is supplied" in {
-          val errors = ErrorMessageFactory.error("error.dob_date.invalid")
+          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid
           val testInput = setupTestData(dob = DateModel("56","10","1990"))
@@ -180,7 +180,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if an invalid numeric month is supplied" in {
-          val errors = ErrorMessageFactory.error("error.dob_date.invalid")
+          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid
           val testInput = setupTestData(dob = DateModel("01","15","1990"))
@@ -188,7 +188,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
         }
 
         "error if an invalid numeric year is supplied" in {
-          val errors = ErrorMessageFactory.error("error.dob_date.invalid")
+          val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid
           val testInput = setupTestData(dob = DateModel("01","12","1234567899"))

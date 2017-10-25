@@ -33,7 +33,7 @@ object BackToPreferencesForm {
 
   val backToPreferencesEmpty: Constraint[String] = constraint[String](
     terms => {
-      lazy val empty = ErrorMessageFactory.error("error.back_to_preferences.empty")
+      lazy val empty = ErrorMessageFactory.error("agent.error.back_to_preferences.empty")
       terms match {
         case `option_yes` | `option_no` => Valid
         case _ => empty

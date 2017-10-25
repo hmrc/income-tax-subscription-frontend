@@ -25,10 +25,10 @@
 @(incomeSourceForm: Form[IncomeSourceModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
-    Messages("income_source.heading")
+    Messages("agent.income_source.heading")
 }
 
-@agent.views.html.templates.main_template(title = Messages("income_source.title"), bodyClasses = None) {
+@agent.views.html.templates.main_template(title = Messages("agent.income_source.title"), bodyClasses = None) {
     @if(isEditMode) {
         @back_link(backUrl)
     }
@@ -43,10 +43,10 @@
             field = incomeSourceForm(IncomeSourceForm.incomeSource),
             legend = question,
             options = Seq(
-                RadioOption(IncomeSourceForm.option_business, Messages("income_source.business")),
-                RadioOption(IncomeSourceForm.option_property, Messages("income_source.property")),
-                RadioOption(IncomeSourceForm.option_both, Messages("income_source.both")),
-                RadioOption(IncomeSourceForm.option_other, Messages("income_source.other"))
+                RadioOption(IncomeSourceForm.option_business, Messages("agent.income_source.business")),
+                RadioOption(IncomeSourceForm.option_property, Messages("agent.income_source.property")),
+                RadioOption(IncomeSourceForm.option_both, Messages("agent.income_source.both")),
+                RadioOption(IncomeSourceForm.option_other, Messages("agent.income_source.other"))
             ),
             parentForm = incomeSourceForm
         )

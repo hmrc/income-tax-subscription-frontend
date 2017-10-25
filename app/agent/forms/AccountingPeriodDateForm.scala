@@ -38,7 +38,7 @@ object AccountingPeriodDateForm {
 
   def dateValidation(errorName: String): Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val invalidDate = ErrorMessageFactory.error(s"error.$errorName.invalid")
+      lazy val invalidDate = ErrorMessageFactory.error(s"agent.error.$errorName.invalid")
       Try[ValidationResult] {
         date.toLocalDate
         Valid
@@ -48,14 +48,14 @@ object AccountingPeriodDateForm {
 
   def dateEmpty(errorName: String): Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val emptyDate = ErrorMessageFactory.error(s"error.$errorName.empty")
+      lazy val emptyDate = ErrorMessageFactory.error(s"agent.error.$errorName.empty")
       if (date.day.trim.isEmpty && date.month.trim.isEmpty && date.year.trim.isEmpty) emptyDate else Valid
     }
   )
 
   def dateIsNumeric(errorName: String): Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val isNotNumeric = ErrorMessageFactory.error(s"error.$errorName.invalid_chars")
+      lazy val isNotNumeric = ErrorMessageFactory.error(s"agent.error.$errorName.invalid_chars")
       val numericRegex = "[0-9]*"
 
       def isNumeric(str: String): Boolean = str.replace(" ", "").matches(numericRegex)
@@ -66,14 +66,14 @@ object AccountingPeriodDateForm {
 
   val startDateBeforeApr17: Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val invalid = ErrorMessageFactory.error(TargetIds(startDate), "error.business_accounting_period.minStartDate")
+      lazy val invalid = ErrorMessageFactory.error(TargetIds(startDate), "agent.error.business_accounting_period.minStartDate")
       if (date.isBefore(minStartDate)) invalid else Valid
     }
   )
 
   val endDateAfterStart: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
     accountingPeriod => {
-      lazy val invalid = ErrorMessageFactory.error(TargetIds(endDate), "error.end_date_violation")
+      lazy val invalid = ErrorMessageFactory.error(TargetIds(endDate), "agent.error.end_date_violation")
       if (accountingPeriod.endDate.isAfter(accountingPeriod.startDate)) Valid else invalid
     }
   )
@@ -83,7 +83,7 @@ object AccountingPeriodDateForm {
       lazy val maxEndDate = accountingPeriod.startDate.plusMonths(maxMonths)
       lazy val invalid = ErrorMessageFactory.error(
         TargetIds(endDate),
-        "error.business_accounting_period.maxEndDate"
+        "agent.error.business_accounting_period.maxEndDate"
       )
       if (accountingPeriod.endDate.isAfter(maxEndDate)) invalid else Valid
     }

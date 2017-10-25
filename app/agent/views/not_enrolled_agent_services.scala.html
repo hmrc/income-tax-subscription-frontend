@@ -21,12 +21,12 @@
 
 @(getAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("not_enrolled_agent_services.title"), bodyClasses = None) {
+@main_template(title = Messages("agent.not_enrolled_agent_services.title"), bodyClasses = None) {
 
-    <h1 class="heading-large">@Messages("not_enrolled_agent_services.heading")</h1>
+    <h1 class="heading-large">@Messages("agent.not_enrolled_agent_services.heading")</h1>
 
     <div class="form-group">
-        <p>@Html(Messages("not_enrolled_agent_services.para1", appConfig.agentServicesUrl))</p>
+        <p>@Html(Messages("agent.not_enrolled_agent_services.para1", appConfig.agentServicesUrl))</p>
     </div>
 
     <div class="form-group">

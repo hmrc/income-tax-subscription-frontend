@@ -21,12 +21,12 @@
 
 @(subscriptionId: String, submissionDate: DateModel, postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-    @agent.views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction)) {
+    @agent.views.html.templates.main_template(title = Messages("agent.confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction)) {
 
         <div class="form-group">
             <section id="confirmation-heading" class="transaction-banner--complete">
-                <h1 class="transaction-banner__heading" style="color: #fff">@Messages("confirmation.heading")</h1>
-                <p>@Messages("confirmation.banner.line_1")</p>
+                <h1 class="transaction-banner__heading" style="color: #fff">@Messages("agent.confirmation.heading")</h1>
+                <p>@Messages("agent.confirmation.banner.line_1")</p>
                 <p>
                     <span id="subscription-id-value" class="h3-heading">@subscriptionId</span>
                 </p>
@@ -35,21 +35,21 @@
 
         <section class="form-group" id="whatHappensNext">
             <div class="form-group">
-                <p>@Messages("confirmation.whatHappensNext.para1")</p>
+                <p>@Messages("agent.confirmation.whatHappensNext.para1")</p>
             </div>
-            <h2>@Messages("confirmation.whatHappensNext.heading")</h2>
-            <p>@Messages("confirmation.whatHappensNext.para2")</p>
-            <p>@Messages("confirmation.whatHappensNext.para3")</p>
+            <h2>@Messages("agent.confirmation.whatHappensNext.heading")</h2>
+            <p>@Messages("agent.confirmation.whatHappensNext.para2")</p>
+            <p>@Messages("agent.confirmation.whatHappensNext.para3")</p>
         </section>
 
         <section class="form-group" id="giveUsFeedback">
-            <h2>@Messages("confirmation.giveUsFeedback.heading")</h2>
-            <p><a id="confirmation-feedback" href="@signOutAction">@Messages("confirmation.giveUsFeedback.link")</a> @Messages("confirmation.giveUsFeedback.para1")</p>
+            <h2>@Messages("agent.confirmation.giveUsFeedback.heading")</h2>
+            <p><a id="confirmation-feedback" href="@signOutAction">@Messages("agent.confirmation.giveUsFeedback.link")</a> @Messages("agent.confirmation.giveUsFeedback.para1")</p>
         </section>
 
         <div class = "form-group">
         @form(action = postAction) {
-            <button formnovalidate class="button" type="submit" id="add-another-button">@Messages("confirmation.add_another")</button>
+            <button formnovalidate class="button" type="submit" id="add-another-button">@Messages("agent.confirmation.add_another")</button>
         }
         </div>
 

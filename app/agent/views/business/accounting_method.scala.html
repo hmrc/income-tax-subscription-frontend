@@ -25,7 +25,7 @@
 @(accountingMethodForm: Form[AccountingMethodModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
-    Messages("business.accounting_method.heading")
+    Messages("agent.business.accounting_method.heading")
 }
 
 @agent.views.html.templates.main_template(title = Messages("agent.business.accounting_method.title"), bodyClasses = None) {
@@ -48,7 +48,7 @@
         )
 
         @if(isEditMode) {
-            @continueButton(Messages("base.update"))
+            @continueButton(Messages("agent.base.update"))
         } else {
             @continueButton()
         }

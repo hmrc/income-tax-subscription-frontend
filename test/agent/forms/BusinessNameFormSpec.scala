@@ -41,9 +41,9 @@ class BusinessNameFormSpec extends PlaySpec with GuiceOneAppPerSuite {
     "validate business name correctly" in {
       val maxLength = 105
 
-      val empty = ErrorMessageFactory.error("error.business_name.empty")
-      val maxLen = ErrorMessageFactory.error("error.business_name.maxLength")
-      val invalid = ErrorMessageFactory.error("error.business_name.invalid")
+      val empty = ErrorMessageFactory.error("agent.error.business_name.empty")
+      val maxLen = ErrorMessageFactory.error("agent.error.business_name.maxLength")
+      val invalid = ErrorMessageFactory.error("agent.error.business_name.invalid")
 
       empty fieldErrorIs MessageLookup.Error.BusinessName.empty
       empty summaryErrorIs MessageLookup.Error.BusinessName.empty

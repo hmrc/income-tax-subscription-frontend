@@ -39,8 +39,8 @@ class NotEligibleFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "validate income type correctly" in {
-      val empty = ErrorMessageFactory.error("error.not-eligible.empty")
-      val invalid = ErrorMessageFactory.error("error.not-eligible.invalid")
+      val empty = ErrorMessageFactory.error("agent.error.not-eligible.empty")
+      val invalid = ErrorMessageFactory.error("agent.error.not-eligible.invalid")
 
       empty fieldErrorIs MessageLookup.Error.NotEligible.empty
       empty summaryErrorIs MessageLookup.Error.NotEligible.empty

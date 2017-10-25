@@ -38,7 +38,7 @@ class BackToPreferencesFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "validate backToPreferences correctly" in {
-      val empty = ErrorMessageFactory.error("error.back_to_preferences.empty")
+      val empty = ErrorMessageFactory.error("agent.error.back_to_preferences.empty")
 
       empty fieldErrorIs MessageLookup.Error.BackToPreferences.empty
       empty summaryErrorIs MessageLookup.Error.BackToPreferences.empty

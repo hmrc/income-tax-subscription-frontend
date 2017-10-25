@@ -36,7 +36,7 @@
         </div>
         @changeUrl match {
             case Some(url) => {
-                <a class="tabular-data__data-2" data-journey-click="itsa:changeLink:@field" href="@url" id="@field-edit">@Messages("base.change") <span class="visuallyhidden">@question</span> </a>
+                <a class="tabular-data__data-2" data-journey-click="itsa:changeLink:@field" href="@url" id="@field-edit">@Messages("agent.base.change") <span class="visuallyhidden">@question</span> </a>
             }
             case _ => {
                 <div class="tabular-data__data-2"></div>
@@ -47,7 +47,7 @@
 
 @incomeSource(source: IncomeSourceModel) = @{
     val rowName = IncomeSourceId
-    val rowQuestion = Messages("summary.income_source")
+    val rowQuestion = Messages("agent.summary.income_source")
     val rowAnswer = incomeSourceText(source)
     val rowUrl = agent.controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
@@ -55,7 +55,7 @@
 
 @otherIncome(source: OtherIncomeModel) = @{
     val rowName = OtherIncomeId
-    val rowQuestion = Messages("summary.other_income")
+    val rowQuestion = Messages("agent.summary.other_income")
     val rowAnswer = source.choice
     val rowUrl = agent.controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
@@ -63,7 +63,7 @@
 
 @accountingPeriodDate(period: AccountingPeriodModel) = @{
     val rowName = AccountingPeriodDateId
-    val rowQuestion = Messages("summary.accounting_period")
+    val rowQuestion = Messages("agent.summary.accounting_period")
     val periodInMonth = period.startDate.diffInMonth(period.endDate)
     val rowAnswer = s"${period.startDate.toCheckYourAnswersDateFormat} to ${period.endDate.toCheckYourAnswersDateFormat}"
     val rowUrl = agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
@@ -72,7 +72,7 @@
 
 @businessName(name: BusinessNameModel) = @{
     val rowName = BusinessNameId
-    val rowQuestion = Messages("summary.business_name")
+    val rowQuestion = Messages("agent.summary.business_name")
     val rowAnswer = name.businessName
     val rowUrl = agent.controllers.business.routes.BusinessNameController.showBusinessName(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
@@ -80,19 +80,19 @@
 
 @accountingMethod(income: AccountingMethodModel) = @{
     val rowName = AccountingMethodId
-    val rowQuestion = Messages("summary.income_type")
+    val rowQuestion = Messages("agent.summary.income_type")
     val rowAnswer = accountingMethodText(income)
     val rowUrl = agent.controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@agent.views.html.templates.main_template(title = Messages("summary.title"), bodyClasses = None, articleLayout = false) {
+@agent.views.html.templates.main_template(title = Messages("agent.summary.title"), bodyClasses = None, articleLayout = false) {
 
     @back_link(backUrl)
 
-    <h1 class="heading-large">@Messages("summary.heading") <span class="visuallyhidden">@Messages("summary.heading_hidden")</span></h1>
+    <h1 class="heading-large">@Messages("agent.summary.heading") <span class="visuallyhidden">@Messages("agent.summary.heading_hidden")</span></h1>
 
-    <h2 class="heading-medium">@Html(Messages("summary.h2"))</h2>
+    <h2 class="heading-medium">@Html(Messages("agent.summary.h2"))</h2>
 
     <div class="form-group" data-metrics="itsa:incomeSource:@summaryModel.incomeSource.map(_.source)">
         @summaryModel.incomeSource.map(incomeSource)
@@ -104,7 +104,7 @@
     </div>
 
     @form(action = postAction) {
-        @continueButton(Messages("summary.confirm_and_sign_up"))
+        @continueButton(Messages("agent.summary.confirm_and_sign_up"))
     }
 
 }

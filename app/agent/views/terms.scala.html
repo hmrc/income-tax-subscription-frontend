@@ -20,24 +20,24 @@
 
 @(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agent.views.html.templates.main_template(title = Messages("terms.title"), bodyClasses = None) {
+@agent.views.html.templates.main_template(title = Messages("agent.terms.title"), bodyClasses = None) {
     @back_link(backUrl)
 
-    <h1 class="heading-large">@Messages("terms.heading")</h1>
+    <h1 class="heading-large">@Messages("agent.terms.heading")</h1>
 
-    <p>@Messages("terms.line_1")</p>
+    <p>@Messages("agent.terms.line_1")</p>
     <ul class="bullets">
-        <li>@Messages("terms.point_1")</li>
-        <li>@Messages("terms.point_2")</li>
-        <li>@Messages("terms.point_3")</li>
-        <li>@Messages("terms.point_4")</li>
-        <li>@Messages("terms.point_5")</li>
-        <li>@Messages("terms.point_6")</li>
-        <li>@Messages("terms.point_7")</li>
+        <li>@Messages("agent.terms.point_1")</li>
+        <li>@Messages("agent.terms.point_2")</li>
+        <li>@Messages("agent.terms.point_3")</li>
+        <li>@Messages("agent.terms.point_4")</li>
+        <li>@Messages("agent.terms.point_5")</li>
+        <li>@Messages("agent.terms.point_6")</li>
+        <li>@Messages("agent.terms.point_7")</li>
     </ul>
-    <p>@Messages("terms.line_2")</p>
+    <p>@Messages("agent.terms.line_2")</p>
 
     @form(action = postAction) {
-        @continueButton(Messages("terms.button"))
+        @continueButton(Messages("agent.terms.button"))
     }
 }

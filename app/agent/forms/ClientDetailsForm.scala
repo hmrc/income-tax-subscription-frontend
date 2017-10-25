@@ -39,25 +39,25 @@ object ClientDetailsForm {
 
   val nameMaxLength = 105
 
-  val firstNameNonEmpty: Constraint[String] = nonEmpty("error.client_details.first_name.empty")
-  val lastNameNonEmpty: Constraint[String] = nonEmpty("error.client_details.last_name.empty")
+  val firstNameNonEmpty: Constraint[String] = nonEmpty("agent.error.client_details.first_name.empty")
+  val lastNameNonEmpty: Constraint[String] = nonEmpty("agent.error.client_details.last_name.empty")
 
-  val firstNameInvalid: Constraint[String] = invalidFormat("error.client_details.first_name.invalid")
-  val lastNameInvalid: Constraint[String] = invalidFormat("error.client_details.last_name.invalid")
+  val firstNameInvalid: Constraint[String] = invalidFormat("agent.error.client_details.first_name.invalid")
+  val lastNameInvalid: Constraint[String] = invalidFormat("agent.error.client_details.last_name.invalid")
 
-  val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.client_details.first_name.maxLength")
-  val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.client_details.last_name.maxLength")
+  val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "agent.error.client_details.first_name.maxLength")
+  val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "agent.error.client_details.last_name.maxLength")
 
   val dobNoneEmpty: Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val emptyDate = ErrorMessageFactory.error("error.dob_date.empty")
+      lazy val emptyDate = ErrorMessageFactory.error("agent.error.dob_date.empty")
       if (date.day.trim.isEmpty && date.month.trim.isEmpty && date.year.trim.isEmpty) emptyDate else Valid
     }
   )
 
   val dobIsNumeric: Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val isNotNumeric = ErrorMessageFactory.error("error.dob_date.invalid_chars")
+      lazy val isNotNumeric = ErrorMessageFactory.error("agent.error.dob_date.invalid_chars")
       val numericRegex = "[0-9]*"
 
       def isNumeric(str: String): Boolean = str.replace(" ","").matches(numericRegex)
@@ -71,7 +71,7 @@ object ClientDetailsForm {
       Try[ValidationResult] {
         date.toLocalDate
         Valid
-      }.getOrElse(ErrorMessageFactory.error("error.dob_date.invalid"))
+      }.getOrElse(ErrorMessageFactory.error("agent.error.dob_date.invalid"))
     }
   )
 

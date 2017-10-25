@@ -32,14 +32,14 @@ object OtherIncomeForm {
 
   val choiceEmpty: Constraint[String] = constraint[String](
     choice => {
-      lazy val emptyChoice = ErrorMessageFactory.error("error.other-income.empty")
+      lazy val emptyChoice = ErrorMessageFactory.error("agent.error.other-income.empty")
       if (choice.isEmpty) emptyChoice else Valid
     }
   )
 
   val choiceInvalid: Constraint[String] = constraint[String](
     choice => {
-      lazy val invalidChoice = ErrorMessageFactory.error("error.other-income.invalid")
+      lazy val invalidChoice = ErrorMessageFactory.error("agent.error.other-income.invalid")
       choice match {
         case `option_yes` | `option_no` => Valid
         case _ => invalidChoice

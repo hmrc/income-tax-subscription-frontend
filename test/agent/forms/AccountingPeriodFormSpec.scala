@@ -38,8 +38,8 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "validate income type correctly" in {
-      val empty = ErrorMessageFactory.error("error.business.current_financial_period_prior.empty")
-      val invalid = ErrorMessageFactory.error("error.business.current_financial_period_prior.invalid")
+      val empty = ErrorMessageFactory.error("agent.error.business.current_financial_period_prior.empty")
+      val invalid = ErrorMessageFactory.error("agent.error.business.current_financial_period_prior.invalid")
 
       empty fieldErrorIs MessageLookup.Error.Business.AccountingPeriodPrior.empty
       empty summaryErrorIs MessageLookup.Error.Business.AccountingPeriodPrior.empty

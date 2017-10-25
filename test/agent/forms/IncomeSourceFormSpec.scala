@@ -39,8 +39,8 @@ class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "validate income type correctly" in {
-      val empty = ErrorMessageFactory.error("error.income_source.empty")
-      val invalid = ErrorMessageFactory.error("error.income_source.invalid")
+      val empty = ErrorMessageFactory.error("agent.error.income_source.empty")
+      val invalid = ErrorMessageFactory.error("agent.error.income_source.invalid")
 
       empty fieldErrorIs MessageLookup.Error.IncomeSource.empty
       empty summaryErrorIs MessageLookup.Error.IncomeSource.empty

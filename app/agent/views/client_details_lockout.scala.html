@@ -21,9 +21,9 @@
 
 @(postAction: Call, durationText: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("client-details-lockout.title"), bodyClasses = None) {
-    <h1 class="heading-large">@Messages("client-details-lockout.heading")</h1>
-    <p>@Messages("client-details-lockout.line_1", durationText)</p>
+@main_template(title = Messages("agent.client-details-lockout.title"), bodyClasses = None) {
+    <h1 class="heading-large">@Messages("agent.client-details-lockout.heading")</h1>
+    <p>@Messages("agent.client-details-lockout.line_1", durationText)</p>
     <div class="form-group">
     @form(action = postAction) {
         @signOutButton()

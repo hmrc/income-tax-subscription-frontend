@@ -39,8 +39,8 @@ class AccountingMethodFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "validate income type correctly" in {
-      val empty = ErrorMessageFactory.error("error.accounting-method.empty")
-      val invalid = ErrorMessageFactory.error("error.accounting-method.invalid")
+      val empty = ErrorMessageFactory.error("agent.error.accounting-method.empty")
+      val invalid = ErrorMessageFactory.error("agent.error.accounting-method.invalid")
 
       empty fieldErrorIs MessageLookup.Error.AccountingMethod.empty
       empty summaryErrorIs MessageLookup.Error.AccountingMethod.empty

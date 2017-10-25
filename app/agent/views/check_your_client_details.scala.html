@@ -32,7 +32,7 @@
         </div>
         @changeUrl match {
             case Some(url) => {
-                <a class="tabular-data__data-2" data-journey-click="itsa:changeLink:@field" href="@url" id="@field-edit">@Messages("base.change") <span class="visuallyhidden">@question</span> </a>
+                <a class="tabular-data__data-2" data-journey-click="itsa:changeLink:@field" href="@url" id="@field-edit">@Messages("agent.base.change") <span class="visuallyhidden">@question</span> </a>
             }
             case _ => {
                 <div class="tabular-data__data-2"></div>
@@ -43,7 +43,7 @@
 
 @firstName(clientDetailsModel: ClientDetailsModel) = @{
     val rowName = FirstNameId
-    val rowQuestion = Messages("client-details.summary.first_name")
+    val rowQuestion = Messages("agent.client-details.summary.first_name")
     val rowAnswer = clientDetailsModel.firstName
     val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
@@ -51,7 +51,7 @@
 
 @lastName(clientDetailsModel: ClientDetailsModel) = @{
     val rowName = LastNameId
-    val rowQuestion = Messages("client-details.summary.last_name")
+    val rowQuestion = Messages("agent.client-details.summary.last_name")
     val rowAnswer = clientDetailsModel.lastName
     val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
@@ -59,7 +59,7 @@
 
 @nino(clientDetailsModel: ClientDetailsModel) = @{
     val rowName = NinoId
-    val rowQuestion = Messages("client-details.summary.nino")
+    val rowQuestion = Messages("agent.client-details.summary.nino")
     val rowAnswer = clientDetailsModel.ninoInDisplayFormat
     val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
@@ -67,20 +67,20 @@
 
 @dob(clientDetailsModel: ClientDetailsModel) = @{
     val rowName = DobId
-    val rowQuestion = Messages("client-details.summary.dob")
+    val rowQuestion = Messages("agent.client-details.summary.dob")
     val rowAnswer = clientDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat
     val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
 
-@agent.views.html.templates.main_template(title = Messages("client-details.summary.title"), bodyClasses = None, articleLayout = false) {
+@agent.views.html.templates.main_template(title = Messages("agent.client-details.summary.title"), bodyClasses = None, articleLayout = false) {
 
     @back_link(backUrl)
 
-    <h1 class="heading-large">@Messages("client-details.summary.heading") <span class="visuallyhidden">@Messages("client-details.summary.heading_hidden")</span></h1>
+    <h1 class="heading-large">@Messages("agent.client-details.summary.heading") <span class="visuallyhidden">@Messages("agent.client-details.summary.heading_hidden")</span></h1>
 
-    <h2 class="heading-medium">@Html(Messages("client-details.summary.h2"))</h2>
+    <h2 class="heading-medium">@Html(Messages("agent.client-details.summary.h2"))</h2>
 
     <div class="form-group">
         @firstName(clientDetailsModel)

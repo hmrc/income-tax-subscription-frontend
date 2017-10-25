@@ -41,9 +41,9 @@ class EmailFormSpec extends PlaySpec with OneAppPerTest {
     "validate contact email correctly" in {
       val maxLength = emailMaxLength
 
-      val empty = ErrorMessageFactory.error("error.contact_email.empty")
-      val maxLen = ErrorMessageFactory.error("error.contact_email.maxLength")
-      val invalid = ErrorMessageFactory.error("error.contact_email.invalid")
+      val empty = ErrorMessageFactory.error("agent.error.contact_email.empty")
+      val maxLen = ErrorMessageFactory.error("agent.error.contact_email.maxLength")
+      val invalid = ErrorMessageFactory.error("agent.error.contact_email.invalid")
 
       empty fieldErrorIs MessageLookup.Error.ContactEmail.empty
       empty summaryErrorIs MessageLookup.Error.ContactEmail.empty

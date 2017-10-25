@@ -19,9 +19,9 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("timeout.title"), bodyClasses = None, showSignOutLink = false) {
+@main_template(title = Messages("agent.timeout.title"), bodyClasses = None, showSignOutLink = false) {
 
-<h1>@Messages("timeout.title")</h1>
-<p>@Html(Messages("timeout.returnToHome", agent.controllers.routes.HomeController.index().url))</p>
+<h1>@Messages("agent.timeout.title")</h1>
+<p>@Html(Messages("agent.timeout.returnToHome", agent.controllers.routes.HomeController.index().url))</p>
 
 }

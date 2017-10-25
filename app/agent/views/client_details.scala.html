@@ -22,13 +22,13 @@
 
 @(clientDetailsForm: Form[ClientDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agent.views.html.templates.main_template(title = Messages("client-details.title"), bodyClasses = None) {
+@agent.views.html.templates.main_template(title = Messages("agent.client-details.title"), bodyClasses = None) {
 
     @summaryErrorHelper(clientDetailsForm)
 
-    <h1 class="heading-large">@Messages("client-details.heading")</h1>
+    <h1 class="heading-large">@Messages("agent.client-details.heading")</h1>
 
-    <p>@Messages("client-details.line_1")</p>
+    <p>@Messages("agent.client-details.line_1")</p>
 
     @form(action = postAction) {
 
@@ -36,7 +36,7 @@
             <div class="form-field-group">
             @inputHelper(
                 field = clientDetailsForm(clientFirstName),
-                label = Messages("client-details.field_1"),
+                label = Messages("agent.client-details.field_1"),
                 labelClass = "form-label-bold",
                 maxLength = nameMaxLength,
                 parentForm = clientDetailsForm
@@ -45,7 +45,7 @@
             <div class="form-field-group">
             @inputHelper(
                 field = clientDetailsForm(clientLastName),
-                label = Messages("client-details.field_2"),
+                label = Messages("agent.client-details.field_2"),
                 labelClass = "form-label-bold",
                 maxLength = nameMaxLength,
                 parentForm = clientDetailsForm
@@ -54,23 +54,23 @@
             <div class="form-field-group">
             @inputHelper(
                 field = clientDetailsForm(clientNino),
-                label = Messages("client-details.field_3"),
+                label = Messages("agent.client-details.field_3"),
                 labelClass = "form-label-bold",
-                formHint = Seq(Messages("client_details.formhint.1.line_1")),
+                formHint = Seq(Messages("agent.client_details.formhint.1.line_1")),
                 parentForm = clientDetailsForm
             )
             </div>
 
             @dateHelper(
                 field = clientDetailsForm(clientDateOfBirth),
-                label = Messages("client-details.field_4"),
+                label = Messages("agent.client-details.field_4"),
                 parentForm = clientDetailsForm,
-                hintText = Messages("client-details.formhint.2")
+                hintText = Messages("agent.client-details.formhint.2")
             )
         </div>
 
         @if(isEditMode) {
-            @continueButton(Messages("base.update"))
+            @continueButton(Messages("agent.base.update"))
         } else {
             @continueButton()
         }
