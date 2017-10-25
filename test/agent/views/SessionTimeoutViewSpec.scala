@@ -37,7 +37,7 @@ class SessionTimeoutViewSpec extends ViewSpecTrait {
 
     val para = testPage.selectHead("return home paragraph", "p")
 
-    para.mustHaveALink("sign in", controllers.routes.HomeController.index().url)
+    para.mustHaveALink("sign in", agent.controllers.routes.HomeController.index().url)
   }
 
 }

@@ -73,37 +73,37 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystor
       verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the business journey" in {
+    s"redirect to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the business journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
+      redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.routes.TermsController.showTerms().url}' on the property journey" in {
+    s"redirect to '${agent.controllers.routes.TermsController.showTerms().url}' on the property journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+      redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the both journey" in {
+    s"redirect to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the both journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
+      redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)

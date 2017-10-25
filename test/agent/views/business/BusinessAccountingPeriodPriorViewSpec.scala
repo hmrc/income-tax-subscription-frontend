@@ -16,7 +16,7 @@
 
 package agent.views.business
 
-import assets.MessageLookup.Business.{AccountingPeriodPrior => messages}
+import agent.assets.MessageLookup.Business.{AccountingPeriodPrior => messages}
 import agent.forms.AccountingPeriodPriorForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
@@ -27,7 +27,7 @@ class BusinessAccountingPeriodPriorViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  private def page(isEditMode: Boolean) = views.html.business.accounting_period_prior(
+  private def page(isEditMode: Boolean) = agent.views.html.business.accounting_period_prior(
     accountingPeriodPriorForm = AccountingPeriodPriorForm.accountingPeriodPriorForm,
     postAction = action,
     backUrl = backUrl,

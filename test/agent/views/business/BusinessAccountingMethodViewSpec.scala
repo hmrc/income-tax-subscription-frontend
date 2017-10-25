@@ -16,7 +16,7 @@
 
 package agent.views.business
 
-import assets.MessageLookup.{AccountingMethod => messages}
+import agent.assets.MessageLookup.{AccountingMethod => messages}
 import agent.forms.AccountingMethodForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
@@ -26,7 +26,7 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = views.html.business.accounting_method(
+  def page(isEditMode: Boolean) = agent.views.html.business.accounting_method(
     accountingMethodForm = AccountingMethodForm.accountingMethodForm,
     postAction = action,
     isEditMode,

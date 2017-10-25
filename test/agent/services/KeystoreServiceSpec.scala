@@ -16,7 +16,7 @@
 
 package agent.services
 
-import agent.config.SessionCache
+import core.config.SessionCache
 import agent.models.BusinessNameModel
 import org.scalatest.Matchers._
 import agent.services.mocks.MockKeystoreService

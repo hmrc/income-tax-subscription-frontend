@@ -56,13 +56,13 @@ class AddAnotherClientControllerSpec extends ControllerBaseSpec
 
       def call = TestAddAnotherClientController.addAnother()(request)
 
-      s"redirect to ${controllers.matching.routes.ClientDetailsController.show().url}" in {
+      s"redirect to ${agent.controllers.matching.routes.ClientDetailsController.show().url}" in {
         setupMockKeystore(deleteAll = HttpResponse(OK))
 
         val result = call
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.matching.routes.ClientDetailsController.show().url)
+        redirectLocation(result) mustBe Some(agent.controllers.matching.routes.ClientDetailsController.show().url)
       }
 
       "cleared the keystore" in {

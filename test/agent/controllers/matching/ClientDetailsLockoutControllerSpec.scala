@@ -66,13 +66,13 @@ class ClientDetailsLockoutControllerSpec extends ControllerBaseSpec
     }
 
     "the agent is not locked out" should {
-      s"redirect to ${controllers.matching.routes.ClientDetailsController.show().url}" in {
+      s"redirect to ${agent.controllers.matching.routes.ClientDetailsController.show().url}" in {
         setupMockNotLockedOut(testARN)
 
         lazy val result = TestClientDetailsLockoutController.show(userMatchingRequest)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.show().url
+        redirectLocation(result).get mustBe agent.controllers.matching.routes.ClientDetailsController.show().url
       }
     }
 
@@ -87,7 +87,7 @@ class ClientDetailsLockoutControllerSpec extends ControllerBaseSpec
     }
 
     "Redirect to the 'Client details' page" in {
-      redirectLocation(result).get mustBe controllers.routes.SignOutController.signOut().url
+      redirectLocation(result).get mustBe agent.controllers.routes.SignOutController.signOut().url
     }
 
   }

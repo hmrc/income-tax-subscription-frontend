@@ -16,7 +16,7 @@
 
 package agent.views.business
 
-import assets.MessageLookup.Business.{RegisterNextAccountingPeriod => messages}
+import agent.assets.MessageLookup.Business.{RegisterNextAccountingPeriod => messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import agent.views.ViewSpecTrait
@@ -26,7 +26,7 @@ class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  lazy val page = views.html.business.register_next_accounting_period(
+  lazy val page = agent.views.html.business.register_next_accounting_period(
     postAction = action,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)

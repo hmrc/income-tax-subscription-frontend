@@ -16,7 +16,7 @@
 
 package agent.views.business
 
-import assets.MessageLookup.{AccountingPeriod => messages, Base => common}
+import agent.assets.MessageLookup.{AccountingPeriod => messages, Base => common}
 import agent.forms.AccountingPeriodDateForm
 import agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
 import play.api.i18n.Messages.Implicits._
@@ -28,7 +28,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean) = views.html.business.accounting_period_date(
+  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean) = agent.views.html.business.accounting_period_date(
     accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm,
     postAction = action,
     backUrl = backUrl,

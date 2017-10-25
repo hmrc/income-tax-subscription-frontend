@@ -24,7 +24,7 @@
 
 @(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, isEditMode: Boolean, backUrl: String, viewType: AccountingPeriodViewType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@agent.views.html.templates.main_template(title = Messages("accounting_period.title"), bodyClasses = None, scriptElem = None) {
+@agent.views.html.templates.main_template(title = Messages("agent.accounting_period.title"), bodyClasses = None, scriptElem = None) {
 
     @back_link(backUrl)
 
@@ -32,12 +32,12 @@
 
     <h1 class="heading-large">
     @if(isEditMode) {
-        @Messages("accounting_period.heading")
+        @Messages("agent.accounting_period.heading")
     } else {
         @if(viewType == CurrentAccountingPeriodView) {
-            @Messages("accounting_period.heading.current")
+            @Messages("agent.accounting_period.heading.current")
         } else {
-            @Messages("accounting_period.heading.next")
+            @Messages("agent.accounting_period.heading.next")
         }
     }
     </h1>
@@ -51,9 +51,9 @@
             parentForm = accountingPeriodForm,
             hintText =
                     if(viewType == CurrentAccountingPeriodView) {
-                        Messages("accounting_period.exampleStartDate.current")
+                        Messages("agent.accounting_period.exampleStartDate.current")
                     } else {
-                        Messages("accounting_period.exampleStartDate.next")
+                        Messages("agent.accounting_period.exampleStartDate.next")
                     }
         )
 
@@ -63,9 +63,9 @@
             parentForm = accountingPeriodForm,
             hintText =
                     if(viewType == CurrentAccountingPeriodView) {
-                        Messages("accounting_period.exampleEndDate.current")
+                        Messages("agent.accounting_period.exampleEndDate.current")
                     } else {
-                        Messages("accounting_period.exampleEndDate.next")
+                        Messages("agent.accounting_period.exampleEndDate.next")
                     }
         )
 

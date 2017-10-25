@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
-import agent.utils.JsonUtils._
+import core.utils.JsonUtils._
 import agent.utils.MockTrait
 import agent.utils.TestConstants._
 

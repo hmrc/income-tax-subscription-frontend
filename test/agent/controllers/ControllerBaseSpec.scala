@@ -25,9 +25,10 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import agent.services.mocks.MockAuthService
+import core.utils.JsonUtils
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 
-trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
+trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService with JsonUtils {
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()

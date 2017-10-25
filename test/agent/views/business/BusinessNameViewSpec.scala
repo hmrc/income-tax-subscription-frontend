@@ -16,7 +16,7 @@
 
 package agent.views.business
 
-import assets.MessageLookup.{BusinessName => messages}
+import agent.assets.MessageLookup.{BusinessName => messages}
 import agent.forms.BusinessNameForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
@@ -27,7 +27,7 @@ class BusinessNameViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = views.html.business.business_name(
+  def page(isEditMode: Boolean) = agent.views.html.business.business_name(
     businessNameForm = BusinessNameForm.businessNameForm.form,
     postAction = action,
     backUrl = backUrl,

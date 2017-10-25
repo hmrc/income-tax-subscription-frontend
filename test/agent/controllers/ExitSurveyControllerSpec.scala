@@ -99,8 +99,8 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
         status(result) must be(Status.SEE_OTHER)
       }
 
-      s"redirect to '${controllers.routes.ThankYouController.show().url}'" in {
-        redirectLocation(result) mustBe Some(controllers.routes.ThankYouController.show().url)
+      s"redirect to '${agent.controllers.routes.ThankYouController.show().url}'" in {
+        redirectLocation(result) mustBe Some(agent.controllers.routes.ThankYouController.show().url)
       }
     }
 
@@ -114,8 +114,8 @@ class ExitSurveyControllerSpec extends ControllerBaseSpec {
         status(result) must be(Status.SEE_OTHER)
       }
 
-      s"redirect to '${controllers.routes.ThankYouController.show().url}'" in {
-        redirectLocation(result) mustBe Some(controllers.routes.ThankYouController.show().url)
+      s"redirect to '${agent.controllers.routes.ThankYouController.show().url}'" in {
+        redirectLocation(result) mustBe Some(agent.controllers.routes.ThankYouController.show().url)
       }
     }
   }

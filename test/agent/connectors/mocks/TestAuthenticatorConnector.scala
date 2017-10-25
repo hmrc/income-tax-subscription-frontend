@@ -25,7 +25,7 @@ import org.mockito.Mockito._
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.HeaderCarrier
-import agent.utils.JsonUtils._
+import core.utils.JsonUtils._
 import agent.utils.TestConstants._
 import agent.utils.{MockTrait, TestConstants, UnitTestTrait}
 

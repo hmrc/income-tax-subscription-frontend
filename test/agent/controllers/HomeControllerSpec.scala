@@ -73,7 +73,7 @@ class HomeControllerSpec extends ControllerBaseSpec {
       }
 
       "Redirect to the 'Index' page" in {
-        redirectLocation(result).get mustBe controllers.routes.HomeController.index().url
+        redirectLocation(result).get mustBe agent.controllers.routes.HomeController.index().url
       }
     }
 
@@ -86,23 +86,23 @@ class HomeControllerSpec extends ControllerBaseSpec {
 
       def result = testHomeController(showGuidance = false).index()(request)
 
-      s"if the user has arn redirect to ${controllers.matching.routes.ClientDetailsController.show().url}" in {
+      s"if the user has arn redirect to ${agent.controllers.matching.routes.ClientDetailsController.show().url}" in {
         reset(mockAuthService)
         mockAgent()
         status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.show().url
+        redirectLocation(result).get mustBe agent.controllers.matching.routes.ClientDetailsController.show().url
 
         await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatching.name)
       }
 
-      s"if the user does not have arn redirect to ${controllers.routes.NotEnrolledAgentServicesController.show().url}" in {
+      s"if the user does not have arn redirect to ${agent.controllers.routes.NotEnrolledAgentServicesController.show().url}" in {
         reset(mockAuthService)
         mockNotAgent()
 
         status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe controllers.routes.NotEnrolledAgentServicesController.show().url
+        redirectLocation(result).get mustBe agent.controllers.routes.NotEnrolledAgentServicesController.show().url
 
         await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
       }
@@ -113,10 +113,10 @@ class HomeControllerSpec extends ControllerBaseSpec {
 
       def result = testHomeController(showGuidance = false).index()(request)
 
-      s"redirect user to ${controllers.matching.routes.ClientDetailsController.show().url}" in {
+      s"redirect user to ${agent.controllers.matching.routes.ClientDetailsController.show().url}" in {
         status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.show().url
+        redirectLocation(result).get mustBe agent.controllers.matching.routes.ClientDetailsController.show().url
 
         await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatching.name)
       }
@@ -127,10 +127,10 @@ class HomeControllerSpec extends ControllerBaseSpec {
 
       def result = testHomeController(showGuidance = false).index()(request)
 
-      s"redirect user to ${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+      s"redirect user to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
         status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+        redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
 
         await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(SignUp.name)
       }

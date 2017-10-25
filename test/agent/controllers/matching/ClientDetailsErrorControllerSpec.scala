@@ -56,8 +56,8 @@ class ClientDetailsErrorControllerSpec extends ControllerBaseSpec {
       document.title mustBe messages.title
     }
 
-    s"the page must have a link to ${controllers.routes.SignOutController.signOut().url}" in {
-      document.select("#sign-out").attr("href") mustBe controllers.routes.SignOutController.signOut().url
+    s"the page must have a link to ${agent.controllers.routes.SignOutController.signOut().url}" in {
+      document.select("#sign-out").attr("href") mustBe agent.controllers.routes.SignOutController.signOut().url
     }
 
   }
@@ -71,7 +71,7 @@ class ClientDetailsErrorControllerSpec extends ControllerBaseSpec {
     }
 
     "Redirect to the 'Client details' page" in {
-      redirectLocation(result).get mustBe controllers.matching.routes.ClientDetailsController.show().url
+      redirectLocation(result).get mustBe agent.controllers.matching.routes.ClientDetailsController.show().url
     }
 
   }

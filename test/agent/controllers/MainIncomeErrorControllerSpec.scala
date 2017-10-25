@@ -51,8 +51,8 @@ class MainIncomeErrorControllerSpec extends ControllerBaseSpec {
   }
 
   "The back url" should {
-    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
-      TestMainIncomeErrorController.backUrl mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+    s"point to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+      TestMainIncomeErrorController.backUrl mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
     }
   }
 

@@ -63,7 +63,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
     }
 
     "income source is not in keystore" should {
-      s"return redirect (303) to ${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+      s"return redirect (303) to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
         setupMockKeystore(
           fetchIncomeSource = None,
           fetchOtherIncome = None
@@ -72,7 +72,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         val result = call
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+        redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
 
         await(result)
         verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0, saveOtherIncome = 0)
@@ -86,7 +86,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
       .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_yes)))
 
     "income source is not in keystore" should {
-      s"return redirect (303) to ${controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+      s"return redirect (303) to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
         setupMockKeystore(
           fetchIncomeSource = None,
           fetchOtherIncome = None
@@ -95,7 +95,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         val result = callSubmit
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+        redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
 
         await(result)
         verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0, saveOtherIncome = 0)
@@ -122,7 +122,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
       }
 
-      s"redirect to '${controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
+      s"redirect to '${agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
         setupMockKeystore(
           fetchIncomeSource = TestModels.testIncomeSourceBoth,
           fetchOtherIncome = None
@@ -130,7 +130,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callSubmit
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url)
 
         await(goodRequest)
         verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
@@ -158,7 +158,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
       }
 
-      s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the business journey" in {
+      s"redirect to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the business journey" in {
 
         setupMockKeystore(
           fetchIncomeSource = TestModels.testIncomeSourceBusiness,
@@ -167,13 +167,13 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callSubmit
 
-        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
         await(goodRequest)
         verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
       }
 
-      s"redirect to '${controllers.routes.TermsController.showTerms().url}' on the property journey" in {
+      s"redirect to '${agent.controllers.routes.TermsController.showTerms().url}' on the property journey" in {
 
         setupMockKeystore(
           fetchIncomeSource = TestModels.testIncomeSourceProperty,
@@ -182,13 +182,13 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callSubmit
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
 
         await(goodRequest)
         verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
       }
 
-      s"redirect to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the both journey" in {
+      s"redirect to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the both journey" in {
 
         setupMockKeystore(
           fetchIncomeSource = TestModels.testIncomeSourceBoth,
@@ -197,7 +197,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callSubmit
 
-        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
         await(goodRequest)
         verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
@@ -227,14 +227,14 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
   }
 
   "The back url not in edit mode" should {
-    s"point to ${controllers.routes.IncomeSourceController.showIncomeSource().url} on other income page" in {
-      TestOtherIncomeController.backUrl(isEditMode = false) mustBe controllers.routes.IncomeSourceController.showIncomeSource().url
+    s"point to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url} on other income page" in {
+      TestOtherIncomeController.backUrl(isEditMode = false) mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
     }
   }
 
   "The back url in edit mode" should {
-    s"point to ${controllers.routes.CheckYourAnswersController.show().url} on other income page" in {
-      TestOtherIncomeController.backUrl(isEditMode = true) mustBe controllers.routes.CheckYourAnswersController.show().url
+    s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url} on other income page" in {
+      TestOtherIncomeController.backUrl(isEditMode = true) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

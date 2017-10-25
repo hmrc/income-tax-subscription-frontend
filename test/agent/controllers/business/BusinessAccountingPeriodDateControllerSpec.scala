@@ -104,13 +104,13 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
       }
 
-      s"redirect to '${controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
+      s"redirect to '${agent.controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
         // required for backurl
         setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.business.routes.BusinessNameController.showBusinessName().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.showBusinessName().url)
 
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
@@ -130,13 +130,13 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
       }
 
-      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+      s"redirect to '${agent.controllers.routes.CheckYourAnswersController.show().url}'" in {
         // required for backurl
         setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
 
         val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
@@ -159,23 +159,23 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   }
 
   "The back url when the user is submitting details for current period" should {
-    s"point to ${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}" in {
+    s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}" in {
       setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
-      await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(FakeRequest())) mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
+      await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(FakeRequest())) mustBe agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
       verifyKeystore(fetchAccountingPeriodPrior = 1)
     }
   }
 
   "The back url when the user is submitting details for next period" should {
-    s"point to ${controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in {
+    s"point to ${agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in {
       setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
-      await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(FakeRequest())) mustBe controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+      await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(FakeRequest())) mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
       verifyKeystore(fetchAccountingPeriodPrior = 1)
     }
   }
   "The back url when in edit mode" should {
-    s"point to ${controllers.routes.CheckYourAnswersController.show().url}" in {
-      await(TestBusinessAccountingPeriodController.backUrl(isEditMode = true)(FakeRequest())) mustBe controllers.routes.CheckYourAnswersController.show().url
+    s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
+      await(TestBusinessAccountingPeriodController.backUrl(isEditMode = true)(FakeRequest())) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

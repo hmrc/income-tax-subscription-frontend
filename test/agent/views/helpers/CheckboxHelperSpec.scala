@@ -27,7 +27,7 @@ import agent.forms.validation.utils.MappingUtil._
 class CheckboxHelperSpec extends UnitTestTrait {
 
   private def checkboxHelper(field: Field, label: String)
-  = views.html.helpers.checkboxHelper(field, label)(applicationMessages)
+  = agent.views.html.helpers.checkboxHelper(field, label)(applicationMessages)
 
   case class TestData(checked: Boolean)
 

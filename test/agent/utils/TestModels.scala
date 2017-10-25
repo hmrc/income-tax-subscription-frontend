@@ -17,10 +17,11 @@
 package agent.utils
 
 import agent.forms._
-import agent.models._
 import agent.models.agent._
+import agent.models._
 import play.api.libs.json.{JsValue, Json}
-import agent.services.CacheConstants
+import _root_.agent.services.CacheConstants
+import core.utils.Implicits
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 

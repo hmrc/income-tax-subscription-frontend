@@ -50,14 +50,14 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
       status(result) must be(Status.OK)
     }
 
-    s"The back url should point to '${controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}'" in {
+    s"The back url should point to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}'" in {
       val document = Jsoup.parse(contentAsString(result))
-      document.select("#back").attr("href") mustBe controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
+      document.select("#back").attr("href") mustBe agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
     }
 
-    s"the page must have a link to ${controllers.routes.SignOutController.signOut().url}" in {
+    s"the page must have a link to ${agent.controllers.routes.SignOutController.signOut().url}" in {
       val document = Jsoup.parse(contentAsString(result))
-      document.select("#sign-out").attr("href") mustBe controllers.routes.SignOutController.signOut().url
+      document.select("#sign-out").attr("href") mustBe agent.controllers.routes.SignOutController.signOut().url
     }
   }
 
@@ -76,8 +76,8 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
         status(goodRequest) mustBe Status.SEE_OTHER
       }
 
-      s"redirect to ${controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url}" in {
-        redirectLocation(goodRequest).get mustBe controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+      s"redirect to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url}" in {
+        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
       }
 
     }

@@ -16,14 +16,14 @@
 
 package agent.services
 
-import models._
+import agent.models._
 import org.scalatest.Matchers._
-import agent.utils.{TestConstants, UnitTestTrait}
+import _root_.agent.utils.{TestConstants, UnitTestTrait}
 
 class CacheUtilSpec extends UnitTestTrait {
 
   import CacheUtil._
-  import utils.TestModels._
+  import _root_.agent.utils.TestModels._
 
   "CacheUtil" should {
 

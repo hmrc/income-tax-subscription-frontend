@@ -68,22 +68,22 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     }
 
     "There are no a matched nino in keystore" should {
-      s"return redirect ${controllers.matching.routes.ConfirmClientController.show().url}" in {
+      s"return redirect ${agent.controllers.matching.routes.ConfirmClientController.show().url}" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(matchedNino = None))
         val result = call
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.matching.routes.ConfirmClientController.show().url)
+        redirectLocation(result) mustBe Some(agent.controllers.matching.routes.ConfirmClientController.show().url)
       }
     }
 
     "There is a matched nino but no terms in keystore" should {
-      s"return redirect ${controllers.routes.TermsController.showTerms().url}" in {
+      s"return redirect ${agent.controllers.routes.TermsController.showTerms().url}" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(terms = None))
         val result = call
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.routes.TermsController.showTerms().url)
+        redirectLocation(result) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
       }
     }
   }
@@ -94,22 +94,22 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     def call: Future[Result] = TestCheckYourAnswersController.submit(request)
 
     "There are no a matched nino in keystore" should {
-      s"return redirect ${controllers.matching.routes.ConfirmClientController.show().url}" in {
+      s"return redirect ${agent.controllers.matching.routes.ConfirmClientController.show().url}" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(matchedNino = None))
         val result = call
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.matching.routes.ConfirmClientController.show().url)
+        redirectLocation(result) mustBe Some(agent.controllers.matching.routes.ConfirmClientController.show().url)
       }
     }
 
     "There is a matched nino but no terms in keystore" should {
-      s"return redirect ${controllers.routes.TermsController.showTerms().url}" in {
+      s"return redirect ${agent.controllers.routes.TermsController.showTerms().url}" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(terms = None))
         val result = call
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.routes.TermsController.showTerms().url)
+        redirectLocation(result) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
       }
     }
 
@@ -140,8 +140,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         // verifySubscriptionHeader(ITSASessionKeys.RequestURI -> request.uri)
       }
 
-      s"redirect to '${controllers.routes.ConfirmationController.showConfirmation().url}'" in {
-        redirectLocation(result) mustBe Some(controllers.routes.ConfirmationController.showConfirmation().url)
+      s"redirect to '${agent.controllers.routes.ConfirmationController.showConfirmation().url}'" in {
+        redirectLocation(result) mustBe Some(agent.controllers.routes.ConfirmationController.showConfirmation().url)
       }
     }
 
@@ -171,8 +171,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${controllers.routes.TermsController.showTerms().url}" in {
-      TestCheckYourAnswersController.backUrl mustBe controllers.routes.TermsController.showTerms().url
+    s"point to ${agent.controllers.routes.TermsController.showTerms().url}" in {
+      TestCheckYourAnswersController.backUrl mustBe agent.controllers.routes.TermsController.showTerms().url
     }
   }
 

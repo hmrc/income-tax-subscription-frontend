@@ -23,7 +23,7 @@ import agent.utils.UnitTestTrait
 
 class ContinueButtonHelperSpec extends UnitTestTrait {
 
-  val view = views.html.helpers.continueButton()(applicationMessages)
+  val view = agent.views.html.helpers.continueButton()(applicationMessages)
   val html = Jsoup.parse(view.body)
 
   "The continue button helper" should {

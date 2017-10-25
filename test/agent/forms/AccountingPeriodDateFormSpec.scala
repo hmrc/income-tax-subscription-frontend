@@ -16,7 +16,7 @@
 
 package agent.forms
 
-import assets.MessageLookup
+import agent.assets.MessageLookup
 import agent.forms.submapping.DateMapping
 import agent.forms.validation.ErrorMessageFactory
 import agent.forms.validation.testutils.{DataMap, _}

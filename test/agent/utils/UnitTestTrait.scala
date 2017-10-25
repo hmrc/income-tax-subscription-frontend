@@ -17,6 +17,7 @@
 package agent.utils
 
 import agent.auth.MockConfig
+import core.utils.Implicits
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.PlaySpec

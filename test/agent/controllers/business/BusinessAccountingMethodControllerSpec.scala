@@ -71,12 +71,12 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
 
-      s"redirect to '${controllers.routes.TermsController.showTerms().url}'" in {
+      s"redirect to '${agent.controllers.routes.TermsController.showTerms().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.TermsController.showTerms().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
 
         await(goodRequest)
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
@@ -95,12 +95,12 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
 
-      s"redirect to '${controllers.routes.CheckYourAnswersController.show().url}'" in {
+      s"redirect to '${agent.controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(controllers.routes.CheckYourAnswersController.show().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
@@ -120,14 +120,14 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   }
 
   "The back url when not in edit mode" should {
-    s"point to ${controllers.business.routes.BusinessNameController.showBusinessName().url}" in {
-      TestBusinessAccountingMethodController.backUrl(isEditMode = false) mustBe controllers.business.routes.BusinessNameController.showBusinessName().url
+    s"point to ${agent.controllers.business.routes.BusinessNameController.showBusinessName().url}" in {
+      TestBusinessAccountingMethodController.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessNameController.showBusinessName().url
     }
   }
 
   "The back url when in edit mode" should {
-    s"point to ${controllers.routes.CheckYourAnswersController.show().url}" in {
-      TestBusinessAccountingMethodController.backUrl(isEditMode = true) mustBe controllers.routes.CheckYourAnswersController.show().url
+    s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
+      TestBusinessAccountingMethodController.backUrl(isEditMode = true) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

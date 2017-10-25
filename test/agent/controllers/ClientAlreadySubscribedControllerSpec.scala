@@ -55,8 +55,8 @@ class ClientAlreadySubscribedControllerSpec extends ControllerBaseSpec {
       document.title mustBe messages.heading
     }
 
-    s"the post action of the page rendered should be '${controllers.routes.ClientAlreadySubscribedController.submit().url}'" in {
-      document.select("form").attr("action") mustBe controllers.routes.ClientAlreadySubscribedController.submit().url
+    s"the post action of the page rendered should be '${agent.controllers.routes.ClientAlreadySubscribedController.submit().url}'" in {
+      document.select("form").attr("action") mustBe agent.controllers.routes.ClientAlreadySubscribedController.submit().url
     }
 
   }
@@ -70,8 +70,8 @@ class ClientAlreadySubscribedControllerSpec extends ControllerBaseSpec {
       status(result) must be(Status.SEE_OTHER)
     }
 
-    s"redirect to '${controllers.matching.routes.ClientDetailsController.show().url}'" in {
-      redirectLocation(result) mustBe Some(controllers.matching.routes.ClientDetailsController.show().url)
+    s"redirect to '${agent.controllers.matching.routes.ClientDetailsController.show().url}'" in {
+      redirectLocation(result) mustBe Some(agent.controllers.matching.routes.ClientDetailsController.show().url)
     }
 
   }

@@ -17,12 +17,12 @@
 package agent.services.mocks
 
 import agent.models._
-import agent.models.agent._
+import _root_.agent.models.agent._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import agent.services.KeystoreService
+import _root_.agent.services.KeystoreService
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import agent.utils.MockTrait
+import _root_.agent.utils.MockTrait
 
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HttpResponse
@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.HttpResponse
 
 trait MockKeystoreService extends MockTrait {
 
-  import services.CacheConstants._
+  import _root_.agent.services.CacheConstants._
 
   val returnedCacheMap: CacheMap = CacheMap("", Map())
 

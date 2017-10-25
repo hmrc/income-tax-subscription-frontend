@@ -107,8 +107,8 @@ class ConfirmationViewSpec extends UnitTestTrait {
           document.select("#confirmation-feedback").text() must include(MessageLookup.Confirmation.giveUsFeedback.link)
         }
 
-        s"has a link to ${controllers.routes.ExitSurveyController.show().url}" in {
-          document.select("#confirmation-feedback").attr("href") mustBe controllers.routes.ExitSurveyController.show().url
+        s"has a link to ${agent.controllers.routes.ExitSurveyController.show().url}" in {
+          document.select("#confirmation-feedback").attr("href") mustBe agent.controllers.routes.ExitSurveyController.show().url
         }
       }
 

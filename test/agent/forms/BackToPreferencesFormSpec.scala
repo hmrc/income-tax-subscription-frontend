@@ -16,7 +16,7 @@
 
 package agent.forms
 
-import assets.MessageLookup
+import agent.assets.MessageLookup
 import agent.forms.validation.ErrorMessageFactory
 import agent.forms.validation.testutils.{DataMap, _}
 import agent.models.preferences.BackToPreferencesModel
@@ -26,7 +26,7 @@ import play.api.i18n.Messages.Implicits._
 
 class BackToPreferencesFormSpec extends PlaySpec with OneAppPerTest {
 
-  import forms.preferences.BackToPreferencesForm._
+  import agent.forms.preferences.BackToPreferencesForm._
 
   "The BackToPreferencesForm " should {
     "transform the data to the case class" in {

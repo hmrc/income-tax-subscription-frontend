@@ -28,7 +28,7 @@ import agent.utils.UnitTestTrait
 class DateHelperSpec extends UnitTestTrait {
 
   private def dateHelper(field: Field, label: Option[String])
-  = views.html.helpers.dateHelper(field, label)(applicationMessages)
+  = agent.views.html.helpers.dateHelper(field, label)(applicationMessages)
 
   val dateName = "testDate"
   val testForm = Form(

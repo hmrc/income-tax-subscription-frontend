@@ -25,13 +25,13 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Timeout routes
   "The URL for the timeout.timeout action" should {
     s"be equal to $contextRoute/session-timeout" in {
-      controllers.routes.SessionTimeoutController.timeout().url must be (s"$contextRoute/session-timeout")
+      agent.controllers.routes.SessionTimeoutController.timeout().url must be (s"$contextRoute/session-timeout")
     }
   }
 
   "The URL for the SummaryController.showSummary action" should {
     s"be equal to $contextRoute/check-your-answers" in {
-      controllers.routes.CheckYourAnswersController.show().url must be (s"$contextRoute/check-your-answers")
+      agent.controllers.routes.CheckYourAnswersController.show().url must be (s"$contextRoute/check-your-answers")
     }
   }
 
@@ -39,52 +39,52 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Summary routes
   "The URL for the SummaryController.submitSummary action" should {
     s"be equal to $contextRoute/check-your-answers" in {
-      controllers.routes.CheckYourAnswersController.submit().url must be (s"$contextRoute/check-your-answers")
+      agent.controllers.routes.CheckYourAnswersController.submit().url must be (s"$contextRoute/check-your-answers")
     }
   }
 
   "The URL for the ConfirmationController.showConfirmation action" should {
     s"be equal to $contextRoute/confirmation" in {
-      controllers.routes.ConfirmationController.showConfirmation().url must be (s"$contextRoute/confirmation")
+      agent.controllers.routes.ConfirmationController.showConfirmation().url must be (s"$contextRoute/confirmation")
     }
   }
 
   // Business accounting period prior to April 2017 routes
   "The URL for the BusinessAccountingPeriodController.show action" should {
     s"be equal to $contextRoute/business/accounting-period" in {
-      controllers.business.routes.BusinessAccountingPeriodPriorController.show().url must be (s"$contextRoute/business/accounting-period-prior")
+      agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url must be (s"$contextRoute/business/accounting-period-prior")
     }
   }
 
   "The URL for the BusinessAccountingPeriodController.submit action" should {
     s"be equal to $contextRoute/business/accounting-period" in {
-      controllers.business.routes.BusinessAccountingPeriodPriorController.show().url must be (s"$contextRoute/business/accounting-period-prior")
+      agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url must be (s"$contextRoute/business/accounting-period-prior")
     }
   }
 
   // Register Next Accounting Period routes
   "The URL for the RegisterNextAccountingPeriod.show action" should {
     s"be equal to $contextRoute/business/register-next-accounting-period" in {
-      controllers.business.routes.RegisterNextAccountingPeriodController.show().url must be (s"$contextRoute/business/register-next-accounting-period")
+      agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url must be (s"$contextRoute/business/register-next-accounting-period")
     }
   }
 
   "The URL for the RegisterNextAccountingPeriod.submit action" should {
     s"be equal to $contextRoute/business/register-next-accounting-period" in {
-      controllers.business.routes.RegisterNextAccountingPeriodController.show().url must be (s"$contextRoute/business/register-next-accounting-period")
+      agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url must be (s"$contextRoute/business/register-next-accounting-period")
     }
   }
 
   // Terms and Conditions routes
   "The URL for the Terms.showTerms action" should {
     s"be equal to $contextRoute/terms" in {
-      controllers.routes.TermsController.showTerms().url must be (s"$contextRoute/terms")
+      agent.controllers.routes.TermsController.showTerms().url must be (s"$contextRoute/terms")
     }
   }
 
   "The URL for the Terms.submitTerms(true) action" should {
     s"be equal to $contextRoute/terms" in {
-      controllers.routes.TermsController.submitTerms().url must be (s"$contextRoute/terms")
+      agent.controllers.routes.TermsController.submitTerms().url must be (s"$contextRoute/terms")
     }
   }
 

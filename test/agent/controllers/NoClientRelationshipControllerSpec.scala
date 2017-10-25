@@ -53,16 +53,16 @@ class NoClientRelationshipControllerSpec
 
       document.title mustBe messages.heading
 
-      document.select("form").attr("action") mustBe controllers.routes.NoClientRelationshipController.submit().url
+      document.select("form").attr("action") mustBe agent.controllers.routes.NoClientRelationshipController.submit().url
     }
   }
 
   "submit" should {
-    s"redirect to '${controllers.matching.routes.ClientDetailsController.show().url}'" in {
+    s"redirect to '${agent.controllers.matching.routes.ClientDetailsController.show().url}'" in {
       val res = TestNoClientRelationshipController.submit(userMatchingRequest)
 
       status(res) mustBe SEE_OTHER
-      redirectLocation(res) must contain(controllers.matching.routes.ClientDetailsController.show().url)
+      redirectLocation(res) must contain(agent.controllers.matching.routes.ClientDetailsController.show().url)
     }
   }
 

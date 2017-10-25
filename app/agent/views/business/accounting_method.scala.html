@@ -28,7 +28,7 @@
     Messages("business.accounting_method.heading")
 }
 
-@agent.views.html.templates.main_template(title = Messages("business.accounting_method.title"), bodyClasses = None) {
+@agent.views.html.templates.main_template(title = Messages("agent.business.accounting_method.title"), bodyClasses = None) {
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingMethodForm)
@@ -41,8 +41,8 @@
             field = accountingMethodForm(AccountingMethodForm.accountingMethod),
             legend = question,
             options = Seq(
-                RadioOption(AccountingMethodForm.option_cash, Messages("business.accounting_method.cash")),
-                RadioOption(AccountingMethodForm.option_accruals, Messages("business.accounting_method.accruals"))
+                RadioOption(AccountingMethodForm.option_cash, Messages("agent.business.accounting_method.cash")),
+                RadioOption(AccountingMethodForm.option_accruals, Messages("agent.business.accounting_method.accruals"))
             ),
             parentForm = accountingMethodForm
         )
