@@ -19,8 +19,8 @@ package usermatching.controllers
 import assets.MessageLookup.FrontPage
 import core.ITSASessionKeys
 import core.audit.Logging
-import core.auth.{MockConfig, Registration, SignUp}
-import core.config.BaseControllerConfig
+import core.auth.{Registration, SignUp}
+import core.config.{BaseControllerConfig, MockConfig}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants
@@ -315,7 +315,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         val result = getResult(userMatchingFeature = true)
 
         status(result) mustBe Status.SEE_OTHER
-        redirectLocation(result).get mustBe usermatching.controllers.routes.NinoResolverController.resolveNino().url
+        redirectLocation(result).get mustBe usermatching.controllers.routes.NinoResolverController.resolveNinoAction().url
       }
     }
 
@@ -326,7 +326,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         val result = getResult(userMatchingFeature = false)
 
         status(result) mustBe Status.SEE_OTHER
-        redirectLocation(result).get mustBe usermatching.controllers.routes.NinoResolverController.resolveNino().url
+        redirectLocation(result).get mustBe usermatching.controllers.routes.NinoResolverController.resolveNinoAction().url
       }
     }
   }

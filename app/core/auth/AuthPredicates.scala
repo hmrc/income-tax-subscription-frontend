@@ -20,17 +20,20 @@ import _root_.uk.gov.hmrc.http.SessionKeys._
 import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import core.auth.JourneyState._
 import cats.implicits._
+import core.config.AppConfig
 import play.api.mvc.{Result, Results}
+import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 
 import scala.concurrent.Future
 
-object AuthPredicates extends Results {
+trait AuthPredicates extends Results {
+  def applicationConfig: AppConfig
 
   val emptyPredicate: AuthPredicate = _ => _ => Right(AuthPredicateSuccess)
 
-  lazy val resolveNino: Result = Redirect(usermatching.controllers.routes.NinoResolverController.resolveNino())
+  lazy val resolveNino: Result = Redirect(usermatching.controllers.routes.NinoResolverController.resolveNinoAction())
 
   val ninoPredicate: AuthPredicate = request => user =>
     if (user.nino(request).isDefined) {
@@ -65,25 +68,28 @@ object AuthPredicates extends Results {
   lazy val wrongAffinity: Result = Redirect(usermatching.controllers.routes.AffinityGroupErrorController.show())
 
   val affinityPredicate: AuthPredicate = request => user =>
-    if (user.affinityGroup contains AffinityGroup.Individual) Right(AuthPredicateSuccess)
-    else Left(Future.successful(wrongAffinity))
+    (applicationConfig.userMatchingFeature, user.affinityGroup) match {
+      case (true, Some(Individual) | Some(Organisation)) => Right(AuthPredicateSuccess)
+      case (false, Some(Individual)) => Right(AuthPredicateSuccess)
+      case _ => Left(Future.successful(wrongAffinity))
+    }
 
   val registrationJourneyPredicate: AuthPredicate = request => user =>
-    if(request.session.isInState(Registration)) Right(AuthPredicateSuccess)
+    if (request.session.isInState(Registration)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
   val signUpJourneyPredicate: AuthPredicate = request => user =>
-    if(request.session.isInState(Registration) || request.session.isInState(SignUp)) Right(AuthPredicateSuccess)
+    if (request.session.isInState(Registration) || request.session.isInState(SignUp)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
   val userMatchingJourneyPredicate: AuthPredicate = request => user =>
-    if(request.session.isInState(UserMatching)) Right(AuthPredicateSuccess)
+    if (request.session.isInState(UserMatching)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
   lazy val goToIv = Redirect(identityverification.controllers.routes.IdentityVerificationController.gotoIV())
 
   val ivPredicate: AuthPredicate = request => user =>
-    if(request.session.isInState(Registration) && user.confidenceLevel < ConfidenceLevel.L200) Left(Future.successful(goToIv))
+    if (request.session.isInState(Registration) && user.confidenceLevel < ConfidenceLevel.L200) Left(Future.successful(goToIv))
     else Right(AuthPredicateSuccess)
 
   val defaultPredicates = timeoutPredicate |+| affinityPredicate |+| ninoPredicate

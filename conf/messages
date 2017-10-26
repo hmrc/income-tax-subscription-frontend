@@ -46,8 +46,8 @@ frontpage.bullet_9                                              = use your busin
 
 ## Preferences call back page
 preferences_callback.title                                      = Do you want to continue?
-preferences_callback.heading                                    = You can''t sign up for quarterly reporting
-preferences_callback.line_1                                     = To sign up for this service, you must allow HMRC to send you electronic communications.
+preferences_callback.heading                                    = You need to agree to go paperless
+preferences_callback.line_1                                     = To sign up for this service, you need to allow HM Revenue and Customs to send you electronic communications.
 preferences_callback.button                                     = Go back
 
 ## Income source page
@@ -100,10 +100,10 @@ business.current_financial_period_prior.yes                     = Yes
 business.current_financial_period_prior.no                      = No
 
 # Current Financial Period Prior page
-business.register_next_accounting_period.title                   = You can''t send quarterly reports yet
-business.register_next_accounting_period.heading                 = You can''t send quarterly reports yet
-business.register_next_accounting_period.line_1                  = You can only use this service if your current accounting period started after 5 April 2017.
-business.register_next_accounting_period.line_2                  = You can sign up now, but you won''t be able to send any reports until your next accounting period begins.
+business.register_next_accounting_period.title                   = You can''t use software to report your income yet
+business.register_next_accounting_period.heading                 = You can''t use software to report your income yet
+business.register_next_accounting_period.line_1                  = To report your income for your current accounting period, you''ll have to submit a Self Assessment tax return.
+business.register_next_accounting_period.line_2                  = You can sign up now and use software to record your income and expenses, but you won''t be able to submit a report until your next accounting period.
 business.register_next_accounting_period.continue                = Continue to sign up
 
 ## Business Accounting Period page
@@ -129,16 +129,15 @@ business.sole_trader.line_1                                     = As a sole trad
 business.sole_trader.yes                                        = Yes - I''m a sole trader
 business.sole_trader.no                                         = No - I am a different type of business
 
-## Business Income page
+## Business Accounting Method page
 business.accounting_method.title                                = Accounting method
-business.accounting_method.heading                              = What method do you use for your accounting?
+business.accounting_method.heading                              = How do you record your income and expenses?
 business.accounting_method.accordion                            = Show me an example
-business.accounting_method.accordion.line_1                     = Your accounting period is 6 April 2016 to 5 April 2017. You invoiced someone in March 2017 but didn''t receive the money until May 2017.
-business.accounting_method.accordion.line_2                     = If you would record this income in:
-business.accounting_method.accordion.bullet_1                   = May 2017, then the method you use is ''cash basis'' accounting
-business.accounting_method.accordion.bullet_2                   = March 2017, then the method you use is ''accruals basis'' accounting
-business.accounting_method.cash                                 = <span class="heading-small">Cash basis</span><br>Your end-of-year accounts show the money you''ve received or paid out in the tax year. Many sole traders and small businesses use this method.
-business.accounting_method.accruals                             = <span class="heading-small">Accruals basis</span><br>Your end-of-year accounts show income and expenses in the tax year that they occur, regardless of when you receive or make a payment. This method is also called ''traditional'' accounting.
+business.accounting_method.accordion.line_1                     = You invoiced someone in March 2017 but didn''t receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:
+business.accounting_method.accordion.bullet_1                   = May 2017, then you use ''cash basis'' accounting
+business.accounting_method.accordion.bullet_2                   = March 2017, then you use ''accruals basis''
+business.accounting_method.cash                                 = <span class="heading-small">Cash basis</span><br>You record on the date you receive money or pay a bill. Many sole traders and small businesses use this method.
+business.accounting_method.accruals                             = <span class="heading-small">Accruals basis</span><br>You record on the date you send or receive an invoice, even if you don''t receive or pay any money. This method is also called ''traditional accounting''.
 
 
 ## Business Name
@@ -162,7 +161,8 @@ terms.bullet_3                                                  = send HMRC your
 terms.bullet_4                                                  = declare any other income sources and reliefs
 terms.bullet_5                                                  = authorise any third party you use to act on your behalf, such as your accountant
 terms.bullet_6                                                  = have responsibility for any information a third party gives to HMRC on your behalf
-terms.bullet_7                                                  = contact HMRC if you can''t continue to take part in this trial
+terms.bullet_7                                                  = let HMRC know if you start a new business or your current business stops trading
+terms.bullet_8                                                  = contact HMRC if you can''t continue to take part in this trial
 terms.button                                                    = Accept and continue
 
 ## Contact Email Address page ##
@@ -318,10 +318,13 @@ no-sa.heading                                                   = You can''t use
 no-sa.line_1                                                    = You need to <a id="sa-signup" href="{0}">register for Self Assessment</a> before you can sign up for quarterly reporting.
 
 ## Other income error page ##
-other-income-error.title                                        = You can only send quarterly reports on part of your income
-other-income-error.heading                                      = You can only send quarterly reports on part of your income
-other-income-error.para1                                        = As this service is currently a trial, you can only send quarterly reports on income from your sole trader business, renting out a UK property or both.
-other-income-error.para2                                        = You''ll be able to send quarterly reports including your other income later in the year.
+other-income-error.title                                        = You can only use software to report some of your income
+other-income-error.heading                                      = You can only use software to report some of your income
+other-income-error.para1                                        = As this is a trial service, you can only use software to report income from:
+other-income-error.bullet1                                      = your sole trader business
+other-income-error.bullet2                                      = renting out UK property
+other-income-error.bullet3                                      = your sole trader business and renting out UK property
+other-income-error.para2                                        = You''ll be able to use software to report your other income later in the year.
 
 ## Other sources of income page ##
 income-other.title                                              = Do you have any other sources of income?
@@ -365,6 +368,7 @@ affinity-group-error.title                                      = You can''t use
 affinity-group-error.heading                                    = You can''t use this service
 affinity-group-error.line1                                      = You can only use this service if you have an individual Government Gateway account.
 affinity-group-error.line2                                      = To sign up for quarterly reporting, you''ll need to <a id="sign-out" href="{0}">sign in using a different type of account.</a>
+affinity-group-error.agent.line1                                = To sign up for quarterly reporting with these sign in details, you need to <a id="agent-service" href="{0}">use our agent service.</a>
 
 ## IV Error
 iv-error.title                                                  = We''re unable to confirm your identity

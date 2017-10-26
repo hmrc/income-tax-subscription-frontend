@@ -16,8 +16,7 @@
 
 package core.utils
 
-import core.auth.MockConfig
-import core.config.AppConfig
+import core.config.{AppConfig, MockConfig}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.PlaySpec

@@ -35,10 +35,10 @@ class OtherIncomeErrorViewSpec extends ViewSpecTrait {
     appConfig
   )
 
-  "The Main Income Error view" should {
+  "The Other Income Error view" should {
 
     val testPage = TestView(
-      name = "Main Income Error View",
+      name = "Other Income Error View",
       title = messages.title,
       heading = messages.heading,
       page = page
@@ -49,6 +49,12 @@ class OtherIncomeErrorViewSpec extends ViewSpecTrait {
     testPage.mustHaveParaSeq(
       messages.para1,
       messages.para2
+    )
+
+    testPage.mustHaveBulletSeq(
+      messages.bullet1,
+      messages.bullet2,
+      messages.bullet3
     )
 
   }

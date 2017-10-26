@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package core
+@import core.config.AppConfig
+@import core.views.html.templates.main_template
 
-object ITSASessionKeys {
-  val StartTime = "StartTime"
-  val RequestURI = "Request-URI"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val FailedUserMatching = "Failed-User-Matching"
-  val JourneyStateKey = "Journey-State"
-  val PreferencesRedirectUrl = "Preferences-Redirect-Url"
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@main_template(title = Messages("affinity-group-error.title"), bodyClasses = None) {
+
+    <h1 class="heading-large">@Messages("affinity-group-error.heading")</h1>
+    <p>@Html(Messages("affinity-group-error.agent.line1", appConfig.agentSignUpUrl))</p>
 }

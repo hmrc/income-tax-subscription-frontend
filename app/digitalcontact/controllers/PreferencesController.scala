@@ -18,6 +18,7 @@ package digitalcontact.controllers
 
 import javax.inject.{Inject, Singleton}
 
+import core.ITSASessionKeys
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
@@ -46,17 +47,20 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
     )
   }
 
+  private def skipPreferences = baseConfig.applicationConfig.userMatchingFeature && !applicationConfig.newPreferencesApiEnabled
+
+  private def goToIncomeSource = Redirect(
+    incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource()
+  )
+
   def checkPreferences: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         token <- paperlessPreferenceTokenService.storeNino(user.nino.get)
-        res <- if (baseConfig.applicationConfig.userMatchingFeature) {
-          Future.successful(Redirect(
-            incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource()))
-        } else {
+        res <- if (skipPreferences) Future.successful(goToIncomeSource)
+        else {
           preferencesService.checkPaperless(token).map {
-            case Right(Activated) => Redirect(
-              incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource())
+            case Right(Activated) => goToIncomeSource
             case Right(Unset(Some(url))) => Redirect(url)
             //TODO Remove after feature switch is removed as redirect url will become non-optional
             case Right(Unset(None)) => Redirect(preferencesService.defaultChoosePaperlessUrl)
@@ -71,9 +75,10 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
       paperlessPreferenceTokenService.storeNino(user.nino.get) flatMap {
         token =>
           preferencesService.checkPaperless(token).map {
-            case Right(Activated) => Redirect(
-              incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource())
-            case Right(_) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
+            case Right(Activated) => goToIncomeSource
+            case Right(Unset(Some(url))) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
+              .addingToSession(ITSASessionKeys.PreferencesRedirectUrl -> url)
+            case Right(Unset(None)) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
             case _ => throw new InternalServerException("Could not get paperless preferences")
           }
       }
@@ -81,19 +86,22 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   def showGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      if (baseConfig.applicationConfig.userMatchingFeature) Redirect(
-        incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource())
+      if (skipPreferences) goToIncomeSource
       else Ok(view())
   }
 
   def submitGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      if (baseConfig.applicationConfig.userMatchingFeature) Redirect(
-        incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource())
+      if (skipPreferences) goToIncomeSource
       else gotoPreferences
   }
 
-  @inline def gotoPreferences(implicit request: Request[AnyContent]): Result = Redirect(preferencesService.defaultChoosePaperlessUrl)
+  @inline def gotoPreferences(implicit request: Request[AnyContent]): Result =
+    request.session.get(ITSASessionKeys.PreferencesRedirectUrl) match {
+      case Some(redirectUrl) => Redirect(redirectUrl)
+        .removingFromSession(ITSASessionKeys.PreferencesRedirectUrl)
+      case None => Redirect(preferencesService.defaultChoosePaperlessUrl)
+    }
 
   def signOut(implicit request: Request[_]): Result = Redirect(core.controllers.routes.SignOutController.signOut())
 

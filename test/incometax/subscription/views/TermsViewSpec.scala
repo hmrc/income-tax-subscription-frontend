@@ -51,7 +51,8 @@ class TermsViewSpec extends ViewSpecTrait {
       messages.bullet_4,
       messages.bullet_5,
       messages.bullet_6,
-      messages.bullet_7
+      messages.bullet_7,
+      messages.bullet_8
     )
 
     val form = testPage.getForm("terms form")(actionCall = action)

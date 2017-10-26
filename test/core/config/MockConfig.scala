@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package core.auth
+package core.config
 
-import core.config.AppConfig
 import play.api.mvc.Call
 
 trait MockConfig extends AppConfig {
@@ -73,6 +72,8 @@ trait MockConfig extends AppConfig {
   override val newPreferencesApiEnabled: Boolean = false
 
   override val signUpToSaLink : String = "sa-sign-up"
+
+  override val agentSignUpUrl: String = "/report-quarterly/income-and-expenses/sign-up/client"
 }
 
 object MockConfig extends MockConfig
