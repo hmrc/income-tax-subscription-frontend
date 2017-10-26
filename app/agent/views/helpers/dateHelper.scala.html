@@ -42,25 +42,28 @@
             @hintText.map(hint => Html(s"""<span class="form-hint">$hint</span>"""))
             @fieldErrorHelper(field, parentForm)
         </legend>
-            <div class="form-date">
-                @inputHelper(
-                    field(dateDay),
-                    label = Messages("agent.base.day"),
-                    maxLength = 2,
-                    isNumeric = true
-                )
-                @inputHelper(
-                    field(dateMonth),
-                    label = Messages("agent.base.month"),
-                    maxLength = 2,
-                    isNumeric = true
-                )
-                @inputHelper(
-                    field(dateYear),
-                    label = Messages("agent.base.year"),
-                    maxLength = 4,
-                    isNumeric = true
-                )
-            </div>
+        <div class="form-date">
+            @inputHelper(
+            field(dateDay),
+            label = Messages("base.day"),
+            divClass = "form-group-day",
+            maxLength = 2,
+            isNumeric = true
+            )
+            @inputHelper(
+            field(dateMonth),
+            label = Messages("base.month"),
+            divClass = "form-group-month",
+            maxLength = 2,
+            isNumeric = true
+            )
+            @inputHelper(
+            field(dateYear),
+            label = Messages("base.year"),
+            divClass = "form-group-year",
+            maxLength = 4,
+            isNumeric = true
+            )
+        </div>
     </fieldset>
 </div>
