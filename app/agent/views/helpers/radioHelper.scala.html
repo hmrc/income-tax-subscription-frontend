@@ -58,15 +58,15 @@
     }
 }
 
-<div class="form-group form-field@if(hasError) { form-field--error}">
+<div class="form-group @if(hasError) { form-field--error}">
     <fieldset @fieldSetClassValue>
         <legend class="visuallyhidden" id="@field.name">@legend</legend>
         @fieldErrorHelper(field, parentForm)
         @for(option <- options) {
-            <label class="block-label selection-button-radio@option.classes.fold("")(x=>" "+x)" for="@{field.name}-@option.optionName">
-                <input id="@{field.name}-@option.optionName" type="radio" name="@field.name" value="@option.optionName" @isSelected(option.optionName)>
-                @Html(option.message)
-            </label>
+        <div class="multiple-choice">
+            <input id="@{field.name}-@option.optionName" type="radio" name="@field.name" value="@valueAttr(option)" @isSelected(option.optionName)>
+            <label @option.classes.fold("")(x => s"""class="$x"""") for="@{field.name}-@option.optionName">@Html(option.message)</label>
+        </div>
         }
     </fieldset>
 </div>

@@ -26,19 +26,19 @@
 
     <h1 class="heading-large">@Messages("User stubbing service")</h1>
     <p>Successfully stubbed the following user:</p>
-    @form(action = testonly.controllers.routes.MatchingStubController.show()) {
+    @form(action = agent.testonly.controllers.routes.MatchingStubController.show()) {
 
         <div class="form-group">
             <div class="form-field-group">
-                @Messages("client-details.field_1"):
+                @Messages("agent.client-details.field_1"):
                 @clientToStubModel.firstName
             </div>
             <div class="form-field-group">
-                @Messages("client-details.field_2"):
+                @Messages("agent.client-details.field_2"):
                 @clientToStubModel.lastName
             </div>
             <div class="form-field-group">
-                @Messages("client-details.field_3"):
+                @Messages("agent.client-details.field_3"):
                 @clientToStubModel.nino
             </div>
             <div class="form-field-group">
@@ -46,7 +46,7 @@
                 @clientToStubModel.sautr
             </div>
             <div class="form-field-group">
-                @Messages("client-details.field_4"):
+                @Messages("agent.client-details.field_4"):
                 @clientToStubModel.dateOfBirth.toLocalDate.format(DateTimeFormatter.ofPattern("dd MM uuuu").withResolverStyle(ResolverStyle.STRICT))
             </div>
         </div>
