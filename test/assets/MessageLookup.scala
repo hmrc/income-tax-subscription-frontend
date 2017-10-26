@@ -61,8 +61,8 @@ object MessageLookup {
 
   object PreferencesCallBack {
     val title = "Do you want to continue?"
-    val heading: String = "You can't sign up for quarterly reporting"
-    val legend: String = "To sign up for this service, you must allow HMRC to send you electronic communications."
+    val heading: String = "You need to agree to go paperless"
+    val legend: String = "To sign up for this service, you need to allow HM Revenue and Customs to send you electronic communications."
     val button: String = "Go back"
     val signOut: String = "Sign out"
   }
@@ -108,10 +108,10 @@ object MessageLookup {
     }
 
     object RegisterNextAccountingPeriod {
-      val title = "You can't send quarterly reports yet"
+      val title = "You can't use software to report your income yet"
       val heading = title
-      val line_1 = "You can only use this service if your current accounting period started after 5 April 2017."
-      val line_2 = "You can sign up now, but you won't be able to send any reports until your next accounting period begins."
+      val line_1 = "To report your income for your current accounting period, you'll have to submit a Self Assessment tax return."
+      val line_2 = "You can sign up now and use software to record your income and expenses, but you won't be able to submit a report until your next accounting period."
       val button = "Continue to sign up"
       val signOut = "Sign out"
     }
@@ -192,14 +192,13 @@ object MessageLookup {
 
   object AccountingMethod {
     val title = "Accounting method"
-    val heading: String = "What method do you use for your accounting?"
+    val heading: String = "How do you record your income and expenses?"
     val accordion = "Show me an example"
-    val accordion_line_1 = "Your accounting period is 6 April 2016 to 5 April 2017. You invoiced someone in March 2017 but didn't receive the money until May 2017."
-    val accordion_line_2 = "If you would record this income in:"
-    val accordion_bullet_1 = "May 2017, then the method you use is 'cash basis' accounting"
-    val accordion_bullet_2 = "March 2017, then the method you use is 'accruals basis' accounting"
-    val cash = "Cash basis Your end-of-year accounts show the money you've received or paid out in the tax year. Many sole traders and small businesses use this method."
-    val accruals = "Accruals basis Your end-of-year accounts show income and expenses in the tax year that they occur, regardless of when you receive or make a payment. This method is also called 'traditional' accounting."
+    val accordion_line_1 = "You invoiced someone in March 2017 but didn't receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:"
+    val accordion_bullet_1 = "May 2017, then you use 'cash basis' accounting"
+    val accordion_bullet_2 = "March 2017, then you use 'accruals basis'"
+    val cash = "Cash basis You record on the date you receive money or pay a bill. Many sole traders and small businesses use this method."
+    val accruals = "Accruals basis You record on the date you send or receive an invoice, even if you don't receive or pay any money. This method is also called 'traditional accounting'."
   }
 
   object Terms {
@@ -213,7 +212,8 @@ object MessageLookup {
     val bullet_4 = "declare any other income sources and reliefs"
     val bullet_5 = "authorise any third party you use to act on your behalf, such as your accountant"
     val bullet_6 = "have responsibility for any information a third party gives to HMRC on your behalf"
-    val bullet_7 = "contact HMRC if you can't continue to take part in this trial"
+    val bullet_7 = "let HMRC know if you start a new business or your current business stops trading"
+    val bullet_8 = "contact HMRC if you can't continue to take part in this trial"
     val button = "Accept and continue"
   }
 
@@ -446,10 +446,13 @@ object MessageLookup {
   }
 
   object OtherIncomeError {
-    val title = "You can only send quarterly reports on part of your income"
+    val title = "You can only use software to report some of your income"
     val heading: String = title
-    val para1 = "As this service is currently a trial, you can only send quarterly reports on income from your sole trader business, renting out a UK property or both."
-    val para2 = "You'll be able to send quarterly reports including your other income later in the year."
+    val para1 = "As this is a trial service, you can only use software to report income from:"
+    val bullet1 = "your sole trader business"
+    val bullet2 = "renting out UK property"
+    val bullet3 = "your sole trader business and renting out UK property"
+    val para2 = "You'll be able to use software to report your other income later in the year."
   }
 
   object OtherIncome {
