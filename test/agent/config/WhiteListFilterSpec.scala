@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package core.config
+package agent.config
 
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.Results._
@@ -22,7 +22,7 @@ import play.api.mvc.{Action, Call}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Application, Configuration}
-import core.utils.UnitTestTrait
+import agent.utils.UnitTestTrait
 
 class WhiteListFilterSpec extends UnitTestTrait {
 

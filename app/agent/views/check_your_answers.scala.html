@@ -1,0 +1,110 @@
+@*
+ * Copyright 2017 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import _root_.agent.models.{SummaryModel, IncomeSourceModel, OtherIncomeModel, AccountingPeriodModel, BusinessNameModel, AccountingMethodModel}
+@import agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
+@import agent.config.AppConfig
+@import agent.views.html.helpers._
+@import uk.gov.hmrc.play.views.html.helpers.form
+
+@(summaryModel: SummaryModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@import SummaryIdConstants._
+@import agent.views.html.helpers.SummaryHelper._
+
+@summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
+    <div class="tabular-data__entry divider--top--thick" id="@field-row">
+        <span class="tabular-data__heading tabular-data__heading--label" id="@field-question">
+        @question
+        </span>
+        <div class="tabular-data__data-1" id="@field-answer">
+        @if(enableHtml) {@Html(answer)} else {
+            @answer
+        }
+        </div>
+        @changeUrl match {
+            case Some(url) => {
+                <a class="tabular-data__data-2" data-journey-click="itsa:changeLink:@field" href="@url" id="@field-edit">@Messages("agent.base.change") <span class="visuallyhidden">@question</span> </a>
+            }
+            case _ => {
+                <div class="tabular-data__data-2"></div>
+            }
+        }
+    </div>
+}
+
+@incomeSource(source: IncomeSourceModel) = @{
+    val rowName = IncomeSourceId
+    val rowQuestion = Messages("agent.summary.income_source")
+    val rowAnswer = incomeSourceText(source)
+    val rowUrl = agent.controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@otherIncome(source: OtherIncomeModel) = @{
+    val rowName = OtherIncomeId
+    val rowQuestion = Messages("agent.summary.other_income")
+    val rowAnswer = source.choice
+    val rowUrl = agent.controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@accountingPeriodDate(period: AccountingPeriodModel) = @{
+    val rowName = AccountingPeriodDateId
+    val rowQuestion = Messages("agent.summary.accounting_period")
+    val periodInMonth = period.startDate.diffInMonth(period.endDate)
+    val rowAnswer = s"${period.startDate.toCheckYourAnswersDateFormat} to ${period.endDate.toCheckYourAnswersDateFormat}"
+    val rowUrl = agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
+}
+
+@businessName(name: BusinessNameModel) = @{
+    val rowName = BusinessNameId
+    val rowQuestion = Messages("agent.summary.business_name")
+    val rowAnswer = name.businessName
+    val rowUrl = agent.controllers.business.routes.BusinessNameController.showBusinessName(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@accountingMethod(income: AccountingMethodModel) = @{
+    val rowName = AccountingMethodId
+    val rowQuestion = Messages("agent.summary.income_type")
+    val rowAnswer = accountingMethodText(income)
+    val rowUrl = agent.controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@agent.views.html.templates.main_template(title = Messages("agent.summary.title"), bodyClasses = None, articleLayout = false) {
+
+    @back_link(backUrl)
+
+    <h1 class="heading-large">@Messages("agent.summary.heading") <span class="visuallyhidden">@Messages("agent.summary.heading_hidden")</span></h1>
+
+    <h2 class="heading-medium">@Html(Messages("agent.summary.h2"))</h2>
+
+    <div class="form-group" data-metrics="itsa:incomeSource:@summaryModel.incomeSource.map(_.source)">
+        @summaryModel.incomeSource.map(incomeSource)
+        @summaryModel.otherIncome.map(otherIncome)
+        @summaryModel.accountingPeriod.map(accountingPeriodDate)
+        @summaryModel.businessName.map(businessName)
+        @summaryModel.accountingMethod.map(accountingMethod)
+        <div class="divider--top--thick"></div>
+    </div>
+
+    @form(action = postAction) {
+        @continueButton(Messages("agent.summary.confirm_and_sign_up"))
+    }
+
+}
