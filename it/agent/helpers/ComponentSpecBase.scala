@@ -18,7 +18,7 @@ package agent.helpers
 
 import java.util.UUID
 
-import _root_.agent.auth.{JourneyState, SignUp, UserMatching}
+import _root_.agent.auth.{AgentJourneyState, AgentSignUp, AgentUserMatching}
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
@@ -117,7 +117,7 @@ trait ComponentSpecBase extends UnitSpec
 
     val defaultCookies = Map(
       ITSASessionKeys.ArnKey -> IntegrationTestConstants.testARN,
-      ITSASessionKeys.JourneyStateKey -> SignUp.name
+      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name
     )
 
     val headers = Seq(
@@ -142,7 +142,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def startPage(): WSResponse = get("/")
 
-    def indexPage(journeySate: Option[JourneyState] = None): WSResponse = {
+    def indexPage(journeySate: Option[AgentJourneyState] = None): WSResponse = {
       get("/index", journeySate.fold(Map.empty[String, String])(state => Map(ITSASessionKeys.JourneyStateKey -> state.name)))
     }
 
@@ -160,20 +160,20 @@ trait ComponentSpecBase extends UnitSpec
 
     def sessionTimeout(): WSResponse = get("/session-timeout")
 
-    def showClientDetails(): WSResponse = get("/client-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
+    def showClientDetails(): WSResponse = get("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
     def submitClientDetails(clientDetails: Option[ClientDetailsModel]): WSResponse =
-      post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))(
+      post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(
         clientDetails.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(ClientDetailsForm.clientDetailsValidationForm, cd)
         )
       )
 
-    def showClientDetailsError(): WSResponse = get("/error/client-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
+    def showClientDetailsError(): WSResponse = get("/error/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def showClientDetailsLockout(): WSResponse = get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
+    def showClientDetailsLockout(): WSResponse = get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def submitClientDetailsLockout(): WSResponse = post("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))(Map.empty)
+    def submitClientDetailsLockout(): WSResponse = post("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
 
     def showConfirmation(hasSubmitted: Boolean): WSResponse =
       if (hasSubmitted)
@@ -191,22 +191,22 @@ trait ComponentSpecBase extends UnitSpec
 
     def notEnrolledAgentServices(): WSResponse = get("/not-enrolled-agent-services")
 
-    def noClientRelationship(): WSResponse = get("/error/no-client-relationship", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
+    def noClientRelationship(): WSResponse = get("/error/no-client-relationship", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def clientAlreadySubscribed(): WSResponse = get("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
+    def clientAlreadySubscribed(): WSResponse = get("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def submitClientAlreadySubscribed(): WSResponse = post("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))(Map.empty)
+    def submitClientAlreadySubscribed(): WSResponse = post("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
 
     def checkYourAnswers(): WSResponse = get("/check-your-answers")
 
-    def submitCheckYourAnswers(): WSResponse = post("/check-your-answers", Map(ITSASessionKeys.JourneyStateKey -> SignUp.name))(Map.empty)
+    def submitCheckYourAnswers(): WSResponse = post("/check-your-answers", Map(ITSASessionKeys.JourneyStateKey -> AgentSignUp.name))(Map.empty)
 
     def submitConfirmClient(previouslyFailedAttempts: Int = 0): WSResponse = {
       val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
         case 0 => Map.empty
         case count => Map(ITSASessionKeys.FailedClientMatching -> previouslyFailedAttempts.toString)
       }
-      post("/confirm-client", additionalCookies = failedAttemptCounter ++ Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))(Map.empty)
+      post("/confirm-client", additionalCookies = failedAttemptCounter ++ Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
     }
 
     def submitTerms(): WSResponse = post("/terms")(Map.empty)

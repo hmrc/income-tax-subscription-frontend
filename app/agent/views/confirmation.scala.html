@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
-@import agent.config.AppConfig
+@import core.config.AppConfig
 @import agent.models.DateModel
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import agent.views.html.helpers._
+@import core.views.html.helpers._
 
 @(subscriptionId: String, submissionDate: DateModel, postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-    @agent.views.html.templates.main_template(title = Messages("agent.confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction)) {
+    @core.views.html.templates.main_template(title = Messages("agent.confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction)) {
 
         <div class="form-group">
             <section id="confirmation-heading" class="transaction-banner--complete">

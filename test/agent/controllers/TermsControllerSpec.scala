@@ -22,10 +22,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.controllers.ControllerBaseSpec
 
 import scala.concurrent.Future
 
-class TermsControllerSpec extends ControllerBaseSpec
+class TermsControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
 
   override val controllerName: String = "TermsController"

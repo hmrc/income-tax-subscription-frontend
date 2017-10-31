@@ -26,8 +26,8 @@
         overrideSignOutCall: Option[Call] = None
 )(mainContent: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@import core.views.html.templates.govuk_wrapper
 @import uk.gov.hmrc.play.views.html.layouts
-
 
 @serviceInfoContent = {}
 
@@ -62,8 +62,6 @@
     @mainContent
 }
 }
-
-@import core.views.html.templates.govuk_wrapper
 
 @govuk_wrapper(appConfig = appConfig,
     title = title,

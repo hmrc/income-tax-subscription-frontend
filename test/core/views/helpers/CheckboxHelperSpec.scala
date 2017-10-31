@@ -23,11 +23,12 @@ import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
 import core.utils.UnitTestTrait
 import core.forms.validation.utils.MappingUtil._
+import core.views.html.helpers
 
 class CheckboxHelperSpec extends UnitTestTrait {
 
   private def checkboxHelper(field: Field, label: String)
-  = core.views.html.helpers.checkboxHelper(field, label)(applicationMessages)
+  = helpers.checkboxHelper(field, label)(applicationMessages)
 
   case class TestData(checked: Boolean)
 

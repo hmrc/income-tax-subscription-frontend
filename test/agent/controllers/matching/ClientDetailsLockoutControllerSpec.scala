@@ -19,13 +19,13 @@ package agent.controllers.matching
 import java.time.Duration
 
 import agent.assets.MessageLookup.{ClientDetailsLockout => messages}
-import agent.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import agent.services.mocks.MockAgentLockoutService
 import agent.utils.TestConstants.testARN
+import core.controllers.ControllerBaseSpec
 
 class ClientDetailsLockoutControllerSpec extends ControllerBaseSpec
   with MockAgentLockoutService {

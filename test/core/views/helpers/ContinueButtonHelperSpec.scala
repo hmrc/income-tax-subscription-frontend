@@ -20,10 +20,11 @@ import assets.MessageLookup
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits.applicationMessages
 import core.utils.UnitTestTrait
+import core.views.html.helpers.continueButton
 
 class ContinueButtonHelperSpec extends UnitTestTrait {
 
-  val view = core.views.html.helpers.continueButton()(applicationMessages)
+  val view = continueButton()(applicationMessages)
   val html = Jsoup.parse(view.body)
 
   "The continue button helper" should {

@@ -16,13 +16,14 @@
 
 package agent.controllers
 
+import core.controllers.ControllerBaseSpec
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 
-class SignOutControllerSpec extends ControllerBaseSpec {
+class SignOutControllerSpec extends AgentControllerBaseSpec {
 
   object TestSignOutController extends SignOutController(
     app,

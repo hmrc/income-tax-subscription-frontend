@@ -23,6 +23,7 @@ import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
 import core.utils.UnitTestTrait
+import core.views.html.helpers
 
 class TextAreaHelperSpec extends UnitTestTrait {
 
@@ -32,7 +33,7 @@ class TextAreaHelperSpec extends UnitTestTrait {
                               cols: Option[Int] = None,
                               rows: Option[Int] = None
                             )
-  = core.views.html.helpers.textAreaHelper(field = field, maxLength = maxLength, cols = cols, rows = rows)(applicationMessages)
+  = helpers.textAreaHelper(field = field, maxLength = maxLength, cols = cols, rows = rows)(applicationMessages)
 
   case class TestData(input: String)
 

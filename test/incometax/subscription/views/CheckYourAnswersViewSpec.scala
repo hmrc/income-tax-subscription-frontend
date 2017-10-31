@@ -30,7 +30,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import core.utils.{TestModels, UnitTestTrait}
-import core.views.html.SummaryIdConstants._
+import core.views.html.helpers.SummaryIdConstants._
 import incometax.business.models._
 import incometax.business.models.address.Address
 

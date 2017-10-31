@@ -21,7 +21,7 @@ import agent.models.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import agent.services.SubscriptionOrchestrationService
-import agent.utils.MockTrait
+import core.utils.MockTrait
 import agent.utils.TestConstants._
 
 import scala.concurrent.Future

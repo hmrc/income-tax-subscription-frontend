@@ -15,15 +15,15 @@
  *@
 
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import agent.views.html.helpers._
+@import core.views.html.helpers._
 @import agent.models.OtherIncomeModel
-@import agent.config.AppConfig
+@import core.config.AppConfig
 @import agent.forms.OtherIncomeForm
 @import agent.forms.IncomeSourceForm.option_property
 
 @(otherIncomeForm: Form[OtherIncomeModel], incomeSource:String, postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-    @agent.views.html.templates.main_template(title = Messages("agent.income-other.title"), bodyClasses = None) {
+    @core.views.html.templates.main_template(title = Messages("agent.income-other.title"), bodyClasses = None) {
         @back_link(backUrl)
 
         @summaryErrorHelper(otherIncomeForm)

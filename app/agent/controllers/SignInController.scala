@@ -18,7 +18,7 @@ package agent.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import agent.config.FrontendAppConfig
+import core.config.FrontendAppConfig
 import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.frontend.config.AuthRedirects

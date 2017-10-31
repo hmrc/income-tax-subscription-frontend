@@ -17,6 +17,7 @@
 package agent.controllers
 
 import assets.MessageLookup
+import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -24,7 +25,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 
-class ThankYouControllerSpec extends ControllerBaseSpec {
+class ThankYouControllerSpec extends AgentControllerBaseSpec {
 
   override val controllerName: String = "ThankYouController"
 

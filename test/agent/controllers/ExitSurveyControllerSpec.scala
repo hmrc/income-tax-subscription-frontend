@@ -20,6 +20,7 @@ import agent.assets.MessageLookup
 import agent.audit.Logging
 import agent.forms.ExitSurveyForm
 import agent.models.ExitSurveyModel
+import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -27,7 +28,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 
-class ExitSurveyControllerSpec extends ControllerBaseSpec {
+class ExitSurveyControllerSpec extends AgentControllerBaseSpec {
 
   override val controllerName: String = "ExitSurveyController"
 

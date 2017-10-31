@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package agent.auth
-
-import cats.Monoid
-import play.api.mvc.{AnyContent, Request, Result}
-
-import scala.concurrent.Future
-
-object AuthPredicate {
-
-  object AuthPredicateSuccess
-
-  type AuthPredicateSuccess = AuthPredicateSuccess.type
-
-  implicit object AuthPredicateSuccessMonoid extends Monoid[AuthPredicateSuccess] {
-    override def empty: AuthPredicateSuccess = AuthPredicateSuccess
-
-    override def combine(x: AuthPredicateSuccess, y: AuthPredicateSuccess): AuthPredicateSuccess = AuthPredicateSuccess
-  }
-
-  type AuthPredicate = Request[AnyContent] => IncomeTaxSAUser => Either[Future[Result], AuthPredicateSuccess]
-
-}
+//package agent.auth
+//
+//import cats.Monoid
+//import play.api.mvc.{AnyContent, Request, Result}
+//
+//import scala.concurrent.Future
+//
+//object AuthPredicate {
+//
+//  object AuthPredicateSuccess
+//
+//  type AuthPredicateSuccess = AuthPredicateSuccess.type
+//
+//  implicit object AuthPredicateSuccessMonoid extends Monoid[AuthPredicateSuccess] {
+//    override def empty: AuthPredicateSuccess = AuthPredicateSuccess
+//
+//    override def combine(x: AuthPredicateSuccess, y: AuthPredicateSuccess): AuthPredicateSuccess = AuthPredicateSuccess
+//  }
+//
+//  type AuthPredicate = Request[AnyContent] => IncomeTaxSAUser => Either[Future[Result], AuthPredicateSuccess]
+//
+//}

@@ -22,7 +22,7 @@ import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import play.api.mvc.Call
 import play.twirl.api.Html
-import agent.utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 
 trait ViewSpecTrait extends UnitTestTrait {

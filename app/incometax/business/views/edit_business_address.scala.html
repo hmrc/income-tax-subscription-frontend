@@ -14,10 +14,12 @@
  * limitations under the License.
  *@
 
-@import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
 @import incometax.business.models.address.Address
+
+@import core.views.html.templates.main_template
+@import core.views.html.helpers._
 
 @(address: Address, postAction: Call, backUrl: String, editUrl: Option[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -29,7 +31,7 @@
     </p>@address.country.fold("")(_.name)</p>
 }
 
-@core.views.html.templates.main_template(title = Messages("business.address.title"), bodyClasses = None) {
+@main_template(title = Messages("business.address.title"), bodyClasses = None) {
     @back_link(backUrl)
 
     <h1 class="heading-large">@Messages("business.address.heading")</h1>

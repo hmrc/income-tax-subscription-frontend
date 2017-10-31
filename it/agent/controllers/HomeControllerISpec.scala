@@ -16,7 +16,7 @@
 
 package agent.controllers
 
-import _root_.agent.auth.{SignUp, UserMatched, UserMatching}
+import _root_.agent.auth.{AgentSignUp, AgentUserMatched, AgentUserMatching}
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks.AuthStub
@@ -58,7 +58,7 @@ class HomeControllerISpec extends ComponentSpecBase {
           )
 
           Then("the JourneyStateKey should be added as UserMatching")
-          SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(UserMatching.name)
+          SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatching.name)
         }
       }
 
@@ -68,7 +68,7 @@ class HomeControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
 
           When("I call GET /index")
-          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(UserMatching))
+          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatching))
 
           Then("the result should have a status of SEE_OTHER and a redirect location of /client-details")
           res should have(
@@ -77,7 +77,7 @@ class HomeControllerISpec extends ComponentSpecBase {
           )
 
           Then("the JourneyStateKey should remain as UserMatching")
-          SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(UserMatching.name)
+          SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatching.name)
         }
       }
 
@@ -87,7 +87,7 @@ class HomeControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
 
           When("I call GET /index")
-          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(UserMatched))
+          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched))
 
           Then("the result should have a status of SEE_OTHER and a redirect location of /income")
           res should have(
@@ -96,7 +96,7 @@ class HomeControllerISpec extends ComponentSpecBase {
           )
 
           Then("the JourneyStateKey should be changed to SignUp")
-          SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(SignUp.name)
+          SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentSignUp.name)
         }
       }
     }

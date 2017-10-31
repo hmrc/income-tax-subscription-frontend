@@ -17,7 +17,6 @@
 package agent.controllers.business
 
 import agent.assets.MessageLookup
-import agent.controllers.ControllerBaseSpec
 import agent.forms.AccountingPeriodDateForm
 import agent.models.{AccountingPeriodModel, DateModel}
 import org.jsoup.Jsoup
@@ -27,6 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.controllers.ControllerBaseSpec
 
 class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {

@@ -16,12 +16,13 @@
 
 package agent.controllers
 
+import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class MainIncomeErrorControllerSpec extends ControllerBaseSpec {
+class MainIncomeErrorControllerSpec extends AgentControllerBaseSpec {
 
   override val controllerName: String = "MainIncomeErrorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

@@ -18,17 +18,18 @@ package agent.controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import agent.auth.{Registration, SignUp, UserMatched, UserMatching}
+import agent.auth.{AgentRegistration, AgentSignUp, AgentUserMatched, AgentUserMatching}
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import agent.services.mocks.MockAuthService
+import agent.services.mocks.MockAgentAuthService
+import core.controllers.ControllerBaseTrait
 import core.utils.JsonUtils
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 
-trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService with JsonUtils {
+trait AgentControllerBaseSpec extends ControllerBaseTrait with MockAgentAuthService with JsonUtils {
 
   implicit val system = ActorSystem()
   implicit val materializer = ActorMaterializer()
@@ -68,18 +69,18 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService with J
   }
 
   lazy val userMatchingRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> UserMatching.name
+    ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
   )
 
   lazy val userMatchedRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> UserMatched.name
+    ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name
   )
 
   lazy val subscriptionRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> SignUp.name
+    ITSASessionKeys.JourneyStateKey -> AgentSignUp.name
   )
 
   lazy val registrationRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> Registration.name
+    ITSASessionKeys.JourneyStateKey -> AgentRegistration.name
   )
 }

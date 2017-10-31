@@ -18,7 +18,7 @@ package agent.connectors.matching
 
 import javax.inject.{Inject, Singleton}
 
-import agent.config.AppConfig
+import core.config.AppConfig
 import agent.connectors.httpparsers.LockoutStatusHttpParser._
 import agent.connectors.models.matching.LockOutRequest
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost}

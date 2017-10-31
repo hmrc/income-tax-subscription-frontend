@@ -18,17 +18,18 @@ package core.views.helpers
 
 import core.forms.validation.testutils.DataMap
 import core.forms.validation.utils.MappingUtil._
-import core.views.html.RadioOption
+import core.views.html.helpers
 import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits._
 import core.utils.UnitTestTrait
+import core.views.html.helpers.RadioOption
 
 class RadioHelperSpec extends UnitTestTrait {
 
   private def radioHelper(field: Field, legend: String, options: Seq[RadioOption])
-  = core.views.html.helpers.radioHelper(field, legend, options)(applicationMessages)
+  = helpers.radioHelper(field, legend, options)(applicationMessages)
 
   case class TestData(radio: String)
 

@@ -20,14 +20,15 @@ import agent.audit.Logging
 import agent.connectors.matching.AuthenticatorConnector
 import agent.connectors.models.matching._
 import agent.models.agent.ClientDetailsModel
+import agent.utils.TestConstants
+import agent.utils.TestConstants._
+import core.utils.JsonUtils._
+import core.utils.{MockTrait, UnitTestTrait}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.HeaderCarrier
-import core.utils.JsonUtils._
-import agent.utils.TestConstants._
-import agent.utils.{MockTrait, TestConstants, UnitTestTrait}
 
 import scala.concurrent.Future
 

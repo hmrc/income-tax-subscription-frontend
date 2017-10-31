@@ -17,18 +17,19 @@
 @import play.api.data.Form
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
+
 @import core.config.AppConfig
 @import incometax.incomesource.models._
 @import incometax.incomesource.forms._
+@import core.views.html.templates.main_template
 
-@import core.views.html.RadioOption
 @(incomeSourceForm: Form[IncomeSourceModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     Messages("income_source.heading")
 }
 
-@core.views.html.templates.main_template(title = Messages("income_source.title"), bodyClasses = None) {
+@main_template(title = Messages("income_source.title"), bodyClasses = None) {
     @if(isEditMode) {
         @back_link(backUrl)
     }

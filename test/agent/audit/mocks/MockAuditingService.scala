@@ -19,7 +19,7 @@ package agent.audit.mocks
 import agent.audit.{AuditModel, AuditingService}
 import org.mockito.ArgumentMatchers
 import org.scalatest.BeforeAndAfterEach
-import agent.utils.MockTrait
+import core.utils.MockTrait
 import org.mockito.Mockito._
 
 import scala.concurrent.ExecutionContext

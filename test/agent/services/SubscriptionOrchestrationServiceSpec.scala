@@ -22,7 +22,7 @@ import org.scalatest.concurrent.ScalaFutures
 import agent.services.mocks.TestSubscriptionOrchestrationService
 import agent.utils.TestConstants._
 import agent.utils.TestModels._
-import agent.utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 import scala.concurrent.Future
 

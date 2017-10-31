@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.libs.json.JsNull
-import agent.utils.MockTrait
+import core.utils.MockTrait
 import agent.utils.TestConstants.{testErrorMessage, testException}
 
 import scala.concurrent.Future

@@ -18,16 +18,17 @@ package agent.controllers.matching
 
 import javax.inject.{Inject, Singleton}
 
-import agent.auth.JourneyState._
-import agent.auth.{IncomeTaxSAUser, UserMatched, UserMatchingController}
-import agent.config.BaseControllerConfig
+import agent.auth.AgentJourneyState._
+import agent.auth.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
+import core.config.BaseControllerConfig
 import agent.connectors.models.matching.{LockedOut, NotLockedOut}
 import agent.controllers.ITSASessionKeys
 import agent.models.agent.ClientDetailsModel
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import agent.services._
+import agent.services.{AuthService => _, _}
+import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
@@ -50,7 +51,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
       backUrl
     )
 
-  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
+  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]) = {
     (lockOutService.getLockoutStatus(user.arn.get) flatMap {
       case Right(NotLockedOut) => f
       case Right(_: LockedOut) =>
@@ -99,7 +100,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
             .removingFromSession(FailedClientMatching))
           case Left(NoClientRelationship) => successful(Redirect(agent.controllers.routes.NoClientRelationshipController.show())
             .removingFromSession(FailedClientMatching))
-          case Right(_) => successful(Redirect(agent.controllers.routes.HomeController.index()).withJourneyState(UserMatched)
+          case Right(_) => successful(Redirect(agent.controllers.routes.HomeController.index()).withJourneyState(AgentUserMatched)
             .removingFromSession(FailedClientMatching))
         }.recoverWith {
           case e => failed(new InternalServerException("ConfirmClientController.submit\n" + e.getMessage))

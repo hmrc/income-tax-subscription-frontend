@@ -17,13 +17,13 @@
 package agent.controllers
 
 import agent.audit.Logging
+import agent.services.mocks.MockKeystoreService
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import agent.services.mocks.MockKeystoreService
-import uk.gov.hmrc.http.{ HttpResponse, NotFoundException }
+import uk.gov.hmrc.http.{HttpResponse, NotFoundException}
 
 
-class AddAnotherClientControllerSpec extends ControllerBaseSpec
+class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
 
   override val controllerName: String = "addAnotherClientController"

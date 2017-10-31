@@ -19,13 +19,13 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import agent.auth.JourneyState._
-import agent.auth.{SignUp, StatelessController, UserMatched, UserMatching}
-import agent.config.BaseControllerConfig
+import agent.auth.AgentJourneyState._
+import agent.auth.{AgentSignUp, StatelessController, AgentUserMatched, AgentUserMatching}
+import core.config.BaseControllerConfig
 import agent.controllers.ITSASessionKeys._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import agent.services.AuthService
+import core.services.AuthService
 import core.utils.Implicits._
 
 @Singleton
@@ -46,13 +46,13 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
   def index: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (request.isInState(UserMatched))
-        Redirect(agent.controllers.routes.IncomeSourceController.showIncomeSource()).withJourneyState(SignUp)
+      if (request.isInAgentState(AgentUserMatched))
+        Redirect(agent.controllers.routes.IncomeSourceController.showIncomeSource()).withJourneyState(AgentSignUp)
       else
         user.arn match {
           case Some(arn) =>
             Redirect(agent.controllers.matching.routes.ClientDetailsController.show())
-              .addingToSession(ArnKey -> arn).withJourneyState(UserMatching)
+              .addingToSession(ArnKey -> arn).withJourneyState(AgentUserMatching)
           case None =>
             Redirect(agent.controllers.routes.NotEnrolledAgentServicesController.show())
         }

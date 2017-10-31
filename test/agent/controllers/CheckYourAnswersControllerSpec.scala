@@ -29,8 +29,9 @@ import agent.utils.TestModels.testCacheMap
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.InternalServerException
+import core.controllers.ControllerBaseSpec
 
-class CheckYourAnswersControllerSpec extends ControllerBaseSpec
+class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService
   with MockClientRelationshipService
   with MockSubscriptionOrchestrationService {

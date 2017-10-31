@@ -16,12 +16,12 @@
 
 package agent.controllers.business
 
-import agent.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import agent.services.mocks.MockKeystoreService
+import core.controllers.ControllerBaseSpec
 
 import scala.concurrent.Future
 

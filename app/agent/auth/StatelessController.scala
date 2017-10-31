@@ -16,13 +16,16 @@
 
 package agent.auth
 
-import agent.auth.AuthPredicates._
+import core.auth.BaseFrontendController
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 
 trait StatelessController extends BaseFrontendController{
 
-  object Authenticated extends AuthenticatedActions {
+  object Authenticated extends AuthenticatedActions[IncomeTaxAgentUser] {
 
-    override val async: AuthenticatedAction = asyncInternal(homePredicates)
+    override def userApply: (Enrolments, Option[AffinityGroup]) => IncomeTaxAgentUser = IncomeTaxAgentUser.apply
+
+    override val async: AuthenticatedAction[IncomeTaxAgentUser] = asyncInternal(agent.auth.AuthPredicates.homePredicates)
 
   }
 }

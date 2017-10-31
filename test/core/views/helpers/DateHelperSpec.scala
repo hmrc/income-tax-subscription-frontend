@@ -24,11 +24,12 @@ import org.scalatest.Matchers._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
 import core.utils.UnitTestTrait
+import core.views.html.helpers
 
 class DateHelperSpec extends UnitTestTrait {
 
   private def dateHelper(field: Field, label: Option[String])
-  = core.views.html.helpers.dateHelper(field, label)(applicationMessages)
+  = helpers.dateHelper(field, label)(applicationMessages)
 
   val dateName = "testDate"
   val testForm = Form(

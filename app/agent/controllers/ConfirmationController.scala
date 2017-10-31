@@ -21,11 +21,12 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.auth.PostSubmissionController
-import agent.config.BaseControllerConfig
+import core.config.BaseControllerConfig
 import agent.models.DateModel.dateConvert
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import agent.services.{AuthService, KeystoreService}
+import agent.services.KeystoreService
+import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future

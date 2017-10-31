@@ -22,7 +22,7 @@ import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
 import agent.utils.TestConstants._
-import agent.utils.UnitTestTrait
+import core.utils.UnitTestTrait
 import uk.gov.hmrc.http.HttpResponse
 
 class SubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {

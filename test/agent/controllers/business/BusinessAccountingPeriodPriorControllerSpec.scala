@@ -16,7 +16,6 @@
 
 package agent.controllers.business
 
-import agent.controllers.ControllerBaseSpec
 import agent.forms.AccountingPeriodPriorForm
 import agent.forms.OtherIncomeForm._
 import agent.models.{AccountingPeriodPriorModel, OtherIncomeModel}
@@ -26,6 +25,7 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.controllers.ControllerBaseSpec
 
 import scala.concurrent.Future
 

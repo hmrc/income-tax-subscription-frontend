@@ -15,7 +15,9 @@
  *@
 
 @import core.config.AppConfig
-@(pageTitle: String, heading: String, message: String,         scriptElem: Option[Html] = None
+@import core.views.html.templates.govuk_wrapper
+
+@(pageTitle: String, heading: String, message: String, scriptElem: Option[Html] = None
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @contentHeader = {
@@ -40,7 +42,5 @@
 @headStyle = {
     <link rel="stylesheet" href=@routes.Assets.at("stylesheets/banner-panel.css")>
 }
-
-@import core.views.html.templates.govuk_wrapper
 
 @govuk_wrapper(appConfig = appConfig, title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent, scriptElem = Some(defaultScriptElem), headStyle = Some(headStyle))

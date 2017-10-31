@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
 import agent.services.AgentLockoutService
-import agent.utils.MockTrait
+import core.utils.MockTrait
 import agent.utils.TestConstants.{testException, testLockoutResponse}
 
 import scala.concurrent.Future

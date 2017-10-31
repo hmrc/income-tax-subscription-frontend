@@ -17,13 +17,14 @@
 package agent.controllers
 
 import agent.assets.MessageLookup.{ClientAlreadySubscribed => messages}
-import agent.auth._
+import core.auth._
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import core.controllers.ControllerBaseSpec
 
-class ClientAlreadySubscribedControllerSpec extends ControllerBaseSpec {
+class ClientAlreadySubscribedControllerSpec extends AgentControllerBaseSpec {
 
   override val controllerName: String = "ClientAlreadySubscribedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

@@ -18,7 +18,8 @@ package agent.services
 
 import agent.models._
 import org.scalatest.Matchers._
-import _root_.agent.utils.{TestConstants, UnitTestTrait}
+import _root_.agent.utils.TestConstants
+import _root_.core.utils.UnitTestTrait
 
 class CacheUtilSpec extends UnitTestTrait {
 

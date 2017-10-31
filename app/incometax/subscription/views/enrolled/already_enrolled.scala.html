@@ -17,6 +17,7 @@
 @import core.config.AppConfig
 @import core.models.DateModel
 @import uk.gov.hmrc.play.views.html.helpers.form
+@import core.views.html.templates.main_template
 @import core.views.html.helpers._
 
 @(subscriptionId: String, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -24,7 +25,7 @@
 @scripts = {
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
 }
-@core.views.html.templates.main_template(title = Messages("already-enrolled.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction), scriptElem = scripts) {
+@main_template(title = Messages("already-enrolled.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction), scriptElem = scripts) {
 
     <div class="form-group">
         <section id="confirmation-heading" class="transaction-banner--complete">

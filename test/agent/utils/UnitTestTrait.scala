@@ -14,39 +14,40 @@
  * limitations under the License.
  */
 
-package agent.utils
-
-import agent.auth.MockConfig
-import core.utils.Implicits
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.i18n.MessagesApi
-import play.twirl.api.Html
-
-import scala.concurrent.{ExecutionContextExecutor, Future}
-import uk.gov.hmrc.http.HeaderCarrier
-
-
-trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits {
-
-  implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
-
-  implicit val hc = HeaderCarrier()
-
-  implicit def futureWrapperUtil[T](value: T): Future[T] = Future.successful(value)
-
-  implicit def futureWrapperUtil[T](err: Throwable): Future[T] = Future.failed(err)
-
-  implicit def futureOptionWrapperUtil[T](value: T): Future[Option[T]] = Future.successful(value)
-
-  implicit class HtmlFormatUtil(html: Html) {
-    def doc: Document = Jsoup.parse(html.body)
-  }
-
-  implicit val appConfig = MockConfig
-
-  implicit lazy val messagesApi = app.injector.instanceOf[MessagesApi]
-
-}
+//
+//package agent.utils
+//
+//import core.config.MockConfig
+//import core.utils.Implicits
+//import org.jsoup.Jsoup
+//import org.jsoup.nodes.Document
+//import org.scalatestplus.play.PlaySpec
+//import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+//import play.api.i18n.MessagesApi
+//import play.twirl.api.Html
+//import uk.gov.hmrc.http.HeaderCarrier
+//
+//import scala.concurrent.{ExecutionContextExecutor, Future}
+//
+//
+//trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits {
+//
+//  implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
+//
+//  implicit val hc = HeaderCarrier()
+//
+//  implicit def futureWrapperUtil[T](value: T): Future[T] = Future.successful(value)
+//
+//  implicit def futureWrapperUtil[T](err: Throwable): Future[T] = Future.failed(err)
+//
+//  implicit def futureOptionWrapperUtil[T](value: T): Future[Option[T]] = Future.successful(value)
+//
+//  implicit class HtmlFormatUtil(html: Html) {
+//    def doc: Document = Jsoup.parse(html.body)
+//  }
+//
+//  implicit val appConfig = MockConfig
+//
+//  implicit lazy val messagesApi = app.injector.instanceOf[MessagesApi]
+//
+//}

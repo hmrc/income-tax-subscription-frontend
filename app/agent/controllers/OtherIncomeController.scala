@@ -20,14 +20,15 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.auth.AuthenticatedController
-import agent.config.BaseControllerConfig
+import core.config.BaseControllerConfig
 import agent.forms.{IncomeSourceForm, OtherIncomeForm}
 import agent.models.{IncomeSourceModel, OtherIncomeModel}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import agent.services.{AuthService, KeystoreService}
+import agent.services.KeystoreService
+import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
 import core.utils.Implicits._
 

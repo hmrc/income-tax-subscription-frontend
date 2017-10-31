@@ -19,7 +19,7 @@ package agent.controllers
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
-import agent.config.AppConfig
+import core.config.AppConfig
 import agent.views.html.feedback.feedback_thankyou
 import core.config.AuthConnector
 import play.api.Logger

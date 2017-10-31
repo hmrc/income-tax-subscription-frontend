@@ -23,6 +23,7 @@ import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
 import core.utils.UnitTestTrait
 import core.forms.validation.utils.MappingUtil._
+import core.views.html.helpers
 
 class InputHelperSpec extends UnitTestTrait {
 
@@ -34,7 +35,7 @@ class InputHelperSpec extends UnitTestTrait {
                            labelClass: Option[String] = None,
                            isNumeric: Boolean = false
                          )
-  = core.views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength, labelClass = labelClass, isNumeric = isNumeric)(applicationMessages)
+  = helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength, labelClass = labelClass, isNumeric = isNumeric)(applicationMessages)
 
   case class TestData(input: String)
 

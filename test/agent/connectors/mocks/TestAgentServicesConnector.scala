@@ -20,7 +20,7 @@ import agent.audit.Logging
 import agent.connectors.AgentServicesConnector
 import org.mockito.Mockito._
 import play.api.libs.json.JsValue
-import agent.utils.MockTrait
+import core.utils.MockTrait
 
 import scala.concurrent.Future
 

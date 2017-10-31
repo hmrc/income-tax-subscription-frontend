@@ -17,7 +17,7 @@
 package agent.controllers.matching
 
 import agent.assets.MessageLookup.{ClientDetailsError => messages}
-import agent.controllers.ControllerBaseSpec
+import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

@@ -17,13 +17,14 @@
 package agent.controllers
 
 import assets.MessageLookup
+import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-class SessionTimeoutControllerSpec extends ControllerBaseSpec {
+class SessionTimeoutControllerSpec extends AgentControllerBaseSpec {
 
   override val controllerName: String = "SessionTimeoutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()

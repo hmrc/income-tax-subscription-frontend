@@ -26,6 +26,7 @@ import play.api.data.validation.Invalid
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
 import core.utils.UnitTestTrait
+import core.views.html.helpers
 
 class FieldErrorHelperSpec extends UnitTestTrait {
 
@@ -34,7 +35,7 @@ class FieldErrorHelperSpec extends UnitTestTrait {
   case class TestData(field1: String)
 
   private def fieldErrorHelper(field: Field, form: Form[_])
-  = core.views.html.helpers.fieldErrorHelper(field, form)(applicationMessages)
+  = helpers.fieldErrorHelper(field, form)(applicationMessages)
 
   val errorMessage: Invalid = DataMap.alwaysFailInvalid
   val fieldErrorMessage: FieldError = DataMap.alwaysFailInvalid.errors.head.args(FieldErrorLoc).asInstanceOf[FieldError]

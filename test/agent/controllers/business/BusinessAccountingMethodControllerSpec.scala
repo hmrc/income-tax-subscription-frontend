@@ -16,13 +16,13 @@
 
 package agent.controllers.business
 
-import agent.controllers.ControllerBaseSpec
 import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import agent.services.mocks.MockKeystoreService
+import core.controllers.ControllerBaseSpec
 
 class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {

@@ -16,16 +16,17 @@
 
 @import core.config.AppConfig
 @import core.models.DateModel
-@import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import incometax.incomesource.forms.IncomeSourceForm.option_both
+@import core.views.html.templates.main_template
+@import core.views.html.helpers._
 
 @(subscriptionId: String, submissionDate: DateModel, signOutAction: Call, journeyDuration: Int, incomeSource: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
 }
-@core.views.html.templates.main_template(title = Messages("confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction), scriptElem = scripts) {
+@main_template(title = Messages("confirmation.title"), bodyClasses = None, overrideSignOutCall = Some(signOutAction), scriptElem = scripts) {
 
     <div class="form-group" data-metrics="itsa:journey duration:@incomeSource:@journeyDuration">
         <section id="confirmation-heading" class="transaction-banner--complete">

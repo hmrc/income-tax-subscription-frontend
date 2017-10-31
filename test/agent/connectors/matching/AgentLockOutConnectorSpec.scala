@@ -18,7 +18,7 @@ package agent.connectors.matching
 
 import agent.connectors.mocks.TestAgentLockoutConnector
 import agent.utils.TestConstants._
-import agent.utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class AgentLockOutConnectorSpec extends UnitTestTrait with TestAgentLockoutConnector{
 

@@ -25,7 +25,8 @@ import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import agent.utils.{TestConstants, TestModels, UnitTestTrait}
+import agent.utils.{TestConstants, TestModels}
+import core.utils.UnitTestTrait
 import agent.views.html.helpers.ConfirmClientIdConstants._
 
 class CheckYourClientDetailsViewSpec extends UnitTestTrait {

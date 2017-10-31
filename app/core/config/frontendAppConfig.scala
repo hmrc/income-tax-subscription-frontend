@@ -18,7 +18,7 @@ package core.config
 
 import javax.inject.{Inject, Singleton}
 
-import core.config.featureswitch.{FeatureSwitching, RegistrationFeature, UserMatchingFeature}
+import core.config.featureswitch.FeatureSwitching
 import play.api.mvc.Call
 import play.api.{Application, Configuration}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -37,6 +37,7 @@ trait AppConfig {
   val alreadyEnrolledUrl: String
   val subscriptionUrl: String
   val userMatchingUrl: String
+  val clientMatchingUrl: String
   val authUrl: String
   val preferencesFrontend: String
   val preferencesFrontendRedirect: String
@@ -45,25 +46,34 @@ trait AppConfig {
   val ggUrl: String
   val ggSignOutUrl: String
   val btaUrl: String
+  val agentAuthUrl: String
+  val agentAccountUrl: String
   val showGuidance: Boolean
   val whitelistIps: Seq[String]
   val ipExclusionList: Seq[Call]
   val shutterPage: String
   val authURL: String
   val ggURL: String
+  val agentServicesUrl: String
+  val agentMicroserviceUrl: String
+  val authenticatorUrl: String
+  val hasEnabledTestOnlyRoutes: Boolean
   val ggAdminURL: String
   val ggAuthenticationURL: String
   val identityVerificationURL: String
   val contactHmrcLink: String
   val citizenDetailsURL: String
-  val hasEnabledTestOnlyRoutes: Boolean
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
-  val authenticatorUrl: String
+
   def userMatchingFeature: Boolean
+
   def enableRegistration: Boolean
+
   def newPreferencesApiEnabled: Boolean
+
   def storeNinoUrl(token: String): String
+
   val addressLookupFrontendURL: String
   val signUpToSaLink: String
   val agentSignUpUrl: String
@@ -96,6 +106,12 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   // BTA link
   override lazy val btaUrl = loadConfig(s"bta.url")
 
+  // Agent Auth link
+  override lazy val agentAuthUrl = loadConfig(s"agent-auth.url")
+
+  // Agent Services Account link
+  override lazy val agentAccountUrl = loadConfig(s"agent-account.url")
+
   //GA Config
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
@@ -113,6 +129,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   protected lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
   override lazy val userMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
+  override lazy val clientMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
 
   override def storeNinoUrl(token: String) = s"$protectedMicroServiceUrl/income-tax-subscription/identifier-mapping/$token"
 
@@ -149,6 +166,11 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val citizenDetailsURL: String = baseUrl("citizen-details")
 
+  // Agent Services config
+  override lazy val agentServicesUrl: String = loadConfig("agent-services.url")
+
+  override lazy val agentMicroserviceUrl: String = baseUrl("agent-microservice")
+
   /*
   *  This checks to see if the testOnlyDoNotUseInAppConf route is set in configuration instead of the default prod.Routes
   *  This flag can be used by the application to check if the test only routes are enabled. i.e. this flag can be used to
@@ -174,6 +196,6 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
 
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 
-  override lazy val signUpToSaLink:String = loadConfig("sa-signup.url")
+  override lazy val signUpToSaLink: String = loadConfig("sa-signup.url")
 }
 

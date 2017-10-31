@@ -22,9 +22,10 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import agent.services.ClientRelationshipService
 import agent.services.mocks.MockKeystoreService
+import core.controllers.ControllerBaseSpec
 
 class NoClientRelationshipControllerSpec
-  extends ControllerBaseSpec
+  extends AgentControllerBaseSpec
     with MockKeystoreService {
 
   override lazy val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

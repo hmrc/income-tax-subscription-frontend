@@ -23,7 +23,7 @@ import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import agent.utils.MockTrait
+import core.utils.MockTrait
 import agent.utils.TestConstants._
 import agent.utils.TestModels._
 

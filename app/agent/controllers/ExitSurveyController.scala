@@ -19,7 +19,7 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import agent.config.AppConfig
+import core.config.AppConfig
 import agent.forms.ExitSurveyForm
 import agent.models.ExitSurveyModel
 import play.api.Application

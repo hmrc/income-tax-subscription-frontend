@@ -16,7 +16,7 @@
 
 package agent.forms.validation.utils
 
-import agent.utils.UnitTestTrait
+import core.utils.UnitTestTrait
 import org.scalatest.Matchers._
 
 class PatternsSpec extends UnitTestTrait {

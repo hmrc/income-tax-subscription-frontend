@@ -21,9 +21,10 @@ import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import agent.services.mocks.MockKeystoreService
+import core.controllers.ControllerBaseSpec
 import uk.gov.hmrc.http.NotFoundException
 
-class ConfirmationControllerSpec extends ControllerBaseSpec
+class ConfirmationControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
 
   object TestConfirmationController extends ConfirmationController(

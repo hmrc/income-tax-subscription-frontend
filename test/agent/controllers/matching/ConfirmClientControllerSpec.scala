@@ -16,8 +16,8 @@
 
 package agent.controllers.matching
 
-import agent.auth.UserMatched
-import agent.controllers.{ControllerBaseSpec, ITSASessionKeys}
+import agent.auth.AgentUserMatched
+import agent.controllers.ITSASessionKeys
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status
@@ -26,6 +26,7 @@ import play.api.test.Helpers.{await, _}
 import agent.services._
 import agent.services.mocks.{MockAgentLockoutService, MockAgentQualificationService}
 import agent.utils.{TestConstants, TestModels}
+import core.controllers.ControllerBaseSpec
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
@@ -172,7 +173,7 @@ class ConfirmClientControllerSpec extends ControllerBaseSpec
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(agent.controllers.routes.HomeController.index().url)
 
-        await(result).session(userMatchingRequest).get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatched.name)
+        await(result).session(userMatchingRequest).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
       }
     }
   }

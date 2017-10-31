@@ -26,8 +26,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, _}
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.controllers.ControllerBaseSpec
 
-class OtherIncomeErrorControllerSpec extends ControllerBaseSpec with MockKeystoreService {
+class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKeystoreService {
 
   override val controllerName: String = "OtherIncomeErrorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()

@@ -16,6 +16,7 @@
 
 package core.views.helpers
 
+import core.views.html.helpers
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
@@ -27,7 +28,7 @@ import org.scalatest.Matchers._
 class AccordionHelperSpec extends PlaySpec with OneServerPerSuite {
 
   private def accordionHelper(label: String,content: Html)
-  = core.views.html.helpers.accordionHelper(label,content)(applicationMessages)
+  = helpers.accordionHelper(label,content)(applicationMessages)
 
   implicit class HtmlFormatUtil(html: Html) {
     def doc: Document = Jsoup.parse(html.body)

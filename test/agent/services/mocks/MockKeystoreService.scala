@@ -22,7 +22,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import _root_.agent.services.KeystoreService
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import _root_.agent.utils.MockTrait
+import _root_.core.utils.MockTrait
 
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HttpResponse

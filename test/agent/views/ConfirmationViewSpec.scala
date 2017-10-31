@@ -21,7 +21,7 @@ import agent.models.DateModel
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import agent.utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class ConfirmationViewSpec extends UnitTestTrait {
 

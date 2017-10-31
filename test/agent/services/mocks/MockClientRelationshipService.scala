@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import agent.services.ClientRelationshipService
 import uk.gov.hmrc.http.HeaderCarrier
-import agent.utils.MockTrait
+import core.utils.MockTrait
 
 import scala.concurrent.Future
 

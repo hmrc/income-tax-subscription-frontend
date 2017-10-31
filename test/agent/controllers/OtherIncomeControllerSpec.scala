@@ -24,8 +24,9 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.controllers.ControllerBaseSpec
 
-class OtherIncomeControllerSpec extends ControllerBaseSpec
+class OtherIncomeControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
 
   override val controllerName: String = "OtherIncomeController"

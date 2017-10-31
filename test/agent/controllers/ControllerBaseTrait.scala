@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package agent.controllers
-
-import agent.auth.MockConfig
-import agent.config.{AppConfig, BaseControllerConfig}
-import agent.utils.UnitTestTrait
-
-
-trait ControllerBaseTrait extends UnitTestTrait {
-
-  def mockBaseControllerConfig(appConfig: AppConfig): BaseControllerConfig = new BaseControllerConfig(
-    applicationConfig = appConfig) {
-    override lazy val postSignInRedirectUrl = appConfig.ggSignInContinueUrl
-  }
-
-  lazy val MockBaseControllerConfig = mockBaseControllerConfig(MockConfig)
-
-}
+//package agent.controllers
+//
+//import agent.auth.MockConfig
+//import agent.config.{AppConfig, BaseControllerConfig}
+//import core.utils.UnitTestTrait
+//
+//
+//trait ControllerBaseTrait extends UnitTestTrait {
+//
+//  def mockBaseControllerConfig(appConfig: AppConfig): BaseControllerConfig = new BaseControllerConfig(
+//    applicationConfig = appConfig) {
+//    override lazy val postSignInRedirectUrl = appConfig.ggSignInContinueUrl
+//  }
+//
+//  lazy val MockBaseControllerConfig = mockBaseControllerConfig(MockConfig)
+//
+//}

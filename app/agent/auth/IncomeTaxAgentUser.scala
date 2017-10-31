@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package agent.config
+package agent.auth
 
-import javax.inject._
+import agent.common.Constants
+import core.auth.IncomeTaxUser
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, EnrolmentIdentifier, Enrolments}
 
-@Singleton
-class BaseControllerConfig @Inject()(val applicationConfig: AppConfig) {
-  lazy val postSignInRedirectUrl: String = applicationConfig.ggSignInContinueUrl
+import scala.collection.immutable.::
+
+case class IncomeTaxAgentUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup]) extends IncomeTaxUser {
+  lazy val arn: Option[String] = getEnrolment(Constants.agentServiceEnrolmentName)
+
+  private def getEnrolment(key: String) = enrolments.enrolments.collectFirst {
+    case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _, _) => value
+  }
 }

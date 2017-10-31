@@ -14,12 +14,13 @@
  * limitations under the License.
  *@
 
-@import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
-@import core.views.html.ConfirmUserIdConstants._
-
+@import core.views.html.helpers._
+@import core.views.html.helpers.ConfirmUserIdConstants._
 @import usermatching.models.UserDetailsModel
+@import core.views.html.templates.main_template
+
 @(userDetailsModel: UserDetailsModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
@@ -74,7 +75,7 @@
 }
 
 
-@core.views.html.templates.main_template(title = Messages("user-details.summary.title"), bodyClasses = None, articleLayout = false) {
+@main_template(title = Messages("user-details.summary.title"), bodyClasses = None, articleLayout = false) {
 
     @back_link(backUrl)
 
