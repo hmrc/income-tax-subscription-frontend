@@ -27,7 +27,7 @@ import agent.models.agent.ClientDetailsModel
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import agent.services.{AuthService => _, _}
+import agent.services._
 import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
 
