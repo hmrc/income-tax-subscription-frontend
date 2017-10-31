@@ -17,8 +17,9 @@
 package agent.controllers.matching
 
 import _root_.agent.helpers.ComponentSpecBase
-import _root_.agent.helpers.IntegrationTestConstants.{clientDetailsURI, signOutURI, testARN}
+import _root_.agent.helpers.IntegrationTestConstants.{clientDetailsURI, testARN}
 import _root_.agent.helpers.servicemocks.{AgentLockoutStub, AuthStub}
+import _root_.helpers.IntegrationTestConstants.signOutURI
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 

@@ -58,7 +58,6 @@ object IntegrationTestConstants {
     //TODO see if this needs to be different for agents/individuals
   val signInURI = s"/report-quarterly/income-and-expenses/sign-up/sign-in"
   val ggSignInURI = s"/gg/sign-in"
-  val signOutURI = s"$baseURI/logout"
   val ggSignOutURI = s"/gg/sign-out"
 
   object Auth {

@@ -48,6 +48,12 @@ object ClientDetailsForm {
   val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "agent.error.client_details.first_name.maxLength")
   val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "agent.error.client_details.last_name.maxLength")
 
+  val emptyClientNino: Constraint[String] = nonEmpty("agent.error.nino.empty")
+
+  val validateClientNino: Constraint[String] = {
+    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else ErrorMessageFactory.error("agent.error.nino.invalid"))
+  }
+
   val dobNoneEmpty: Constraint[DateModel] = constraint[DateModel](
     date => {
       lazy val emptyDate = ErrorMessageFactory.error("agent.error.dob_date.empty")
@@ -75,11 +81,12 @@ object ClientDetailsForm {
     }
   )
 
+
   val clientDetailsValidationForm = Form(
     mapping(
       clientFirstName -> oText.toText.verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       clientLastName -> oText.toText.verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
-      clientNino -> oText.toText.verifying(emptyNino andThen validateNino),
+      clientNino -> oText.toText.verifying(emptyClientNino andThen validateClientNino),
       clientDateOfBirth -> dateMapping.verifying(dobNoneEmpty andThen dobIsNumeric andThen dobInvalid)
     )(ClientDetailsModel.apply)(ClientDetailsModel.unapply)
   )

@@ -17,7 +17,7 @@
 package agent.forms
 
 import agent.assets.MessageLookup
-import agent.forms.submapping.DateMapping._
+import core.forms.submapping.DateMapping._
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils._
 import agent.models.DateModel
