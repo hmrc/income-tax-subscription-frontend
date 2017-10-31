@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package agent.forms.validation.models
-
-import play.api.i18n.Messages
-
-
-trait ErrorMessage {
-
-  def messageKey: String
-
-  def messageArgs: Seq[String]
-
-  def toText(implicit messages: Messages): String = messages.apply(messageKey, messageArgs: _*)
-
-}
+//
+//package agent.forms.validation.models
+//
+//import play.api.i18n.Messages
+//
+//
+//trait ErrorMessage {
+//
+//  def messageKey: String
+//
+//  def messageArgs: Seq[String]
+//
+//  def toText(implicit messages: Messages): String = messages.apply(messageKey, messageArgs: _*)
+//
+//}

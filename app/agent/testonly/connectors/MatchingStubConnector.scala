@@ -23,7 +23,7 @@ import java.time.format.{DateTimeFormatter, ResolverStyle}
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import agent.models.DateModel
+import core.models.DateModel
 import agent.testonly.TestOnlyAppConfig
 import agent.testonly.models.ClientToStubModel
 import core.connectors.RawResponseReads

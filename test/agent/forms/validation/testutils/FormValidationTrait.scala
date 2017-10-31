@@ -16,8 +16,8 @@
 
 package agent.forms.validation.testutils
 
-import agent.forms.validation.ErrorMessageHelper
-import agent.forms.validation.models.{ErrorMessage, FieldError, SummaryError}
+import core.forms.validation.ErrorMessageHelper
+import core.forms.validation.models.{ErrorMessage, FieldError, SummaryError}
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.validation.Invalid

@@ -15,35 +15,35 @@
  */
 
 package agent.forms.validation
-
-import agent.forms.validation.utils.ConstraintUtil._
-import agent.forms.validation.utils.Patterns
-import play.api.data.validation.{Constraint, Valid}
-
-object Constraints {
-
-  val nonEmpty: String => Constraint[String] = msgKey => constraint[String](
-    x => if (x.isEmpty) ErrorMessageFactory.error(msgKey) else Valid
-  )
-
-  val maxLength: (Int, String) => Constraint[String] = (length, msgKey) => constraint[String](
-    x => if (x.trim.length > length) ErrorMessageFactory.error(msgKey) else Valid
-  )
-
-  val invalidFormat: String => Constraint[String] = msgKey => constraint[String](
-    x => if (Patterns.validText(x.trim)) Valid else ErrorMessageFactory.error(msgKey)
-  )
-
-  val emptyNino: Constraint[String] = nonEmpty("agent.error.nino.empty")
-
-  // N.B. this regex is updated to force the user to also enter the suffix
-  // the suffix is required because the service we currently call to perform the lookup does not remove it safely
-  // and will break if we do not send down the full nino
-  val ninoRegex =
-  """^((?!(BG|GB|KN|NK|NT|TN|ZZ)|(D|F|I|Q|U|V)[A-Z]|[A-Z](D|F|I|O|Q|U|V))[A-Z]{2})[0-9]{6}[A-D]$"""
-
-  val validateNino: Constraint[String] = {
-    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else ErrorMessageFactory.error("agent.error.nino.invalid"))
-  }
-
-}
+//
+//import core.forms.validation.utils.ConstraintUtil._
+//import core.forms.validation.utils.Patterns
+//import play.api.data.validation.{Constraint, Valid}
+//
+//object Constraints {
+//
+//  val nonEmpty: String => Constraint[String] = msgKey => constraint[String](
+//    x => if (x.isEmpty) ErrorMessageFactory.error(msgKey) else Valid
+//  )
+//
+//  val maxLength: (Int, String) => Constraint[String] = (length, msgKey) => constraint[String](
+//    x => if (x.trim.length > length) ErrorMessageFactory.error(msgKey) else Valid
+//  )
+//
+//  val invalidFormat: String => Constraint[String] = msgKey => constraint[String](
+//    x => if (Patterns.validText(x.trim)) Valid else ErrorMessageFactory.error(msgKey)
+//  )
+//
+//  val emptyNino: Constraint[String] = nonEmpty("agent.error.nino.empty")
+//
+//  // N.B. this regex is updated to force the user to also enter the suffix
+//  // the suffix is required because the service we currently call to perform the lookup does not remove it safely
+//  // and will break if we do not send down the full nino
+//  val ninoRegex =
+//  """^((?!(BG|GB|KN|NK|NT|TN|ZZ)|(D|F|I|Q|U|V)[A-Z]|[A-Z](D|F|I|O|Q|U|V))[A-Z]{2})[0-9]{6}[A-D]$"""
+//
+//  val validateNino: Constraint[String] = {
+//    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else ErrorMessageFactory.error("agent.error.nino.invalid"))
+//  }
+//
+//}

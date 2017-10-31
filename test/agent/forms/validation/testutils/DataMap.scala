@@ -17,14 +17,13 @@
 package agent.forms.validation.testutils
 
 import agent.forms.AccountingPeriodPriorForm
-import agent.forms.validation.ErrorMessageFactory
-import agent.forms.validation.utils.ConstraintUtil.constraint
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.utils.ConstraintUtil.constraint
 import play.api.data.validation.{Constraint, Invalid}
 
 object DataMap {
 
   import agent.forms.BusinessNameForm._
-  import agent.forms.EmailForm._
   import agent.forms.{IncomeSourceForm, AccountingMethodForm}
   import agent.forms.NotEligibleForm._
   import agent.forms.preferences.BackToPreferencesForm
@@ -51,8 +50,6 @@ object DataMap {
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 
   def notEligibleChoice(iType: String): DataMap = Map(choice -> iType)
-
-  def email(email: String): DataMap = Map(emailAddress -> email)
 
   def acceptPaperlessDataMap(accept: String): DataMap = Map(BackToPreferencesForm.backToPreferences -> accept)
 

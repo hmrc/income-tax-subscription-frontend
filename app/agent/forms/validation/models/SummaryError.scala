@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
-package agent.forms.validation.models
-
-case class SummaryError(messageKey: String, messageArgs: Seq[String] = Seq()) extends ErrorMessage
+//
+//package agent.forms.validation.models
+//
+//case class SummaryError(messageKey: String, messageArgs: Seq[String] = Seq()) extends ErrorMessage

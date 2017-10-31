@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package agent.forms.validation.utils
-
-import play.api.data.Forms._
-import play.api.data._
-
-object MappingUtil {
-
-  val oText: Mapping[Option[String]] = optional(text)
-
-  implicit class OTextUtil(mapping: Mapping[Option[String]]) {
-    def toText: Mapping[String] =
-      mapping.transform(
-        x => x.fold("")(x => x),
-        x => Some(x)
-      )
-
-    def toBoolean: Mapping[Boolean] = mapping.transform(
-      {
-        case Some("true") => true
-        case _ => false
-      },
-      x => Some(x.toString)
-    )
-  }
-
-}
+//
+//package agent.forms.validation.utils
+//
+//import play.api.data.Forms._
+//import play.api.data._
+//
+//object MappingUtil {
+//
+//  val oText: Mapping[Option[String]] = optional(text)
+//
+//  implicit class OTextUtil(mapping: Mapping[Option[String]]) {
+//    def toText: Mapping[String] =
+//      mapping.transform(
+//        x => x.fold("")(x => x),
+//        x => Some(x)
+//      )
+//
+//    def toBoolean: Mapping[Boolean] = mapping.transform(
+//      {
+//        case Some("true") => true
+//        case _ => false
+//      },
+//      x => Some(x.toString)
+//    )
+//  }
+//
+//}

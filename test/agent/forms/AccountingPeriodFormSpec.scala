@@ -18,8 +18,8 @@ package agent.forms
 
 import agent.assets.MessageLookup
 import agent.forms.AccountingPeriodPriorForm._
-import agent.forms.validation.ErrorMessageFactory
-import agent.forms.validation.testutils.{DataMap, _}
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.testutils.{DataMap, _}
 import agent.models.AccountingPeriodPriorModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}

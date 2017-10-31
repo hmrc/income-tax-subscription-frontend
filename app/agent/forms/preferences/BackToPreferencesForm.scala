@@ -16,9 +16,9 @@
 
 package agent.forms.preferences
 
-import agent.forms.validation.ErrorMessageFactory
-import agent.forms.validation.utils.ConstraintUtil.constraint
-import agent.forms.validation.utils.MappingUtil._
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.utils.ConstraintUtil.constraint
+import core.forms.validation.utils.MappingUtil._
 import agent.models.preferences.BackToPreferencesModel
 import play.api.data.Form
 import play.api.data.Forms.mapping

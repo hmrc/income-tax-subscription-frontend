@@ -20,7 +20,7 @@ import agent.assets.MessageLookup.Business.{AccountingPeriodPrior => messages}
 import agent.forms.AccountingPeriodPriorForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import agent.views.ViewSpecTrait
+import core.views.ViewSpecTrait
 
 class BusinessAccountingPeriodPriorViewSpec extends ViewSpecTrait {
 

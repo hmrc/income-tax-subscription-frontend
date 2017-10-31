@@ -20,7 +20,7 @@ import agent.assets.MessageLookup.{AccountingMethod => messages}
 import agent.forms.AccountingMethodForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import agent.views.ViewSpecTrait
+import core.views.ViewSpecTrait
 
 class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl

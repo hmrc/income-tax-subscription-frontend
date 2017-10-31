@@ -21,7 +21,7 @@ import agent.forms.AccountingPeriodDateForm
 import agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import agent.views.ViewSpecTrait
+import core.views.ViewSpecTrait
 
 class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 

@@ -16,7 +16,7 @@
 
 package agent.forms.validation
 
-import agent.forms.validation.models.{FieldError, SummaryError}
+import core.forms.validation.models.{FieldError, SummaryError}
 import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.validation.Invalid
@@ -60,7 +60,7 @@ package object testutils {
 
   implicit class InvalidUtil(invalid: Invalid) {
 
-    import ErrorMessageFactory._
+    import core.forms.validation.ErrorMessageFactory._
 
     def fieldErrorIs(expectedText: String)(implicit messages: Messages): Unit =
       invalid.errors.head.args(FieldErrorLoc).asInstanceOf[FieldError].toText shouldBe expectedText

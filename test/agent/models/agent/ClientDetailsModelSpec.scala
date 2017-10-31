@@ -16,7 +16,7 @@
 
 package agent.models.agent
 
-import agent.forms.validation.Constraints
+import core.forms.validation.Constraints
 import agent.models.DateModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite

@@ -17,6 +17,7 @@
 package agent.views
 
 import agent.assets.MessageLookup.{ThankYou => messages}
+import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.test.FakeRequest
 

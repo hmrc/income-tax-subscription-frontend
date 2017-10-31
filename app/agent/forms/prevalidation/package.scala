@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package agent.forms
-
-import play.api.data.Form
-
-package object prevalidation {
-
-  import TrimOption._
-
-  val defaultTrims: Map[String, TrimOption] = Map[String, TrimOption]()
-
-  import CaseOption._
-
-  val defaultCases: Map[String, CaseOption] = Map[String, CaseOption]()
-
-  val trimAllFunc: String => String = (value: String) => value.replaceAll("[\\s]", "")
-  val trimBothFunc: String => String = (value: String) => value.trim
-  val trimBothAndCompressFunc: String => String = (value: String) => value.trim.replaceAll("[\\s]{2,}", " ")
-
-  def PreprocessedForm[T](validation: Form[T], trimRules: Map[String, TrimOption] = defaultTrims, caseRules: Map[String, CaseOption] = defaultCases): PrevalidationAPI[T] = {
-    val trules = trimRules
-    val crules = caseRules
-    new PrevalidationAPI[T] {
-      override val form: Form[T] = validation
-      override val trimRules: Map[String, TrimOption] = trules
-      override val caseRules: Map[String, CaseOption] = crules
-    }
-  }
-
-}
+//package agent.forms
+//
+//import play.api.data.Form
+//
+//package object prevalidation {
+//
+//  import TrimOption._
+//
+//  val defaultTrims: Map[String, TrimOption] = Map[String, TrimOption]()
+//
+//  import CaseOption._
+//
+//  val defaultCases: Map[String, CaseOption] = Map[String, CaseOption]()
+//
+//  val trimAllFunc: String => String = (value: String) => value.replaceAll("[\\s]", "")
+//  val trimBothFunc: String => String = (value: String) => value.trim
+//  val trimBothAndCompressFunc: String => String = (value: String) => value.trim.replaceAll("[\\s]{2,}", " ")
+//
+//  def PreprocessedForm[T](validation: Form[T], trimRules: Map[String, TrimOption] = defaultTrims, caseRules: Map[String, CaseOption] = defaultCases): PrevalidationAPI[T] = {
+//    val trules = trimRules
+//    val crules = caseRules
+//    new PrevalidationAPI[T] {
+//      override val form: Form[T] = validation
+//      override val trimRules: Map[String, TrimOption] = trules
+//      override val caseRules: Map[String, CaseOption] = crules
+//    }
+//  }
+//
+//}

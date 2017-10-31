@@ -17,8 +17,8 @@
 package agent.forms
 
 import agent.assets.MessageLookup
-import agent.forms.validation.ErrorMessageFactory
-import agent.forms.validation.testutils.{DataMap, _}
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.testutils.{DataMap, _}
 import agent.models.BusinessNameModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
