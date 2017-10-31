@@ -19,14 +19,13 @@ package agent.controllers
 import agent.audit.Logging
 import agent.forms.OtherIncomeForm
 import agent.models.OtherIncomeModel
+import agent.services.mocks.MockKeystoreService
+import agent.utils.TestModels
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, _}
-import agent.services.mocks.MockKeystoreService
-import agent.utils.TestModels
-import core.controllers.ControllerBaseSpec
 
 class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKeystoreService {
 

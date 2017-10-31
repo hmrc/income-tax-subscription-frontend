@@ -20,7 +20,6 @@ import agent.assets.MessageLookup.FrontPage
 import agent.audit.Logging
 import agent.auth.{AgentSignUp, AgentUserMatching}
 import core.config.{BaseControllerConfig, MockConfig}
-import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import org.mockito.Mockito.reset
 import play.api.http.Status

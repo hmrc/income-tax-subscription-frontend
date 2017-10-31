@@ -16,15 +16,15 @@
 
 package agent.controllers.business
 
+import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
+import agent.services.mocks.MockKeystoreService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import agent.services.mocks.MockKeystoreService
-import core.controllers.ControllerBaseSpec
 
-class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
+class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
 
   override val controllerName: String = "BusinessAccountingMethod"

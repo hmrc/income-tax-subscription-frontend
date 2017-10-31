@@ -2,9 +2,6 @@
 GET         /                                       agent.controllers.HomeController.home
 GET         /index                                  agent.controllers.HomeController.index
 
-# SignOut Controller
-GET         /logout                                 agent.controllers.SignOutController.signOut
-
 # Income Source Routes
 GET         /income                                 agent.controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
 POST        /income                                 agent.controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)

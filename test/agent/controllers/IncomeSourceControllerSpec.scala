@@ -18,14 +18,12 @@ package agent.controllers
 
 import agent.forms.IncomeSourceForm
 import agent.models.IncomeSourceModel
+import agent.services.mocks.MockKeystoreService
+import agent.utils.TestModels
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import agent.services.mocks.MockKeystoreService
-import agent.utils.TestModels
-import core.controllers.ControllerBaseSpec
-import core.utils.JsonUtils._
 
 class IncomeSourceControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {

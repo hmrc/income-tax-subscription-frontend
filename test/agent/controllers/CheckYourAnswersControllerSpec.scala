@@ -17,19 +17,18 @@
 package agent.controllers
 
 import agent.audit.Logging
-import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers._
 import agent.services.CacheUtil._
 import agent.services.mocks._
-import uk.gov.hmrc.domain.Generator
 import agent.utils.TestConstants._
 import agent.utils.TestModels
 import agent.utils.TestModels.testCacheMap
+import play.api.http.Status
+import play.api.mvc.{Action, AnyContent, Result}
+import play.api.test.Helpers._
+import uk.gov.hmrc.domain.Generator
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.InternalServerException
-import core.controllers.ControllerBaseSpec
 
 class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService

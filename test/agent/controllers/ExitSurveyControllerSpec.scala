@@ -20,7 +20,6 @@ import agent.assets.MessageLookup
 import agent.audit.Logging
 import agent.forms.ExitSurveyForm
 import agent.models.ExitSurveyModel
-import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

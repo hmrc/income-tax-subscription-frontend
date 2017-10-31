@@ -17,11 +17,10 @@
 package agent.controllers
 
 import agent.audit.Logging
+import agent.services.mocks.MockKeystoreService
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import agent.services.mocks.MockKeystoreService
-import core.controllers.ControllerBaseSpec
 import uk.gov.hmrc.http.NotFoundException
 
 class ConfirmationControllerSpec extends AgentControllerBaseSpec

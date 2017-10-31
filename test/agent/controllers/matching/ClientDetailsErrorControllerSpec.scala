@@ -17,13 +17,13 @@
 package agent.controllers.matching
 
 import agent.assets.MessageLookup.{ClientDetailsError => messages}
-import core.controllers.ControllerBaseSpec
+import agent.controllers.AgentControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 
-class ClientDetailsErrorControllerSpec extends ControllerBaseSpec {
+class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec {
 
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "ClientDetailsErrorController"
@@ -56,8 +56,8 @@ class ClientDetailsErrorControllerSpec extends ControllerBaseSpec {
       document.title mustBe messages.title
     }
 
-    s"the page must have a link to ${agent.controllers.routes.SignOutController.signOut().url}" in {
-      document.select("#sign-out").attr("href") mustBe agent.controllers.routes.SignOutController.signOut().url
+    s"the page must have a link to ${core.controllers.routes.SignOutController.signOut().url}" in {
+      document.select("#sign-out").attr("href") mustBe core.controllers.routes.SignOutController.signOut().url
     }
 
   }

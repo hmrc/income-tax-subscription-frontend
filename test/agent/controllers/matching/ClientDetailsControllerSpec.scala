@@ -17,20 +17,20 @@
 package agent.controllers.matching
 
 import agent.assets.MessageLookup.{ClientDetails => messages}
+import agent.controllers.AgentControllerBaseSpec
 import agent.forms.ClientDetailsForm
 import agent.models.DateModel
 import agent.models.agent.ClientDetailsModel
+import agent.services.mocks.{MockAgentLockoutService, MockKeystoreService}
+import agent.utils.TestConstants
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
-import agent.services.mocks.{MockAgentLockoutService, MockKeystoreService}
-import agent.utils.TestConstants
-import core.controllers.ControllerBaseSpec
 import uk.gov.hmrc.http.HttpResponse
 
 
-class ClientDetailsControllerSpec extends ControllerBaseSpec
+class ClientDetailsControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService
   with MockAgentLockoutService {
 

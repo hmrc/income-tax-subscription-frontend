@@ -16,16 +16,16 @@
 
 package agent.controllers.business
 
+import agent.controllers.AgentControllerBaseSpec
+import agent.services.mocks.MockKeystoreService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import agent.services.mocks.MockKeystoreService
-import core.controllers.ControllerBaseSpec
 
 import scala.concurrent.Future
 
-class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with MockKeystoreService {
+class RegisterNextAccountingPeriodControllerSpec extends AgentControllerBaseSpec with MockKeystoreService {
 
   override val controllerName: String = "RegisterNextAccountingPeriodController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -55,9 +55,9 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
       document.select("#back").attr("href") mustBe agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
     }
 
-    s"the page must have a link to ${agent.controllers.routes.SignOutController.signOut().url}" in {
+    s"the page must have a link to ${core.controllers.routes.SignOutController.signOut().url}" in {
       val document = Jsoup.parse(contentAsString(result))
-      document.select("#sign-out").attr("href") mustBe agent.controllers.routes.SignOutController.signOut().url
+      document.select("#sign-out").attr("href") mustBe core.controllers.routes.SignOutController.signOut().url
     }
   }
 

@@ -16,20 +16,20 @@
 
 package agent.controllers.business
 
+import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingPeriodPriorForm
 import agent.forms.OtherIncomeForm._
 import agent.models.{AccountingPeriodPriorModel, OtherIncomeModel}
+import agent.services.mocks.MockKeystoreService
+import agent.utils.TestModels
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
-import agent.services.mocks.MockKeystoreService
-import agent.utils.TestModels
-import core.controllers.ControllerBaseSpec
 
 import scala.concurrent.Future
 
-class BusinessAccountingPeriodPriorControllerSpec extends ControllerBaseSpec with MockKeystoreService {
+class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpec with MockKeystoreService {
 
   override val controllerName: String = "BusinessAccountingPeriodPriorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

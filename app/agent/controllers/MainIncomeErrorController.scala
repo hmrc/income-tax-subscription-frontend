@@ -39,5 +39,5 @@ class MainIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   lazy val backUrl: String = agent.controllers.routes.IncomeSourceController.showIncomeSource().url
-  lazy val getAction: Call = agent.controllers.routes.SignOutController.signOut()
+  lazy val getAction: Call = core.controllers.routes.SignOutController.signOut()
 }
