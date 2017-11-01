@@ -18,12 +18,12 @@
 @import core.views.html.helpers._
 @import core.config.AppConfig
 @import incometax.incomesource.models._
-
 @import incometax.incomesource.forms.OtherIncomeForm
-@import core.views.html.RadioOption
+@import core.views.html.templates.main_template
+
 @(otherIncomeForm: Form[OtherIncomeModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@core.views.html.templates.main_template(title = Messages("income-other.title"), bodyClasses = None) {
+@main_template(title = Messages("income-other.title"), bodyClasses = None) {
   @back_link(backUrl)
 
   @summaryErrorHelper(otherIncomeForm)

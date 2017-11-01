@@ -16,8 +16,8 @@
 
 @import uk.gov.hmrc.play.partials.FormPartialRetriever
 @import uk.gov.hmrc.play.partials.CachedStaticHtmlPartialRetriever
-@import agent.views.html.templates.main_template
-@import agent.config.AppConfig
+@import core.views.html.templates.main_template
+@import core.config.AppConfig
 @import scala.concurrent.ExecutionContext
 
 @(partialUrl: String, formBody: Option[Html])(implicit request: Request[_], formPartialRetriever: FormPartialRetriever,

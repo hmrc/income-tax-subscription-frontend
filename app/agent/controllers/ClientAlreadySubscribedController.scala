@@ -19,10 +19,10 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.UserMatchingController
-import agent.config.BaseControllerConfig
+import core.config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import agent.services.AuthService
+import core.services.AuthService
 
 import scala.concurrent.Future
 

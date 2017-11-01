@@ -20,6 +20,7 @@ import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
 import core.config.{AppConfig, WSHttp}
+import core.views.html.feedback.{feedback, feedback_thankyou}
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -73,8 +74,8 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
   def show: Action[AnyContent] = UnauthorisedAction {
     implicit request =>
       (request.session.get(REFERER), request.headers.get(REFERER)) match {
-        case (None, Some(ref)) => Ok(core.views.html.feedback.feedback(feedbackFormPartialUrl, None)).withSession(request.session + (REFERER -> ref))
-        case _ => Ok(core.views.html.feedback.feedback(feedbackFormPartialUrl, None))
+        case (None, Some(ref)) => Ok(feedback(feedbackFormPartialUrl, None)).withSession(request.session + (REFERER -> ref))
+        case _ => Ok(feedback(feedbackFormPartialUrl, None))
       }
   }
 
@@ -86,7 +87,7 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
           resp =>
             resp.status match {
               case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))
-              case HttpStatus.BAD_REQUEST => BadRequest(core.views.html.feedback.feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
+              case HttpStatus.BAD_REQUEST => BadRequest(feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
               case status => Logger.error(s"Unexpected status code from feedback form: $status"); throw new InternalServerException("Feedback, submit call")
             }
         }
@@ -100,7 +101,7 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
     implicit request =>
       val ticketId = request.session.get(TICKET_ID).getOrElse("N/A")
       val referer = request.session.get(REFERER).getOrElse("/")
-      Ok(core.views.html.feedback.feedback_thankyou(feedbackThankYouPartialUrl(ticketId), referer)).withSession(request.session - REFERER)
+      Ok(feedback_thankyou(feedbackThankYouPartialUrl(ticketId), referer)).withSession(request.session - REFERER)
   }
 
   private def urlEncode(value: String) = URLEncoder.encode(value, "UTF-8")

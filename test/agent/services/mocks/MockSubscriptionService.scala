@@ -26,7 +26,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
 import agent.services.SubscriptionService
-import agent.utils.MockTrait
+import core.utils.MockTrait
 import agent.utils.TestConstants._
 
 import scala.concurrent.Future

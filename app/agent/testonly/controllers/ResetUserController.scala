@@ -18,11 +18,11 @@ package agent.testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import agent.config.BaseControllerConfig
+import core.config.BaseControllerConfig
 import agent.controllers.ITSASessionKeys
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import agent.services.AuthService
+import core.services.AuthService
 import agent.auth.StatelessController
 
 import scala.concurrent.Future

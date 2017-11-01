@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import play.api.data.Form
-@import play.api.data.Field
+package core.views.html.helpers
 
-@(field: Field, parentForm: Option[Form[_]] = None)(implicit messages: Messages)
+object SummaryIdConstants {
 
-    @import agent.forms.validation.ErrorMessageHelper._
+  val ReceiveEmail = "receiveEmail"
+  val IncomeSourceId = "incomeSource"
+  val OtherIncomeId = "otherIncome"
+  val AccountingPeriodPriorId = "accountingPeriodPrior"
+  val AccountingPeriodDateId = "accountingPeriodDate"
+  val BusinessNameId = "businessName"
+  val BusinessPhoneNumberId = "businessPhoneNumber"
+  val BusinessAddressId = "businessAddress"
+  val BusinessStartDateId = "businessStartDate"
+  val AccountingMethodId = "accountingMethod"
+  val TermsId = "terms"
 
-    @error = @{
-        getFieldError(field, parentForm)
-    }
-
-    @error match {
-        case Some(err) => {
-            <span class="error-notification" role="tooltip" id="error-message-@field.name">@err.toText</span>
-        }
-        case _ => {}
-    }
+}

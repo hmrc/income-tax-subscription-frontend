@@ -20,7 +20,7 @@ import agent.connectors.models.gg._
 import org.scalatest.concurrent.ScalaFutures
 import agent.services.mocks.TestKnownFactsService
 import agent.utils.TestConstants._
-import agent.utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 import scala.concurrent.Future
 

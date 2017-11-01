@@ -25,6 +25,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -37,17 +38,20 @@ trait BaseFrontendController extends FrontendController with I18nSupport with Au
 
   override lazy implicit val applicationConfig = baseConfig.applicationConfig
 
-  type ActionBody = Request[AnyContent] => IncomeTaxSAUser => Future[Result]
-  type AuthenticatedAction = ActionBody => Action[AnyContent]
+  type ActionBody[User <: IncomeTaxUser] = Request[AnyContent] => User => Future[Result]
+  type AuthenticatedAction[User <: IncomeTaxUser] = ActionBody[User] => Action[AnyContent]
 
-  protected trait AuthenticatedActions {
-    def apply(action: Request[AnyContent] => IncomeTaxSAUser => Result): Action[AnyContent] = async(action andThen (_ andThen Future.successful))
+  protected trait AuthenticatedActions[User <: IncomeTaxUser] {
 
-    protected def asyncInternal(predicate: AuthPredicate)(action: ActionBody): Action[AnyContent] =
+    def userApply : (Enrolments, Option[AffinityGroup]) => User
+
+    def apply(action: Request[AnyContent] => User => Result): Action[AnyContent] = async(action andThen (_ andThen Future.successful))
+
+    protected def asyncInternal(predicate: AuthPredicate[User])(action: ActionBody[User]): Action[AnyContent] =
       Action.async { implicit request =>
         authService.authorised().retrieve(allEnrolments and affinityGroup) {
           case enrolments ~ affinity =>
-            implicit val user = IncomeTaxSAUser(enrolments, affinity)
+            implicit val user = userApply(enrolments, affinity)
 
             predicate.apply(request)(user) match {
               case Right(AuthPredicateSuccess) => action(request)(user)
@@ -56,7 +60,7 @@ trait BaseFrontendController extends FrontendController with I18nSupport with Au
         }
       }
 
-    def async: AuthenticatedAction
+    def async: AuthenticatedAction[User]
   }
 
   implicit class FormUtil[T](form: Form[T]) {

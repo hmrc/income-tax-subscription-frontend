@@ -18,8 +18,8 @@ package agent.controllers.matching
 
 import javax.inject.{Inject, Singleton}
 
-import agent.auth.{IncomeTaxSAUser, UserMatchingController}
-import agent.config.BaseControllerConfig
+import agent.auth.{IncomeTaxAgentUser, UserMatchingController}
+import core.config.BaseControllerConfig
 import agent.connectors.models.matching.NotLockedOut
 import agent.forms._
 import agent.models.agent.ClientDetailsModel
@@ -27,7 +27,8 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import agent.services.{AgentLockoutService, AuthService, KeystoreService}
+import agent.services.{AgentLockoutService, KeystoreService}
+import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
@@ -47,7 +48,7 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
       isEditMode
     )
 
-  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
+  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]) = {
     (lockOutService.getLockoutStatus(user.arn.get) flatMap {
       case Right(NotLockedOut) => f
       case Right(_) => Future.successful(Redirect(agent.controllers.matching.routes.ClientDetailsLockoutController.show().url))

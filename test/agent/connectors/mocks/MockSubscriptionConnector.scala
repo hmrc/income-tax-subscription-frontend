@@ -16,7 +16,7 @@
 
 package agent.connectors.mocks
 
-import agent.config.AppConfig
+import core.config.AppConfig
 import agent.connectors.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import agent.connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import agent.connectors.models.subscription._
@@ -26,7 +26,7 @@ import org.mockito.Mockito._
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
 import core.utils.JsonUtils._
-import agent.utils.MockTrait
+import core.utils.MockTrait
 import agent.utils.TestConstants._
 
 import scala.concurrent.Future

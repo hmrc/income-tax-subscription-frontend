@@ -27,11 +27,12 @@ import play.api.data.Forms.mapping
 import play.api.data.validation.Invalid
 import play.api.i18n.Messages.Implicits.applicationMessages
 import core.utils.UnitTestTrait
+import core.views.html.helpers
 
 class SummaryErrorHelperSpec extends UnitTestTrait {
 
   private def summaryErrorHelper(form: Form[_])
-  = core.views.html.helpers.summaryErrorHelper(form)(applicationMessages)
+  = helpers.summaryErrorHelper(form)(applicationMessages)
 
   case class TestData(field1: String, field2: String, field3: String)
 

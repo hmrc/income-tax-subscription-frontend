@@ -18,6 +18,7 @@ package core.config
 
 import com.typesafe.config.Config
 import core.config.filters.WhitelistFilter
+import core.views.html.templates.error_template
 import net.ceedubs.ficus.Ficus._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
@@ -64,7 +65,7 @@ object FrontendGlobal
   }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
-    core.views.html.templates.error_template(pageTitle, heading, message)(implicitly, implicitly, new FrontendAppConfig(Play.current))
+    error_template(pageTitle, heading, message)(implicitly, implicitly, new FrontendAppConfig(Play.current))
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig(s"microservice.metrics")
 

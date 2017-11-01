@@ -22,7 +22,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 
-class NotEnrolledAgentServicesControllerSpec extends ControllerBaseSpec {
+class NotEnrolledAgentServicesControllerSpec extends AgentControllerBaseSpec {
 
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "NotEnrolledAgentServices"

@@ -15,14 +15,15 @@
  *@
 
 @import _root_.testonly.models.UserToStubModel
-@import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
 @import java.time.format.{DateTimeFormatter, ResolverStyle}
+@import core.views.html.templates.main_template
+@import core.views.html.helpers._
 
 @(userToStubModel: UserToStubModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@core.views.html.templates.main_template(title = Messages("User stubbing service"), bodyClasses = None) {
+@main_template(title = Messages("User stubbing service"), bodyClasses = None) {
 
     <h1 class="heading-large">@Messages("User stubbing service")</h1>
     <p>Successfully stubbed the following user:</p>

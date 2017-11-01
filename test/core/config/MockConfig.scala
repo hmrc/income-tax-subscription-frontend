@@ -31,6 +31,8 @@ trait MockConfig extends AppConfig {
   override val contactFrontendPartialBaseUrl: String = "/contact/partial"
   override val alreadyEnrolledUrl: String = "/already-enrolled"
   override val subscriptionUrl: String = "/income-tax-subscription/subscription"
+  override val clientMatchingUrl = "/income-tax-subscription/client-matching"
+  override val agentMicroserviceUrl: String = "/agent-subscription"
   override val preferencesFrontend: String = ""
   override val preferencesFrontendRedirect: String = ""
   override val preferencesUrl: String = ""
@@ -74,6 +76,13 @@ trait MockConfig extends AppConfig {
   override val signUpToSaLink : String = "sa-sign-up"
 
   override val agentSignUpUrl: String = "/report-quarterly/income-and-expenses/sign-up/client"
+
+  override lazy val agentServicesUrl: String = "/agent-subscription"
+
+  override lazy val agentAuthUrl = "https://www.gov.uk/guidance/self-assessment-for-agents-online-service"
+
+  override lazy val agentAccountUrl = "https://www.gov.uk/guidance/self-assessment-for-agents-online-service"
+
 }
 
 object MockConfig extends MockConfig

@@ -19,7 +19,7 @@ package agent.connectors
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import agent.config.AppConfig
+import core.config.AppConfig
 import agent.connectors.models.Enrolment
 import core.connectors.RawResponseReads
 import play.api.http.Status._

@@ -19,11 +19,12 @@ package agent.controllers.business
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.AuthenticatedController
-import agent.config.BaseControllerConfig
+import core.config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import agent.services.{AuthService, KeystoreService}
+import agent.services.KeystoreService
+import core.services.AuthService
 import core.utils.Implicits._
 
 @Singleton

@@ -18,8 +18,8 @@ package agent.controllers
 
 import agent.assets.MessageLookup.FrontPage
 import agent.audit.Logging
-import agent.auth.{MockConfig, SignUp, UserMatching}
-import agent.config.BaseControllerConfig
+import agent.auth.{AgentSignUp, AgentUserMatching}
+import core.config.{BaseControllerConfig, MockConfig}
 import org.jsoup.Jsoup
 import org.mockito.Mockito.reset
 import play.api.http.Status
@@ -28,7 +28,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 
-class HomeControllerSpec extends ControllerBaseSpec {
+class HomeControllerSpec extends AgentControllerBaseSpec {
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -93,7 +93,7 @@ class HomeControllerSpec extends ControllerBaseSpec {
 
         redirectLocation(result).get mustBe agent.controllers.matching.routes.ClientDetailsController.show().url
 
-        await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatching.name)
+        await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
       }
 
       s"if the user does not have arn redirect to ${agent.controllers.routes.NotEnrolledAgentServicesController.show().url}" in {
@@ -118,7 +118,7 @@ class HomeControllerSpec extends ControllerBaseSpec {
 
         redirectLocation(result).get mustBe agent.controllers.matching.routes.ClientDetailsController.show().url
 
-        await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatching.name)
+        await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
       }
     }
 
@@ -132,7 +132,7 @@ class HomeControllerSpec extends ControllerBaseSpec {
 
         redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
 
-        await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(SignUp.name)
+        await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
       }
     }
   }

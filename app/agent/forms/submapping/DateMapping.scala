@@ -16,7 +16,7 @@
 
 package agent.forms.submapping
 
-import agent.forms.validation.utils.MappingUtil._
+import core.forms.validation.utils.MappingUtil._
 import agent.models.DateModel
 import play.api.data.Forms.mapping
 import play.api.data.Mapping

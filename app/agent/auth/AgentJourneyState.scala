@@ -19,38 +19,38 @@ package agent.auth
 import agent.controllers.ITSASessionKeys
 import play.api.mvc._
 
-sealed trait JourneyState {
+sealed trait AgentJourneyState {
   val name: String
 }
 
-object UserMatching extends JourneyState {
+object AgentUserMatching extends AgentJourneyState {
   override val name: String = "userMatching"
 }
 
-object UserMatched extends JourneyState {
+object AgentUserMatched extends AgentJourneyState {
   override val name: String = "userMatched"
 }
 
-object SignUp extends JourneyState {
+object AgentSignUp extends AgentJourneyState {
   override val name: String = "signUp"
 }
 
-object Registration extends JourneyState {
+object AgentRegistration extends AgentJourneyState {
   override val name: String = "registration"
 }
 
-object JourneyState {
+object AgentJourneyState {
 
   implicit class SessionFunctions(session: Session) {
-    def isInState(state: JourneyState): Boolean = session.get(ITSASessionKeys.JourneyStateKey) contains state.name
+    def isInState(state: AgentJourneyState): Boolean = session.get(ITSASessionKeys.JourneyStateKey) contains state.name
   }
 
   implicit class RequestFunctions(request: Request[_]) {
-    def isInState(state: JourneyState): Boolean = request.session.isInState(state)
+    def isInAgentState(state: AgentJourneyState): Boolean = request.session.isInState(state)
   }
 
   implicit class ResultFunctions(result: Result) {
-    def withJourneyState(state: JourneyState)(implicit header: RequestHeader): Result = result.addingToSession(ITSASessionKeys.JourneyStateKey -> state.name)
+    def withJourneyState(state: AgentJourneyState)(implicit header: RequestHeader): Result = result.addingToSession(ITSASessionKeys.JourneyStateKey -> state.name)
   }
 
 }

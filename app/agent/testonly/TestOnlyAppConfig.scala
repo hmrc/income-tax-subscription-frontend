@@ -20,7 +20,7 @@ package agent.testonly
 
 import javax.inject.{Inject, Singleton}
 
-import agent.config.FrontendAppConfig
+import core.config.FrontendAppConfig
 import play.api.Application
 
 @Singleton

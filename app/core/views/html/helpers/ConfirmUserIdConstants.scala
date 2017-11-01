@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package agent.auth
+package core.views.html.helpers
 
-import agent.common.Constants
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, EnrolmentIdentifier, Enrolments}
+object ConfirmUserIdConstants {
 
-import scala.collection.immutable.::
+  val DobId = "date-of-birth"
+  val FirstNameId = "first-name"
+  val LastNameId = "last-name"
+  val NinoId = "nino"
 
-case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup]) {
-  lazy val arn: Option[String] = getEnrolment(Constants.agentServiceEnrolmentName)
-
-  private def getEnrolment(key: String) = enrolments.enrolments.collectFirst {
-    case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _, _) => value
-  }
 }

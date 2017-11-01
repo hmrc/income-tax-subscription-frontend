@@ -31,11 +31,11 @@ import scala.concurrent.Future
 trait AuthPredicates extends Results {
   def applicationConfig: AppConfig
 
-  val emptyPredicate: AuthPredicate = _ => _ => Right(AuthPredicateSuccess)
+  val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
 
   lazy val resolveNino: Result = Redirect(usermatching.controllers.routes.NinoResolverController.resolveNinoAction())
 
-  val ninoPredicate: AuthPredicate = request => user =>
+  val ninoPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (user.nino(request).isDefined) {
       Right(AuthPredicateSuccess)
     }
@@ -47,11 +47,11 @@ trait AuthPredicates extends Results {
 
   lazy val alreadyEnrolled: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.enrolled())
 
-  val mtdidPredicate: AuthPredicate = request => user =>
+  val mtdidPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(alreadyEnrolled))
 
-  val enrolledPredicate: AuthPredicate = request => user =>
+  val enrolledPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (user.mtdItsaRef.nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.enrolledPredicate")))
 
@@ -59,7 +59,7 @@ trait AuthPredicates extends Results {
 
   lazy val timeoutRoute = Redirect(core.controllers.routes.SessionTimeoutController.timeout())
 
-  val timeoutPredicate: AuthPredicate = request => user =>
+  val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
       Left(Future.successful(timeoutRoute))
     }
@@ -67,28 +67,28 @@ trait AuthPredicates extends Results {
 
   lazy val wrongAffinity: Result = Redirect(usermatching.controllers.routes.AffinityGroupErrorController.show())
 
-  val affinityPredicate: AuthPredicate = request => user =>
+  val affinityPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     (applicationConfig.userMatchingFeature, user.affinityGroup) match {
       case (true, Some(Individual) | Some(Organisation)) => Right(AuthPredicateSuccess)
       case (false, Some(Individual)) => Right(AuthPredicateSuccess)
       case _ => Left(Future.successful(wrongAffinity))
     }
 
-  val registrationJourneyPredicate: AuthPredicate = request => user =>
+  val registrationJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.isInState(Registration)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val signUpJourneyPredicate: AuthPredicate = request => user =>
+  val signUpJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.isInState(Registration) || request.session.isInState(SignUp)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val userMatchingJourneyPredicate: AuthPredicate = request => user =>
+  val userMatchingJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.isInState(UserMatching)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
   lazy val goToIv = Redirect(identityverification.controllers.routes.IdentityVerificationController.gotoIV())
 
-  val ivPredicate: AuthPredicate = request => user =>
+  val ivPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.isInState(Registration) && user.confidenceLevel < ConfidenceLevel.L200) Left(Future.successful(goToIv))
     else Right(AuthPredicateSuccess)
 

@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import agent.views.html.templates.main_template
-@import agent.config.AppConfig
-@import agent.views.html.helpers._
+@import core.views.html.templates.main_template
+@import core.config.AppConfig
+@import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -33,5 +33,5 @@
       @continueButton(Messages("agent.base.go_back"))
     }
   </div>
-  <a id="sign-out" href="@agent.controllers.routes.SignOutController.signOut().url">@Messages("agent.base.sign-out")</a>
+  <a id="sign-out" href="@core.controllers.routes.SignOutController.signOut().url">@Messages("agent.base.sign-out")</a>
 }

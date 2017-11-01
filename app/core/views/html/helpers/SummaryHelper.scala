@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package core.views.html
+package core.views.html.helpers
 
 import incometax.business.forms.AccountingMethodForm
 import incometax.business.models.AccountingMethodModel

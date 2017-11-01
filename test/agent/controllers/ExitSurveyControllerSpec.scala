@@ -27,7 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 
-class ExitSurveyControllerSpec extends ControllerBaseSpec {
+class ExitSurveyControllerSpec extends AgentControllerBaseSpec {
 
   override val controllerName: String = "ExitSurveyController"
 

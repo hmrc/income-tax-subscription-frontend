@@ -19,10 +19,10 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.AuthenticatedController
-import agent.config.BaseControllerConfig
+import core.config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.mvc.Call
-import agent.services.AuthService
+import core.services.AuthService
 
 import scala.concurrent.Future
 
@@ -39,5 +39,5 @@ class MainIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   lazy val backUrl: String = agent.controllers.routes.IncomeSourceController.showIncomeSource().url
-  lazy val getAction: Call = agent.controllers.routes.SignOutController.signOut()
+  lazy val getAction: Call = core.controllers.routes.SignOutController.signOut()
 }

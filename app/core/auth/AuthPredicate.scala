@@ -33,6 +33,6 @@ object AuthPredicate {
     override def combine(x: AuthPredicateSuccess, y: AuthPredicateSuccess): AuthPredicateSuccess = AuthPredicateSuccess
   }
 
-  type AuthPredicate = Request[AnyContent] => IncomeTaxSAUser => Either[Future[Result], AuthPredicateSuccess]
+  type AuthPredicate[User <: IncomeTaxUser] = Request[AnyContent] => User => Either[Future[Result], AuthPredicateSuccess]
 
 }

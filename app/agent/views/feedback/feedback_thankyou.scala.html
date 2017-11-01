@@ -15,12 +15,12 @@
  *@
 
 @import uk.gov.hmrc.play.partials.CachedStaticHtmlPartialRetriever
-@import agent.views.html.templates.main_template
-@import agent.config.AppConfig
+@import core.views.html.templates.main_template
+@import core.config.AppConfig
 @import scala.concurrent.ExecutionContext
 
-@(partialUrl: String, redirectUrl: String)(implicit request: Request[_], cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever
-, messages: Messages, appConfig: AppConfig, ec: ExecutionContext)
+@(partialUrl: String, redirectUrl: String)(implicit request: Request[_], cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever,
+        messages: Messages, appConfig: AppConfig, ec: ExecutionContext)
 
 @main_template(Messages("feedback.thankyou.title")) {
     @cachedStaticHtmlPartialRetriever.getPartialContent(partialUrl)

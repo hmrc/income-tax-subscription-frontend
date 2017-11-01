@@ -16,12 +16,12 @@
 
 package agent.forms
 
-import agent.forms.prevalidation.PreprocessedForm
+import core.forms.prevalidation.PreprocessedForm
 import agent.forms.submapping.DateMapping.dateMapping
-import agent.forms.validation.Constraints._
-import agent.forms.validation.ErrorMessageFactory
-import agent.forms.validation.utils.ConstraintUtil._
-import agent.forms.validation.utils.MappingUtil._
+import core.forms.validation.Constraints._
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.utils.ConstraintUtil._
+import core.forms.validation.utils.MappingUtil._
 import agent.models.DateModel
 import agent.models.agent.ClientDetailsModel
 import play.api.data.Form
@@ -47,6 +47,12 @@ object ClientDetailsForm {
 
   val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "agent.error.client_details.first_name.maxLength")
   val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "agent.error.client_details.last_name.maxLength")
+
+  val emptyClientNino: Constraint[String] = nonEmpty("agent.error.nino.empty")
+
+  val validateClientNino: Constraint[String] = {
+    constraint[String](nino => if (nino.filterNot(_.isWhitespace).matches(ninoRegex)) Valid else ErrorMessageFactory.error("agent.error.nino.invalid"))
+  }
 
   val dobNoneEmpty: Constraint[DateModel] = constraint[DateModel](
     date => {
@@ -75,17 +81,18 @@ object ClientDetailsForm {
     }
   )
 
+
   val clientDetailsValidationForm = Form(
     mapping(
       clientFirstName -> oText.toText.verifying(firstNameNonEmpty andThen firstNameMaxLength andThen firstNameInvalid),
       clientLastName -> oText.toText.verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
-      clientNino -> oText.toText.verifying(emptyNino andThen validateNino),
+      clientNino -> oText.toText.verifying(emptyClientNino andThen validateClientNino),
       clientDateOfBirth -> dateMapping.verifying(dobNoneEmpty andThen dobIsNumeric andThen dobInvalid)
     )(ClientDetailsModel.apply)(ClientDetailsModel.unapply)
   )
 
-  import agent.forms.prevalidation.CaseOption._
-  import agent.forms.prevalidation.TrimOption._
+  import core.forms.prevalidation.CaseOption._
+  import core.forms.prevalidation.TrimOption._
 
   val clientDetailsForm = PreprocessedForm(
     validation = clientDetailsValidationForm,

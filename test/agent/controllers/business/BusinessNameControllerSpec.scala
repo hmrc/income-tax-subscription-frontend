@@ -16,15 +16,15 @@
 
 package agent.controllers.business
 
-import agent.controllers.ControllerBaseSpec
+import agent.controllers.AgentControllerBaseSpec
 import agent.forms.BusinessNameForm
 import agent.models.BusinessNameModel
+import agent.services.mocks.MockKeystoreService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import agent.services.mocks.MockKeystoreService
 
-class BusinessNameControllerSpec extends ControllerBaseSpec
+class BusinessNameControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
 
   override val controllerName: String = "BusinessNameController"

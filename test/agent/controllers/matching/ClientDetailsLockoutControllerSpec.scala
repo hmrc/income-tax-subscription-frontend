@@ -19,15 +19,15 @@ package agent.controllers.matching
 import java.time.Duration
 
 import agent.assets.MessageLookup.{ClientDetailsLockout => messages}
-import agent.controllers.ControllerBaseSpec
+import agent.controllers.AgentControllerBaseSpec
+import agent.services.mocks.MockAgentLockoutService
+import agent.utils.TestConstants.testARN
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
-import agent.services.mocks.MockAgentLockoutService
-import agent.utils.TestConstants.testARN
 
-class ClientDetailsLockoutControllerSpec extends ControllerBaseSpec
+class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
   with MockAgentLockoutService {
 
   // Required for trait but no authorisation tests are required
@@ -87,7 +87,7 @@ class ClientDetailsLockoutControllerSpec extends ControllerBaseSpec
     }
 
     "Redirect to the 'Client details' page" in {
-      redirectLocation(result).get mustBe agent.controllers.routes.SignOutController.signOut().url
+      redirectLocation(result).get mustBe core.controllers.routes.SignOutController.signOut().url
     }
 
   }

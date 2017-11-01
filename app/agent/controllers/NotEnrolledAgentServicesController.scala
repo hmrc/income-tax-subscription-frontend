@@ -18,7 +18,7 @@ package agent.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import agent.config.{AppConfig, BaseControllerConfig}
+import core.config.{AppConfig, BaseControllerConfig}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -34,7 +34,7 @@ class NotEnrolledAgentServicesController @Inject()(val baseConfig: BaseControlle
 
   val show: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(agent.views.html.not_enrolled_agent_services(getAction = agent.controllers.routes.SignOutController.signOut())))
+      Future.successful(Ok(agent.views.html.not_enrolled_agent_services(getAction = core.controllers.routes.SignOutController.signOut())))
   }
 
 }

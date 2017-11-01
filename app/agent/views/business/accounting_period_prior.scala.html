@@ -17,10 +17,9 @@
 @import agent.models.AccountingPeriodPriorModel
 @import play.api.data.Form
 @import agent.forms.AccountingPeriodPriorForm
-@import agent.views.html.helpers.radioHelper
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import agent.views.html.helpers._
-@import agent.config.AppConfig
+@import core.config.AppConfig
+@import core.views.html.helpers._
 
 @(accountingPeriodPriorForm: Form[AccountingPeriodPriorModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -33,7 +32,7 @@
     <p>@Messages("agent.business.current_financial_period_prior.accordion.line2")</p>
 }
 
-@agent.views.html.templates.main_template(title = Messages("agent.business.current_financial_period_prior.title"), bodyClasses = None) {
+@core.views.html.templates.main_template(title = Messages("agent.business.current_financial_period_prior.title"), bodyClasses = None) {
 
     @back_link(backUrl)
 

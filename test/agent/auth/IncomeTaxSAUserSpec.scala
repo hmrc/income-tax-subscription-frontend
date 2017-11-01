@@ -25,7 +25,7 @@ import agent.utils.TestConstants
 class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
   "IncomeTaxSAUser" should {
-    lazy val user = IncomeTaxSAUser(
+    lazy val user = IncomeTaxAgentUser(
       Enrolments(Set(
         Enrolment(Constants.agentServiceEnrolmentName,
           Seq(EnrolmentIdentifier(Constants.agentServiceIdentifierKey, TestConstants.testARN)),

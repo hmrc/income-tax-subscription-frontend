@@ -16,7 +16,8 @@
 
 package agent.views
 
-import agent.assets.MessageLookup.{ClientAlreadySubscribed => messages, Base => common}
+import agent.assets.MessageLookup.{Base => common, ClientAlreadySubscribed => messages}
+import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 

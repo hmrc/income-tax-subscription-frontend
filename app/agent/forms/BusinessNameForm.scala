@@ -16,11 +16,11 @@
 
 package agent.forms
 
-import agent.forms.prevalidation.PreprocessedForm
-import agent.forms.validation.ErrorMessageFactory
-import agent.forms.validation.utils.ConstraintUtil._
-import agent.forms.validation.utils.MappingUtil._
-import agent.forms.validation.utils.Patterns
+import core.forms.prevalidation.PreprocessedForm
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.utils.ConstraintUtil._
+import core.forms.validation.utils.MappingUtil._
+import core.forms.validation.utils.Patterns
 import agent.models.BusinessNameModel
 import play.api.data.Form
 import play.api.data.Forms._

@@ -16,9 +16,9 @@
 
 package agent.forms
 
-import agent.forms.validation.ErrorMessageFactory
-import agent.forms.validation.utils.ConstraintUtil._
-import agent.forms.validation.utils.MappingUtil._
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.utils.ConstraintUtil._
+import core.forms.validation.utils.MappingUtil._
 import agent.models.AccountingPeriodPriorModel
 import play.api.data.Form
 import play.api.data.Forms._

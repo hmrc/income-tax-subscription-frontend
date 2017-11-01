@@ -22,7 +22,12 @@ import uk.gov.hmrc.auth.core._
 
 import scala.collection.immutable.::
 
-case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup]) {
+trait IncomeTaxUser {
+  val enrolments: Enrolments
+  val affinityGroup: Option[AffinityGroup]
+}
+
+case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup]) extends IncomeTaxUser {
   def nino(implicit request: Request[AnyContent]): Option[String] =
     getEnrolment(Constants.ninoEnrolmentName) match {
       case None => request.session.get(ITSASessionKeys.NINO)

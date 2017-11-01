@@ -18,15 +18,14 @@ package agent.controllers
 
 import agent.forms.IncomeSourceForm
 import agent.models.IncomeSourceModel
+import agent.services.mocks.MockKeystoreService
+import agent.utils.TestModels
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import agent.services.mocks.MockKeystoreService
-import agent.utils.TestModels
-import core.utils.JsonUtils._
 
-class IncomeSourceControllerSpec extends ControllerBaseSpec
+class IncomeSourceControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
 
   override val controllerName: String = "IncomeSourceController"

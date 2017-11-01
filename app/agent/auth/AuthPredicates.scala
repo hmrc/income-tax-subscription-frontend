@@ -17,8 +17,8 @@
 package agent.auth
 
 import _root_.uk.gov.hmrc.http.SessionKeys._
-import agent.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
-import agent.auth.JourneyState._
+import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
+import agent.auth.AgentJourneyState._
 import cats.implicits._
 import agent.common.Constants.agentServiceEnrolmentName
 import agent.controllers.ITSASessionKeys
@@ -29,7 +29,7 @@ import scala.concurrent.Future
 
 object AuthPredicates extends Results {
 
-  val emptyPredicate: AuthPredicate = _ => _ => Right(AuthPredicateSuccess)
+  val emptyPredicate: AuthPredicate[IncomeTaxAgentUser] = _ => _ => Right(AuthPredicateSuccess)
 
   lazy val noArnRoute: Result = Redirect(agent.controllers.routes.NotEnrolledAgentServicesController.show())
 
@@ -40,33 +40,33 @@ object AuthPredicates extends Results {
   lazy val homeRoute = Redirect(agent.controllers.routes.HomeController.index())
 
 
-  val notSubmitted: AuthPredicate = request => user =>
+  val notSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>
     if (request.session.get(ITSASessionKeys.Submitted).isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(confirmationRoute))
 
-  val hasSubmitted: AuthPredicate = request => user =>
+  val hasSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>
     if (request.session.get(ITSASessionKeys.Submitted).nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("auth.AuthPredicates.hasSubmitted")))
 
-  val timeoutPredicate: AuthPredicate = request => user =>
+  val timeoutPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
       Left(Future.successful(timeoutRoute))
     }
     else Right(AuthPredicateSuccess)
 
-  val registrationJourneyPredicate: AuthPredicate = request => user =>
-    if (request.session.isInState(Registration)) Right(AuthPredicateSuccess)
+  val registrationJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+    if (request.session.isInState(AgentRegistration)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val signUpJourneyPredicate: AuthPredicate = request => user =>
-    if (request.session.isInState(Registration) || request.session.isInState(SignUp)) Right(AuthPredicateSuccess)
+  val signUpJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+    if (request.session.isInState(AgentRegistration) || request.session.isInState(AgentSignUp)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val userMatchingJourneyPredicate: AuthPredicate = request => user =>
-    if (request.session.isInState(UserMatching)) Right(AuthPredicateSuccess)
+  val userMatchingJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+    if (request.session.isInState(AgentUserMatching)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val arnPredicate: AuthPredicate = request => user =>
+  val arnPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
     if (user.enrolments.getEnrolment(agentServiceEnrolmentName).nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(noArnRoute))
 

@@ -19,7 +19,7 @@ package agent.connectors.matching
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import agent.config.AppConfig
+import core.config.AppConfig
 import agent.connectors.models.matching.{ClientMatchFailureResponseModel, ClientMatchRequestModel, ClientMatchSuccessResponseModel}
 import agent.models.agent.ClientDetailsModel
 import core.connectors.RawResponseReads

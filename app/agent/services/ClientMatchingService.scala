@@ -18,7 +18,7 @@ package agent.services
 
 import javax.inject.{Inject, Singleton}
 
-import agent.config.AppConfig
+import core.config.AppConfig
 import agent.connectors.matching.AuthenticatorConnector
 import agent.models.agent.ClientDetailsModel
 

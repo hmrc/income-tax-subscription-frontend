@@ -20,7 +20,7 @@ import agent.common.Constants
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
-import agent.services.AuthService
+import core.services.AuthService
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
@@ -30,7 +30,7 @@ import agent.utils.TestConstants
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
+trait MockAgentAuthService extends BeforeAndAfterEach with MockitoSugar {
   self: Suite =>
 
   val mockAuthService = mock[AuthService]

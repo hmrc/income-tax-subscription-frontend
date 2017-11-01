@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.common.Constants
-import agent.config.AppConfig
+import core.config.AppConfig
 import agent.connectors.GGAdminConnector._
 import agent.connectors.models.gg.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess}
 import core.connectors.RawResponseReads

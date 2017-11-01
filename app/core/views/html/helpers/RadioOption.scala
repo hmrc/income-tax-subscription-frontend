@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package core.views.html
+package core.views.html.helpers
 
 class RadioOption(val optionName: String, val message: String, val classes: Option[String]) extends Product with Serializable {
 

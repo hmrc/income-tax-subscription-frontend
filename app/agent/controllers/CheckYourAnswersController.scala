@@ -19,12 +19,14 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import agent.auth.{AuthenticatedController, IncomeTaxSAUser}
-import agent.config.BaseControllerConfig
+import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
+import core.config.BaseControllerConfig
 import agent.connectors.models.subscription.SubscriptionSuccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import agent.services._
+import agent.services.{SubscriptionOrchestrationService,ClientRelationshipService}
+import agent.services.KeystoreService
+import core.services.AuthService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
@@ -42,7 +44,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
 
   import agent.services.CacheUtil._
 
-  private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CacheMap => Future[Result])
+  private def journeySafeGuard(processFunc: IncomeTaxAgentUser => Request[AnyContent] => CacheMap => Future[Result])
                               (noCacheMapErrMessage: String) =
     Authenticated.async { implicit request =>
       implicit user =>

@@ -19,7 +19,7 @@ package agent.connectors.mocks
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.libs.json.{JsString, JsValue}
-import agent.utils.MockTrait
+import core.utils.MockTrait
 import agent.utils.TestConstants.testErrorMessage
 
 import scala.concurrent.{ExecutionContext, Future}

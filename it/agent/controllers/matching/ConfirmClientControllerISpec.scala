@@ -16,7 +16,7 @@
 
 package agent.controllers.matching
 
-import _root_.agent.auth.UserMatched
+import _root_.agent.auth.AgentUserMatched
 import _root_.agent.controllers.ITSASessionKeys
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks._
@@ -174,7 +174,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
           redirectURI(indexURI)
         )
 
-        SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(UserMatched.name)
+        SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
 
         Then("The client matching request should have been audited")
         AuditStub.verifyAudit()

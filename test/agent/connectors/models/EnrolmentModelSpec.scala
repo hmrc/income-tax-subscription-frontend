@@ -17,7 +17,7 @@
 package agent.connectors.models
 
 import play.api.libs.json.Json
-import agent.utils.UnitTestTrait
+import core.utils.UnitTestTrait
 
 class EnrolmentModelSpec extends UnitTestTrait {
 

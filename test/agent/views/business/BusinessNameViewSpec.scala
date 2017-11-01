@@ -20,7 +20,7 @@ import agent.assets.MessageLookup.{BusinessName => messages}
 import agent.forms.BusinessNameForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import agent.views.ViewSpecTrait
+import core.views.ViewSpecTrait
 
 class BusinessNameViewSpec extends ViewSpecTrait {
 

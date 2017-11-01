@@ -21,10 +21,10 @@ package agent.testonly.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.StatelessController
-import agent.config.BaseControllerConfig
+import core.config.BaseControllerConfig
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
-import agent.services.AuthService
+import core.services.AuthService
 import uk.gov.hmrc.http.HttpPatch
 
 import scala.concurrent.Future

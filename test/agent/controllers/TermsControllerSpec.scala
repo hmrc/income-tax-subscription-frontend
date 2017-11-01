@@ -16,16 +16,16 @@
 
 package agent.controllers
 
+import agent.services.mocks.MockKeystoreService
+import agent.utils.TestModels
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import agent.services.mocks.MockKeystoreService
-import agent.utils.TestModels
 
 import scala.concurrent.Future
 
-class TermsControllerSpec extends ControllerBaseSpec
+class TermsControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
 
   override val controllerName: String = "TermsController"

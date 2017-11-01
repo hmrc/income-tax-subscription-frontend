@@ -19,14 +19,15 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.AuthenticatedController
-import agent.config.BaseControllerConfig
+import core.config.BaseControllerConfig
 import agent.forms.IncomeSourceForm
 import agent.models.IncomeSourceModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import agent.services.{AuthService, KeystoreService}
+import agent.services.KeystoreService
+import core.services.AuthService
 
 import scala.concurrent.Future
 

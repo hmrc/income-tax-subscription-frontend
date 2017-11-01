@@ -16,7 +16,8 @@
 
 package agent.connectors.models.matching
 
-import agent.utils.{TestModels, UnitTestTrait}
+import agent.utils.TestModels
+import core.utils.UnitTestTrait
 
 
 class ClientMatchRequestModelSpec extends UnitTestTrait {
