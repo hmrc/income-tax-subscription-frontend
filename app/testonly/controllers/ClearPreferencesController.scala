@@ -22,11 +22,12 @@ import core.auth.StatelessController
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import digitalcontact.connectors.PreferenceFrontendConnector
-import digitalcontact.models.Activated
 import play.api.i18n.MessagesApi
+import play.api.mvc.Result
 import testonly.connectors.ClearPreferencesConnector
-import uk.gov.hmrc.http.{HttpGet, InternalServerException}
-import core.utils.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, InternalServerException}
+
+import scala.concurrent.Future
 
 @Singleton
 class ClearPreferencesController @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector,
@@ -37,23 +38,19 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
                                            val authService: AuthService
                                           ) extends StatelessController {
 
-  //N.b. asyncUnrestricted is used because it doesn't check any predicates
+  private def clearUser(nino: String)(implicit hc: HeaderCarrier): Future[Result] = clearPreferencesConnector.clear(nino).map { response =>
+    response.status match {
+      case OK => Ok("Preferences cleared")
+      case NO_CONTENT => Ok("No preferences found")
+      case _ => throw new InternalServerException("Unexpected error in clear pref: status=" + response.status + ", body=" + response.body)
+    }
+  }
+
   val clear = Authenticated.asyncUnrestricted { implicit request =>
     implicit user =>
       user.nino match {
-        case None => throw new InternalServerException("clear preferences controller, no nino")
-        case Some(nino) =>
-          //TODO Update for the new API
-          preferenceFrontendConnector.checkPaperless("").flatMap {
-            case Right(Activated) =>
-              clearPreferencesConnector.clear(nino).map { response =>
-                response.status match {
-                  case OK => Ok("Preferences cleared")
-                  case _ => throw new InternalServerException("Unexpected error in clear pref: status=" + response.status + ", body=" + response.body)
-                }
-              }
-            case _ => Ok("No Preferences found")
-          }
+        case None => Future.failed[Result](new InternalServerException("clear preferences controller, no nino"))
+        case Some(nino) => clearUser(nino)
       }
   }
 

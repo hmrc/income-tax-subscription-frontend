@@ -19,31 +19,19 @@ package testonly.connectors
 import javax.inject.{Inject, Singleton}
 
 import core.connectors.RawResponseReads
-import play.api.http.Status._
 import testonly.TestOnlyAppConfig
-import core.utils.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpDelete, HttpGet, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpDelete, HttpGet, HttpResponse }
 
 @Singleton
 class ClearPreferencesConnector @Inject()(appConfig: TestOnlyAppConfig,
                                           httpGet: HttpGet,
                                           http: HttpDelete) extends RawResponseReads {
 
-  val getEntityId: String => String = (nino: String) => appConfig.entityResolverURL + s"/entity-resolver/paye/$nino"
+  val clearPreferencesURL: String => String = (nino: String) => appConfig.entityResolverURL + s"/entity-resolver-admin/paye/$nino"
 
-  val clearPreferencesURL: String => String = (entityId: String) => appConfig.preferencesUrl + s"/preferences-admin/$entityId"
-
-  def clear(nino: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpGet.GET(getEntityId(nino)).flatMap { response =>
-      response.status match {
-        case OK =>
-          val entityId = (response.json \ "_id").as[String]
-          http.DELETE(clearPreferencesURL(entityId))
-        case failure => response
-      }
-    }
+  def clear(nino: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = http.DELETE(clearPreferencesURL(nino))
 
 }
