@@ -18,6 +18,9 @@ GET         /report-quarterly/income-and-expenses/sign-up/test-only/add-known-fa
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts             testonly.controllers.KnownFactsController.submit
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-users                 testonly.controllers.DeEnrolController.resetUsers
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences           testonly.controllers.ClearPreferencesController.clear
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences-for       testonly.controllers.ClearPreferencesController.showClearUser
+# NOCSRF
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences-for       testonly.controllers.ClearPreferencesController.submitClearUser
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/auth-update                 testonly.controllers.AuthUpdateController.update
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-lockout               testonly.controllers.ResetUserLockoutController.resetLockout
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch              testonly.controllers.FeatureSwitchController.show
