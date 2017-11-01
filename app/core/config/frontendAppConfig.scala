@@ -77,6 +77,7 @@ trait AppConfig {
   val addressLookupFrontendURL: String
   val signUpToSaLink: String
   val agentSignUpUrl: String
+
 }
 
 @Singleton
