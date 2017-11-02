@@ -34,6 +34,8 @@ object FeatureSwitch {
       case None => throw new IllegalArgumentException("Invalid feature switch: " + str)
     }
 
+  def get(str: String): Option[FeatureSwitch] = switches find (_.name == str)
+
 }
 
 object UserMatchingFeature extends FeatureSwitch {
