@@ -26,33 +26,51 @@ import core.services.AuthService
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, Request}
 import play.twirl.api.Html
+import testonly.connectors.BackendFeatureSwitchConnector
+import testonly.models.FeatureSwitchSetting
 
 class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
                                         val baseConfig: BaseControllerConfig,
-                                        val authService: AuthService)
+                                        val authService: AuthService,
+                                        featureSwitchConnector: BackendFeatureSwitchConnector)
   extends BaseFrontendController with FeatureSwitching with I18nSupport {
-  private def view(switchNames: Map[FeatureSwitch, Boolean])(implicit request: Request[_]): Html = testonly.views.html.feature_switch(
-    switchNames = switchNames,
-    testonly.controllers.routes.FeatureSwitchController.submit()
-  )
+  private def view(switchNames: Map[FeatureSwitch, Boolean], backendFeatureSwitches: Map[String, Boolean])(implicit request: Request[_]): Html =
+    testonly.views.html.feature_switch(
+      switchNames = switchNames,
+      backendFeatureSwitches = backendFeatureSwitches,
+      testonly.controllers.routes.FeatureSwitchController.submit()
+    )
 
-  lazy val show = Action { implicit req =>
-    val featureSwitches = (switches map (switch => switch -> isEnabled(switch))).toMap
-    Ok(view(featureSwitches))
+  lazy val show = Action.async { implicit req =>
+    for {
+      backendFeatureSwitches <- featureSwitchConnector.getBackendFeatureSwitches
+      featureSwitches = (switches map (switch => switch -> isEnabled(switch))).toMap
+    } yield Ok(view(featureSwitches, backendFeatureSwitches))
   }
 
-  lazy val submit = Action { implicit req =>
-    val featureSwitches =
-      req.body.asFormUrlEncoded.fold(Map.empty[FeatureSwitch, Boolean])(_.filterNot(_._1 == "csrfToken").map {
-        case (k, v) => FeatureSwitch(k) -> v.head.toBoolean
-      })
+  lazy val submit = Action.async { implicit req =>
+    val submittedData: Set[String] = req.body.asFormUrlEncoded match {
+      case None => Set.empty
+      case Some(data) => data.keySet
+    }
+
+    val frontendFeatureSwitches = submittedData flatMap FeatureSwitch.get
 
     switches.foreach(fs =>
-      if (featureSwitches.contains(fs)) enable(fs)
+      if (frontendFeatureSwitches.contains(fs)) enable(fs)
       else disable(fs)
     )
 
-    Redirect(testonly.controllers.routes.FeatureSwitchController.show())
+    featureSwitchConnector.getBackendFeatureSwitches map {
+      _.keySet map { switchName =>
+        FeatureSwitchSetting(
+          feature = switchName,
+          enable = submittedData contains switchName
+        )
+      }
+    } flatMap featureSwitchConnector.submitBackendFeatureSwitches map {
+      _ => Redirect(testonly.controllers.routes.FeatureSwitchController.show())
+    }
   }
 
 }

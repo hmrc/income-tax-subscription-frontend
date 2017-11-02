@@ -19,20 +19,31 @@
 @import core.config.featureswitch.FeatureSwitch
 @import core.views.html.templates.main_template
 
-@(switchNames: Map[FeatureSwitch, Boolean], action: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(switchNames: Map[FeatureSwitch, Boolean], backendFeatureSwitches: Map[String, Boolean], action: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("Feature switch"), bodyClasses = None) {
     <form method="@action.method" action="@action.url">
         @CSRF.formField
         <fieldset>
             <legend>
-                <h3 class="heading-medium">What features would you like to have enabled?</h3>
+                <h2 class="heading-medium">Which features would you like to have enabled?</h2>
             </legend>
+            <h3 class="heading-small">Frontend features</h3>
             <div class="form-group">
-            @for(switch <- switchNames) {
+                @for(switch <- switchNames) {
                 <div class="multiple-choice">
                     <input type="checkbox" id="@switch._1.name" name="@switch._1.name" value="true" @{if(switch._2){"Checked"}}>
                     <label for="@switch._1.name">@switch._1.displayText</label>
+                </div>
+            }
+            </div>
+
+            <h3 class="heading-small">Backend features</h3>
+            <div class="form-group">
+                @for(switch <- backendFeatureSwitches) {
+                <div class="multiple-choice">
+                    <input type="checkbox" id="@switch._1" name="@switch._1" value="true" @{if(switch._2){"Checked"}}>
+                    <label for="@switch._1">@switch._1</label>
                 </div>
             }
             </div>

@@ -78,6 +78,7 @@ trait AppConfig {
   val signUpToSaLink: String
   val agentSignUpUrl: String
 
+  val backendFeatureSwitchUrl: String
 }
 
 @Singleton
@@ -198,5 +199,7 @@ class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with S
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 
   override lazy val signUpToSaLink: String = loadConfig("sa-signup.url")
+
+  override lazy val backendFeatureSwitchUrl: String = s"$protectedMicroServiceUrl/income-tax-subscription/test-only/feature-switch"
 }
 
