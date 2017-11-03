@@ -19,17 +19,17 @@ package agent.controllers
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
-import core.config.AppConfig
 import agent.views.html.feedback.feedback_thankyou
-import core.config.AuthConnector
+import core.config.{AppConfig, AuthConnector}
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, RequestHeader}
 import play.twirl.api.Html
+import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
-import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
+import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
+import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
 import uk.gov.hmrc.play.partials._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,6 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
                                    protected val authConnector: AuthConnector,
+                                   val sessionCookieCrypto: SessionCookieCrypto,
                                    val httpGet: HttpGet,
                                    val httpPost: HttpPost,
                                    val messagesApi: MessagesApi
@@ -51,7 +52,7 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
   implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
     override def httpGet: HttpGet = httpGet
 
-    override def crypto: (String) => String = cookie => SessionCookieCryptoFilter.encrypt(cookie)
+    override def crypto: (String) => String = cookie => sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
   }
 
   def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
@@ -115,7 +116,7 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
     override val crypto = encryptCookieString _
 
     def encryptCookieString(cookie: String): String = {
-      SessionCookieCryptoFilter.encrypt(cookie)
+      sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
     }
   }
 

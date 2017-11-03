@@ -17,12 +17,12 @@
 package core.auth
 
 import agent.auth.IncomeTaxAgentUser
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
 
 trait PostSubmissionController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
-    override def userApply: (Enrolments, Option[AffinityGroup]) => IncomeTaxSAUser = IncomeTaxSAUser.apply
+    override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
 
     override val async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(enrolledPredicates)
   }

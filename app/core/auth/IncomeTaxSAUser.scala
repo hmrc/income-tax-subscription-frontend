@@ -27,7 +27,7 @@ trait IncomeTaxUser {
   val affinityGroup: Option[AffinityGroup]
 }
 
-case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup]) extends IncomeTaxUser {
+case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup], confidenceLevel: ConfidenceLevel) extends IncomeTaxUser {
   def nino(implicit request: Request[AnyContent]): Option[String] =
     getEnrolment(Constants.ninoEnrolmentName) match {
       case None => request.session.get(ITSASessionKeys.NINO)
@@ -40,14 +40,9 @@ case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[Affinit
       case x => x
     }
 
-  lazy val confidenceLevel: ConfidenceLevel = enrolments.getEnrolment(Constants.ninoEnrolmentName) match {
-    case Some(enrolment) => enrolment.confidenceLevel
-    case None => ConfidenceLevel.L0
-  }
-
   lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
 
   private def getEnrolment(key: String) = enrolments.enrolments.collectFirst {
-    case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _, _) => value
+    case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _) => value
   }
 }

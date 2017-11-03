@@ -18,14 +18,14 @@ package agent.auth
 
 import agent.common.Constants
 import core.auth.IncomeTaxUser
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.auth.core._
 
 import scala.collection.immutable.::
 
-case class IncomeTaxAgentUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup]) extends IncomeTaxUser {
+case class IncomeTaxAgentUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup], confidenceLevel: ConfidenceLevel) extends IncomeTaxUser {
   lazy val arn: Option[String] = getEnrolment(Constants.agentServiceEnrolmentName)
 
   private def getEnrolment(key: String) = enrolments.enrolments.collectFirst {
-    case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _, _) => value
+    case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _) => value
   }
 }

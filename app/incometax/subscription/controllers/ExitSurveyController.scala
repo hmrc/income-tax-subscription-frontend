@@ -29,7 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
 

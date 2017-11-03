@@ -22,7 +22,7 @@ import core.config.FrontendAppConfig
 import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.frontend.config.AuthRedirects
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
 

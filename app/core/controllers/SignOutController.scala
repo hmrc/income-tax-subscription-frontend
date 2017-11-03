@@ -22,7 +22,7 @@ import core.config.AppConfig
 import play.api.Application
 import play.api.mvc.Action
 import uk.gov.hmrc.play.config.RunMode
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 @Singleton
 class SignOutController @Inject()(val app: Application,

@@ -27,7 +27,7 @@ import testonly.connectors.{MatchingStubConnector, UserData}
 import testonly.forms.UserToStubForm
 import testonly.models.UserToStubModel
 import uk.gov.hmrc.http.InternalServerException
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import core.utils.Implicits._
 
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
