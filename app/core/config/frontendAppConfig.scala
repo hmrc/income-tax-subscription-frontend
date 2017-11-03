@@ -85,6 +85,8 @@ trait AppConfig {
 class FrontendAppConfig @Inject()(val app: Application) extends AppConfig with ServicesConfig with FeatureSwitching {
 
   protected val configuration: Configuration = app.configuration
+  override val mode = app.mode
+  override protected def runModeConfiguration: Configuration = configuration
 
   protected def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 

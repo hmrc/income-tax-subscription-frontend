@@ -20,12 +20,13 @@ import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
 import agent.views.html.feedback.feedback_thankyou
-import core.config.{AppConfig, AuthConnector}
+import core.config.AppConfig
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, RequestHeader}
 import play.twirl.api.Html
+import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
@@ -47,7 +48,6 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
   implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
     override val httpGet: HttpGet = httpGet
   }
-
 
   implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
     override def httpGet: HttpGet = httpGet

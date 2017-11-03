@@ -18,7 +18,7 @@ package core.config
 
 import javax.inject._
 
-import play.api.Application
+import play.api.{Application, Configuration}
 import uk.gov.hmrc.auth.core.PlayAuthConnector
 import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http._
@@ -45,6 +45,11 @@ import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 @Singleton
 class SessionCache @Inject()(val app: Application,
                              val http: WSHttp) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
+  protected val configuration: Configuration = app.configuration
+  override val mode = app.mode
+  override protected def runModeConfiguration: Configuration = configuration
+  override protected def appNameConfiguration: Configuration = configuration
+
   lazy val defaultSource: String = getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
 
   lazy val baseUri = baseUrl("session-cache")
@@ -62,8 +67,8 @@ class ITSAHeaderCarrierForPartialsConverter @Inject()(sessionCookieCrypto: Sessi
   override val crypto = encryptCookieString _
 }
 
-@Singleton
-class AuthConnector @Inject()(appConfig: AppConfig, val http: HttpPost) extends PlayAuthConnector {
-  override lazy val serviceUrl: String = appConfig.authUrl
-}
-
+//@Singleton
+//class AuthConnector @Inject()(appConfig: AppConfig, val http: HttpPost) extends PlayAuthConnector {
+//  override lazy val serviceUrl: String = appConfig.authUrl
+//}
+//
