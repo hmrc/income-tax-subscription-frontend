@@ -22,7 +22,7 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import org.joda.time.{DateTime, DateTimeZone}
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
-import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 
 object AuthStub extends WireMockMethods {
   private val authIDs = "/uri/to/ids"
@@ -30,7 +30,7 @@ object AuthStub extends WireMockMethods {
 
   def stubAuthSuccess(): StubMapping = {
     when(method = POST, uri = authoriseUri)
-      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Agent, arnEnrolment))
+      .thenReturn(status = OK, body = successfulAuthResponse(AffinityGroup.Agent, ConfidenceLevel.L200, arnEnrolment))
   }
 
   def stubUnauthorised(): StubMapping = {
@@ -51,10 +51,11 @@ object AuthStub extends WireMockMethods {
     )
   )
 
-  private def successfulAuthResponse(affinityGroup: AffinityGroup, enrolments: JsObject*): JsObject =
+  private def successfulAuthResponse(affinityGroup: AffinityGroup, confidenceLevel: ConfidenceLevel, enrolments: JsObject*): JsObject =
   //Written out manually as the json writer for Enrolment doesn't match the reader
     Json.obj(
       "allEnrolments" -> enrolments,
-      "affinityGroup" -> affinityGroup
+      "affinityGroup" -> affinityGroup,
+      "confidenceLevel" -> confidenceLevel
     )
 }
