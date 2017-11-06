@@ -47,8 +47,6 @@ trait MockGGAuthenticationConnector extends MockTrait {
 trait TestGGAuthenticationConnector extends MockHttp {
 
   lazy val logging: Logging = app.injector.instanceOf[Logging]
-  lazy val httpPost: HttpPost = mockHttpPost
-  lazy val httpGet: HttpGet = mockHttpGet
 
   def mockRefreshProfileSuccess(): Unit =
     setupMockHttpPostEmpty(Some(TestGGAuthenticationConnector.refreshProfileUrl))(Status.NO_CONTENT, JsNull)
@@ -59,6 +57,6 @@ trait TestGGAuthenticationConnector extends MockHttp {
   def mockRefreshProfileException(): Unit =
     setupMockHttpPostEmptyException(Some(TestGGAuthenticationConnector.refreshProfileUrl))(testException)
 
-  object TestGGAuthenticationConnector extends GGAuthenticationConnector(appConfig, httpPost, logging)
+  object TestGGAuthenticationConnector extends GGAuthenticationConnector(appConfig, mockHttp, logging)
 
 }

@@ -24,7 +24,6 @@ import play.api.test.Helpers._
 class SignOutControllerSpec extends ControllerBaseSpec {
 
   object TestSignOutController extends SignOutController(
-    app,
     appConfig
   )
 

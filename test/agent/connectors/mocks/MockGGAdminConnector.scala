@@ -19,15 +19,15 @@ package agent.connectors.mocks
 import agent.audit.Logging
 import agent.connectors.GGAdminConnector
 import agent.connectors.models.gg.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess}
+import agent.utils.TestConstants.{testErrorMessage, testException}
+import core.utils.MockTrait
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.libs.json.JsNull
-import core.utils.MockTrait
-import agent.utils.TestConstants.{testErrorMessage, testException}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpGet, HttpPost }
 
 
 trait MockGGAdminConnector extends MockTrait {
@@ -50,8 +50,6 @@ trait MockGGAdminConnector extends MockTrait {
 
 trait TestGGAdminConnector extends MockHttp {
   lazy val logging: Logging = app.injector.instanceOf[Logging]
-  lazy val httpPost: HttpPost = mockHttpPost
-  lazy val httpGet: HttpGet = mockHttpGet
 
   def mockAddKnownFactsSuccess(request: KnownFactsRequest): Unit =
     setupMockHttpPost(Some(TestGGAdminConnector.addKnownFactsUrl), Some(request))(Status.OK, JsNull)
@@ -62,6 +60,6 @@ trait TestGGAdminConnector extends MockHttp {
   def mockAddKnownFactsException(request: KnownFactsRequest): Unit =
     setupMockHttpPostException(Some(TestGGAdminConnector.addKnownFactsUrl), Some(request))(testException)
 
-  object TestGGAdminConnector extends GGAdminConnector(appConfig, httpPost, logging)
+  object TestGGAdminConnector extends GGAdminConnector(appConfig, mockHttp, logging)
 
 }

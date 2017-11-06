@@ -16,6 +16,8 @@
 
 package core.controllers
 
+import javax.inject.Provider
+
 import core.config.{AppConfig, BaseControllerConfig, MockConfig}
 import core.utils.UnitTestTrait
 
@@ -23,7 +25,9 @@ import core.utils.UnitTestTrait
 trait ControllerBaseTrait extends UnitTestTrait {
 
   def mockBaseControllerConfig(appConfig: AppConfig): BaseControllerConfig = new BaseControllerConfig(
-    applicationConfig = appConfig) {
+    applicationConfigProvider = new Provider[AppConfig] {
+      override def get = appConfig
+    }) {
     override lazy val postSignInRedirectUrl = appConfig.ggSignInContinueUrl
   }
 

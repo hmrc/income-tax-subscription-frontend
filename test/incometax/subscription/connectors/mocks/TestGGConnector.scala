@@ -54,7 +54,6 @@ trait MockGGConnector extends MockTrait {
 trait TestGGConnector extends MockHttp {
 
   lazy val config: Configuration = app.injector.instanceOf[Configuration]
-  lazy val httpPost: HttpPost = mockHttpPost
   lazy val logging: Logging = app.injector.instanceOf[Logging]
 
   def mockEnrolSuccess(request: EnrolRequest): Unit =
@@ -66,6 +65,6 @@ trait TestGGConnector extends MockHttp {
   def mockEnrolException(request: EnrolRequest): Unit =
     setupMockHttpPostException(Some(TestGovernmentGatewayEnrolConnector.enrolUrl), Some(request))(testException)
 
-  object TestGovernmentGatewayEnrolConnector extends GGConnector(httpPost, appConfig, logging)
+  object TestGovernmentGatewayEnrolConnector extends GGConnector(mockHttp, appConfig, logging)
 
 }

@@ -16,8 +16,10 @@
 
 package usermatching.connectors.mocks
 
-import core.connectors.mocks.MockHttp
 import core.config.AppConfig
+import core.connectors.mocks.MockHttp
+import core.utils.MockTrait
+import core.utils.TestConstants._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.BAD_REQUEST
@@ -25,8 +27,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.connectors.UserLockoutConnector
 import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
-import core.utils.MockTrait
-import core.utils.TestConstants._
 
 import scala.concurrent.Future
 
@@ -68,8 +68,7 @@ trait TestUserLockoutConnector extends MockTrait with MockHttp {
 
   object TestUserLockoutConnector extends UserLockoutConnector(
     app.injector.instanceOf[AppConfig],
-    mockHttpGet,
-    mockHttpPost
+    mockHttp
   )
 
 }

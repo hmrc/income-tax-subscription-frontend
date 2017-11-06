@@ -16,25 +16,24 @@
 
 package agent.connectors.mocks
 
-import core.config.AppConfig
 import agent.connectors.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import agent.connectors.matching.AgentLockoutConnector
 import agent.connectors.models.matching.{LockoutStatusFailureResponse, NotLockedOut}
+import agent.utils.TestConstants.{testException, testLockoutResponse}
+import core.config.AppConfig
+import core.utils.MockTrait
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.BAD_REQUEST
-import core.utils.MockTrait
-import agent.utils.TestConstants.{testException, testLockoutResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 trait TestAgentLockoutConnector extends MockTrait with MockHttp {
 
   object TestAgentLockoutConnector extends AgentLockoutConnector(
     app.injector.instanceOf[AppConfig],
-    mockHttpGet,
-    mockHttpPost
+    mockHttp
   )
 
 }
