@@ -23,7 +23,6 @@ import core.config.AppConfig
 import core.utils.Implicits._
 import incometax.subscription.forms.ExitSurveyForm
 import incometax.subscription.models.ExitSurveyModel
-import play.api.Application
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
@@ -34,8 +33,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.Future
 
 @Singleton
-class ExitSurveyController @Inject()(val app: Application,
-                                     val logging: Logging,
+class ExitSurveyController @Inject()(val logging: Logging,
                                      implicit val applicationConfig: AppConfig,
                                      val messagesApi: MessagesApi
                                     ) extends FrontendController with I18nSupport {

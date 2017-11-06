@@ -22,15 +22,15 @@ import core.audit.Logging
 import core.config.AppConfig
 import incometax.business.httpparsers.AddressLookupResponseHttpParser._
 import incometax.business.models.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, MalformatAddressReturned, UnexpectedStatusReturned}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 
 @Singleton
 class AddressLookupConnector @Inject()(appConfig: AppConfig,
-                                       httpPost: HttpPost,
-                                       httpGet: HttpGet,
+                                       http: HttpClient,
                                        logging: Logging) {
 
   lazy val initUrl = appConfig.addressLookupFrontendURL + AddressLookupConnector.initUri
@@ -38,7 +38,7 @@ class AddressLookupConnector @Inject()(appConfig: AppConfig,
   def retrieveAddressUrl(id: String) = s"${appConfig.addressLookupFrontendURL}${AddressLookupConnector.fetchAddressUri}?id=$id"
 
   def init(initAddressLookup: AddressLookupInitRequest)(implicit hc: HeaderCarrier): Future[InitAddressLookupResponseResponse] =
-    httpPost.POST[AddressLookupInitRequest, InitAddressLookupResponseResponse](initUrl, initAddressLookup).map {
+    http.POST[AddressLookupInitRequest, InitAddressLookupResponseResponse](initUrl, initAddressLookup).map {
       case r@Right(_) =>
         logging.debug("AddressLookupConnector.init successful, returned OK")
         r
@@ -48,7 +48,7 @@ class AddressLookupConnector @Inject()(appConfig: AppConfig,
     }
 
   def retrieveAddress(journeyId: String)(implicit hc: HeaderCarrier): Future[ConfirmAddressLookupResponseResponse] =
-    httpGet.GET[ConfirmAddressLookupResponseResponse](retrieveAddressUrl(journeyId)).map {
+    http.GET[ConfirmAddressLookupResponseResponse](retrieveAddressUrl(journeyId)).map {
       case r@Right(_) =>
         logging.debug("AddressLookupConnector.fetchAddress successful, returned OK")
         r

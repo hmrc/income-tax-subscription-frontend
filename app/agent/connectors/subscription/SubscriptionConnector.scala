@@ -18,28 +18,27 @@ package agent.connectors.subscription
 
 import javax.inject.{Inject, Singleton}
 
-import core.config.AppConfig
-import agent.connectors.models.subscription.SubscriptionRequest
-import agent.connectors.httpparsers.SubscriptionResponseHttpParser._
 import agent.connectors.httpparsers.GetSubscriptionResponseHttpParser._
-
+import agent.connectors.httpparsers.SubscriptionResponseHttpParser._
+import agent.connectors.models.subscription.SubscriptionRequest
+import core.config.AppConfig
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost}
+import scala.concurrent.Future
 
 @Singleton
 class SubscriptionConnector @Inject()(val appConfig: AppConfig,
-                                      val httpPost: HttpPost,
-                                      val httpGet: HttpGet) {
+                                      val http: HttpClient) {
 
   def subscriptionUrl(nino: String): String = appConfig.subscriptionUrl + SubscriptionConnector.subscriptionUri(nino)
 
   def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] =
-    httpPost.POST[SubscriptionRequest, SubscriptionResponse](subscriptionUrl(request.nino), request)
+    http.POST[SubscriptionRequest, SubscriptionResponse](subscriptionUrl(request.nino), request)
 
   def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] =
-    httpGet.GET[GetSubscriptionResponse](subscriptionUrl(nino))
+    http.GET[GetSubscriptionResponse](subscriptionUrl(nino))
 }
 
 object SubscriptionConnector {

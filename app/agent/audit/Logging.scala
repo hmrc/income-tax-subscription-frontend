@@ -35,7 +35,7 @@ object LoggingConfig {
 }
 
 @Singleton
-class Logging @Inject()(application: Application,
+class Logging @Inject()(//application: Application,
                         configuration: Configuration,
                         auditConnector: AuditConnector) {
 

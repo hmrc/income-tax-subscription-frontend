@@ -24,6 +24,7 @@ import core.config.AppConfig
 import core.connectors.RawResponseReads
 import play.api.http.Status
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
@@ -31,13 +32,12 @@ import scala.concurrent.Future._
 
 @Singleton
 class AgentServicesConnector @Inject()(appConfig: AppConfig,
-                                       httpGet: HttpGet,
-                                       httpPut: HttpPut,
+                                       http: HttpClient,
                                        logging: Logging) extends RawResponseReads {
   def isPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val url = agentClientURL(arn, nino)
 
-    httpGet.GET(url).flatMap {
+    http.GET(url).flatMap {
       case res if res.status == Status.OK => successful(true)
       case res if res.status == Status.NOT_FOUND => successful(false)
       case res => failed(isPreExistingRelationshipFailure(res.status, res.body))
@@ -61,7 +61,7 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
   def createClientRelationship(arn: String, mtdid: String)(implicit hc: HeaderCarrier): Future[Unit] = {
     val url = createClientRelationshipURL(arn, mtdid)
 
-    httpPut.PUT(url, "")
+    http.PUT(url, "")
       .flatMap {
         case HttpResponse(Status.CREATED, _, _, _) => successful(())
         case HttpResponse(status, _, _, body) => failed(createClientRelationshipFailure(status, body))

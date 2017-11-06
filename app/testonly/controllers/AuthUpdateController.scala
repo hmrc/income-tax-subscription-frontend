@@ -25,7 +25,7 @@ import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HttpPatch
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.Future
 
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 @Singleton
 class AuthUpdateController @Inject()(val baseConfig: BaseControllerConfig,
                                      val messagesApi: MessagesApi,
-                                     val http: HttpPatch,
+                                     val http: HttpClient,
                                      val authService: AuthService
                                     ) extends SignUpController with I18nSupport {
 

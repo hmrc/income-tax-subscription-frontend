@@ -29,7 +29,8 @@ import play.twirl.api.Html
 import testonly.connectors.ClearPreferencesConnector
 import testonly.forms.ClearPreferencesForm
 import testonly.models.preferences.{ClearPreferencesModel, ClearPreferencesResult, Cleared, NoPreferences}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, InternalServerException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.Future
 
@@ -38,7 +39,7 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
                                            clearPreferencesConnector: ClearPreferencesConnector,
                                            val baseConfig: BaseControllerConfig,
                                            val messagesApi: MessagesApi,
-                                           httpGet: HttpGet,
+                                           http: HttpClient,
                                            val authService: AuthService
                                           ) extends StatelessController {
 

@@ -20,13 +20,14 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.common.Constants
-import core.config.AppConfig
 import agent.connectors.GGAdminConnector._
 import agent.connectors.models.gg.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess}
+import core.config.AppConfig
 import core.connectors.RawResponseReads
 import play.api.http.Status.OK
 import play.api.libs.json.Json.toJson
-import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
@@ -34,7 +35,7 @@ import scala.concurrent.Future
 
 @Singleton
 class GGAdminConnector @Inject()(applicationConfig: AppConfig,
-                                 httpPost: HttpPost,
+                                 http: HttpClient,
                                  logging: Logging
                                 ) extends RawResponseReads {
 
@@ -46,7 +47,7 @@ class GGAdminConnector @Inject()(applicationConfig: AppConfig,
     lazy val requestDetails: Map[String, String] = Map("knownFacts" -> toJson(knownFacts).toString)
     logging.debug(s"Request:\n$requestDetails")
 
-    httpPost.POST[KnownFactsRequest, HttpResponse](addKnownFactsUrl, knownFacts) map {
+    http.POST[KnownFactsRequest, HttpResponse](addKnownFactsUrl, knownFacts) map {
       case HttpResponse(OK, _, _, body) =>
         logging.debug("addKnownFacts responded with OK")
         Right(KnownFactsSuccess)

@@ -34,7 +34,7 @@ import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
-class ExitSurveyController @Inject()(val app: Application,
+class ExitSurveyController @Inject()(//val app: Application,
                                      val logging: Logging,
                                      implicit val applicationConfig: AppConfig,
                                      val messagesApi: MessagesApi

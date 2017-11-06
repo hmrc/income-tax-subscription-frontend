@@ -20,7 +20,8 @@ import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
 import core.config.AppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpPost}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import usermatching.httpparsers.MatchUserHttpParser._
 import usermatching.models.{UserDetailsModel, UserMatchRequestModel}
 
@@ -29,7 +30,7 @@ import scala.concurrent.Future
 
 @Singleton
 class AuthenticatorConnector @Inject()(appConfig: AppConfig,
-                                       val http: HttpPost,
+                                       val http: HttpClient,
                                        logging: Logging) {
 
   lazy val matchingEndpoint: String = appConfig.authenticatorUrl + "/authenticator/match"

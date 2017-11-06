@@ -19,13 +19,11 @@ package core.controllers
 import javax.inject.{Inject, Singleton}
 
 import core.config.AppConfig
-import play.api.Application
 import play.api.mvc.Action
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 @Singleton
-class SignOutController @Inject()(val app: Application,
-                                  val applicationConfig: AppConfig) extends FrontendController {
+class SignOutController @Inject()(val applicationConfig: AppConfig) extends FrontendController {
 
   val signOut = Action { implicit request =>
     Redirect(applicationConfig.ggSignOutUrl)

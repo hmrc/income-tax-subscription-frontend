@@ -30,7 +30,7 @@ import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
-import uk.gov.hmrc.play.http.ws.WSHttp
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.partials._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,21 +38,20 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
                                    val sessionCookieCrypto: SessionCookieCrypto,
-                                   val wsHttp: WSHttp,
+                                   val http: HttpClient,
                                    val messagesApi: MessagesApi
                                   ) extends FrontendController with PartialRetriever with I18nSupport {
-  override val httpGet = wsHttp
-  val httpPost = wsHttp
+  override val httpGet = http
 
   private val TICKET_ID = "ticketId"
 
   implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
-    override val httpGet = wsHttp
+    override val httpGet = http
   }
 
 
   implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
-    override def httpGet = wsHttp
+    override def httpGet = http
 
     override def crypto: (String) => String = cookie => sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
   }
@@ -85,7 +84,7 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
   def submit: Action[AnyContent] = UnauthorisedAction.async {
     implicit request =>
       request.body.asFormUrlEncoded.map { formData =>
-        httpPost.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(
+        http.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(
           rds = readPartialsForm, hc = partialsReadyHeaderCarrier, ec = implicitly[ExecutionContext]).map {
           resp =>
             resp.status match {

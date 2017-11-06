@@ -20,18 +20,18 @@ import javax.inject.Inject
 
 import core.config.AppConfig
 import testonly.models.FeatureSwitchSetting
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 
-class BackendFeatureSwitchConnector @Inject()(httpGet: HttpGet,
-                                              httpPost: HttpPost,
+class BackendFeatureSwitchConnector @Inject()(http: HttpClient,
                                               appConfig: AppConfig) {
   def getBackendFeatureSwitches(implicit hc: HeaderCarrier): Future[Map[String, Boolean]] = for {
-    featureSwitches <- httpGet.GET[Set[FeatureSwitchSetting]](appConfig.backendFeatureSwitchUrl)
+    featureSwitches <- http.GET[Set[FeatureSwitchSetting]](appConfig.backendFeatureSwitchUrl)
   } yield (featureSwitches map { case FeatureSwitchSetting(name, isEnabled) => name -> isEnabled }).toMap
 
   def submitBackendFeatureSwitches(featureSwitches: Set[FeatureSwitchSetting])(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpPost.POST(appConfig.backendFeatureSwitchUrl, featureSwitches)
+    http.POST(appConfig.backendFeatureSwitchUrl, featureSwitches)
 }

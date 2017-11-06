@@ -19,13 +19,11 @@ package core.config
 import javax.inject._
 
 import play.api.{Application, Configuration}
-import uk.gov.hmrc.auth.core.PlayAuthConnector
 import uk.gov.hmrc.crypto.PlainText
-import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
-import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 
 //@Singleton
@@ -43,11 +41,14 @@ import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 //}
 
 @Singleton
-class SessionCache @Inject()(val app: Application,
-                             val http: WSHttp) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
-  protected val configuration: Configuration = app.configuration
-  override val mode = app.mode
+class SessionCache @Inject()(appProvider: Provider[Application],
+                             val http: HttpClient) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
+  lazy val app: Application = appProvider.get
+  protected lazy val configuration: Configuration = app.configuration
+  override lazy val mode = app.mode
+
   override protected def runModeConfiguration: Configuration = configuration
+
   override protected def appNameConfiguration: Configuration = configuration
 
   lazy val defaultSource: String = getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")

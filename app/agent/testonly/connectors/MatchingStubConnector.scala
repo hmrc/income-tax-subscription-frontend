@@ -23,14 +23,14 @@ import java.time.format.{DateTimeFormatter, ResolverStyle}
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import core.models.DateModel
 import agent.testonly.TestOnlyAppConfig
 import agent.testonly.models.ClientToStubModel
 import core.connectors.RawResponseReads
+import core.models.DateModel
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.http.ws.WSHttp
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.Future
 
@@ -103,7 +103,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
 class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                      http: WSHttp,
+                                      http: HttpClient,
                                       logging: Logging) extends RawResponseReads {
 
   lazy val dynamicStubUrl = appConfig.matchingStubsURL + "/dynamic-cid"
