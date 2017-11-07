@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package core.config
+package core.config.filters
 
 import play.api.mvc._
 import play.filters.csrf._

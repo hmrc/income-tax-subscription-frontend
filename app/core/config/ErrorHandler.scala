@@ -19,9 +19,12 @@ package core.config
 import javax.inject.{Inject, Provider}
 
 import core.views.html.templates.error_template
-import play.api.Configuration
 import play.api.i18n.MessagesApi
-import play.api.mvc.Request
+import play.api.mvc.Results._
+import play.api.mvc.{Request, RequestHeader, Result}
+import play.api.{Configuration, Logger}
+import uk.gov.hmrc.auth.core.{AuthorisationException, BearerTokenExpired, InsufficientEnrolments}
+import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 
 class ErrorHandler @Inject()(val appConfigProvider: Provider[AppConfig],
@@ -30,5 +33,23 @@ class ErrorHandler @Inject()(val appConfigProvider: Provider[AppConfig],
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]):
   _root_.play.twirl.api.HtmlFormat.Appendable =
     error_template(pageTitle, heading, message)(implicitly, implicitly, appConfigProvider.get)
+
+  override def resolveError(rh: RequestHeader, ex: Throwable): Result = {
+    ex match {
+      case _: InsufficientEnrolments =>
+        Logger.debug("[AuthenticationPredicate][async] No HMRC-MTD-IT Enrolment and/or No NINO.")
+        super.resolveError(rh, ex)
+      case _: BearerTokenExpired =>
+        Logger.debug("[AuthenticationPredicate][async] Bearer Token Timed Out.")
+        Redirect(core.controllers.routes.SessionTimeoutController.timeout())
+      case _: AuthorisationException =>
+        Logger.debug("[AuthenticationPredicate][async] Unauthorised request. Redirect to Sign In.")
+        Redirect(core.controllers.routes.SignInController.signIn())
+      case _: NotFoundException =>
+        NotFound(notFoundTemplate(Request(rh, "")))
+      case _ =>
+        super.resolveError(rh, ex)
+    }
+  }
 
 }
