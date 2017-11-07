@@ -20,16 +20,14 @@ import javax.inject.{Inject, Singleton}
 
 import akka.stream.Materializer
 import core.config.AppConfig
-import play.api.Application
 import play.api.mvc.Call
 import uk.gov.hmrc.whitelist.AkamaiWhitelistFilter
 
 @Singleton
-class WhitelistFilter @Inject()(app: Application,
+class WhitelistFilter @Inject()(appConfig: AppConfig,
                                 val mat: Materializer
                                ) extends AkamaiWhitelistFilter {
 
-  private lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   override lazy val whitelist: Seq[String] = appConfig.whitelistIps
 
