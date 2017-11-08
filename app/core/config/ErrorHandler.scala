@@ -16,7 +16,7 @@
 
 package core.config
 
-import javax.inject.{Inject, Provider}
+import javax.inject.Inject
 
 import core.views.html.templates.error_template
 import play.api.i18n.MessagesApi
@@ -27,12 +27,12 @@ import uk.gov.hmrc.auth.core.{AuthorisationException, BearerTokenExpired, Insuff
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 
-class ErrorHandler @Inject()(val appConfigProvider: Provider[AppConfig],
+class ErrorHandler @Inject()(val appConfig: AppConfig,
                              val messagesApi: MessagesApi, val configuration: Configuration) extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]):
   _root_.play.twirl.api.HtmlFormat.Appendable =
-    error_template(pageTitle, heading, message)(implicitly, implicitly, appConfigProvider.get)
+    error_template(pageTitle, heading, message)(implicitly, implicitly, appConfig)
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result = {
     ex match {

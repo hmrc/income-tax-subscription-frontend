@@ -16,11 +16,11 @@
 
 package core.config
 
-import javax.inject.{Inject, Provider, Singleton}
+import javax.inject.{Inject, Singleton}
 
 import core.config.featureswitch.FeatureSwitching
 import play.api.mvc.Call
-import play.api.{Application, Configuration}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
@@ -82,12 +82,12 @@ trait AppConfig {
 }
 
 @Singleton
-class FrontendAppConfig @Inject()(appProvider: Provider[Application]) extends AppConfig with ServicesConfig with FeatureSwitching {
+class FrontendAppConfig @Inject()(configuration: Configuration,
+                                  environment: Environment
+                                 ) extends AppConfig with ServicesConfig with FeatureSwitching {
 
-  lazy val app = appProvider.get()
+  override lazy val mode = environment.mode
 
-  protected lazy val configuration: Configuration = app.configuration
-  override lazy val mode = app.mode
   override protected def runModeConfiguration: Configuration = configuration
 
   protected def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))

@@ -18,7 +18,7 @@ package core.config
 
 import javax.inject._
 
-import play.api.{Application, Configuration}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
@@ -41,11 +41,10 @@ import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 //}
 
 @Singleton
-class SessionCache @Inject()(appProvider: Provider[Application],
+class SessionCache @Inject()(environment: Environment,
+                             configuration: Configuration,
                              val http: HttpClient) extends uk.gov.hmrc.http.cache.client.SessionCache with AppName with ServicesConfig {
-  lazy val app: Application = appProvider.get
-  protected lazy val configuration: Configuration = app.configuration
-  override lazy val mode = app.mode
+  override lazy val mode = environment.mode
 
   override protected def runModeConfiguration: Configuration = configuration
 

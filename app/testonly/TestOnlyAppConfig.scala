@@ -21,10 +21,11 @@ package testonly
 import javax.inject.{Inject, Provider, Singleton}
 
 import core.config.FrontendAppConfig
-import play.api.Application
+import play.api.{Application, Configuration, Environment}
 
 @Singleton
-class TestOnlyAppConfig @Inject()(appProvider: Provider[Application]) extends FrontendAppConfig(appProvider) {
+class TestOnlyAppConfig @Inject()(configuration: Configuration,
+                                  environment: Environment) extends FrontendAppConfig(configuration, environment) {
 
   lazy val ggStubsURL: String = baseUrl("gg-stubs")
 
