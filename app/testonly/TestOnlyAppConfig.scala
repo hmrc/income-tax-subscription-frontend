@@ -18,10 +18,10 @@
 
 package testonly
 
-import javax.inject.{Inject, Provider, Singleton}
+import javax.inject.{Inject, Singleton}
 
 import core.config.FrontendAppConfig
-import play.api.{Application, Configuration, Environment}
+import play.api.{Configuration, Environment}
 
 @Singleton
 class TestOnlyAppConfig @Inject()(configuration: Configuration,
