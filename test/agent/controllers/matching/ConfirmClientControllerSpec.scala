@@ -56,15 +56,16 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     reset(mockAgentQualificationService)
   }
 
-  def mockOrchestrateAgentQualificationSuccess(arn: String, nino: String): Unit =
+  def mockOrchestrateAgentQualificationSuccess(arn: String, nino: String, utr: String): Unit =
     when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any()))
-      .thenReturn(Future.successful(Right(ApprovedAgent(nino))))
+      .thenReturn(Future.successful(Right(ApprovedAgent(nino, utr))))
 
   def mockOrchestrateAgentQualificationFailure(arn: String, expectedResult: UnqualifiedAgent): Unit =
     when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(Left(expectedResult)))
 
   val arn = TestConstants.testARN
+  val utr = TestConstants.testUtr
   val nino = TestConstants.testNino
 
   lazy val request = userMatchingRequest
@@ -164,7 +165,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
     "AgentQualificationService returned ApprovedAgent" should {
       s"redirect user to ${agent.controllers.routes.HomeController.index().url}" in {
-        mockOrchestrateAgentQualificationSuccess(arn, nino)
+        mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
         setupMockNotLockedOut(arn)
 
         val result = callSubmit()
@@ -225,7 +226,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       lazy val result = callSubmit()
 
       s"have the ${ITSASessionKeys.FailedClientMatching} removed from session" in {
-        mockOrchestrateAgentQualificationSuccess(arn, nino)
+        mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
         setupMockNotLockedOut(arn)
 
         await(result).session(request).get(ITSASessionKeys.FailedClientMatching) mustBe None

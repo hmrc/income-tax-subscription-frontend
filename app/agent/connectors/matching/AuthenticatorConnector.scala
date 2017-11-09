@@ -39,7 +39,7 @@ class AuthenticatorConnector @Inject()(appConfig: AppConfig,
 
   lazy val matchingEndpoint: String = appConfig.authenticatorUrl + "/authenticator/match"
 
-  def matchClient(clientDetailsModel: ClientDetailsModel)(implicit hc: HeaderCarrier): Future[Option[String]] = {
+  def matchClient(clientDetailsModel: ClientDetailsModel)(implicit hc: HeaderCarrier): Future[Option[ClientMatchSuccessResponseModel]] = {
 
     val request: ClientMatchRequestModel = clientDetailsModel
 
@@ -55,7 +55,7 @@ class AuthenticatorConnector @Inject()(appConfig: AppConfig,
             logging.debug("AuthenticatorConnector.matchClient response received: " + response.body)
             ClientMatchSuccessResponseModel.format.reads(response.json).fold(
               invalid => logFailure(OK, response),
-              valid => Some(valid.nino)
+              valid => Some(valid)
             )
           case UNAUTHORIZED => // this end point should always return UNAUTHORIZED when there is a failure
             response.json.validate[ClientMatchFailureResponseModel] match {

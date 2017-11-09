@@ -40,7 +40,7 @@ case object UnexpectedFailure extends UnqualifiedAgent
 
 case object NoClientRelationship extends UnqualifiedAgent
 
-case class ApprovedAgent(clientNino: String)
+case class ApprovedAgent(clientNino: String, clientUtr: String)
 
 @Singleton
 class AgentQualificationService @Inject()(clientMatchingService: ClientMatchingService,
@@ -65,9 +65,9 @@ class AgentQualificationService @Inject()(clientMatchingService: ClientMatchingS
       case Right(cd) =>
         clientMatchingService.matchClient(cd)
           .collect {
-            case Some(nino) =>
+            case Some(matchedClient) =>
               auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = true), agent.controllers.matching.routes.ConfirmClientController.submit().url)
-              Right(ApprovedAgent(nino))
+              Right(ApprovedAgent(matchedClient.nino, matchedClient.saUtr))
             case None =>
               auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = false), agent.controllers.matching.routes.ConfirmClientController.submit().url)
               Left(NoClientMatched)
@@ -111,7 +111,7 @@ class AgentQualificationService @Inject()(clientMatchingService: ClientMatchingS
       .flatMapRight(checkExistingSubscription)
       .flatMapRight(checkClientRelationship(arn, _))
       .flatMapRight {
-        case returnValue@ApprovedAgent(nino) =>
+        case returnValue@ApprovedAgent(nino, utr) =>
           keystoreService.saveMatchedNino(nino).flatMap(_ => Future.successful(Right(returnValue)))
       }
 

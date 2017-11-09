@@ -16,26 +16,29 @@
 
 package agent.services.mocks
 
-import agent.connectors.mocks.{MockAuthenticatorConnector, TestAuthenticatorConnector}
+import agent.connectors.mocks.MockAuthenticatorConnector
+import agent.connectors.models.matching.ClientMatchSuccessResponseModel
 import agent.models.agent.ClientDetailsModel
+import agent.services.ClientMatchingService
+import agent.utils.TestConstants._
+import core.utils.MockTrait
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import agent.services.ClientMatchingService
 import uk.gov.hmrc.http.HeaderCarrier
-import core.utils.MockTrait
-import agent.utils.TestConstants._
 
 import scala.concurrent.Future
 
 trait TestClientMatchingService extends MockAuthenticatorConnector {
+
   object TestClientMatchingService extends ClientMatchingService(appConfig, mockAuthenticatorConnector)
+
 }
 
 trait MockClientMatchingService extends MockTrait {
   val mockClientMatchingService = mock[ClientMatchingService]
 
   private def mockClientMatch(clientDetails: ClientDetailsModel)
-                             (response: Future[Option[String]]): Unit =
+                             (response: Future[Option[ClientMatchSuccessResponseModel]]): Unit =
     when(
       mockClientMatchingService.matchClient(
         ArgumentMatchers.eq(clientDetails)
@@ -44,7 +47,7 @@ trait MockClientMatchingService extends MockTrait {
     ).thenReturn(response)
 
   def mockClientMatchSuccess(clientDetails: ClientDetailsModel): Unit = {
-    mockClientMatch(clientDetails)(Future.successful(Some(testNino)))
+    mockClientMatch(clientDetails)(Future.successful(Some(ClientMatchSuccessResponseModel(testNino, testUtr))))
   }
 
   def mockClientMatchNotFound(clientDetails: ClientDetailsModel): Unit = {

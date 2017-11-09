@@ -18,7 +18,7 @@ package agent.connectors.models.matching
 
 import play.api.libs.json.{Json, OFormat}
 
-case class ClientMatchSuccessResponseModel(firstName: String, lastName: String, dateOfBirth: String, nino: String, saUtr: String)
+case class ClientMatchSuccessResponseModel(nino: String, saUtr: String)
 
 object ClientMatchSuccessResponseModel {
   implicit val format: OFormat[ClientMatchSuccessResponseModel] = Json.format[ClientMatchSuccessResponseModel]

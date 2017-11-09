@@ -118,7 +118,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        AuthenticatorStub.stubMatchFound(testNino)
+        AuthenticatorStub.stubMatchFound(testNino, testUtr)
         SubscriptionStub.stubGetSubscriptionFound()
 
         When("I call POST /confirm-client")
@@ -137,7 +137,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        AuthenticatorStub.stubMatchFound(testNino)
+        AuthenticatorStub.stubMatchFound(testNino, testUtr)
         SubscriptionStub.stubGetNoSubscription()
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = false)
 
@@ -160,7 +160,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        AuthenticatorStub.stubMatchFound(testNino)
+        AuthenticatorStub.stubMatchFound(testNino, testUtr)
         SubscriptionStub.stubGetNoSubscription()
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
         KeystoreStub.stubKeystoreSave(CacheConstants.MatchedNino, testNino)

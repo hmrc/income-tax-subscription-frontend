@@ -18,12 +18,13 @@ package agent.services
 
 import javax.inject.{Inject, Singleton}
 
-import core.config.AppConfig
 import agent.connectors.matching.AuthenticatorConnector
+import agent.connectors.models.matching.ClientMatchSuccessResponseModel
 import agent.models.agent.ClientDetailsModel
+import core.config.AppConfig
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class ClientMatchingService @Inject()(val appConfig: AppConfig,
@@ -36,11 +37,11 @@ class ClientMatchingService @Inject()(val appConfig: AppConfig,
   */
   def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =
     appConfig.hasEnabledTestOnlyRoutes match {
-      case true => hc.copy(trueClientIp =  Some("ITSA-AGENT"))
+      case true => hc.copy(trueClientIp = Some("ITSA-AGENT"))
       case false => hc
     }
 
-  @inline def matchClient(clientDetailsModel: ClientDetailsModel)(implicit hc: HeaderCarrier): Future[Option[String]] =
+  @inline def matchClient(clientDetailsModel: ClientDetailsModel)(implicit hc: HeaderCarrier): Future[Option[ClientMatchSuccessResponseModel]] =
     authenticatorConnector.matchClient(clientDetailsModel)(amendHCForTest)
 
 }
