@@ -26,20 +26,6 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.config.{AppName, ServicesConfig}
 import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 
-//@Singleton
-//class FrontendAuditConnector @Inject()(val app: Application) extends Auditing with AppName {
-//
-//  override lazy val auditingConfig = LoadAuditingConfig(s"auditing")
-//}
-
-//@Singleton
-//class WSHttp @Inject()(val app: Application)
-//  extends uk.gov.hmrc.play.http.ws.WSHttp
-//    with HttpGet with HttpPost with HttpPut with HttpDelete with HttpPatch
-//    with AppName with RunMode {
-//  override val hooks = NoneRequired
-//}
-
 @Singleton
 class SessionCache @Inject()(environment: Environment,
                              configuration: Configuration,
@@ -66,9 +52,3 @@ class ITSAHeaderCarrierForPartialsConverter @Inject()(sessionCookieCrypto: Sessi
 
   override val crypto = encryptCookieString _
 }
-
-//@Singleton
-//class AuthConnector @Inject()(appConfig: AppConfig, val http: HttpPost) extends PlayAuthConnector {
-//  override lazy val serviceUrl: String = appConfig.authUrl
-//}
-//
