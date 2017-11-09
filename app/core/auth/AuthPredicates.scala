@@ -102,6 +102,6 @@ trait AuthPredicates extends Results {
 
   val registrationPredicates = defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
 
-  val enrolledPredicates = defaultPredicates |+| enrolledPredicate
+  val enrolledPredicates = timeoutPredicate |+| enrolledPredicate
 
 }
