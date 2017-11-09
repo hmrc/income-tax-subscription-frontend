@@ -19,7 +19,8 @@ package usermatching.connectors
 import javax.inject.{Inject, Singleton}
 
 import core.config.AppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import usermatching.httpparsers.LockoutStatusHttpParser._
 import usermatching.models.LockOutRequest
@@ -28,17 +29,15 @@ import scala.concurrent.Future
 
 @Singleton
 class UserLockoutConnector @Inject()(val appConfig: AppConfig,
-                                     val httpGet: HttpGet,
-                                     val httpPost: HttpPost
-                                    ) {
+                                     val http: HttpClient) {
 
   def userLockoutUrl(token: String): String = appConfig.userMatchingUrl + UserLockoutConnector.tokenLockoutUri(token)
 
   def lockoutUser(arn: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] =
-    httpPost.POST[LockOutRequest, LockoutStatusResponse](userLockoutUrl(arn), LockOutRequest(appConfig.matchingLockOutSeconds))
+    http.POST[LockOutRequest, LockoutStatusResponse](userLockoutUrl(arn), LockOutRequest(appConfig.matchingLockOutSeconds))
 
   def getLockoutStatus(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] =
-    httpGet.GET[LockoutStatusResponse](userLockoutUrl(token))
+    http.GET[LockoutStatusResponse](userLockoutUrl(token))
 
 }
 

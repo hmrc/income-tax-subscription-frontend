@@ -17,7 +17,7 @@
 package core.auth
 
 import play.api.mvc.Action
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
 import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
@@ -26,7 +26,7 @@ trait RegistrationController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
 
-    override def userApply: (Enrolments, Option[AffinityGroup]) => IncomeTaxSAUser = IncomeTaxSAUser.apply
+    override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
 
     private val registrationUnavailableMessage = "This page for registration is not yet available to the public: "
 

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package core.config
+package core.config.filters
+
+import javax.inject.Inject
 
 import play.api.mvc._
 import play.filters.csrf._
@@ -28,7 +30,7 @@ This allow a routes be labeled in the route file to exclude a csrf check,
  /my-route   controllers.routes.NoCSRFCheckController.post()
 
  */
-class ExcludingCSRFFilter(filter: CSRFFilter) extends EssentialFilter {
+class ExcludingCSRFFilter @Inject()(filter: CSRFFilter) extends EssentialFilter {
 
   override def apply(nextFilter: EssentialAction) = new EssentialAction {
 

@@ -22,10 +22,10 @@ import core.utils.UnitTestTrait
 
 trait ControllerBaseTrait extends UnitTestTrait {
 
-  def mockBaseControllerConfig(appConfig: AppConfig): BaseControllerConfig = new BaseControllerConfig(
-    applicationConfig = appConfig) {
-    override lazy val postSignInRedirectUrl = appConfig.ggSignInContinueUrl
-  }
+  def mockBaseControllerConfig(appConfig: AppConfig): BaseControllerConfig =
+    new BaseControllerConfig(applicationConfig = appConfig) {
+      override lazy val postSignInRedirectUrl = appConfig.ggSignInContinueUrl
+    }
 
   lazy val MockBaseControllerConfig = mockBaseControllerConfig(MockConfig)
 

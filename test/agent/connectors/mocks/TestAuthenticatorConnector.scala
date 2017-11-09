@@ -35,7 +35,7 @@ import scala.concurrent.Future
 trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
 
   object TestAuthenticatorConnector extends AuthenticatorConnector(
-    appConfig, mockHttpPost, app.injector.instanceOf[Logging])
+    appConfig, mockHttp, app.injector.instanceOf[Logging])
 
   def setupMockMatchClient(clientDetailsModel: Option[ClientDetailsModel])(status: Int, response: JsValue): Unit =
     setupMockHttpPost(TestAuthenticatorConnector.matchingEndpoint,

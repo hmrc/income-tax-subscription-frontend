@@ -36,17 +36,16 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
           Set(
             Enrolment(Constants.ninoEnrolmentName,
               Seq(EnrolmentIdentifier(Constants.ninoEnrolmentIdentifierKey, testNino)),
-              "Activated",
-              confidenceLevel
+              "Activated"
             ),
             Enrolment(Constants.utrEnrolmentName,
               Seq(EnrolmentIdentifier(Constants.utrEnrolmentIdentifierKey, testUtr)),
-              "Activated",
-              confidenceLevel
+              "Activated"
             )
           )
         ),
-        None
+        None,
+        confidenceLevel
       )
 
       s"have the expected NINO $testNino" in {
@@ -72,7 +71,8 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
       lazy val user = IncomeTaxSAUser(
         Enrolments(Set.empty),
-        None
+        None,
+        confidenceLevel
       )
 
       s"have the expected NINO $testNino" in {

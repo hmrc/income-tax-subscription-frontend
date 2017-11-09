@@ -15,7 +15,9 @@ private object AppDependencies {
   import play.sbt.PlayImport._
   import play.core.PlayVersion
 
-  private val frontendBootstrapVersion = "8.9.0"
+  private val bootstrapPlayVersion = "0.14.0"
+  private val govukTemplateVersion = "5.14.0"
+  private val playUiVersion = "7.8.0"
   private val playPartialsVersion = "6.0.0"
   private val hmrcTestVersion = "2.3.0"
   private val scalaTestVersion = "3.0.1"
@@ -24,13 +26,15 @@ private object AppDependencies {
   private val httpCachingCleintVersion = "7.0.0"
   private val playWhitelistFilterVersion = "2.0.0"
   private val wiremockVersion = "2.5.1"
-  private val authClientVersion = "0.2.0"
+  private val authClientVersion = "2.3.0"
   private val domainVersion = "4.1.0"
   private val catsVersion = "0.9.0"
 
   val compile = Seq(
     ws,
-    "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
+    "uk.gov.hmrc" %% "bootstrap-play-25" % bootstrapPlayVersion,
+    "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
+    "uk.gov.hmrc" %% "play-ui" % playUiVersion,
     "uk.gov.hmrc" %% "play-partials" % playPartialsVersion,
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingCleintVersion,
     "uk.gov.hmrc" %% "play-whitelist-filter" % playWhitelistFilterVersion,

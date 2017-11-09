@@ -18,15 +18,16 @@ package incometax.subscription.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import core.connectors.RawResponseReads
 import core.Constants._
 import core.audit.Logging
 import core.config.AppConfig
+import core.connectors.RawResponseReads
 import incometax.subscription.connectors.GGAdminConnector._
 import incometax.subscription.models.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess}
 import play.api.http.Status.OK
 import play.api.libs.json.Json.toJson
-import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
@@ -34,18 +35,18 @@ import scala.concurrent.Future
 
 @Singleton
 class GGAdminConnector @Inject()(applicationConfig: AppConfig,
-                                 httpPost: HttpPost,
+                                 http: HttpClient,
                                  logging: Logging
                                 ) extends RawResponseReads {
   private lazy val ggAdminUrl: String = applicationConfig.ggAdminURL
 
-  val addKnownFactsUrl: String = ggAdminUrl + addKnownFactsUri
+  lazy val addKnownFactsUrl: String = ggAdminUrl + addKnownFactsUri
 
   def addKnownFacts(knownFacts: KnownFactsRequest)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
     lazy val requestDetails: Map[String, String] = Map("knownFacts" -> toJson(knownFacts).toString)
     logging.debug(s"Request:\n$requestDetails")
 
-    httpPost.POST[KnownFactsRequest, HttpResponse](addKnownFactsUrl, knownFacts) map {
+    http.POST[KnownFactsRequest, HttpResponse](addKnownFactsUrl, knownFacts) map {
       case HttpResponse(OK, _, _, body) =>
         logging.debug("addKnownFacts responded with OK")
         Right(KnownFactsSuccess)

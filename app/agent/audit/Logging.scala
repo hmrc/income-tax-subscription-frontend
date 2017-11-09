@@ -18,7 +18,7 @@ package agent.audit
 
 import javax.inject.{Inject, Singleton}
 
-import play.api.{Application, Configuration, Logger}
+import play.api.{Configuration, Logger}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -35,8 +35,7 @@ object LoggingConfig {
 }
 
 @Singleton
-class Logging @Inject()(application: Application,
-                        configuration: Configuration,
+class Logging @Inject()(configuration: Configuration,
                         auditConnector: AuditConnector) {
 
 

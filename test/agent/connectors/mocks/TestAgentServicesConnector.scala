@@ -18,14 +18,15 @@ package agent.connectors.mocks
 
 import agent.audit.Logging
 import agent.connectors.AgentServicesConnector
+import core.utils.MockTrait
 import org.mockito.Mockito._
 import play.api.libs.json.JsValue
-import core.utils.MockTrait
 
 import scala.concurrent.Future
 
 trait TestAgentServicesConnector extends MockHttp {
-  object TestAgentServicesConnector extends AgentServicesConnector(appConfig, mockHttpGet, mockHttpPut, app.injector.instanceOf[Logging])
+
+  object TestAgentServicesConnector extends AgentServicesConnector(appConfig, mockHttp, app.injector.instanceOf[Logging])
 
   def mockIsPreExistingRelationship(arn: String, nino: String)(status: Int, response: Option[JsValue] = None): Unit =
     setupMockHttpGet(Some(TestAgentServicesConnector.agentClientURL(arn, nino)))(status, response)

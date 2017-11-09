@@ -17,23 +17,24 @@
 package agent.auth
 
 import agent.common.Constants
-import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
-import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier, Enrolments}
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import agent.utils.TestConstants
+import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
   "IncomeTaxSAUser" should {
+    val confidenceLevel = ConfidenceLevel.L50
+
     lazy val user = IncomeTaxAgentUser(
       Enrolments(Set(
         Enrolment(Constants.agentServiceEnrolmentName,
           Seq(EnrolmentIdentifier(Constants.agentServiceIdentifierKey, TestConstants.testARN)),
-          "Activated",
-          L50
+          "Activated"
         )
       )),
-      None
+      None,
+      confidenceLevel
     )
 
     s"have the expected ARN '${TestConstants.testARN}'" in {

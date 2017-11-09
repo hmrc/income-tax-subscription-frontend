@@ -19,17 +19,19 @@ package agent.controllers
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
-import core.config.AppConfig
 import agent.views.html.feedback.feedback_thankyou
-import core.config.AuthConnector
+import core.config.AppConfig
 import play.api.Logger
 import play.api.http.{Status => HttpStatus}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, RequestHeader}
 import play.twirl.api.Html
+import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.crypto.PlainText
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
-import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
+import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
+import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.partials._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,21 +39,22 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
                                    protected val authConnector: AuthConnector,
-                                   val httpGet: HttpGet,
-                                   val httpPost: HttpPost,
+                                   val sessionCookieCrypto: SessionCookieCrypto,
+                                   val http: HttpClient,
                                    val messagesApi: MessagesApi
                                   ) extends FrontendController with PartialRetriever with I18nSupport {
   private val TICKET_ID = "ticketId"
 
+  override val httpGet = http
+
   implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
-    override val httpGet: HttpGet = httpGet
+    override val httpGet: HttpGet = http
   }
 
-
   implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
-    override def httpGet: HttpGet = httpGet
+    override def httpGet: HttpGet = http
 
-    override def crypto: (String) => String = cookie => SessionCookieCryptoFilter.encrypt(cookie)
+    override def crypto: (String) => String = cookie => sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
   }
 
   def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
@@ -82,7 +85,7 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
   def submit: Action[AnyContent] = UnauthorisedAction.async {
     implicit request =>
       request.body.asFormUrlEncoded.map { formData =>
-        httpPost.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(rds = readPartialsForm, hc = partialsReadyHeaderCarrier, implicitly[ExecutionContext]).map {
+        http.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(rds = readPartialsForm, hc = partialsReadyHeaderCarrier, implicitly[ExecutionContext]).map {
           resp =>
             resp.status match {
               case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))
@@ -115,7 +118,7 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
     override val crypto = encryptCookieString _
 
     def encryptCookieString(cookie: String): String = {
-      SessionCookieCryptoFilter.encrypt(cookie)
+      sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
     }
   }
 

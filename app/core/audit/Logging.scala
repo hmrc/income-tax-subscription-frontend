@@ -18,14 +18,11 @@ package core.audit
 
 import javax.inject.{Inject, Singleton}
 
-import core.connectors.models.ConnectorError
-import play.api.libs.json.JsValue
-import play.api.{Application, Configuration, Logger}
+import play.api.{Configuration, Logger}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.{Audit, DataEvent}
-import core.utils.HttpResult.HttpConnectorError
-import uk.gov.hmrc.http.HeaderCarrier
 
 case class LoggingConfig(heading: String)
 
@@ -39,8 +36,7 @@ object LoggingConfig {
 
 
 @Singleton
-class Logging @Inject()(application: Application,
-                        configuration: Configuration,
+class Logging @Inject()(configuration: Configuration,
                         auditConnector: AuditConnector) {
 
 

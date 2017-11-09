@@ -22,14 +22,14 @@ import javax.inject.{Inject, Singleton}
 
 import core.connectors.RawResponseReads
 import testonly.TestOnlyAppConfig
-import uk.gov.hmrc.play.http.ws.WSHttp
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 @Singleton
 class AuthenticatorConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                       http: WSHttp)(implicit ec: ExecutionContext) extends RawResponseReads {
+                                       http: HttpClient)(implicit ec: ExecutionContext) extends RawResponseReads {
 
   lazy val refreshURI = s"${appConfig.authenticatorUrl}/authenticator/refresh-profile"
 

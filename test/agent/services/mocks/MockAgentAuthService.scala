@@ -17,16 +17,15 @@
 package agent.services.mocks
 
 import agent.common.Constants
+import agent.utils.TestConstants
+import core.services.AuthService
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
-import core.services.AuthService
-import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.HeaderCarrier
-import agent.utils.TestConstants
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -59,9 +58,9 @@ trait MockAgentAuthService extends BeforeAndAfterEach with MockitoSugar {
         })
   }
 
-  def mockAgent(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set(arnEnrolment)), Some(AffinityGroup.Agent)))
+  def mockAgent(): Unit = mockRetrievalSuccess(new ~(new ~(Enrolments(Set(arnEnrolment)), Some(AffinityGroup.Agent)), testConfidenceLevel))
 
-  def mockNotAgent(): Unit = mockRetrievalSuccess(new ~(Enrolments(Set()), Some(AffinityGroup.Agent)))
+  def mockNotAgent(): Unit = mockRetrievalSuccess(new ~(new ~(Enrolments(Set()), Some(AffinityGroup.Agent)), testConfidenceLevel))
 
   def mockAuthUnauthorised(exception: AuthorisationException = new InvalidBearerToken): Unit =
     when(mockAuthService.authorised())
@@ -77,8 +76,9 @@ trait MockAgentAuthService extends BeforeAndAfterEach with MockitoSugar {
   val arnEnrolment = Enrolment(
     Constants.agentServiceEnrolmentName,
     Seq(EnrolmentIdentifier(Constants.agentServiceIdentifierKey, TestConstants.testARN)),
-    "Activated",
-    L50
+    "Activated"
   )
+
+  val testConfidenceLevel = ConfidenceLevel.L200
 
 }

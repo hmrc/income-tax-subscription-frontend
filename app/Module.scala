@@ -16,30 +16,13 @@
 
 import com.google.inject.AbstractModule
 import core.config.{AppConfig, FrontendAppConfig}
-import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.http.cache.client.SessionCache
-import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.http.ws._
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
     bind(classOf[SessionCache]).to(classOf[core.config.SessionCache]).asEagerSingleton()
-    bind(classOf[WSGet]).to(classOf[core.config.WSHttp]).asEagerSingleton()
-    bind(classOf[HttpGet]).to(classOf[core.config.WSHttp]).asEagerSingleton()
-    bind(classOf[WSPost]).to(classOf[core.config.WSHttp]).asEagerSingleton()
-    bind(classOf[HttpPost]).to(classOf[core.config.WSHttp]).asEagerSingleton()
-    bind(classOf[WSDelete]).to(classOf[core.config.WSHttp]).asEagerSingleton()
-    bind(classOf[HttpDelete]).to(classOf[core.config.WSHttp]).asEagerSingleton()
-    bind(classOf[WSPut]).to(classOf[core.config.WSHttp]).asEagerSingleton()
-    bind(classOf[HttpPut]).to(classOf[core.config.WSHttp]).asEagerSingleton()
-    bind(classOf[HttpPatch]).to(classOf[core.config.WSHttp]).asEagerSingleton()
-    bind(classOf[WSHttp]).to(classOf[core.config.WSHttp]).asEagerSingleton()
     bind(classOf[AppConfig]).to(classOf[FrontendAppConfig]).asEagerSingleton()
-
-    bind(classOf[AuthConnector]).to(classOf[core.config.AuthConnector])
-    bind(classOf[AuditConnector]).to(classOf[core.config.FrontendAuditConnector])
   }
 
 }

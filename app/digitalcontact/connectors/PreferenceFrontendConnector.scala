@@ -19,34 +19,34 @@ package digitalcontact.connectors
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
-import core.audit.Logging
 import core.Constants._
-import core.config.AppConfig
-import core.config.ITSAHeaderCarrierForPartialsConverter._
-import core.connectors.RawResponseReads
+import core.audit.Logging
+import core.config.{AppConfig, ITSAHeaderCarrierForPartialsConverter}
+import core.utils.HttpResult._
+import digitalcontact.httpparsers.PaperlessPreferenceHttpParser._
 import digitalcontact.models.{PaperlessPreferenceError, PaperlessState}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
-import uk.gov.hmrc.http.{HttpGet, HttpPut}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import core.utils.HttpResult._
-import digitalcontact.httpparsers.PaperlessPreferenceHttpParser._
 
 import scala.concurrent.Future
 
 
 @Singleton
 class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
-                                            httpGet: HttpGet,
-                                            httpPut: HttpPut,
+                                            hc: ITSAHeaderCarrierForPartialsConverter,
+                                            http: HttpClient,
                                             val messagesApi: MessagesApi,
                                             logging: Logging
                                            ) extends I18nSupport {
 
+  import hc._
+
   lazy val returnUrl: String = PreferenceFrontendConnector.returnUrl(appConfig.baseUrl)
 
-  def checkPaperlessUrl(token: String): String = if(appConfig.newPreferencesApiEnabled) {
+  def checkPaperlessUrl(token: String): String = if (appConfig.newPreferencesApiEnabled) {
     appConfig.preferencesFrontend + PreferenceFrontendConnector.newCheckPaperlessUri(returnUrl, token)
   } else {
     appConfig.preferencesFrontend + PreferenceFrontendConnector.checkPaperlessUri(returnUrl)
@@ -59,7 +59,7 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
     // The header carrier must include the current user's session in order to be authenticated by the preferences-frontend service
     // this header is converted implicitly by functions in core.config.ITSAHeaderCarrierForPartialsConverter which implements
     // uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
-    httpPut.PUT[String, HttpResult[PaperlessState]](checkPaperlessUrl(token), "") map {
+    http.PUT[String, HttpResult[PaperlessState]](checkPaperlessUrl(token), "") map {
       case Right(paperlessState) => Right(paperlessState)
       case Left(error) =>
         logging.warn(s"PreferencesFrontendConnector#checkPaperless failed. Returned status:${error.httpResponse.status} body:${error.httpResponse.body}")

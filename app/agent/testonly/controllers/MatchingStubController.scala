@@ -26,7 +26,7 @@ import play.twirl.api.Html
 import agent.testonly.connectors.{MatchingStubConnector, UserData}
 import agent.testonly.forms.ClientToStubForm
 import agent.testonly.models.ClientToStubModel
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import core.utils.Implicits._
 import uk.gov.hmrc.http.InternalServerException
 

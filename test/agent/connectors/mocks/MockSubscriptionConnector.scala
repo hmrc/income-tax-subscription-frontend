@@ -16,21 +16,21 @@
 
 package agent.connectors.mocks
 
-import core.config.AppConfig
 import agent.connectors.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import agent.connectors.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import agent.connectors.models.subscription._
 import agent.connectors.subscription.SubscriptionConnector
+import agent.utils.TestConstants._
+import core.config.AppConfig
+import core.utils.JsonUtils._
+import core.utils.MockTrait
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsValue, Json}
-import core.utils.JsonUtils._
-import core.utils.MockTrait
-import agent.utils.TestConstants._
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 trait MockSubscriptionConnector extends MockTrait {
   val mockSubscriptionConnector = mock[SubscriptionConnector]
@@ -73,8 +73,7 @@ trait TestSubscriptionConnector extends MockHttp {
 
   object TestSubscriptionConnector extends SubscriptionConnector(
     app.injector.instanceOf[AppConfig],
-    mockHttpPost,
-    mockHttpGet
+    mockHttp
   )
 
   def setupMockSubscribe(request: SubscriptionRequest)(status: Int, response: JsValue): Unit =

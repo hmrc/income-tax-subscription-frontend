@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import core.config.BaseControllerConfig
 import play.api.mvc.{Action, AnyContent}
 import testonly.connectors.ResetUserLockoutConnector
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 @Singleton
 class ResetUserLockoutController @Inject()(val baseConfig: BaseControllerConfig,

@@ -22,13 +22,13 @@ import javax.inject.{Inject, Singleton}
 import core.connectors.RawResponseReads
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.http.ws.WSHttp
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class DeEnrolmentConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                     http: WSHttp)(implicit ec: ExecutionContext) extends RawResponseReads {
+                                     http: HttpClient)(implicit ec: ExecutionContext) extends RawResponseReads {
 
   lazy val resetURI = s"${appConfig.ggStubsURL}/test-only/with-refreshed-enrolments/false"
 

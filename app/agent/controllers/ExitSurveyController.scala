@@ -19,23 +19,21 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import core.config.AppConfig
 import agent.forms.ExitSurveyForm
 import agent.models.ExitSurveyModel
-import play.api.Application
+import core.config.AppConfig
+import core.utils.Implicits._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import core.utils.Implicits._
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
-class ExitSurveyController @Inject()(val app: Application,
-                                     val logging: Logging,
+class ExitSurveyController @Inject()(val logging: Logging,
                                      implicit val applicationConfig: AppConfig,
                                      val messagesApi: MessagesApi
                                     ) extends FrontendController with I18nSupport {

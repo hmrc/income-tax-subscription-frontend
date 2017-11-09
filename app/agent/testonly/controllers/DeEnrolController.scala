@@ -22,7 +22,7 @@ import javax.inject.{Inject, Singleton}
 
 import agent.testonly.connectors.{AuthenticatorConnector, DeEnrolmentConnector}
 import play.api.mvc.Action
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 @Singleton
 class DeEnrolController @Inject()(deEnrolmentConnector: DeEnrolmentConnector,

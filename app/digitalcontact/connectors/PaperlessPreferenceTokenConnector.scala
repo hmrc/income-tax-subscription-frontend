@@ -23,15 +23,16 @@ import digitalcontact.models.PaperlessPreferenceTokenResult.PaperlessPreferenceT
 import digitalcontact.httpparsers.PaperlessPreferenceTokenResultHttpParser._
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpPost}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 
-class PaperlessPreferenceTokenConnector @Inject()(httpPost: HttpPost,
+class PaperlessPreferenceTokenConnector @Inject()(http: HttpClient,
                                                   appConfig: AppConfig) {
 
   def storeNino(token: String, nino: String)(implicit hc: HeaderCarrier): Future[PaperlessPreferenceTokenResult] = {
-    httpPost.POST[JsObject, PaperlessPreferenceTokenResult](
+    http.POST[JsObject, PaperlessPreferenceTokenResult](
       url = appConfig.storeNinoUrl(token),
       body = Json.obj("nino" -> nino)
     )

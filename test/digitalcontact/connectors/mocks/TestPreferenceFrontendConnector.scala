@@ -17,8 +17,11 @@
 package digitalcontact.connectors.mocks
 
 import core.audit.Logging
-import core.config.AppConfig
+import core.config.{AppConfig, ITSAHeaderCarrierForPartialsConverter}
 import core.connectors.mocks.MockHttp
+import core.utils.JsonUtils._
+import core.utils.TestConstants._
+import core.utils.{MockTrait, UnitTestTrait}
 import digitalcontact.connectors.PreferenceFrontendConnector
 import digitalcontact.models.{Activated, PaperlessPreferenceError, PaperlessState, Unset}
 import org.mockito.ArgumentMatchers
@@ -27,9 +30,6 @@ import play.api.http.Status._
 import play.api.i18n.MessagesApi
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Request}
-import core.utils.JsonUtils._
-import core.utils.TestConstants._
-import core.utils.{MockTrait, UnitTestTrait}
 
 import scala.concurrent.Future
 
@@ -56,8 +56,8 @@ trait TestPreferenceFrontendConnector extends UnitTestTrait
 
   object TestPreferenceFrontendConnector extends PreferenceFrontendConnector(
     app.injector.instanceOf[AppConfig],
-    mockHttpGet,
-    mockHttpPut,
+    app.injector.instanceOf[ITSAHeaderCarrierForPartialsConverter],
+    mockHttp,
     app.injector.instanceOf[MessagesApi],
     app.injector.instanceOf[Logging]
   )

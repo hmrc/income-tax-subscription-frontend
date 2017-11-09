@@ -19,21 +19,22 @@ package agent.connectors.matching
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import core.config.AppConfig
 import agent.connectors.models.matching.{ClientMatchFailureResponseModel, ClientMatchRequestModel, ClientMatchSuccessResponseModel}
 import agent.models.agent.ClientDetailsModel
+import core.config.AppConfig
 import core.connectors.RawResponseReads
+import core.utils.Implicits._
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpResponse, InternalServerException}
-import core.utils.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 
 @Singleton
 class AuthenticatorConnector @Inject()(appConfig: AppConfig,
-                                       val http: HttpPost,
+                                       val http: HttpClient,
                                        logging: Logging) extends RawResponseReads {
 
   lazy val matchingEndpoint: String = appConfig.authenticatorUrl + "/authenticator/match"

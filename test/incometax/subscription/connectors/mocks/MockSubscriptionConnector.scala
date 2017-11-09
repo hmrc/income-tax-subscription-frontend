@@ -73,8 +73,7 @@ trait TestSubscriptionConnector extends MockHttp {
 
   object TestSubscriptionConnector extends SubscriptionConnector(
     app.injector.instanceOf[AppConfig],
-    mockHttpPost,
-    mockHttpGet
+    mockHttp
   )
 
   def setupMockSubscribe(request: SubscriptionRequest)(status: Int, response: JsValue): Unit =

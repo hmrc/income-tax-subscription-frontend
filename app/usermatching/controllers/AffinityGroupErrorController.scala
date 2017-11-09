@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import core.config.AppConfig
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 @Singleton
 class AffinityGroupErrorController @Inject()(implicit val applicationConfig: AppConfig,

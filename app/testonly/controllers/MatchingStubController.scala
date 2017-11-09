@@ -27,18 +27,16 @@ import testonly.connectors.{MatchingStubConnector, UserData}
 import testonly.forms.UserToStubForm
 import testonly.models.UserToStubModel
 import uk.gov.hmrc.http.InternalServerException
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import core.utils.Implicits._
 
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 
 @Singleton
-class MatchingStubController @Inject()(val baseConfig: BaseControllerConfig,
+class MatchingStubController @Inject()(implicit val applicationConfig: AppConfig,
                                        val messagesApi: MessagesApi,
                                        matchingStubConnector: MatchingStubConnector
                                       ) extends FrontendController with I18nSupport {
-
-  implicit lazy val appConfig: AppConfig = baseConfig.applicationConfig
 
   def view(clientToStubForm: Form[UserToStubModel])(implicit request: Request[_]): Html =
     testonly.views.html.stub_user(

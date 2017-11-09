@@ -18,6 +18,10 @@ package usermatching.connectors.mocks
 
 import core.audit.Logging
 import core.connectors.mocks.MockHttp
+import core.utils.JsonUtils._
+import core.utils.TestConstants.testException
+import core.utils.TestModels._
+import core.utils.{MockTrait, TestConstants, UnitTestTrait}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
@@ -25,17 +29,13 @@ import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.connectors.AuthenticatorConnector
 import usermatching.models._
-import core.utils.JsonUtils._
-import core.utils.TestConstants.testException
-import core.utils.TestModels._
-import core.utils.{MockTrait, TestConstants, UnitTestTrait}
 
 import scala.concurrent.Future
 
 trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
 
   object TestAuthenticatorConnector extends AuthenticatorConnector(
-    appConfig, mockHttpPost, app.injector.instanceOf[Logging])
+    appConfig, mockHttp, app.injector.instanceOf[Logging])
 
   def setupMockMatchUser(userDetailsModel: Option[UserDetailsModel])(status: Int, response: JsValue): Unit =
     setupMockHttpPost(TestAuthenticatorConnector.matchingEndpoint,

@@ -18,27 +18,28 @@ package incometax.subscription.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import core.connectors.RawResponseReads
 import core.audit.Logging
 import core.config.AppConfig
+import core.connectors.RawResponseReads
 import incometax.subscription.connectors.GGAuthenticationConnector._
 import incometax.subscription.models.{RefreshProfileFailure, RefreshProfileSuccess}
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
 class GGAuthenticationConnector @Inject()(appConfig: AppConfig,
-                                          httpPost: HttpPost,
+                                          http: HttpClient,
                                           logging: Logging
                                          ) extends RawResponseReads {
 
   lazy val refreshProfileUrl = appConfig.ggAuthenticationURL + refreshProfileUri
 
   def refreshProfile()(implicit hc: HeaderCarrier): Future[Either[RefreshProfileFailure.type, RefreshProfileSuccess.type]] =
-    httpPost.POSTEmpty[HttpResponse](refreshProfileUrl).map {
+    http.POSTEmpty[HttpResponse](refreshProfileUrl).map {
       response =>
         response.status match {
           case NO_CONTENT =>

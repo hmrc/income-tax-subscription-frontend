@@ -18,35 +18,36 @@ package incometax.subscription.connectors
 
 import javax.inject.{Inject, Singleton}
 
-import core.utils.JsonUtils._
-import core.connectors.RawResponseReads
 import core.audit.Logging
 import core.config.AppConfig
+import core.connectors.RawResponseReads
+import core.utils.JsonUtils._
 import incometax.subscription.connectors.GGConnector._
 import incometax.subscription.models.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import play.api.http.Status.OK
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.http.{HeaderCarrier, HttpPost, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 
 @Singleton
-class GGConnector @Inject()(httpPost: HttpPost,
+class GGConnector @Inject()(http: HttpClient,
                             applicationConfig: AppConfig,
                             logging: Logging
                            ) extends RawResponseReads {
 
   lazy val governmentGatewayURL = applicationConfig.ggURL
 
-  val enrolUrl: String = governmentGatewayURL + enrolUri
+  lazy val enrolUrl: String = governmentGatewayURL + enrolUri
 
   def enrol(enrolmentRequest: EnrolRequest)(implicit hc: HeaderCarrier): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
 
     lazy val requestDetails: Map[String, String] = Map("enrolRequest" -> (enrolmentRequest: JsValue).toString)
     logging.debug(s"Request:\n$requestDetails")
 
-    httpPost.POST[EnrolRequest, HttpResponse](enrolUrl, enrolmentRequest) map { response =>
+    http.POST[EnrolRequest, HttpResponse](enrolUrl, enrolmentRequest) map { response =>
       response.status match {
         case OK =>
           logging.info(s"GG enrol responded with OK")

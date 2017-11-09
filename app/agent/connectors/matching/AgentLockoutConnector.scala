@@ -22,23 +22,23 @@ import core.config.AppConfig
 import agent.connectors.httpparsers.LockoutStatusHttpParser._
 import agent.connectors.models.matching.LockOutRequest
 import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 
 @Singleton
 class AgentLockoutConnector @Inject()(val appConfig: AppConfig,
-                                      val httpGet: HttpGet,
-                                      val httpPost: HttpPost
+                                      val http: HttpClient
                                      ) {
 
   def agentLockoutUrl(arn: String): String = appConfig.clientMatchingUrl + AgentLockoutConnector.agentLockoutUri(arn)
 
   def lockoutAgent(arn: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] =
-    httpPost.POST[LockOutRequest, LockoutStatusResponse](agentLockoutUrl(arn), LockOutRequest(appConfig.matchingLockOutSeconds))
+    http.POST[LockOutRequest, LockoutStatusResponse](agentLockoutUrl(arn), LockOutRequest(appConfig.matchingLockOutSeconds))
 
   def getLockoutStatus(arn: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] =
-    httpGet.GET[LockoutStatusResponse](agentLockoutUrl(arn))
+    http.GET[LockoutStatusResponse](agentLockoutUrl(arn))
 
 }
 

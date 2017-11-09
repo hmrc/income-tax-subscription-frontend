@@ -19,18 +19,19 @@ package agent.connectors
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import core.config.AppConfig
 import agent.connectors.models.Enrolment
+import core.config.AppConfig
 import core.connectors.RawResponseReads
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 
 @Singleton
 class EnrolmentConnector @Inject()(appConfig: AppConfig,
-                                   val http: HttpGet,
+                                   val http: HttpClient,
                                    logging: Logging) extends RawResponseReads {
 
   def getEnrolments(uri: String)(implicit hc: HeaderCarrier): Future[Option[Seq[Enrolment]]] = {
