@@ -259,12 +259,19 @@ error.contact_email.invalid                                     = The email is i
 error.accounting-method.empty                                   = You must select an option to continue
 error.accounting-method.invalid                                 = You must select an option to continue
 
-error.user_details.first_name.empty                           = Enter your first name
-error.user_details.last_name.empty                            = Enter your last name
-error.user_details.first_name.invalid                         = Enter a valid first name
-error.user_details.last_name.invalid                          = Enter a valid last name
-error.user_details.first_name.maxLength                       = Enter a first name that''s 105 characters or less
-error.user_details.last_name.maxLength                        = Enter a last name that''s 105 characters or less
+error.user_details.first_name.empty                             = Enter your first name
+error.user_details.last_name.empty                              = Enter your last name
+error.user_details.first_name.invalid                           = Enter a valid first name
+error.user_details.last_name.invalid                            = Enter a valid last name
+error.user_details.first_name.maxLength                         = Enter a first name that''s 105 characters or less
+error.user_details.last_name.maxLength                          = Enter a last name that''s 105 characters or less
+
+error.nino.invalid                                              = Enter a valid National Insurance number
+error.nino.empty                                                = Enter your National Insurance number
+
+error.dob_date.empty                                            = Enter a date of birth
+error.dob_date.invalid_chars                                    = Enter a date of birth using numbers 0 to 9
+error.dob_date.invalid                                          = Enter a real date of birth
 
 error.not-eligible.empty                                        = You must select an option to continue
 error.not-eligible.invalid                                      = You must select an option to continue

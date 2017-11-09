@@ -22,6 +22,7 @@ import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils._
 import agent.models.DateModel
 import agent.models.agent.ClientDetailsModel
+import agent.utils.TestConstants
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.Messages.Implicits._
@@ -32,7 +33,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   val testClientFirstName = "Test client first name"
   val testClientLastName = "Test client last name"
-  val testClientNino = "AB123456C"
+  val testClientNino = TestConstants.testNino
   val dob = DateModel("01", "02", "1980")
 
   def setupTestData(fname: String = testClientFirstName,
