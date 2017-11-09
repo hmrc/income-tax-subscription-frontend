@@ -60,18 +60,27 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
       "output the appropriate error messages for the start date" when {
 
         "a date is not supplied" in {
-          val empty = ErrorMessageFactory.error("error.date.empty")
-          empty fieldErrorIs MessageLookup.Error.Date.empty
-          empty summaryErrorIs MessageLookup.Error.Date.empty
+          val empty = ErrorMessageFactory.error("error.start_date.empty")
+          empty fieldErrorIs MessageLookup.Error.StartDate.empty
+          empty summaryErrorIs MessageLookup.Error.StartDate.empty
 
           accountingPeriodDateForm.bind(DataMap.EmptyMap) assert startDate hasExpectedErrors empty
           accountingPeriodDateForm.bind(DataMap.emptyDate(startDate)) assert startDate hasExpectedErrors empty
         }
 
+        "it is a date with invalid characters" in {
+          val invalidChar = ErrorMessageFactory.error("error.start_date.invalid_chars")
+          invalidChar fieldErrorIs MessageLookup.Error.StartDate.invalid_chars
+          invalidChar summaryErrorIs MessageLookup.Error.StartDate.invalid_chars
+
+          val invalidCharTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("!X", "5", "X0X;"))
+          invalidCharTest assert startDate hasExpectedErrors invalidChar
+        }
+
         "it is an invalid date" in {
-          val invalid = ErrorMessageFactory.error("error.date.invalid")
-          invalid fieldErrorIs MessageLookup.Error.Date.invalid
-          invalid summaryErrorIs MessageLookup.Error.Date.invalid
+          val invalid = ErrorMessageFactory.error("error.start_date.invalid")
+          invalid fieldErrorIs MessageLookup.Error.StartDate.invalid
+          invalid summaryErrorIs MessageLookup.Error.StartDate.invalid
 
           val invalidTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("29", "2", "2017"))
           invalidTest assert startDate hasExpectedErrors invalid
@@ -93,9 +102,9 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
       "output an appropriate error for the end date" when {
 
         "a date is not supplied" in {
-          val empty = ErrorMessageFactory.error("error.date.empty")
-          empty fieldErrorIs MessageLookup.Error.Date.empty
-          empty summaryErrorIs MessageLookup.Error.Date.empty
+          val empty = ErrorMessageFactory.error("error.end_date.empty")
+          empty fieldErrorIs MessageLookup.Error.EndDate.empty
+          empty summaryErrorIs MessageLookup.Error.EndDate.empty
 
           val emptyDateInput0 = DataMap.EmptyMap
           val emptyTest0 = accountingPeriodDateForm.bind(emptyDateInput0)
@@ -107,10 +116,19 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
 
         }
 
+        "it is a date with invalid characters" in {
+          val invalidChar = ErrorMessageFactory.error("error.end_date.invalid_chars")
+          invalidChar fieldErrorIs MessageLookup.Error.EndDate.invalid_chars
+          invalidChar summaryErrorIs MessageLookup.Error.EndDate.invalid_chars
+
+          val invalidCharTest = accountingPeriodDateForm.bind(DataMap.date(endDate)("!X", "5", "X0X;"))
+          invalidCharTest assert endDate hasExpectedErrors invalidChar
+        }
+
         "it is an invalid date" in {
-          val invalid = ErrorMessageFactory.error("error.date.invalid")
-          invalid fieldErrorIs MessageLookup.Error.Date.invalid
-          invalid summaryErrorIs MessageLookup.Error.Date.invalid
+          val invalid = ErrorMessageFactory.error("error.end_date.invalid")
+          invalid fieldErrorIs MessageLookup.Error.EndDate.invalid
+          invalid summaryErrorIs MessageLookup.Error.EndDate.invalid
 
           val invalidDateInput = DataMap.date(endDate)("29", "2", "2017")
           val invalidTest = accountingPeriodDateForm.bind(invalidDateInput)
@@ -119,8 +137,8 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
 
         "it is before the start date" in {
           val violation = ErrorMessageFactory.error("error.end_date_violation")
-          violation fieldErrorIs MessageLookup.Error.Date.end_violation
-          violation summaryErrorIs MessageLookup.Error.Date.end_violation
+          violation fieldErrorIs MessageLookup.Error.EndDate.end_violation
+          violation summaryErrorIs MessageLookup.Error.EndDate.end_violation
 
           val endDateViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("28", "6", "2017")
           val violationTest = accountingPeriodDateForm.bind(endDateViolationInput)
