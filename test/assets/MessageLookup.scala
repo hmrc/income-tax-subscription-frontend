@@ -330,6 +330,26 @@ object MessageLookup {
 
   object Error {
 
+    object UserDetails {
+      val firstNameEmpty = "Enter your first name"
+      val lastNameEmpty = "Enter your last name"
+      val firstNameInvalid = "Enter a valid first name"
+      val lastNameInvalid = "Enter a valid last name"
+      val firstNameMaxLength = "Enter a first name that's 105 characters or less"
+      val lastNameMaxLength = "Enter a last name that's 105 characters or less"
+    }
+
+    object Nino {
+      val empty = "Enter your National Insurance number"
+      val invalid = "Enter a valid National Insurance number"
+    }
+
+    object DOBDate {
+      val empty = "Enter a date of birth"
+      val invalid_chars = "Enter a date of birth using numbers 0 to 9"
+      val invalid = "Enter a real date of birth"
+    }
+
     object BackToPreferences {
       val empty = "You must select an option to continue"
     }
