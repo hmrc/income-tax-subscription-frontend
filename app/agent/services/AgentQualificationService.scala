@@ -23,10 +23,10 @@ import agent.audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
 import agent.connectors.models.subscription.SubscriptionSuccess
 import agent.models.agent.ClientDetailsModel
 import core.utils.Implicits._
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 sealed trait UnqualifiedAgent
 
@@ -40,7 +40,7 @@ case object UnexpectedFailure extends UnqualifiedAgent
 
 case object NoClientRelationship extends UnqualifiedAgent
 
-case class ApprovedAgent(clientNino: String, clientUtr: String)
+case class ApprovedAgent(clientNino: String, clientUtr: Option[String])
 
 @Singleton
 class AgentQualificationService @Inject()(clientMatchingService: ClientMatchingService,
@@ -108,8 +108,8 @@ class AgentQualificationService @Inject()(clientMatchingService: ClientMatchingS
 
   def orchestrateAgentQualification(arn: String)(implicit hc: HeaderCarrier): Future[ReturnType] =
     matchClient(arn)
-      .flatMapRight(checkExistingSubscription)
       .flatMapRight(checkClientRelationship(arn, _))
+      .flatMapRight(checkExistingSubscription)
       .flatMapRight {
         case returnValue@ApprovedAgent(nino, utr) =>
           keystoreService.saveMatchedNino(nino).flatMap(_ => Future.successful(Right(returnValue)))

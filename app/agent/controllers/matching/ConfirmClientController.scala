@@ -18,13 +18,10 @@ package agent.controllers.matching
 
 import javax.inject.{Inject, Singleton}
 
-import agent.audit.AuditingService
-import agent.audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
 import agent.auth.AgentJourneyState._
 import agent.auth.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
 import agent.connectors.models.matching.{LockedOut, NotLockedOut}
 import agent.controllers.ITSASessionKeys
-import agent.controllers.ITSASessionKeys.FailedClientMatching
 import agent.models.agent.ClientDetailsModel
 import agent.services._
 import core.config.BaseControllerConfig
@@ -32,10 +29,9 @@ import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
-import scala.concurrent.Future.successful
 import scala.util.Left
 
 
@@ -44,8 +40,8 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                                         val messagesApi: MessagesApi,
                                         val keystoreService: KeystoreService,
                                         val agentQualificationService: AgentQualificationService,
-//                                        val clientMatchingService: ClientMatchingService,
-//                                        val auditingService: AuditingService,
+                                        //                                        val clientMatchingService: ClientMatchingService,
+                                        //                                        val auditingService: AuditingService,
                                         val authService: AuthService,
                                         val lockOutService: AgentLockoutService
                                        ) extends UserMatchingController {
@@ -106,76 +102,86 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
             .removingFromSession(FailedClientMatching))
           case Left(NoClientRelationship) => successful(Redirect(agent.controllers.routes.NoClientRelationshipController.show())
             .removingFromSession(FailedClientMatching))
-          case Right(_) => successful(Redirect(agent.controllers.routes.HomeController.index()).withJourneyState(AgentUserMatched)
-            .removingFromSession(FailedClientMatching))
+          case Right(ApprovedAgent(nino, optUtr)) =>
+            successful(
+              {
+                optUtr match {
+                  case Some(_) =>
+                    Redirect(agent.controllers.routes.HomeController.index())
+                  case None =>
+                    // TODO redirect to error page
+                    NotImplemented
+                }
+              }.withJourneyState(AgentUserMatched).removingFromSession(FailedClientMatching)
+            )
         }.recoverWith {
           case e => failed(new InternalServerException("ConfirmClientController.submit\n" + e.getMessage))
         }
       }
   }
 
-//
-//  private implicit class Util[A, B](first: Future[Either[A, B]]) {
-//    def flatMapRight(next: B => Future[Either[A, B]]): Future[Either[A, B]] =
-//      first.flatMap {
-//        case Right(v) => next(v)
-//        case left => successful(left)
-//      }
-//  }
-//
-//  def matchClient(arn: String)(implicit hc: HeaderCarrier): Future[Either[UnqualifiedAgent, ApprovedAgent]] = {
-//    val clientDetails: Future[Either[UnqualifiedAgent, ClientDetailsModel]] = keystoreService.fetchClientDetails()
-//      .collect {
-//        case Some(cd) => Right(cd)
-//        case _ => Left(NoClientDetails)
-//      }
-//      .recover { case _ => Left(UnexpectedFailure) }
-//
-//    clientDetails.flatMap {
-//      case Left(x) => successful(Left(x))
-//      case Right(cd) =>
-//        clientMatchingService.matchClient(cd)
-//          .collect {
-//            case Some(nino) =>
-//              auditingService.audit(
-//                ClientMatchingAuditModel(arn, cd, isSuccess = true),
-//                agent.controllers.matching.routes.ConfirmClientController.submit().url
-//              )
-//              Right(ApprovedAgent(nino))
-//            case None =>
-//              auditingService.audit(
-//                ClientMatchingAuditModel(arn, cd, isSuccess = false),
-//                agent.controllers.matching.routes.ConfirmClientController.submit().url
-//              )
-//              Left(NoClientMatched)
-//          }.recover { case _ => Left(UnexpectedFailure) }
-//    }
-//  }
+  //
+  //  private implicit class Util[A, B](first: Future[Either[A, B]]) {
+  //    def flatMapRight(next: B => Future[Either[A, B]]): Future[Either[A, B]] =
+  //      first.flatMap {
+  //        case Right(v) => next(v)
+  //        case left => successful(left)
+  //      }
+  //  }
+  //
+  //  def matchClient(arn: String)(implicit hc: HeaderCarrier): Future[Either[UnqualifiedAgent, ApprovedAgent]] = {
+  //    val clientDetails: Future[Either[UnqualifiedAgent, ClientDetailsModel]] = keystoreService.fetchClientDetails()
+  //      .collect {
+  //        case Some(cd) => Right(cd)
+  //        case _ => Left(NoClientDetails)
+  //      }
+  //      .recover { case _ => Left(UnexpectedFailure) }
+  //
+  //    clientDetails.flatMap {
+  //      case Left(x) => successful(Left(x))
+  //      case Right(cd) =>
+  //        clientMatchingService.matchClient(cd)
+  //          .collect {
+  //            case Some(nino) =>
+  //              auditingService.audit(
+  //                ClientMatchingAuditModel(arn, cd, isSuccess = true),
+  //                agent.controllers.matching.routes.ConfirmClientController.submit().url
+  //              )
+  //              Right(ApprovedAgent(nino))
+  //            case None =>
+  //              auditingService.audit(
+  //                ClientMatchingAuditModel(arn, cd, isSuccess = false),
+  //                agent.controllers.matching.routes.ConfirmClientController.submit().url
+  //              )
+  //              Left(NoClientMatched)
+  //          }.recover { case _ => Left(UnexpectedFailure) }
+  //    }
+  //  }
 
-//  def submitSimplified(): Action[AnyContent] = Authenticated.async { implicit request =>
-//    implicit user =>
-//      handleLockOut {
-//        val arn = user.arn.get
-//        matchClient(arn) flatMap {
-//          case Left(NoClientDetails) => successful(Redirect(routes.ClientDetailsController.show()))
-//          case Left(NoClientMatched) =>
-//            val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
-//            val incCount = currentCount + 1
-//            if (incCount < applicationConfig.matchingAttempts) {
-//              successful(Redirect(agent.controllers.matching.routes.ClientDetailsErrorController.show())
-//                .addingToSession(FailedClientMatching -> incCount.toString))
-//            }
-//            else {
-//              for {
-//                _ <- lockOutService.lockoutAgent(arn)
-//                _ <- keystoreService.deleteAll()
-//              } yield
-//                Redirect(agent.controllers.matching.routes.ClientDetailsLockoutController.show()).removingFromSession(FailedClientMatching)
-//            }
-//          case Right(matched) => successful(Redirect(backUrl)) //TODO
-//        }
-//      }
-//  }
+  //  def submitSimplified(): Action[AnyContent] = Authenticated.async { implicit request =>
+  //    implicit user =>
+  //      handleLockOut {
+  //        val arn = user.arn.get
+  //        matchClient(arn) flatMap {
+  //          case Left(NoClientDetails) => successful(Redirect(routes.ClientDetailsController.show()))
+  //          case Left(NoClientMatched) =>
+  //            val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
+  //            val incCount = currentCount + 1
+  //            if (incCount < applicationConfig.matchingAttempts) {
+  //              successful(Redirect(agent.controllers.matching.routes.ClientDetailsErrorController.show())
+  //                .addingToSession(FailedClientMatching -> incCount.toString))
+  //            }
+  //            else {
+  //              for {
+  //                _ <- lockOutService.lockoutAgent(arn)
+  //                _ <- keystoreService.deleteAll()
+  //              } yield
+  //                Redirect(agent.controllers.matching.routes.ClientDetailsLockoutController.show()).removingFromSession(FailedClientMatching)
+  //            }
+  //          case Right(matched) => successful(Redirect(backUrl)) //TODO
+  //        }
+  //      }
+  //  }
 
   lazy val backUrl: String = routes.ClientDetailsController.show().url
 

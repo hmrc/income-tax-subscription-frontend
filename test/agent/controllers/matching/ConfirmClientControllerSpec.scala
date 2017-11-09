@@ -56,7 +56,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     reset(mockAgentQualificationService)
   }
 
-  def mockOrchestrateAgentQualificationSuccess(arn: String, nino: String, utr: String): Unit =
+  def mockOrchestrateAgentQualificationSuccess(arn: String, nino: String, utr: Option[String]): Unit =
     when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(Right(ApprovedAgent(nino, utr))))
 
@@ -163,17 +163,35 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "AgentQualificationService returned ApprovedAgent" should {
-      s"redirect user to ${agent.controllers.routes.HomeController.index().url}" in {
-        mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
-        setupMockNotLockedOut(arn)
+    "AgentQualificationService returned ApprovedAgent" when {
+      "the user has a utr" should {
+        s"redirect user to ${agent.controllers.routes.HomeController.index().url}" in {
+          mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
+          setupMockNotLockedOut(arn)
 
-        val result = callSubmit()
+          val result = callSubmit()
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(agent.controllers.routes.HomeController.index().url)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(agent.controllers.routes.HomeController.index().url)
 
-        await(result).session(userMatchingRequest).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+          await(result).session(userMatchingRequest).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+        }
+      }
+
+      "the user does not have a utr" should {
+        // TODO define redirection
+//        s"redirect user to ${agent.controllers.routes.HomeController.index().url}" in {
+        s"return not implemented" in {
+          mockOrchestrateAgentQualificationSuccess(arn, nino, None)
+          setupMockNotLockedOut(arn)
+
+          val result = callSubmit()
+
+          status(result) mustBe NOT_IMPLEMENTED
+//          redirectLocation(result) mustBe Some(agent.controllers.routes.HomeController.index().url)
+
+          await(result).session(userMatchingRequest).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+        }
       }
     }
   }

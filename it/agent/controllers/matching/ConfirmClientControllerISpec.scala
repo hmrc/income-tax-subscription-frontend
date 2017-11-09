@@ -119,6 +119,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         AuthenticatorStub.stubMatchFound(testNino, testUtr)
+        AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
         SubscriptionStub.stubGetSubscriptionFound()
 
         When("I call POST /confirm-client")
@@ -138,7 +139,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         AuthenticatorStub.stubMatchFound(testNino, testUtr)
-        SubscriptionStub.stubGetNoSubscription()
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = false)
 
         When("I call POST /confirm-client")
