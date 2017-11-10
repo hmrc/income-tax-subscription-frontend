@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import agent.models.agent.ClientDetailsModel
 @import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
 
-@(clientDetailsModel: ClientDetailsModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@import usermatching.models.UserDetailsModel
+@(userDetailsModel: UserDetailsModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @import _root_.agent.views.html.helpers.ConfirmClientIdConstants._
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
@@ -41,34 +41,34 @@
     </div>
 }
 
-@firstName(clientDetailsModel: ClientDetailsModel) = @{
+@firstName(userDetailsModel: UserDetailsModel) = @{
     val rowName = FirstNameId
     val rowQuestion = Messages("agent.client-details.summary.first_name")
-    val rowAnswer = clientDetailsModel.firstName
+    val rowAnswer = userDetailsModel.firstName
     val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@lastName(clientDetailsModel: ClientDetailsModel) = @{
+@lastName(userDetailsModel: UserDetailsModel) = @{
     val rowName = LastNameId
     val rowQuestion = Messages("agent.client-details.summary.last_name")
-    val rowAnswer = clientDetailsModel.lastName
+    val rowAnswer = userDetailsModel.lastName
     val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@nino(clientDetailsModel: ClientDetailsModel) = @{
+@nino(userDetailsModel: UserDetailsModel) = @{
     val rowName = NinoId
     val rowQuestion = Messages("agent.client-details.summary.nino")
-    val rowAnswer = clientDetailsModel.ninoInDisplayFormat
+    val rowAnswer = userDetailsModel.ninoInDisplayFormat
     val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@dob(clientDetailsModel: ClientDetailsModel) = @{
+@dob(userDetailsModel: UserDetailsModel) = @{
     val rowName = DobId
     val rowQuestion = Messages("agent.client-details.summary.dob")
-    val rowAnswer = clientDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat
+    val rowAnswer = userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat
     val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
@@ -83,10 +83,10 @@
     <h2 class="heading-medium">@Html(Messages("agent.client-details.summary.h2"))</h2>
 
     <div class="form-group">
-        @firstName(clientDetailsModel)
-        @lastName(clientDetailsModel)
-        @nino(clientDetailsModel)
-        @dob(clientDetailsModel)
+        @firstName(userDetailsModel)
+        @lastName(userDetailsModel)
+        @nino(userDetailsModel)
+        @dob(userDetailsModel)
         <div class="divider--top--thick"></div>
     </div>
 

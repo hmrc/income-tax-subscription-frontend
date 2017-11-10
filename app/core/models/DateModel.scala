@@ -26,11 +26,15 @@ case class DateModel(day: String, month: String, year: String) {
 
   val checkYourAnswersFormat = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT)
 
+  val desFormat = DateTimeFormatter.ofPattern("uuuu-MM-dd").withResolverStyle(ResolverStyle.STRICT)
+
   def toLocalDate: LocalDate = LocalDate.of(year.toInt, month.toInt, day.toInt)
 
   def toOutputDateFormat: String = toLocalDate.format(outputFormat)
 
   def toCheckYourAnswersDateFormat: String = toLocalDate.format(outputFormat)
+
+  def toDesDateFormat: String = toLocalDate.format(desFormat)
 
   def diffInMonth(that: DateModel): Int = {
     import java.time.temporal.ChronoUnit

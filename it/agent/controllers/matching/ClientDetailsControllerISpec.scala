@@ -20,12 +20,12 @@ import _root_.agent.helpers.ImplicitConversions._
 import _root_.agent.helpers.IntegrationTestConstants.{agentLockedOutURI, testARN}
 import _root_.agent.helpers.servicemocks.{AgentLockoutStub, AuthStub, KeystoreStub}
 import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
-import _root_.agent.models.agent.ClientDetailsModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.libs.json.JsValue
 import play.api.libs.ws.WSResponse
 import _root_.agent.services.CacheConstants.ClientDetails
+import usermatching.models.UserDetailsModel
 
 class ClientDetailsControllerISpec extends ComponentSpecBase {
 
@@ -108,7 +108,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase {
       "redirects to confirm client and saves the client details to keystore" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        val clientDetails: ClientDetailsModel = IntegrationTestModels.testClientDetails
+        val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
         KeystoreStub.stubKeystoreSave(ClientDetails, clientDetails)
         KeystoreStub.stubEmptyKeystore()
 
@@ -130,7 +130,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase {
       "redirects to confirm client but do not modify the keystore" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        val clientDetails: ClientDetailsModel = IntegrationTestModels.testClientDetails
+        val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
         val clientDetailsJs: JsValue = clientDetails
         KeystoreStub.stubKeystoreData(Map(ClientDetails -> clientDetailsJs))
 

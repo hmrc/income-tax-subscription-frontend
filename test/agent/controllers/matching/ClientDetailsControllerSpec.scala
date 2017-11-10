@@ -19,8 +19,7 @@ package agent.controllers.matching
 import agent.assets.MessageLookup.{ClientDetails => messages}
 import agent.controllers.AgentControllerBaseSpec
 import agent.forms.ClientDetailsForm
-import agent.models.DateModel
-import agent.models.agent.ClientDetailsModel
+import core.models.DateModel
 import agent.services.mocks.{MockAgentLockoutService, MockKeystoreService}
 import agent.utils.TestConstants
 import org.jsoup.Jsoup
@@ -28,6 +27,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import uk.gov.hmrc.http.HttpResponse
+import usermatching.models.UserDetailsModel
 
 
 class ClientDetailsControllerSpec extends AgentControllerBaseSpec
@@ -84,7 +84,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
       "Calling the submit action of the ClientDetailsController with an authorised user and valid submission and" when {
 
         val testClientDetails =
-          ClientDetailsModel(
+          UserDetailsModel(
             firstName = "Abc",
             lastName = "Abc",
             nino = testNino,
@@ -162,7 +162,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         def callSubmit(isEditMode: Boolean) =
           TestClientDetailsController.submit(isEditMode = isEditMode)(
             userMatchingRequest
-              .post(ClientDetailsForm.clientDetailsForm.form, ClientDetailsModel(
+              .post(ClientDetailsForm.clientDetailsForm.form, UserDetailsModel(
                 firstName = "Abc",
                 lastName = "Abc",
                 nino = testNino,

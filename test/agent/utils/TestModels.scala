@@ -16,14 +16,14 @@
 
 package agent.utils
 
-import agent.forms._
-import agent.models.agent._
-import agent.models._
-import play.api.libs.json.{JsValue, Json}
 import _root_.agent.services.CacheConstants
+import agent.forms._
+import agent.models._
 import core.utils.Implicits
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
+import usermatching.models.UserDetailsModel
 
 
 object TestModels extends Implicits {
@@ -65,7 +65,7 @@ object TestModels extends Implicits {
       terms = testTerms)
 
   def testCacheMapCustom(
-                          clientDetailsModel: Option[ClientDetailsModel] = testClientDetails,
+                          clientDetailsModel: Option[UserDetailsModel] = testClientDetails,
                           matchedNino: Option[String] = testClientDetails.ninoInBackendFormat,
                           incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
                           otherIncome: Option[OtherIncomeModel] = testOtherIncomeNo,
@@ -85,7 +85,7 @@ object TestModels extends Implicits {
       accountingMethod = accountingMethod,
       terms = terms)
 
-  def testCacheMap(clientDetailsModel: Option[ClientDetailsModel] = None,
+  def testCacheMap(clientDetailsModel: Option[UserDetailsModel] = None,
                    matchedNino: Option[String] = None,
                    incomeSource: Option[IncomeSourceModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
@@ -96,7 +96,7 @@ object TestModels extends Implicits {
                    terms: Option[Boolean] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
-      clientDetailsModel.fold(emptyMap)(model => Map(ClientDetails -> ClientDetailsModel.format.writes(model))) ++
+      clientDetailsModel.fold(emptyMap)(model => Map(ClientDetails -> UserDetailsModel.format.writes(model))) ++
       matchedNino.fold(emptyMap)(model => Map(MatchedNino -> Json.toJson(model))) ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
       otherIncome.fold(emptyMap)(model => Map(OtherIncome -> OtherIncomeModel.format.writes(model))) ++
@@ -125,7 +125,8 @@ object TestModels extends Implicits {
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
-  lazy val testClientDetails = ClientDetailsModel("Test", "User", TestConstants.testNino, testStartDate)
+  // TODO change when consolidating models
+  lazy val testClientDetails = UserDetailsModel("Test", "User", TestConstants.testNino, core.models.DateModel("01", "04", "2017"))
 
   val testSummaryData = SummaryModel(
     incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),

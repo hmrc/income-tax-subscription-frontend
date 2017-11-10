@@ -21,15 +21,16 @@ import agent.services.{UnexpectedFailure, _}
 import agent.utils.TestConstants
 import agent.utils.TestConstants.{testARN, testNino}
 import agent.utils.TestModels.testClientDetails
+import usermatching.services.mocks.MockUserMatchingService
 
 trait MockAgentQualificationService extends MockKeystoreService
   with MockClientRelationshipService
-  with MockClientMatchingService
+  with MockUserMatchingService
   with MockSubscriptionService
   with MockAuditingService {
 
   object TestAgentQualificationService extends AgentQualificationService(
-    mockClientMatchingService,
+    mockUserMatchingService,
     mockClientRelationshipService,
     mockSubscriptionService,
     MockKeystoreService,
@@ -38,7 +39,7 @@ trait MockAgentQualificationService extends MockKeystoreService
 
   def setupOrchestrateAgentQualificationSuccess(arn: String = TestConstants.testARN, nino: String = TestConstants.testNino): Unit = {
     setupMockKeystore(fetchClientDetails = testClientDetails)
-    mockClientMatchSuccess(testClientDetails)
+    mockUserMatchSuccess(testClientDetails)
     setupMockGetSubscriptionNotFound(testNino)
     preExistingRelationship(testARN, testNino)(isPreExistingRelationship = true)
   }
@@ -50,8 +51,8 @@ trait MockAgentQualificationService extends MockKeystoreService
     }
 
     expectedResult match {
-      case NoClientMatched => mockClientMatchNotFound(testClientDetails)
-      case _ => mockClientMatchSuccess(testClientDetails)
+      case NoClientMatched => mockUserMatchNotFound(testClientDetails)
+      case _ => mockUserMatchSuccess(testClientDetails)
     }
 
     expectedResult match {

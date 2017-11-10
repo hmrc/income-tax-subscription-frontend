@@ -16,16 +16,16 @@
 
 package agent.services.mocks
 
+import _root_.agent.services.KeystoreService
+import _root_.core.utils.MockTrait
 import agent.models._
-import _root_.agent.models.agent._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import _root_.agent.services.KeystoreService
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import _root_.core.utils.MockTrait
+import usermatching.models.UserDetailsModel
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.HttpResponse
 
 
 trait MockKeystoreService extends MockTrait {
@@ -64,7 +64,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
-                                         fetchClientDetails: MFO[ClientDetailsModel] = DoNotConfigure,
+                                         fetchClientDetails: MFO[UserDetailsModel] = DoNotConfigure,
                                          fetchMatchedNino: MFO[String] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
@@ -78,7 +78,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
-    mockFetchFromKeyStore[ClientDetailsModel](ClientDetails, fetchClientDetails)
+    mockFetchFromKeyStore[UserDetailsModel](ClientDetails, fetchClientDetails)
     mockFetchFromKeyStore[String](MatchedNino, fetchMatchedNino)
 
     setupMockKeystoreSaveFunctions()

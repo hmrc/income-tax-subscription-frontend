@@ -21,9 +21,10 @@ import javax.inject.{Inject, Singleton}
 import agent.audit.AuditingService
 import agent.audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
 import agent.connectors.models.subscription.SubscriptionSuccess
-import agent.models.agent.ClientDetailsModel
+import usermatching.models.UserDetailsModel
 import core.utils.Implicits._
 import uk.gov.hmrc.http.HeaderCarrier
+import usermatching.services.UserMatchingService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -43,7 +44,7 @@ case object NoClientRelationship extends UnqualifiedAgent
 case class ApprovedAgent(clientNino: String, clientUtr: Option[String])
 
 @Singleton
-class AgentQualificationService @Inject()(clientMatchingService: ClientMatchingService,
+class AgentQualificationService @Inject()(clientMatchingService: UserMatchingService,
                                           clientRelationshipService: ClientRelationshipService,
                                           subscriptionService: SubscriptionService,
                                           keystoreService: KeystoreService,
@@ -53,7 +54,7 @@ class AgentQualificationService @Inject()(clientMatchingService: ClientMatchingS
 
   private[services]
   def matchClient(arn: String)(implicit hc: HeaderCarrier): Future[ReturnType] = {
-    val clientDetails: Future[Either[UnqualifiedAgent, ClientDetailsModel]] = keystoreService.fetchClientDetails()
+    val clientDetails: Future[Either[UnqualifiedAgent, UserDetailsModel]] = keystoreService.fetchClientDetails()
       .collect {
         case Some(cd) => Right(cd)
         case _ => Left(NoClientDetails)
@@ -63,12 +64,12 @@ class AgentQualificationService @Inject()(clientMatchingService: ClientMatchingS
     clientDetails.flatMap {
       case Left(x) => Left(x)
       case Right(cd) =>
-        clientMatchingService.matchClient(cd)
+        clientMatchingService.matchUser(cd)
           .collect {
-            case Some(matchedClient) =>
+            case Right(Some(matchedClient)) =>
               auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = true), agent.controllers.matching.routes.ConfirmClientController.submit().url)
               Right(ApprovedAgent(matchedClient.nino, matchedClient.saUtr))
-            case None =>
+            case Right(None) =>
               auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = false), agent.controllers.matching.routes.ConfirmClientController.submit().url)
               Left(NoClientMatched)
           }

@@ -17,16 +17,16 @@
 package agent.forms
 
 import core.forms.prevalidation.PreprocessedForm
-import agent.forms.submapping.DateMapping.dateMapping
+import core.forms.submapping.DateMapping.dateMapping
 import core.forms.validation.Constraints._
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil._
 import core.forms.validation.utils.MappingUtil._
-import agent.models.DateModel
-import agent.models.agent.ClientDetailsModel
+import core.models.DateModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid, ValidationResult}
+import usermatching.models.UserDetailsModel
 
 import scala.util.Try
 
@@ -88,7 +88,7 @@ object ClientDetailsForm {
       clientLastName -> oText.toText.verifying(lastNameNonEmpty andThen lastNameMaxLength andThen lastNameInvalid),
       clientNino -> oText.toText.verifying(emptyClientNino andThen validateClientNino),
       clientDateOfBirth -> dateMapping.verifying(dobNoneEmpty andThen dobIsNumeric andThen dobInvalid)
-    )(ClientDetailsModel.apply)(ClientDetailsModel.unapply)
+    )(UserDetailsModel.apply)(UserDetailsModel.unapply)
   )
 
   import core.forms.prevalidation.CaseOption._
