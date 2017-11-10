@@ -182,8 +182,8 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   }
 
   "enrolledPredicates" should {
-    "return an AuthPredicateSuccess where there is a nino, an mtditId, an individual affinity, the home session flag and an auth token" in {
-      enrolledPredicates(authorisedRequest)(enrolledPredicateUser).right.value mustBe AuthPredicateSuccess
+    "return an AuthPredicateSuccess where there is an mtditId, the home session flag and an auth token" in {
+      enrolledPredicates(authorisedRequest)(testUser(affinityGroup = None, mtdidEnrolment)).right.value mustBe AuthPredicateSuccess
     }
 
     "throw a NotFoundException where the user is not enrolled" in {
