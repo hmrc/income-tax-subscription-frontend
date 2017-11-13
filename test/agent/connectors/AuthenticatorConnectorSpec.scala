@@ -17,8 +17,10 @@
 package agent.connectors
 
 import agent.connectors.mocks.TestAuthenticatorConnector
-import play.api.test.Helpers._
+import agent.connectors.models.matching.ClientMatchSuccessResponseModel
+import agent.utils.TestConstants
 import agent.utils.TestModels.testClientDetails
+import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
 
 
@@ -27,9 +29,9 @@ class AuthenticatorConnectorSpec extends TestAuthenticatorConnector {
   "AuthenticatorConnector" should {
 
     "return true if authenticator response with ok" in {
-      setupMockMatchClient(testClientDetails)(matchClientMatched(testClientDetails.nino))
+      setupMockMatchClient(testClientDetails)(matchClientMatched(testClientDetails.nino, TestConstants.testUtr))
       val result = TestAuthenticatorConnector.matchClient(testClientDetails)
-      await(result) mustBe Some(testClientDetails.nino)
+      await(result) mustBe Some(ClientMatchSuccessResponseModel(testClientDetails.nino, TestConstants.testUtr))
     }
 
     "return false if authenticator response with Unauthorized but with a matching error message" in {
@@ -45,7 +47,7 @@ class AuthenticatorConnectorSpec extends TestAuthenticatorConnector {
       val e = intercept[InternalServerException] {
         await(result)
       }
-      e.message must include (s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=$UNAUTHORIZED")
+      e.message must include(s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=$UNAUTHORIZED")
     }
 
     "throw InternalServerException if authenticator response with an unexpected status" in {
@@ -55,7 +57,7 @@ class AuthenticatorConnectorSpec extends TestAuthenticatorConnector {
       val e = intercept[InternalServerException] {
         await(result)
       }
-      e.message must include (s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=")
+      e.message must include(s"AuthenticatorConnector.matchClient unexpected response from authenticator: status=")
       e.message must not include s"UNAUTHORIZED"
     }
 

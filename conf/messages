@@ -722,3 +722,7 @@ agent.thank-you.title                                                 = Thank yo
 agent.thank-you.heading                                               = Thank you
 agent.thank-you.line_1                                                = Your feedback will help us improve this service.
 agent.thank-you.go_to_gov                                             = Go to the GOV.UK page
+
+agent.no-sa.title                                                     = Your client hasn''t registered for Self Assessment
+agent.no-sa.heading                                                   = Your client hasn''t registered for Self Assessment
+agent.no-sa.line_1                                                    = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.

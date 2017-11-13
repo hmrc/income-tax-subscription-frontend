@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package usermatching
+package agent.controllers.matching
 
-import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.signOutURI
-import helpers.servicemocks.AuthStub
+import agent.helpers.ComponentSpecBase
+import agent.helpers.IntegrationTestConstants.signOutURI
+import agent.helpers.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 
 class NoSAControllerISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/register-for-SA" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/client/register-for-SA" when {
 
     "keystore not applicable" should {
       "show the error maintenance page" in {
@@ -43,7 +43,7 @@ class NoSAControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/register-for-SA" when {
+  "POST /report-quarterly/income-and-expenses/sign-up/client/register-for-SA" when {
 
     "always" should {
       "proceed to sign out" in {

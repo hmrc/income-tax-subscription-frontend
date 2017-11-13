@@ -49,14 +49,14 @@ trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
   val setupMatchClient: ((Int, JsValue)) => Unit =
     (setupMockMatchClient(None) _).tupled
 
-  def matchClientMatched(nino: String = TestConstants.testNino): (Int, JsValue) = (OK,
+  def matchClientMatched(nino: String = TestConstants.testNino, utr: String = TestConstants.testUtr): (Int, JsValue) = (OK,
     s"""{
        | "firstName" : "",
        | "lastName" : "",
        | "dateOfBirth" : "",
        | "postCode" : "",
        | "nino" : "$nino",
-       | "saUtr" : ""
+       | "saUtr" : "$utr"
        |}""".stripMargin: JsValue)
 
   val matchClientNoMatch: (Int, JsValue) = (UNAUTHORIZED,
@@ -78,7 +78,7 @@ trait MockAuthenticatorConnector extends MockTrait {
   val mockAuthenticatorConnector = mock[AuthenticatorConnector]
 
   private def mockClientMatch(clientDetails: ClientDetailsModel)
-                           (response: Future[Option[String]]): Unit =
+                             (response: Future[Option[ClientMatchSuccessResponseModel]]): Unit =
     when(
       mockAuthenticatorConnector.matchClient(
         ArgumentMatchers.eq(clientDetails)
@@ -87,7 +87,7 @@ trait MockAuthenticatorConnector extends MockTrait {
     ).thenReturn(response)
 
   def mockClientMatchSuccess(clientDetails: ClientDetailsModel): Unit = {
-    mockClientMatch(clientDetails)(Future.successful(Some(testNino)))
+    mockClientMatch(clientDetails)(Future.successful(Some(ClientMatchSuccessResponseModel(testNino, testUtr))))
   }
 
   def mockClientMatchNotFound(clientDetails: ClientDetailsModel): Unit = {

@@ -16,11 +16,11 @@
 
 package agent.services
 
+import agent.connectors.models.matching.ClientMatchSuccessResponseModel
 import agent.services.mocks.TestClientMatchingService
+import agent.utils.TestConstants._
 import agent.utils.TestModels.testClientDetails
 import play.api.test.Helpers._
-import agent.utils.TestConstants._
-import uk.gov.hmrc.http.InternalServerException
 
 class ClientMatchingServiceSpec extends TestClientMatchingService {
 
@@ -28,8 +28,8 @@ class ClientMatchingServiceSpec extends TestClientMatchingService {
 
     "return the nino if authenticator response with ok" in {
       mockClientMatchSuccess(testClientDetails)
-      val result = TestClientMatchingService.matchClient(testClientDetails)
-      await(result) mustBe Some(testNino)
+      val result = await(TestClientMatchingService.matchClient(testClientDetails))
+      result mustBe Some(ClientMatchSuccessResponseModel(testNino, testUtr))
     }
 
     "return None if authenticator response with Unauthorized but with a matching error message" in {

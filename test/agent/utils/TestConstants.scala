@@ -31,6 +31,7 @@ object TestConstants {
   * this nino is a constant, if you need a fresh one use TestModels.newNino
   */
   lazy val testNino = new Generator().nextNino.nino
+  lazy val testUtr = new Generator().nextAtedUtr.utr
   lazy val testMTDID = new Generator().nextAtedUtr.utr
   //Not a valid MTDID, for test purposes only
   lazy val startDate = DateModel("05", "04", "2017")

@@ -20,15 +20,15 @@ import javax.inject.{Inject, Singleton}
 
 import agent.auth.AgentJourneyState._
 import agent.auth.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
-import core.config.BaseControllerConfig
 import agent.connectors.models.matching.{LockedOut, NotLockedOut}
 import agent.controllers.ITSASessionKeys
 import agent.models.agent.ClientDetailsModel
+import agent.services._
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import agent.services._
-import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
@@ -93,21 +93,29 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
               for {
                 _ <- lockOutService.lockoutAgent(arn)
                 _ <- keystoreService.deleteAll()
-              } yield
-                Redirect(agent.controllers.matching.routes.ClientDetailsLockoutController.show()).removingFromSession(FailedClientMatching)
+              } yield Redirect(agent.controllers.matching.routes.ClientDetailsLockoutController.show())
+                .removingFromSession(FailedClientMatching)
             }
-          case Left(ClientAlreadySubscribed) => successful(Redirect(agent.controllers.routes.ClientAlreadySubscribedController.show())
-            .removingFromSession(FailedClientMatching))
-          case Left(NoClientRelationship) => successful(Redirect(agent.controllers.routes.NoClientRelationshipController.show())
-            .removingFromSession(FailedClientMatching))
-          case Right(_) => successful(Redirect(agent.controllers.routes.HomeController.index()).withJourneyState(AgentUserMatched)
-            .removingFromSession(FailedClientMatching))
-        }.recoverWith {
-          case e => failed(new InternalServerException("ConfirmClientController.submit\n" + e.getMessage))
+          case Left(ClientAlreadySubscribed) => successful(
+            Redirect(agent.controllers.routes.ClientAlreadySubscribedController.show())
+              .removingFromSession(FailedClientMatching)
+          )
+          case Left(NoClientRelationship) => successful(
+            Redirect(agent.controllers.routes.NoClientRelationshipController.show())
+              .removingFromSession(FailedClientMatching)
+          )
+          case Right(ApprovedAgent(nino, Some(utr))) => successful(
+            Redirect(agent.controllers.routes.HomeController.index())
+              .withJourneyState(AgentUserMatched)
+              .removingFromSession(FailedClientMatching)
+          )
+          case Right(ApprovedAgent(nino, None)) => successful(
+            Redirect(agent.controllers.matching.routes.NoSAController.show())
+              .withJourneyState(AgentUserMatched)
+          )
         }
       }
   }
 
   lazy val backUrl: String = routes.ClientDetailsController.show().url
-
 }

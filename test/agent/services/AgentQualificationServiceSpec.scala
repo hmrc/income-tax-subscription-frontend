@@ -33,7 +33,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
   def verifyClientMatchingFailureAudit(): Unit =
     verifyAudit(ClientMatchingAuditModel(TestConstants.testARN, TestModels.testClientDetails, isSuccess = false), auditPath)
 
-  val matchedClient = ApprovedAgent(testNino)
+  val matchedClient = ApprovedAgent(testNino, testUtr)
 
   "AgentQualificationService.matchClient" should {
 
@@ -64,7 +64,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
       val result = call
 
-      await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat))
+      await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat, testUtr))
 
       verifyClientMatchingSuccessAudit()
     }
@@ -186,7 +186,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
       val result = call
 
-      await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat))
+      await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat, testUtr))
 
       verifyClientMatchingSuccessAudit()
       verifyKeystore(fetchClientDetails = 1, saveMatchedNino = 1)
