@@ -37,9 +37,9 @@ object AccountingPeriodDateForm {
   val startDate: String = "startDate"
   val endDate: String = "endDate"
 
-  val dateValidation: Constraint[DateModel] = constraint[DateModel](
+  def dateValidation(errorName: String): Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val invalidDate = ErrorMessageFactory.error("error.date.invalid")
+      lazy val invalidDate = ErrorMessageFactory.error(s"error.$errorName.invalid")
       Try[ValidationResult] {
         date.toLocalDate
         Valid
@@ -47,10 +47,21 @@ object AccountingPeriodDateForm {
     }
   )
 
-  val dateEmpty: Constraint[DateModel] = constraint[DateModel](
+  def dateEmpty(errorName: String): Constraint[DateModel] = constraint[DateModel](
     date => {
-      lazy val emptyDate = ErrorMessageFactory.error("error.date.empty")
+      lazy val emptyDate = ErrorMessageFactory.error(s"error.$errorName.empty")
       if (date.day.trim.isEmpty && date.month.trim.isEmpty && date.year.trim.isEmpty) emptyDate else Valid
+    }
+  )
+
+  def dateIsNumeric(errorName: String): Constraint[DateModel] = constraint[DateModel](
+    date => {
+      lazy val isNotNumeric = ErrorMessageFactory.error(s"error.$errorName.invalid_chars")
+      val numericRegex = "[0-9]*"
+
+      def isNumeric(str: String): Boolean = str.replace(" ", "").matches(numericRegex)
+
+      if (isNumeric(date.day) && isNumeric(date.month) && isNumeric(date.year)) Valid else isNotNumeric
     }
   )
 
@@ -79,10 +90,20 @@ object AccountingPeriodDateForm {
     }
   )
 
+  val startDateConstraints = {
+    val name = "start_date"
+    dateEmpty(name) andThen dateIsNumeric(name) andThen dateValidation(name) andThen startDateBeforeApr17
+  }
+
+  val endDateConstraints = {
+    val name = "end_date"
+    dateEmpty(name) andThen dateIsNumeric(name) andThen dateValidation(name)
+  }
+
   val accountingPeriodDateForm = Form(
     mapping(
-      startDate -> dateMapping.verifying(dateEmpty andThen dateValidation andThen startDateBeforeApr17),
-      endDate -> dateMapping.verifying(dateEmpty andThen dateValidation)
+      startDate -> dateMapping.verifying(startDateConstraints),
+      endDate -> dateMapping.verifying(endDateConstraints)
     )(AccountingPeriodModel.apply)(AccountingPeriodModel.unapply).verifying(endDateAfterStart andThen endDate24MonthRule)
   )
 

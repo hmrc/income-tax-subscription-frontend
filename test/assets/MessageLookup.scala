@@ -388,6 +388,19 @@ object MessageLookup {
       val end_violation = "You must enter a date greater than the start date"
     }
 
+    object StartDate {
+      val empty = "Enter a start date"
+      val invalid_chars = "Enter a start date using numbers 0 to 9"
+      val invalid = "Enter a real start date"
+    }
+
+    object EndDate {
+      val empty = "Enter an end date"
+      val invalid_chars = "Enter an end date using numbers 0 to 9"
+      val invalid = "Enter a real end date"
+      val end_violation = "Enter an end date that's after the start date"
+    }
+
     object BusinessAccountingPeriod {
       val minStartDate = "You can't enter a start date before 6 April 2017"
       val maxEndDate = "You must provide an end date that is not more than 24 months after your start date"
