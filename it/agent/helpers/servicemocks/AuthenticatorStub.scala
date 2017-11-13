@@ -21,10 +21,10 @@ import _root_.agent.helpers.IntegrationTestModels
 import play.api.http.Status
 
 object AuthenticatorStub extends WireMockMethods {
-  def stubMatchFound(returnedNino: String, returnedUtr: String): Unit = {
+  def stubMatchFound(returnedNino: String, returnedUtr: Option[String]): Unit = {
     val model = ClientMatchRequestModel.requestConvert(IntegrationTestModels.testClientDetails)
 
-    val returnMessage = ClientMatchSuccessResponseModel(nino = returnedNino, saUtr = Some(returnedUtr))
+    val returnMessage = ClientMatchSuccessResponseModel(nino = returnedNino, saUtr = returnedUtr)
     when(method = POST, uri = "/authenticator/match", body = model)
       .thenReturn(status = Status.OK, returnMessage)
   }

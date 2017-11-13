@@ -294,6 +294,10 @@ trait ComponentSpecBase extends UnitSpec
         )
       )
     }
+
+    def noSA(): WSResponse = get("/register-for-SA")
+
+    def submitNoSA(): WSResponse = post("/register-for-SA")(Map.empty)
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
