@@ -40,8 +40,6 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                                         val messagesApi: MessagesApi,
                                         val keystoreService: KeystoreService,
                                         val agentQualificationService: AgentQualificationService,
-                                        //                                        val clientMatchingService: ClientMatchingService,
-                                        //                                        val auditingService: AuditingService,
                                         val authService: AuthService,
                                         val lockOutService: AgentLockoutService
                                        ) extends UserMatchingController {
@@ -112,7 +110,6 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
               .removingFromSession(FailedClientMatching)
           )
           case Right(ApprovedAgent(nino, None)) => successful(
-            //Error page for client no UTR
             Redirect(agent.controllers.matching.routes.NoSAController.show())
               .withJourneyState(AgentUserMatched)
           )
