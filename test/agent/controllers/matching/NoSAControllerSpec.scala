@@ -48,7 +48,7 @@ class NoSAControllerSpec extends ControllerBaseSpec {
     }
 
     s"have the title '${MessageLookup.NoSA.title}'" in {
-      document.title() must be(MessageLookup.NoSA.title)
+      document.title() must be(MessageLookup.NoSA.Agent.title)
     }
   }
 
