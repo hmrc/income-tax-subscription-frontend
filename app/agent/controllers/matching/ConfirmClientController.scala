@@ -22,7 +22,6 @@ import agent.auth.AgentJourneyState._
 import agent.auth.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
 import agent.connectors.models.matching.{LockedOut, NotLockedOut}
 import agent.controllers.ITSASessionKeys
-import agent.models.agent.ClientDetailsModel
 import agent.services._
 import core.config.BaseControllerConfig
 import core.services.AuthService
@@ -30,6 +29,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
+import usermatching.models.UserDetailsModel
 
 import scala.concurrent.Future
 import scala.util.Left
@@ -44,9 +44,9 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                                         val lockOutService: AgentLockoutService
                                        ) extends UserMatchingController {
 
-  def view(clientDetailsModel: ClientDetailsModel)(implicit request: Request[_]): Html =
+  def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     agent.views.html.check_your_client_details(
-      clientDetailsModel,
+      userDetailsModel,
       routes.ConfirmClientController.submit(),
       backUrl
     )

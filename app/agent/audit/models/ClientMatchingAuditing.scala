@@ -17,20 +17,20 @@
 package agent.audit.models
 
 import agent.audit.AuditModel
-import agent.models.agent.ClientDetailsModel
+import usermatching.models.UserDetailsModel
 
 object ClientMatchingAuditing {
   val clientMatchingTransactionName = "ITSAMatchingRequest"
   val clientMatchingAuditType = "ClientMatchingCheckSubmitted"
 
-  case class ClientMatchingAuditModel(arn: String, clientDetailsModel: ClientDetailsModel, isSuccess: Boolean) extends AuditModel {
+  case class ClientMatchingAuditModel(arn: String, userDetailsModel: UserDetailsModel, isSuccess: Boolean) extends AuditModel {
     override val transactionName: String = clientMatchingTransactionName
     override val detail: Map[String, String] = Map(
       "arn" -> arn,
-      "firstName" -> clientDetailsModel.firstName,
-      "lastName" -> clientDetailsModel.lastName,
-      "nino" -> clientDetailsModel.ninoInBackendFormat,
-      "dateOfBirth" -> clientDetailsModel.dateOfBirth.toDesDateFormat,
+      "firstName" -> userDetailsModel.firstName,
+      "lastName" -> userDetailsModel.lastName,
+      "nino" -> userDetailsModel.ninoInBackendFormat,
+      "dateOfBirth" -> userDetailsModel.dateOfBirth.toDesDateFormat,
       "matchSuccess" -> s"$isSuccess"
     )
     override val auditType: String = clientMatchingAuditType

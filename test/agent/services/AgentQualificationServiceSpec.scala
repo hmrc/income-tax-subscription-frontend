@@ -49,7 +49,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
     "return NoClientMatched if the client matching was unsuccessful" in {
       setupMockKeystore(fetchClientDetails = testClientDetails)
-      mockClientMatchNotFound(testClientDetails)
+      mockUserMatchNotFound(testClientDetails)
 
       val result = call
 
@@ -60,7 +60,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
     "return ApprovedAgent if the client matching was successful" in {
       setupMockKeystore(fetchClientDetails = testClientDetails)
-      mockClientMatchSuccess(testClientDetails)
+      mockUserMatchSuccess(testClientDetails)
 
       val result = call
 

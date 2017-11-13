@@ -23,9 +23,9 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 
 object IntegrationTestConstants {
-  lazy val testNino: String = new Generator().nextNino.nino
-  lazy val testUtr: String = new Generator().nextNino.nino
-  lazy val testMTDID = "XE0001234567890"
+  lazy val testNino: String = _root_.helpers.IntegrationTestConstants.testNino
+  lazy val testUtr: String = _root_.helpers.IntegrationTestConstants.testUtr
+  lazy val testMTDID = _root_.helpers.IntegrationTestConstants.testMTDID
   lazy val startDate = DateModel("05", "04", "2017")
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"

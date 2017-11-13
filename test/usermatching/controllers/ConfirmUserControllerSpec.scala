@@ -201,7 +201,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         "the lockout count is 0" should {
           "redirect to the user details page and increment the counter by 1" in {
             setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
-            mockUserMatchFailure(userDetails)
+            mockUserMatchNotFound(userDetails)
             setupMockNotLockedOut(testUserId)
 
             val result = callSubmit()
@@ -222,7 +222,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
             )
 
             setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
-            mockUserMatchFailure(userDetails)
+            mockUserMatchNotFound(userDetails)
             setupMockNotLockedOut(testUserId)
 
             val result = TestConfirmUserController.submit()(requestWithLockout)
@@ -243,7 +243,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
             )
 
             setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
-            mockUserMatchFailure(userDetails)
+            mockUserMatchNotFound(userDetails)
             setupMockNotLockedOut(testUserId)
             setupMockLockCreated(testUserId)
             setupMockKeystore(deleteAll = HttpResponse(Status.OK))
