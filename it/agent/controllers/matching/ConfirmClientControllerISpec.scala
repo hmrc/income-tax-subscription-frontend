@@ -21,8 +21,10 @@ import _root_.agent.controllers.ITSASessionKeys
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
-import play.api.http.Status._
 import _root_.agent.services.CacheConstants
+import helpers.IntegrationTestConstants.testUserIdStripped
+import helpers.servicemocks.{AuthenticatorStub, UserLockoutStub}
+import play.api.http.Status._
 
 
 class ConfirmClientControllerISpec extends ComponentSpecBase {
@@ -72,6 +74,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubFullKeystore()
+          UserLockoutStub.stubUserIsNotLocked(testARN)
           AuthenticatorStub.stubMatchNotFound()
 
           When("I call POST /confirm-client")
@@ -94,6 +97,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubFullKeystore()
           KeystoreStub.stubKeystoreDelete()
+          UserLockoutStub.stubUserIsNotLocked(testARN)
+          UserLockoutStub.stubLockAgent(testARN)
           AuthenticatorStub.stubMatchNotFound()
 
           When("I call POST /confirm-client")

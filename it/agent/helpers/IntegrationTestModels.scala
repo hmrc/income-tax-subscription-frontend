@@ -93,6 +93,6 @@ object IntegrationTestModels {
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
-  lazy val testClientDetails = UserDetailsModel("Test", "User", IntegrationTestConstants.testNino, core.models.DateModel("06", "04", "2017"))
+  lazy val testClientDetails = _root_.helpers.IntegrationTestModels.testUserDetails
 
 }
