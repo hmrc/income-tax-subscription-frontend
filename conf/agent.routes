@@ -74,3 +74,6 @@ GET         /feedback-submitted                     agent.controllers.ThankYouCo
 
 GET         /sign-in                                agent.controllers.SignInController.signIn
 
+# No NINO Routes
+GET         /register-for-SA                        agent.controllers.matching.NoSAController.show
+POST        /register-for-SA                        agent.controllers.matching.NoSAController.submit

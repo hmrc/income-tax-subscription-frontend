@@ -118,7 +118,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        AuthenticatorStub.stubMatchFound(testNino, testUtr)
+        AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
         SubscriptionStub.stubGetSubscriptionFound()
 
@@ -138,7 +138,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        AuthenticatorStub.stubMatchFound(testNino, testUtr)
+        AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = false)
 
         When("I call POST /confirm-client")
@@ -155,12 +155,38 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
       }
     }
 
+    "tbe client does not have an SAUTR" should {
+      "redirects to the sign up to self assessment page" in {
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
+        AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+        AuthenticatorStub.stubMatchFound(testNino, None)
+        KeystoreStub.stubKeystoreSave(CacheConstants.MatchedNino, testNino)
+        SubscriptionStub.stubGetNoSubscription()
+
+        When("I call POST /confirm-client")
+        val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
+
+        Then("The result should have a status of SEE_OTHER and redirect to index")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(registerForSAURI)
+        )
+
+        SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
+
+        Then("The client matching request should have been audited")
+        AuditStub.verifyAudit()
+      }
+    }
+
     "the agent is fully qualified" should {
       "redirects to income source page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        AuthenticatorStub.stubMatchFound(testNino, testUtr)
+        AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
         SubscriptionStub.stubGetNoSubscription()
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
         KeystoreStub.stubKeystoreSave(CacheConstants.MatchedNino, testNino)

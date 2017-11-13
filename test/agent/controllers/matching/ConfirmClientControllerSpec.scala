@@ -179,16 +179,14 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       }
 
       "the user does not have a utr" should {
-        // TODO define redirection
-//        s"redirect user to ${agent.controllers.routes.HomeController.index().url}" in {
-        s"return not implemented" in {
+        s"redirect user to ${agent.controllers.matching.routes.NoSAController.show().url}" in {
           mockOrchestrateAgentQualificationSuccess(arn, nino, None)
           setupMockNotLockedOut(arn)
 
           val result = callSubmit()
 
-          status(result) mustBe NOT_IMPLEMENTED
-//          redirectLocation(result) mustBe Some(agent.controllers.routes.HomeController.index().url)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(agent.controllers.matching.routes.NoSAController.show().url)
 
           await(result).session(userMatchingRequest).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
         }

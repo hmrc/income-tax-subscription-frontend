@@ -42,6 +42,7 @@ object IntegrationTestConstants {
   val clientDetailsErrorURI = s"$baseURI/error/client-details"
   val agentLockedOutURI = s"$baseURI/error/lockout"
   val alreadySubscribedURI = s"$baseURI/error/client-already-subscribed"
+  val registerForSAURI = s"$baseURI/register-for-SA"
   val confirmationURI = s"$baseURI/confirmation"
   val noClientRelationshipURI = s"$baseURI/error/no-client-relationship"
   val incomeSourceURI = s"$baseURI/income"
@@ -60,6 +61,8 @@ object IntegrationTestConstants {
   val signInURI = s"/report-quarterly/income-and-expenses/sign-up/sign-in"
   val ggSignInURI = s"/gg/sign-in"
   val ggSignOutURI = s"/gg/sign-out"
+  val signOutURI = s"/report-quarterly/income-and-expenses/sign-up/logout"
+
 
   object Auth {
     def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(
