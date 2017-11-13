@@ -18,16 +18,16 @@ package agent.views
 
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Base => common, ConfirmClient => messages}
-import agent.models.agent.ClientDetailsModel
+import agent.utils.TestConstants
+import agent.views.html.helpers.ConfirmClientIdConstants._
+import core.utils.{TestModels, UnitTestTrait}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import agent.utils.{TestConstants, TestModels}
-import core.utils.UnitTestTrait
-import agent.views.html.helpers.ConfirmClientIdConstants._
+import usermatching.models.UserDetailsModel
 
 class CheckYourClientDetailsViewSpec extends UnitTestTrait {
 
@@ -35,7 +35,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
   val testLastName = "User"
   val testNino = TestConstants.testNino
   val testDob = TestModels.testStartDate
-  val testClientDetails = ClientDetailsModel(
+  val testClientDetails = UserDetailsModel(
     testFirstName,
     testLastName,
     testNino,
@@ -45,7 +45,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
   lazy val backUrl: String = "testBackUrl"
 
   def page(): Html = agent.views.html.check_your_client_details(
-    clientDetailsModel = testClientDetails,
+    userDetailsModel = testClientDetails,
     postAction = postAction,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)

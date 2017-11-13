@@ -54,7 +54,7 @@ trait MockUserMatchingService extends MockTrait {
     mockUserMatch(userDetails)(Future.successful(Right(Some(testMatchSuccessModel.copy(saUtr = None)))))
   }
 
-  def mockUserMatchFailure(userDetails: UserDetailsModel): Unit = {
+  def mockUserMatchNotFound(userDetails: UserDetailsModel): Unit = {
     mockUserMatch(userDetails)(Future.successful(None))
   }
 

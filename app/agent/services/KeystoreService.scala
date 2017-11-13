@@ -18,13 +18,13 @@ package agent.services
 
 import javax.inject._
 
-import agent.models.agent._
 import agent.models._
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import usermatching.models.UserDetailsModel
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 @Singleton
 class KeystoreService @Inject()(val session: SessionCache)(implicit ec: ExecutionContext) {
@@ -95,11 +95,11 @@ class KeystoreService @Inject()(val session: SessionCache)(implicit ec: Executio
                                (implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodPriorModel]): FC =
     save[AccountingPeriodPriorModel](AccountingPeriodPrior, accountingPeriodPrior)
 
-  def fetchClientDetails()(implicit hc: HeaderCarrier, reads: Reads[ClientDetailsModel]): FO[ClientDetailsModel] =
-    fetch[ClientDetailsModel](ClientDetails)
+  def fetchClientDetails()(implicit hc: HeaderCarrier, reads: Reads[UserDetailsModel]): FO[UserDetailsModel] =
+    fetch[UserDetailsModel](ClientDetails)
 
-  def saveClientDetails(clientDetails: ClientDetailsModel)(implicit hc: HeaderCarrier, reads: Reads[ClientDetailsModel]): FC =
-    save[ClientDetailsModel](ClientDetails, clientDetails)
+  def saveClientDetails(clientDetails: UserDetailsModel)(implicit hc: HeaderCarrier, reads: Reads[UserDetailsModel]): FC =
+    save[UserDetailsModel](ClientDetails, clientDetails)
 
   def fetchMatchedNino()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] =
     fetch[String](MatchedNino)

@@ -28,7 +28,6 @@ import _root_.agent.helpers.IntegrationTestConstants.{baseURI, testMTDID}
 import _root_.agent.helpers.SessionCookieBaker._
 import _root_.agent.helpers.servicemocks.{AuditStub, WireMockMethods}
 import _root_.agent.models._
-import _root_.agent.models.agent.ClientDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -42,6 +41,7 @@ import play.api.libs.ws.{WSClient, WSResponse}
 import play.api.mvc.Headers
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.test.UnitSpec
+import usermatching.models.UserDetailsModel
 
 trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite
@@ -162,7 +162,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def showClientDetails(): WSResponse = get("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def submitClientDetails(clientDetails: Option[ClientDetailsModel]): WSResponse =
+    def submitClientDetails(clientDetails: Option[UserDetailsModel]): WSResponse =
       post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(
         clientDetails.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(ClientDetailsForm.clientDetailsValidationForm, cd)

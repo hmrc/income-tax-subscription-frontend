@@ -17,15 +17,15 @@
 package agent.forms
 
 import agent.assets.MessageLookup
+import agent.utils.TestConstants
 import core.forms.submapping.DateMapping._
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils._
-import agent.models.DateModel
-import agent.models.agent.ClientDetailsModel
-import agent.utils.TestConstants
+import core.models.DateModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.Messages.Implicits._
+import usermatching.models.UserDetailsModel
 
 class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
@@ -55,7 +55,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
     "For valid data should transform the data to the case class" in {
       val testInput = setupTestData()
-      val expected = ClientDetailsModel(testClientFirstName, testClientLastName, testClientNino, dob)
+      val expected = UserDetailsModel(testClientFirstName, testClientLastName, testClientNino, dob)
       val actual = clientDetailsForm.bind(testInput).value
       actual mustBe Some(expected)
     }
@@ -144,7 +144,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           val errors = ErrorMessageFactory.error("agent.error.dob_date.empty")
           errors fieldErrorIs MessageLookup.Error.DOBDate.empty
           errors summaryErrorIs MessageLookup.Error.DOBDate.empty
-          val testInput = setupTestData(dob = DateModel("","",""))
+          val testInput = setupTestData(dob = DateModel("", "", ""))
           clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
         }
 
@@ -152,7 +152,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid_chars")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid_chars
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid_chars
-          val testInput = setupTestData(dob = DateModel("aa","10","1990"))
+          val testInput = setupTestData(dob = DateModel("aa", "10", "1990"))
           clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
         }
 
@@ -160,7 +160,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid_chars")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid_chars
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid_chars
-          val testInput = setupTestData(dob = DateModel("01","aa","1990"))
+          val testInput = setupTestData(dob = DateModel("01", "aa", "1990"))
           clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
         }
 
@@ -168,7 +168,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid_chars")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid_chars
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid_chars
-          val testInput = setupTestData(dob = DateModel("01","12","aa"))
+          val testInput = setupTestData(dob = DateModel("01", "12", "aa"))
           clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
         }
 
@@ -176,7 +176,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid
-          val testInput = setupTestData(dob = DateModel("56","10","1990"))
+          val testInput = setupTestData(dob = DateModel("56", "10", "1990"))
           clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
         }
 
@@ -184,7 +184,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid
-          val testInput = setupTestData(dob = DateModel("01","15","1990"))
+          val testInput = setupTestData(dob = DateModel("01", "15", "1990"))
           clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
         }
 
@@ -192,7 +192,7 @@ class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
           val errors = ErrorMessageFactory.error("agent.error.dob_date.invalid")
           errors fieldErrorIs MessageLookup.Error.DOBDate.invalid
           errors summaryErrorIs MessageLookup.Error.DOBDate.invalid
-          val testInput = setupTestData(dob = DateModel("01","12","1234567899"))
+          val testInput = setupTestData(dob = DateModel("01", "12", "1234567899"))
           clientDetailsForm.bind(testInput) assert clientDateOfBirth hasExpectedErrors errors
         }
       }

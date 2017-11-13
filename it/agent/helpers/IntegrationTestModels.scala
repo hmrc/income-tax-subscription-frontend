@@ -19,9 +19,9 @@ package agent.helpers
 import _root_.agent.forms._
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.models._
-import _root_.agent.models.agent._
-import play.api.libs.json.{JsValue, Json}
 import _root_.agent.services.CacheConstants
+import play.api.libs.json.{JsValue, Json}
+import usermatching.models.UserDetailsModel
 
 object IntegrationTestModels {
 
@@ -55,7 +55,7 @@ object IntegrationTestModels {
       terms = Some(testTerms)
     )
 
-  def keystoreData(clientDetailsModel: Option[ClientDetailsModel] = None,
+  def keystoreData(clientDetailsModel: Option[UserDetailsModel] = None,
                    matchedNino: Option[String] = None,
                    incomeSource: Option[IncomeSourceModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
@@ -65,7 +65,7 @@ object IntegrationTestModels {
                    accountingMethod: Option[AccountingMethodModel] = None,
                    terms: Option[Boolean] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
-      clientDetailsModel.map(model => ClientDetails -> ClientDetailsModel.format.writes(model)) ++
+      clientDetailsModel.map(model => ClientDetails -> UserDetailsModel.format.writes(model)) ++
       matchedNino.map(model => MatchedNino -> Json.toJson(model)) ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++
@@ -93,6 +93,6 @@ object IntegrationTestModels {
   lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
-  lazy val testClientDetails = ClientDetailsModel("Test", "User", IntegrationTestConstants.testNino, testStartDate)
+  lazy val testClientDetails = _root_.helpers.IntegrationTestModels.testUserDetails
 
 }
