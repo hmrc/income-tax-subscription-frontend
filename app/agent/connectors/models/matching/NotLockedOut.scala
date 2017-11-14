@@ -18,7 +18,7 @@ package agent.connectors.models.matching
 
 import java.time.OffsetDateTime
 
-import agent.connectors.models.ConnectorError
+import core.connectors.models.ConnectorError
 import play.api.libs.json.{Json, OFormat}
 
 sealed trait LockoutStatus
