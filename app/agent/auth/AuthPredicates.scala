@@ -41,11 +41,11 @@ object AuthPredicates extends Results {
 
 
   val notSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>
-    if (request.session.get(ITSASessionKeys.Submitted).isEmpty) Right(AuthPredicateSuccess)
+    if (request.session.get(ITSASessionKeys.MTDITID).isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(confirmationRoute))
 
   val hasSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>
-    if (request.session.get(ITSASessionKeys.Submitted).nonEmpty) Right(AuthPredicateSuccess)
+    if (request.session.get(ITSASessionKeys.MTDITID).nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("auth.AuthPredicates.hasSubmitted")))
 
   val timeoutPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>

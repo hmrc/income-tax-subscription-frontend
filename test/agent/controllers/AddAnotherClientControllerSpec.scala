@@ -52,7 +52,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     }
 
     "the user has completed their submission" should {
-      lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.Submitted -> "anyValue")
+      lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue")
 
       def call = TestAddAnotherClientController.addAnother()(request)
 
@@ -74,17 +74,21 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
         verifyKeystore(deleteAll = 1)
       }
 
-      s"removed the ${ITSASessionKeys.Submitted} from session" in {
+      s"removed the ${ITSASessionKeys.MTDITID} from session" in {
         setupMockKeystore(deleteAll = HttpResponse(OK))
 
         // test validity check
-        request.session.get(ITSASessionKeys.Submitted) must not be None
+        request.session.get(ITSASessionKeys.MTDITID) must not be None
         request.session.get(ITSASessionKeys.JourneyStateKey) must not be None
+        request.session.get(ITSASessionKeys.UTR) must not be None
+        request.session.get(ITSASessionKeys.NINO) must not be None
 
         val result = await(call)
 
-        result.session(request).get(ITSASessionKeys.Submitted) mustBe None
+        result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
         result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
+        result.session(request).get(ITSASessionKeys.UTR) mustBe None
+        result.session(request).get(ITSASessionKeys.NINO) mustBe None
       }
     }
   }

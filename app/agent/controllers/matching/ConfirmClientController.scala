@@ -78,7 +78,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
 
         import ITSASessionKeys.FailedClientMatching
 
-        import scala.concurrent.Future.{failed, successful}
+        import scala.concurrent.Future.successful
 
         agentQualificationService.orchestrateAgentQualification(arn).flatMap {
           case Left(NoClientDetails) => successful(Redirect(routes.ClientDetailsController.show()))
@@ -104,15 +104,16 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
             Redirect(agent.controllers.routes.NoClientRelationshipController.show())
               .removingFromSession(FailedClientMatching)
           )
-          case Right(ApprovedAgent(nino, Some(utr))) => successful(
-            Redirect(agent.controllers.routes.HomeController.index())
+          case Right(ApprovedAgent(nino, optUtr)) =>
+            val resultWithoutUTR = Redirect(agent.controllers.routes.HomeController.index())
               .withJourneyState(AgentUserMatched)
               .removingFromSession(FailedClientMatching)
-          )
-          case Right(ApprovedAgent(nino, None)) => successful(
-            Redirect(agent.controllers.matching.routes.NoSAController.show())
-              .withJourneyState(AgentUserMatched)
-          )
+              .addingToSession(ITSASessionKeys.NINO -> nino)
+            val result = optUtr match {
+              case Some(utr) => resultWithoutUTR.addingToSession(ITSASessionKeys.UTR -> utr)
+              case _ => resultWithoutUTR.removingFromSession(ITSASessionKeys.UTR)
+            }
+            successful(result)
         }
       }
   }

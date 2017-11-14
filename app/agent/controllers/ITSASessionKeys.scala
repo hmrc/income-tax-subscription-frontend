@@ -18,8 +18,12 @@ package agent.controllers
 
 object ITSASessionKeys {
   val ArnKey = "ARN"
-  val Submitted = "Submitted"
+  val MTDITID = "MTDIT-ID"
   val RequestURI = "Request-URI"
   val FailedClientMatching = "Failed-Client-Matching"
   val JourneyStateKey = "Journey-State"
+  val NINO = "NINO"
+  val UTR = "UTR"
+
+  val clientData = Seq(MTDITID, NINO, UTR)
 }

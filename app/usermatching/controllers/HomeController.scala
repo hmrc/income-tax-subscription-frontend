@@ -103,8 +103,8 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
         keystoreService.saveSubscriptionId(mtditId) map { _ =>
           Redirect(incometax.subscription.controllers.routes.ClaimSubscriptionController.claim()).withJourneyState(SignUp)
         }
-      case _ =>
-        Future.failed(new InternalServerException(s"HomeController.index: unexpected error calling the subscription service"))
+      case err@_ =>
+        Future.failed(new InternalServerException(s"HomeController.index: unexpected error calling the subscription service:\n$err"))
     }
 
   def index: Action[AnyContent] = Authenticated.async { implicit request =>

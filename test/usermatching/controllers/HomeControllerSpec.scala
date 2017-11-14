@@ -134,23 +134,23 @@ class HomeControllerSpec extends ControllerBaseSpec
           userSetup()
           mockLookupUserWithoutUtr(testNino)
 
-          val result = call()
+          val result = call(registrationRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe usermatching.controllers.routes.NoSAController.show().url
 
-          await(result).session(subscriptionRequest).get(ITSASessionKeys.UTR) mustBe None
+          await(result).session(registrationRequest).get(ITSASessionKeys.UTR) mustBe None
         }
       }
       "the registration feature flag is on" should {
         "redirect the user to the income source page with the Registration journey state added to session" in {
           userSetup()
 
-          val result = TestHomeController(registrationFeature = true).index()(subscriptionRequest)
+          val result = TestHomeController(registrationFeature = true).index()(registrationRequest)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
-          await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
+          await(result).session(registrationRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
         }
       }
     }
@@ -224,7 +224,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         userSetup()
         mockLookupUserNotFound(testNino)
 
-        val result = call()
+        val result = call(userMatchingRequest)
 
         val e = intercept[InternalServerException] {
           await(result)
@@ -239,7 +239,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         userSetup()
         mockLookupFailure(testNino)
 
-        val result = call()
+        val result = call(userMatchingRequest)
 
         val e = intercept[InternalServerException] {
           await(result)
@@ -251,7 +251,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the index action of the HomeController with an authorised user with only a utr enrolments" should {
-    def call() = TestHomeController(showGuidance = false).index()(subscriptionRequest)
+    def call() = TestHomeController(showGuidance = false).index()(fakeRequest)
 
     def userSetup(): Unit = {
       import org.mockito.Mockito._
@@ -272,7 +272,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
   "Calling the index action of the HomeController with an authorised user who does not already have a subscription" should {
 
-    def getResult: Future[Result] = TestHomeController(showGuidance = false).index()(subscriptionRequest)
+    def getResult: Future[Result] = TestHomeController(showGuidance = false).index()(fakeRequest)
 
     "redirect to check preferences if the user qualifies" in {
       setupMockGetSubscriptionNotFound(testNino)
@@ -306,7 +306,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   "If a user doesn't have a NINO" when {
 
     def getResult(userMatchingFeature: Boolean): Future[Result] =
-      TestHomeController(showGuidance = false, userMatchingFeature = userMatchingFeature).index()(subscriptionRequest)
+      TestHomeController(showGuidance = false, userMatchingFeature = userMatchingFeature).index()(fakeRequest)
 
     "userMatchingFeature in core.config is set to true" should {
       "redirect them to user details" in {

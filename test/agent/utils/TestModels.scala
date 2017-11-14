@@ -55,7 +55,6 @@ object TestModels extends Implicits {
   val testCacheMap: CacheMap =
     testCacheMap(
       clientDetailsModel = testClientDetails,
-      matchedNino = testClientDetails.ninoInBackendFormat,
       incomeSource = testIncomeSourceBoth,
       otherIncome = testOtherIncomeNo,
       accountingPeriodPrior = testAccountingPeriodPriorCurrent,
@@ -66,7 +65,6 @@ object TestModels extends Implicits {
 
   def testCacheMapCustom(
                           clientDetailsModel: Option[UserDetailsModel] = testClientDetails,
-                          matchedNino: Option[String] = testClientDetails.ninoInBackendFormat,
                           incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
                           otherIncome: Option[OtherIncomeModel] = testOtherIncomeNo,
                           accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
@@ -76,7 +74,6 @@ object TestModels extends Implicits {
                           terms: Option[Boolean] = testTerms): CacheMap =
     testCacheMap(
       clientDetailsModel = clientDetailsModel,
-      matchedNino = matchedNino,
       incomeSource = incomeSource,
       otherIncome = otherIncome,
       accountingPeriodPrior = accountingPeriodPrior,
@@ -86,7 +83,6 @@ object TestModels extends Implicits {
       terms = terms)
 
   def testCacheMap(clientDetailsModel: Option[UserDetailsModel] = None,
-                   matchedNino: Option[String] = None,
                    incomeSource: Option[IncomeSourceModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
@@ -97,7 +93,6 @@ object TestModels extends Implicits {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       clientDetailsModel.fold(emptyMap)(model => Map(ClientDetails -> UserDetailsModel.format.writes(model))) ++
-      matchedNino.fold(emptyMap)(model => Map(MatchedNino -> Json.toJson(model))) ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
       otherIncome.fold(emptyMap)(model => Map(OtherIncome -> OtherIncomeModel.format.writes(model))) ++
       accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++

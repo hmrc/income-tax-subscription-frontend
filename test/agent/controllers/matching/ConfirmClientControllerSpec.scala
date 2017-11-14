@@ -174,7 +174,10 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(agent.controllers.routes.HomeController.index().url)
 
-          await(result).session(userMatchingRequest).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+          val session = await(result).session(userMatchingRequest)
+          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+          session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+          session.get(ITSASessionKeys.UTR) mustBe Some(utr)
         }
       }
 
@@ -186,9 +189,12 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           val result = callSubmit()
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(agent.controllers.matching.routes.NoSAController.show().url)
+          redirectLocation(result) mustBe Some(agent.controllers.routes.HomeController.index().url)
 
-          await(result).session(userMatchingRequest).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+          val session = await(result).session(userMatchingRequest.withSession(ITSASessionKeys.UTR -> "this will be deleted"))
+          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+          session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+          session.get(ITSASessionKeys.UTR) mustBe None
         }
       }
     }

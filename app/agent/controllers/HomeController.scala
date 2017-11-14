@@ -20,13 +20,17 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.auth.AgentJourneyState._
-import agent.auth.{AgentSignUp, StatelessController, AgentUserMatched, AgentUserMatching}
-import core.config.BaseControllerConfig
+import agent.auth._
 import agent.controllers.ITSASessionKeys._
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import core.config.BaseControllerConfig
 import core.services.AuthService
 import core.utils.Implicits._
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent, Result}
+import uk.gov.hmrc.http.InternalServerException
+
+import scala.concurrent.Future
+import scala.concurrent.Future._
 
 @Singleton
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
@@ -46,16 +50,20 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
   def index: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (request.isInAgentState(AgentUserMatched))
-        Redirect(agent.controllers.routes.IncomeSourceController.showIncomeSource()).withJourneyState(AgentSignUp)
-      else
-        user.arn match {
-          case Some(arn) =>
-            Redirect(agent.controllers.matching.routes.ClientDetailsController.show())
-              .addingToSession(ArnKey -> arn).withJourneyState(AgentUserMatching)
-          case None =>
-            Redirect(agent.controllers.routes.NotEnrolledAgentServicesController.show())
-        }
+      user.arn match {
+        case Some(arn) =>
+            (user.clientNino, user.clientUtr) match {
+              case (Some(nino), Some(utr)) =>
+                successful(Redirect(agent.controllers.routes.IncomeSourceController.showIncomeSource()).withJourneyState(AgentSignUp))
+              case (Some(nino), _) =>
+                successful(Redirect(agent.controllers.matching.routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey))
+              case _ =>
+                successful(Redirect(agent.controllers.matching.routes.ClientDetailsController.show())
+                  .addingToSession(ArnKey -> arn).withJourneyState(AgentUserMatching))
+            }
+        case None =>
+          successful(Redirect(agent.controllers.routes.NotEnrolledAgentServicesController.show()))
+      }
   }
 
 }

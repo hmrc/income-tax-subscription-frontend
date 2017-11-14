@@ -38,7 +38,9 @@ class AddAnotherClientController @Inject()(override val baseConfig: BaseControll
     implicit user => {
       for {
         _ <- keystore.deleteAll()
-      } yield Redirect(agent.controllers.matching.routes.ClientDetailsController.show().url).removingFromSession(ITSASessionKeys.Submitted, ITSASessionKeys.JourneyStateKey)
+      } yield Redirect(agent.controllers.matching.routes.ClientDetailsController.show().url)
+        .removingFromSession(ITSASessionKeys.JourneyStateKey)
+        .removingFromSession(ITSASessionKeys.clientData: _*)
     }.recover {
       case e =>
         logging.warn("AddAnotherClientController.addAnother encountered error: " + e)
