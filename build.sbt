@@ -15,7 +15,6 @@
  */
 
 import FrontendBuild._
-import TestPhases.oneForkedJvmPerTest
 import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 
@@ -40,7 +39,8 @@ lazy val microservice = Project(appName, file("."))
   .settings(defaultSettings(): _*)
   .settings(
     Keys.fork in Test := true,
-    javaOptions in Test += "-Dlogger.resource=logback-test.xml"
+    javaOptions in Test += "-Dlogger.resource=logback-test.xml",
+    parallelExecution in Test := true
   )
   .settings(
     libraryDependencies ++= appDependencies,
@@ -51,11 +51,12 @@ lazy val microservice = Project(appName, file("."))
   .configs(IntegrationTest)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(
-    Keys.fork in IntegrationTest := false,
+    Keys.fork in IntegrationTest := true,
     unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest) (base => Seq(base / "it")),
     addTestReportOption(IntegrationTest, "int-test-reports"),
-    testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
-    parallelExecution in IntegrationTest := false)
+    javaOptions in IntegrationTest += "-Dlogger.resource=logback-test.xml",
+    parallelExecution in IntegrationTest := false
+  )
   .settings(resolvers ++= Seq(
     Resolver.bintrayRepo("hmrc", "releases"),
     Resolver.jcenterRepo

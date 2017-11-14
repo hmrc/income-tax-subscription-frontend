@@ -21,6 +21,7 @@ import java.util.UUID
 import core.ITSASessionKeys
 import core.auth.{JourneyState, Registration, SignUp, UserMatching}
 import core.config.AppConfig
+import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import helpers.IntegrationTestConstants._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
@@ -46,7 +47,7 @@ trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite
   with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers
   with WiremockHelper with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
-  with I18nSupport with CustomMatchers with WireMockMethods {
+  with I18nSupport with CustomMatchers with WireMockMethods with FeatureSwitching {
 
   val mockHost = WiremockHelper.wiremockHost
   val mockPort = WiremockHelper.wiremockPort.toString
@@ -87,7 +88,7 @@ trait ComponentSpecBase extends UnitSpec
     .configure(config)
     .build
 
-  val appConfig = app.injector.instanceOf[AppConfig]
+  implicit lazy val appConfig = app.injector.instanceOf[AppConfig]
 
   override lazy val messagesApi = app.injector.instanceOf[MessagesApi]
 
@@ -105,6 +106,7 @@ trait ComponentSpecBase extends UnitSpec
   override def afterAll(): Unit = {
     stopWiremock()
     super.afterAll()
+    FeatureSwitch.switches foreach disable
   }
 
   object IncomeTaxSubscriptionFrontend {
