@@ -30,8 +30,6 @@ class NewPreferencesControllerISpec extends ComponentSpecBase with FeatureSwitch
 
   enable(featureswitch.NewPreferencesApiFeature)
 
-  override implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-
   "GET /preferences" should {
 
     "where the user has previously accepted paperless where optedIn is set to True" in {

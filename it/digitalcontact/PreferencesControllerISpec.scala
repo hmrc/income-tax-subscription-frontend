@@ -28,8 +28,6 @@ import play.api.libs.json.JsString
 
 class PreferencesControllerISpec extends ComponentSpecBase {
 
-  override implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-
   "GET /preferences" should {
 
     "where the user has previously accepted paperless where optedIn is set to True" in {
