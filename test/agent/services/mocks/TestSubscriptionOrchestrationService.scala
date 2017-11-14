@@ -23,6 +23,7 @@ import org.mockito.Mockito._
 import agent.services.SubscriptionOrchestrationService
 import core.utils.MockTrait
 import agent.utils.TestConstants._
+import incometax.subscription.services.mocks.MockKnownFactsService
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier

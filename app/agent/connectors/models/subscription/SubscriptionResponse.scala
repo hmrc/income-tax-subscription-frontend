@@ -16,7 +16,7 @@
 
 package agent.connectors.models.subscription
 
-import agent.connectors.models.ConnectorError
+import core.connectors.models.ConnectorError
 import play.api.libs.json.Json
 
 case class SubscriptionSuccess(mtditId: String)

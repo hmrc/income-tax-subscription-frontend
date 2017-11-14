@@ -19,10 +19,10 @@ package agent.utils
 import java.time.OffsetDateTime
 
 import agent.common.Constants._
-import agent.connectors.models.gg._
 import agent.connectors.models.matching.LockedOut
 import agent.connectors.models.subscription.{Both, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
 import agent.models.DateModel
+import incometax.subscription.models.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, TypeValuePair}
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
 
