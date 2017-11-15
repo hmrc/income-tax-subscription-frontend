@@ -17,8 +17,8 @@
 package agent.helpers.servicemocks
 
 import _root_.agent.common.Constants
-import _root_.agent.connectors.GGAdminConnector
-import _root_.agent.connectors.models.gg.{KnownFactsRequest, TypeValuePair}
+import incometax.subscription.connectors.GGAdminConnector
+import incometax.subscription.models.{KnownFactsRequest, TypeValuePair}
 import _root_.agent.helpers.WiremockHelper
 import play.api.http.Status
 import play.api.libs.json.{JsNull, Json}

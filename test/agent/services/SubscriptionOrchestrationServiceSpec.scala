@@ -16,12 +16,12 @@
 
 package agent.services
 
-import agent.connectors.models.ConnectorError
 import agent.connectors.models.subscription.SubscriptionSuccess
 import org.scalatest.concurrent.ScalaFutures
 import agent.services.mocks.TestSubscriptionOrchestrationService
 import agent.utils.TestConstants._
 import agent.utils.TestModels._
+import core.connectors.models.ConnectorError
 import core.utils.UnitTestTrait
 
 import scala.concurrent.Future
@@ -64,7 +64,7 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
         mockCreateSubscriptionSuccess(testARN, testNino, testSummaryData)
         mockAddKnownFactsException(testMTDID, testNino)
 
-        whenReady(res.failed)(_ mustBe testException)
+        whenReady(res.failed)(_ mustBe core.utils.TestConstants.testException)
       }
     }
   }
