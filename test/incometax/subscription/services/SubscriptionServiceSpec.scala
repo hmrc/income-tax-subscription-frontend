@@ -34,7 +34,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService with EitherValues 
     "convert the user's data into the correct FERequest format" in {
       // a freshly generated nino is used to ensure it is not simply pulling the test nino from somewhere else
       val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequest(nino, testSummaryData)
+      val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
       request.nino mustBe nino
       request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.get.startDate
       request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.get.endDate
@@ -46,7 +46,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService with EitherValues 
   }
 
   "SubscriptionService.submitSubscription" should {
-    def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData))
+    def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData, arn = None))
 
     "return the safeId when the subscription is successful" in {
       setupMockSubscribeSuccess(testSubmissionRequest)

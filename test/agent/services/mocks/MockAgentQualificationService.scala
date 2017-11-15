@@ -21,6 +21,7 @@ import agent.services.{UnexpectedFailure, _}
 import agent.utils.TestConstants
 import agent.utils.TestConstants.{testARN, testNino}
 import agent.utils.TestModels.testClientDetails
+import incometax.subscription.services.mocks.MockSubscriptionService
 import usermatching.services.mocks.MockUserMatchingService
 
 trait MockAgentQualificationService extends MockKeystoreService

@@ -16,8 +16,11 @@
 
 package agent.services
 
-import agent.forms.IncomeSourceForm
-import agent.models._
+
+import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, AccountingPeriodPriorModel, BusinessNameModel}
+import incometax.incomesource.forms.IncomeSourceForm
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.subscription.models.SummaryModel
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -63,13 +66,16 @@ object CacheUtil {
               )
             case _ =>
               SummaryModel(
-                incomeSource,
-                getOtherIncome(),
-                getAccountingPeriodPrior(),
-                getAccountingPeriodDate(),
-                getBusinessName(),
-                getAccountingMethod(),
-                getTerms()
+                incomeSource = incomeSource,
+                otherIncome = getOtherIncome(),
+                accountingPeriodPrior = getAccountingPeriodPrior(),
+                accountingPeriod = getAccountingPeriodDate(),
+                businessName = getBusinessName(),
+                businessPhoneNumber = None,
+                businessAddress = None,
+                businessStartDate = None,
+                accountingMethod = getAccountingMethod(),
+                terms = getTerms()
               )
           }
         case _ => SummaryModel()

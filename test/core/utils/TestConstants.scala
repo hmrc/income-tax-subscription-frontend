@@ -21,6 +21,7 @@ import java.util.UUID
 
 import core.Constants.GovernmentGateway._
 import core.models.DateModel
+import core.utils.TestModels._
 import incometax.subscription.models._
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
@@ -71,7 +72,8 @@ object TestConstants {
     accountingPeriodStart = Some(startDate),
     accountingPeriodEnd = Some(endDate),
     cashOrAccruals = Some("Cash"),
-    tradingName = Some("ABC")
+    tradingName = testBusinessName.businessName,
+    arn = None
   )
 
   val testErrorMessage = "This is an error"

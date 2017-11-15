@@ -16,13 +16,13 @@
 
 package agent.services
 
-import agent.connectors.models.subscription.SubscriptionSuccess
-import org.scalatest.concurrent.ScalaFutures
 import agent.services.mocks.TestSubscriptionOrchestrationService
 import agent.utils.TestConstants._
-import agent.utils.TestModels._
+import core.utils.TestModels.testSummaryData
 import core.connectors.models.ConnectorError
 import core.utils.UnitTestTrait
+import incometax.subscription.models.SubscriptionSuccess
+import org.scalatest.concurrent.ScalaFutures
 
 import scala.concurrent.Future
 
@@ -34,7 +34,7 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
       TestSubscriptionOrchestrationService.createSubscription(testARN, testNino, testSummaryData)
 
     "return a success when all services succeed" in {
-      mockCreateSubscriptionSuccess(testARN, testNino, testSummaryData)
+      mockCreateSubscriptionSuccess(testNino, testSummaryData, testARN)
       mockAddKnownFactsSuccess(testMTDID, testNino)
 
       whenReady(res)(_ mustBe testSubscriptionSuccess)
@@ -42,26 +42,26 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
 
     "return a failure" when {
       "create subscription returns an error" in {
-        mockCreateSubscriptionFailure(testARN, testNino, testSummaryData)
+        mockCreateSubscriptionFailure(testNino, testSummaryData, testARN)
 
         whenReady(res)(_ mustBe testSubscriptionFailure)
       }
 
       "create subscription returns an exception" in {
-        mockCreateSubscriptionException(testARN, testNino, testSummaryData)
+        mockCreateSubscriptionException(testNino, testSummaryData, testARN)
 
         whenReady(res.failed)(_ mustBe testException)
       }
 
       "add known facts returns an error" in {
-        mockCreateSubscriptionSuccess(testARN, testNino, testSummaryData)
+        mockCreateSubscriptionSuccess(testNino, testSummaryData, testARN)
         mockAddKnownFactsFailure(testMTDID, testNino)
 
         whenReady(res)(_ mustBe testKnownFactsFailure)
       }
 
       "add known facts returns an exception" in {
-        mockCreateSubscriptionSuccess(testARN, testNino, testSummaryData)
+        mockCreateSubscriptionSuccess(testNino, testSummaryData, testARN)
         mockAddKnownFactsException(testMTDID, testNino)
 
         whenReady(res.failed)(_ mustBe core.utils.TestConstants.testException)

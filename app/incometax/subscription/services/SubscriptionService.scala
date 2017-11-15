@@ -31,7 +31,7 @@ import scala.concurrent.Future
 class SubscriptionService @Inject()(logging: Logging,
                                     subscriptionConnector: SubscriptionConnector) {
 
-  private[services] def buildRequest(nino: String, summaryData: SummaryModel): SubscriptionRequest = {
+  private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
     val incomeSource = IncomeSourceType(summaryData.incomeSource.get.source)
     val accountingPeriodStart = summaryData.accountingPeriod map (_.startDate)
     val accountingPeriodEnd = summaryData.accountingPeriod map (_.endDate)
@@ -40,6 +40,7 @@ class SubscriptionService @Inject()(logging: Logging,
 
     SubscriptionRequest(
       nino = nino,
+      arn = arn,
       incomeSource = incomeSource,
       accountingPeriodStart = accountingPeriodStart,
       accountingPeriodEnd = accountingPeriodEnd,
@@ -49,9 +50,10 @@ class SubscriptionService @Inject()(logging: Logging,
   }
 
   def submitSubscription(nino: String,
-                         summaryData: SummaryModel
+                         summaryData: SummaryModel,
+                         arn: Option[String] = None
                         )(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
-    val request = buildRequest(nino, summaryData)
+    val request = buildRequest(nino, summaryData, arn)
     logging.debug(s"Submitting subscription with request: $request")
     subscriptionConnector.subscribe(request)
   }

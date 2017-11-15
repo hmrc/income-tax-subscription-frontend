@@ -74,6 +74,7 @@ object TestModels extends Implicits {
       businessAddress = testAddress,
       businessStartDate = testBusinessStartDate,
       accountingMethod = testAccountingMethod,
+      nino = testNino,
       terms = testTerms)
 
   def testCacheMapCustom(
@@ -148,9 +149,9 @@ object TestModels extends Implicits {
     incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),
     otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
     accountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no),
-    accountingPeriod = AccountingPeriodModel(TestConstants.startDate, TestConstants.endDate),
-    businessName = BusinessNameModel("ABC"),
-    accountingMethod = AccountingMethodModel("Cash")
+    accountingPeriod = testAccountingPeriod,
+    businessName = testBusinessName,
+    accountingMethod = testAccountingMethod
   )
 
 }

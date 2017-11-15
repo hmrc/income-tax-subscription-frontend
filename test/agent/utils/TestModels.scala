@@ -20,6 +20,7 @@ import _root_.agent.services.CacheConstants
 import agent.forms._
 import agent.models._
 import core.utils.Implicits
+import incometax.subscription.models.SummaryModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -127,14 +128,5 @@ object TestModels extends Implicits {
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
   // TODO change when consolidating models
   lazy val testClientDetails = UserDetailsModel("Test", "User", TestConstants.testNino, core.models.DateModel("01", "04", "2017"))
-
-  val testSummaryData = SummaryModel(
-    incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),
-    otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
-    accountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no),
-    accountingPeriod = AccountingPeriodModel(TestConstants.startDate, TestConstants.endDate),
-    businessName = BusinessNameModel("ABC"),
-    accountingMethod = AccountingMethodModel("Cash")
-  )
 
 }

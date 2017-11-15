@@ -21,13 +21,14 @@ import core.utils.TestConstants
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.test.UnitSpec
 
-class FERequestSpec extends UnitSpec {
+class SubscriptionRequestSpec extends UnitSpec {
 
   "FERequest" should {
     "Provide the correct reader for FERequest" in {
       val feRequest = SubscriptionRequest(
         nino = TestConstants.testNino,
-        incomeSource = Business
+        incomeSource = Business,
+        arn = None
       )
 
       val request: JsValue = Json.toJson(feRequest)

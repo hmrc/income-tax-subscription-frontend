@@ -16,17 +16,16 @@
 
 package agent.services.mocks
 
-import agent.connectors.models.subscription.{SubscriptionFailureResponse, SubscriptionSuccess}
-import agent.models.SummaryModel
+import agent.services.SubscriptionOrchestrationService
+import agent.utils.TestConstants._
+import core.utils.MockTrait
+import incometax.subscription.models.{SubscriptionFailureResponse, SubscriptionSuccess, SummaryModel}
+import incometax.subscription.services.mocks.{MockKnownFactsService, MockSubscriptionService}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
-import agent.services.SubscriptionOrchestrationService
-import core.utils.MockTrait
-import agent.utils.TestConstants._
-import incometax.subscription.services.mocks.MockKnownFactsService
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 trait TestSubscriptionOrchestrationService extends MockSubscriptionService
   with MockKnownFactsService {

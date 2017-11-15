@@ -22,6 +22,7 @@ import play.api.libs.json.Json
 case class SubscriptionRequest(nino: String,
                                incomeSource: IncomeSourceType,
                                isAgent: Boolean = false,
+                               arn: Option[String],
                                accountingPeriodStart: Option[DateModel] = None,
                                accountingPeriodEnd: Option[DateModel] = None,
                                tradingName: Option[String] = None,
@@ -30,3 +31,4 @@ case class SubscriptionRequest(nino: String,
 object SubscriptionRequest {
   implicit val format = Json.format[SubscriptionRequest]
 }
+
