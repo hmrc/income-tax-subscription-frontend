@@ -38,7 +38,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        UserLockoutStub.stubUserIsNotLocked(testUserIdStripped)
+        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
         AuthenticatorStub.stubMatchFailure()
         // n.b. failure is expected as the additional methods are not mocked
 
@@ -76,7 +76,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubFullKeystore()
-          UserLockoutStub.stubUserIsNotLocked(testUserIdStripped)
+          UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
           AuthenticatorStub.stubMatchNotFound()
 
           When("I call POST /confirm-user")
@@ -99,8 +99,8 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubFullKeystore()
           KeystoreStub.stubKeystoreDelete()
-          UserLockoutStub.stubUserIsNotLocked(testUserIdStripped)
-          UserLockoutStub.stubLockAgent(testUserIdStripped)
+          UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
+          UserLockoutStub.stubLockAgent(testUserIdEncoded)
           AuthenticatorStub.stubMatchNotFound()
 
           When("I call POST /confirm-user")
@@ -126,7 +126,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         AuthenticatorStub.stubMatchFound(testNino)
-        UserLockoutStub.stubUserIsNotLocked(testUserIdStripped)
+        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
         SubscriptionStub.stubGetNoSubscription()
 
         When("I call POST /confirm-user")

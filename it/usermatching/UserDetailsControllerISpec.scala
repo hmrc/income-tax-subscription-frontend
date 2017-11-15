@@ -41,8 +41,8 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubFullKeystore()
 
-      if (agentLocked) UserLockoutStub.stubUserIsLocked(testUserIdStripped)
-      else UserLockoutStub.stubUserIsNotLocked(testUserIdStripped)
+      if (agentLocked) UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
+      else UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
       When("I call GET /user-details")
       IncomeTaxSubscriptionFrontend.showUserDetails()
@@ -79,7 +79,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
       "show the user lock out page" in {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        UserLockoutStub.stubUserIsLocked(testUserIdStripped)
+        UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
 
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(None)
 
@@ -96,7 +96,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubEmptyKeystore()
-        UserLockoutStub.stubUserIsNotLocked(testUserIdStripped)
+        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(None)
@@ -118,7 +118,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         val userDetails: UserDetailsModel = IntegrationTestModels.testUserDetails
         KeystoreStub.stubKeystoreSave(CacheConstants.UserDetails, userDetails)
         KeystoreStub.stubEmptyKeystore()
-        UserLockoutStub.stubUserIsNotLocked(testUserIdStripped)
+        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(Some(userDetails))
@@ -141,7 +141,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         val userDetails: UserDetailsModel = IntegrationTestModels.testUserDetails
         val userDetailsJs = Json.toJson(userDetails)
         KeystoreStub.stubKeystoreData(Map(CacheConstants.UserDetails -> userDetailsJs))
-        UserLockoutStub.stubUserIsNotLocked(testUserIdStripped)
+        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(Some(userDetails))
@@ -166,7 +166,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         KeystoreStub.stubKeystoreData(Map(CacheConstants.UserDetails -> userDetailsJs))
         KeystoreStub.stubKeystoreSave(CacheConstants.UserDetails, userDetailsJs)
         KeystoreStub.stubKeystoreDelete()
-        UserLockoutStub.stubUserIsNotLocked(testUserIdStripped)
+        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
         val submittedUserDetails = userDetails.copy(firstName = "NotMatching")
