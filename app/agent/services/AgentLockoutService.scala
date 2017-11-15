@@ -20,18 +20,18 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.connectors.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import agent.connectors.matching.AgentLockoutConnector
+import uk.gov.hmrc.http.HeaderCarrier
+import usermatching.connectors.UserLockoutConnector
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
-class AgentLockoutService @Inject()(agentLockoutConnector: AgentLockoutConnector,
+class AgentLockoutService @Inject()(agentLockoutConnector: UserLockoutConnector,
                                     logging: Logging) {
 
   def lockoutAgent(arn: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
     logging.debug(s"Creating a lock for agent with arn=$arn")
-    agentLockoutConnector.lockoutAgent(arn)
+    agentLockoutConnector.lockoutUser(arn)
   }
 
   def getLockoutStatus(arn: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {

@@ -58,6 +58,6 @@ object TestConstants {
 
   val testKnownFactsFailure = Left(KnownFactsFailure(testErrorMessage))
 
-  lazy val testLockoutResponse = LockedOut(testARN, OffsetDateTime.now())
+  lazy val testLockoutResponse = core.utils.TestConstants.testLockoutResponse
 
 }

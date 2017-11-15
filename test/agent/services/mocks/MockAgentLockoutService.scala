@@ -18,7 +18,6 @@ package agent.services.mocks
 
 import agent.audit.Logging
 import agent.connectors.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import agent.connectors.mocks.MockAgentLockoutConnector
 import agent.services.AgentLockoutService
 import agent.utils.TestConstants.{testException, testLockoutResponse}
 import core.utils.MockTrait
@@ -26,6 +25,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
 import uk.gov.hmrc.http.HeaderCarrier
+import usermatching.connectors.mocks.MockUserLockoutConnector
 import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 
 import scala.concurrent.Future
@@ -73,8 +73,8 @@ trait MockAgentLockoutService extends MockTrait {
 }
 
 
-trait TestAgentLockoutService extends MockAgentLockoutConnector {
+trait TestAgentLockoutService extends MockUserLockoutConnector {
 
-  object TestAgentLockoutService extends AgentLockoutService(mockAgentLockoutConnector, app.injector.instanceOf[Logging])
+  object TestAgentLockoutService extends AgentLockoutService(mockUserLockoutConnector, app.injector.instanceOf[Logging])
 
 }
