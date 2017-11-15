@@ -27,7 +27,7 @@ object UserLockoutStub extends WireMockMethods {
 
   def lockoutURI(userId: String): String = s"/income-tax-subscription/client-matching/lock/$userId"
 
-  val testLock: LockedOut = LockedOut(testUserIdStripped, OffsetDateTime.now())
+  val testLock: LockedOut = LockedOut(testUserIdEncoded, OffsetDateTime.now())
 
   def stubLockAgent(userId: String): Unit =
     when(method = POST, uri = lockoutURI(userId))

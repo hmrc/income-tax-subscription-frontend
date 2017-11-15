@@ -16,6 +16,7 @@
 
 package core.utils
 
+import java.net.URLEncoder
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -42,8 +43,8 @@ object TestConstants {
   lazy val ggServiceName = "HMRC-MTD-IT"
   lazy val testLockoutResponse = LockedOut(testNino, OffsetDateTime.now())
 
-  val strippedUserId = "1234567"
-  val testUserId = UserId(s"/auth/oid/$strippedUserId")
+  val testUserId = UserId(s"/auth/oid/1234567")
+  val escapedUserId = URLEncoder.encode(testUserId.value, "UTF-8")
 
   val testFirstName = "Test"
   val testLastName = "Name"
