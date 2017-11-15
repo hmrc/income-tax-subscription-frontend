@@ -41,6 +41,11 @@ trait TestKnownFactsService extends MockGGAdminConnector {
 trait MockKnownFactsService extends MockTrait {
   val mockKnownFactsService = mock[KnownFactsService]
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockKnownFactsService)
+  }
+
   private def mockAddKnownFacts(mtditid: String, nino: String)(response: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]]): Unit =
     when(mockKnownFactsService.addKnownFacts(ArgumentMatchers.eq(mtditid), ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(response)

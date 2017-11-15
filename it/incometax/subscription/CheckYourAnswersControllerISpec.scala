@@ -16,6 +16,7 @@
 
 package incometax.subscription
 
+import agent.helpers.IntegrationTestConstants.{checkYourAnswersURI => _, confirmationURI => _, signInURI => _, termsURI => _, _}
 import core.services.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -81,7 +82,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription()
+        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(OK)
         GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
@@ -103,7 +104,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription()
+        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(OK)
         GGAuthenticationStub.stubRefreshProfileResult(BAD_REQUEST)
@@ -123,7 +124,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription()
+        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         GGAdminStub.stubAddKnownFactsResult(BAD_REQUEST)
 
         When("POST /check-your-answers is called")
@@ -141,7 +142,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription()
+        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(FORBIDDEN)
 
@@ -160,7 +161,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription()
+        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(BAD_REQUEST)
 
@@ -179,7 +180,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription()
+        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(INTERNAL_SERVER_ERROR)
 
@@ -226,7 +227,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubFullKeystore()
-      SubscriptionStub.stubCreateSubscriptionNotFound()
+      SubscriptionStub.stubCreateSubscriptionNotFound(checkYourAnswersURI)
 
       When("POST /check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()

@@ -16,11 +16,11 @@
 
 package agent.forms
 
-import agent.connectors.models.subscription.IncomeSourceType
+import agent.models.IncomeSourceModel
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil._
 import core.forms.validation.utils.MappingUtil._
-import agent.models.IncomeSourceModel
+import incometax.subscription.models.IncomeSourceType
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid}

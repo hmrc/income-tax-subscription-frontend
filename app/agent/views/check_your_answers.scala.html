@@ -14,8 +14,12 @@
  * limitations under the License.
  *@
 
-@import _root_.agent.models.{SummaryModel, IncomeSourceModel, OtherIncomeModel, AccountingPeriodModel, BusinessNameModel, AccountingMethodModel}
-@import agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
+@import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+@import incometax.business.models.address.Address
+@import incometax.incomesource.models._
+@import incometax.subscription.models.SummaryModel
+@import incometax.business.models.AccountingMethodModel
+@import incometax.business.models.AccountingPeriodModel
 @import core.config.AppConfig
 @import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form

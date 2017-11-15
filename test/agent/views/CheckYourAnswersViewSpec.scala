@@ -20,36 +20,24 @@ import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
 import agent.models._
 import _root_.agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
+import core.utils.TestModels._
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import _root_.agent.utils.TestModels
 import _root_.core.utils.UnitTestTrait
 import _root_.agent.views.html.helpers.SummaryIdConstants._
+import incometax.subscription.models.SummaryModel
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
-
-  val testAccountingPeriod = AccountingPeriodModel(DateModel("1", "4", "2017"), DateModel("1", "4", "2018"))
-  val testBusinessName = BusinessNameModel("test business name")
-  val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
-  val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
-  val testOtherIncome: OtherIncomeModel = TestModels.testOtherIncomeNo
-  val testSummary = SummaryModel(
-    incomeSource = testIncomeSource,
-    otherIncome = testOtherIncome,
-    accountingPeriod = testAccountingPeriod,
-    businessName = testBusinessName,
-    accountingMethod = testAccountingMethod
-  )
 
   lazy val postAction: Call = _root_.agent.controllers.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = _root_.agent.controllers.routes.TermsController.showTerms().url
 
   def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Html = _root_.agent.views.html.check_your_answers(
-    summaryModel = testSummary,
+    summaryModel = testSummaryData,
     postAction = postAction,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)

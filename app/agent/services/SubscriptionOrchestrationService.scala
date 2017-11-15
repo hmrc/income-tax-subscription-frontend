@@ -20,11 +20,9 @@ import javax.inject.{Inject, Singleton}
 
 import cats.data.EitherT
 import cats.implicits._
-import incometax.subscription.services.KnownFactsService
-import agent.connectors.models.subscription.SubscriptionSuccess
-import agent.models.SummaryModel
+import incometax.subscription.services.{KnownFactsService, SubscriptionService}
 import core.connectors.models.ConnectorError
-import incometax.subscription.models.KnownFactsSuccess
+import incometax.subscription.models.{KnownFactsSuccess, SubscriptionSuccess, SummaryModel}
 
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -38,7 +36,11 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                          nino: String,
                          summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
     val res: EitherT[Future, ConnectorError, SubscriptionSuccess] = for {
-      subscriptionResponse <- EitherT(subscriptionService.submitSubscription(arn, nino, summaryModel))
+      subscriptionResponse <- EitherT(subscriptionService.submitSubscription(
+        nino = nino,
+        summaryData = summaryModel,
+        arn = Some(arn)
+      ))
       mtditId = subscriptionResponse.mtditId
       _ <- EitherT[Future, ConnectorError, KnownFactsSuccess.type](knownFactsService.addKnownFacts(mtditId, nino))
     } yield subscriptionResponse

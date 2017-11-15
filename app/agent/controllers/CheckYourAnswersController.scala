@@ -20,13 +20,12 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
+import agent.services.{ClientRelationshipService, KeystoreService, SubscriptionOrchestrationService}
 import core.config.BaseControllerConfig
-import agent.connectors.models.subscription.SubscriptionSuccess
+import core.services.AuthService
+import incometax.subscription.models.SubscriptionSuccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import agent.services.{SubscriptionOrchestrationService,ClientRelationshipService}
-import agent.services.KeystoreService
-import core.services.AuthService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 

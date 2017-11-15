@@ -22,6 +22,7 @@ import java.util.UUID
 
 import core.Constants.GovernmentGateway._
 import core.models.DateModel
+import core.utils.TestModels._
 import incometax.subscription.models._
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
@@ -69,10 +70,11 @@ object TestConstants {
   val testSubmissionRequest = SubscriptionRequest(
     nino = TestConstants.testNino,
     incomeSource = Both,
-    accountingPeriodStart = Some(startDate),
-    accountingPeriodEnd = Some(endDate),
+    accountingPeriodStart = Some(testAccountingPeriod.startDate),
+    accountingPeriodEnd = Some(testAccountingPeriod.endDate),
     cashOrAccruals = Some("Cash"),
-    tradingName = Some("ABC")
+    tradingName = testBusinessName.businessName,
+    arn = None
   )
 
   val testErrorMessage = "This is an error"

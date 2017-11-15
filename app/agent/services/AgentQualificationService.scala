@@ -20,9 +20,10 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.AuditingService
 import agent.audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
-import agent.connectors.models.subscription.SubscriptionSuccess
 import usermatching.models.UserDetailsModel
 import core.utils.Implicits._
+import incometax.subscription.models.SubscriptionSuccess
+import incometax.subscription.services.SubscriptionService
 import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.services.UserMatchingService
 

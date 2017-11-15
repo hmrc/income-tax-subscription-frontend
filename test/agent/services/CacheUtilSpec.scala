@@ -16,15 +16,14 @@
 
 package agent.services
 
-import agent.models._
+import _root_.core.utils.{TestConstants, UnitTestTrait}
+import incometax.subscription.models.SummaryModel
 import org.scalatest.Matchers._
-import _root_.agent.utils.TestConstants
-import _root_.core.utils.UnitTestTrait
 
 class CacheUtilSpec extends UnitTestTrait {
 
   import CacheUtil._
-  import _root_.agent.utils.TestModels._
+  import core.utils.TestModels._
 
   "CacheUtil" should {
 
@@ -56,6 +55,9 @@ class CacheUtilSpec extends UnitTestTrait {
           testAccountingPeriodPriorCurrent,
           testAccountingPeriod,
           testBusinessName,
+          None,
+          None,
+          None,
           testAccountingMethod,
           testTerms
         )
@@ -63,15 +65,16 @@ class CacheUtilSpec extends UnitTestTrait {
       // for the property only journey, this should only populate the subset of views
       // relevant to the journey
       val overPopulatedPropertyCacheMap =
-        testCacheMap(
-          testClientDetails,
-          testIncomeSourceProperty,
-          testOtherIncomeNo,
-          testAccountingPeriodPriorCurrent,
-          testAccountingPeriod,
-          testBusinessName,
-          testAccountingMethod,
-          testTerms)
+        agent.utils.TestModels.testCacheMap(
+          Some(testUserDetails),
+          Some(agent.utils.TestModels.testIncomeSourceProperty),
+          Some(agent.utils.TestModels.testOtherIncomeNo),
+          Some(agent.utils.TestModels.testAccountingPeriodPriorCurrent),
+          Some(agent.utils.TestModels.testAccountingPeriod),
+          Some(agent.utils.TestModels.testBusinessName),
+          Some(agent.utils.TestModels.testAccountingMethod),
+          Some(agent.utils.TestModels.testTerms)
+        )
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceProperty,

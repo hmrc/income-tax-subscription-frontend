@@ -16,8 +16,11 @@
 
 package agent.views.html.helpers
 
-import agent.forms.{IncomeSourceForm, AccountingMethodForm}
-import agent.models.{IncomeSourceModel, AccountingMethodModel}
+
+import incometax.business.forms.AccountingMethodForm
+import incometax.business.models.AccountingMethodModel
+import incometax.incomesource.forms.IncomeSourceForm
+import incometax.incomesource.models.IncomeSourceModel
 import play.api.i18n.Messages
 
 object SummaryHelper {

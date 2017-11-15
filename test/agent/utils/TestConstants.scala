@@ -19,9 +19,8 @@ package agent.utils
 import java.time.OffsetDateTime
 
 import agent.common.Constants._
-import agent.connectors.models.subscription.{Both, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
 import agent.models.DateModel
-import incometax.subscription.models.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, TypeValuePair}
+import incometax.subscription.models._
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
 import usermatching.models.LockedOut
@@ -46,18 +45,9 @@ object TestConstants {
       TypeValuePair(agentServiceIdentifierKey, testNino)
     )
   )
-  val testSubmissionRequest = SubscriptionRequest(
-    nino = TestConstants.testNino,
-    incomeSource = Both,
-    arn = TestConstants.testARN,
-    accountingPeriodStart = Some(startDate),
-    accountingPeriodEnd = Some(endDate),
-    cashOrAccruals = Some("Cash"),
-    tradingName = Some("ABC")
-  )
 
   val testErrorMessage = "This is an error"
-  val testException = new Exception
+  val testException = core.utils.TestConstants.testException
 
 
   val testSubscriptionSuccess = Right(SubscriptionSuccess(testMTDID))

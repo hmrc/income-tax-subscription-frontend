@@ -36,6 +36,11 @@ trait TestRefreshProfileService extends MockGGAuthenticationConnector {
 trait MockRefreshProfileService extends MockTrait {
   val mockRefreshProfileService = mock[RefreshProfileService]
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockRefreshProfileService)
+  }
+
   private def mockRefreshProfile(result: Future[Either[RefreshProfileFailure.type, RefreshProfileSuccess.type]]): Unit =
     when(mockRefreshProfileService.refreshProfile()(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
