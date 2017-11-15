@@ -23,7 +23,7 @@ import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import _root_.agent.services.CacheConstants
 import helpers.IntegrationTestConstants.testUserIdStripped
-import helpers.servicemocks.{AuthenticatorStub, UserLockoutStub}
+import helpers.servicemocks.{AuditStub, AuthenticatorStub, SubscriptionStub, UserLockoutStub}
 import play.api.http.Status._
 
 

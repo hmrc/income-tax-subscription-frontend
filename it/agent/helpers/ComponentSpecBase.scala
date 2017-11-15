@@ -26,8 +26,9 @@ import _root_.agent.controllers.ITSASessionKeys
 import _root_.agent.forms._
 import _root_.agent.helpers.IntegrationTestConstants.{baseURI, testMTDID}
 import _root_.agent.helpers.SessionCookieBaker._
-import _root_.agent.helpers.servicemocks.{AuditStub, WireMockMethods}
+import _root_.agent.helpers.servicemocks.WireMockMethods
 import _root_.agent.models._
+import helpers.servicemocks.AuditStub
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite

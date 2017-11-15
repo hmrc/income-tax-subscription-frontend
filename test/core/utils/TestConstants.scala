@@ -69,8 +69,8 @@ object TestConstants {
   val testSubmissionRequest = SubscriptionRequest(
     nino = TestConstants.testNino,
     incomeSource = Both,
-    accountingPeriodStart = Some(startDate),
-    accountingPeriodEnd = Some(endDate),
+    accountingPeriodStart = Some(testAccountingPeriod.startDate),
+    accountingPeriodEnd = Some(testAccountingPeriod.endDate),
     cashOrAccruals = Some("Cash"),
     tradingName = testBusinessName.businessName,
     arn = None

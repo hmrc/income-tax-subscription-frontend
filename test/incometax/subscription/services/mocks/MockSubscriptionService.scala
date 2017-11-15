@@ -34,6 +34,11 @@ import scala.concurrent.Future
 trait MockSubscriptionService extends MockTrait {
   val mockSubscriptionService = mock[SubscriptionService]
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockSubscriptionService)
+  }
+
   private def mockCreateSubscription(nino: String, summaryModel: SummaryModel, arn: Option[String])(result: Future[SubscriptionResponse]): Unit =
     when(mockSubscriptionService.submitSubscription(
       ArgumentMatchers.eq(nino),
@@ -42,13 +47,13 @@ trait MockSubscriptionService extends MockTrait {
     )(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel, arn: Option[String] = None): Unit =
+  def mockCreateSubscriptionSuccess(nino: String, summaryModel: SummaryModel, arn: Option[String]): Unit =
     mockCreateSubscription(nino, summaryModel, arn)(Future.successful(testSubscriptionSuccess))
 
-  def mockCreateSubscriptionFailure(nino: String, summaryModel: SummaryModel, arn: Option[String] = None): Unit =
+  def mockCreateSubscriptionFailure(nino: String, summaryModel: SummaryModel, arn: Option[String]): Unit =
     mockCreateSubscription(nino, summaryModel, arn)(Future.successful(testSubscriptionFailure))
 
-  def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel, arn: Option[String] = None): Unit =
+  def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel, arn: Option[String]): Unit =
     mockCreateSubscription(nino, summaryModel, arn)(Future.failed(testException))
 
   private def mockGetSubscription(nino: String)(result: Future[GetSubscriptionResponse]): Unit =

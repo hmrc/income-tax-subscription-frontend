@@ -43,6 +43,11 @@ trait TestEnrolmentService extends MockGGConnector {
 trait MockEnrolmentService extends MockTrait {
   val mockEnrolmentService = mock[EnrolmentService]
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockEnrolmentService)
+  }
+
   private def mockEnrol(mtditid: String, nino: String)(response: Future[Either[EnrolFailure, EnrolSuccess.type]]): Unit =
     when(
       mockEnrolmentService.enrol(

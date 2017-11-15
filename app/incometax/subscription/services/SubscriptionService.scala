@@ -51,7 +51,7 @@ class SubscriptionService @Inject()(logging: Logging,
 
   def submitSubscription(nino: String,
                          summaryData: SummaryModel,
-                         arn: Option[String] = None
+                         arn: Option[String]
                         )(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
     val request = buildRequest(nino, summaryData, arn)
     logging.debug(s"Submitting subscription with request: $request")

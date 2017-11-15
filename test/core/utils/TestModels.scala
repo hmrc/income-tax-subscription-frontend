@@ -74,7 +74,6 @@ object TestModels extends Implicits {
       businessAddress = testAddress,
       businessStartDate = testBusinessStartDate,
       accountingMethod = testAccountingMethod,
-      nino = testNino,
       terms = testTerms)
 
   def testCacheMapCustom(

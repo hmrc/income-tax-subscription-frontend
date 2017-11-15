@@ -23,6 +23,7 @@ import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 import play.api.i18n.Messages
 import _root_.agent.services.CacheConstants._
+import helpers.servicemocks.SubscriptionStub
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase {
 
@@ -81,7 +82,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription()
+        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         GGAdminStub.stubKnowFactsSuccess(testNino, testMTDID)
         KeystoreStub.stubPutMtditId()
 
@@ -126,7 +127,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription()
+        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         GGAdminStub.stubKnowFactsFailure(testNino, testMTDID)
 
         When("I call POST /check-your-answers")
@@ -139,8 +140,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
 
         val cookieMap = SessionCookieCrumbler.getSessionMap(res)
         cookieMap.get(ITSASessionKeys.Submitted) shouldBe None
-
-        GGAdminStub.verifyKnownFacts(testNino, testMTDID, Some(1))
       }
     }
 
@@ -177,7 +176,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubFullKeystore()
-      SubscriptionStub.stubCreateSubscriptionNotFound()
+      SubscriptionStub.stubCreateSubscriptionNotFound(checkYourAnswersURI)
 
       When("POST /check-your-answers is called")
       val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()

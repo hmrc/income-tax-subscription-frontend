@@ -39,7 +39,6 @@ class CacheUtilSpec extends UnitTestTrait {
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
-      testCacheMap.getNino() shouldBe Some(TestConstants.testNino)
       testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
       testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)

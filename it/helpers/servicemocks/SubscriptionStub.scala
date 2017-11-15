@@ -24,10 +24,9 @@ import play.api.libs.json.Json
 
 object SubscriptionStub extends WireMockMethods{
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"
-  val callingPageURI = "/report-quarterly/income-and-expenses/sign-up/check-your-answers"
 
-  def stubSuccessfulSubscription(): Unit = {
-    when(method = POST, uri = subscriptionURI(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageURI))
+  def stubSuccessfulSubscription(callingPageUri: String): Unit = {
+    when(method = POST, uri = subscriptionURI(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri))
       .thenReturn(Status.OK, successfulSubscriptionResponse)
   }
 
@@ -46,8 +45,8 @@ object SubscriptionStub extends WireMockMethods{
       .thenReturn(Status.INTERNAL_SERVER_ERROR, failureSubscriptionResponse)
   }
 
-  def stubCreateSubscriptionNotFound(): Unit = {
-    when(method = POST, uri = subscriptionURI(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageURI))
+  def stubCreateSubscriptionNotFound(callingPageUri: String): Unit = {
+    when(method = POST, uri = subscriptionURI(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri))
       .thenReturn(Status.NOT_FOUND)
   }
 
