@@ -20,7 +20,6 @@ import javax.inject.{Inject, Singleton}
 
 import agent.auth.AgentJourneyState._
 import agent.auth.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
-import agent.connectors.models.matching.{LockedOut, NotLockedOut}
 import agent.controllers.ITSASessionKeys
 import agent.services._
 import core.config.BaseControllerConfig
@@ -29,7 +28,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
-import usermatching.models.UserDetailsModel
+import usermatching.models.{LockedOut, NotLockedOut, UserDetailsModel}
 
 import scala.concurrent.Future
 import scala.util.Left

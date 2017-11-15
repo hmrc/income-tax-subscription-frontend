@@ -16,13 +16,13 @@
 
 package agent.services
 
-import agent.connectors.models.matching.{LockoutStatusFailureResponse, NotLockedOut}
-import org.scalatest.EitherValues
-import org.scalatest.Matchers._
-import play.api.test.Helpers._
 import agent.services.mocks.TestAgentLockoutService
 import agent.utils.TestConstants
 import agent.utils.TestConstants._
+import org.scalatest.EitherValues
+import org.scalatest.Matchers._
+import play.api.test.Helpers._
+import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 
 class AgentLockOutServiceSpec extends TestAgentLockoutService with EitherValues {
 

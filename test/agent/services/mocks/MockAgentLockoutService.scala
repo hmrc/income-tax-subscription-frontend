@@ -18,17 +18,17 @@ package agent.services.mocks
 
 import agent.audit.Logging
 import agent.connectors.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import agent.connectors.mocks.{MockAgentLockoutConnector, TestAgentLockoutConnector}
-import agent.connectors.models.matching.{LockoutStatusFailureResponse, NotLockedOut}
+import agent.connectors.mocks.MockAgentLockoutConnector
+import agent.services.AgentLockoutService
+import agent.utils.TestConstants.{testException, testLockoutResponse}
+import core.utils.MockTrait
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
-import agent.services.AgentLockoutService
-import core.utils.MockTrait
-import agent.utils.TestConstants.{testException, testLockoutResponse}
+import uk.gov.hmrc.http.HeaderCarrier
+import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 trait MockAgentLockoutService extends MockTrait {
   val mockAgentLockoutService = mock[AgentLockoutService]

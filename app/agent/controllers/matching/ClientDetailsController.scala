@@ -19,17 +19,16 @@ package agent.controllers.matching
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.{IncomeTaxAgentUser, UserMatchingController}
-import core.config.BaseControllerConfig
-import agent.connectors.models.matching.NotLockedOut
 import agent.forms._
+import agent.services.{AgentLockoutService, KeystoreService}
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import agent.services.{AgentLockoutService, KeystoreService}
-import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
-import usermatching.models.UserDetailsModel
+import usermatching.models.{NotLockedOut, UserDetailsModel}
 
 import scala.concurrent.Future
 
