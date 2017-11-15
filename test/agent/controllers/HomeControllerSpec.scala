@@ -18,7 +18,7 @@ package agent.controllers
 
 import agent.assets.MessageLookup.FrontPage
 import agent.audit.Logging
-import agent.auth.{AgentSignUp, AgentUserMatching}
+import agent.auth.{AgentRegistration, AgentSignUp, AgentUserMatching}
 import core.config.{BaseControllerConfig, MockConfig}
 import org.jsoup.Jsoup
 import org.mockito.Mockito.reset
@@ -122,17 +122,33 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
       }
     }
 
-    "journey state is user matched" should {
-      lazy val request = userMatchedRequest
+    "journey state is user matched" when {
+      "the user has a UTR" should {
+        lazy val request = userMatchedRequest
 
-      def result = testHomeController(showGuidance = false).index()(request)
+        def result = testHomeController(showGuidance = false).index()(request)
 
-      s"redirect user to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
-        status(result) must be(Status.SEE_OTHER)
+        s"redirect user to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+          status(result) must be(Status.SEE_OTHER)
 
-        redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
+          redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
 
-        await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+          await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+        }
+      }
+
+      "the user does not have a UTR" should {
+        lazy val request = userMatchedRequestNoUtr
+
+        def result = testHomeController(showGuidance = false).index()(request)
+
+        s"redirect user to ${agent.controllers.matching.routes.NoSAController.show().url}" in {
+          status(result) must be(Status.SEE_OTHER)
+
+          redirectLocation(result).get mustBe agent.controllers.matching.routes.NoSAController.show().url
+
+          await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
+        }
       }
     }
   }

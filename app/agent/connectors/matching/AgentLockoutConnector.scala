@@ -18,12 +18,12 @@ package agent.connectors.matching
 
 import javax.inject.{Inject, Singleton}
 
-import core.config.AppConfig
 import agent.connectors.httpparsers.LockoutStatusHttpParser._
-import agent.connectors.models.matching.LockOutRequest
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpPost}
+import core.config.AppConfig
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+import usermatching.models.LockOutRequest
 
 import scala.concurrent.Future
 

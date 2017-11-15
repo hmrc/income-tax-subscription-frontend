@@ -113,8 +113,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       .flatMapRight(checkClientRelationship(arn, _))
       .flatMapRight(checkExistingSubscription)
       .flatMapRight {
-        case returnValue@ApprovedAgent(nino, utr) =>
-          keystoreService.saveMatchedNino(nino).flatMap(_ => Future.successful(Right(returnValue)))
+        case returnValue@ApprovedAgent(nino, utr) => Future.successful(Right(returnValue))
       }
 
 }

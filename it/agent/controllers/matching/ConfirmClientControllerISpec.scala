@@ -176,10 +176,13 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
         Then("The result should have a status of SEE_OTHER and redirect to index")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(registerForSAURI)
+          redirectURI(indexURI)
         )
 
-        SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
+        val session = SessionCookieCrumbler.getSessionMap(res)
+        session.get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
+        session.get(ITSASessionKeys.NINO) shouldBe Some(testNino)
+        session.get(ITSASessionKeys.UTR) shouldBe None
 
         Then("The client matching request should have been audited")
         AuditStub.verifyAudit()
@@ -205,7 +208,10 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
           redirectURI(indexURI)
         )
 
-        SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
+        val session = SessionCookieCrumbler.getSessionMap(res)
+        session.get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
+        session.get(ITSASessionKeys.NINO) shouldBe Some(testNino)
+        session.get(ITSASessionKeys.UTR) shouldBe Some(testUtr)
 
         Then("The client matching request should have been audited")
         AuditStub.verifyAudit()

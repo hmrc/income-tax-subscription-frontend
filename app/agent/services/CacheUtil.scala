@@ -30,8 +30,6 @@ object CacheUtil {
 
     import CacheConstants._
 
-    def getNino()(implicit read: Reads[String]): Option[String] = cacheMap.getEntry(MatchedNino)
-
     def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
 
     def getOtherIncome()(implicit read: Reads[OtherIncomeModel]): Option[OtherIncomeModel] = cacheMap.getEntry(OtherIncome)

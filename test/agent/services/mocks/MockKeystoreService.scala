@@ -65,7 +65,6 @@ trait MockKeystoreService extends MockTrait {
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
                                          fetchClientDetails: MFO[UserDetailsModel] = DoNotConfigure,
-                                         fetchMatchedNino: MFO[String] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
@@ -79,7 +78,6 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
     mockFetchFromKeyStore[UserDetailsModel](ClientDetails, fetchClientDetails)
-    mockFetchFromKeyStore[String](MatchedNino, fetchMatchedNino)
 
     setupMockKeystoreSaveFunctions()
 
@@ -108,8 +106,6 @@ trait MockKeystoreService extends MockTrait {
                                       saveAccountingPeriodPrior: Option[Int] = None,
                                       fetchClientDetails: Option[Int] = None,
                                       saveClientDetails: Option[Int] = None,
-                                      fetchMatchedNino: Option[Int] = None,
-                                      saveMatchedNino: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
@@ -133,8 +129,6 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(AccountingPeriodPrior, saveAccountingPeriodPrior)
     verifyKeystoreFetch(ClientDetails, fetchClientDetails)
     verifyKeystoreSave(ClientDetails, saveClientDetails)
-    verifyKeystoreFetch(MatchedNino, fetchMatchedNino)
-    verifyKeystoreSave(MatchedNino, saveMatchedNino)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext]))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext]))

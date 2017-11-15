@@ -37,7 +37,7 @@ class ResetUserController @Inject()(val baseConfig: BaseControllerConfig,
     implicit user =>
       Future.successful(
         Ok("User reset successfully")
-          .removingFromSession(ITSASessionKeys.Submitted)
+          .removingFromSession(ITSASessionKeys.MTDITID)
       )
   }
 }

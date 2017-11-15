@@ -28,7 +28,6 @@ class CacheUtilSpec extends UnitTestTrait {
   "CacheUtil" should {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
-      emptyCacheMap.getNino() shouldBe None
       emptyCacheMap.getIncomeSource() shouldBe None
       emptyCacheMap.getOtherIncome() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
@@ -66,16 +65,15 @@ class CacheUtilSpec extends UnitTestTrait {
       // for the property only journey, this should only populate the subset of views
       // relevant to the journey
       val overPopulatedPropertyCacheMap =
-        agent.utils.TestModels.testCacheMap(
-          agent.utils.TestModels.testClientDetails,
-          agent.utils.TestModels.testClientDetails.ninoInBackendFormat,
-          agent.utils.TestModels.testIncomeSourceProperty,
-          agent.utils.TestModels.testOtherIncomeNo,
-          agent.utils.TestModels.testAccountingPeriodPriorCurrent,
-          agent.utils.TestModels.testAccountingPeriod,
-          agent.utils.TestModels.testBusinessName,
-          agent.utils.TestModels.testAccountingMethod,
-          agent.utils.TestModels.testTerms)
+        testCacheMap(
+          testUserDetails,
+          testIncomeSourceProperty,
+          testOtherIncomeNo,
+          testAccountingPeriodPriorCurrent,
+          testAccountingPeriod,
+          testBusinessName,
+          testAccountingMethod,
+          testTerms)
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceProperty,

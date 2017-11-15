@@ -16,10 +16,10 @@
 
 package agent.controllers
 
-import _root_.agent.auth.{AgentSignUp, AgentUserMatched, AgentUserMatching}
-import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import _root_.agent.auth.{AgentRegistration, AgentSignUp, AgentUserMatched, AgentUserMatching}
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks.AuthStub
+import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -81,24 +81,48 @@ class HomeControllerISpec extends ComponentSpecBase {
         }
       }
 
-      "journey state is UserMatched" should {
-        "redirect to client details" in {
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
+      "journey state is UserMatched" when {
 
-          When("I call GET /index")
-          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched))
+        "the matched user has a utr" should {
+          "redirect to client details" in {
+            Given("I setup the wiremock stubs")
+            AuthStub.stubAuthSuccess()
 
-          Then("the result should have a status of SEE_OTHER and a redirect location of /income")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(incomeSourceURI)
-          )
+            When("I call GET /index")
+            val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino, ITSASessionKeys.UTR -> testUtr))
 
-          Then("the JourneyStateKey should be changed to SignUp")
-          SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentSignUp.name)
+            Then("the result should have a status of SEE_OTHER and a redirect location of /income")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(incomeSourceURI)
+            )
+
+            Then("the JourneyStateKey should be changed to AgentSignUp")
+            SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentSignUp.name)
+          }
         }
+
+        "the matched user only has a nino" should {
+          "redirect to client details" in {
+            Given("I setup the wiremock stubs")
+            AuthStub.stubAuthSuccess()
+
+            When("I call GET /index")
+            val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatched), Map(ITSASessionKeys.NINO -> testNino))
+
+            Then("the result should have a status of SEE_OTHER and a redirect location of /register-for-SA")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(registerForSAURI)
+            )
+
+            Then("the JourneyStateKey should be removed")
+            SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe None
+          }
+        }
+
       }
+
     }
   }
 }

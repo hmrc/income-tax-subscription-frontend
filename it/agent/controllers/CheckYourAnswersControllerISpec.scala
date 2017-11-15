@@ -96,7 +96,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         )
 
         val cookieMap = SessionCookieCrumbler.getSessionMap(res)
-        cookieMap(ITSASessionKeys.Submitted) shouldBe testMTDID
+        cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
 
         GGAdminStub.verifyKnownFacts(testNino, testMTDID, Some(1))
       }
@@ -118,7 +118,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         )
 
         val cookieMap = SessionCookieCrumbler.getSessionMap(res)
-        cookieMap.get(ITSASessionKeys.Submitted) shouldBe None
+        cookieMap.get(ITSASessionKeys.MTDITID) shouldBe None
 
         GGAdminStub.verifyKnownFacts(testNino, testMTDID, Some(0))
       }
@@ -139,7 +139,9 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         )
 
         val cookieMap = SessionCookieCrumbler.getSessionMap(res)
-        cookieMap.get(ITSASessionKeys.Submitted) shouldBe None
+        cookieMap.get(ITSASessionKeys.MTDITID) shouldBe None
+
+        GGAdminStub.verifyKnownFacts(testNino, testMTDID, Some(1))
       }
     }
 

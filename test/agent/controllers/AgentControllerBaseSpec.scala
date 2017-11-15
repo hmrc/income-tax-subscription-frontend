@@ -25,6 +25,7 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import agent.services.mocks.MockAgentAuthService
+import agent.utils.TestConstants
 import core.controllers.ControllerBaseTrait
 import core.utils.JsonUtils
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
@@ -66,21 +67,38 @@ trait AgentControllerBaseSpec extends ControllerBaseTrait with MockAgentAuthServ
     def addingToSession(newSessions: (String, String)*): FakeRequest[C] = {
       fakeRequest.withSession(fakeRequest.session.data ++: newSessions: _*)
     }
+
+    def removeFromSession(sessionKeys: String*): FakeRequest[C] = {
+      FakeRequest().withSession(fakeRequest.session.data.filter { case (k, v) => !sessionKeys.contains(k) }.toSeq: _*)
+        .withBody(fakeRequest.body)
+    }
   }
+
+  lazy val fakeRequest = FakeRequest()
 
   lazy val userMatchingRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name
   )
 
   lazy val userMatchedRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name
+    ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name,
+    ITSASessionKeys.NINO -> TestConstants.testNino,
+    ITSASessionKeys.UTR -> TestConstants.testUtr
+  )
+
+  lazy val userMatchedRequestNoUtr = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name,
+    ITSASessionKeys.NINO -> TestConstants.testNino
   )
 
   lazy val subscriptionRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentSignUp.name
+    ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+    ITSASessionKeys.NINO -> TestConstants.testNino,
+    ITSASessionKeys.UTR -> TestConstants.testUtr
   )
 
   lazy val registrationRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> AgentRegistration.name
+    ITSASessionKeys.JourneyStateKey -> AgentRegistration.name,
+    ITSASessionKeys.NINO -> TestConstants.testNino
   )
 }

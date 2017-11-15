@@ -19,16 +19,16 @@ package agent.helpers
 import java.util.UUID
 
 import _root_.agent.auth.{AgentJourneyState, AgentSignUp, AgentUserMatching}
-import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import _root_.agent.controllers.ITSASessionKeys
 import _root_.agent.forms._
-import _root_.agent.helpers.IntegrationTestConstants.{baseURI, testMTDID}
+import _root_.agent.helpers.IntegrationTestConstants.{baseURI, testMTDID, testNino, testUtr, testARN}
 import _root_.agent.helpers.SessionCookieBaker._
 import _root_.agent.helpers.servicemocks.WireMockMethods
 import _root_.agent.models._
 import helpers.servicemocks.AuditStub
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -143,8 +143,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def startPage(): WSResponse = get("/")
 
-    def indexPage(journeySate: Option[AgentJourneyState] = None): WSResponse = {
-      get("/index", journeySate.fold(Map.empty[String, String])(state => Map(ITSASessionKeys.JourneyStateKey -> state.name)))
+    def indexPage(journeySate: Option[AgentJourneyState] = None, sessionMap: Map[String, String] = Map.empty[String, String]): WSResponse = {
+      get("/index", journeySate.fold(sessionMap)(state => sessionMap.+(ITSASessionKeys.JourneyStateKey -> state.name)))
     }
 
     def income(): WSResponse = get("/income")
@@ -178,7 +178,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def showConfirmation(hasSubmitted: Boolean): WSResponse =
       if (hasSubmitted)
-        get("/confirmation", Map(ITSASessionKeys.Submitted -> testMTDID))
+        get("/confirmation", Map(ITSASessionKeys.MTDITID -> testMTDID))
       else
         get("/confirmation")
 
@@ -198,9 +198,19 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitClientAlreadySubscribed(): WSResponse = post("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
 
-    def checkYourAnswers(): WSResponse = get("/check-your-answers")
+    def checkYourAnswers(): WSResponse = get("/check-your-answers", Map(
+      ITSASessionKeys.ArnKey -> testARN,
+      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+      ITSASessionKeys.NINO -> testNino,
+      ITSASessionKeys.UTR -> testUtr
+    ))
 
-    def submitCheckYourAnswers(): WSResponse = post("/check-your-answers", Map(ITSASessionKeys.JourneyStateKey -> AgentSignUp.name))(Map.empty)
+    def submitCheckYourAnswers(): WSResponse = post("/check-your-answers", Map(
+      ITSASessionKeys.ArnKey -> testARN,
+      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+      ITSASessionKeys.NINO -> testNino,
+      ITSASessionKeys.UTR -> testUtr
+    ))(Map.empty)
 
     def submitConfirmClient(previouslyFailedAttempts: Int = 0): WSResponse = {
       val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
@@ -228,7 +238,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def getAddAnotherClient(hasSubmitted: Boolean): WSResponse =
       if (hasSubmitted)
-        get("/add-another", Map(ITSASessionKeys.Submitted -> testMTDID))
+        get("/add-another", Map(ITSASessionKeys.MTDITID -> testMTDID))
       else
         get("/add-another")
 

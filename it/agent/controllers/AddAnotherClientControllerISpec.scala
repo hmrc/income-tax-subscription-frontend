@@ -42,7 +42,7 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase {
     }
 
     "the session marked the journey as complete" should {
-      s"clear the keystore and ${ITSASessionKeys.Submitted} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
+      s"clear the keystore and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreDelete()
@@ -57,7 +57,7 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase {
         )
 
         val cookie = SessionCookieCrumbler.getSessionMap(res)
-        cookie.keys should not contain ITSASessionKeys.Submitted
+        cookie.keys should not contain ITSASessionKeys.MTDITID
         cookie.keys should not contain ITSASessionKeys.JourneyStateKey
 
         KeystoreStub.verifyKeyStoreDelete(Some(1))

@@ -18,7 +18,6 @@ package agent.connectors.mocks
 
 import agent.connectors.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import agent.connectors.matching.AgentLockoutConnector
-import agent.connectors.models.matching.{LockoutStatusFailureResponse, NotLockedOut}
 import agent.utils.TestConstants.{testException, testLockoutResponse}
 import core.config.AppConfig
 import core.utils.MockTrait
@@ -26,6 +25,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.HeaderCarrier
+import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 
 import scala.concurrent.Future
 

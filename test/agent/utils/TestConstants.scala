@@ -19,11 +19,11 @@ package agent.utils
 import java.time.OffsetDateTime
 
 import agent.common.Constants._
-import agent.connectors.models.matching.LockedOut
 import agent.models.DateModel
 import incometax.subscription.models._
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
+import usermatching.models.LockedOut
 
 object TestConstants {
   /*

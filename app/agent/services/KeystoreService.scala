@@ -101,11 +101,5 @@ class KeystoreService @Inject()(val session: SessionCache)(implicit ec: Executio
   def saveClientDetails(clientDetails: UserDetailsModel)(implicit hc: HeaderCarrier, reads: Reads[UserDetailsModel]): FC =
     save[UserDetailsModel](ClientDetails, clientDetails)
 
-  def fetchMatchedNino()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] =
-    fetch[String](MatchedNino)
-
-  def saveMatchedNino(nino: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC =
-    save[String](MatchedNino, nino)
-
 }
 

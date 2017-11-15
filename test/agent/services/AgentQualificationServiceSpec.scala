@@ -136,7 +136,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
       val response = await(call)
 
       response mustBe Left(UnexpectedFailure)
-      verifyKeystore(fetchClientDetails = 1, saveMatchedNino = 0)
+      verifyKeystore(fetchClientDetails = 1)
     }
 
     "return NoClientDetails if there's no client details in keystore" in {
@@ -145,7 +145,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
       val result = call
 
       await(result) mustBe Left(NoClientDetails)
-      verifyKeystore(fetchClientDetails = 1, saveMatchedNino = 0)
+      verifyKeystore(fetchClientDetails = 1)
     }
 
     "return NoClientMatched if the client matching was unsuccessful" in {
@@ -156,7 +156,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
       await(result) mustBe Left(NoClientMatched)
 
       verifyClientMatchingFailureAudit()
-      verifyKeystore(fetchClientDetails = 1, saveMatchedNino = 0)
+      verifyKeystore(fetchClientDetails = 1)
     }
 
     "return ClientAlreadySubscribed if the client already has subscription" in {
@@ -167,7 +167,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
       await(result) mustBe Left(ClientAlreadySubscribed)
 
       verifyClientMatchingSuccessAudit()
-      verifyKeystore(fetchClientDetails = 1, saveMatchedNino = 0)
+      verifyKeystore(fetchClientDetails = 1)
     }
 
     "return NoClientRelationship if the agent does not have prior relationship with the client" in {
@@ -178,7 +178,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
       await(result) mustBe Left(NoClientRelationship)
 
       verifyClientMatchingSuccessAudit()
-      verifyKeystore(fetchClientDetails = 1, saveMatchedNino = 0)
+      verifyKeystore(fetchClientDetails = 1)
     }
 
     "return ApprovedAgent if the client matching was successful" in {
@@ -189,7 +189,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
       await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat, testUtr))
 
       verifyClientMatchingSuccessAudit()
-      verifyKeystore(fetchClientDetails = 1, saveMatchedNino = 1)
+      verifyKeystore(fetchClientDetails = 1)
     }
   }
 
