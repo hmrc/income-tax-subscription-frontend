@@ -65,15 +65,16 @@ class CacheUtilSpec extends UnitTestTrait {
       // for the property only journey, this should only populate the subset of views
       // relevant to the journey
       val overPopulatedPropertyCacheMap =
-        testCacheMap(
-          testUserDetails,
-          testIncomeSourceProperty,
-          testOtherIncomeNo,
-          testAccountingPeriodPriorCurrent,
-          testAccountingPeriod,
-          testBusinessName,
-          testAccountingMethod,
-          testTerms)
+        agent.utils.TestModels.testCacheMap(
+          Some(testUserDetails),
+          Some(agent.utils.TestModels.testIncomeSourceProperty),
+          Some(agent.utils.TestModels.testOtherIncomeNo),
+          Some(agent.utils.TestModels.testAccountingPeriodPriorCurrent),
+          Some(agent.utils.TestModels.testAccountingPeriod),
+          Some(agent.utils.TestModels.testBusinessName),
+          Some(agent.utils.TestModels.testAccountingMethod),
+          Some(agent.utils.TestModels.testTerms)
+        )
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceProperty,
