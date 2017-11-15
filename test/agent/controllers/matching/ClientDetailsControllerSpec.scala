@@ -19,20 +19,21 @@ package agent.controllers.matching
 import agent.assets.MessageLookup.{ClientDetails => messages}
 import agent.controllers.AgentControllerBaseSpec
 import agent.forms.ClientDetailsForm
-import core.models.DateModel
-import agent.services.mocks.{MockAgentLockoutService, MockKeystoreService}
+import agent.services.mocks.MockKeystoreService
 import agent.utils.TestConstants
+import core.models.DateModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import uk.gov.hmrc.http.HttpResponse
 import usermatching.models.UserDetailsModel
+import usermatching.services.mocks.MockUserLockoutService
 
 
 class ClientDetailsControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService
-  with MockAgentLockoutService {
+  with MockUserLockoutService {
 
   override val controllerName: String = "ClientDetailsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -45,7 +46,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     mockAuthService,
-    mockAgentLockoutService
+    mockUserLockoutService
   )
 
   val testNino = TestConstants.testNino

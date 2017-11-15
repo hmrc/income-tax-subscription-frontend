@@ -19,7 +19,7 @@ package agent.controllers.matching
 import agent.auth.AgentUserMatched
 import agent.controllers.{AgentControllerBaseSpec, ITSASessionKeys}
 import agent.services._
-import agent.services.mocks.{MockAgentLockoutService, MockAgentQualificationService}
+import agent.services.mocks.MockAgentQualificationService
 import agent.utils.{TestConstants, TestModels}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -27,12 +27,13 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, _}
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
+import usermatching.services.mocks.MockUserLockoutService
 
 import scala.concurrent.Future
 
 class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   with MockAgentQualificationService
-  with MockAgentLockoutService {
+  with MockUserLockoutService {
 
   override val controllerName: String = "ConfirmClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -48,7 +49,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     MockKeystoreService,
     mockAgentQualificationService,
     mockAuthService,
-    mockAgentLockoutService
+    mockUserLockoutService
   )
 
   override def beforeEach(): Unit = {
@@ -295,7 +296,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         val result = callSubmit()
 
         await(result)
-        verifyLockoutAgent(arn, 1)
+        verifyLockoutUser(arn, 1)
       }
     }
 

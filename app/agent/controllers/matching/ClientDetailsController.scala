@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import agent.auth.{IncomeTaxAgentUser, UserMatchingController}
 import agent.forms._
-import agent.services.{AgentLockoutService, KeystoreService}
+import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.data.Form
@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.models.{NotLockedOut, UserDetailsModel}
+import usermatching.services.UserLockoutService
 
 import scala.concurrent.Future
 
@@ -37,7 +38,7 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
                                         val messagesApi: MessagesApi,
                                         val keystoreService: KeystoreService,
                                         val authService: AuthService,
-                                        val lockOutService: AgentLockoutService
+                                        val lockOutService: UserLockoutService
                                        ) extends UserMatchingController {
 
   def view(clientDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =

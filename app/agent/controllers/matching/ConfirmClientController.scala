@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.models.{LockedOut, NotLockedOut, UserDetailsModel}
+import usermatching.services.UserLockoutService
 
 import scala.concurrent.Future
 import scala.util.Left
@@ -40,7 +41,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                                         val keystoreService: KeystoreService,
                                         val agentQualificationService: AgentQualificationService,
                                         val authService: AuthService,
-                                        val lockOutService: AgentLockoutService
+                                        val lockOutService: UserLockoutService
                                        ) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
@@ -90,7 +91,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
             }
             else {
               for {
-                _ <- lockOutService.lockoutAgent(arn)
+                _ <- lockOutService.lockoutUser(arn)
                 _ <- keystoreService.deleteAll()
               } yield Redirect(agent.controllers.matching.routes.ClientDetailsLockoutController.show())
                 .removingFromSession(FailedClientMatching)

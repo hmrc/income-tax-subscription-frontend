@@ -96,7 +96,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
       "when there are no user details store redirect them to user details" in {
         setupMockKeystore(fetchUserDetails = None)
-        setupMockNotLockedOut(testUserId)
+        setupMockNotLockedOut(testUserId.value)
 
         val result = call
 
@@ -109,7 +109,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
       "if there is are user details return ok (200)" in {
         setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
-        setupMockNotLockedOut(testUserId)
+        setupMockNotLockedOut(testUserId.value)
 
         val result = call
 
@@ -125,7 +125,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
       def callSubmit(): Future[Result] = TestConfirmUserController.submit()(request)
 
       "return the user details page" in {
-        setupMockLockedOut(testUserId)
+        setupMockLockedOut(testUserId.value)
 
         val result = callSubmit()
 
@@ -138,7 +138,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
       "return the user details page" in {
         setupMockKeystore(fetchUserDetails = None)
-        setupMockNotLockedOut(testUserId)
+        setupMockNotLockedOut(testUserId.value)
 
         val result = callSubmit()
 
@@ -154,7 +154,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         "return a InternalServerException" in {
           setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
           mockUserMatchException(userDetails)
-          setupMockNotLockedOut(testUserId)
+          setupMockNotLockedOut(testUserId.value)
 
           val result = callSubmit()
 
@@ -166,7 +166,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         s"redirect to the home controller with nino and sautr added to session" in {
           setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
           mockUserMatchSuccess(userDetails)
-          setupMockNotLockedOut(testUserId)
+          setupMockNotLockedOut(testUserId.value)
 
           val result = callSubmit()
 
@@ -184,7 +184,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
         s"redirect to the home controller with nino added to session" in {
           setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
           mockUserMatchSuccessNoUtr(userDetails)
-          setupMockNotLockedOut(testUserId)
+          setupMockNotLockedOut(testUserId.value)
 
           val result = callSubmit()
 
@@ -202,7 +202,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           "redirect to the user details page and increment the counter by 1" in {
             setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
             mockUserMatchNotFound(userDetails)
-            setupMockNotLockedOut(testUserId)
+            setupMockNotLockedOut(testUserId.value)
 
             val result = callSubmit()
 
@@ -223,7 +223,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
             setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
             mockUserMatchNotFound(userDetails)
-            setupMockNotLockedOut(testUserId)
+            setupMockNotLockedOut(testUserId.value)
 
             val result = TestConfirmUserController.submit()(requestWithLockout)
 
@@ -244,8 +244,8 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
             setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
             mockUserMatchNotFound(userDetails)
-            setupMockNotLockedOut(testUserId)
-            setupMockLockCreated(testUserId)
+            setupMockNotLockedOut(testUserId.value)
+            setupMockLockCreated(testUserId.value)
             setupMockKeystore(deleteAll = HttpResponse(Status.OK))
 
             val result = TestConfirmUserController.submit()(requestWithLockout)
@@ -256,7 +256,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
             val session = await(result).session
             session.get(ITSASessionKeys.FailedUserMatching) mustBe empty
 
-            verifyLockoutUser(testUserId, 1)
+            verifyLockoutUser(testUserId.value, 1)
           }
         }
       }

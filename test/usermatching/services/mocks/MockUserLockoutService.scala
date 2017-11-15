@@ -17,16 +17,16 @@
 package usermatching.services.mocks
 
 import core.audit.Logging
+import core.utils.MockTrait
+import core.utils.TestConstants.{testException, testLockoutResponse}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
-import uk.gov.hmrc.http.{HeaderCarrier, UserId}
+import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.connectors.mocks.MockUserLockoutConnector
 import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 import usermatching.services.UserLockoutService
-import core.utils.MockTrait
-import core.utils.TestConstants.{testException, testLockoutResponse}
 
 import scala.concurrent.Future
 
@@ -38,38 +38,38 @@ trait MockUserLockoutService extends MockTrait {
     reset(mockUserLockoutService)
   }
 
-  private def mockLockoutUser(userId: UserId)(result: Future[LockoutStatusResponse]): Unit =
-    when(mockUserLockoutService.lockoutUser(UserId(ArgumentMatchers.eq(userId.value)))(ArgumentMatchers.any[HeaderCarrier]))
+  private def mockLockoutUser(token: String)(result: Future[LockoutStatusResponse]): Unit =
+    when(mockUserLockoutService.lockoutUser(ArgumentMatchers.eq(token))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  def setupMockLockCreated(userId: UserId): Unit =
-    mockLockoutUser(userId)(Future.successful(Right(testLockoutResponse)))
+  def setupMockLockCreated(token: String): Unit =
+    mockLockoutUser(token)(Future.successful(Right(testLockoutResponse)))
 
-  def setupMockLockFailureResponse(userId: UserId): Unit =
-    mockLockoutUser(userId)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
+  def setupMockLockFailureResponse(token: String): Unit =
+    mockLockoutUser(token)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
 
-  def setupMockLockException(userId: UserId): Unit =
-    mockLockoutUser(userId)(Future.failed(testException))
+  def setupMockLockException(token: String): Unit =
+    mockLockoutUser(token)(Future.failed(testException))
 
-  def verifyLockoutUser(userId: UserId, count: Int): Unit =
-    verify(mockUserLockoutService, times(count)).lockoutUser(UserId(ArgumentMatchers.eq(userId.value)))(ArgumentMatchers.any[HeaderCarrier])
+  def verifyLockoutUser(token: String, count: Int): Unit =
+    verify(mockUserLockoutService, times(count)).lockoutUser(ArgumentMatchers.eq(token))(ArgumentMatchers.any[HeaderCarrier])
 
-  private def mockGetLockoutStatus(userId: UserId)(result: Future[LockoutStatusResponse]): Unit = {
-    when(mockUserLockoutService.getLockoutStatus(UserId(ArgumentMatchers.eq(userId.value)))(ArgumentMatchers.any[HeaderCarrier]))
+  private def mockGetLockoutStatus(token: String)(result: Future[LockoutStatusResponse]): Unit = {
+    when(mockUserLockoutService.getLockoutStatus(ArgumentMatchers.eq(token))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
   }
 
-  def setupMockNotLockedOut(userId: UserId): Unit =
-    mockGetLockoutStatus(userId)(Future.successful(Right(NotLockedOut)))
+  def setupMockNotLockedOut(token: String): Unit =
+    mockGetLockoutStatus(token)(Future.successful(Right(NotLockedOut)))
 
-  def setupMockLockedOut(userId: UserId): Unit =
-    mockGetLockoutStatus(userId)(Future.successful(Right(testLockoutResponse)))
+  def setupMockLockedOut(token: String): Unit =
+    mockGetLockoutStatus(token)(Future.successful(Right(testLockoutResponse)))
 
-  def setupMockLockStatusFailureResponse(userId: UserId): Unit =
-    mockGetLockoutStatus(userId)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
+  def setupMockLockStatusFailureResponse(token: String): Unit =
+    mockGetLockoutStatus(token)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
 
-  def setupMockLockStatusException(userId: UserId): Unit =
-    mockGetLockoutStatus(userId)(Future.failed(testException))
+  def setupMockLockStatusException(token: String): Unit =
+    mockGetLockoutStatus(token)(Future.failed(testException))
 
 }
 

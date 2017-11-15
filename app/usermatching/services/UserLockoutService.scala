@@ -30,19 +30,20 @@ import scala.concurrent.Future
 class UserLockoutService @Inject()(userLockoutConnector: UserLockoutConnector,
                                    logging: Logging) {
 
-  def lockoutUser(userId: UserId)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
-    val strippedId = stripUserId(userId)
 
-    logging.debug(s"Creating a lock for user with token=$strippedId")
-    userLockoutConnector.lockoutUser(strippedId)
+  def lockoutUser(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
+    val encodedToken = encodeToken(token)
+
+    logging.debug(s"Creating a lock for token=$token encoded=$encodedToken")
+    userLockoutConnector.lockoutUser(encodedToken)
   }
 
-  def getLockoutStatus(userId: UserId)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
-    val strippedId = stripUserId(userId)
+  def getLockoutStatus(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
+    val encodedToken = encodeToken(token)
 
-    logging.debug(s"Getting lockout status for token=$strippedId")
-    userLockoutConnector.getLockoutStatus(strippedId)
+    logging.debug(s"Getting lockout status for token=$token encoded=$encodedToken")
+    userLockoutConnector.getLockoutStatus(encodedToken)
   }
 
-  private def stripUserId(userId: UserId): String = URLEncoder.encode(userId.value, "UTF-8")
+  private def encodeToken(token: String): String = URLEncoder.encode(token, "UTF-8")
 }

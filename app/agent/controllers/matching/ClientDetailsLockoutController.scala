@@ -20,7 +20,6 @@ import java.time.{Duration, LocalTime}
 import javax.inject.Inject
 
 import agent.auth.{IncomeTaxAgentUser, UserMatchingController}
-import agent.services.AgentLockoutService
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import core.utils.Implicits._
@@ -28,6 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.models.{LockedOut, NotLockedOut}
+import usermatching.services.UserLockoutService
 
 import scala.concurrent.Future
 
@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class ClientDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfig,
                                                val messagesApi: MessagesApi,
                                                val authService: AuthService,
-                                               val lockoutService: AgentLockoutService
+                                               val lockoutService: UserLockoutService
                                               ) extends UserMatchingController {
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]) = {

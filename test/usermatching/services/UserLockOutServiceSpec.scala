@@ -30,7 +30,7 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
   "UserLockoutService.lockoutUser" should {
 
-    def call = await(TestUserLockoutService.lockoutUser(userId = testUserId))
+    def call = await(TestUserLockoutService.lockoutUser(token = testUserId.value))
 
     "return the not locked out status" in {
       def stripUserId(userId: UserId): String = URLEncoder.encode(userId.value, "UTF-8")
@@ -51,7 +51,7 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
   "UserLockoutService.getLockOutStatus" should {
 
-    def call = await(TestUserLockoutService.getLockoutStatus(userId = testUserId))
+    def call = await(TestUserLockoutService.getLockoutStatus(token = testUserId.value))
 
     "return the not locked out status" in {
       setupMockNotLockedOut(escapedUserId)
