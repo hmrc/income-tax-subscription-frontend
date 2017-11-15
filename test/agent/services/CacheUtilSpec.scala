@@ -29,7 +29,6 @@ class CacheUtilSpec extends UnitTestTrait {
   "CacheUtil" should {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
-      emptyCacheMap.getNino() shouldBe None
       emptyCacheMap.getIncomeSource() shouldBe None
       emptyCacheMap.getOtherIncome() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
@@ -40,7 +39,6 @@ class CacheUtilSpec extends UnitTestTrait {
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
-      testCacheMap.getNino() shouldBe Some(TestConstants.testNino)
       testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
       testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
@@ -67,7 +65,6 @@ class CacheUtilSpec extends UnitTestTrait {
       val overPopulatedPropertyCacheMap =
         testCacheMap(
           testClientDetails,
-          testClientDetails.ninoInBackendFormat,
           testIncomeSourceProperty,
           testOtherIncomeNo,
           testAccountingPeriodPriorCurrent,

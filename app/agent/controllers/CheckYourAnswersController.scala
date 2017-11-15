@@ -44,13 +44,13 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
 
   import agent.services.CacheUtil._
 
-  private def journeySafeGuard(processFunc: IncomeTaxAgentUser => Request[AnyContent] => CacheMap => Future[Result])
+  private def journeySafeGuard(processFunc: => IncomeTaxAgentUser => Request[AnyContent] => CacheMap => Future[Result])
                               (noCacheMapErrMessage: String) =
     Authenticated.async { implicit request =>
       implicit user =>
         keystoreService.fetchAll().flatMap {
           case Some(cache) =>
-            (cache.getNino(), cache.getTerms()) match {
+            (user.clientNino, cache.getTerms()) match {
               case (None, _) => Future.successful(Redirect(agent.controllers.matching.routes.ConfirmClientController.show()))
               case (_, None) => Future.successful(Redirect(agent.controllers.routes.TermsController.showTerms()))
               case _ => processFunc(user)(request)(cache)
@@ -77,9 +77,10 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     implicit request =>
       cache =>
         // Will fail if there is no NINO
-        val nino = cache.getNino().get
+        val nino = user.clientNino.get
+
         // Will fail if there is no ARN in session
-        val arn = request.session.get(ITSASessionKeys.ArnKey).get
+        val arn = user.arn.get
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
         for {
@@ -91,7 +92,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
           //  .recoverWith { case _ => error("Failed to create client relationship") }
           cacheMap <- keystoreService.saveSubscriptionId(mtditid)
             .recoverWith { case _ => error("Failed to save to keystore") }
-        } yield Redirect(agent.controllers.routes.ConfirmationController.showConfirmation()).addingToSession(ITSASessionKeys.Submitted -> mtditid)
+        } yield Redirect(agent.controllers.routes.ConfirmationController.showConfirmation()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any keystore cached data")
 
   def error(message: String): Future[Nothing] = {

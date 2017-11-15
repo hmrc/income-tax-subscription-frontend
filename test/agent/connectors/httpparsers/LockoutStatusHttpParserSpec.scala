@@ -19,13 +19,13 @@ package agent.connectors.httpparsers
 import java.time.OffsetDateTime
 
 import agent.connectors.httpparsers.LockoutStatusHttpParser.LockoutStatusHttpReads
-import agent.connectors.models.matching.{LockedOut, LockoutStatusFailureResponse, NotLockedOut}
+import agent.utils.TestConstants.testARN
+import core.utils.UnitTestTrait
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
-import agent.utils.TestConstants.testARN
-import core.utils.UnitTestTrait
 import uk.gov.hmrc.http.HttpResponse
+import usermatching.models.{LockedOut, LockoutStatusFailureResponse, NotLockedOut}
 
 class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
   val testUri = "/"

@@ -17,13 +17,21 @@
 package agent.auth
 
 import agent.common.Constants
+import agent.controllers.ITSASessionKeys
 import core.auth.IncomeTaxUser
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core._
 
 import scala.collection.immutable.::
 
 case class IncomeTaxAgentUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup], confidenceLevel: ConfidenceLevel) extends IncomeTaxUser {
   lazy val arn: Option[String] = getEnrolment(Constants.agentServiceEnrolmentName)
+
+  def clientNino(implicit request: Request[AnyContent]): Option[String] =
+    request.session.get(ITSASessionKeys.NINO)
+
+  def clientUtr(implicit request: Request[AnyContent]): Option[String] =
+    request.session.get(ITSASessionKeys.UTR)
 
   private def getEnrolment(key: String) = enrolments.enrolments.collectFirst {
     case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _) => value

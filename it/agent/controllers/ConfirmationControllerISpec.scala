@@ -24,7 +24,7 @@ import play.api.libs.json.Json
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
   "GET /confirmation" when {
-    s"There is ${ITSASessionKeys.Submitted} in session" should {
+    s"There is ${ITSASessionKeys.MTDITID} in session" should {
       "call subscription on the back end service" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -40,7 +40,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       }
     }
 
-    s"There is not ${ITSASessionKeys.Submitted} in session" should {
+    s"There is not ${ITSASessionKeys.MTDITID} in session" should {
       "call subscription on the back end service" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()

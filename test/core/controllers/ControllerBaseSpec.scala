@@ -63,6 +63,8 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
       fakeRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
   }
 
+  lazy val fakeRequest = FakeRequest()
+
   lazy val userMatchingRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> UserMatching.name
   )
@@ -79,11 +81,15 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
   )
 
   lazy val subscriptionRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> SignUp.name
+    ITSASessionKeys.JourneyStateKey -> SignUp.name,
+    ITSASessionKeys.NINO -> TestConstants.testNino,
+    ITSASessionKeys.UTR -> TestConstants.testUtr
   )
 
   lazy val registrationRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> Registration.name
+    ITSASessionKeys.JourneyStateKey -> Registration.name,
+    ITSASessionKeys.JourneyStateKey -> Registration.name,
+    ITSASessionKeys.NINO -> TestConstants.testNino
   )
 
 }

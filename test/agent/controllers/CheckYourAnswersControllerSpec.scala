@@ -23,7 +23,7 @@ import agent.utils.TestConstants._
 import agent.utils.TestModels
 import agent.utils.TestModels.testCacheMap
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.InternalServerException
@@ -57,30 +57,31 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" when {
 
-    def call = TestCheckYourAnswersController.show(subscriptionRequest)
+    def call(request: Request[AnyContent] = subscriptionRequest): Future[Result] = TestCheckYourAnswersController.show(request)
 
     "There are both a matched nino and terms in keystore" should {
       "return ok (200)" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
 
-        status(call) must be(Status.OK)
+        status(call()) must be(Status.OK)
       }
     }
 
-    "There are no a matched nino in keystore" should {
+    "There are no a matched nino in session" should {
       s"return redirect ${agent.controllers.matching.routes.ConfirmClientController.show().url}" in {
-        setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(matchedNino = None))
-        val result = call
+        setupMockKeystore(fetchAll = TestModels.testCacheMap)
+
+        val result = call(subscriptionRequest.removeFromSession(ITSASessionKeys.NINO))
 
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result) mustBe Some(agent.controllers.matching.routes.ConfirmClientController.show().url)
       }
     }
 
-    "There is a matched nino but no terms in keystore" should {
+    "There is no terms in keystore" should {
       s"return redirect ${agent.controllers.routes.TermsController.showTerms().url}" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(terms = None))
-        val result = call
+        val result = call()
 
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
@@ -89,14 +90,15 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   }
 
   "Calling the submit action of the CheckYourAnswersController with an authorised user" when {
-    lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
 
-    def call: Future[Result] = TestCheckYourAnswersController.submit(request)
+    def call(request: Request[AnyContent]): Future[Result] = TestCheckYourAnswersController.submit(request)
 
-    "There are no a matched nino in keystore" should {
+    "There are no a matched nino in session" should {
       s"return redirect ${agent.controllers.matching.routes.ConfirmClientController.show().url}" in {
-        setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(matchedNino = None))
-        val result = call
+        val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN).removeFromSession(ITSASessionKeys.NINO)
+
+        setupMockKeystore(fetchAll = TestModels.testCacheMap)
+        val result = call(request)
 
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result) mustBe Some(agent.controllers.matching.routes.ConfirmClientController.show().url)
@@ -105,8 +107,10 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
     "There is a matched nino but no terms in keystore" should {
       s"return redirect ${agent.controllers.routes.TermsController.showTerms().url}" in {
+        lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
+
         setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(terms = None))
-        val result = call
+        val result = call(request)
 
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
@@ -114,14 +118,15 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     }
 
     "There are both a matched nino and terms in keystore and the submission is successful" should {
-      lazy val result = call
       // generate a new nino specifically for this test,
       // since the default value in test constant may be used by accident
       lazy val newTestNino = new Generator().nextNino.nino
+      lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN, ITSASessionKeys.NINO -> newTestNino)
+
+      lazy val result = call(request)
 
       // This is used to verify that the nino returned from client matching is used instead of whatever the user entered
       lazy val testSummary = TestModels.testCacheMapCustom(
-        matchedNino = newTestNino,
         clientDetailsModel = TestModels.testClientDetails.copy(nino = testNino)
       )
 
@@ -147,22 +152,26 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
     "When the submission is unsuccessful" should {
       "return a failure if subscription fails" in {
+        val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
+
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
         mockCreateSubscriptionFailure(testARN, testNino, testCacheMap.getSummary())
 
-        val ex = intercept[InternalServerException](await(call))
+        val ex = intercept[InternalServerException](await(call(request)))
         ex.message mustBe "Successful response not received from submission"
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
 
       // TODO re-enable create relationship test once the agent team is ready
       "return a failure if create client relationship fails" ignore {
+        val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
+
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
         mockCreateSubscriptionSuccess(testARN, testNino, testCacheMap.getSummary())
 
         setupCreateClientRelationshipFailure(testARN, testMTDID)(new Exception())
 
-        val ex = intercept[InternalServerException](await(call))
+        val ex = intercept[InternalServerException](await(call(request)))
         ex.message mustBe "Failed to create client relationship"
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
