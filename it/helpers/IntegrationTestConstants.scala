@@ -16,6 +16,7 @@
 
 package helpers
 
+import java.net.URLEncoder
 import java.util.UUID
 
 import core.models.DateModel
@@ -30,9 +31,9 @@ object IntegrationTestConstants {
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
 
-  val testUserIdStripped = "1234567890"
   val SessionId = s"stubbed-${UUID.randomUUID}"
-  val userId = s"/auth/oid/$testUserIdStripped"
+  val userId = s"/auth/oid/1234567890"
+  val testUserIdEncoded = URLEncoder.encode(userId, "UTF-8")
   val testFirstName = "Test"
   val testLastName = "Name"
   val dateOfBirth = DateModel("01", "01", "1980")

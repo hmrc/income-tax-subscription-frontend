@@ -16,6 +16,7 @@
 
 package usermatching.services
 
+import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
@@ -43,5 +44,5 @@ class UserLockoutService @Inject()(userLockoutConnector: UserLockoutConnector,
     userLockoutConnector.getLockoutStatus(strippedId)
   }
 
-  private def stripUserId(userId: UserId): String = userId.value.replace("/auth/oid/", "")
+  private def stripUserId(userId: UserId): String = URLEncoder.encode(userId.value, "UTF-8")
 }

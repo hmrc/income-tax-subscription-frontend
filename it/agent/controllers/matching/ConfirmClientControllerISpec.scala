@@ -22,7 +22,7 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import _root_.agent.services.CacheConstants
-import helpers.IntegrationTestConstants.testUserIdStripped
+import helpers.IntegrationTestConstants.testUserIdEncoded
 import helpers.servicemocks.{AuthenticatorStub, UserLockoutStub}
 import play.api.http.Status._
 

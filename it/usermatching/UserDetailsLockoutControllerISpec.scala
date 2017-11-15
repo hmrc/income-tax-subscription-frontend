@@ -35,7 +35,7 @@ class UserDetailsLockoutControllerISpec extends ComponentSpecBase with FeatureSw
       "show the locked out page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        UserLockoutStub.stubUserIsLocked(testUserIdStripped)
+        UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
 
         When("I call GET /error/lockout")
         val res = IncomeTaxSubscriptionFrontend.showUserDetailsLockout()
@@ -52,7 +52,7 @@ class UserDetailsLockoutControllerISpec extends ComponentSpecBase with FeatureSw
       "show the user details page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        UserLockoutStub.stubUserIsNotLocked(testUserIdStripped)
+        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call GET /error/lockout")
         val res = IncomeTaxSubscriptionFrontend.showUserDetailsLockout()
