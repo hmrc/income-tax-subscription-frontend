@@ -22,13 +22,17 @@ import core.views.html.templates.error_template
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
-import play.api.{Configuration, Logger}
+import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.auth.core.{AuthorisationException, BearerTokenExpired, InsufficientEnrolments}
 import uk.gov.hmrc.http.NotFoundException
+import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 
 class ErrorHandler @Inject()(val appConfig: AppConfig,
-                             val messagesApi: MessagesApi, val configuration: Configuration) extends FrontendErrorHandler {
+                             val messagesApi: MessagesApi,
+                             val config: Configuration,
+                             val env: Environment
+                            ) extends FrontendErrorHandler with AuthRedirects {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]):
   _root_.play.twirl.api.HtmlFormat.Appendable =
@@ -44,7 +48,7 @@ class ErrorHandler @Inject()(val appConfig: AppConfig,
         Redirect(core.controllers.routes.SessionTimeoutController.timeout())
       case _: AuthorisationException =>
         Logger.debug("[AuthenticationPredicate][async] Unauthorised request. Redirect to Sign In.")
-        Redirect(core.controllers.routes.SignInController.signIn())
+        toGGLogin(rh.path)
       case _: NotFoundException =>
         NotFound(notFoundTemplate(Request(rh, "")))
       case _ =>

@@ -30,23 +30,6 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/income" when {
 
-    "call to keystore fails" should {
-      "fail to display income source page" in {
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("GET /income is called")
-        val res = IncomeTaxSubscriptionFrontend.income()
-
-        Then("Should return a INTERNAL_SERVER_ERROR")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-    }
-
     "keystore returns all data" should {
       "show the income source page with an option selected" in {
         Given("I setup the Wiremock stubs")
@@ -83,19 +66,6 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       }
     }
 
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /income is called")
-      val res = IncomeTaxSubscriptionFrontend.income()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
-      )
-    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/income" when {
@@ -184,37 +154,6 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "redirect to sign-in when auth fails" in {
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubUnauthorised()
-
-        When("POST /income is called")
-        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
-        )
-      }
-
-      "call to keystore fails" in {
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("POST /income is called")
-        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
-
-        Then("Should return a INTERNAL_SERVER_ERROR")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
     }
 
     "when in edit mode" should {
@@ -329,38 +268,6 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(otherIncomeURI)
-        )
-      }
-
-      "redirect to sign-in when auth fails" in {
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubUnauthorised()
-
-        When("POST /income is called")
-        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
-        )
-      }
-
-      "call to keystore fails" in {
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("POST /income is called")
-        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
-
-        Then("Should return a INTERNAL_SERVER_ERROR")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
     }

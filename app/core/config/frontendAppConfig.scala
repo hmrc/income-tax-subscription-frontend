@@ -24,17 +24,13 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig {
-  val betaFeedbackUrl: String
   val analyticsToken: String
   val analyticsHost: String
   val contactFormServiceIdentifier: String
   val contactFrontendPartialBaseUrl: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
-  val notAuthorisedRedirectUrl: String
-  val ggSignInUrl: String
   val ggSignInContinueUrl: String
-  val alreadyEnrolledUrl: String
   val subscriptionUrl: String
   val userMatchingUrl: String
   val clientMatchingUrl: String
@@ -52,7 +48,6 @@ trait AppConfig {
   val whitelistIps: Seq[String]
   val ipExclusionList: Seq[Call]
   val shutterPage: String
-  val authURL: String
   val ggURL: String
   val agentServicesUrl: String
   val agentMicroserviceUrl: String
@@ -96,13 +91,10 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   // Frontend Config
   override lazy val baseUrl: String = loadConfig("base.url")
-  protected val contextRoute = "income-tax-subscription-frontend"
+  val contextRoute = "/report-quarterly/income-and-expenses/sign-up"
 
   //Authentication/Authorisation Config
-  override lazy val ggSignInUrl = loadConfig("government-gateway.sign-in.url")
-  override lazy val ggSignInContinueUrl = loadConfig("government-gateway.continue.url")
-  override lazy val notAuthorisedRedirectUrl = loadConfig("not-authorised-callback.url")
-  override lazy val alreadyEnrolledUrl = loadConfig("already-enrolled.url")
+  override lazy val ggSignInContinueUrl = s"$baseUrl$contextRoute/index"
   override lazy val authUrl = baseUrl("auth")
 
   // sign out
@@ -125,7 +117,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   //Contact Frontend Config
   protected lazy val contactFrontendService = baseUrl("contact-frontend")
   protected lazy val contactHost = loadConfig("contact-frontend.host")
-  override lazy val betaFeedbackUrl = s"$contextRoute/feedback"
   override lazy val contactFormServiceIdentifier = "MTDIT"
   override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
@@ -161,7 +152,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override lazy val ipExclusionList: Seq[Call] = whitelistConfig("ip-whitelist.excludeCalls").map(ip => Call("GET", ip))
 
-  override lazy val authURL = baseUrl("auth")
   override lazy val ggAuthenticationURL = baseUrl("gg-authentication")
   override lazy val ggURL = baseUrl("government-gateway")
   override lazy val ggAdminURL = baseUrl("gg-admin")

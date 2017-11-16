@@ -58,8 +58,6 @@ object IntegrationTestConstants {
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
     //TODO see if this needs to be different for agents/individuals
-  val signInURI = s"/report-quarterly/income-and-expenses/sign-up/sign-in"
-  val ggSignInURI = s"/gg/sign-in"
   val ggSignOutURI = s"/gg/sign-out"
   val signOutURI = s"/report-quarterly/income-and-expenses/sign-up/logout"
 

@@ -16,7 +16,6 @@
 
 package incometax.subscription
 
-import agent.helpers.IntegrationTestConstants.{checkYourAnswersURI => _, confirmationURI => _, signInURI => _, termsURI => _, _}
 import core.services.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -60,19 +59,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       )
     }
 
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /check-your-answers is called")
-      val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
-      )
-    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
@@ -206,20 +192,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(termsURI)
-      )
-    }
-
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /check-your-answers is called")
-      val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
       )
     }
 

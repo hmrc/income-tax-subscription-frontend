@@ -42,19 +42,6 @@ class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase {
       }
     }
 
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /business/register-next-accounting-period is called")
-      val res = IncomeTaxSubscriptionFrontend.registerNextAccountingPeriod()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
-      )
-    }
   }
 
 
@@ -73,20 +60,6 @@ class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(accountingPeriodDatesURI)
-        )
-      }
-
-      "redirect to sign-in when auth fails" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubUnauthorised()
-
-        When("POST /business/register-next-accounting-period is called")
-        val res = IncomeTaxSubscriptionFrontend.submitRegisterNextAccountingPeriod()
-
-        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
         )
       }
 
