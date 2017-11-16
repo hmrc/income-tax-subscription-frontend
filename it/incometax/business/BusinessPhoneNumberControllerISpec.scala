@@ -19,7 +19,7 @@ package incometax.business
 import core.config.featureswitch
 import core.config.featureswitch.FeatureSwitching
 import core.services.CacheConstants
-import helpers.IntegrationTestConstants.{checkYourAnswersURI, ggSignInURI}
+import helpers.IntegrationTestConstants.checkYourAnswersURI
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
@@ -35,22 +35,6 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureS
   enable(featureswitch.RegistrationFeature)
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/phone-number" when {
-
-    "keystore call fails" should {
-      "return an internal server error" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("GET /business/phone-number is called")
-        val res = IncomeTaxSubscriptionFrontend.businessPhoneNumber()
-
-        Then("return an internal server error")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-    }
 
     "keystore returns all data" should {
       "show the business phone number page" in {
@@ -88,19 +72,6 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureS
       }
     }
 
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /business/phone-number is called")
-      val res = IncomeTaxSubscriptionFrontend.businessPhoneNumber()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(ggSignInURI)
-      )
-    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/phone-number" when {
@@ -156,38 +127,6 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureS
         )
       }
 
-      "keystore call fails" in {
-        val userInput: BusinessPhoneNumberModel = IntegrationTestModels.testBusinessPhoneNumber
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("POST /business/phone-number is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessPhoneNumber(inEditMode = false, Some(userInput))
-
-        Then("Should return an Internal Server Error")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-
-      "redirect to sign-in when auth fails" in {
-        val userInput: BusinessPhoneNumberModel = IntegrationTestModels.testBusinessPhoneNumber
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubUnauthorised()
-
-        When("POST /business/phone-number is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessPhoneNumber(inEditMode = false, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(ggSignInURI)
-        )
-      }
-
     }
 
     "in edit mode" should {
@@ -230,38 +169,6 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureS
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
-        )
-      }
-
-      "keystore call fails" in {
-        val userInput: BusinessPhoneNumberModel = IntegrationTestModels.testBusinessPhoneNumber
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("POST /business/phone-number is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessPhoneNumber(inEditMode = false, Some(userInput))
-
-        Then("Should return an Internal Server Error")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-
-      "redirect to sign-in when auth fails" in {
-        val userInput: BusinessPhoneNumberModel = IntegrationTestModels.testBusinessPhoneNumber
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubUnauthorised()
-
-        When("POST /business/phone-number is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessPhoneNumber(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(ggSignInURI)
         )
       }
 

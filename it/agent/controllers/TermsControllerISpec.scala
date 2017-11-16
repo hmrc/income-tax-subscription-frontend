@@ -22,27 +22,10 @@ import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status._
 import play.api.i18n.Messages
 import _root_.agent.services.CacheConstants
-import helpers.IntegrationTestConstants
 
 class TermsControllerISpec extends ComponentSpecBase {
 
   "GET /terms" when {
-
-    "keystore call fails" should {
-      "return internal server error" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("GET /terms is called")
-        val res = IncomeTaxSubscriptionFrontend.terms()
-
-        Then("Should return an internal server error")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-    }
 
     "keystore returns all data" should {
       "show the terms page" in {
@@ -59,20 +42,6 @@ class TermsControllerISpec extends ComponentSpecBase {
           pageTitle(Messages("agent.terms.title"))
         )
       }
-    }
-
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /terms is called")
-      val res = IncomeTaxSubscriptionFrontend.terms()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(IntegrationTestConstants.ggSignInURI)
-      )
     }
 
   }
@@ -99,34 +68,6 @@ class TermsControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "keystore call fails" in {
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("POST /terms is called")
-        val res = IncomeTaxSubscriptionFrontend.submitTerms()
-
-        Then("should return an internal server error")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-
-      "redirect to sign-in when auth fails" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubUnauthorised()
-
-        When("POST /terms is called")
-        val res = IncomeTaxSubscriptionFrontend.submitTerms()
-
-        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(IntegrationTestConstants.ggSignInURI)
-        )
-      }
     }
   }
 }

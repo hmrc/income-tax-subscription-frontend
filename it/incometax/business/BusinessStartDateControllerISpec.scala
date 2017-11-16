@@ -69,19 +69,6 @@ class BusinessStartDateControllerISpec extends ComponentSpecBase with FeatureSwi
       }
     }
 
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /business/start-date is called")
-      val res = IncomeTaxSubscriptionFrontend.businessStartDate()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(ggSignInURI)
-      )
-    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/start-date" when {

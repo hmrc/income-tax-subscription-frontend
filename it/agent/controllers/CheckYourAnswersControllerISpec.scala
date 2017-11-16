@@ -20,11 +20,10 @@ import _root_.agent.helpers.IntegrationTestConstants.{testMTDID, _}
 import _root_.agent.helpers.IntegrationTestModels.fullKeystoreData
 import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
-import _root_.agent.services.CacheConstants._
-import helpers.IntegrationTestConstants
-import helpers.servicemocks.SubscriptionStub
 import play.api.http.Status._
 import play.api.i18n.Messages
+import _root_.agent.services.CacheConstants._
+import helpers.servicemocks.SubscriptionStub
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase {
 
@@ -61,19 +60,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       )
     }
 
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /check-your-answers is called")
-      val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(IntegrationTestConstants.ggSignInURI)
-      )
-    }
   }
 
 
@@ -158,20 +144,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(termsURI)
-      )
-    }
-
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /check-your-answers is called")
-      val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(IntegrationTestConstants.ggSignInURI)
       )
     }
 
