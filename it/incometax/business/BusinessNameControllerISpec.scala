@@ -31,22 +31,6 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/name" when {
 
-    "keystore call fails" should {
-      "return an internal server error" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("GET /business/name is called")
-        val res = IncomeTaxSubscriptionFrontend.businessName()
-
-        Then("return an internal server error")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-    }
-
     "keystore returns all data" should {
       "show the business name page" in {
         Given("I setup the Wiremock stubs")
@@ -83,19 +67,6 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       }
     }
 
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /business/name is called")
-      val res = IncomeTaxSubscriptionFrontend.businessName()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
-      )
-    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/name" when {
@@ -151,38 +122,6 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "keystore call fails" in {
-        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("POST /business/name is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
-
-        Then("Should return an Internal Server Error")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-
-      "redirect to sign-in when auth fails" in {
-        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubUnauthorised()
-
-        When("POST /business/name is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
-        )
-      }
-
     }
 
     "in edit mode" should {
@@ -225,38 +164,6 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(checkYourAnswersURI)
-        )
-      }
-
-      "keystore call fails" in {
-        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("POST /business/name is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
-
-        Then("Should return an Internal Server Error")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-
-      "redirect to sign-in when auth fails" in {
-        val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubUnauthorised()
-
-        When("POST /business/name is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
         )
       }
 

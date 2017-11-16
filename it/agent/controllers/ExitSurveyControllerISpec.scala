@@ -22,6 +22,7 @@ import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 
 class ExitSurveyControllerISpec extends ComponentSpecBase {
+
   "GET /exit-survey" when {
     "a user is or isn't logged in" should {
       "return the exit survey page" in {

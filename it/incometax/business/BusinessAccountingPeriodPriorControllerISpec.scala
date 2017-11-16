@@ -29,22 +29,6 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-period-prior" when {
 
-    "keystore call fails" should {
-      "internal server error" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("GET /business/accounting-period-prior is called")
-        val res = IncomeTaxSubscriptionFrontend.businessAccountingPeriodPrior()
-
-        Then("Should return an Internal Server Error")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-    }
-
     "keystore returns all data" should {
       "show the accounting period prior page with an option selected" in {
         Given("I setup the Wiremock stubs")
@@ -81,19 +65,6 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
       }
     }
 
-    "redirect to sign-in when auth fails" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubUnauthorised()
-
-      When("GET /business/accounting-period-prior is called")
-      val res = IncomeTaxSubscriptionFrontend.businessAccountingPeriodPrior()
-
-      Then("Should return a SEE_OTHER with a redirect location of sign-in")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
-      )
-    }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-period-prior" when {
@@ -167,37 +138,6 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "keystore call fails" in {
-        val userInput = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreFailure()
-
-        When("POST /business/accounting-period-prior is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessAccountingPeriodPrior(inEditMode = false, Some(userInput))
-
-        Then("Should return an internal server error")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-      }
-
-      "redirect to sign-in when auth fails" in {
-        val userInput = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubUnauthorised()
-
-        When("POST /business/accounting-period-prior is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessAccountingPeriodPrior(inEditMode = false, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of sign-in")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
-        )
-      }
     }
   }
 }

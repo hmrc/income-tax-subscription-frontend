@@ -24,6 +24,7 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 class HomeControllerISpec extends ComponentSpecBase {
+
   "GET /" when {
     "feature-switch.show-guidance is true" should {
       "return the guidance page" in {

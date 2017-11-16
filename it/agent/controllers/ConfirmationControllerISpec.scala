@@ -23,6 +23,7 @@ import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.Json
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
+
   "GET /confirmation" when {
     s"There is ${ITSASessionKeys.MTDITID} in session" should {
       "call subscription on the back end service" in {
