@@ -207,7 +207,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
           errorDisplayed()
         )
       }
-
+    }
 
     "in edit mode" should {
 
