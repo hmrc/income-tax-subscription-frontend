@@ -23,13 +23,9 @@ trait MockConfig extends AppConfig {
   override val analyticsHost: String = ""
   override val reportAProblemPartialUrl: String = ""
   override val reportAProblemNonJSUrl: String = ""
-  override val notAuthorisedRedirectUrl: String = "/not-authorised"
-  override val ggSignInUrl: String = "/gg/sign-in"
   override val ggSignInContinueUrl: String = "/income-tax-subscription-frontend"
-  override val betaFeedbackUrl: String = "/feedback"
   override val contactFormServiceIdentifier: String = "MTDIT"
   override val contactFrontendPartialBaseUrl: String = "/contact/partial"
-  override val alreadyEnrolledUrl: String = "/already-enrolled"
   override val subscriptionUrl: String = "/income-tax-subscription/subscription"
   override val clientMatchingUrl = "/income-tax-subscription/client-matching"
   override val agentMicroserviceUrl: String = "/agent-subscription"
@@ -50,7 +46,6 @@ trait MockConfig extends AppConfig {
   override val matchingAttempts: Int = 3
   override val matchingLockOutSeconds: Int = 60
 
-  override val authURL: String = "/auth"
   override val ggAdminURL: String = "/gg-admin"
   override val ggURL: String = "/gg"
   override val ggAuthenticationURL: String = "/gg-auth"

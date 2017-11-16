@@ -17,7 +17,7 @@
 package incometax.business
 
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{accountingPeriodDatesURI, signInURI}
+import helpers.IntegrationTestConstants.{accountingPeriodDatesURI, ggSignInURI}
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
@@ -52,7 +52,7 @@ class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(ggSignInURI)
       )
     }
   }
@@ -86,7 +86,7 @@ class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
+          redirectURI(ggSignInURI)
         )
       }
 

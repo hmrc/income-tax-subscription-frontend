@@ -17,7 +17,7 @@
 package agent.controllers.business
 
 import _root_.agent.forms.IncomeSourceForm
-import _root_.agent.helpers.IntegrationTestConstants.{businessAccountingMethodURI, checkYourAnswersURI, signInURI}
+import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
@@ -25,6 +25,7 @@ import _root_.agent.models._
 import play.api.http.Status._
 import play.api.i18n.Messages
 import _root_.agent.services.CacheConstants
+import helpers.IntegrationTestConstants
 
 class BusinessNameControllerISpec extends ComponentSpecBase {
 
@@ -92,7 +93,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(IntegrationTestConstants.ggSignInURI)
       )
     }
   }
@@ -178,7 +179,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
+          redirectURI(IntegrationTestConstants.ggSignInURI)
         )
       }
 
@@ -255,7 +256,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
+          redirectURI(IntegrationTestConstants.ggSignInURI)
         )
       }
 

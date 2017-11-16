@@ -97,7 +97,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(ggSignInURI)
       )
     }
   }
@@ -201,7 +201,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(ggSignInURI)
       )
     }
 
@@ -297,7 +297,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
+          redirectURI(ggSignInURI)
         )
       }
     }

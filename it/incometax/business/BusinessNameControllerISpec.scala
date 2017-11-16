@@ -17,7 +17,7 @@
 package incometax.business
 
 import core.services.CacheConstants
-import helpers.IntegrationTestConstants.{accountingPeriodPriorURI, checkYourAnswersURI, signInURI}
+import helpers.IntegrationTestConstants.{accountingPeriodPriorURI, checkYourAnswersURI, ggSignInURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
@@ -93,7 +93,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(ggSignInURI)
       )
     }
   }
@@ -179,7 +179,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
+          redirectURI(ggSignInURI)
         )
       }
 
@@ -256,7 +256,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
+          redirectURI(ggSignInURI)
         )
       }
 

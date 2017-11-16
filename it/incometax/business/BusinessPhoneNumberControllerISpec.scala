@@ -19,7 +19,7 @@ package incometax.business
 import core.config.featureswitch
 import core.config.featureswitch.FeatureSwitching
 import core.services.CacheConstants
-import helpers.IntegrationTestConstants.{checkYourAnswersURI, signInURI}
+import helpers.IntegrationTestConstants.{checkYourAnswersURI, ggSignInURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
@@ -98,7 +98,7 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureS
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(ggSignInURI)
       )
     }
   }
@@ -184,7 +184,7 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureS
         Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
+          redirectURI(ggSignInURI)
         )
       }
 
@@ -261,7 +261,7 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureS
         Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
+          redirectURI(ggSignInURI)
         )
       }
 

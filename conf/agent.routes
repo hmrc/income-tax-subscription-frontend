@@ -72,8 +72,6 @@ POST        /exit-survey                            agent.controllers.ExitSurvey
 
 GET         /feedback-submitted                     agent.controllers.ThankYouController.show
 
-GET         /sign-in                                agent.controllers.SignInController.signIn
-
 # No NINO Routes
 GET         /register-for-SA                        agent.controllers.matching.NoSAController.show
 POST        /register-for-SA                        agent.controllers.matching.NoSAController.submit

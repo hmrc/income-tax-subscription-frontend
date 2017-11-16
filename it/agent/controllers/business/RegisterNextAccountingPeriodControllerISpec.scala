@@ -19,6 +19,7 @@ package agent.controllers.business
 import _root_.agent.helpers.ComponentSpecBase
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks.AuthStub
+import helpers.IntegrationTestConstants
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 
@@ -52,7 +53,7 @@ class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(IntegrationTestConstants.ggSignInURI)
       )
     }
   }
@@ -86,7 +87,7 @@ class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
+          redirectURI(IntegrationTestConstants.ggSignInURI)
         )
       }
 

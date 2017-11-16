@@ -16,7 +16,6 @@
 
 package incometax.subscription
 
-import agent.helpers.IntegrationTestConstants.{checkYourAnswersURI => _, confirmationURI => _, signInURI => _, termsURI => _, _}
 import core.services.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -70,7 +69,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(ggSignInURI)
       )
     }
   }
@@ -219,7 +218,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(ggSignInURI)
       )
     }
 

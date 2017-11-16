@@ -20,10 +20,11 @@ import _root_.agent.helpers.IntegrationTestConstants.{testMTDID, _}
 import _root_.agent.helpers.IntegrationTestModels.fullKeystoreData
 import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import _root_.agent.services.CacheConstants._
+import helpers.IntegrationTestConstants
+import helpers.servicemocks.SubscriptionStub
 import play.api.http.Status._
 import play.api.i18n.Messages
-import _root_.agent.services.CacheConstants._
-import helpers.servicemocks.SubscriptionStub
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase {
 
@@ -70,7 +71,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(IntegrationTestConstants.ggSignInURI)
       )
     }
   }
@@ -170,7 +171,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(IntegrationTestConstants.ggSignInURI)
       )
     }
 

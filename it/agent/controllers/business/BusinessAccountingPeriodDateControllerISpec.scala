@@ -23,6 +23,7 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels.{keystoreData, _}
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
+import helpers.IntegrationTestConstants
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -168,7 +169,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
       Then("Should return a SEE_OTHER with a redirect location of sign-in")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(signInURI)
+        redirectURI(IntegrationTestConstants.ggSignInURI)
       )
     }
   }
@@ -265,7 +266,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
+          redirectURI(IntegrationTestConstants.ggSignInURI)
         )
       }
     }
@@ -358,7 +359,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of sign-in")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(signInURI)
+          redirectURI(IntegrationTestConstants.ggSignInURI)
         )
       }
     }
