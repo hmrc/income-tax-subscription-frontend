@@ -198,11 +198,12 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
       }
 
       "UserMatchingService returns nothing" when {
-        "the lockout count is 0" should {
-          "redirect to the user details page and increment the counter by 1" in {
+        "not locked out is returned by the service" should {
+          "redirect to the user details page and apply the new counter to session" in {
             setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
             mockUserMatchNotFound(userDetails)
             setupMockNotLockedOut(testUserId.value)
+            setupIncrementNotLockedOut(testUserId.value, 0)
 
             val result = callSubmit()
 
@@ -214,38 +215,18 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
           }
         }
 
-        "the lockout count is less than the maximum" should {
-          "redirect to the user details page and increment the counter by 1" in {
+        "locked out is returned by the service" should {
+          "remove the counter from the session, lockout the user then redirect to the locked out page" in {
+            val currentFailedMatches = 3
             implicit val requestWithLockout = request.withSession(
               SessionKeys.userId -> testUserId.value,
-              ITSASessionKeys.FailedUserMatching -> "1"
+              ITSASessionKeys.FailedUserMatching -> currentFailedMatches.toString
             )
 
             setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
             mockUserMatchNotFound(userDetails)
             setupMockNotLockedOut(testUserId.value)
-
-            val result = TestConfirmUserController.submit()(requestWithLockout)
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(usermatching.controllers.routes.UserDetailsErrorController.show().url)
-
-            val session = await(result).session
-            session.get(ITSASessionKeys.FailedUserMatching) must contain("2")
-          }
-        }
-
-        "the lockout count reaches the maximum" should {
-          "lockout the user and redirect to the locked out page" in {
-            implicit val requestWithLockout = request.withSession(
-              SessionKeys.userId -> testUserId.value,
-              ITSASessionKeys.FailedUserMatching -> "3"
-            )
-
-            setupMockKeystore(fetchUserDetails = TestModels.testUserDetails)
-            mockUserMatchNotFound(userDetails)
-            setupMockNotLockedOut(testUserId.value)
-            setupMockLockCreated(testUserId.value)
+            setupIncrementLockedOut(testUserId.value, currentFailedMatches)
             setupMockKeystore(deleteAll = HttpResponse(Status.OK))
 
             val result = TestConfirmUserController.submit()(requestWithLockout)
@@ -256,7 +237,7 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
             val session = await(result).session
             session.get(ITSASessionKeys.FailedUserMatching) mustBe empty
 
-            verifyLockoutUser(testUserId.value, 1)
+            verifyIncrementLockout(testUserId.value, 1)
           }
         }
       }

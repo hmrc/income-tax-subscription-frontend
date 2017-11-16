@@ -21,6 +21,7 @@ import javax.inject.{Inject, Singleton}
 import agent.auth.AgentJourneyState._
 import agent.auth.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
 import agent.controllers.ITSASessionKeys
+import agent.controllers.ITSASessionKeys.FailedClientMatching
 import agent.services._
 import core.config.BaseControllerConfig
 import core.services.AuthService
@@ -29,9 +30,10 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.models.{LockedOut, NotLockedOut, UserDetailsModel}
-import usermatching.services.UserLockoutService
+import usermatching.services.{LockoutUpdate, UserLockoutService}
 
 import scala.concurrent.Future
+import scala.concurrent.Future.{failed, successful}
 import scala.util.Left
 
 
@@ -57,7 +59,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
       case Right(_: LockedOut) =>
         Future.successful(Redirect(agent.controllers.matching.routes.ClientDetailsLockoutController.show().url))
     }).recover { case e =>
-      throw new InternalServerException("client details controller: " + e)
+      throw new InternalServerException("ConfirmClientController.handleLockOut: " + e)
     }
   }
 
@@ -71,6 +73,19 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
+  private def lockUser(arn: String)(implicit request: Request[_]) = {
+    val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
+    lockOutService.incrementLockout(arn, currentCount).flatMap {
+      case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
+        successful(Redirect(agent.controllers.matching.routes.ClientDetailsErrorController.show())
+          .addingToSession(FailedClientMatching -> newCount.toString))
+      case Right(LockoutUpdate(_: LockedOut, _)) =>
+        successful(Redirect(agent.controllers.matching.routes.ClientDetailsLockoutController.show())
+          .removingFromSession(FailedClientMatching))
+      case Left(failure) => failed(new InternalServerException("ConfirmClientControllerr.lockUser: " + failure))
+    }
+  }
+
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
@@ -82,20 +97,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
 
         agentQualificationService.orchestrateAgentQualification(arn).flatMap {
           case Left(NoClientDetails) => successful(Redirect(routes.ClientDetailsController.show()))
-          case Left(NoClientMatched) =>
-            val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
-            val incCount = currentCount + 1
-            if (incCount < applicationConfig.matchingAttempts) {
-              successful(Redirect(agent.controllers.matching.routes.ClientDetailsErrorController.show())
-                .addingToSession(FailedClientMatching -> incCount.toString))
-            }
-            else {
-              for {
-                _ <- lockOutService.lockoutUser(arn)
-                _ <- keystoreService.deleteAll()
-              } yield Redirect(agent.controllers.matching.routes.ClientDetailsLockoutController.show())
-                .removingFromSession(FailedClientMatching)
-            }
+          case Left(NoClientMatched) => lockUser(arn)
           case Left(ClientAlreadySubscribed) => successful(
             Redirect(agent.controllers.routes.ClientAlreadySubscribedController.show())
               .removingFromSession(FailedClientMatching)

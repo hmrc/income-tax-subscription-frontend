@@ -128,10 +128,11 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "AgentQualificationService returned NoClientMatched" should {
+    "AgentQualificationService returned NoClientMatched and the agent is not locked out" should {
       s"redirect user to ${agent.controllers.matching.routes.ClientDetailsErrorController.show().url}" in {
         mockOrchestrateAgentQualificationFailure(arn, NoClientMatched)
         setupMockNotLockedOut(arn)
+        setupIncrementNotLockedOut(arn, 0)
 
         val result = callSubmit()
 
@@ -233,6 +234,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       s"have the ${ITSASessionKeys.FailedClientMatching} -> 1 added to session" in {
         mockOrchestrateAgentQualificationFailure(arn, NoClientMatched)
         setupMockNotLockedOut(arn)
+        setupIncrementNotLockedOut(arn, 0)
 
         await(result).session(request).get(ITSASessionKeys.FailedClientMatching) mustBe Some(1.toString)
       }
@@ -268,7 +270,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
       def fixture(): Unit = {
         setupMockNotLockedOut(arn)
-        setupMockLockCreated(arn)
+        setupIncrementLockedOut(arn, prevFailedAttempts)
         setupMockKeystore(deleteAll = HttpResponse(OK))
         mockOrchestrateAgentQualificationFailure(arn, NoClientMatched)
       }
@@ -281,22 +283,13 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
         await(result).session(request).get(ITSASessionKeys.FailedClientMatching) mustBe None
       }
 
-      "removed all data in keystore" in {
-        fixture()
-
-        val result = callSubmit()
-
-        await(result)
-        verifyKeystore(deleteAll = 1)
-      }
-
       "added lock for the user" in {
         fixture()
 
         val result = callSubmit()
 
         await(result)
-        verifyLockoutUser(arn, 1)
+        verifyIncrementLockout(arn, 1)
       }
     }
 

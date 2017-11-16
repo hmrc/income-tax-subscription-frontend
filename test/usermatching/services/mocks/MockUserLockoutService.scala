@@ -17,18 +17,20 @@
 package usermatching.services.mocks
 
 import core.audit.Logging
+import core.services.mocks.MockKeystoreService
 import core.utils.MockTrait
 import core.utils.TestConstants.{testException, testLockoutResponse}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import play.api.http.Status
 import play.api.http.Status._
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import usermatching.connectors.mocks.MockUserLockoutConnector
 import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
-import usermatching.services.UserLockoutService
+import usermatching.models.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
+import usermatching.services.{LockoutUpdate, UserLockoutService}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait MockUserLockoutService extends MockTrait {
   val mockUserLockoutService = mock[UserLockoutService]
@@ -37,22 +39,6 @@ trait MockUserLockoutService extends MockTrait {
     super.beforeEach()
     reset(mockUserLockoutService)
   }
-
-  private def mockLockoutUser(token: String)(result: Future[LockoutStatusResponse]): Unit =
-    when(mockUserLockoutService.lockoutUser(ArgumentMatchers.eq(token))(ArgumentMatchers.any[HeaderCarrier]))
-      .thenReturn(result)
-
-  def setupMockLockCreated(token: String): Unit =
-    mockLockoutUser(token)(Future.successful(Right(testLockoutResponse)))
-
-  def setupMockLockFailureResponse(token: String): Unit =
-    mockLockoutUser(token)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
-
-  def setupMockLockException(token: String): Unit =
-    mockLockoutUser(token)(Future.failed(testException))
-
-  def verifyLockoutUser(token: String, count: Int): Unit =
-    verify(mockUserLockoutService, times(count)).lockoutUser(ArgumentMatchers.eq(token))(ArgumentMatchers.any[HeaderCarrier])
 
   private def mockGetLockoutStatus(token: String)(result: Future[LockoutStatusResponse]): Unit = {
     when(mockUserLockoutService.getLockoutStatus(ArgumentMatchers.eq(token))(ArgumentMatchers.any[HeaderCarrier]))
@@ -71,11 +57,42 @@ trait MockUserLockoutService extends MockTrait {
   def setupMockLockStatusException(token: String): Unit =
     mockGetLockoutStatus(token)(Future.failed(testException))
 
+  private def mockIncrementLockout(token: String, currentFailedMatches: Int)(result: Future[Either[LockoutStatusFailure, LockoutUpdate]]): Unit = {
+    when(mockUserLockoutService.incrementLockout(
+      ArgumentMatchers.eq(token),
+      ArgumentMatchers.eq(currentFailedMatches)
+    )(
+      ArgumentMatchers.any[HeaderCarrier],
+      ArgumentMatchers.any[ExecutionContext])
+    ).thenReturn(result)
+  }
+
+  def setupIncrementNotLockedOut(token: String, currentFailedMatches: Int): Unit =
+    mockIncrementLockout(token, currentFailedMatches)(Future.successful(Right(LockoutUpdate(NotLockedOut, Some(currentFailedMatches + 1)))))
+
+  def setupIncrementLockedOut(token: String, currentFailedMatches: Int): Unit =
+    mockIncrementLockout(token, currentFailedMatches)(Future.successful(Right(LockoutUpdate(testLockoutResponse, None))))
+
+  def verifyIncrementLockout(token: String, count: Int): Unit =
+    verify(mockUserLockoutService, times(count)).incrementLockout(ArgumentMatchers.eq(token),
+      ArgumentMatchers.any[Int])(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[ExecutionContext])
+
 }
 
 
-trait TestUserLockoutService extends MockUserLockoutConnector {
+trait TestUserLockoutService extends MockUserLockoutConnector
+  with MockKeystoreService {
 
-  object TestUserLockoutService extends UserLockoutService(mockUserLockoutConnector, app.injector.instanceOf[Logging])
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    setupMockKeystore(deleteAll = HttpResponse(Status.OK))
+  }
+
+  object TestUserLockoutService extends UserLockoutService(
+    appConfig,
+    mockUserLockoutConnector,
+    MockKeystoreService,
+    app.injector.instanceOf[Logging]
+  )
 
 }

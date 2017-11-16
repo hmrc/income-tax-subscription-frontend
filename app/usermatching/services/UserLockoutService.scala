@@ -20,18 +20,25 @@ import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
-import uk.gov.hmrc.http.{HeaderCarrier, UserId}
+import core.config.AppConfig
+import core.services.KeystoreService
+import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.connectors.UserLockoutConnector
 import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
+import usermatching.models.{LockedOut, LockoutStatus, LockoutStatusFailure, NotLockedOut}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
+
+case class LockoutUpdate(status: LockoutStatus, updatedCount: Option[Int])
 
 @Singleton
-class UserLockoutService @Inject()(userLockoutConnector: UserLockoutConnector,
+class UserLockoutService @Inject()(appConfig: AppConfig,
+                                   userLockoutConnector: UserLockoutConnector,
+                                   keystoreService: KeystoreService,
                                    logging: Logging) {
 
 
-  def lockoutUser(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
+  private def lockoutUser(token: String)(implicit hc: HeaderCarrier): Future[LockoutStatusResponse] = {
     val encodedToken = encodeToken(token)
 
     logging.debug(s"Creating a lock for token=$token encoded=$encodedToken")
@@ -45,5 +52,21 @@ class UserLockoutService @Inject()(userLockoutConnector: UserLockoutConnector,
     userLockoutConnector.getLockoutStatus(encodedToken)
   }
 
+  def incrementLockout(token: String, currentFailedMatches: Int)(implicit hc: HeaderCarrier, ec: ExecutionContext)
+  : Future[Either[LockoutStatusFailure, LockoutUpdate]] = {
+    val encodedToken = encodeToken(token)
+
+    val incrementedFailedMatches = currentFailedMatches + 1
+    if (incrementedFailedMatches < appConfig.matchingAttempts) {
+      Future.successful(Right(LockoutUpdate(NotLockedOut, Some(incrementedFailedMatches))))
+    } else {
+      userLockoutConnector.lockoutUser(encodedToken) flatMap {
+        case Right(status) => keystoreService.deleteAll().map(_ => Right(LockoutUpdate(status, None)))
+        case Left(failure) => Future.successful(Left(failure))
+      }
+    }
+  }
+
   private def encodeToken(token: String): String = URLEncoder.encode(token, "UTF-8")
+
 }
