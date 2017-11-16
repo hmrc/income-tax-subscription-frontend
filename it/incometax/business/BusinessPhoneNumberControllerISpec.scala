@@ -19,7 +19,7 @@ package incometax.business
 import core.config.featureswitch
 import core.config.featureswitch.FeatureSwitching
 import core.services.CacheConstants
-import helpers.IntegrationTestConstants.{checkYourAnswersURI, signInURI}
+import helpers.IntegrationTestConstants.checkYourAnswersURI
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}

@@ -68,8 +68,6 @@ POST        /exit-survey                  incometax.subscription.controllers.Exi
 
 GET         /feedback-submitted           incometax.subscription.controllers.ExitSurveyThankYouController.show
 
-GET         /sign-in                      core.controllers.SignInController.signIn
-
 # Claim Subscription
 GET         /claim-subscription           incometax.subscription.controllers.ClaimSubscriptionController.claim
 

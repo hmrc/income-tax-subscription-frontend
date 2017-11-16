@@ -16,7 +16,6 @@
 
 package incometax.subscription
 
-import agent.helpers.IntegrationTestConstants.{checkYourAnswersURI => _, confirmationURI => _, signInURI => _, termsURI => _, _}
 import core.services.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._

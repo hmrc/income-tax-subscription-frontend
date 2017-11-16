@@ -17,7 +17,7 @@
 package incometax.business
 
 import core.services.CacheConstants
-import helpers.IntegrationTestConstants.{accountingPeriodPriorURI, checkYourAnswersURI, signInURI}
+import helpers.IntegrationTestConstants.{accountingPeriodPriorURI, checkYourAnswersURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}

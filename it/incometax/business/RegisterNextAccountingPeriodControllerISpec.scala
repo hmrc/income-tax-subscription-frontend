@@ -17,7 +17,7 @@
 package incometax.business
 
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{accountingPeriodDatesURI, signInURI}
+import helpers.IntegrationTestConstants.accountingPeriodDatesURI
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
