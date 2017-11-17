@@ -20,15 +20,15 @@ import java.time.Duration
 
 import agent.assets.MessageLookup.{ClientDetailsLockout => messages}
 import agent.controllers.AgentControllerBaseSpec
-import agent.services.mocks.MockAgentLockoutService
 import agent.utils.TestConstants.testARN
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
+import usermatching.services.mocks.MockUserLockoutService
 
 class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
-  with MockAgentLockoutService {
+  with MockUserLockoutService {
 
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "ClientDetailsLockoutController"
@@ -41,7 +41,7 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     mockAuthService,
-    mockAgentLockoutService
+    mockUserLockoutService
   )
 
   "Calling the 'show' action of the ClientDetailsLockoutController" when {

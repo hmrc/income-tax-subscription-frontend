@@ -21,12 +21,12 @@ import core.ITSASessionKeys
 import core.auth.UserMatching
 import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
+import core.utils.TestConstants.testUserId
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import uk.gov.hmrc.http.{NotFoundException, SessionKeys}
-import core.utils.TestConstants.testUserId
 
 class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
 

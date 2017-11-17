@@ -16,6 +16,7 @@
 
 package usermatching.controllers
 
+import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
 import core.auth.{IncomeTaxSAUser, UserMatchingController}
@@ -25,7 +26,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, UserId}
 import usermatching.forms.UserDetailsForm
 import usermatching.models.{NotLockedOut, UserDetailsModel}
 import usermatching.services.UserLockoutService
@@ -48,7 +49,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
     )
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
-    val bearerToken = implicitly[HeaderCarrier].userId.get
+    val bearerToken = implicitly[HeaderCarrier].userId.get.value
 
     (lockOutService.getLockoutStatus(bearerToken) flatMap {
       case Right(NotLockedOut) => f

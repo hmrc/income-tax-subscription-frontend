@@ -16,42 +16,18 @@
 
 package usermatching.services
 
-import java.net.URLEncoder
-
+import core.utils.TestConstants._
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.UserId
 import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 import usermatching.services.mocks.TestUserLockoutService
-import core.utils.TestConstants._
 
 class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
-  "UserLockoutService.lockoutUser" should {
-
-    def call = await(TestUserLockoutService.lockoutUser(userId = testUserId))
-
-    "return the not locked out status" in {
-      def stripUserId(userId: UserId): String = URLEncoder.encode(userId.value, "UTF-8")
-      setupMockLockCreated(escapedUserId)
-      call.right.value shouldBe testLockoutResponse
-    }
-
-    "return the error if lock status fails on bad request" in {
-      setupMockLockFailureResponse(escapedUserId)
-      call.left.value shouldBe LockoutStatusFailureResponse(BAD_REQUEST)
-    }
-
-    "return the error if locked out throws an exception" in {
-      setupMockLockException(escapedUserId)
-      intercept[Exception](call) shouldBe testException
-    }
-  }
-
   "UserLockoutService.getLockOutStatus" should {
 
-    def call = await(TestUserLockoutService.getLockoutStatus(userId = testUserId))
+    def call = await(TestUserLockoutService.getLockoutStatus(token = testUserId.value))
 
     "return the not locked out status" in {
       setupMockNotLockedOut(escapedUserId)
@@ -71,6 +47,40 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
     "return the error if locked out throws an exception" in {
       setupMockLockStatusException(escapedUserId)
       intercept[Exception](call) shouldBe testException
+    }
+  }
+
+  "UserLockoutService.incrementLockout" should {
+
+    def call(counter: Int) = await(TestUserLockoutService.incrementLockout(token = testUserId.value, counter))
+
+    "when counter is under the limit should return not locked out and updated new counter, should not clear keystore" in {
+      setupMockLockCreated(escapedUserId)
+      call(appConfig.matchingAttempts - 2).right.value shouldBe LockoutUpdate(NotLockedOut, appConfig.matchingAttempts - 1)
+
+      verifyKeystore(deleteAll = 0)
+    }
+
+    "when counter exceeds max should return locked out, keystore should be cleared" in {
+      setupMockLockCreated(escapedUserId)
+      call(appConfig.matchingAttempts - 1).right.value shouldBe LockoutUpdate(testLockoutResponse, None)
+
+      verifyKeystore(deleteAll = 1)
+    }
+
+    "return the error if create lock fails on bad request, should not clear keystore" in {
+      setupMockLockFailureResponse(escapedUserId)
+      call(appConfig.matchingAttempts - 1).left.value shouldBe LockoutStatusFailureResponse(BAD_REQUEST)
+
+      verifyKeystore(deleteAll = 0)
+    }
+
+    "return the error if create lock throws an exception, should not clear keystore" in {
+      setupMockLockException(escapedUserId)
+      intercept[Exception](call(appConfig.matchingAttempts - 1)) shouldBe testException
+
+      verifyKeystore(deleteAll = 0)
+
     }
   }
 

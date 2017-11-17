@@ -23,13 +23,13 @@ import core.ITSASessionKeys
 import core.auth.UserMatching
 import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
+import core.utils.TestConstants._
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import uk.gov.hmrc.http.{NotFoundException, SessionKeys}
 import usermatching.services.mocks.MockUserLockoutService
-import core.utils.TestConstants._
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   with MockUserLockoutService {
@@ -87,7 +87,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
         lazy val document = Jsoup.parse(contentAsString(result))
 
         "return 200" in {
-          setupMockLockedOut(testUserId)
+          setupMockLockedOut(testUserId.value)
           status(result) must be(Status.OK)
 
           contentType(result) must be(Some("text/html"))
@@ -99,7 +99,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
 
       "the user is not locked out" should {
         s"redirect to ${usermatching.controllers.routes.UserDetailsController.show().url}" in {
-          setupMockNotLockedOut(testUserId)
+          setupMockNotLockedOut(testUserId.value)
 
           lazy val result = TestUserDetailsLockoutController.show(request)
 

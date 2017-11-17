@@ -28,9 +28,10 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.models.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
-import usermatching.services.{UserLockoutService, UserMatchingService}
+import usermatching.services.{LockoutUpdate, UserLockoutService, UserMatchingService}
 
 import scala.concurrent.Future
+import scala.concurrent.Future.{failed, successful}
 import scala.util.Left
 
 @Singleton
@@ -49,9 +50,9 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       backUrl
     )
 
-  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
+  private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
     val bearerToken = implicitly[HeaderCarrier].userId.get
-    (lockOutService.getLockoutStatus(bearerToken) flatMap {
+    (lockOutService.getLockoutStatus(bearerToken.value) flatMap {
       case Right(NotLockedOut) => f
       case Right(_: LockedOut) =>
         Future.successful(Redirect(usermatching.controllers.routes.UserDetailsLockoutController.show().url))
@@ -62,7 +63,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      handleLockOut {
+      withLockOutCheck {
         keystoreService.fetchUserDetails() map {
           case Some(userDetails) => Ok(view(userDetails))
           case _ => Redirect(usermatching.controllers.routes.UserDetailsLockoutController.show())
@@ -72,7 +73,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      handleLockOut {
+      withLockOutCheck {
         keystoreService.fetchUserDetails() flatMap {
           case None =>
             Future.successful(Redirect(usermatching.controllers.routes.UserDetailsController.show()))
@@ -82,36 +83,29 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
+  private def handleFailedMatch(bearerToken: String)(implicit request: Request[AnyContent]): Future[Result] = {
+    val currentCount = request.session.get(FailedUserMatching).fold(0)(_.toInt)
+    lockOutService.incrementLockout(bearerToken, currentCount).flatMap {
+      case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
+        successful(Redirect(usermatching.controllers.routes.UserDetailsErrorController.show())
+          .addingToSession(FailedUserMatching -> newCount.toString))
+      case Right(LockoutUpdate(_: LockedOut, _)) =>
+        successful(Redirect(usermatching.controllers.routes.UserDetailsLockoutController.show())
+          .removingFromSession(FailedUserMatching))
+      case Left(failure) => failed(new InternalServerException("ConfirmUserController.lockUser: " + failure))
+    }
+  }
+
   private def matchUserDetails(userDetails: UserDetailsModel)(implicit request: Request[AnyContent]) = for {
     user <- userMatching.matchUser(userDetails)
     result <- user match {
       case Right(Some(matchedDetails)) => handleMatchedUser(matchedDetails)
-      case Right(None) => handleFailedMatch
+      case Right(None) => handleFailedMatch(implicitly[HeaderCarrier].userId.get.value)
       case Left(error) => throw new InternalServerException(error.errors)
     }
   } yield result
 
   lazy val backUrl: String = usermatching.controllers.routes.UserDetailsController.show().url
-
-  private def handleFailedMatch(implicit request: Request[AnyContent]): Future[Result] = {
-    val failedMatches = request.session.get(FailedUserMatching).fold(0)(_.toInt) + 1
-
-    if (failedMatches < applicationConfig.matchingAttempts) {
-      Future.successful(
-        Redirect(usermatching.controllers.routes.UserDetailsErrorController.show())
-          .addingToSession(FailedUserMatching -> s"$failedMatches")
-      )
-    }
-    else {
-      val bearerToken = implicitly[HeaderCarrier].userId.get
-      for {
-        _ <- lockOutService.lockoutUser(bearerToken)
-          .filter(_.isRight)
-        _ <- keystoreService.deleteAll()
-      } yield Redirect(usermatching.controllers.routes.UserDetailsLockoutController.show())
-        .removingFromSession(FailedUserMatching)
-    }
-  }
 
   private def handleMatchedUser(matchedDetails: UserMatchSuccessResponseModel)(implicit request: Request[AnyContent]): Future[Result] = {
     matchedDetails match {

@@ -37,30 +37,30 @@ trait MockUserLockoutConnector extends MockTrait {
     when(mockUserLockoutConnector.lockoutUser(ArgumentMatchers.eq(arn))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  def setupMockLockCreated(arn: String): Unit =
-    setupLockoutUser(arn)(Future.successful(Right(testLockoutResponse)))
+  def setupMockLockCreated(token: String): Unit =
+    setupLockoutUser(token)(Future.successful(Right(testLockoutResponse)))
 
-  def setupMockLockFailureResponse(arn: String): Unit =
-    setupLockoutUser(arn)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
+  def setupMockLockFailureResponse(token: String): Unit =
+    setupLockoutUser(token)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
 
-  def setupMockLockException(arn: String): Unit =
-    setupLockoutUser(arn)(Future.failed(testException))
+  def setupMockLockException(token: String): Unit =
+    setupLockoutUser(token)(Future.failed(testException))
 
-  private def setupMockGetLockoutStatus(arn: String)(result: Future[LockoutStatusResponse]): Unit =
-    when(mockUserLockoutConnector.getLockoutStatus(ArgumentMatchers.eq(arn))(ArgumentMatchers.any[HeaderCarrier]))
+  private def setupMockGetLockoutStatus(token: String)(result: Future[LockoutStatusResponse]): Unit =
+    when(mockUserLockoutConnector.getLockoutStatus(ArgumentMatchers.eq(token))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  def setupMockNotLockedOut(arn: String): Unit =
-    setupMockGetLockoutStatus(arn)(Future.successful(Right(NotLockedOut)))
+  def setupMockNotLockedOut(token: String): Unit =
+    setupMockGetLockoutStatus(token)(Future.successful(Right(NotLockedOut)))
 
-  def setupMockLockedOut(arn: String): Unit =
-    setupMockGetLockoutStatus(arn)(Future.successful(Right(testLockoutResponse)))
+  def setupMockLockedOut(token: String): Unit =
+    setupMockGetLockoutStatus(token)(Future.successful(Right(testLockoutResponse)))
 
-  def setupMockLockStatusFailureResponse(arn: String): Unit =
-    setupMockGetLockoutStatus(arn)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
+  def setupMockLockStatusFailureResponse(token: String): Unit =
+    setupMockGetLockoutStatus(token)(Future.successful(Left(LockoutStatusFailureResponse(BAD_REQUEST))))
 
-  def setupMockLockStatusException(arn: String): Unit =
-    setupMockGetLockoutStatus(arn)(Future.failed(testException))
+  def setupMockLockStatusException(token: String): Unit =
+    setupMockGetLockoutStatus(token)(Future.failed(testException))
 
 }
 
