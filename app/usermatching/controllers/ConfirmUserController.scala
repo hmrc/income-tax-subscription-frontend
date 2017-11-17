@@ -50,7 +50,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       backUrl
     )
 
-  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
+  private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
     val bearerToken = implicitly[HeaderCarrier].userId.get
     (lockOutService.getLockoutStatus(bearerToken.value) flatMap {
       case Right(NotLockedOut) => f
@@ -63,7 +63,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      handleLockOut {
+      withLockOutCheck {
         keystoreService.fetchUserDetails() map {
           case Some(userDetails) => Ok(view(userDetails))
           case _ => Redirect(usermatching.controllers.routes.UserDetailsLockoutController.show())
@@ -73,7 +73,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      handleLockOut {
+      withLockOutCheck {
         keystoreService.fetchUserDetails() flatMap {
           case None =>
             Future.successful(Redirect(usermatching.controllers.routes.UserDetailsController.show()))
@@ -83,7 +83,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  private def lockUser(bearerToken: String)(implicit request: Request[AnyContent]): Future[Result] = {
+  private def handleFailedMatch(bearerToken: String)(implicit request: Request[AnyContent]): Future[Result] = {
     val currentCount = request.session.get(FailedUserMatching).fold(0)(_.toInt)
     lockOutService.incrementLockout(bearerToken, currentCount).flatMap {
       case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
@@ -100,7 +100,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
     user <- userMatching.matchUser(userDetails)
     result <- user match {
       case Right(Some(matchedDetails)) => handleMatchedUser(matchedDetails)
-      case Right(None) => lockUser(implicitly[HeaderCarrier].userId.get.value)
+      case Right(None) => handleFailedMatch(implicitly[HeaderCarrier].userId.get.value)
       case Left(error) => throw new InternalServerException(error.errors)
     }
   } yield result

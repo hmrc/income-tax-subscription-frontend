@@ -53,7 +53,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
       backUrl
     )
 
-  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]) = {
+  private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]) = {
     (lockOutService.getLockoutStatus(user.arn.get) flatMap {
       case Right(NotLockedOut) => f
       case Right(_: LockedOut) =>
@@ -65,7 +65,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      handleLockOut {
+      withLockOutCheck {
         keystoreService.fetchClientDetails() map {
           case Some(clientDetails) => Ok(view(clientDetails))
           case _ => Redirect(agent.controllers.matching.routes.ClientDetailsController.show())
@@ -73,7 +73,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  private def lockUser(arn: String)(implicit request: Request[_]) = {
+  private def handleFailedMatch(arn: String)(implicit request: Request[_]) = {
     val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
     lockOutService.incrementLockout(arn, currentCount).flatMap {
       case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
@@ -88,7 +88,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      handleLockOut {
+      withLockOutCheck {
         val arn = user.arn.get // Will fail if no ARN in user
 
         import ITSASessionKeys.FailedClientMatching
@@ -97,7 +97,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
 
         agentQualificationService.orchestrateAgentQualification(arn).flatMap {
           case Left(NoClientDetails) => successful(Redirect(routes.ClientDetailsController.show()))
-          case Left(NoClientMatched) => lockUser(arn)
+          case Left(NoClientMatched) => handleFailedMatch(arn)
           case Left(ClientAlreadySubscribed) => successful(
             Redirect(agent.controllers.routes.ClientAlreadySubscribedController.show())
               .removingFromSession(FailedClientMatching)
