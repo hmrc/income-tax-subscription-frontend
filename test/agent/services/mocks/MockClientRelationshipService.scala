@@ -39,16 +39,6 @@ trait MockClientRelationshipService extends MockTrait {
   def preExistingRelationshipFailure(arn: String, nino: String)(failure: Throwable): Unit =
     when(mockClientRelationshipService.isPreExistingRelationship(arn, nino)).thenReturn(Future.failed(failure))
 
-  def setupCreateClientRelationship(arn: String, mtdid: String): Unit =
-    when(mockClientRelationshipService
-      .createClientRelationship(ArgumentMatchers.eq(arn), ArgumentMatchers.eq(mtdid))(ArgumentMatchers.any[HeaderCarrier])
-    ).thenReturn(Future.successful(()))
-
-  def setupCreateClientRelationshipFailure(arn: String, mtdid: String)(failure: Throwable): Unit =
-    when(mockClientRelationshipService
-      .createClientRelationship(ArgumentMatchers.eq(arn), ArgumentMatchers.eq(mtdid))(ArgumentMatchers.any[HeaderCarrier])
-    ).thenReturn(Future.failed(failure))
-
 }
 
 trait TestClientRelationshipService extends MockAgentServicesConnector {

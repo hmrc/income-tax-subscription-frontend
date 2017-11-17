@@ -30,9 +30,6 @@ trait TestAgentServicesConnector extends MockHttp {
 
   def mockIsPreExistingRelationship(arn: String, nino: String)(status: Int, response: Option[JsValue] = None): Unit =
     setupMockHttpGet(Some(TestAgentServicesConnector.agentClientURL(arn, nino)))(status, response)
-
-  def mockCreateClientRelationship(arn: String, mtdid: String)(status: Int, response: Option[JsValue]): Unit =
-    setupMockHttpPut(Some(TestAgentServicesConnector.createClientRelationshipURL(arn, mtdid)))(status, response)
 }
 
 trait MockAgentServicesConnector extends MockTrait {
@@ -50,9 +47,4 @@ trait MockAgentServicesConnector extends MockTrait {
   def preExistingRelationshipFailure(arn: String, nino: String)(failure: Throwable): Unit =
     when(mockAgentServicesConnector.isPreExistingRelationship(arn, nino)).thenReturn(Future.failed(failure))
 
-  def createClientRelationship(arn: String, mtdid: String): Unit =
-    when(mockAgentServicesConnector.createClientRelationship(arn, mtdid)).thenReturn(Future.successful(()))
-
-  def createClientRelationshipFailure(arn: String, mtdid: String)(failure: Throwable): Unit =
-    when(mockAgentServicesConnector.createClientRelationship(arn, mtdid)).thenReturn(Future.failed(failure))
 }

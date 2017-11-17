@@ -49,27 +49,12 @@ class AgentServicesConnector @Inject()(appConfig: AppConfig,
 
   def isPreExistingRelationshipFailure(status: Int, body: String): Throwable = failure("isPreExistingRelationship", status, body)
 
-  def createClientRelationshipFailure(status: Int, body: String): Throwable = failure("createClientRelationship", status, body)
-
   private def failure(methodCall: String, status: Int, body: String) = {
     val message = s"AgentServicesConnector.$methodCall unexpected response from agent services: status=$status body=$body"
 
     logging.warn(message)
     new InternalServerException(message)
   }
-
-  def createClientRelationship(arn: String, mtdid: String)(implicit hc: HeaderCarrier): Future[Unit] = {
-    val url = createClientRelationshipURL(arn, mtdid)
-
-    http.PUT(url, "")
-      .flatMap {
-        case HttpResponse(Status.CREATED, _, _, _) => successful(())
-        case HttpResponse(status, _, _, body) => failed(createClientRelationshipFailure(status, body))
-      }
-  }
-
-  def createClientRelationshipURL(arn: String, mtdid: String): String =
-    appConfig.agentMicroserviceUrl + AgentServicesConnector.createClientRelationshipURI(arn, mtdid)
 
 }
 
@@ -78,6 +63,4 @@ object AgentServicesConnector {
   def agentClientURI(arn: String, nino: String): String =
     s"/agent-client-relationships/agent/$arn/service/IR-SA/client/ni/$nino"
 
-  def createClientRelationshipURI(arn: String, mtdid: String): String =
-    s"/agent-client-relationships/agent/$arn/service/$mtdItsaEnrolmentName/client/$mtdItsaEnrolmentIdentifierKey/$mtdid"
 }

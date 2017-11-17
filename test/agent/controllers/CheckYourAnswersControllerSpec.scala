@@ -135,7 +135,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           fetchAll = testSummary
         )
         mockCreateSubscriptionSuccess(testARN, newTestNino, testSummary.getSummary())
-        setupCreateClientRelationship(testARN, testMTDID)
 
         status(result) must be(Status.SEE_OTHER)
         await(result)
@@ -168,8 +167,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
         mockCreateSubscriptionSuccess(testARN, testNino, testCacheMap.getSummary())
-
-        setupCreateClientRelationshipFailure(testARN, testMTDID)(new Exception())
 
         val ex = intercept[InternalServerException](await(call(request)))
         ex.message mustBe "Failed to create client relationship"

@@ -49,23 +49,4 @@ class ClientRelationshipServiceSpec extends TestClientRelationshipService {
     }
   }
 
-  "createClientRelationship" should {
-    "return a successful Future[Unit] when the connector is successful" in {
-      createClientRelationship(testARN, testMTDID)
-
-      val res = TestClientRelationshipService.createClientRelationship(testARN, testMTDID)
-
-      await(res) must be(())
-    }
-
-    "return a failed future when the connector fails" in {
-      val exception = new Exception()
-
-      createClientRelationshipFailure(testARN, testMTDID)(exception)
-
-      val res = TestClientRelationshipService.createClientRelationship(testARN, testMTDID)
-
-      intercept[Exception](await(res)) mustBe exception
-    }
-  }
 }

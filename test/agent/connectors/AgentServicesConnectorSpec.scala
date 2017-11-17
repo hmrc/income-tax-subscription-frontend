@@ -50,33 +50,4 @@ class AgentServicesConnectorSpec extends TestAgentServicesConnector {
       ex.getMessage mustBe TestAgentServicesConnector.isPreExistingRelationshipFailure(INTERNAL_SERVER_ERROR, invalidBody.toString()).getMessage
     }
   }
-
-  "createClientRelationship" should {
-    "successfully create a client relationship from the provided details" in {
-      mockCreateClientRelationship(testARN, testMTDID)(CREATED, None)
-
-      val res = TestAgentServicesConnector.createClientRelationship(testARN, testMTDID)
-
-      await(res) must be(())
-    }
-
-    "fail when a 4XX response is received" in {
-      mockCreateClientRelationship(testARN, testMTDID)(BAD_REQUEST, None)
-
-      val res = TestAgentServicesConnector.createClientRelationship(testARN, testMTDID)
-
-      val ex = intercept[Exception](await(res))
-      ex.getMessage mustBe TestAgentServicesConnector.createClientRelationshipFailure(BAD_REQUEST, "null").getMessage
-    }
-
-
-    "fail when a 5XX response is received" in {
-      mockCreateClientRelationship(testARN, testMTDID)(INTERNAL_SERVER_ERROR, None)
-
-      val res = TestAgentServicesConnector.createClientRelationship(testARN, testMTDID)
-
-      val ex = intercept[Exception](await(res))
-      ex.getMessage mustBe TestAgentServicesConnector.createClientRelationshipFailure(INTERNAL_SERVER_ERROR, "null").getMessage
-    }
-  }
 }
