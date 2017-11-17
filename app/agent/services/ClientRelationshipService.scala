@@ -28,8 +28,4 @@ class ClientRelationshipService @Inject()(val agentServicesConnector: AgentServi
   def isPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     agentServicesConnector.isPreExistingRelationship(arn, nino)
   }
-
-  def createClientRelationship(arn: String, mtdid: String)(implicit hc: HeaderCarrier): Future[Unit] = {
-    agentServicesConnector.createClientRelationship(arn, mtdid)
-  }
 }
