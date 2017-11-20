@@ -16,6 +16,7 @@
 
 package incometax.business.controllers
 
+import assets.MessageLookup
 import core.ITSASessionKeys
 import core.auth.Registration
 import core.config.MockConfig
@@ -228,6 +229,7 @@ class BusinessAddressControllerSpec extends ControllerBaseSpec
         "should have the correct parameters" in {
           conf.continueUrl mustBe TestBusinessAddressController.callbackUrl(editMode)(request)
           conf.showBackButtons mustBe Some(true)
+          conf.navTitle mustBe Some(MessageLookup.Base.navTitle)
 
           val lookup = conf.lookupPage.get
           lookup.heading mustBe Some(Lookup.heading)
