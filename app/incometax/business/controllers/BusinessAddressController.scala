@@ -72,7 +72,8 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
           line2Label = Some(Messages("business.address.edit.add_line_2")),
           line3Label = Some(Messages("business.address.edit.add_line_3"))
         )
-      )
+      ),
+      navTitle = Some(Messages("base.service_name"))
     )
 
   def init(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
