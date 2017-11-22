@@ -16,17 +16,17 @@ private object AppDependencies {
   import play.core.PlayVersion
 
   private val bootstrapPlayVersion = "1.0.0"
-  private val govukTemplateVersion = "5.14.0"
+  private val govukTemplateVersion = "5.15.0"
   private val playUiVersion = "7.8.0"
-  private val playPartialsVersion = "6.0.0"
-  private val hmrcTestVersion = "2.3.0"
+  private val playPartialsVersion = "6.1.0"
+  private val hmrcTestVersion = "3.0.0"
   private val scalaTestVersion = "3.0.1"
   private val scalaTestPlusVersion = "2.0.0"
   private val pegdownVersion = "1.6.0"
   private val httpCachingCleintVersion = "7.0.0"
   private val playWhitelistFilterVersion = "2.0.0"
   private val wiremockVersion = "2.5.1"
-  private val domainVersion = "4.1.0"
+  private val domainVersion = "5.0.0"
   private val catsVersion = "0.9.0"
 
   val compile = Seq(

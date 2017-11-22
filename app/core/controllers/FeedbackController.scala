@@ -60,8 +60,7 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
 
   def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit().url
 
-  protected def loadPartial(url: String)(implicit request: RequestHeader, ec: ExecutionContext): HtmlPartial = ???
-
+  protected def loadPartial(url: String)(implicit request: RequestHeader): HtmlPartial = ???
 
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =
     s"${applicationConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/?submitUrl=${urlEncode(localSubmitUrl)}" +
