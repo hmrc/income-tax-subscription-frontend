@@ -27,6 +27,7 @@ POST        /check-your-answers           incometax.subscription.controllers.Che
 
 # Confirmation Routes
 GET         /confirmation                 incometax.subscription.controllers.ConfirmationController.showConfirmation
+GET         /confirmation/sign-out        incometax.subscription.controllers.ConfirmationController.signOut
 
 # Session Timeout Route
 GET         /session-timeout              core.controllers.SessionTimeoutController.timeout

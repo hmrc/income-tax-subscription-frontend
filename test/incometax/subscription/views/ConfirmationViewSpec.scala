@@ -118,13 +118,6 @@ class ConfirmationViewSpec extends ViewSpecTrait {
       actionSignOut.text() mustBe MessageLookup.Confirmation.signOut
     }
 
-    // N.B. both of these should be directed to the special sign out call which also takes them to the exit survey page
-    "The banner sign out button must be directed to the same as the sign out button" in {
-      val bannerSignout = document.getElementById("logOutNavHref")
-      bannerSignout.text() mustBe MessageLookup.Base.signOut
-      bannerSignout.attr("href") mustBe action.url
-    }
-
   }
 
   "The Confirmation view for both income source" should {

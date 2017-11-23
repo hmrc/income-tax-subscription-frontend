@@ -46,8 +46,8 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
           Ok(agent.views.html.confirmation(
             subscriptionId = id,
             submissionDate = dateConvert(LocalDate.now()),
-            agent.controllers.routes.AddAnotherClientController.addAnother(),
-            core.controllers.SignOutController.signOut(origin = routes.ConfirmationController.showConfirmation())
+            postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
+            signOutAction = core.controllers.SignOutController.signOut(origin =routes.ConfirmationController.showConfirmation())
           ))
         case _ =>
           logging.info("User attempted to view confirmation with no subscriptionId stored in Keystore")
