@@ -47,19 +47,14 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
       keystoreService.fetchIncomeSource.flatMap {
         case Some(incomeSource) =>
-          keystoreService.fetchSubscriptionId.map {
-            case Some(id) =>
-              Ok(incometax.subscription.views.html.confirmation(
-                subscriptionId = id,
-                submissionDate = dateConvert(LocalDate.now()),
-                routes.ConfirmationController.signOut(),
-                journeyDuration,
-                incomeSource.source
-              ))
-            case _ =>
-              logging.info("User attempted to view confirmation with no subscriptionId stored in Keystore")
-              throw new InternalServerException("Confirmation Controller, call to view confirmation with no subscription ID")
-          }
+          Future.successful(
+            Ok(incometax.subscription.views.html.confirmation(
+              submissionDate = dateConvert(LocalDate.now()),
+              routes.ConfirmationController.signOut(),
+              journeyDuration,
+              incomeSource.source
+            ))
+          )
         case _ =>
           logging.info("User attempted to view confirmation with no incomeSource stored in Keystore")
           Future.failed(new InternalServerException("Confirmation Controller, call to show confirmation with no income source"))

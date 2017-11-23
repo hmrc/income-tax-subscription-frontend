@@ -26,12 +26,10 @@ import play.api.test.FakeRequest
 
 class AlreadyEnrolledViewSpec extends ViewSpecTrait {
 
-  val subscriptionIdValue = "000-032407"
   val submissionDateValue = DateModel("1", "1", "2016")
   val action = ViewSpecTrait.testCall
 
   lazy val page = incometax.subscription.views.html.enrolled.already_enrolled(
-    subscriptionId = subscriptionIdValue,
     signOutAction = action
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
@@ -61,20 +59,9 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
         }
       }
 
-      s"has a subscription id value '$subscriptionIdValue'" in {
-        document.select("#subscription-id-value").text() mustBe subscriptionIdValue
-      }
-
-      s"has in the banner a paragraph of '${MessageLookup.Confirmation.banner_line1}'" in {
-        document.select("#confirmation-heading p").text() must include(MessageLookup.Confirmation.banner_line1)
-      }
     }
 
     "have a 'What happens next' section" which {
-
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para1)
-      }
 
       s"has the section heading '${MessageLookup.Confirmation.whatHappensNext.heading}'" in {
         document.select("#whatHappensNext h2").text() mustBe MessageLookup.Confirmation.whatHappensNext.heading

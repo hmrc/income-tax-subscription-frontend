@@ -57,7 +57,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     val startTime: LocalDateTime = LocalDateTime.now()
     "get the ID from keystore if the user is enrolled" in {
       mockAuthEnrolled()
-      setupMockKeystore(fetchSubscriptionId = "testId")
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
       val result: Future[Result] = TestConfirmationController.showConfirmation(
         subscriptionRequest.addStartTime(startTime)
@@ -66,7 +65,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       status(result) shouldBe OK
 
       await(result)
-      verifyKeystore(fetchSubscriptionId = 1)
     }
 
     "return not found if the user is not enrolled" in {
@@ -74,7 +72,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       val result = TestConfirmationController.showConfirmation(subscriptionRequest)
 
       intercept[NotFoundException](await(result)).message shouldBe "AuthPredicates.enrolledPredicate"
-      verifyKeystore(fetchSubscriptionId = 0)
     }
   }
 

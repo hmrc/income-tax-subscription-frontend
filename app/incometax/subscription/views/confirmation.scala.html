@@ -21,7 +21,7 @@
 @import core.views.html.templates.main_template
 @import core.views.html.helpers._
 
-@(subscriptionId: String, submissionDate: DateModel, signOutAction: Call, journeyDuration: Int, incomeSource: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(submissionDate: DateModel, signOutAction: Call, journeyDuration: Int, incomeSource: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
@@ -31,17 +31,10 @@
     <div class="form-group" data-metrics="itsa:journey duration:@incomeSource:@journeyDuration">
         <section id="confirmation-heading" class="transaction-banner--complete">
             <h1 class="transaction-banner__heading" style="color: #fff">@Messages("confirmation.heading")</h1>
-            <p>@Messages("confirmation.banner.line_1")</p>
-            <p>
-                <span id="subscription-id-value" class="h3-heading">@subscriptionId</span>
-            </p>
         </section>
     </div>
 
     <section class="form-group" id="whatHappensNext">
-        <div class="form-group">
-            <p>@Messages("confirmation.whatHappensNext.para1")</p>
-        </div>
         <h2>@Messages("confirmation.whatHappensNext.heading")</h2>
         <p>@Messages("confirmation.whatHappensNext.para2")</p>
         <p>@Messages("confirmation.whatHappensNext.para3")</p>
