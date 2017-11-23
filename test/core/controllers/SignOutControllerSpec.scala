@@ -19,22 +19,47 @@ package core.controllers
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.AffinityGroup
 
 
 class SignOutControllerSpec extends ControllerBaseSpec {
 
   object TestSignOutController extends SignOutController(
-    appConfig
+    appConfig,
+    mockAuthService
   )
 
   override val controllerName: String = "SignOutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map.empty
 
-  "Authorised users" should {
-    "be redirected to the gg signOut" in {
-      val result = TestSignOutController.signOut(subscriptionRequest)
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result).get should be(appConfig.ggSignOutUrl)
+  "Authorised users" when {
+    implicit val request = fakeRequest
+    "with an agent affinity group" should {
+      "be redirected to the gg signOut" in {
+        mockRetrievalSuccess(Some(AffinityGroup.Agent))
+
+        val result = TestSignOutController.signOut(subscriptionRequest)
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.agent.controllers.routes.ExitSurveyController.show().absoluteURL()))
+      }
+    }
+    "with an individual affinity group" should {
+      "be redirected to the gg signOut" in {
+        mockRetrievalSuccess(Some(AffinityGroup.Individual))
+
+        val result = TestSignOutController.signOut(subscriptionRequest)
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show().absoluteURL()))
+      }
+    }
+    "with an org affinity group" should {
+      "be redirected to the gg signOut" in {
+        mockRetrievalSuccess(Some(AffinityGroup.Organisation))
+
+        val result = TestSignOutController.signOut(subscriptionRequest)
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show().absoluteURL()))
+      }
     }
   }
 
