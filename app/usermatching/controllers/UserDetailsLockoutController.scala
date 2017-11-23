@@ -74,7 +74,7 @@ class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfi
 
   lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Redirect(core.controllers.routes.SignOutController.signOut()))
+      Future.successful(Redirect(core.controllers.SignOutController.signOut(routes.UserDetailsLockoutController.show().url)))
   }
 
 }

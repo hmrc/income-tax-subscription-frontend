@@ -35,7 +35,8 @@ class ClientAlreadySubscribedController @Inject()(val baseConfig: BaseController
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Future.successful(Ok(agent.views.html.client_already_subscribed(
-        postAction = agent.controllers.routes.ClientAlreadySubscribedController.submit()
+        postAction = agent.controllers.routes.ClientAlreadySubscribedController.submit(),
+        signOut = core.controllers.SignOutController.signOut(origin = routes.ClientAlreadySubscribedController.show())
       )))
   }
 

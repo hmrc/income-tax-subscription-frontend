@@ -52,7 +52,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
               Ok(incometax.subscription.views.html.confirmation(
                 subscriptionId = id,
                 submissionDate = dateConvert(LocalDate.now()),
-                routes.ConfirmationController.signOut(),
+                signOutAction = core.controllers.SignOutController.signOut(routes.ConfirmationController.showConfirmation()),
                 journeyDuration,
                 incomeSource.source
               ))
@@ -64,10 +64,6 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
           logging.info("User attempted to view confirmation with no incomeSource stored in Keystore")
           Future.failed(new InternalServerException("Confirmation Controller, call to show confirmation with no income source"))
       }
-  }
-
-  val signOut: Action[AnyContent] = Authenticated.async { implicit user =>
-    implicit request => Future.successful(Redirect(routes.ExitSurveyController.show()).withNewSession)
   }
 
 }

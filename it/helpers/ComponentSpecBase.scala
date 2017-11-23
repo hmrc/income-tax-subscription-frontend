@@ -152,7 +152,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def signIn(): WSResponse = get("/sign-in")
 
-    def signOut(): WSResponse = get("/logout")
+    def signOut(origin: String): WSResponse = get(s"/logout?origin=$origin")
 
     def alreadyEnrolled(): WSResponse = get("/already-enrolled")
 
@@ -205,7 +205,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitNoSA(): WSResponse = post("/register-for-SA")(Map.empty)
 
-    def exitSurvey(): WSResponse = get("/exit-survey")
+    def exitSurvey(origin: String): WSResponse = get(s"/exit-survey?origin=$origin")
 
     def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
 

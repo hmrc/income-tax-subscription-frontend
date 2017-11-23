@@ -28,14 +28,14 @@ class NoSAControllerSpec extends ControllerBaseSpec {
   override val controllerName: String = "NoSAController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestNoSAController$ extends NoSAController()(
+  object TestNoSAController extends NoSAController()(
     MockBaseControllerConfig.applicationConfig,
     messagesApi
   )
 
   "Calling the show action of the NoSAController" should {
 
-    lazy val result = TestNoSAController$.show(subscriptionRequest)
+    lazy val result = TestNoSAController.show(subscriptionRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -54,14 +54,14 @@ class NoSAControllerSpec extends ControllerBaseSpec {
 
   "Calling the submit action of the NoSAController" should {
 
-    lazy val result = TestNoSAController$.submit(subscriptionRequest)
+    lazy val result = TestNoSAController.submit(subscriptionRequest)
 
     "return SEE_OTHER" in {
       status(result) must be(Status.SEE_OTHER)
     }
 
-    s"redirect to ${core.controllers.routes.SignOutController.signOut().url}" in {
-      redirectLocation(result).get mustBe core.controllers.routes.SignOutController.signOut().url
+    s"redirect to sign out" in {
+      redirectLocation(result).get mustBe core.controllers.SignOutController.signOut(routes.NoSAController.show())(subscriptionRequest).url
     }
 
   }

@@ -87,7 +87,7 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
     }
 
     "Redirect to the 'Client details' page" in {
-      redirectLocation(result).get mustBe core.controllers.routes.SignOutController.signOut().url
+      redirectLocation(result).get mustBe core.controllers.SignOutController.signOut(routes.ClientDetailsLockoutController.show())(userMatchingRequest).url
     }
 
   }

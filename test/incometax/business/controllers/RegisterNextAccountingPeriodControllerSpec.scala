@@ -50,10 +50,15 @@ class RegisterNextAccountingPeriodControllerSpec extends ControllerBaseSpec with
       status(result) must be(Status.OK)
     }
 
-
     s"The back url should point to '${incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url}'" in {
       val document = Jsoup.parse(contentAsString(result))
       document.select("#back").attr("href") mustBe incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url
+    }
+
+    s"the page must have a link to sign out" in {
+      val document = Jsoup.parse(contentAsString(result))
+      document.select("#sign-out").attr("href") mustBe
+        core.controllers.SignOutController.signOut(incometax.business.controllers.routes.RegisterNextAccountingPeriodController.show())(subscriptionRequest).url
     }
   }
 

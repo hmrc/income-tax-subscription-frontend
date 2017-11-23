@@ -55,9 +55,10 @@ class RegisterNextAccountingPeriodControllerSpec extends AgentControllerBaseSpec
       document.select("#back").attr("href") mustBe agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
     }
 
-    s"the page must have a link to ${core.controllers.routes.SignOutController.signOut().url}" in {
+    s"the page must have a link to sign out" in {
       val document = Jsoup.parse(contentAsString(result))
-      document.select("#sign-out").attr("href") mustBe core.controllers.routes.SignOutController.signOut().url
+      document.select("#sign-out").attr("href") mustBe
+        core.controllers.SignOutController.signOut(agent.controllers.business.routes.RegisterNextAccountingPeriodController.show())(subscriptionRequest).url
     }
   }
 

@@ -23,17 +23,19 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
+import scala.concurrent.Future
+
 @Singleton
 class NoSAController @Inject()(implicit val applicationConfig: AppConfig,
                                val messagesApi: MessagesApi
                                 ) extends FrontendController with I18nSupport {
 
-  val show: Action[AnyContent] = Action {
-    implicit request => Ok(agent.views.html.no_sa(postAction = agent.controllers.matching.routes.NoSAController.submit()))
+  val show: Action[AnyContent] = Action.async {
+    implicit request => Future.successful(Ok(agent.views.html.no_sa(postAction = agent.controllers.matching.routes.NoSAController.submit())))
   }
 
-  val submit: Action[AnyContent] = Action {
-    implicit request => Redirect(core.controllers.routes.SignOutController.signOut())
+  val submit: Action[AnyContent] = Action.async {
+    implicit request => Future.successful(Redirect(core.controllers.SignOutController.signOut(origin = routes.NoSAController.show())))
   }
 
 }

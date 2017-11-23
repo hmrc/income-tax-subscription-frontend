@@ -34,9 +34,10 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
                                                        val authService: AuthService
                                                       ) extends AuthenticatedController {
 
-  def view()(implicit request: Request[_]): Html =
+  def view()(implicit request: Request[AnyContent]): Html =
     agent.views.html.business.register_next_accounting_period(
       postAction = agent.controllers.business.routes.RegisterNextAccountingPeriodController.submit(),
+      signOut = core.controllers.SignOutController.signOut(origin = routes.RegisterNextAccountingPeriodController.show()),
       backUrl = agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
     )
 

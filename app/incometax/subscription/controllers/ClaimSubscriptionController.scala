@@ -57,6 +57,6 @@ class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig
   private def confirmationPage(id: String)(implicit request: Request[AnyContent]) =
     incometax.subscription.views.html.enrolled.already_enrolled(
       subscriptionId = id,
-      routes.ConfirmationController.signOut()
+      core.controllers.SignOutController.signOut(routes.ClaimSubscriptionController.claim())
     )
 }

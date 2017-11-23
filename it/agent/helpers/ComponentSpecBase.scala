@@ -224,7 +224,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitExitSurvey(): WSResponse = post("/exit-survey")(Map.empty)
 
-    def exitSurvey(): WSResponse = get("/exit-survey")
+    def exitSurvey(origin: String): WSResponse = get(s"/exit-survey?origin=$origin")
 
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
 

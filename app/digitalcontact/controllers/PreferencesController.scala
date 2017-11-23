@@ -43,7 +43,8 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   def view()(implicit request: Request[AnyContent]): Html = {
     digitalcontact.views.html.continue_registration(
-      postAction = digitalcontact.controllers.routes.PreferencesController.submitGoBackToPreferences()
+      postAction = digitalcontact.controllers.routes.PreferencesController.submitGoBackToPreferences(),
+      signOut = core.controllers.SignOutController.signOut(routes.PreferencesController.showGoBackToPreferences())
     )
   }
 
@@ -102,7 +103,5 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
         .removingFromSession(ITSASessionKeys.PreferencesRedirectUrl)
       case None => Redirect(preferencesService.defaultChoosePaperlessUrl)
     }
-
-  def signOut(implicit request: Request[_]): Result = Redirect(core.controllers.routes.SignOutController.signOut())
 
 }

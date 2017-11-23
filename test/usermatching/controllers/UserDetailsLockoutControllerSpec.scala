@@ -24,6 +24,7 @@ import core.auth.UserMatching
 import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
 import core.utils.TestConstants._
+import core.views.ViewSpecTrait
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -119,7 +120,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
       }
 
       "Redirect to the 'sign out'" in {
-        redirectLocation(result).get mustBe core.controllers.routes.SignOutController.signOut().url
+        redirectLocation(result).get mustBe core.controllers.SignOutController.signOut(routes.UserDetailsLockoutController.show())(request).url
       }
 
     }

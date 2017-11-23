@@ -19,7 +19,7 @@
 @import core.views.html.templates.main_template
 @import core.views.html.helpers._
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call, signOut: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("preferences_callback.title"), bodyClasses = None) {
 
@@ -33,5 +33,5 @@
 
     }
     <br>
-    <a id="sign-out" href="@core.controllers.routes.SignOutController.signOut().url">@Messages("base.sign-out")</a>
+    <a id="sign-out" href="@signOut.url">@Messages("base.sign-out")</a>
 }

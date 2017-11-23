@@ -17,6 +17,7 @@
 package agent.views.business
 
 import agent.assets.MessageLookup.Business.{RegisterNextAccountingPeriod => messages}
+import assets.MessageLookup.{Base => commonMessages}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import core.views.ViewSpecTrait
@@ -25,9 +26,11 @@ class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
+  val action2 = ViewSpecTrait.testCall
 
   lazy val page = agent.views.html.business.register_next_accounting_period(
     postAction = action,
+    signOut = action2,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -44,5 +47,7 @@ class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
     testPage.mustHaveParaSeq(
       messages.line_1
     )
+
+    testPage.mustHaveALink("sign-out", commonMessages.signOut, action2.url)
   }
 }

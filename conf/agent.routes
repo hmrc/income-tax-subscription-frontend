@@ -67,7 +67,7 @@ POST        /error/no-client-relationship           agent.controllers.NoClientRe
 GET         /add-another                            agent.controllers.AddAnotherClientController.addAnother()
 
 # Exit Survey
-GET         /exit-survey                            agent.controllers.ExitSurveyController.show
+GET         /exit-survey                            agent.controllers.ExitSurveyController.show(origin: String)
 POST        /exit-survey                            agent.controllers.ExitSurveyController.submit
 
 GET         /feedback-submitted                     agent.controllers.ThankYouController.show

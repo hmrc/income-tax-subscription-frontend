@@ -24,8 +24,9 @@ import play.api.test.FakeRequest
 class UserDetailsErrorViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
+  val action2 = ViewSpecTrait.testCall.copy(url = "/action2")
 
-  lazy val page = usermatching.views.html.user_details_error(action)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = usermatching.views.html.user_details_error(action, action2)(FakeRequest(), applicationMessages, appConfig)
 
   "The User Details Error view" should {
     val testPage = TestView(
@@ -41,7 +42,7 @@ class UserDetailsErrorViewSpec extends ViewSpecTrait {
 
     form.mustHaveSubmitButton(commonMessages.goBack)
 
-    testPage.mustHaveALink("sign-out", commonMessages.signOut, core.controllers.routes.SignOutController.signOut().url)
+    testPage.mustHaveALink("sign-out", commonMessages.signOut, action2.url)
 
   }
 }

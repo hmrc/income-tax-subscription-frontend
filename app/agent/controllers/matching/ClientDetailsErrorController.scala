@@ -33,7 +33,10 @@ class ClientDetailsErrorController @Inject()(val baseConfig: BaseControllerConfi
 
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Ok(agent.views.html.client_details_error(postAction = agent.controllers.matching.routes.ClientDetailsErrorController.submit()))
+      Ok(agent.views.html.client_details_error(
+        postAction = agent.controllers.matching.routes.ClientDetailsErrorController.submit(),
+        signOut = core.controllers.SignOutController.signOut(routes.ClientDetailsErrorController.show())
+      ))
   }
 
   lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>

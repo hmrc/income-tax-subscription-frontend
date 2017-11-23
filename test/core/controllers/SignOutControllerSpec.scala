@@ -16,6 +16,8 @@
 
 package core.controllers
 
+import java.net.URLEncoder
+
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -31,6 +33,7 @@ class SignOutControllerSpec extends ControllerBaseSpec {
 
   override val controllerName: String = "SignOutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map.empty
+  val testOrigin = "/hello-world"
 
   "Authorised users" when {
     implicit val request = fakeRequest
@@ -38,28 +41,35 @@ class SignOutControllerSpec extends ControllerBaseSpec {
       "be redirected to the gg signOut" in {
         mockRetrievalSuccess(Some(AffinityGroup.Agent))
 
-        val result = TestSignOutController.signOut(subscriptionRequest)
+        val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.agent.controllers.routes.ExitSurveyController.show().absoluteURL()))
+        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.agent.controllers.routes.ExitSurveyController.show(testOrigin).absoluteURL()))
       }
     }
     "with an individual affinity group" should {
       "be redirected to the gg signOut" in {
         mockRetrievalSuccess(Some(AffinityGroup.Individual))
 
-        val result = TestSignOutController.signOut(subscriptionRequest)
+        val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show().absoluteURL()))
+        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show(testOrigin).absoluteURL()))
       }
     }
     "with an org affinity group" should {
       "be redirected to the gg signOut" in {
         mockRetrievalSuccess(Some(AffinityGroup.Organisation))
 
-        val result = TestSignOutController.signOut(subscriptionRequest)
+        val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show().absoluteURL()))
+        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show(testOrigin).absoluteURL()))
       }
+    }
+  }
+
+  "SignOutController.signOut util function" should {
+    "escape the url correctly" in {
+      val testOrigin = "/hello-world"
+      SignOutController.signOut(testOrigin).url mustBe routes.SignOutController.signOut(origin = URLEncoder.encode(testOrigin, "UTF-8")).url
     }
   }
 

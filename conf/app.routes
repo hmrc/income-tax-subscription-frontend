@@ -6,7 +6,7 @@ GET         /                             usermatching.controllers.HomeControlle
 GET         /index                        usermatching.controllers.HomeController.index
 
 # SignOut Controller
-GET         /logout                       core.controllers.SignOutController.signOut
+GET         /logout                       core.controllers.SignOutController.signOut(origin: String)
 
 # NinoResolver Controller
 GET         /resolve-nino                 usermatching.controllers.NinoResolverController.resolveNinoAction
@@ -27,7 +27,6 @@ POST        /check-your-answers           incometax.subscription.controllers.Che
 
 # Confirmation Routes
 GET         /confirmation                 incometax.subscription.controllers.ConfirmationController.showConfirmation
-GET         /confirmation/sign-out        incometax.subscription.controllers.ConfirmationController.signOut
 
 # Session Timeout Route
 GET         /session-timeout              core.controllers.SessionTimeoutController.timeout
@@ -63,7 +62,7 @@ GET         /error/affinity-group         usermatching.controllers.AffinityGroup
 GET         /error/iv-failed              identityverification.controllers.IdentityVerificationController.ivFailed
 
 # Exit Survey
-GET         /exit-survey                  incometax.subscription.controllers.ExitSurveyController.show
+GET         /exit-survey                  incometax.subscription.controllers.ExitSurveyController.show(origin: String)
 POST        /exit-survey                  incometax.subscription.controllers.ExitSurveyController.submit
 
 GET         /feedback-submitted           incometax.subscription.controllers.ExitSurveyThankYouController.show

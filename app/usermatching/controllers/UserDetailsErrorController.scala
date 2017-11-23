@@ -29,13 +29,14 @@ import core.utils.Implicits._
 class UserDetailsErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                            val messagesApi: MessagesApi,
                                            val authService: AuthService
-                                            ) extends UserMatchingController {
+                                          ) extends UserMatchingController {
 
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Ok(usermatching.views.html.user_details_error(
-        postAction = usermatching.controllers.routes.UserDetailsErrorController.submit())
-      )
+        postAction = usermatching.controllers.routes.UserDetailsErrorController.submit(),
+        signOut = core.controllers.SignOutController.signOut(routes.UserDetailsErrorController.show())
+      ))
   }
 
   lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
