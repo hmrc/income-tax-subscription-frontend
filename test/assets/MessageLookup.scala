@@ -306,8 +306,8 @@ object MessageLookup {
 
     object whatHappensNext {
       val heading = "What happens next"
-      val para2 = "You must use accounting software to record your income and expenses and send a report to HM Revenue and Customs at least every quarter."
-      val para3 = "After you send a report you'll get an Income Tax estimate. You can view your estimate and report deadlines in your:"
+      val para1 = "You must use accounting software to record your income and expenses and send a report to HM Revenue and Customs at least every quarter."
+      val para2 = "After you send a report you'll get an Income Tax estimate. You can view your estimate and report deadlines in your:"
       val bul1 = "accounting software"
       val bul2 = "business tax account"
       val para4 = "It may take a few hours for them all to appear."

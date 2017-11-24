@@ -220,8 +220,8 @@ object MessageLookup {
 
   object whatHappensNext {
       val heading = "What happens next"
-      val para2 = "You must use accounting software to keep your client's accounts, and send a report to HMRC at least every quarter."
-      val para3 = "You'll get an estimate of your client's Income Tax in your software when you send a report. From August 2017 your client can view these Income Tax calculations and their report deadlines in their business tax account."
+      val para1 = "You must use accounting software to keep your client's accounts, and send a report to HMRC at least every quarter."
+      val para2 = "You'll get an estimate of your client's Income Tax in your software when you send a report. From August 2017 your client can view these Income Tax calculations and their report deadlines in their business tax account."
   }
 
   object giveUsFeedback {
