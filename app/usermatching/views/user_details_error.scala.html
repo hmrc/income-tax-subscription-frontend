@@ -19,7 +19,7 @@
 @import core.config.AppConfig
 @import core.views.html.templates.main_template
 
-@(postAction: Call, signOut: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("user-details-error.title"), bodyClasses = None) {
     <h1 class="heading-large">@Messages("user-details-error.heading")</h1>
@@ -29,6 +29,6 @@
         @continueButton(Messages("base.go_back"))
     }
     </div>
-    <a id="sign-out" href="@signOut.url">@Messages("base.sign-out")</a>
+    @signOutLink()
 
 }

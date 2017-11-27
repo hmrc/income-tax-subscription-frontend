@@ -57,7 +57,6 @@ POST        /error/client-details                   agent.controllers.matching.C
 
 # Client Lockout
 GET         /error/lockout                          agent.controllers.matching.ClientDetailsLockoutController.show
-POST        /error/lockout                          agent.controllers.matching.ClientDetailsLockoutController.submit
 
 #
 GET         /error/no-client-relationship           agent.controllers.NoClientRelationshipController.show
@@ -74,4 +73,3 @@ GET         /feedback-submitted                     agent.controllers.ThankYouCo
 
 # No NINO Routes
 GET         /register-for-SA                        agent.controllers.matching.NoSAController.show
-POST        /register-for-SA                        agent.controllers.matching.NoSAController.submit

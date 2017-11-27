@@ -24,10 +24,9 @@ import play.api.test.FakeRequest
 class ClientDetailsErrorViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
-  val action2 = ViewSpecTrait.testCall.copy(url = "/action2")
-  val request = FakeRequest()
+  val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = agent.views.html.client_details_error(action, action2)(request, applicationMessages, appConfig)
+  lazy val page = agent.views.html.client_details_error(action)(request, applicationMessages, appConfig)
 
   "The Client Details Error view" should {
     val testPage = TestView(
@@ -39,11 +38,7 @@ class ClientDetailsErrorViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line1)
 
-    val form = testPage.getForm("Client Details Error form")(actionCall = action)
-
-    form.mustHaveSubmitButton(commonMessages.goBack)
-
-    testPage.mustHaveALink("sign-out", commonMessages.signOut, action2.url)
+    testPage.mustHaveSignOutLink(commonMessages.signOut, request.path)
 
   }
 }

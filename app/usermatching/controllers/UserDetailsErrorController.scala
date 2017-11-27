@@ -21,9 +21,9 @@ import javax.inject.{Inject, Singleton}
 import core.auth.UserMatchingController
 import core.config.BaseControllerConfig
 import core.services.AuthService
+import core.utils.Implicits._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import core.utils.Implicits._
 
 @Singleton
 class UserDetailsErrorController @Inject()(val baseConfig: BaseControllerConfig,
@@ -34,8 +34,7 @@ class UserDetailsErrorController @Inject()(val baseConfig: BaseControllerConfig,
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Ok(usermatching.views.html.user_details_error(
-        postAction = usermatching.controllers.routes.UserDetailsErrorController.submit(),
-        signOut = core.controllers.SignOutController.signOut(routes.UserDetailsErrorController.show())
+        postAction = usermatching.controllers.routes.UserDetailsErrorController.submit()
       ))
   }
 

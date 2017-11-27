@@ -58,7 +58,7 @@ class ClientDetailsErrorControllerSpec extends AgentControllerBaseSpec {
 
     s"the page must have a link to sign out}" in {
       document.select("#sign-out").attr("href") mustBe
-        core.controllers.SignOutController.signOut(agent.controllers.matching.routes.ClientDetailsErrorController.show())(userMatchingRequest).url
+        core.controllers.SignOutController.signOut(userMatchingRequest.path).url
     }
 
   }

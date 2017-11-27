@@ -27,7 +27,6 @@ POST        /check-your-answers           incometax.subscription.controllers.Che
 
 # Confirmation Routes
 GET         /confirmation                 incometax.subscription.controllers.ConfirmationController.showConfirmation
-GET         /confirmation/sign-out        incometax.subscription.controllers.ConfirmationController.signOut
 
 # Session Timeout Route
 GET         /session-timeout              core.controllers.SessionTimeoutController.timeout
@@ -50,7 +49,6 @@ GET         /already-enrolled             incometax.subscription.controllers.Alr
 
 # No NINO Routes
 GET         /register-for-SA              usermatching.controllers.NoSAController.show
-POST        /register-for-SA              usermatching.controllers.NoSAController.submit
 
 # Other Income Error Routes
 GET         /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.showOtherIncomeError
@@ -80,7 +78,6 @@ POST        /user-details                 usermatching.controllers.UserDetailsCo
 
 # User Lockout
 GET         /error/lockout                usermatching.controllers.UserDetailsLockoutController.show
-POST        /error/lockout                usermatching.controllers.UserDetailsLockoutController.submit
 
 # Confirm User
 GET         /confirm-user                 usermatching.controllers.ConfirmUserController.show()

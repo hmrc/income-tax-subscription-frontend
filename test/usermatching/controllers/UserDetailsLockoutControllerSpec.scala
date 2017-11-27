@@ -38,8 +38,7 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "UserDetailsLockoutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestUserDetailsLockoutController.show,
-    "submit" -> TestUserDetailsLockoutController.submit
+    "show" -> TestUserDetailsLockoutController.show
   )
 
   def createTestUserDetailsLockoutController(enableMatchingFeature: Boolean) = new UserDetailsLockoutController(
@@ -61,16 +60,6 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
     "show" should {
       "return NOT FOUND" in {
         val result = TestUserDetailsLockoutController.show()(request)
-        val ex = intercept[NotFoundException] {
-          await(result)
-        }
-        ex.message must startWith("This page for user matching is not yet available to the public:")
-      }
-    }
-
-    "submit" should {
-      "return NOT FOUND" in {
-        val result = TestUserDetailsLockoutController.submit()(request)
         val ex = intercept[NotFoundException] {
           await(result)
         }
@@ -107,20 +96,6 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe usermatching.controllers.routes.UserDetailsController.show().url
         }
-      }
-
-    }
-
-    "Calling the 'submit' action of the UserDetailsLockoutController" should {
-
-      lazy val result = TestUserDetailsLockoutController.submit(request)
-
-      "return 303" in {
-        status(result) must be(Status.SEE_OTHER)
-      }
-
-      "Redirect to the 'sign out'" in {
-        redirectLocation(result).get mustBe core.controllers.SignOutController.signOut(routes.UserDetailsLockoutController.show())(request).url
       }
 
     }

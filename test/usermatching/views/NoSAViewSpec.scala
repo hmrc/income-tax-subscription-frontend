@@ -16,16 +16,16 @@
 
 package usermatching.views
 
-import assets.MessageLookup.{Base, NoSA => messages}
+import assets.MessageLookup.{Base => common, NoSA => messages}
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
-import play.api.test.FakeRequest
 
 class NoSAViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
+  val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = usermatching.views.html.no_sa(postAction = action)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = usermatching.views.html.no_sa()(request, applicationMessages, appConfig)
 
   "The No SA view" should {
 
@@ -41,8 +41,7 @@ class NoSAViewSpec extends ViewSpecTrait {
 
     testPage.mustHaveALink(id = "sa-signup", messages.linkText, appConfig.signUpToSaLink)
 
-    val form = testPage.getForm("No SA form")(actionCall = action)
+    testPage.mustHaveSignOutButton(common.signOut, request.path)
 
-    form.mustHaveSubmitButton(Base.signOut)
   }
 }

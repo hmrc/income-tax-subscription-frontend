@@ -33,8 +33,7 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
   // Required for trait but no authorisation tests are required
   override val controllerName: String = "ClientDetailsLockoutController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestClientDetailsLockoutController.show,
-    "submit" -> TestClientDetailsLockoutController.submit
+    "show" -> TestClientDetailsLockoutController.show
   )
 
   object TestClientDetailsLockoutController extends ClientDetailsLockoutController(
@@ -74,20 +73,6 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe agent.controllers.matching.routes.ClientDetailsController.show().url
       }
-    }
-
-  }
-
-  "Calling the 'submit' action of the ClientDetailsLockoutController" should {
-
-    lazy val result = TestClientDetailsLockoutController.submit(userMatchingRequest)
-
-    "return 303" in {
-      status(result) must be(Status.SEE_OTHER)
-    }
-
-    "Redirect to the 'Client details' page" in {
-      redirectLocation(result).get mustBe core.controllers.SignOutController.signOut(routes.ClientDetailsLockoutController.show())(userMatchingRequest).url
     }
 
   }

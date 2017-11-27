@@ -43,8 +43,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   def view()(implicit request: Request[AnyContent]): Html = {
     digitalcontact.views.html.continue_registration(
-      postAction = digitalcontact.controllers.routes.PreferencesController.submitGoBackToPreferences(),
-      signOut = core.controllers.SignOutController.signOut(routes.PreferencesController.showGoBackToPreferences())
+      postAction = digitalcontact.controllers.routes.PreferencesController.submitGoBackToPreferences()
     )
   }
 

@@ -35,7 +35,6 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
   def view()(implicit request: Request[AnyContent]): Html =
     incometax.business.views.html.register_next_accounting_period(
       postAction = incometax.business.controllers.routes.RegisterNextAccountingPeriodController.submit(),
-      signOut = core.controllers.SignOutController.signOut(routes.RegisterNextAccountingPeriodController.show()),
       backUrl = incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url
     )
 

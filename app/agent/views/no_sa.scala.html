@@ -14,13 +14,12 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
 
 @import core.views.html.templates.main_template
 @import core.views.html.helpers._
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("agent.no-sa.title"), bodyClasses = None, showSignOutLink = false) {
 
@@ -30,8 +29,6 @@
         <p>@Html(Messages("agent.no-sa.line_1", appConfig.signUpToSaLink))</p>
     </div>
 
-    @form(action = postAction) {
-        @signOutButton()
-    }
+    @signOutButton()
 
 }

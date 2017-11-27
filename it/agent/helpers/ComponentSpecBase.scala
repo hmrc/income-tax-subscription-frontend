@@ -174,8 +174,6 @@ trait ComponentSpecBase extends UnitSpec
 
     def showClientDetailsLockout(): WSResponse = get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def submitClientDetailsLockout(): WSResponse = post("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
-
     def showConfirmation(hasSubmitted: Boolean): WSResponse =
       if (hasSubmitted)
         get("/confirmation", Map(ITSASessionKeys.MTDITID -> testMTDID))
@@ -308,7 +306,6 @@ trait ComponentSpecBase extends UnitSpec
 
     def noSA(): WSResponse = get("/register-for-SA")
 
-    def submitNoSA(): WSResponse = post("/register-for-SA")(Map.empty)
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =

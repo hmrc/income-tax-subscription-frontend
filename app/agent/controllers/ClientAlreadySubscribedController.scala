@@ -20,9 +20,9 @@ import javax.inject.{Inject, Singleton}
 
 import agent.auth.UserMatchingController
 import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import core.services.AuthService
 
 import scala.concurrent.Future
 
@@ -35,8 +35,7 @@ class ClientAlreadySubscribedController @Inject()(val baseConfig: BaseController
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Future.successful(Ok(agent.views.html.client_already_subscribed(
-        postAction = agent.controllers.routes.ClientAlreadySubscribedController.submit(),
-        signOut = core.controllers.SignOutController.signOut(origin = routes.ClientAlreadySubscribedController.show())
+        postAction = agent.controllers.routes.ClientAlreadySubscribedController.submit()
       )))
   }
 
@@ -44,6 +43,5 @@ class ClientAlreadySubscribedController @Inject()(val baseConfig: BaseController
     implicit user =>
       Future.successful(Redirect(agent.controllers.matching.routes.ClientDetailsController.show()))
   }
-
 
 }

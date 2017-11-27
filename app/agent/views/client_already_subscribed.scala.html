@@ -19,7 +19,7 @@
 @import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 
-@(postAction: Call, signOut: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("agent.client-already-subscribed.title"), bodyClasses = None) {
 
@@ -33,5 +33,5 @@
       @continueButton(Messages("agent.base.go_back"))
     }
   </div>
-  <a id="sign-out" href="@signOut.url">@Messages("agent.base.sign-out")</a>
+  @signOutLink()
 }

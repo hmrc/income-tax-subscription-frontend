@@ -15,19 +15,16 @@
  *@
 
 @import core.config.AppConfig
-@import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 @import core.views.html.templates.main_template
 
-@(postAction: Call, durationText: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(durationText: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("agent.client-details-lockout.title"), bodyClasses = None) {
     <h1 class="heading-large">@Messages("agent.client-details-lockout.heading")</h1>
     <p>@Messages("agent.client-details-lockout.line_1", durationText)</p>
     <div class="form-group">
-    @form(action = postAction) {
-        @signOutButton()
-    }
+    @signOutButton()
     </div>
 
 }

@@ -95,7 +95,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
 
       s"the page must have a link to sign out" in {
         document.select("#sign-out").attr("href") mustBe
-          core.controllers.SignOutController.signOut(routes.UserDetailsErrorController.show())(request).url
+          core.controllers.SignOutController.signOut(request.path).url
       }
 
     }

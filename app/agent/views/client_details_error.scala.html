@@ -19,7 +19,7 @@
 @import core.views.html.helpers._
 @import core.config.AppConfig
 
-@(postAction: Call, signOut: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("agent.client-details-error.title"), bodyClasses = None) {
     <h1 class="heading-large">@Messages("agent.client-details-error.heading")</h1>
@@ -29,6 +29,6 @@
         @continueButton(Messages("agent.base.go_back"))
     }
     </div>
-    <a id="sign-out" href="@signOut.url">@Messages("agent.base.sign-out")</a>
+    @signOutLink()
 
 }

@@ -19,7 +19,7 @@
 @import core.views.html.helpers._
 @import core.config.AppConfig
 
-@(postAction: Call, signOut: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     Messages("agent.business.register_next_accounting_period.heading")
@@ -35,10 +35,10 @@
 
     @form(action = postAction) {
         @continueButton(Messages("agent.business.register_next_accounting_period.button"))
-
     }
 
     <br>
-    <a id="sign-out" href="@signOut">@Messages("agent.base.sign-out")</a>
+
+    @signOutLink()
 
 }

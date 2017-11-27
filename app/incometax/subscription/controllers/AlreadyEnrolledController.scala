@@ -38,8 +38,7 @@ class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
         Future.successful(
           Ok(
             incometax.subscription.views.html.enrolled.already_enrolled(
-              subscriptionId = user.mtdItsaRef.get,
-              signOutAction = core.controllers.SignOutController.signOut(routes.AlreadyEnrolledController.enrolled())
+              subscriptionId = user.mtdItsaRef.get
             )
           )
         )

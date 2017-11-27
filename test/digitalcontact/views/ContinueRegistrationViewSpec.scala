@@ -24,12 +24,10 @@ import play.api.test.FakeRequest
 class ContinueRegistrationViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
-  val action2 = ViewSpecTrait.testCall.copy(url = "/action2")
-  val request = FakeRequest()
+  val request = ViewSpecTrait.viewTestRequest
 
   lazy val page = digitalcontact.views.html.continue_registration(
-    postAction = action,
-    signOut = action2
+    postAction = action
   )(request, applicationMessages, appConfig)
 
   "The Continue Registration view" should {
@@ -44,7 +42,7 @@ class ContinueRegistrationViewSpec extends ViewSpecTrait {
 
     form.mustHaveGoBackButton()
 
-    testPage.mustHaveALink(id = "sign-out", href = action2.url, text = messages.signOut)
+    testPage.mustHaveSignOutLink(text = messages.signOut, origin = request.path)
 
   }
 }

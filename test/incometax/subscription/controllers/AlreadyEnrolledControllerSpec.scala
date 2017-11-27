@@ -50,8 +50,8 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
 
       document.title mustBe messages.heading
 
-      document.select("form").attr("action") mustBe
-        core.controllers.SignOutController.signOut(routes.AlreadyEnrolledController.enrolled())(subscriptionRequest).url
+      document.select("#sign-out-button").attr("href") mustBe
+      core.controllers.SignOutController.signOut(subscriptionRequest.path).url
     }
   }
 
