@@ -97,7 +97,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase {
         Then("The result should have a status of BadRequest")
         res should have(
           httpStatus(BAD_REQUEST),
-          pageTitle(Messages("agent.client-details.title"))
+          pageTitle("Error: " + Messages("agent.client-details.title"))
         )
         KeystoreStub.verifyKeyStoreSave(ClientDetails, None, Some(0))
         KeystoreStub.verifyKeyStoreDelete(Some(0))
