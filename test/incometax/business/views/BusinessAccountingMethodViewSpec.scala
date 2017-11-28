@@ -26,18 +26,18 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = incometax.business.views.html.accounting_method(
-    accountingMethodForm = AccountingMethodForm.accountingMethodForm,
+  def page(isEditMode: Boolean, addFormErrors: Boolean) = incometax.business.views.html.accounting_method(
+    accountingMethodForm = AccountingMethodForm.accountingMethodForm.addError(addFormErrors),
     postAction = action,
     isEditMode,
-      backUrl = backUrl
+    backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
   def documentCore(isEditMode: Boolean) = TestView(
     name = "Business Accounting Method View",
     title = messages.title,
     heading = messages.heading,
-    page = page(isEditMode = isEditMode)
+    page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
 
@@ -78,4 +78,14 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
     editModePage.mustHaveUpdateButton()
   }
 
+  "Append Error to the page title if the form has error" should {
+    def documentCore() = TestView(
+      name = "Business Accounting Method View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
+  }
 }

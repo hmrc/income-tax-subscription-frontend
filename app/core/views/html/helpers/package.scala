@@ -21,11 +21,13 @@ import play.api.data.Form
 
 package object helpers extends Implicits {
 
+  val titleErrPrefix = "Error: "
+
   def prefixErr(title: String, dependentForm: Option[Form[_]]): String =
     dependentForm.fold(title)(form => prefixErr(title, form.hasErrors))
 
   def prefixErr(title: String, prefixError: Boolean): String =
-    if (prefixError) "Error: " + title
+    if (prefixError) titleErrPrefix + title
     else title
 
 }

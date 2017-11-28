@@ -51,8 +51,6 @@ class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
     val form = testPage.getForm("Register Next Accounting Period form")(actionCall = action)
 
     form.mustHaveContinueToSignUpButton()
-
-
-
   }
+
 }

@@ -28,8 +28,8 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) =  incometax.incomesource.views.html.other_income(
-    otherIncomeForm = OtherIncomeForm.otherIncomeForm,
+  def page(isEditMode: Boolean, addFormErrors: Boolean) =  incometax.incomesource.views.html.other_income(
+    otherIncomeForm = OtherIncomeForm.otherIncomeForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
@@ -41,7 +41,7 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       name = "Other Income View",
       title = messages.title,
       heading = messages.heading,
-      page = page(isEditMode = false))
+      page = page(isEditMode = false, addFormErrors = false))
 
     testPage.mustHaveBackLinkTo(backUrl)
 
@@ -71,8 +71,19 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       name = "Edit Other Income View",
       title = messages.title,
       heading = messages.heading,
-      page = page(isEditMode = true))
+      page = page(isEditMode = true, addFormErrors = false))
 
     editModePage.mustHaveUpdateButton()
+  }
+
+  "Append Error to the page title if the form has error" should {
+    def documentCore() = TestView(
+      name = "Other Income View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
   }
 }

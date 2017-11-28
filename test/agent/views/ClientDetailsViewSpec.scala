@@ -26,8 +26,8 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = agent.views.html.client_details(
-    clientDetailsForm = ClientDetailsForm.clientDetailsForm.form,
+  def page(isEditMode: Boolean, addFormErrors: Boolean) = agent.views.html.client_details(
+    clientDetailsForm = ClientDetailsForm.clientDetailsForm.form.addError(addFormErrors),
     postAction = action,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
@@ -36,7 +36,7 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
     name = "Client Details View",
     title = messages.title,
     heading = messages.heading,
-    page = page(isEditMode = isEditMode)
+    page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
   "The Client Details view" should {
@@ -75,4 +75,14 @@ class ClientDetailsViewSpec extends ViewSpecTrait {
     editModePage.mustHaveUpdateButton()
   }
 
+  "Append Error to the page title if the form has error" should {
+    def documentCore() = TestView(
+      name = "Client Details View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
+  }
 }
