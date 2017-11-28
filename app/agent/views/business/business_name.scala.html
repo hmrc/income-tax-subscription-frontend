@@ -22,7 +22,11 @@
 
 @(businessNameForm: Form[BusinessNameModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@core.views.html.templates.main_template(title = Messages("agent.business.name.title"), bodyClasses = None) {
+@title = @{
+    prefixErr(Messages("agent.business.name.title"), businessNameForm)
+}
+
+@core.views.html.templates.main_template(title = title, bodyClasses = None) {
     @back_link(backUrl)
 
     @summaryErrorHelper(businessNameForm)

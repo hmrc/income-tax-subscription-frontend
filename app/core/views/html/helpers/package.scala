@@ -17,5 +17,15 @@
 package core.views.html
 
 import core.utils.Implicits
+import play.api.data.Form
 
-package object helpers extends Implicits
+package object helpers extends Implicits {
+
+  def prefixErr(title: String, dependentForm: Option[Form[_]]): String =
+    dependentForm.fold(title)(form => prefixErr(title, form.hasErrors))
+
+  def prefixErr(title: String, prefixError: Boolean): String =
+    if (prefixError) "Error: " + title
+    else title
+
+}

@@ -216,12 +216,12 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
             charset(badResult) must be(Some("utf-8"))
           }
 
-          "render the 'Not subscribed to Agent Services page'" in {
+          "render the 'User Details page'" in {
             setupMockNotLockedOut(testUserId.value)
 
             val badResult = callSubmit(isEditMode = editMode)
             val document = Jsoup.parse(contentAsString(badResult))
-            document.title mustBe messages.title
+            document.title mustBe "Error: " + messages.title
           }
 
         }

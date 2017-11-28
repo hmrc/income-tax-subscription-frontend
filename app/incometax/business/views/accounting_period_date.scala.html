@@ -27,7 +27,11 @@
 
 @(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, viewType: AccountingPeriodViewType, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("accounting_period.title"), bodyClasses = None, scriptElem = None) {
+@title = @{
+    prefixErr(Messages("accounting_period.title"), accountingPeriodForm)
+}
+
+@main_template(title = title, bodyClasses = None, scriptElem = None) {
 
     @back_link(backUrl)
 

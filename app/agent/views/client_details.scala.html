@@ -22,7 +22,11 @@
 
 @(clientDetailsForm: Form[UserDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@core.views.html.templates.main_template(title = Messages("agent.client-details.title"), bodyClasses = None) {
+@title = @{
+    prefixErr(Messages("agent.client-details.title"), clientDetailsForm)
+}
+
+@core.views.html.templates.main_template(title = title, bodyClasses = None) {
 
     @summaryErrorHelper(clientDetailsForm)
 

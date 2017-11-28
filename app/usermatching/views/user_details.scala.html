@@ -24,7 +24,11 @@
 
 @(userDetailsForm: Form[UserDetailsModel], postAction: Call, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("user-details.title"), bodyClasses = None) {
+@title = @{
+    prefixErr(Messages("user-details.title"), userDetailsForm)
+}
+
+@main_template(title = title, bodyClasses = None) {
 
     @summaryErrorHelper(userDetailsForm)
 

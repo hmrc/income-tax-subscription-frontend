@@ -191,12 +191,12 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
           charset(badResult) must be(Some("utf-8"))
         }
 
-        "render the 'Not subscribed to Agent Services page'" in {
+        "render the 'Client Details page'" in {
           setupMockNotLockedOut(testARN)
 
           val badResult = callSubmit(isEditMode = editMode)
           val document = Jsoup.parse(contentAsString(badResult))
-          document.title mustBe messages.title
+          document.title mustBe "Error: " + messages.title
         }
 
       }
