@@ -233,7 +233,6 @@ error.property.income.invalid                                   = You must selec
 
 error.date.empty                                                = You must enter a date
 error.date.invalid                                              = You must enter a valid date
-error.end_date_violation                                        = You must enter a date greater than the start date
 
 error.business.current_financial_period_prior.empty             = You must select an option to continue
 error.business.current_financial_period_prior.invalid           = You must select an option to continue
