@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import models._
 @import incometax.business.forms.BusinessPhoneNumberForm._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
@@ -25,11 +24,7 @@
 
 @(businessPhoneNumberForm: Form[BusinessPhoneNumberModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@title = @{
-    prefixErr(Messages("business.phone_number.title"), businessPhoneNumberForm)
-}
-
-@main_template(title = title, bodyClasses = None) {
+@main_template(title = Messages("business.phone_number.title"), form = businessPhoneNumberForm) {
     @back_link(backUrl)
 
     @summaryErrorHelper(businessPhoneNumberForm)

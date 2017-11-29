@@ -29,11 +29,7 @@
     Messages("income_source.heading")
 }
 
-@title = @{
-    prefixErr(Messages("income_source.title"), incomeSourceForm)
-}
-
-@main_template(title = title, bodyClasses = None) {
+@main_template(title = Messages("income_source.title"), form = incomeSourceForm) {
     @if(isEditMode) {
         @back_link(backUrl)
     }

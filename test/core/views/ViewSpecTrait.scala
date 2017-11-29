@@ -16,6 +16,7 @@
 
 package core.views
 
+import assets.MessageLookup
 import assets.MessageLookup.{Base => common}
 import core.controllers.SignOutController
 import core.forms.validation.models.{SummaryError, TargetIds}
@@ -31,7 +32,7 @@ import play.twirl.api.Html
 
 trait ViewSpecTrait extends UnitTestTrait {
 
-  val titleErrPrefix = core.views.html.helpers.titleErrPrefix
+  val titleErrPrefix = MessageLookup.Base.titleError
 
   case class Selector(name: String, cssQuery: String)
 

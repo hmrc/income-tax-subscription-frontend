@@ -36,6 +36,7 @@ object MessageLookup {
     val dateOfBirth = "Date of birth"
     val goBack = "Go back"
     val navTitle = "Report your income and expenses quarterly"
+    val titleError = "Error: "
   }
 
   object FrontPage {

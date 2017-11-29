@@ -21,7 +21,7 @@
 
 @(durationText: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("user-details-lockout.title"), bodyClasses = None) {
+@main_template(title = Messages("user-details-lockout.title")) {
     <h1 class="heading-large">@Messages("user-details-lockout.heading")</h1>
     <p>@Messages("user-details-lockout.line_1", durationText)</p>
     <div class="form-group">

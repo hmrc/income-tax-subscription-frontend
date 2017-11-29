@@ -26,11 +26,7 @@
 
 @(businessStartDateForm: Form[BusinessStartDateModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@title = @{
-    prefixErr(Messages("business.start_date.title"), businessStartDateForm)
-}
-
-@main_template(title = title, bodyClasses = None, scriptElem = None) {
+@main_template(title = Messages("business.start_date.title"), form = businessStartDateForm) {
 
     @back_link(backUrl)
 

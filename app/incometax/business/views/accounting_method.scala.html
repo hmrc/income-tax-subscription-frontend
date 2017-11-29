@@ -36,11 +36,7 @@
     </ul>
 }
 
-@title = @{
-    prefixErr(Messages("business.accounting_method.title"), accountingMethodForm)
-}
-
-@main_template(title = title, bodyClasses = None) {
+@main_template(title = Messages("business.accounting_method.title"), form = accountingMethodForm) {
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingMethodForm)

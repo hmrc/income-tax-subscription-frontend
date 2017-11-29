@@ -16,6 +16,7 @@
 
 @import core.config.AppConfig
 @(title: String,
+        form: Option[Form[_]] = None,
         sidebarLinks: Option[Html] = None,
         contentHeader: Option[Html] = None,
         bodyClasses: Option[String] = None,
@@ -64,8 +65,15 @@
 }
 }
 
+@prefixedTitle = @{
+    form match {
+        case Some(validationForm) if validationForm.hasErrors => Messages("base.title.error", title)
+        case _ => title
+    }
+}
+
 @govuk_wrapper(appConfig = appConfig,
-    title = title,
+    title = prefixedTitle,
     mainClass = mainClass,
     bodyClasses = bodyClasses,
     sidebar = sidebar,

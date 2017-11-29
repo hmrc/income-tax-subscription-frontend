@@ -23,11 +23,7 @@
 
 @(otherIncomeForm: Form[OtherIncomeModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@title = @{
-    prefixErr(Messages("income-other.title"), otherIncomeForm)
-}
-
-@main_template(title = title, bodyClasses = None) {
+@main_template(title = Messages("income-other.title"), form = otherIncomeForm) {
   @back_link(backUrl)
 
   @summaryErrorHelper(otherIncomeForm)

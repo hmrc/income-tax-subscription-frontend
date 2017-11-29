@@ -33,11 +33,7 @@
     <p>@Messages("business.current_financial_period_prior.accordion.line2")</p>
 }
 
-@title = @{
-    prefixErr(Messages("business.current_financial_period_prior.title"), accountingPeriodPriorForm)
-}
-
-@main_template(title = title, bodyClasses = None) {
+@main_template(title = Messages("business.current_financial_period_prior.title"), form = accountingPeriodPriorForm) {
 
     @back_link(backUrl)
 
