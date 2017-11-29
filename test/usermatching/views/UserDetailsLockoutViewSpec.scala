@@ -23,11 +23,10 @@ import play.api.test.FakeRequest
 
 class UserDetailsLockoutViewSpec extends ViewSpecTrait {
 
-  val action = ViewSpecTrait.testCall
-
   val testTime = "test time"
+  val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = usermatching.views.html.user_details_lockout(action, testTime)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = usermatching.views.html.user_details_lockout(testTime)(request, applicationMessages, appConfig)
 
   "The User Details Lockout view" should {
     val testPage = TestView(
@@ -39,9 +38,7 @@ class UserDetailsLockoutViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line1(testTime))
 
-    val form = testPage.getForm("User Details Lockout form")(actionCall = action)
-
-    form.mustHaveSubmitButton(commonMessages.signOut)
+    testPage.mustHaveSignOutButton(commonMessages.signOut, request.path)
 
   }
 }

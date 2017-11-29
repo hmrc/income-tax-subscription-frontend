@@ -17,11 +17,11 @@
 @import core.config.AppConfig
 @import core.views.html.templates.main_template
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(signOut: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("affinity-group-error.title"), bodyClasses = None) {
 
     <h1 class="heading-large">@Messages("affinity-group-error.heading")</h1>
     <p>@Messages("affinity-group-error.line1")</p>
-    <div id="signOut"><p>@Html(Messages("affinity-group-error.line2", core.controllers.routes.SignOutController.signOut().url))</p></div>
+    <div id="signOut"><p>@Html(Messages("affinity-group-error.line2", signOut.url))</p></div>
 }

@@ -24,8 +24,8 @@ import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
-import core.services.{AuthService, KeystoreService}
 import core.models.DateModel.dateConvert
+import core.services.{AuthService, KeystoreService}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.InternalServerException
@@ -50,7 +50,6 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
           Future.successful(
             Ok(incometax.subscription.views.html.confirmation(
               submissionDate = dateConvert(LocalDate.now()),
-              routes.ConfirmationController.signOut(),
               journeyDuration,
               incomeSource.source
             ))
@@ -59,10 +58,6 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
           logging.info("User attempted to view confirmation with no incomeSource stored in Keystore")
           Future.failed(new InternalServerException("Confirmation Controller, call to show confirmation with no income source"))
       }
-  }
-
-  val signOut: Action[AnyContent] = Authenticated.async { implicit user =>
-    implicit request => Future.successful(Redirect(routes.ExitSurveyController.show()).withNewSession)
   }
 
 }

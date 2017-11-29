@@ -21,15 +21,12 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.auth.PostSubmissionController
-import core.config.BaseControllerConfig
 import agent.models.DateModel.dateConvert
+import agent.services.KeystoreService
+import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import agent.services.KeystoreService
-import core.services.AuthService
-import uk.gov.hmrc.http.InternalServerException
-
-import scala.concurrent.Future
 
 @Singleton
 class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
@@ -39,19 +36,13 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
                                        val logging: Logging
                                       ) extends PostSubmissionController {
 
-  val showConfirmation: Action[AnyContent] = Authenticated.async { implicit request =>
+  val showConfirmation: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Future.successful(
-          Ok(agent.views.html.confirmation(
-            submissionDate = dateConvert(LocalDate.now()),
-            agent.controllers.routes.AddAnotherClientController.addAnother(),
-            agent.controllers.routes.ExitSurveyController.show()
-          ))
-      )
-  }
-
-  val signOut: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => Future.successful(Redirect(routes.ExitSurveyController.show()).withNewSession)
+      Ok(agent.views.html.confirmation(
+        submissionDate = dateConvert(LocalDate.now()),
+        postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
+        signOutAction = core.controllers.SignOutController.signOut(origin = routes.ConfirmationController.showConfirmation())
+      ))
   }
 
 }

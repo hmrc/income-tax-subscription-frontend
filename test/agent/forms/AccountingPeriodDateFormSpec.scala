@@ -151,9 +151,13 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           violation fieldErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate
           violation summaryErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate
 
-          val endDateViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("29", "6", "2019")
+          val endDateViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("28", "6", "2019")
           val violationTest = accountingPeriodDateForm.bind(endDateViolationInput)
           violationTest assert endDate hasExpectedErrors violation
+
+          val endDateNoViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("27", "6", "2019")
+          val noViolationTest = accountingPeriodDateForm.bind(endDateNoViolationInput)
+          noViolationTest assert endDate doesNotHaveSpecifiedErrors violation
         }
       }
     }

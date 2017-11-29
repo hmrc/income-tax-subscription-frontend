@@ -103,6 +103,4 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
       case None => Redirect(preferencesService.defaultChoosePaperlessUrl)
     }
 
-  def signOut(implicit request: Request[_]): Result = Redirect(core.controllers.routes.SignOutController.signOut())
-
 }

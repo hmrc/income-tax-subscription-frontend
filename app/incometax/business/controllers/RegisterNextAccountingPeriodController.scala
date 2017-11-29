@@ -32,7 +32,7 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
                                                        val authService: AuthService
                                                       ) extends SignUpController {
 
-  def view()(implicit request: Request[_]): Html =
+  def view()(implicit request: Request[AnyContent]): Html =
     incometax.business.views.html.register_next_accounting_period(
       postAction = incometax.business.controllers.routes.RegisterNextAccountingPeriodController.submit(),
       backUrl = incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url

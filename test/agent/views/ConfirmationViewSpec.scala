@@ -22,15 +22,17 @@ import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import core.utils.UnitTestTrait
+import core.views.ViewSpecTrait
 
 class ConfirmationViewSpec extends UnitTestTrait {
 
   val submissionDateValue = DateModel("1", "1", "2016")
+  val action = ViewSpecTrait.testCall
 
   lazy val page = agent.views.html.confirmation(
     submissionDate = submissionDateValue,
     postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
-    signOutAction = agent.controllers.routes.ExitSurveyController.show()
+    signOutAction = action
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
@@ -93,8 +95,8 @@ class ConfirmationViewSpec extends UnitTestTrait {
           document.select("#confirmation-feedback").text() must include(MessageLookup.Confirmation.giveUsFeedback.link)
         }
 
-        s"has a link to ${agent.controllers.routes.ExitSurveyController.show().url}" in {
-          document.select("#confirmation-feedback").attr("href") mustBe agent.controllers.routes.ExitSurveyController.show().url
+        s"has a link to ${action.url}" in {
+          document.select("#confirmation-feedback").attr("href") mustBe action.url
         }
       }
 

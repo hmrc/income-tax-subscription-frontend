@@ -18,20 +18,19 @@ package incometax.subscription.views
 
 import assets.MessageLookup
 import assets.MessageLookup.{AlreadyEnrolled => messages, Base => common}
+import core.controllers.SignOutController
 import core.models.DateModel
 import core.views.ViewSpecTrait
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
-import play.api.test.FakeRequest
 
 class AlreadyEnrolledViewSpec extends ViewSpecTrait {
 
   val submissionDateValue = DateModel("1", "1", "2016")
   val action = ViewSpecTrait.testCall
+  val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = incometax.subscription.views.html.enrolled.already_enrolled(
-    signOutAction = action
-  )(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = incometax.subscription.views.html.enrolled.already_enrolled()(request, applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Confirmation view" should {
@@ -91,18 +90,17 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
     }
 
     "have a sign out button" in {
-      val form = document.select("form").first()
-      form.attr("action") mustBe action.url
-
-      val actionSignOut = form.getElementById("sign-out-button")
-      actionSignOut.text() mustBe MessageLookup.Confirmation.signOut
+      val actionSignOut = document.getElementById("sign-out-button")
+      actionSignOut.attr("role") mustBe "button"
+      actionSignOut.text() mustBe MessageLookup.Base.signOut
+      actionSignOut.attr("href") mustBe SignOutController.signOut(request.path).url
     }
 
     // N.B. both of these should be directed to the special sign out call which also takes them to the exit survey page
     "The banner sign out button must be directed to the same as the sign out button" in {
       val bannerSignout = document.getElementById("logOutNavHref")
       bannerSignout.text() mustBe MessageLookup.Base.signOut
-      bannerSignout.attr("href") mustBe action.url
+      bannerSignout.attr("href") mustBe SignOutController.signOut(request.path).url
     }
 
   }

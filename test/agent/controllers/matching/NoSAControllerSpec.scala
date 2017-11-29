@@ -52,17 +52,4 @@ class NoSAControllerSpec extends ControllerBaseSpec {
     }
   }
 
-  "Calling the submit action of the NoSAController" should {
-
-    lazy val result = TestNoSAController.submit(subscriptionRequest)
-
-    "return SEE_OTHER" in {
-      status(result) must be(Status.SEE_OTHER)
-    }
-
-    s"redirect to ${core.controllers.routes.SignOutController.signOut().url}" in {
-      redirectLocation(result).get mustBe core.controllers.routes.SignOutController.signOut().url
-    }
-
-  }
 }
