@@ -22,6 +22,7 @@ import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AffinityGroup
+import uk.gov.hmrc.play.binders.ContinueUrl
 
 
 class SignOutControllerSpec extends ControllerBaseSpec {
@@ -43,7 +44,9 @@ class SignOutControllerSpec extends ControllerBaseSpec {
 
         val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.agent.controllers.routes.ExitSurveyController.show(testOrigin).absoluteURL()))
+        redirectLocation(result).get should be(
+          appConfig.ggSignOutUrl(ContinueUrl(_root_.agent.controllers.routes.ExitSurveyController.show(testOrigin).url).encodedUrl)
+        )
       }
     }
     "with an individual affinity group" should {
@@ -52,7 +55,9 @@ class SignOutControllerSpec extends ControllerBaseSpec {
 
         val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show(testOrigin).absoluteURL()))
+        redirectLocation(result).get should be(
+          appConfig.ggSignOutUrl(ContinueUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show(testOrigin).url).encodedUrl)
+        )
       }
     }
     "with an org affinity group" should {
@@ -61,7 +66,9 @@ class SignOutControllerSpec extends ControllerBaseSpec {
 
         val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).get should be(appConfig.ggSignOutUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show(testOrigin).absoluteURL()))
+        redirectLocation(result).get should be(
+          appConfig.ggSignOutUrl(ContinueUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show(testOrigin).url).encodedUrl)
+        )
       }
     }
   }
