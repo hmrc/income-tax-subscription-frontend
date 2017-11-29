@@ -43,23 +43,4 @@ class NoSAControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/client/register-for-SA" when {
-
-    "always" should {
-      "proceed to sign out" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("POST /register-for-SA is called")
-        val res = IncomeTaxSubscriptionFrontend.submitNoSA()
-
-        Then("Should return a SEE_OTHER with a redirect location of sign out")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(signOutURI)
-        )
-      }
-    }
-  }
-
 }

@@ -34,10 +34,10 @@
 
     @form(action = postAction) {
         @continueButton(Messages("agent.business.register_next_accounting_period.button"))
-
     }
 
     <br>
-    <a id="sign-out" href="@core.controllers.routes.SignOutController.signOut().url">@Messages("agent.base.sign-out")</a>
+
+    @signOutLink()
 
 }

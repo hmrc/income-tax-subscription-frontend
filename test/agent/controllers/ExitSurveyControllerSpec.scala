@@ -42,7 +42,8 @@ class ExitSurveyControllerSpec extends AgentControllerBaseSpec {
   val testSurvey = ExitSurveyModel("Very satisfied", "This is my extended feedback")
 
   "ExitSurveyController.show" should {
-    lazy val result = TestExitSurveyController.show()(FakeRequest())
+    val testOrigin = "/hello-world"
+    lazy val result = TestExitSurveyController.show(testOrigin)(FakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return ok (200)" in {

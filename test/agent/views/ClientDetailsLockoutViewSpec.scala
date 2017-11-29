@@ -19,15 +19,13 @@ package agent.views
 import agent.assets.MessageLookup.{Base => commonMessages, ClientDetailsLockout => messages}
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
-import play.api.test.FakeRequest
 
 class ClientDetailsLockoutViewSpec extends ViewSpecTrait {
 
-  val action = ViewSpecTrait.testCall
-
   val testTime = "test time"
+  val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = agent.views.html.client_details_lockout(action, testTime)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = agent.views.html.client_details_lockout(testTime)(request, applicationMessages, appConfig)
 
   "The Client Details Lockout view" should {
     val testPage = TestView(
@@ -39,9 +37,7 @@ class ClientDetailsLockoutViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.line1(testTime))
 
-    val form = testPage.getForm("Client Details Lockout form")(actionCall = action)
-
-    form.mustHaveSubmitButton(commonMessages.signOut)
+    testPage.mustHaveSignOutButton(commonMessages.signOut, request.path)
 
   }
 }

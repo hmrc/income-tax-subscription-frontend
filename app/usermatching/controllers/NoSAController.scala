@@ -26,14 +26,10 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 @Singleton
 class NoSAController @Inject()(implicit val applicationConfig: AppConfig,
                                val messagesApi: MessagesApi
-                                ) extends FrontendController with I18nSupport {
+                              ) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action {
-    implicit request => Ok(usermatching.views.html.no_sa(postAction = routes.NoSAController.submit()))
-  }
-
-  val submit: Action[AnyContent] = Action {
-    implicit request => Redirect(core.controllers.routes.SignOutController.signOut())
+    implicit request => Ok(usermatching.views.html.no_sa())
   }
 
 }

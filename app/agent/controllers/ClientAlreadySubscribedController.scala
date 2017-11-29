@@ -20,9 +20,9 @@ import javax.inject.{Inject, Singleton}
 
 import agent.auth.UserMatchingController
 import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import core.services.AuthService
 
 import scala.concurrent.Future
 
@@ -43,6 +43,5 @@ class ClientAlreadySubscribedController @Inject()(val baseConfig: BaseController
     implicit user =>
       Future.successful(Redirect(agent.controllers.matching.routes.ClientDetailsController.show()))
   }
-
 
 }

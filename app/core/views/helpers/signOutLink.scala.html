@@ -14,24 +14,8 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers.form
-@import core.config.AppConfig
-@import core.views.html.templates.main_template
-@import core.views.html.helpers._
+@import core.controllers.SignOutController.signOut
 
-@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(alternativeText: Option[String] = None)(implicit request: Request[_], messages: Messages)
 
-@main_template(title = Messages("preferences_callback.title"), bodyClasses = None) {
-
-    <h1 class="heading-large">@Messages("preferences_callback.heading")</h1>
-
-    <p>@Messages("preferences_callback.line_1")</p>
-
-    @form(action = postAction) {
-
-        @continueButton(Messages("preferences_callback.button"))
-
-    }
-    <br>
-    @signOutLink()
-}
+<a id="sign-out" href="@signOut(request.path)">@alternativeText.fold(Messages("base.sign-out"))(identity)</a>

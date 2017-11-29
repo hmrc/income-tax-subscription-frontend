@@ -25,11 +25,12 @@ class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
+  val request = ViewSpecTrait.viewTestRequest
 
   lazy val page = incometax.business.views.html.register_next_accounting_period(
     postAction = action,
     backUrl = backUrl
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(request, applicationMessages, appConfig)
 
   "The 'Register Next Accounting Period' view" should {
     val testPage = TestView(
@@ -46,7 +47,7 @@ class BusinessRegisterNextAccountingPeriodViewSpec extends ViewSpecTrait {
       messages.line_2
     )
 
-    testPage.mustHaveALink(id = "sign-out", href = core.controllers.routes.SignOutController.signOut().url, text = messages.signOut)
+    testPage.mustHaveSignOutLink(text = messages.signOut, origin = request.path)
 
     val form = testPage.getForm("Register Next Accounting Period form")(actionCall = action)
 

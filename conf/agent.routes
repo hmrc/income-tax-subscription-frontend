@@ -57,7 +57,6 @@ POST        /error/client-details                   agent.controllers.matching.C
 
 # Client Lockout
 GET         /error/lockout                          agent.controllers.matching.ClientDetailsLockoutController.show
-POST        /error/lockout                          agent.controllers.matching.ClientDetailsLockoutController.submit
 
 #
 GET         /error/no-client-relationship           agent.controllers.NoClientRelationshipController.show
@@ -67,11 +66,10 @@ POST        /error/no-client-relationship           agent.controllers.NoClientRe
 GET         /add-another                            agent.controllers.AddAnotherClientController.addAnother()
 
 # Exit Survey
-GET         /exit-survey                            agent.controllers.ExitSurveyController.show
+GET         /exit-survey                            agent.controllers.ExitSurveyController.show(origin: String)
 POST        /exit-survey                            agent.controllers.ExitSurveyController.submit
 
 GET         /feedback-submitted                     agent.controllers.ThankYouController.show
 
 # No NINO Routes
 GET         /register-for-SA                        agent.controllers.matching.NoSAController.show
-POST        /register-for-SA                        agent.controllers.matching.NoSAController.submit

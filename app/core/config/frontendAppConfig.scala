@@ -40,7 +40,9 @@ trait AppConfig {
   val preferencesUrl: String
   val baseUrl: String
   val ggUrl: String
-  val ggSignOutUrl: String
+
+  def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String
+
   val btaUrl: String
   val agentAuthUrl: String
   val agentAccountUrl: String
@@ -99,7 +101,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   // sign out
   override lazy val ggUrl = loadConfig(s"government-gateway.url")
-  override lazy val ggSignOutUrl = s"$ggUrl/gg/sign-out?continue=$ggSignInContinueUrl"
+
+  override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl) = s"$ggUrl/gg/sign-out?continue=$redirectionUrl"
 
   // BTA link
   override lazy val btaUrl = loadConfig(s"bta.url")

@@ -35,7 +35,7 @@ class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfi
                                              val messagesApi: MessagesApi,
                                              val authService: AuthService,
                                              val lockoutService: UserLockoutService
-                                              ) extends UserMatchingController {
+                                            ) extends UserMatchingController {
 
   private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
     val bearerToken = implicitly[HeaderCarrier].userId.get.value
@@ -66,15 +66,8 @@ class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfi
     implicit user =>
       handleLockOut {
         val duration = Duration.ofSeconds(baseConfig.applicationConfig.matchingLockOutSeconds)
-        Future.successful(Ok(usermatching.views.html.user_details_lockout(
-              postAction = usermatching.controllers.routes.UserDetailsLockoutController.submit(), durationText(duration))
-          ))
+        Future.successful(Ok(usermatching.views.html.user_details_lockout(durationText(duration))))
       }
-  }
-
-  lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      Future.successful(Redirect(core.controllers.routes.SignOutController.signOut()))
   }
 
 }

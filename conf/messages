@@ -217,7 +217,6 @@ confirmation.whatHappensNext.para3                              = After you send
 confirmation.whatHappensNext.bullet1                            = accounting software
 confirmation.whatHappensNext.bullet2                            = <a id="bta" href="{0}">business tax account</a>
 confirmation.whatHappensNext.para4                              = It may take a few hours for them all to appear.
-confirmation.sign_out                                           = Sign out
 
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue
@@ -233,7 +232,6 @@ error.property.income.invalid                                   = You must selec
 
 error.date.empty                                                = You must enter a date
 error.date.invalid                                              = You must enter a valid date
-error.end_date_violation                                        = You must enter a date greater than the start date
 
 error.business.current_financial_period_prior.empty             = You must select an option to continue
 error.business.current_financial_period_prior.invalid           = You must select an option to continue

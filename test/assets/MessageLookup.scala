@@ -303,7 +303,6 @@ object MessageLookup {
     val title = "Confirmation page"
     val heading = "Sign up complete"
     val banner_line1 = "Make a note of your Income Tax reference number:"
-    val signOut = "Sign out"
 
     object whatHappensNext {
       val para1 = "If you forget your Government Gateway login details, we can use this reference number to help you retrieve them."
