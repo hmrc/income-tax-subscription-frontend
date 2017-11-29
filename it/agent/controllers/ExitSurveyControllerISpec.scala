@@ -27,9 +27,10 @@ class ExitSurveyControllerISpec extends ComponentSpecBase {
     "a user is or isn't logged in" should {
       "return the exit survey page" in {
         Given("No wiremock stubs are set up")
+        val testOrigin = "/origin"
 
         When("I call GET /exit-survey")
-        val res = IncomeTaxSubscriptionFrontend.exitSurvey()
+        val res = IncomeTaxSubscriptionFrontend.exitSurvey(testOrigin)
 
         Then("the result should have a status of OK and the exit survey page title")
         res should have(

@@ -61,20 +61,4 @@ class ClientDetailsLockoutControllerISpec extends ComponentSpecBase {
     }
   }
 
-  "POST /error/lockout" should {
-    "sign the user out" in {
-      Given("I setup the wiremock stubs")
-      AuthStub.stubAuthSuccess()
-
-      When("I call POST /error/lockout")
-      val res = IncomeTaxSubscriptionFrontend.submitClientDetailsLockout()
-
-      Then("The result should have a status of SEE_OTHER")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(signOutURI)
-      )
-    }
-  }
-
 }

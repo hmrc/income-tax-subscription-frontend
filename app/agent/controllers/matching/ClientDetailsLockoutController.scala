@@ -66,13 +66,8 @@ class ClientDetailsLockoutController @Inject()(val baseConfig: BaseControllerCon
     implicit user =>
       handleLockOut {
         val duration = Duration.ofSeconds(baseConfig.applicationConfig.matchingLockOutSeconds)
-        Ok(agent.views.html.client_details_lockout(postAction = agent.controllers.matching.routes.ClientDetailsLockoutController.submit(), durationText(duration)))
+        Ok(agent.views.html.client_details_lockout(durationText(duration)))
       }
-  }
-
-  lazy val submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      Redirect(core.controllers.routes.SignOutController.signOut())
   }
 
 }

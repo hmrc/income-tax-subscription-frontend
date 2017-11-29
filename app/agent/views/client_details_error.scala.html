@@ -29,6 +29,6 @@
         @continueButton(Messages("agent.base.go_back"))
     }
     </div>
-    <a id="sign-out" href="@core.controllers.routes.SignOutController.signOut().url">@Messages("agent.base.sign-out")</a>
+    @signOutLink()
 
 }

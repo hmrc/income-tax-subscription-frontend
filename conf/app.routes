@@ -6,7 +6,7 @@ GET         /                             usermatching.controllers.HomeControlle
 GET         /index                        usermatching.controllers.HomeController.index
 
 # SignOut Controller
-GET         /logout                       core.controllers.SignOutController.signOut
+GET         /logout                       core.controllers.SignOutController.signOut(origin: String)
 
 # NinoResolver Controller
 GET         /resolve-nino                 usermatching.controllers.NinoResolverController.resolveNinoAction
@@ -27,7 +27,6 @@ POST        /check-your-answers           incometax.subscription.controllers.Che
 
 # Confirmation Routes
 GET         /confirmation                 incometax.subscription.controllers.ConfirmationController.showConfirmation
-GET         /confirmation/sign-out        incometax.subscription.controllers.ConfirmationController.signOut
 
 # Session Timeout Route
 GET         /session-timeout              core.controllers.SessionTimeoutController.timeout
@@ -50,7 +49,6 @@ GET         /already-enrolled             incometax.subscription.controllers.Alr
 
 # No NINO Routes
 GET         /register-for-SA              usermatching.controllers.NoSAController.show
-POST        /register-for-SA              usermatching.controllers.NoSAController.submit
 
 # Other Income Error Routes
 GET         /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.showOtherIncomeError
@@ -63,7 +61,7 @@ GET         /error/affinity-group         usermatching.controllers.AffinityGroup
 GET         /error/iv-failed              identityverification.controllers.IdentityVerificationController.ivFailed
 
 # Exit Survey
-GET         /exit-survey                  incometax.subscription.controllers.ExitSurveyController.show
+GET         /exit-survey                  incometax.subscription.controllers.ExitSurveyController.show(origin: String)
 POST        /exit-survey                  incometax.subscription.controllers.ExitSurveyController.submit
 
 GET         /feedback-submitted           incometax.subscription.controllers.ExitSurveyThankYouController.show
@@ -80,7 +78,6 @@ POST        /user-details                 usermatching.controllers.UserDetailsCo
 
 # User Lockout
 GET         /error/lockout                usermatching.controllers.UserDetailsLockoutController.show
-POST        /error/lockout                usermatching.controllers.UserDetailsLockoutController.submit
 
 # Confirm User
 GET         /confirm-user                 usermatching.controllers.ConfirmUserController.show()

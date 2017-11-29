@@ -17,6 +17,7 @@
 package incometax.subscription.views
 
 import assets.MessageLookup
+import core.controllers.SignOutController
 import core.models.DateModel
 import core.views.ViewSpecTrait
 import incometax.incomesource.forms.IncomeSourceForm
@@ -31,14 +32,14 @@ class ConfirmationViewSpec extends ViewSpecTrait {
   val duration: Int = 0
   val action = ViewSpecTrait.testCall
   val incomeSource = "Not both"
+  val request = ViewSpecTrait.viewTestRequest
 
   def page(incomeSource: String) = incometax.subscription.views.html.confirmation(
     subscriptionId = subscriptionIdValue,
     submissionDate = submissionDateValue,
-    signOutAction = action,
     journeyDuration = duration,
     incomeSource = incomeSource
-  )(FakeRequest(), applicationMessages, appConfig)
+  )(request, applicationMessages, appConfig)
 
   def document = Jsoup.parse(page(incomeSource).body)
 
@@ -111,18 +112,10 @@ class ConfirmationViewSpec extends ViewSpecTrait {
     }
 
     "have a sign out button" in {
-      val form = document.select("form").first()
-      form.attr("action") mustBe action.url
-
-      val actionSignOut = form.getElementById("sign-out-button")
-      actionSignOut.text() mustBe MessageLookup.Confirmation.signOut
-    }
-
-    // N.B. both of these should be directed to the special sign out call which also takes them to the exit survey page
-    "The banner sign out button must be directed to the same as the sign out button" in {
-      val bannerSignout = document.getElementById("logOutNavHref")
-      bannerSignout.text() mustBe MessageLookup.Base.signOut
-      bannerSignout.attr("href") mustBe action.url
+      val actionSignOut = document.getElementById("sign-out-button")
+      actionSignOut.attr("role") mustBe "button"
+      actionSignOut.text() mustBe MessageLookup.Base.signOut
+      actionSignOut.attr("href") mustBe SignOutController.signOut(request.path).url
     }
 
   }

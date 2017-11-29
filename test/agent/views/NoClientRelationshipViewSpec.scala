@@ -16,7 +16,6 @@
 
 package agent.views
 
-import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Base => common, NoClientRelationship => messages}
 import core.views.ViewSpecTrait
 import org.jsoup.Jsoup

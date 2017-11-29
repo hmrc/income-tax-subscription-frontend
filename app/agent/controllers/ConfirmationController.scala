@@ -46,17 +46,13 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
           Ok(agent.views.html.confirmation(
             subscriptionId = id,
             submissionDate = dateConvert(LocalDate.now()),
-            agent.controllers.routes.AddAnotherClientController.addAnother(),
-            agent.controllers.routes.ExitSurveyController.show()
+            postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
+            signOutAction = core.controllers.SignOutController.signOut(origin =routes.ConfirmationController.showConfirmation())
           ))
         case _ =>
           logging.info("User attempted to view confirmation with no subscriptionId stored in Keystore")
           throw new InternalServerException("confirmation controller, tried to view with no subscription ID")
       }
-  }
-
-  val signOut: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => Future.successful(Redirect(routes.ExitSurveyController.show()).withNewSession)
   }
 
 }
