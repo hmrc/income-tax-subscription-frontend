@@ -46,7 +46,7 @@
     <script type="text/javascript" src="@routes.Assets.at("../../../../public/javascripts/ga-survey.js")"></script>
 }
 
-@main_template(title = Messages("exit-survey.title"), bodyClasses = None, showSignOutLink = false, scriptElem = scripts) {
+@main_template(title = Messages("exit-survey.title"), showSignOutLink = false, scriptElem = scripts) {
 
     @summaryErrorHelper(exitSurveyForm)
 

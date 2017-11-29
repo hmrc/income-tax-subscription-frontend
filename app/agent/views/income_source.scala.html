@@ -27,7 +27,7 @@
     Messages("agent.income_source.heading")
 }
 
-@core.views.html.templates.main_template(title = Messages("agent.income_source.title"), bodyClasses = None) {
+@core.views.html.templates.main_template(title = Messages("agent.income_source.title"), form = incomeSourceForm) {
     @if(isEditMode) {
         @back_link(backUrl)
     }

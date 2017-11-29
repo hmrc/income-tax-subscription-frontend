@@ -36,7 +36,7 @@
     </ul>
 }
 
-@main_template(title = Messages("business.accounting_method.title"), bodyClasses = None) {
+@main_template(title = Messages("business.accounting_method.title"), form = accountingMethodForm) {
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingMethodForm)

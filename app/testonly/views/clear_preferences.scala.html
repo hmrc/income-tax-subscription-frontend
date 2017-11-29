@@ -23,7 +23,7 @@
 
 @(clearPreferencesForm: Form[ClearPreferencesModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("Clear preferences"), bodyClasses = None) {
+@main_template(title = Messages("Clear preferences")) {
 
     @summaryErrorHelper(clearPreferencesForm)
 

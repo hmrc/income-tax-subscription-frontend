@@ -31,7 +31,7 @@ import usermatching.models.UserDetailsModel
 class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   // TODO remove this when the routes are moved into prod.routes
-  override def config: Map[String, String] = super.config.+("application.router"->"testOnlyDoNotUseInAppConf.Routes")
+  override def config: Map[String, String] = super.config.+("application.router" -> "testOnlyDoNotUseInAppConf.Routes")
 
   enable(UserMatchingFeature)
 
@@ -104,7 +104,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         Then("The result should have a status of BadRequest")
         res should have(
           httpStatus(BAD_REQUEST),
-          pageTitle(Messages("user-details.title"))
+          pageTitle("Error: " + Messages("user-details.title"))
         )
         KeystoreStub.verifyKeyStoreSave(CacheConstants.UserDetails, None, Some(0))
         KeystoreStub.verifyKeyStoreDelete(Some(0))

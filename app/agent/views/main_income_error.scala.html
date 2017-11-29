@@ -20,7 +20,7 @@
 
 @(backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("agent.main-income-error.title"), bodyClasses = None) {
+@main_template(title = Messages("agent.main-income-error.title")) {
     @back_link(backUrl)
 
     <h1 data-metrics="itsa:incomeSource:Other" class="heading-large">@Messages("agent.main-income-error.heading")</h1>

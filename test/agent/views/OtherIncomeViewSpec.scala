@@ -28,8 +28,8 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, incomeSource: String) = agent.views.html.other_income(
-    otherIncomeForm = OtherIncomeForm.otherIncomeForm,
+  def page(isEditMode: Boolean, incomeSource: String, addFormErrors: Boolean) = agent.views.html.other_income(
+    otherIncomeForm = OtherIncomeForm.otherIncomeForm.addError(addFormErrors),
     incomeSource = incomeSource,
     postAction = action,
     backUrl = backUrl,
@@ -42,7 +42,7 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       name = "Other Income View",
       title = messages.title,
       heading = messages.heading,
-      page = page(isEditMode = false, incomeSource = IncomeSourceForm.option_property))
+      page = page(isEditMode = false, incomeSource = IncomeSourceForm.option_property, addFormErrors = false))
 
     testPageProperty.mustHaveBackLinkTo(backUrl)
 
@@ -72,7 +72,7 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       name = "Edit Other Income View",
       title = messages.title,
       heading = messages.heading,
-      page = page(isEditMode = true, incomeSource = IncomeSourceForm.option_business))
+      page = page(isEditMode = true, incomeSource = IncomeSourceForm.option_business, addFormErrors = false))
 
     // n.b. bullet1Default test displays for income sources that include a business (property only used bullet1Property
     editModePage.mustHaveBulletSeq(
@@ -84,5 +84,16 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
     )
 
     editModePage.mustHaveUpdateButton()
+  }
+
+  "Append Error to the page title if the form has error" should {
+    def documentCore() = TestView(
+      name = "Other Income View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false, incomeSource = IncomeSourceForm.option_property, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
   }
 }

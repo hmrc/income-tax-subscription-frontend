@@ -26,8 +26,8 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = agent.views.html.business.accounting_method(
-    accountingMethodForm = AccountingMethodForm.accountingMethodForm,
+  def page(isEditMode: Boolean, addFormErrors: Boolean) = agent.views.html.business.accounting_method(
+    accountingMethodForm = AccountingMethodForm.accountingMethodForm.addError(addFormErrors),
     postAction = action,
     isEditMode,
     backUrl = backUrl
@@ -37,16 +37,14 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
     name = "Business Accounting Method View",
     title = messages.title,
     heading = messages.heading,
-    page = page(isEditMode = isEditMode)
+    page = page(isEditMode = isEditMode, addFormErrors = false)
   )
-
 
   "The Business accounting method view" should {
 
     val testPage = documentCore(isEditMode = false)
 
     testPage.mustHaveBackLinkTo(backUrl)
-
 
     val form = testPage.getForm("Business Accounting Method form")(actionCall = action)
 
@@ -63,9 +61,21 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
   }
 
   "The Business accounting method view in edit mode" should {
-
     val editModePage = documentCore(isEditMode = true)
     editModePage.mustHaveUpdateButton()
+  }
+
+  "Append Error to the page title if the form has error" should {
+
+    def documentCore() = TestView(
+      name = "Business Accounting Method View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
+
   }
 
 }

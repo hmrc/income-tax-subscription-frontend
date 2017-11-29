@@ -28,8 +28,8 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = agent.views.html.income_source(
-    incomeSourceForm = IncomeSourceForm.incomeSourceForm,
+  def page(isEditMode: Boolean, addFormErrors: Boolean) = agent.views.html.income_source(
+    incomeSourceForm = IncomeSourceForm.incomeSourceForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
@@ -40,7 +40,7 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
       name = "Income source View",
       title = messages.title,
       heading = messages.heading,
-      page = page(isEditMode = false)
+      page = page(isEditMode = false, addFormErrors = false)
     )
 
     val form = testPage.getForm("Income source form")(actionCall = action)
@@ -55,5 +55,16 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
     )
     form.mustHaveContinueButton()
 
+  }
+
+  "Append Error to the page title if the form has error" should {
+    def documentCore() = TestView(
+      name = "Income source View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
   }
 }

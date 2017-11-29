@@ -18,17 +18,17 @@ package agent.views.business
 
 import agent.assets.MessageLookup.{BusinessName => messages}
 import agent.forms.BusinessNameForm
+import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import core.views.ViewSpecTrait
 
 class BusinessNameViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = agent.views.html.business.business_name(
-    businessNameForm = BusinessNameForm.businessNameForm.form,
+  def page(isEditMode: Boolean, addFormErrors: Boolean) = agent.views.html.business.business_name(
+    businessNameForm = BusinessNameForm.businessNameForm.form.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
@@ -38,7 +38,7 @@ class BusinessNameViewSpec extends ViewSpecTrait {
     name = "Business Name View",
     title = messages.title,
     heading = messages.heading,
-    page = page(isEditMode = isEditMode)
+    page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
   "The Business Name view" should {
@@ -64,6 +64,17 @@ class BusinessNameViewSpec extends ViewSpecTrait {
     val editModePage = documentCore(isEditMode = true)
 
     editModePage.mustHaveUpdateButton()
+  }
+
+  "Append Error to the page title if the form has error" should {
+    def documentCore() = TestView(
+      name = "Business Name View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
   }
 
 }

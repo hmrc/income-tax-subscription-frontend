@@ -27,8 +27,8 @@ class BusinessPhoneNumberViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = incometax.business.views.html.business_phone_number(
-    businessPhoneNumberForm = BusinessPhoneNumberForm.businessPhoneNumberForm.form,
+  def page(isEditMode: Boolean, addFormErrors: Boolean) = incometax.business.views.html.business_phone_number(
+    businessPhoneNumberForm = BusinessPhoneNumberForm.businessPhoneNumberForm.form.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
@@ -38,7 +38,7 @@ class BusinessPhoneNumberViewSpec extends ViewSpecTrait {
     name = "Business phone number View",
     title = messages.title,
     heading = messages.heading,
-    page = page(isEditMode = isEditMode)
+    page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
   "The Business phone number view" should {
@@ -62,6 +62,17 @@ class BusinessPhoneNumberViewSpec extends ViewSpecTrait {
     val editModePage = documentCore(isEditMode = true)
 
     editModePage.mustHaveUpdateButton()
+  }
+
+  "Append Error to the page title if the form has error" should {
+    def documentCore() = TestView(
+      name = "Business phone number View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
   }
 
 }

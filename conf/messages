@@ -19,6 +19,7 @@ base.no                                                         = No
 base.go_back                                                    = Go back
 base.userResearch.title                                         = Help to improve our service
 base.userResearch.link                                          = Answer some questions about yourself to join the research panel
+base.title.error                                                = Error: {0}
 ## base.userResearch.text                                          = This link opens in a new tab. Please note that this service is not available in Welsh.
 base.dismissBanner                                              = No thanks
 base.dismissBanner.screenReader                                 = I don''t want to answer any questions about joining the research panel

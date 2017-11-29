@@ -16,18 +16,23 @@
 
 package core.views
 
+import assets.MessageLookup
 import assets.MessageLookup.{Base => common}
 import core.controllers.SignOutController
+import core.forms.validation.models.{SummaryError, TargetIds}
 import core.utils.UnitTestTrait
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
+import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 
 
 trait ViewSpecTrait extends UnitTestTrait {
+
+  val titleErrPrefix = MessageLookup.Base.titleError
 
   case class Selector(name: String, cssQuery: String)
 
@@ -455,6 +460,10 @@ trait ViewSpecTrait extends UnitTestTrait {
               heading: String,
               page: => Html,
               showSignOutInBanner: Boolean = true): TestView = new TestView(name, title, heading, page, showSignOutInBanner)
+  }
+
+  implicit class FormUtil[T](form: Form[T]) {
+    def addError(addError: Boolean): Form[T] = if (addError) form.withError("test", "test", "err", SummaryError(""), TargetIds("")) else form
   }
 
 }

@@ -26,8 +26,8 @@ class UserDetailsViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean): _root_.play.twirl.api.HtmlFormat.Appendable = usermatching.views.html.user_details(
-    userDetailsForm = UserDetailsForm.userDetailsForm.form,
+  def page(isEditMode: Boolean, addFormErrors: Boolean): _root_.play.twirl.api.HtmlFormat.Appendable = usermatching.views.html.user_details(
+    userDetailsForm = UserDetailsForm.userDetailsForm.form.addError(addFormErrors),
     postAction = action,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
@@ -36,7 +36,7 @@ class UserDetailsViewSpec extends ViewSpecTrait {
     name = "User Details View",
     title = messages.title,
     heading = messages.heading,
-    page = page(isEditMode = isEditMode)
+    page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
   "The User Details view" should {
@@ -78,4 +78,14 @@ class UserDetailsViewSpec extends ViewSpecTrait {
     editModePage.mustHaveUpdateButton()
   }
 
+  "Append Error to the page title if the form has error" should {
+    def documentCore() = TestView(
+      name = "User Details View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
+  }
 }

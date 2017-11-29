@@ -21,7 +21,7 @@
 
 @(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("agent.other-income-error.title"), bodyClasses = None) {
+@main_template(title = Messages("agent.other-income-error.title")) {
     @back_link(backUrl)
 
     <h1 class="heading-large">@Messages("agent.other-income-error.heading")</h1>
