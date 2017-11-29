@@ -216,21 +216,19 @@ object MessageLookup {
   object Confirmation {
     val title = "Confirmation page"
     val heading = "Sign up complete"
-    val banner_line1_1 = "Make a note of your client's reference number:"
     val addAnother = "Sign up another client"
 
-    object whatHappensNext {
-      val para1 = "If your client forgets their Government Gateway login details, we can use this reference number to help retrieve them."
+  object whatHappensNext {
       val heading = "What happens next"
-      val para2 = "You must use accounting software to keep your client's accounts, and send a report to HMRC at least every quarter."
-      val para3 = "You'll get an estimate of your client's Income Tax in your software when you send a report. From August 2017 your client can view these Income Tax calculations and their report deadlines in their business tax account."
-    }
+      val para1 = "You must use accounting software to keep your client's accounts, and send a report to HMRC at least every quarter."
+      val para2 = "You'll get an estimate of your client's Income Tax in your software when you send a report. From August 2017 your client can view these Income Tax calculations and their report deadlines in their business tax account."
+  }
 
-    object giveUsFeedback {
+  object giveUsFeedback {
       val heading = "Give us feedback"
       val para1 = "Your feedback helps us improve."
       val link = "What did you think of this service?"
-    }
+  }
 
   }
 

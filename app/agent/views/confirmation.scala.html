@@ -19,27 +19,20 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 
-@(subscriptionId: String, submissionDate: DateModel, postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(submissionDate: DateModel, postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
     @core.views.html.templates.main_template(title = Messages("agent.confirmation.title")) {
 
         <div class="form-group">
             <section id="confirmation-heading" class="transaction-banner--complete">
                 <h1 class="transaction-banner__heading" style="color: #fff">@Messages("agent.confirmation.heading")</h1>
-                <p>@Messages("agent.confirmation.banner.line_1")</p>
-                <p>
-                    <span id="subscription-id-value" class="h3-heading">@subscriptionId</span>
-                </p>
             </section>
         </div>
 
         <section class="form-group" id="whatHappensNext">
-            <div class="form-group">
-                <p>@Messages("agent.confirmation.whatHappensNext.para1")</p>
-            </div>
             <h2>@Messages("agent.confirmation.whatHappensNext.heading")</h2>
+            <p>@Messages("agent.confirmation.whatHappensNext.para1")</p>
             <p>@Messages("agent.confirmation.whatHappensNext.para2")</p>
-            <p>@Messages("agent.confirmation.whatHappensNext.para3")</p>
         </section>
 
         <section class="form-group" id="giveUsFeedback">

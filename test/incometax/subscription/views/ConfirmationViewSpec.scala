@@ -27,7 +27,6 @@ import play.api.test.FakeRequest
 
 class ConfirmationViewSpec extends ViewSpecTrait {
 
-  val subscriptionIdValue = "000-032407"
   val submissionDateValue = DateModel("1", "1", "2016")
   val duration: Int = 0
   val action = ViewSpecTrait.testCall
@@ -35,7 +34,6 @@ class ConfirmationViewSpec extends ViewSpecTrait {
   val request = ViewSpecTrait.viewTestRequest
 
   def page(incomeSource: String) = incometax.subscription.views.html.confirmation(
-    subscriptionId = subscriptionIdValue,
     submissionDate = submissionDateValue,
     journeyDuration = duration,
     incomeSource = incomeSource
@@ -67,32 +65,20 @@ class ConfirmationViewSpec extends ViewSpecTrait {
           heading.hasClass("transaction-banner__heading") mustBe true
         }
       }
-
-      s"has a subscription id value '$subscriptionIdValue'" in {
-        document.select("#subscription-id-value").text() mustBe subscriptionIdValue
-      }
-
-      s"has in the banner a paragraph of '${MessageLookup.Confirmation.banner_line1}'" in {
-        document.select("#confirmation-heading p").text() must include(MessageLookup.Confirmation.banner_line1)
-      }
     }
 
     "have a 'What happens next' section" which {
-
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para1)
-      }
 
       s"has the section heading '${MessageLookup.Confirmation.whatHappensNext.heading}'" in {
         document.select("#whatHappensNext h2").text() mustBe MessageLookup.Confirmation.whatHappensNext.heading
       }
 
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para2)
+      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para1)
       }
 
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para3}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para3)
+      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para2)
       }
 
       s"has a bullet point '${MessageLookup.Confirmation.whatHappensNext.bul1}'" in {

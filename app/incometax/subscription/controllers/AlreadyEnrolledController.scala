@@ -37,10 +37,7 @@ class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
       user =>
         Future.successful(
           Ok(
-            incometax.subscription.views.html.enrolled.already_enrolled(
-              subscriptionId = user.mtdItsaRef.get
-            )
-          )
+            incometax.subscription.views.html.enrolled.already_enrolled()          )
         )
   }
 
