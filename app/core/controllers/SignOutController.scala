@@ -25,6 +25,7 @@ import play.api.mvc.{Action, AnyContent, Call, Request}
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 import uk.gov.hmrc.http.InternalServerException
+import uk.gov.hmrc.play.binders.ContinueUrl
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
@@ -36,9 +37,13 @@ class SignOutController @Inject()(val applicationConfig: AppConfig,
   def signOut(origin: String): Action[AnyContent] = Action.async { implicit request =>
     authService.authorised().retrieve(affinityGroup) {
       case Some(Agent) =>
-        Future.successful(Redirect(applicationConfig.ggSignOutUrl(_root_.agent.controllers.routes.ExitSurveyController.show(origin = origin).absoluteURL())))
+        Future.successful(Redirect(applicationConfig.ggSignOutUrl(
+          ContinueUrl(applicationConfig.baseUrl + _root_.agent.controllers.routes.ExitSurveyController.show(origin = origin).url).encodedUrl
+        )))
       case Some(_) =>
-        Future.successful(Redirect(applicationConfig.ggSignOutUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show(origin = origin).absoluteURL())))
+        Future.successful(Redirect(applicationConfig.ggSignOutUrl(
+          ContinueUrl(applicationConfig.baseUrl + _root_.incometax.subscription.controllers.routes.ExitSurveyController.show(origin = origin).url).encodedUrl
+        )))
       case None =>
         Future.failed(new InternalServerException("unexpected state"))
     }
