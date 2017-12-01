@@ -16,18 +16,20 @@
 
 package incometax.subscription.controllers
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
+import core.utils.Implicits._
+import incometax.business.models.AccountingPeriodModel
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.OtherIncomeModel
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
-import core.utils.Implicits._
 
 import scala.concurrent.Future
 
@@ -38,17 +40,20 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
                                 val authService: AuthService
                                ) extends SignUpController {
 
-  def view(backUrl: String)(implicit request: Request[_]): Html =
+  def view(backUrl: String, taxEndYear: Int)(implicit request: Request[_]): Html =
     incometax.subscription.views.html.terms(
       postAction = incometax.subscription.controllers.routes.TermsController.submitTerms(),
+      taxEndYear = taxEndYear,
       backUrl
     )
 
   def showTerms(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
+        taxEndYear <- keystoreService.fetchAccountingPeriodDate()
+          .map(dates => TermsController.getTaxEndYear(dates.get))
         backUrl <- backUrl
-      } yield Ok(view(backUrl = backUrl))
+      } yield Ok(view(backUrl = backUrl, taxEndYear = taxEndYear))
   }
 
   def submitTerms(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -77,5 +82,18 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       }
       case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no income source retrieve from Keystore")
     }
+
+}
+
+object TermsController {
+
+  private val april = 4
+  private val sixth = 6
+
+  def getTaxEndYear(accountingPeriodModel: AccountingPeriodModel): Int = {
+    val endDate = accountingPeriodModel.endDate.toLocalDate
+    if (endDate.isBefore(LocalDate.of(endDate.getYear, april, sixth))) endDate.getYear
+    else endDate.getYear + 1
+  }
 
 }
