@@ -17,10 +17,8 @@
 package incometax.subscription.controllers
 
 import core.controllers.ControllerBaseSpec
-import core.models.DateModel
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
-import incometax.business.models.AccountingPeriodModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -130,32 +128,6 @@ class TermsControllerSpec extends ControllerBaseSpec
       }
     }
 
-  }
-
-  "TermsController.getTaxEndYear" should {
-    "return 2018 if the tax year ends between 6th April 2017 and 5th April 2018" in {
-      val testPeriodLowBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("6", "4", "2017"))
-      val testPeriodBelowLowBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("5", "4", "2017"))
-      TermsController.getTaxEndYear(testPeriodLowBound) mustBe 2018
-      TermsController.getTaxEndYear(testPeriodBelowLowBound) mustBe 2017
-
-      val testPeriodUpperBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("5", "4", "2018"))
-      val testPeriodAboveUpperBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("6", "4", "2018"))
-      TermsController.getTaxEndYear(testPeriodUpperBound) mustBe 2018
-      TermsController.getTaxEndYear(testPeriodAboveUpperBound) mustBe 2019
-    }
-
-    "return 2019 if the tax year ends between 6th April 2018 and 5th April 2019" in {
-      val testPeriodLowBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("6", "4", "2018"))
-      val testPeriodBelowLowBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("5", "4", "2018"))
-      TermsController.getTaxEndYear(testPeriodLowBound) mustBe 2019
-      TermsController.getTaxEndYear(testPeriodBelowLowBound) mustBe 2018
-
-      val testPeriodUpperBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("5", "4", "2019"))
-      val testPeriodAboveUpperBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("6", "4", "2019"))
-      TermsController.getTaxEndYear(testPeriodUpperBound) mustBe 2019
-      TermsController.getTaxEndYear(testPeriodAboveUpperBound) mustBe 2020
-    }
   }
 
   authorisationTests()

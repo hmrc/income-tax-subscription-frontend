@@ -25,6 +25,7 @@ import core.utils.Implicits._
 import incometax.business.forms.{AccountingPeriodDateForm, AccountingPeriodPriorForm}
 import incometax.business.models.AccountingPeriodModel
 import incometax.business.models.enums._
+import incometax.util.AccountingPeriodUtil
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -76,13 +77,23 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
               viewType = viewType
             ))),
             accountingPeriod =>
-              keystoreService.saveAccountingPeriodDate(accountingPeriod) map (_ =>
-                if (isEditMode)
-                  Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-                else
-                  Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-                )
-          )
+              if (isEditMode)
+                keystoreService.fetchAccountingPeriodDate() flatMap { oldAccountingPeriodDates =>
+                  keystoreService.saveAccountingPeriodDate(accountingPeriod) flatMap { _ =>
+                    val oldEndYear = AccountingPeriodUtil.getTaxEndYear(oldAccountingPeriodDates.get)
+                    val newEndYear = AccountingPeriodUtil.getTaxEndYear(accountingPeriod.get)
+                    if (oldEndYear == newEndYear) {
+                      Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+                    } else {
+                      keystoreService.saveTerms(terms = false) flatMap {
+                        _ => Redirect(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true))
+                      }
+                    }
+                  }
+                }
+              else
+                keystoreService.saveAccountingPeriodDate(accountingPeriod)
+                  flatMap (_ => Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())))
       }
     }
   }
