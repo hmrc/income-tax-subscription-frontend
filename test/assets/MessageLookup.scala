@@ -210,7 +210,9 @@ object MessageLookup {
     val line_2 = "These terms aren't contractual and you can stop taking part in the trial at any time."
     val bullet_1 = "use accounting software to record your income and expenses, then submit a report once every 3 months from the start of your accounting period"
     val bullet_2 = "allow HMRC to calculate your Income Tax estimate using the information from your reports"
-    val bullet_3 = "send HMRC your summary report for the 2017 to 2018 tax year by 31 January 2019"
+
+    def bullet_3(taxStartYear: Int, taxEndYear: Int, taxDueYear: Int) = s"send HMRC your summary report for the $taxStartYear to $taxEndYear tax year by 31 January $taxDueYear"
+
     val bullet_4 = "declare any other income sources and reliefs"
     val bullet_5 = "authorise any third party you use to act on your behalf, such as your accountant"
     val bullet_6 = "have responsibility for any information a third party gives to HMRC on your behalf"
@@ -321,11 +323,13 @@ object MessageLookup {
     val heading = "You can't use this service"
     val line1 = "You can only use this service if you have an individual Government Gateway account."
     val line2 = """To sign up for quarterly reporting, you'll need to sign in using a different type of account."""
+
     object Agent {
       val linkId: String = "agent-service"
       val linkText = "use our agent service."
       val line1 = s"To sign up for quarterly reporting with these sign in details, you need to $linkText"
     }
+
   }
 
   object Error {
@@ -473,6 +477,7 @@ object MessageLookup {
       val linkText = "register for Self Assessment"
       val line1 = s"To use this service, your client needs to $linkText."
     }
+
   }
 
   object MainIncomeError {

@@ -76,8 +76,11 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     Authenticated.async { implicit request =>
       implicit user =>
         keystoreService.fetchAll().flatMap {
-          case Some(cache) if cache.getTerms.nonEmpty => processFunc(user)(request)(cache)
-          case Some(_) => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.showTerms()))
+          case Some(cache) => cache.getTerms match {
+            case Some(true) => processFunc(user)(request)(cache)
+            case Some(false) => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true)))
+            case _ => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.showTerms()))
+          }
           case _ => error(noCacheMapErrMessage)
         }
     }

@@ -17,18 +17,17 @@
 package incometax.business.controllers
 
 import assets.MessageLookup
-import core.auth._
 import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
 import core.models.DateModel
 import core.services.mocks.MockKeystoreService
+import core.utils.TestModels
+import incometax.business.forms.AccountingPeriodDateForm
+import incometax.business.models.AccountingPeriodModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import core.utils.TestModels
-import incometax.business.forms.AccountingPeriodDateForm
-import incometax.business.models.AccountingPeriodModel
 
 class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -80,36 +79,71 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
     "Calling the submit action of the BusinessAccountingPeriodDate with a valid submission" should {
 
+      val testAccountingPeriodDates = AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2018"))
+      val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2019"))
+
       def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(request
-        .post(AccountingPeriodDateForm.accountingPeriodDateForm, AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("1", "4", "2018"))))
+        .post(AccountingPeriodDateForm.accountingPeriodDateForm, testAccountingPeriodDates))
 
-      "When it is not in edit mode" should {
-        "return a redirect status (SEE_OTHER - 303)" in {
-          setupMockKeystoreSaveFunctions()
+      "When it is not in edit mode" when {
+        "the tax year remained the same" should {
+          s"return a redirect status (SEE_OTHER - 303) but do not update terms" in {
+            setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates)
 
-          val goodRequest = callShow(isEditMode = false)
+            val goodRequest = callShow(isEditMode = false)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
 
-          await(goodRequest)
+            await(goodRequest)
+            verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
+          }
+        }
 
-          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+        "the tax year changed" should {
+          s"return a redirect status (SEE_OTHER - 303) and update terms" in {
+            setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear)
+
+            val goodRequest = callShow(isEditMode = false)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
+
+            await(goodRequest)
+            verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1, saveTerms = 1)
+          }
         }
       }
 
-      "When it is in edit mode" should {
-        "return a redirect status (SEE_OTHER - 303)" in {
-          setupMockKeystoreSaveFunctions()
+      "When it is in edit mode" when {
+        "tax year remains the same" should {
+          "return a redirect status (SEE_OTHER - 303)" in {
+            setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates)
 
-          val goodRequest = callShow(isEditMode = true)
+            val goodRequest = callShow(isEditMode = true)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
 
-          await(goodRequest)
-          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+            await(goodRequest)
+            verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1)
+          }
         }
+
+        "tax year changes" should {
+          "return a redirect status (SEE_OTHER - 303)" in {
+            setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear)
+
+            val goodRequest = callShow(isEditMode = true)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true).url)
+
+            await(goodRequest)
+            verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1)
+          }
+        }
+
       }
     }
 
@@ -185,59 +219,85 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
     "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
 
+      val testAccountingPeriodDates = AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2018"))
+      val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2019"))
+
       def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(request
-        .post(AccountingPeriodDateForm.accountingPeriodDateForm, AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("1", "4", "2018"))))
+        .post(AccountingPeriodDateForm.accountingPeriodDateForm, testAccountingPeriodDates))
 
-      "When it is not in edit mode" should {
-        "return a redirect status (SEE_OTHER - 303)" in {
-          // required for backurl
-          setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+      "When it is not in edit mode" when {
+        "the tax year remained the same" should {
+          s"return a redirect status (SEE_OTHER - 303) and do not update terms" in {
+            setupMockKeystore(
+              fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod, // required for backurl
+              fetchAccountingPeriodDate = testAccountingPeriodDates
+            )
 
-          val goodRequest = callShow(isEditMode = false)
+            val goodRequest = callShow(isEditMode = false)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
 
-          await(goodRequest)
-          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+            await(goodRequest)
+            verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
+          }
         }
 
-        s"redirect to '${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}'" in {
-          // required for backurl
-          setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+        "the tax year changed" should {
+          s"return a redirect status (SEE_OTHER - 303) and update terms" in {
+            setupMockKeystore(
+              fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod, // required for backurl
+              fetchAccountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear
+            )
 
-          val goodRequest = callShow(isEditMode = false)
+            val goodRequest = callShow(isEditMode = false)
 
-          redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
 
-          await(goodRequest)
-          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+            await(goodRequest)
+            verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1, saveTerms = 1)
+          }
         }
       }
 
-      "When it is in edit mode" should {
-        "return a redirect status (SEE_OTHER - 303)" in {
-          // required for backurl
-          setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+      "When it is in edit mode" when {
+        "the tax year remained the same" should {
+          s"return a redirect status (SEE_OTHER - 303) and redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
+            setupMockKeystore(
+              fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod, // required for backurl
+              fetchAccountingPeriodDate = testAccountingPeriodDates
+            )
 
-          val goodRequest = callShow(isEditMode = true)
+            val goodRequest = callShow(isEditMode = true)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            await(goodRequest)
 
-          await(goodRequest)
-          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+            redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
+            verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
+          }
         }
 
-        s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
-          // required for backurl
-          setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+        "the tax year changed" should {
+          s"return a redirect status (SEE_OTHER - 303) and redirect to '${
+            incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true).url
+          }" in {
+            setupMockKeystore(
+              fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod, // required for backurl
+              fetchAccountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear
+            )
 
-          val goodRequest = callShow(isEditMode = true)
+            val goodRequest = callShow(isEditMode = true)
 
-          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            await(goodRequest)
 
-          await(goodRequest)
-          verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+            redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true).url)
+            verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1, saveTerms = 1)
+          }
         }
+
       }
     }
 

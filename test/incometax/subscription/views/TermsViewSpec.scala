@@ -27,8 +27,11 @@ class TermsViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page() = incometax.subscription.views.html.terms(
+  val testTaxEndYear = 2018
+
+  def page(taxEndYear: Int) = incometax.subscription.views.html.terms(
     postAction = action,
+    taxEndYear = taxEndYear,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -37,7 +40,7 @@ class TermsViewSpec extends ViewSpecTrait {
       name = "Terms view",
       title = messages.title,
       heading = messages.heading,
-      page = page())
+      page = page(testTaxEndYear))
 
     testPage.mustHaveBackLinkTo(backUrl)
 
@@ -47,7 +50,7 @@ class TermsViewSpec extends ViewSpecTrait {
     testPage.mustHaveBulletSeq(
       messages.bullet_1,
       messages.bullet_2,
-      messages.bullet_3,
+      messages.bullet_3(testTaxEndYear - 1, testTaxEndYear, testTaxEndYear + 1),
       messages.bullet_4,
       messages.bullet_5,
       messages.bullet_6,

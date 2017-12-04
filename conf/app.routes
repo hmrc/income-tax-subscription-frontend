@@ -37,7 +37,7 @@ POST        /feedback                     core.controllers.FeedbackController.su
 GET         /thankyou                     core.controllers.FeedbackController.thankyou
 
 # Terms Routes
-GET         /terms                        incometax.subscription.controllers.TermsController.showTerms()
+GET         /terms                        incometax.subscription.controllers.TermsController.showTerms(editMode: Boolean ?= false)
 POST        /terms                        incometax.subscription.controllers.TermsController.submitTerms()
 
 # Other Income Sources Routes

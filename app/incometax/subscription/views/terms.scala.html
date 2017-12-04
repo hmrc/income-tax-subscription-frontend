@@ -21,7 +21,7 @@
 @import core.views.html.templates.main_template
 @import core.views.html.helpers._
 
-@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call, taxEndYear: Int, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 
 @main_template(title = Messages("terms.title")) {
@@ -34,7 +34,8 @@
             <ul class="bullets">
                 <li>@Messages("terms.bullet_1")</li>
                 <li>@Messages("terms.bullet_2")</li>
-                <li>@Messages("terms.bullet_3")</li>
+                @*if we don't call toString then it adds , into the year... e.g. 2,017*@
+                <li>@Messages("terms.bullet_3", (taxEndYear - 1).toString, taxEndYear.toString, (taxEndYear + 1).toString)</li>
                 <li>@Messages("terms.bullet_4")</li>
                 <li>@Messages("terms.bullet_5")</li>
                 <li>@Messages("terms.bullet_6")</li>

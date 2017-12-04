@@ -93,12 +93,24 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       }
     }
     "When the terms have not been agreed" should {
-      lazy val result = call
 
-      "return a internalServer error" in {
+      "redirect back to Terms if there is no terms in keystore" in {
         setupMockKeystore(fetchAll = testCacheMapCustom(terms = None))
+
+        val result = call
+
         status(result) mustBe SEE_OTHER
         redirectLocation(result) must contain(incometax.subscription.controllers.routes.TermsController.showTerms().url)
+        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+      }
+
+      "redirect back to Terms if there is terms is set to false in keystore" in {
+        setupMockKeystore(fetchAll = testCacheMapCustom(terms = Some(false)))
+
+        val result = call
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) must contain(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true).url)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
     }
