@@ -49,8 +49,11 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
   def showTerms(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
-        taxEndYear <- keystoreService.fetchAccountingPeriodDate()
-          .map(dates => AccountingPeriodUtil.getTaxEndYear(dates.get))
+        incomeSource <- keystoreService.fetchIncomeSource().collect { case Some(is) => is.source }
+        taxEndYear <- incomeSource match {
+          case IncomeSourceForm.option_property => Future.successful(AccountingPeriodUtil.getCurrentTaxEndYear)
+          case _ => keystoreService.fetchAccountingPeriodDate().collect { case Some(ad) => AccountingPeriodUtil.getTaxEndYear(ad) }
+        }
         backUrl <- backUrl(editMode)
       } yield Ok(view(backUrl = backUrl, taxEndYear = taxEndYear))
   }
