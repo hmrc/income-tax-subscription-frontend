@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.templates.main_template
 @import core.views.html.helpers._
 @import core.config.AppConfig
 
-@(backUrl: String, getAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("agent.main-income-error.title"), bodyClasses = None) {
+@main_template(title = Messages("agent.main-income-error.title")) {
     @back_link(backUrl)
 
     <h1 data-metrics="itsa:incomeSource:Other" class="heading-large">@Messages("agent.main-income-error.heading")</h1>
@@ -35,7 +34,5 @@
         <p>@Messages("agent.main-income-error.para2")</p>
     </div>
 
-    @form(action = getAction) {
-        @signOutButton()
-    }
+    @signOutButton()
 }

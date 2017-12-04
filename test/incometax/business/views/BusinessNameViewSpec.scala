@@ -27,8 +27,8 @@ class BusinessNameViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, isRegistration: Boolean) = incometax.business.views.html.business_name(
-    businessNameForm = BusinessNameForm.businessNameForm.form,
+  def page(isEditMode: Boolean, isRegistration: Boolean, addFormErrors: Boolean) = incometax.business.views.html.business_name(
+    businessNameForm = BusinessNameForm.businessNameForm.form.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isRegistration = isRegistration,
@@ -39,7 +39,7 @@ class BusinessNameViewSpec extends ViewSpecTrait {
     name = s"Business Name View for ${if (isRegistration) "registration" else "sign up"}",
     title = messages.title,
     heading = messages.heading,
-    page = page(isEditMode = isEditMode, isRegistration = isRegistration)
+    page = page(isEditMode = isEditMode, isRegistration = isRegistration, addFormErrors = false)
   )
 
   "The Business Name view" should {
@@ -69,6 +69,17 @@ class BusinessNameViewSpec extends ViewSpecTrait {
 
       editModePage.mustHaveUpdateButton()
     }
+  }
+
+  "Append Error to the page title if the form has error" should {
+    def documentCore() = TestView(
+      name = s"Business Name View for sign up",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false, isRegistration = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
   }
 
 }

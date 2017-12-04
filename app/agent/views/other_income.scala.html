@@ -23,7 +23,7 @@
 
 @(otherIncomeForm: Form[OtherIncomeModel], incomeSource:String, postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-    @core.views.html.templates.main_template(title = Messages("agent.income-other.title"), bodyClasses = None) {
+    @core.views.html.templates.main_template(title = Messages("agent.income-other.title"), form = otherIncomeForm) {
         @back_link(backUrl)
 
         @summaryErrorHelper(otherIncomeForm)

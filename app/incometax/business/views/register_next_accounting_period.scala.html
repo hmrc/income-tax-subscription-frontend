@@ -26,7 +26,7 @@
     Messages("business.register_next_accounting_period.heading")
 }
 
-@main_template(title = Messages("business.register_next_accounting_period.title"), bodyClasses = None) {
+@main_template(title = Messages("business.register_next_accounting_period.title")) {
 
     @back_link(backUrl)
 
@@ -42,6 +42,6 @@
 
     }
     <br>
-    <a id="sign-out" href="@core.controllers.routes.SignOutController.signOut().url">@Messages("base.sign-out")</a>
+    @signOutLink()
 
 }

@@ -22,17 +22,17 @@ import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import core.utils.UnitTestTrait
+import core.views.ViewSpecTrait
 
 class ConfirmationViewSpec extends UnitTestTrait {
 
-  val subscriptionIdValue = "000-032407"
   val submissionDateValue = DateModel("1", "1", "2016")
+  val action = ViewSpecTrait.testCall
 
   lazy val page = agent.views.html.confirmation(
-    subscriptionId = subscriptionIdValue,
     submissionDate = submissionDateValue,
     postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
-    signOutAction = agent.controllers.routes.ExitSurveyController.show()
+    signOutAction = action
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
@@ -61,32 +61,20 @@ class ConfirmationViewSpec extends UnitTestTrait {
         }
       }
 
-      s"has a subscription id value '$subscriptionIdValue'" in {
-        document.select("#subscription-id-value").text() mustBe subscriptionIdValue
-      }
-
-      s"has in the banner a paragraph of '${MessageLookup.Confirmation.banner_line1_1}'" in {
-        document.select("#confirmation-heading p").text() must include(MessageLookup.Confirmation.banner_line1_1)
-      }
-
     }
 
     "have a 'What happens next' section" which {
-
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para1)
-      }
 
       s"has the section heading '${MessageLookup.Confirmation.whatHappensNext.heading}'" in {
         document.select("#whatHappensNext h2").text() mustBe MessageLookup.Confirmation.whatHappensNext.heading
       }
 
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para2)
+      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para1)
       }
 
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para3}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para3)
+      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para2)
       }
 
     }
@@ -107,8 +95,8 @@ class ConfirmationViewSpec extends UnitTestTrait {
           document.select("#confirmation-feedback").text() must include(MessageLookup.Confirmation.giveUsFeedback.link)
         }
 
-        s"has a link to ${agent.controllers.routes.ExitSurveyController.show().url}" in {
-          document.select("#confirmation-feedback").attr("href") mustBe agent.controllers.routes.ExitSurveyController.show().url
+        s"has a link to ${action.url}" in {
+          document.select("#confirmation-feedback").attr("href") mustBe action.url
         }
       }
 

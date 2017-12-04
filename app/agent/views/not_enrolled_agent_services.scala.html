@@ -17,11 +17,10 @@
 @import core.views.html.templates.main_template
 @import core.config.AppConfig
 @import core.views.html.helpers._
-@import uk.gov.hmrc.play.views.html.helpers.form
 
-@(getAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("agent.not_enrolled_agent_services.title"), bodyClasses = None) {
+@main_template(title = Messages("agent.not_enrolled_agent_services.title")) {
 
     <h1 class="heading-large">@Messages("agent.not_enrolled_agent_services.heading")</h1>
 
@@ -30,9 +29,7 @@
     </div>
 
     <div class="form-group">
-        @form(action = getAction) {
-            @signOutButton()
-        }
+        @signOutButton()
     </div>
 
 }

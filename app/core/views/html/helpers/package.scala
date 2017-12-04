@@ -17,5 +17,6 @@
 package core.views.html
 
 import core.utils.Implicits
+import play.api.data.Form
 
 package object helpers extends Implicits

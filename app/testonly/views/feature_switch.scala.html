@@ -21,7 +21,7 @@
 
 @(switchNames: Map[FeatureSwitch, Boolean], backendFeatureSwitches: Map[String, Boolean], action: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("Feature switch"), bodyClasses = None) {
+@main_template(title = Messages("Feature switch")) {
     <form method="@action.method" action="@action.url">
         @CSRF.formField
         <fieldset>

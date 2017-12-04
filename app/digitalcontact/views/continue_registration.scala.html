@@ -21,17 +21,15 @@
 
 @(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("preferences_callback.title"), bodyClasses = None) {
+@main_template(title = Messages("preferences_callback.title")) {
 
     <h1 class="heading-large">@Messages("preferences_callback.heading")</h1>
 
     <p>@Messages("preferences_callback.line_1")</p>
 
     @form(action = postAction) {
-
         @continueButton(Messages("preferences_callback.button"))
-
     }
     <br>
-    <a id="sign-out" href="@core.controllers.routes.SignOutController.signOut().url">@Messages("base.sign-out")</a>
+    @signOutLink()
 }

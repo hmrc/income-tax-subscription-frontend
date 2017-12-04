@@ -18,22 +18,19 @@ package incometax.subscription.views
 
 import assets.MessageLookup
 import assets.MessageLookup.{AlreadyEnrolled => messages, Base => common}
+import core.controllers.SignOutController
 import core.models.DateModel
 import core.views.ViewSpecTrait
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
-import play.api.test.FakeRequest
 
 class AlreadyEnrolledViewSpec extends ViewSpecTrait {
 
-  val subscriptionIdValue = "000-032407"
   val submissionDateValue = DateModel("1", "1", "2016")
   val action = ViewSpecTrait.testCall
+  val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = incometax.subscription.views.html.enrolled.already_enrolled(
-    subscriptionId = subscriptionIdValue,
-    signOutAction = action
-  )(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = incometax.subscription.views.html.enrolled.already_enrolled()(request, applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
   "The Confirmation view" should {
@@ -61,31 +58,20 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
         }
       }
 
-      s"has a subscription id value '$subscriptionIdValue'" in {
-        document.select("#subscription-id-value").text() mustBe subscriptionIdValue
-      }
-
-      s"has in the banner a paragraph of '${MessageLookup.Confirmation.banner_line1}'" in {
-        document.select("#confirmation-heading p").text() must include(MessageLookup.Confirmation.banner_line1)
-      }
     }
 
     "have a 'What happens next' section" which {
-
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para1)
-      }
 
       s"has the section heading '${MessageLookup.Confirmation.whatHappensNext.heading}'" in {
         document.select("#whatHappensNext h2").text() mustBe MessageLookup.Confirmation.whatHappensNext.heading
       }
 
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para2)
+      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para1)
       }
 
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para3}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para3)
+      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para2)
       }
 
       s"has a bullet point '${MessageLookup.Confirmation.whatHappensNext.bul1}'" in {
@@ -104,18 +90,17 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
     }
 
     "have a sign out button" in {
-      val form = document.select("form").first()
-      form.attr("action") mustBe action.url
-
-      val actionSignOut = form.getElementById("sign-out-button")
-      actionSignOut.text() mustBe MessageLookup.Confirmation.signOut
+      val actionSignOut = document.getElementById("sign-out-button")
+      actionSignOut.attr("role") mustBe "button"
+      actionSignOut.text() mustBe MessageLookup.Base.signOut
+      actionSignOut.attr("href") mustBe SignOutController.signOut(request.path).url
     }
 
     // N.B. both of these should be directed to the special sign out call which also takes them to the exit survey page
     "The banner sign out button must be directed to the same as the sign out button" in {
       val bannerSignout = document.getElementById("logOutNavHref")
       bannerSignout.text() mustBe MessageLookup.Base.signOut
-      bannerSignout.attr("href") mustBe action.url
+      bannerSignout.attr("href") mustBe SignOutController.signOut(request.path).url
     }
 
   }

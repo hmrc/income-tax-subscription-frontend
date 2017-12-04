@@ -16,16 +16,23 @@
 
 package core.views
 
+import assets.MessageLookup
 import assets.MessageLookup.{Base => common}
+import core.controllers.SignOutController
+import core.forms.validation.models.{SummaryError, TargetIds}
 import core.utils.UnitTestTrait
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
+import play.api.data.Form
 import play.api.mvc.Call
+import play.api.test.FakeRequest
 import play.twirl.api.Html
 
 
 trait ViewSpecTrait extends UnitTestTrait {
+
+  val titleErrPrefix = MessageLookup.Base.titleError
 
   case class Selector(name: String, cssQuery: String)
 
@@ -300,6 +307,23 @@ trait ViewSpecTrait extends UnitTestTrait {
         submitButtons.head.text() mustBe text
       }
 
+    def mustHaveSignOutButton(text: String, origin: Option[String] = None): Unit =
+      s"$name must have the a sign out button (a) '$text'" in {
+        val signOutButton = element.getElementById("sign-out-button")
+        signOutButton.attr("role") mustBe "button"
+        signOutButton.text() mustBe text
+        if (origin.isDefined) {
+          signOutButton.attr("href") mustBe SignOutController.signOut(origin.get).url
+        }
+      }
+
+    def mustHaveSignOutLink(text: String, origin: Option[String] = None): Unit =
+      if (origin.isDefined) {
+        mustHaveALink("sign-out", text, SignOutController.signOut(origin.get).url)
+      } else {
+        mustHaveALink("sign-out", text)
+      }
+
     def mustHaveContinueButton(): Unit = mustHaveSubmitButton(common.continue)
 
     def mustHaveContinueToSignUpButton(): Unit = mustHaveSubmitButton(common.continueToSignUp)
@@ -376,7 +400,7 @@ trait ViewSpecTrait extends UnitTestTrait {
         val signOut = document.getElementById("logOutNavHref")
         if (signOut == null) fail("Signout link was not located in the banner\nIf this is the expected behaviour then please set 'signOutInBanner' to true when creating the TestView object")
         signOut.text() mustBe common.signOut
-        signOut.attr("href") mustBe core.controllers.routes.SignOutController.signOut().url
+        signOut.attr("href") must startWith(core.controllers.SignOutController.signOut("").url)
       }
     } else {
       s"$name must not have a sign out link in the banner" in {
@@ -438,6 +462,10 @@ trait ViewSpecTrait extends UnitTestTrait {
               showSignOutInBanner: Boolean = true): TestView = new TestView(name, title, heading, page, showSignOutInBanner)
   }
 
+  implicit class FormUtil[T](form: Form[T]) {
+    def addError(addError: Boolean): Form[T] = if (addError) form.withError("test", "test", "err", SummaryError(""), TargetIds("")) else form
+  }
+
 }
 
 
@@ -445,4 +473,5 @@ object ViewSpecTrait {
   // these two constants are used for testing the views
   val testBackUrl = "/test-back-url"
   val testCall = Call("POST", "/test-url")
+  val viewTestRequest = FakeRequest("POST", "/test-url")
 }

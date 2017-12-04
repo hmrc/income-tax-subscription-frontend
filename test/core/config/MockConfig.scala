@@ -37,7 +37,9 @@ trait MockConfig extends AppConfig {
   override lazy val authenticatorUrl: String = ""
   override val userMatchingUrl = "/income-tax-subscription/user-matching"
   override lazy val ggUrl = ""
-  override lazy val ggSignOutUrl = s"$ggUrl/gg/sign-out?continue=$ggSignInContinueUrl"
+
+  override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl) = s"$ggUrl/gg/sign-out?continue=$redirectionUrl"
+
   override lazy val btaUrl = "https://www.tax.service.gov.uk/business-account"
   override val showGuidance: Boolean = true
   override lazy val shutterPage = "https://www.tax.service.gov.uk/outage-income-tax-subscription/"
@@ -70,7 +72,7 @@ trait MockConfig extends AppConfig {
 
   override val newPreferencesApiEnabled: Boolean = false
 
-  override val signUpToSaLink : String = "sa-sign-up"
+  override val signUpToSaLink: String = "sa-sign-up"
 
   override val agentSignUpUrl: String = "/report-quarterly/income-and-expenses/sign-up/client"
 

@@ -24,8 +24,9 @@ import play.api.test.FakeRequest
 class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
+  val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = agent.views.html.client_already_subscribed(action)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = agent.views.html.client_already_subscribed(action)(request, applicationMessages, appConfig)
 
   "The Client Already Enrolled view" should {
     val testPage = TestView(
@@ -42,6 +43,8 @@ class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
     val form = testPage.getForm("Client Already Enrolled form")(actionCall = action)
 
     form.mustHaveSubmitButton(common.goBack)
+
+    testPage.mustHaveSignOutLink(common.signOut, request.path)
 
   }
 }

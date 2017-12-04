@@ -27,8 +27,8 @@ class BusinessAccountingPeriodPriorViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  private def page(isEditMode: Boolean) = agent.views.html.business.accounting_period_prior(
-    accountingPeriodPriorForm = AccountingPeriodPriorForm.accountingPeriodPriorForm,
+  private def page(isEditMode: Boolean, addFormErrors: Boolean) = agent.views.html.business.accounting_period_prior(
+    accountingPeriodPriorForm = AccountingPeriodPriorForm.accountingPeriodPriorForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode
@@ -39,7 +39,7 @@ class BusinessAccountingPeriodPriorViewSpec extends ViewSpecTrait {
       name = "Business Accounting Period View",
       title = messages.title,
       heading = messages.heading,
-      page = page(isEditMode = isEditMode)
+      page = page(isEditMode = isEditMode, addFormErrors = false)
     )
 
   "The Business Accounting Period view" should {
@@ -68,4 +68,17 @@ class BusinessAccountingPeriodPriorViewSpec extends ViewSpecTrait {
 
     editModePage.mustHaveUpdateButton()
   }
+
+  "Append Error to the page title if the form has error" should {
+    def documentCore() =
+      TestView(
+        name = "Business Accounting Period View",
+        title = titleErrPrefix + messages.title,
+        heading = messages.heading,
+        page = page(isEditMode = false, addFormErrors = true)
+      )
+
+    val testPage = documentCore()
+  }
+
 }

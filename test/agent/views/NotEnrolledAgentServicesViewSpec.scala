@@ -19,13 +19,13 @@ package agent.views
 import agent.assets.MessageLookup.{Base => commonMessages, NotEnrolledAgentServices => messages}
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
-import play.api.test.FakeRequest
 
 class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
+  val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = agent.views.html.not_enrolled_agent_services(action)(FakeRequest(), applicationMessages, appConfig)
+  lazy val page = agent.views.html.not_enrolled_agent_services()(request, applicationMessages, appConfig)
 
   "The Agent not Enrolled to Agent Services view" should {
     val testPage = TestView(
@@ -40,10 +40,7 @@ class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
     val paragraph1 = testPage.selectHead("paragraph 1", "p")
     paragraph1.mustHaveALink(messages.linkText, appConfig.agentServicesUrl)
 
-
-    val form = testPage.getForm("Agent not Enrolled to Agent Services form")(actionCall = action)
-
-    form.mustHaveSubmitButton(commonMessages.signOut)
+    testPage.mustHaveSignOutButton(commonMessages.signOut, request.path)
 
   }
 }

@@ -29,7 +29,7 @@
     Messages("income_source.heading")
 }
 
-@main_template(title = Messages("income_source.title"), bodyClasses = None) {
+@main_template(title = Messages("income_source.title"), form = incomeSourceForm) {
     @if(isEditMode) {
         @back_link(backUrl)
     }

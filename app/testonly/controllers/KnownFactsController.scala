@@ -49,8 +49,7 @@ class KnownFactsController @Inject()(val baseConfig: BaseControllerConfig,
       Ok(view(knownFactsForm.form))
   }
 
-  def submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+  def submit: Action[AnyContent] = Action.async { implicit request =>
       knownFactsForm.form.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(form = formWithErrors))),
         knownFacts => {

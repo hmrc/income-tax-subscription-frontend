@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import play.api.data.Form
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 @import core.config.AppConfig
@@ -25,7 +24,7 @@
     Messages("agent.business.register_next_accounting_period.heading")
 }
 
-@core.views.html.templates.main_template(title = Messages("agent.business.register_next_accounting_period.title"), bodyClasses = None) {
+@core.views.html.templates.main_template(title = Messages("agent.business.register_next_accounting_period.title")) {
 
     @back_link(backUrl)
 
@@ -35,10 +34,10 @@
 
     @form(action = postAction) {
         @continueButton(Messages("agent.business.register_next_accounting_period.button"))
-
     }
 
     <br>
-    <a id="sign-out" href="@core.controllers.routes.SignOutController.signOut().url">@Messages("agent.base.sign-out")</a>
+
+    @signOutLink()
 
 }

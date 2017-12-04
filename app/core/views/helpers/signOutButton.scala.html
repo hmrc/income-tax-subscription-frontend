@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
-@(alternativeText: Option[String] = None)(implicit messages: Messages)
+@import core.controllers.SignOutController.signOut
 
-<button formnovalidate class="button" type="submit" id="sign-out-button">@alternativeText.fold(Messages("base.sign-out"))(x => x)</button>
+@(alternativeText: Option[String] = None)(implicit request: Request[_], messages: Messages)
+
+<a  id="sign-out-button" class="button" role="button" href="@signOut(request.path)">@alternativeText.fold(Messages("base.sign-out"))(x => x)</a>

@@ -28,10 +28,11 @@ class SignOutControllerISpec extends ComponentSpecBase {
     "keystore not applicable" should {
       "show the logout page" in {
         Given("I setup the Wiremock stubs")
+        val testOrigin = "/origin"
         AuthStub.stubAuthSuccess()
 
         When("GET /logout is called")
-        val res = IncomeTaxSubscriptionFrontend.signOut()
+        val res = IncomeTaxSubscriptionFrontend.signOut(testOrigin)
 
         Then("Should return a SEE_OTHER with a redirect location of gg sign in")
         res should have(

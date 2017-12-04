@@ -19,17 +19,17 @@ package agent.views.business
 import agent.assets.MessageLookup.{AccountingPeriod => messages, Base => common}
 import agent.forms.AccountingPeriodDateForm
 import agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
+import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import core.views.ViewSpecTrait
 
 class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean) = agent.views.html.business.accounting_period_date(
-    accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm,
+  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean, addFormErrors: Boolean) = agent.views.html.business.accounting_period_date(
+    accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     viewType = viewType,
@@ -44,7 +44,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
       case (_, CurrentAccountingPeriodView) => messages.heading_current
       case (_, NextAccountingPeriodView) => messages.heading_next
     },
-    page = page(viewType = viewType, isEditMode = isEditMode)
+    page = page(viewType = viewType, isEditMode = isEditMode, addFormErrors = false)
   )
 
   "The Business Accounting Period Date view" should {
@@ -78,9 +78,9 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
           legend = common.endDate,
           exampleDate =
             viewType match {
-            case CurrentAccountingPeriodView => messages.exampleEndDate_current
-            case _ => messages.exampleEndDate_next
-          }
+              case CurrentAccountingPeriodView => messages.exampleEndDate_current
+              case _ => messages.exampleEndDate_next
+            }
         )
 
         val editModePage = documentCore(
@@ -93,5 +93,18 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
         editModePage.mustHaveUpdateButton()
 
     }
+  }
+
+  "Append Error to the page title if the form has error" should {
+
+    def documentCore() = TestView(
+      name = s"Business Accounting Period Date View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading_current,
+      page = page(viewType = CurrentAccountingPeriodView, isEditMode = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
+
   }
 }

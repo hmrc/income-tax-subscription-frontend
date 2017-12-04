@@ -51,12 +51,10 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session" should {
       "Get the ID from keystore" in {
-        setupMockKeystore(fetchSubscriptionId = "testId")
         val result = TestConfirmationController.showConfirmation(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))
         status(result) shouldBe OK
 
         await(result)
-        verifyKeystore(fetchSubscriptionId = 1)
       }
     }
   }

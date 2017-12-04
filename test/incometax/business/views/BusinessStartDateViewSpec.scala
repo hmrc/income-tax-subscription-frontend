@@ -28,8 +28,8 @@ class BusinessStartDateViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean) = incometax.business.views.html.business_start_date(
-    businessStartDateForm = BusinessStartDateForm.businessStartDateForm,
+  def page(isEditMode: Boolean, addFormErrors: Boolean) = incometax.business.views.html.business_start_date(
+    businessStartDateForm = BusinessStartDateForm.businessStartDateForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
@@ -39,7 +39,7 @@ class BusinessStartDateViewSpec extends ViewSpecTrait {
     name = s"$prefix Business Start Date View${suffix.fold("")(x => x)}",
     title = messages.title,
     heading = messages.heading,
-    page = page(isEditMode = isEditMode)
+    page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
   "The Business Start Date view" should {
@@ -72,5 +72,16 @@ class BusinessStartDateViewSpec extends ViewSpecTrait {
         editModePage.mustHaveUpdateButton()
 
     }
+  }
+
+  "Append Error to the page title if the form has error" should {
+    def documentCore() = TestView(
+      name = s"Business Start Date View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
+      page = page(isEditMode = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
   }
 }

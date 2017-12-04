@@ -28,13 +28,14 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean) = incometax.business.views.html.accounting_period_date(
-    accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm,
-    postAction = action,
-    backUrl = backUrl,
-    viewType = viewType,
-    isEditMode = isEditMode
-  )(FakeRequest(), applicationMessages, appConfig)
+  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean, addFormErrors: Boolean) =
+    incometax.business.views.html.accounting_period_date(
+      accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm.addError(addFormErrors),
+      postAction = action,
+      backUrl = backUrl,
+      viewType = viewType,
+      isEditMode = isEditMode
+    )(FakeRequest(), applicationMessages, appConfig)
 
   def documentCore(prefix: String, suffix: Option[String] = None, viewType: AccountingPeriodViewType, isEditMode: Boolean) = TestView(
     name = s"$prefix Business Accounting Period Date View${suffix.fold("")(x => x)}",
@@ -45,7 +46,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
       case (_, NextAccountingPeriodView) => messages.heading_next
       case (_, RegistrationAccountingPeriodView) => messages.heading_registration
     },
-    page = page(viewType = viewType, isEditMode = isEditMode)
+    page = page(viewType = viewType, isEditMode = isEditMode, addFormErrors = false)
   )
 
   "The Business Accounting Period Date view" should {
@@ -102,5 +103,16 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
         editModePage.mustHaveUpdateButton()
 
     }
+  }
+
+  "Append Error to the page title if the form has error" should {
+    def documentCore() = TestView(
+      name = "Business Accounting Period Date View",
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading_current,
+      page = page(viewType = CurrentAccountingPeriodView, isEditMode = false, addFormErrors = true)
+    )
+
+    val testPage = documentCore()
   }
 }

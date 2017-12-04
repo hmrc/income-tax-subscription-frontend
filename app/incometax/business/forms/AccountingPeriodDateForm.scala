@@ -81,7 +81,7 @@ object AccountingPeriodDateForm {
 
   val endDate24MonthRule: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
     accountingPeriod => {
-      lazy val maxEndDate = accountingPeriod.startDate.plusMonths(maxMonths)
+      lazy val maxEndDate = accountingPeriod.startDate.plusMonths(maxMonths).minusDays(1)
       lazy val invalid = ErrorMessageFactory.error(
         TargetIds(endDate),
         "error.business_accounting_period.maxEndDate"
