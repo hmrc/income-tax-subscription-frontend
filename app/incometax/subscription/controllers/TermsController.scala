@@ -47,12 +47,12 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       backUrl
     )
 
-  def showTerms(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def showTerms(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         taxEndYear <- keystoreService.fetchAccountingPeriodDate()
           .map(dates => TermsController.getTaxEndYear(dates.get))
-        backUrl <- backUrl
+        backUrl <- backUrl(editMode)
       } yield Ok(view(backUrl = backUrl, taxEndYear = taxEndYear))
   }
 
@@ -62,26 +62,29 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         _ => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
   }
 
-  def backUrl(implicit request: Request[_]): Future[String] =
-    keystoreService.fetchIncomeSource() flatMap {
-      case Some(source) => source.source match {
-        case IncomeSourceForm.option_business =>
-          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
-        case IncomeSourceForm.option_both =>
-          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
-        case IncomeSourceForm.option_property =>
-          import OtherIncomeForm._
-          keystoreService.fetchOtherIncome() flatMap {
-            case Some(OtherIncomeModel(`option_yes`)) =>
-              incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
-            case Some(OtherIncomeModel(`option_no`)) =>
-              incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
-            case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
-          }
-        case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
+  def backUrl(editMode: Boolean)(implicit request: Request[_]): Future[String] =
+    if (editMode)
+      incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+    else
+      keystoreService.fetchIncomeSource() flatMap {
+        case Some(source) => source.source match {
+          case IncomeSourceForm.option_business =>
+            incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+          case IncomeSourceForm.option_both =>
+            incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+          case IncomeSourceForm.option_property =>
+            import OtherIncomeForm._
+            keystoreService.fetchOtherIncome() flatMap {
+              case Some(OtherIncomeModel(`option_yes`)) =>
+                incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+              case Some(OtherIncomeModel(`option_no`)) =>
+                incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
+              case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
+            }
+          case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
+        }
+        case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no income source retrieve from Keystore")
       }
-      case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no income source retrieve from Keystore")
-    }
 
 }
 
