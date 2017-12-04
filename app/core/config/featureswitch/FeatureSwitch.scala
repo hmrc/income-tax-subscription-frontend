@@ -52,3 +52,8 @@ object RegistrationFeature extends FeatureSwitch {
   val name = s"$prefix.enable-registration"
   val displayText = "Registration journey"
 }
+
+object EmacEs6ApiFeature extends FeatureSwitch {
+  val name = s"$prefix.enable-emac-es6"
+  val displayText = "EMAC ES6 API"
+}

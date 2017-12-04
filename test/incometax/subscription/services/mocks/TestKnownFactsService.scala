@@ -17,7 +17,8 @@
 package incometax.subscription.services.mocks
 
 import core.Constants.GovernmentGateway._
-import incometax.subscription.connectors.mocks.MockGGAdminConnector
+import core.config.MockConfig
+import incometax.subscription.connectors.mocks.{MockEnrolmentStoreConnector, MockGGAdminConnector}
 import incometax.subscription.models.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, TypeValuePair}
 import incometax.subscription.services.KnownFactsService
 import org.mockito.ArgumentMatchers
@@ -28,9 +29,22 @@ import core.utils.TestConstants._
 
 import scala.concurrent.Future
 
-trait TestKnownFactsService extends MockGGAdminConnector {
+trait TestKnownFactsService extends MockGGAdminConnector with MockEnrolmentStoreConnector with MockConfig {
 
-  object TestKnownFactsService extends KnownFactsService(mockGGAdminConnector)
+  object TestKnownFactsService extends KnownFactsService(
+    mockGGAdminConnector,
+    mockEnrolmentStoreConnector,
+    MockConfig
+  )
+
+  object TestKnownFactsServiceFeatureSwitched extends KnownFactsService(
+    mockGGAdminConnector,
+    mockEnrolmentStoreConnector,
+    new MockConfig {
+      override val emacEs6ApiEnabled = true
+    }
+  )
+
 
   val expectedRequestModel = KnownFactsRequest(List(
     TypeValuePair(MTDITID, testMTDID),

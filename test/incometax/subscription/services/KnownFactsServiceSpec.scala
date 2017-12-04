@@ -16,7 +16,9 @@
 
 package incometax.subscription.services
 
-import incometax.subscription.models.{KnownFactsFailure, KnownFactsSuccess}
+import core.Constants
+import core.Constants.GovernmentGateway._
+import incometax.subscription.models.{EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
 import incometax.subscription.services.mocks.TestKnownFactsService
 import org.scalatest.concurrent.ScalaFutures
 import core.utils.TestConstants._
@@ -26,25 +28,54 @@ import scala.concurrent.Future
 
 class KnownFactsServiceSpec extends UnitTestTrait with TestKnownFactsService with ScalaFutures {
 
-  "addKnownFacts" must {
-    def result: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = TestKnownFactsService.addKnownFacts(testMTDID, testNino)
+  "addKnownFacts" when {
+    "the EMAC ES6 feature switch is turned off" should {
+      def result: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] =
+        TestKnownFactsService.addKnownFacts(testMTDID, testNino)
 
-    "return a success from the GGAdminConnector" in {
-      mockAddKnownFactsSuccess(expectedRequestModel)
+      "return a success from the GGAdminConnector" in {
+        mockAddKnownFactsSuccess(expectedRequestModel)
 
-      whenReady(result)(_ mustBe Right(KnownFactsSuccess))
+        whenReady(result)(_ mustBe Right(KnownFactsSuccess))
+      }
+
+      "return a failure from the GGAdminConnector" in {
+        mockAddKnownFactsFailure(expectedRequestModel)
+
+        whenReady(result)(_ mustBe Left(KnownFactsFailure(testErrorMessage)))
+      }
+
+      "pass through the exception if the GGAdminConnector fails" in {
+        mockAddKnownFactsException(expectedRequestModel)
+
+        whenReady(result.failed)(_ mustBe testException)
+      }
     }
 
-    "return a failure from the GGAdminConnector" in {
-      mockAddKnownFactsFailure(expectedRequestModel)
+    "the EMAC ES6 feature switch is turned on" should {
+      def result: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] =
+        TestKnownFactsServiceFeatureSwitched.addKnownFacts(testMTDID, testNino)
 
-      whenReady(result)(_ mustBe Left(KnownFactsFailure(testErrorMessage)))
-    }
+      val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMTDID)
+      val testEnrolmentVerifiers = EnrolmentVerifiers(NINO -> testNino)
 
-    "pass through the exception if the GGAdminConnector fails" in {
-      mockAddKnownFactsException(expectedRequestModel)
+      "return a success from the EnrolmentStoreConnector" in {
+        mockUpsertEnrolmentSuccess(testEnrolmentKey, testEnrolmentVerifiers)
 
-      whenReady(result.failed)(_ mustBe testException)
+        whenReady(result)(_ mustBe Right(KnownFactsSuccess))
+      }
+
+      "return a failure from the EnrolmentStoreConnector" in {
+        mockUpsertEnrolmentFailure(testEnrolmentKey, testEnrolmentVerifiers)
+
+        whenReady(result)(_ mustBe Left(KnownFactsFailure(testErrorMessage)))
+      }
+
+      "pass through the exception if the EnrolmentStoreConnector fails" in {
+        mockUpsertEnrolmentException(testEnrolmentKey, testEnrolmentVerifiers)
+
+        whenReady(result.failed)(_ mustBe testException)
+      }
     }
   }
 

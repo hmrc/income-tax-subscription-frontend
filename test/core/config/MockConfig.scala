@@ -64,6 +64,8 @@ trait MockConfig extends AppConfig {
 
   override val enableRegistration: Boolean = false
 
+  override val emacEs6ApiEnabled: Boolean = false
+
   override def storeNinoUrl(token: String): String = s"income-tax-subscription/identifier-mapping/$token"
 
   override lazy val addressLookupFrontendURL: String = ""
@@ -81,6 +83,8 @@ trait MockConfig extends AppConfig {
   override lazy val agentAccountUrl = "https://www.gov.uk/guidance/self-assessment-for-agents-online-service"
 
   override lazy val backendFeatureSwitchUrl = "income-tax-subscription/"
+
+  override def upsertEnrolmentUrl(enrolmentKey: String): String = "enrolment-store/"
 
 }
 

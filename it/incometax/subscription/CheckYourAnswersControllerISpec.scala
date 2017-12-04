@@ -16,6 +16,8 @@
 
 package incometax.subscription
 
+import core.config.featureswitch
+import core.config.featureswitch.FeatureSwitching
 import core.services.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -25,7 +27,7 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 
-class CheckYourAnswersControllerISpec extends ComponentSpecBase {
+class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwitching {
   "GET /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
     "keystore returns all data" should {
       "show the check your answers page" in {
@@ -209,5 +211,31 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         httpStatus(INTERNAL_SERVER_ERROR)
       )
     }
+
+    "call the enrolment store when the feature switch is on" should {
+      "show the check your answers page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
+        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
+        EnrolmentStoreStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+        GGConnectorStub.stubEnrolResult(OK)
+        GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
+        KeystoreStub.stubPutMtditId()
+
+        And("The feature switch is on")
+        enable(featureswitch.EmacEs6ApiFeature)
+
+        When("POST /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+        Then("Should return a SEE_OTHER with a redirect location of confirmation")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(confirmationURI)
+        )
+      }
+    }
   }
+
 }
