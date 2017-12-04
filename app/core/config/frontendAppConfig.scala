@@ -18,7 +18,7 @@ package core.config
 
 import javax.inject.{Inject, Singleton}
 
-import core.config.featureswitch.FeatureSwitching
+import core.config.featureswitch.{EmacEs6ApiFeature, FeatureSwitching}
 import play.api.mvc.Call
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -67,7 +67,11 @@ trait AppConfig {
 
   def newPreferencesApiEnabled: Boolean
 
+  def emacEs6ApiEnabled: Boolean
+
   def storeNinoUrl(token: String): String
+
+  def upsertEnrolmentUrl(enrolmentKey: String): String
 
   val addressLookupFrontendURL: String
   val signUpToSaLink: String
@@ -190,10 +194,17 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override def newPreferencesApiEnabled: Boolean = isEnabled(featureswitch.NewPreferencesApiFeature)
 
+  override def emacEs6ApiEnabled: Boolean = isEnabled(featureswitch.EmacEs6ApiFeature)
+
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 
   override lazy val signUpToSaLink: String = loadConfig("sa-signup.url")
 
   override lazy val backendFeatureSwitchUrl: String = s"$protectedMicroServiceUrl/income-tax-subscription/test-only/feature-switch"
+
+  lazy val enrolmentStore = baseUrl("enrolment-store-proxy")
+
+  override def upsertEnrolmentUrl(enrolmentKey: String): String = s"$enrolmentStore/enrolment-store/enrolments/$enrolmentKey"
+
 }
 

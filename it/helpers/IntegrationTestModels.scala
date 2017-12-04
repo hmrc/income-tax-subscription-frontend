@@ -1,6 +1,8 @@
 
 package helpers
 
+import core.Constants
+import core.Constants.GovernmentGateway._
 import core.models.DateModel
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
@@ -9,6 +11,7 @@ import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.business.models._
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.subscription.models.EnrolmentKey
 import models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
@@ -97,5 +100,7 @@ object IntegrationTestModels {
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testStartDate)
 
   lazy val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
+
+  lazy val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMTDID)
 
 }

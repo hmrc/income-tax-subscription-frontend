@@ -45,9 +45,8 @@ class KnownFactsController @Inject()(val baseConfig: BaseControllerConfig,
       postAction = testonly.controllers.routes.KnownFactsController.submit
     )
 
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      Future.successful(Ok(view(knownFactsForm.form)))
+  def show: Action[AnyContent] = Action { implicit request =>
+      Ok(view(knownFactsForm.form))
   }
 
   def submit: Action[AnyContent] = Authenticated.async { implicit request =>
