@@ -16,23 +16,21 @@
 
 package incometax.subscription.models
 
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.Json
+import uk.gov.hmrc.play.test.UnitSpec
 
-case class EnrolmentVerifiers(verifiers: (String, String)*)
+class EnrolmentVerifiersSpec extends UnitSpec {
+  "format" should {
+    "produce a correctly formatted json object" in {
+      val verifierKey = "verifierKey"
+      val verifierValue = "verifierValue"
 
-object EnrolmentVerifiers {
-  implicit val writer = new Writes[EnrolmentVerifiers] {
-    override def writes(verifiers: EnrolmentVerifiers): JsValue =
-      Json.obj("verifiers" ->
-        (verifiers.verifiers map {
-          case (key, value) =>
-            Json.obj(
-              "key" -> key,
-              "value" -> value
-            )
-        })
-      )
+      val model = EnrolmentVerifiers(verifierKey -> verifierValue)
+
+      val expectedJson = s"""{"verifiers":[{"key":"$verifierKey","value":"$verifierValue"}]}"""
+
+      Json.toJson(model).toString shouldBe expectedJson
+    }
   }
 }
-
 
