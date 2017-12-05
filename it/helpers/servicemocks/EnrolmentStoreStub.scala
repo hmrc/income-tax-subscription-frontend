@@ -21,6 +21,6 @@ import play.api.libs.json.Json
 
 object EnrolmentStoreStub extends WireMockMethods {
   def stubUpsertEnrolmentResult(enrolmentKey: String, status: Int): StubMapping =
-    when(method = PUT, uri = s"/enrolment-store/enrolments/$enrolmentKey")
+    when(method = PUT, uri = s"/enrolment-store-proxy/enrolment-store/enrolments/$enrolmentKey")
       .thenReturn(status = status, body = Json.obj())
 }
