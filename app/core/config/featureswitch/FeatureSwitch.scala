@@ -26,7 +26,7 @@ sealed trait FeatureSwitch {
 object FeatureSwitch {
   val prefix = "feature-switch"
 
-  val switches = Set(UserMatchingFeature, NewPreferencesApiFeature, RegistrationFeature)
+  val switches = Set(UserMatchingFeature, NewPreferencesApiFeature, RegistrationFeature, EmacEs6ApiFeature)
 
   def apply(str: String): FeatureSwitch =
     switches find (_.name == str) match {
