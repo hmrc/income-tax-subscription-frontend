@@ -22,7 +22,7 @@ POST        /feedback                               agent.controllers.FeedbackCo
 GET         /thankyou                               agent.controllers.FeedbackController.thankyou
 
 # Terms Routes
-GET         /terms                                  agent.controllers.TermsController.showTerms()
+GET         /terms                                  agent.controllers.TermsController.showTerms(editMode: Boolean ?= false)
 POST        /terms                                  agent.controllers.TermsController.submitTerms()
 
 # Other Income Sources Routes

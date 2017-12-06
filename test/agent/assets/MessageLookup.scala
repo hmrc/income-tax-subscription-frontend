@@ -157,7 +157,7 @@ object MessageLookup {
     val point_1 = "use accounting software to record your client's income and expenses"
     val point_2 = "submit a report once every 3 months from the start of your client's accounting period"
     val point_3 = "allow HMRC to calculate your client's Income Tax estimate using the information from their reports"
-    val point_4 = "send HMRC your client's summary report for the 2017 to 2018 tax year by 31 January 2019"
+    def point_4(taxStartYear: Int, taxEndYear: Int, taxDueYear: Int)  = s"send HMRC your client's summary report for the $taxStartYear to $taxEndYear tax year by 31 January $taxDueYear"
     val point_5 = "declare any of your client's other income sources and reliefs"
     val point_6 = "let HMRC know if your client starts a new business or their current business stops trading"
     val point_7 = "contact HMRC if your client can't continue to take part in this trial or you stop representing this client"

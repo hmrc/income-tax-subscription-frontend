@@ -27,8 +27,11 @@ class TermsViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page() = agent.views.html.terms(
+  val testTaxEndYear = 2018
+
+  def page(taxEndYear: Int) = agent.views.html.terms(
     postAction = action,
+    taxEndYear = taxEndYear,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -37,7 +40,7 @@ class TermsViewSpec extends ViewSpecTrait {
       name = "Terms view",
       title = messages.title,
       heading = messages.heading,
-      page = page())
+      page = page(testTaxEndYear))
 
     testPage.mustHaveBackLinkTo(backUrl)
 
@@ -48,7 +51,7 @@ class TermsViewSpec extends ViewSpecTrait {
       messages.point_1,
       messages.point_2,
       messages.point_3,
-      messages.point_4,
+      messages.point_4(testTaxEndYear - 1, testTaxEndYear, testTaxEndYear + 1),
       messages.point_5,
       messages.point_6,
       messages.point_7
