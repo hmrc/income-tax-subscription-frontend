@@ -26,7 +26,7 @@ sealed trait FeatureSwitch {
 object FeatureSwitch {
   val prefix = "feature-switch"
 
-  val switches = Set(UserMatchingFeature, NewPreferencesApiFeature, RegistrationFeature, EmacEs6ApiFeature)
+  val switches = Set(UserMatchingFeature, NewPreferencesApiFeature, RegistrationFeature, EmacEs6ApiFeature, EmacEs8ApiFeature)
 
   def apply(str: String): FeatureSwitch =
     switches find (_.name == str) match {
@@ -55,5 +55,10 @@ object RegistrationFeature extends FeatureSwitch {
 
 object EmacEs6ApiFeature extends FeatureSwitch {
   val name = s"$prefix.enable-emac-es6"
-  val displayText = "EMAC ES6 API"
+  val displayText = "EMAC ES6 API (Upsert Enrolment)"
+}
+
+object EmacEs8ApiFeature extends FeatureSwitch {
+  val name = s"$prefix.enable-emac-es8"
+  val displayText = "EMAC ES8 API (Allocate enrolment)"
 }

@@ -71,6 +71,8 @@ trait AppConfig {
 
   def emacEs6ApiEnabled: Boolean
 
+  def emacEs8ApiEnabled: Boolean
+
   def storeNinoUrl(token: String): String
 
   def upsertEnrolmentUrl(enrolmentKey: String): String
@@ -198,6 +200,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override def newPreferencesApiEnabled: Boolean = isEnabled(featureswitch.NewPreferencesApiFeature)
 
   override def emacEs6ApiEnabled: Boolean = isEnabled(featureswitch.EmacEs6ApiFeature)
+
+  override def emacEs8ApiEnabled: Boolean = isEnabled(featureswitch.EmacEs8ApiFeature)
 
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 
