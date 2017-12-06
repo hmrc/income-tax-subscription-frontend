@@ -19,23 +19,24 @@ package core.config.featureswitch
 import uk.gov.hmrc.play.test.UnitSpec
 
 class FeatureSwitchingSpec extends UnitSpec with FeatureSwitching {
-  val testFeatureSwitch = UserMatchingFeature
 
-  "isEnabled" should {
-    "return true when a feature switch is set" in {
-      enable(testFeatureSwitch)
-      isEnabled(testFeatureSwitch) shouldBe true
-    }
+  FeatureSwitch.switches foreach { switch =>
+    s"isEnabled(${switch.name})" should {
+      "return true when a feature switch is set" in {
+        enable(switch)
+        isEnabled(switch) shouldBe true
+      }
 
-    "return false when a feature switch is set to false" in {
-      disable(testFeatureSwitch)
-      isEnabled(testFeatureSwitch) shouldBe false
-    }
+      "return false when a feature switch is set to false" in {
+        disable(switch)
+        isEnabled(switch) shouldBe false
+      }
 
-    "return false when a feature switch has not been set" in {
-        sys.props -= testFeatureSwitch.name
-        sys.props.get(testFeatureSwitch.name) shouldBe empty
-        isEnabled(testFeatureSwitch) shouldBe false
+      "return false when a feature switch has not been set" in {
+        sys.props -= switch.name
+        sys.props.get(switch.name) shouldBe empty
+        isEnabled(switch) shouldBe false
+      }
     }
   }
 
