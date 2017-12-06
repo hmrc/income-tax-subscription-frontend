@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package agent.models
-
-import play.api.libs.json.Json
-
-
-case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel)
-
-object AccountingPeriodModel {
-  implicit val format = Json.format[AccountingPeriodModel]
-}
+//package agent.models
+//
+//import play.api.libs.json.Json
+//
+//
+//case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel)
+//
+//object AccountingPeriodModel {
+//  implicit val format = Json.format[AccountingPeriodModel]
+//}

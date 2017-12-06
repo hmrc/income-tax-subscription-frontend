@@ -18,11 +18,12 @@ package agent.forms
 
 import java.time.LocalDate
 
-import agent.forms.submapping.DateMapping._
+import core.forms.submapping.DateMapping._
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.models.TargetIds
 import core.forms.validation.utils.ConstraintUtil._
-import agent.models.{AccountingPeriodModel, DateModel}
+import core.models.DateModel
+import incometax.business.models.AccountingPeriodModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Valid, ValidationResult}

@@ -19,8 +19,9 @@ package agent.utils
 import _root_.agent.services.CacheConstants
 import agent.forms._
 import agent.models._
+import core.models.DateModel
 import core.utils.Implicits
-import incometax.subscription.models.SummaryModel
+import incometax.business.models.AccountingPeriodModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -36,8 +37,8 @@ object TestModels extends Implicits {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate = DateModel("01", "04", "2017")
-  val testEndDate = DateModel("01", "04", "2018")
+  val testStartDate = core.utils.TestModels.testStartDate
+  val testEndDate = core.utils.TestModels.testEndDate
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
   val testAccountingPeriod: AccountingPeriodModel =

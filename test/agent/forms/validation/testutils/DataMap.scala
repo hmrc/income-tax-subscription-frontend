@@ -27,7 +27,7 @@ object DataMap {
   import agent.forms.{IncomeSourceForm, AccountingMethodForm}
   import agent.forms.NotEligibleForm._
   import agent.forms.preferences.BackToPreferencesForm
-  import agent.forms.submapping.DateMapping._
+  import core.forms.submapping.DateMapping._
 
 
   type DataMap = Map[String, String]

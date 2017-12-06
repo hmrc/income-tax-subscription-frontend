@@ -20,12 +20,12 @@ import javax.inject.{Inject, Singleton}
 
 import agent.auth.AuthenticatedController
 import agent.forms._
-import agent.models.AccountingPeriodModel
 import agent.models.enums._
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import core.utils.Implicits._
+import incometax.business.models.AccountingPeriodModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}

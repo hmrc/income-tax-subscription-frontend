@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package agent.forms.submapping
-
-import core.forms.validation.utils.MappingUtil._
-import agent.models.DateModel
-import play.api.data.Forms.mapping
-import play.api.data.Mapping
-
-object DateMapping {
-
-  val dateDay = "dateDay"
-  val dateMonth = "dateMonth"
-  val dateYear = "dateYear"
-
-  val dateMapping: Mapping[DateModel] = mapping(
-    dateDay -> oText.toText,
-    dateMonth -> oText.toText,
-    dateYear -> oText.toText
-  )(DateModel.apply)(DateModel.unapply)
-
-}
+//package agent.forms.submapping
+//
+//import core.forms.validation.utils.MappingUtil._
+//import agent.models.DateModel
+//import play.api.data.Forms.mapping
+//import play.api.data.Mapping
+//
+//object DateMapping {
+//
+//  val dateDay = "dateDay"
+//  val dateMonth = "dateMonth"
+//  val dateYear = "dateYear"
+//
+//  val dateMapping: Mapping[DateModel] = mapping(
+//    dateDay -> oText.toText,
+//    dateMonth -> oText.toText,
+//    dateYear -> oText.toText
+//  )(DateModel.apply)(DateModel.unapply)
+//
+//}

@@ -19,9 +19,10 @@ package agent.controllers.business
 import agent.assets.MessageLookup
 import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingPeriodDateForm
-import agent.models.{AccountingPeriodModel, DateModel}
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.models.DateModel
+import incometax.business.models.AccountingPeriodModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
