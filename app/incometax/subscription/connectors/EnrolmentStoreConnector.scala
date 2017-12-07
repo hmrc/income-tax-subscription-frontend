@@ -19,8 +19,9 @@ package incometax.subscription.connectors
 import javax.inject.Inject
 
 import core.config.AppConfig
+import incometax.subscription.httpparsers.AllocateEnrolmentResponseHttpParser._
 import incometax.subscription.httpparsers.UpsertEnrolmentResponseHttpParser._
-import incometax.subscription.models.{EnrolmentKey, EnrolmentVerifiers}
+import incometax.subscription.models.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -28,7 +29,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolmentStoreConnector @Inject()(appConfig: AppConfig,
                                         httpClient: HttpClient)(implicit ec: ExecutionContext) {
-  def upsertEnrolment(enrolmentKey: EnrolmentKey, verifiers: EnrolmentVerifiers)(implicit hc: HeaderCarrier): Future[UpsertEnrolmentResponse] = {
-    httpClient.PUT[EnrolmentVerifiers, UpsertEnrolmentResponse](appConfig.upsertEnrolmentUrl(enrolmentKey.asString), verifiers)
+  def upsertEnrolment(enrolmentKey: EnrolmentKey,
+                      verifiers: EnrolmentVerifiers
+                     )(implicit hc: HeaderCarrier): Future[UpsertEnrolmentResponse] = {
+    val url = appConfig.upsertEnrolmentUrl(enrolmentKey.asString)
+    httpClient.PUT[EnrolmentVerifiers, UpsertEnrolmentResponse](url, verifiers)
+  }
+
+  def allocateEnrolment(groupId: String,
+                        enrolmentKey: EnrolmentKey,
+                        enrolmentRequest: EmacEnrolmentRequest
+                       )(implicit hc: HeaderCarrier): Future[AllocateEnrolmentResponse] = {
+    val url = appConfig.allocateEnrolmentUrl(groupId, enrolmentKey.asString)
+    httpClient.PUT[EmacEnrolmentRequest, AllocateEnrolmentResponse](url, enrolmentRequest)
   }
 }

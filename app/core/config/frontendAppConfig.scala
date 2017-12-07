@@ -77,6 +77,8 @@ trait AppConfig {
 
   def upsertEnrolmentUrl(enrolmentKey: String): String
 
+  def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String
+
   val addressLookupFrontendURL: String
   val signUpToSaLink: String
   val agentSignUpUrl: String
@@ -211,7 +213,10 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   lazy val enrolmentStore = baseUrl("enrolment-store-proxy")
 
-  override def upsertEnrolmentUrl(enrolmentKey: String): String = s"$enrolmentStore/enrolment-store-proxy/enrolment-store/enrolments/$enrolmentKey"
+  override def upsertEnrolmentUrl(enrolmentKey: String): String =
+    s"$enrolmentStore/enrolment-store-proxy/enrolment-store/enrolments/$enrolmentKey"
 
+  override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String =
+    s"$enrolmentStore/enrolment-store-proxy/enrolment-store/enrolments/groups/$groupId/enrolments/$enrolmentKey"
 }
 
