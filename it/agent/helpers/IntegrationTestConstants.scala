@@ -18,7 +18,6 @@ package agent.helpers
 
 import java.util.UUID
 
-import _root_.agent.models.DateModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 
@@ -26,12 +25,12 @@ object IntegrationTestConstants {
   lazy val testNino: String = _root_.helpers.IntegrationTestConstants.testNino
   lazy val testUtr: String = _root_.helpers.IntegrationTestConstants.testUtr
   lazy val testMTDID = _root_.helpers.IntegrationTestConstants.testMTDID
-  lazy val startDate = DateModel("05", "04", "2017")
-  lazy val endDate = DateModel("04", "04", "2018")
+  lazy val startDate = _root_.helpers.IntegrationTestConstants.startDate
+  lazy val endDate = _root_.helpers.IntegrationTestConstants.endDate
   lazy val ggServiceName = "HMRC-MTD-IT"
   val SessionId = s"stubbed-${UUID.randomUUID}"
   val userId = "/auth/oid/1234567890"
-  val dateOfBirth = DateModel("01", "01", "1980")
+  val dateOfBirth = _root_.helpers.IntegrationTestConstants.dateOfBirth
   lazy val testARN = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
 
   val baseURI = "/report-quarterly/income-and-expenses/sign-up/client"

@@ -16,14 +16,10 @@
 
 package agent.utils
 
-import java.time.OffsetDateTime
-
 import agent.common.Constants._
-import agent.models.DateModel
 import incometax.subscription.models._
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
-import usermatching.models.LockedOut
 
 object TestConstants {
   /*
@@ -33,8 +29,8 @@ object TestConstants {
   lazy val testUtr = core.utils.TestConstants.testUtr
   lazy val testMTDID = core.utils.TestConstants.testMTDID
   //Not a valid MTDID, for test purposes only
-  lazy val startDate = DateModel("05", "04", "2017")
-  lazy val endDate = DateModel("04", "04", "2018")
+  lazy val startDate = core.utils.TestConstants.startDate
+  lazy val endDate = core.utils.TestConstants.endDate
   lazy val ggServiceName = mtdItsaEnrolmentName
   lazy val agentServiceName = agentServiceEnrolmentName
   lazy val testARN = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only

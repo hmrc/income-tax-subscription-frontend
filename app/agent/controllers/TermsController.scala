@@ -29,6 +29,7 @@ import agent.services.KeystoreService
 import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
 import core.utils.Implicits._
+import incometax.util.AccountingPeriodUtil
 
 import scala.concurrent.Future
 
@@ -39,28 +40,35 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
                                 val authService: AuthService
                                ) extends AuthenticatedController {
 
-  def view(backUrl: String)(implicit request: Request[_]): Html =
+  def view(backUrl: String, taxEndYear: Int)(implicit request: Request[_]): Html =
     agent.views.html.terms(
       postAction = agent.controllers.routes.TermsController.submitTerms(),
+      taxEndYear = taxEndYear,
       backUrl
     )
 
-  def showTerms(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def showTerms(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
-        backUrl <- backUrl
-      } yield Ok(view(backUrl = backUrl))
+        incomeSource <- keystoreService.fetchIncomeSource().collect { case Some(is) => is.source }
+        taxEndYear <- incomeSource match {
+          case IncomeSourceForm.option_property => Future.successful(AccountingPeriodUtil.getCurrentTaxEndYear)
+          case _ => keystoreService.fetchAccountingPeriodDate().collect { case Some(ad) => AccountingPeriodUtil.getTaxEndYear(ad) }
+        }
+        backUrl <- backUrl(editMode)
+      } yield Ok(view(backUrl = backUrl, taxEndYear = taxEndYear))
   }
 
   def submitTerms(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.saveTerms(terms = true) map (
         _ => Redirect(agent.controllers.routes.CheckYourAnswersController.show()))
-
-
   }
 
-  def backUrl(implicit request: Request[_]): Future[String] =
+  def backUrl(editMode: Boolean)(implicit request: Request[_]): Future[String] =
+    if (editMode)
+      agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
+    else
     keystoreService.fetchIncomeSource() flatMap {
       case Some(source) => source.source match {
         case IncomeSourceForm.option_business =>

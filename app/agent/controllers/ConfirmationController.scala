@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.auth.PostSubmissionController
-import agent.models.DateModel.dateConvert
+import core.models.DateModel.dateConvert
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.services.AuthService

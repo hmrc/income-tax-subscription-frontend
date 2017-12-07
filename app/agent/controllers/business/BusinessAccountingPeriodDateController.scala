@@ -20,15 +20,16 @@ import javax.inject.{Inject, Singleton}
 
 import agent.auth.AuthenticatedController
 import agent.forms._
-import agent.models.AccountingPeriodModel
 import agent.models.enums._
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import core.utils.Implicits._
+import incometax.business.models.AccountingPeriodModel
+import incometax.util.AccountingPeriodUtil
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 
@@ -76,13 +77,28 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
               isEditMode = isEditMode,
               viewType = viewType
             ))),
-            accountingPeriod =>
-              keystoreService.saveAccountingPeriodDate(accountingPeriod) map (_ =>
-                if (isEditMode)
-                  Redirect(agent.controllers.routes.CheckYourAnswersController.show())
-                else
-                  Redirect(agent.controllers.business.routes.BusinessNameController.showBusinessName())
-                )
+            accountingPeriod => {
+              lazy val linearRedirect = Redirect(agent.controllers.business.routes.BusinessNameController.showBusinessName())
+              lazy val checkYourAnswersRedirect = Redirect(agent.controllers.routes.CheckYourAnswersController.show())
+              lazy val termsRedirect = Redirect(agent.controllers.routes.TermsController.showTerms(editMode = true))
+
+              def saveAndUpdate(taxYearChanged: Boolean): Future[Result] =
+                if (taxYearChanged) keystoreService.saveTerms(terms = false) flatMap { _ => Future.successful(if (isEditMode) termsRedirect else linearRedirect) }
+                else Future.successful(if (isEditMode) checkYourAnswersRedirect else linearRedirect)
+
+              {
+                for {
+                  optOldAccountingPeriodDates <- keystoreService.fetchAccountingPeriodDate()
+                  _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
+                } yield optOldAccountingPeriodDates match {
+                  case Some(oldAccountingPeriodDates) =>
+                    val oldEndYear = AccountingPeriodUtil.getTaxEndYear(oldAccountingPeriodDates)
+                    val newEndYear = AccountingPeriodUtil.getTaxEndYear(accountingPeriod)
+                    saveAndUpdate(oldEndYear != newEndYear)
+                  case _ => saveAndUpdate(taxYearChanged = false) // can only happen on linear journey so we don't want to update terms
+                }
+              } flatMap identity
+            }
           )
       }
     }

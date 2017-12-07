@@ -16,13 +16,15 @@
 
 package agent.controllers.business
 
-import _root_.agent.services.CacheConstants
-import agent.forms._
-import agent.models._
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels.{keystoreData, _}
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
+import _root_.agent.services.CacheConstants
+import agent.forms._
+import agent.models._
+import core.models.DateModel
+import incometax.business.models.AccountingPeriodModel
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -240,33 +242,66 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "simulate changing accounting period dates when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
-        val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-        val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2019"))
-        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
-            otherIncome = Some(keystoreIncomeOther),
-            accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
-            accountingPeriodDate = Some(keystoreAccountingPeriodDates)
+      "simulate changing accounting period dates when calling page from Check Your Answers" when {
+        "The new accounting period ends in the same tax year" in {
+          val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+          val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
+          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("04", "05", "2019"))
+          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("05", "05", "2019"))
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(
+            keystoreData(
+              incomeSource = Some(keystoreIncomeSource),
+              otherIncome = Some(keystoreIncomeOther),
+              accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
+              accountingPeriodDate = Some(keystoreAccountingPeriodDates)
+            )
           )
-        )
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
-        When("POST /business/accounting-period-dates is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
+          When("POST /business/accounting-period-dates is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
+          Then("Should return a SEE_OTHER with a redirect location of check your answers")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(checkYourAnswersURI)
+          )
+        }
+
+        "The new accounting period ends in a different tax year" in {
+          val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+          val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
+          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2020"))
+          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2019"))
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(
+            keystoreData(
+              incomeSource = Some(keystoreIncomeSource),
+              otherIncome = Some(keystoreIncomeOther),
+              accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
+              accountingPeriodDate = Some(keystoreAccountingPeriodDates)
+            )
+          )
+          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+          KeystoreStub.stubKeystoreSave(CacheConstants.Terms, false)
+
+          When("POST /business/accounting-period-dates is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of check your answers")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(termsURI)
+          )
+        }
       }
 
     }

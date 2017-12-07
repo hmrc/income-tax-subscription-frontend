@@ -78,13 +78,25 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "There is no terms in keystore" should {
-      s"return redirect ${agent.controllers.routes.TermsController.showTerms().url}" in {
+    "When the terms have not been agreed" should {
+
+      "redirect back to Terms if there is no terms in keystore" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(terms = None))
         val result = call()
 
         status(result) must be(Status.SEE_OTHER)
         redirectLocation(result) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
+        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+      }
+
+      "redirect back to Terms if there is terms is set to false in keystore" in {
+        setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(terms = Some(false)))
+
+        val result = call()
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) must contain(agent.controllers.routes.TermsController.showTerms(editMode = true).url)
+        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
     }
   }

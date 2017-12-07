@@ -20,6 +20,8 @@ import _root_.agent.forms._
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.models._
 import _root_.agent.services.CacheConstants
+import core.models.DateModel
+import incometax.business.models.AccountingPeriodModel
 import play.api.libs.json.{JsValue, Json}
 import usermatching.models.UserDetailsModel
 
@@ -27,8 +29,8 @@ object IntegrationTestModels {
 
   import CacheConstants._
 
-  val testStartDate = DateModel("06", "04", "2017")
-  val testEndDate = DateModel("05", "04", "2018")
+  val testStartDate = _root_.helpers.IntegrationTestModels.testStartDate
+  val testEndDate = _root_.helpers.IntegrationTestModels.testEndDate
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
   val testAccountingPeriod: AccountingPeriodModel =

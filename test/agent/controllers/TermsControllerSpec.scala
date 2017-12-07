@@ -30,7 +30,7 @@ class TermsControllerSpec extends AgentControllerBaseSpec
 
   override val controllerName: String = "TermsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showTerms" -> TestTermsController.showTerms(),
+    "showTerms" -> TestTermsController.showTerms(editMode = false),
     "submitTerms" -> TestTermsController.submitTerms()
   )
 
@@ -43,17 +43,17 @@ class TermsControllerSpec extends AgentControllerBaseSpec
 
   "Calling the showTerms action of the TermsController with an authorised user" should {
 
-    lazy val result = TestTermsController.showTerms()(subscriptionRequest)
+    lazy val result = TestTermsController.showTerms(editMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchAccountingPeriodDate = TestModels.testAccountingPeriod())
 
       setupMockKeystore(fetchTerms = None)
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchTerms = 0, saveTerms = 0)
+      verifyKeystore(fetchTerms = 0, saveTerms = 0, fetchAccountingPeriodDate = 1)
     }
   }
 
@@ -89,35 +89,42 @@ class TermsControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "The back url" should {
-    s"point to ${agent.controllers.business.routes.BusinessAccountingMethodController.show().url} on the business journey" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-      await(TestTermsController.backUrl(FakeRequest())) mustBe agent.controllers.business.routes.BusinessAccountingMethodController.show().url
-      verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
+  "The back url" when {
+    "edit mode is true" should {
+      s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url} on any journey" in {
+        await(TestTermsController.backUrl(editMode = true)(subscriptionRequest)) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
+      }
     }
+    "edit mode is false" should {
+      s"point to ${agent.controllers.business.routes.BusinessAccountingMethodController.show().url} on the business journey" in {
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+        await(TestTermsController.backUrl(editMode = false)(subscriptionRequest)) mustBe agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+        verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
+      }
 
-    s"point to ${agent.controllers.business.routes.BusinessAccountingMethodController.show().url} on the both journey" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
-      await(TestTermsController.backUrl(FakeRequest())) mustBe agent.controllers.business.routes.BusinessAccountingMethodController.show().url
-      verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
-    }
+      s"point to ${agent.controllers.business.routes.BusinessAccountingMethodController.show().url} on the both journey" in {
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+        await(TestTermsController.backUrl(editMode = false)(FakeRequest())) mustBe agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+        verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
+      }
 
-    s"point to ${agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url} on the property journey if they answered yes to other incomes" in {
-      setupMockKeystore(
-        fetchIncomeSource = TestModels.testIncomeSourceProperty,
-        fetchOtherIncome = TestModels.testOtherIncomeYes
-      )
-      await(TestTermsController.backUrl(FakeRequest())) mustBe agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
-      verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
-    }
+      s"point to ${agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url} on the property journey if they answered yes to other incomes" in {
+        setupMockKeystore(
+          fetchIncomeSource = TestModels.testIncomeSourceProperty,
+          fetchOtherIncome = TestModels.testOtherIncomeYes
+        )
+        await(TestTermsController.backUrl(editMode = false)(FakeRequest())) mustBe agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+        verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
+      }
 
-    s"point to ${agent.controllers.routes.OtherIncomeController.showOtherIncome().url} on the property journey if they answered no to other incomes" in {
-      setupMockKeystore(
-        fetchIncomeSource = TestModels.testIncomeSourceProperty,
-        fetchOtherIncome = TestModels.testOtherIncomeNo
-      )
-      await(TestTermsController.backUrl(FakeRequest())) mustBe agent.controllers.routes.OtherIncomeController.showOtherIncome().url
-      verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
+      s"point to ${agent.controllers.routes.OtherIncomeController.showOtherIncome().url} on the property journey if they answered no to other incomes" in {
+        setupMockKeystore(
+          fetchIncomeSource = TestModels.testIncomeSourceProperty,
+          fetchOtherIncome = TestModels.testOtherIncomeNo
+        )
+        await(TestTermsController.backUrl(editMode = false)(FakeRequest())) mustBe agent.controllers.routes.OtherIncomeController.showOtherIncome().url
+        verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
+      }
     }
 
   }

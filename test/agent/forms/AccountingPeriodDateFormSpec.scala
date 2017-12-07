@@ -17,10 +17,11 @@
 package agent.forms
 
 import agent.assets.MessageLookup
-import agent.forms.submapping.DateMapping
+import core.forms.submapping.DateMapping
+import core.models.DateModel
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
-import agent.models.{AccountingPeriodModel, DateModel}
+import incometax.business.models.AccountingPeriodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._

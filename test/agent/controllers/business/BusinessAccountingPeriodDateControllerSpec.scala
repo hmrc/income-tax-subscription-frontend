@@ -19,9 +19,10 @@ package agent.controllers.business
 import agent.assets.MessageLookup
 import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingPeriodDateForm
-import agent.models.{AccountingPeriodModel, DateModel}
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.models.DateModel
+import incometax.business.models.AccountingPeriodModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -87,59 +88,69 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
   }
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
+    val testAccountingPeriodDates = AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2018"))
+    val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2019"))
 
     def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submitAccountingPeriod(isEditMode = isEditMode)(subscriptionRequest
-      .post(AccountingPeriodDateForm.accountingPeriodDateForm, AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("1", "4", "2018"))))
+      .post(AccountingPeriodDateForm.accountingPeriodDateForm, testAccountingPeriodDates))
 
     "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        // required for backurl
-        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+      "the tax year remained the same" should {
+        s"return a redirect status (SEE_OTHER - 303) but do not update terms" in {
+          setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates, fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
 
-        val goodRequest = callShow(isEditMode = false)
+          val goodRequest = callShow(isEditMode = false)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.showBusinessName().url)
 
-        await(goodRequest)
-        verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1, saveTerms = 0, fetchAccountingPeriodPrior = 1)
+        }
       }
 
-      s"redirect to '${agent.controllers.business.routes.BusinessNameController.showBusinessName().url}'" in {
-        // required for backurl
-        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+      "the tax year changed" should {
+        s"return a redirect status (SEE_OTHER - 303) and update terms" in {
+          setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear, fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
 
-        val goodRequest = callShow(isEditMode = false)
+          val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.showBusinessName().url)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.showBusinessName().url)
 
-        await(goodRequest)
-        verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1, saveTerms = 1, fetchAccountingPeriodPrior = 1)
+        }
       }
     }
 
     "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        // required for backurl
-        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+      "tax year remains the same" should {
+        "return a redirect status (SEE_OTHER - 303)" in {
+          setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates, fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
 
-        val goodRequest = callShow(isEditMode = true)
+          val goodRequest = callShow(isEditMode = true)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
 
-        await(goodRequest)
-        verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1, fetchAccountingPeriodPrior = 1)
+        }
       }
 
-      s"redirect to '${agent.controllers.routes.CheckYourAnswersController.show().url}'" in {
-        // required for backurl
-        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+      "tax year changes" should {
+        "return a redirect status (SEE_OTHER - 303)" in {
+          setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear, fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
 
-        val goodRequest = callShow(isEditMode = true)
+          val goodRequest = callShow(isEditMode = true)
 
-        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.showTerms(editMode = true).url)
 
-        await(goodRequest)
-        verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 1)
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1, fetchAccountingPeriodPrior = 1)
+        }
       }
     }
   }
