@@ -42,7 +42,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
 
   def view(backUrl: String, taxEndYear: Int)(implicit request: Request[_]): Html =
     agent.views.html.terms(
-      postAction = incometax.subscription.controllers.routes.TermsController.submitTerms(),
+      postAction = agent.controllers.routes.TermsController.submitTerms(),
       taxEndYear = taxEndYear,
       backUrl
     )
