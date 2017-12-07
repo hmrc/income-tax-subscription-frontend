@@ -88,6 +88,7 @@ trait MockConfig extends AppConfig {
 
   override def upsertEnrolmentUrl(enrolmentKey: String): String = "enrolment-store/"
 
+  override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = "enrolment-store/"
 }
 
 object MockConfig extends MockConfig
