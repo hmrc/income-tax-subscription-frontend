@@ -51,8 +51,9 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
           case Some(cache) =>
             (user.clientNino, cache.getTerms()) match {
               case (None, _) => Future.successful(Redirect(agent.controllers.matching.routes.ConfirmClientController.show()))
-              case (_, None) => Future.successful(Redirect(agent.controllers.routes.TermsController.showTerms()))
-              case _ => processFunc(user)(request)(cache)
+              case (_, Some(true)) => processFunc(user)(request)(cache)
+              case (_, Some(false)) => Future.successful(Redirect(agent.controllers.routes.TermsController.showTerms(editMode = true)))
+              case _ => Future.successful(Redirect(agent.controllers.routes.TermsController.showTerms()))
             }
           case _ => error(noCacheMapErrMessage)
         }
