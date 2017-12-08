@@ -25,6 +25,6 @@ object EnrolmentStoreStub extends WireMockMethods {
       .thenReturn(status = status, body = Json.obj())
 
   def stubAllocateEnrolmentResult(groupId: String, enrolmentKey: String, status: Int): StubMapping =
-    when(method = PUT, uri = s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments/$enrolmentKey")
+    when(method = POST, uri = s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments/$enrolmentKey")
       .thenReturn(status = status, body = Json.obj())
 }
