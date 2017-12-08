@@ -29,6 +29,8 @@ import play.twirl.api.Html
 import testonly.connectors.BackendFeatureSwitchConnector
 import testonly.models.FeatureSwitchSetting
 
+import scala.collection.immutable.ListMap
+
 class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
                                         val baseConfig: BaseControllerConfig,
                                         val authService: AuthService,
@@ -44,7 +46,7 @@ class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
   lazy val show = Action.async { implicit req =>
     for {
       backendFeatureSwitches <- featureSwitchConnector.getBackendFeatureSwitches
-      featureSwitches = (switches map (switch => switch -> isEnabled(switch))).toMap
+      featureSwitches =     ListMap(switches.toSeq sortBy(_.displayText) map (switch => switch -> isEnabled(switch)):_*)
     } yield Ok(view(featureSwitches, backendFeatureSwitches))
   }
 

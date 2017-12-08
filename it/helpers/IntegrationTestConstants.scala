@@ -39,6 +39,8 @@ object IntegrationTestConstants {
   val dateOfBirth = DateModel("01", "01", "1980")
   val testPaperlessPreferenceToken = s"${UUID.randomUUID()}"
   val testId = "12345"
+  val testGroupId = UUID.randomUUID.toString
+  val testCredId = UUID.randomUUID.toString
 
   val testUrl = "/test/url/"
 

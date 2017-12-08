@@ -219,12 +219,13 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         EnrolmentStoreStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-        GGConnectorStub.stubEnrolResult(OK)
+        EnrolmentStoreStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
         KeystoreStub.stubPutMtditId()
 
-        And("The feature switch is on")
+        And("The ES6 and ES8 feature switch is on")
         enable(featureswitch.EmacEs6ApiFeature)
+        enable(featureswitch.EmacEs8ApiFeature)
 
         When("POST /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()

@@ -18,16 +18,43 @@ package incometax.subscription.services
 
 import javax.inject.{Inject, Singleton}
 
+import core.Constants
 import core.Constants.GovernmentGateway._
-import incometax.subscription.connectors.GGConnector
-import incometax.subscription.models.{EnrolFailure, EnrolRequest, EnrolSuccess}
-import uk.gov.hmrc.http.HeaderCarrier
+import core.config.AppConfig
+import incometax.subscription.connectors.{EnrolmentStoreConnector, GGConnector}
+import incometax.subscription.httpparsers.AllocateEnrolmentResponseHttpParser.AllocateEnrolmentResponse
+import incometax.subscription.models._
+import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
+import uk.gov.hmrc.auth.core.retrieve.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnrolmentService @Inject()(ggConnector: GGConnector) {
-  def enrol(mtditId: String, nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
+class EnrolmentService @Inject()(config: AppConfig,
+                                 ggConnector: GGConnector,
+                                 enrolmentStoreConnector: EnrolmentStoreConnector,
+                                 authConnector: AuthConnector)(implicit ec: ExecutionContext) {
+  def enrol(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
+    if (config.emacEs8ApiEnabled) esEnrol(mtditId, nino)
+    else ggEnrol(mtditId, nino)
+  }
+
+  private def esEnrol(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[AllocateEnrolmentResponse] =
+    authConnector.authorise(EmptyPredicate, credentials and groupIdentifier) flatMap {
+      case Credentials(ggCred, GGProviderId) ~ Some(groupId) =>
+        val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> mtditId)
+        val enrolmentRequest = EmacEnrolmentRequest(ggCred, nino)
+        enrolmentStoreConnector.allocateEnrolment(groupId, enrolmentKey, enrolmentRequest)
+      case _ ~ None =>
+        Future.failed(new InternalServerException("Failed to enrol - user did not have a group identifier (not a valid GG user)"))
+      case Credentials(_, _) ~ _ =>
+        Future.failed(new InternalServerException("Failed to enrol - user had a different auth provider ID (not a valid GG user)"))
+    }
+
+  private def ggEnrol(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
     val enrolRequest = EnrolRequest(
       portalId = ggPortalId,
       serviceName = ggServiceName,

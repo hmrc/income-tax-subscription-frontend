@@ -217,6 +217,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
     s"$enrolmentStore/enrolment-store-proxy/enrolment-store/enrolments/$enrolmentKey"
 
   override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String =
-    s"$enrolmentStore/enrolment-store-proxy/enrolment-store/enrolments/groups/$groupId/enrolments/$enrolmentKey"
+    s"$enrolmentStore/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments/$enrolmentKey"
 }
 
