@@ -41,6 +41,6 @@ class EnrolmentStoreConnector @Inject()(appConfig: AppConfig,
                         enrolmentRequest: EmacEnrolmentRequest
                        )(implicit hc: HeaderCarrier): Future[AllocateEnrolmentResponse] = {
     val url = appConfig.allocateEnrolmentUrl(groupId, enrolmentKey.asString)
-    httpClient.PUT[EmacEnrolmentRequest, AllocateEnrolmentResponse](url, enrolmentRequest)
+    httpClient.POST[EmacEnrolmentRequest, AllocateEnrolmentResponse](url, enrolmentRequest)
   }
 }
