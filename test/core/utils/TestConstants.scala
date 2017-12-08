@@ -21,6 +21,7 @@ import java.time.OffsetDateTime
 import java.util.UUID
 
 import core.Constants.GovernmentGateway._
+import core.Constants._
 import core.models.DateModel
 import core.utils.TestModels._
 import incometax.subscription.models._
@@ -100,4 +101,11 @@ object TestConstants {
 
   val testMatchFailure = Left(UserMatchFailureResponseModel)
 
+  val testGroupId = UUID.randomUUID().toString
+
+  val testCredId = UUID.randomUUID().toString
+
+  val testEnrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, MTDITID -> testMTDID)
+
+  val testEnrolmentRequest = EmacEnrolmentRequest(testCredId, testNino)
 }

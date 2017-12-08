@@ -17,6 +17,7 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import core.Constants
 import core.Constants._
 import helpers.IntegrationTestConstants._
 import play.api.http.Status._
@@ -96,6 +97,11 @@ object AuthStub extends WireMockMethods {
     Json.obj(
       "allEnrolments" -> enrolments,
       "affinityGroup" -> affinityGroup,
-      "confidenceLevel" -> confidenceLevel
+      "confidenceLevel" -> confidenceLevel,
+      "credentials" -> Json.obj(
+        "providerId" -> testCredId,
+        "providerType" -> Constants.GovernmentGateway.GGProviderId
+      ),
+      "groupIdentifier" -> testGroupId
     )
 }

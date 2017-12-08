@@ -19,6 +19,8 @@ package incometax.subscription.connectors.mocks
 import core.utils.MockTrait
 import core.utils.TestConstants._
 import incometax.subscription.connectors.EnrolmentStoreConnector
+import incometax.subscription.httpparsers.AllocateEnrolmentResponseHttpParser._
+import incometax.subscription.httpparsers.UpsertEnrolmentResponseHttpParser._
 import incometax.subscription.models._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -30,8 +32,8 @@ trait MockEnrolmentStoreConnector extends MockTrait {
   val mockEnrolmentStoreConnector = mock[EnrolmentStoreConnector]
 
   private def mockUpsertEnrolment(enrolmentKey: EnrolmentKey,
-                                enrolmentVerifiers: EnrolmentVerifiers
-                               )(response: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]]): Unit =
+                                  enrolmentVerifiers: EnrolmentVerifiers
+                                 )(response: Future[UpsertEnrolmentResponse]): Unit =
     when(mockEnrolmentStoreConnector.upsertEnrolment(
       ArgumentMatchers.eq(enrolmentKey),
       ArgumentMatchers.eq(enrolmentVerifiers)
@@ -43,11 +45,36 @@ trait MockEnrolmentStoreConnector extends MockTrait {
     mockUpsertEnrolment(enrolmentKey, enrolmentVerifiers)(Future.successful(Right(KnownFactsSuccess)))
 
   def mockUpsertEnrolmentFailure(enrolmentKey: EnrolmentKey,
-                               enrolmentVerifiers: EnrolmentVerifiers): Unit =
+                                 enrolmentVerifiers: EnrolmentVerifiers): Unit =
     mockUpsertEnrolment(enrolmentKey, enrolmentVerifiers)(Future.successful(Left(KnownFactsFailure(testErrorMessage))))
 
   def mockUpsertEnrolmentException(enrolmentKey: EnrolmentKey,
-                                 enrolmentVerifiers: EnrolmentVerifiers): Unit =
+                                   enrolmentVerifiers: EnrolmentVerifiers): Unit =
     mockUpsertEnrolment(enrolmentKey, enrolmentVerifiers)(Future.failed(testException))
 
+  private def mockAllocateEnrolment(groupId: String,
+                                    enrolmentKey: EnrolmentKey,
+                                    enrolmentRequest: EmacEnrolmentRequest
+                                   )(response: Future[AllocateEnrolmentResponse]): Unit =
+    when(mockEnrolmentStoreConnector.allocateEnrolment(
+      ArgumentMatchers.eq(groupId),
+      ArgumentMatchers.eq(enrolmentKey),
+      ArgumentMatchers.eq(enrolmentRequest)
+    )(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(response)
+
+  def mockAllocateEnrolmentSuccess(groupId: String,
+                                   enrolmentKey: EnrolmentKey,
+                                   enrolmentRequest: EmacEnrolmentRequest): Unit =
+    mockAllocateEnrolment(groupId, enrolmentKey, enrolmentRequest)(Future.successful(Right(EnrolSuccess)))
+
+  def mockAllocateEnrolmentFailure(groupId: String,
+                                   enrolmentKey: EnrolmentKey,
+                                   enrolmentRequest: EmacEnrolmentRequest): Unit =
+    mockAllocateEnrolment(groupId, enrolmentKey, enrolmentRequest)(Future.successful(Left(EnrolFailure(testErrorMessage))))
+
+  def mockAllocateEnrolmentException(groupId: String,
+                                     enrolmentKey: EnrolmentKey,
+                                     enrolmentRequest: EmacEnrolmentRequest): Unit =
+    mockAllocateEnrolment(groupId, enrolmentKey, enrolmentRequest)(Future.failed(testException))
 }

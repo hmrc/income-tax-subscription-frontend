@@ -16,17 +16,17 @@
 
 package incometax.subscription.models
 
+import core.Constants._
+import core.Constants.GovernmentGateway._
 import uk.gov.hmrc.play.test.UnitSpec
+import core.utils.TestConstants._
 
 class EnrolmentKeySpec extends UnitSpec {
   "asString" should {
     "format the enrolment key correctly" in {
-      val enrolmentId = "HMRC-MTD-IT"
-      val mtdidIdentifier = "MTDITID" -> "012345678912345"
+      val enrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, MTDITID -> testMTDID)
 
-      val enrolmentKey = EnrolmentKey(enrolmentId, mtdidIdentifier)
-
-      val expectedFormattedKey = "HMRC-MTD-IT~MTDITID~012345678912345"
+      val expectedFormattedKey = s"$mtdItsaEnrolmentName~$MTDITID~$testMTDID"
 
       enrolmentKey.asString shouldBe expectedFormattedKey
     }

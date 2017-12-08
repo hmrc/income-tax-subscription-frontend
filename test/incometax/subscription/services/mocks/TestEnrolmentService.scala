@@ -17,7 +17,9 @@
 package incometax.subscription.services.mocks
 
 import core.Constants.GovernmentGateway.{ggServiceName, _}
-import incometax.subscription.connectors.mocks.MockGGConnector
+import core.config.MockConfig
+import core.connectors.mocks.MockAuth
+import incometax.subscription.connectors.mocks.{MockEnrolmentStoreConnector, MockGGConnector}
 import incometax.subscription.models.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import incometax.subscription.services.EnrolmentService
 import org.mockito.ArgumentMatchers
@@ -28,9 +30,18 @@ import core.utils.TestConstants._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait TestEnrolmentService extends MockGGConnector {
+trait TestEnrolmentService extends MockGGConnector with MockEnrolmentStoreConnector with MockAuth {
 
-  object TestEnrolmentService extends EnrolmentService(mockGGConnector)
+  object TestEnrolmentService extends EnrolmentService(MockConfig, mockGGConnector, mockEnrolmentStoreConnector, mockAuth)
+
+  object TestEnrolmentServiceFeatureSwitched extends EnrolmentService(
+    new MockConfig {
+      override val emacEs8ApiEnabled = true
+    },
+    mockGGConnector,
+    mockEnrolmentStoreConnector,
+    mockAuth
+  )
 
   val expectedRequestModel = EnrolRequest(
     portalId = ggPortalId,
@@ -54,8 +65,7 @@ trait MockEnrolmentService extends MockTrait {
         ArgumentMatchers.eq(mtditid),
         ArgumentMatchers.eq(nino)
       )(
-        ArgumentMatchers.any[HeaderCarrier],
-        ArgumentMatchers.any[ExecutionContext]
+        ArgumentMatchers.any[HeaderCarrier]
       )
     ).thenReturn(response)
 

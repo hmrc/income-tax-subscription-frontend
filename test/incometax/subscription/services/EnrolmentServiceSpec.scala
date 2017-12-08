@@ -16,34 +16,65 @@
 
 package incometax.subscription.services
 
+import core.Constants.GovernmentGateway._
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 import incometax.subscription.models.{EnrolFailure, EnrolSuccess}
 import incometax.subscription.services.mocks.TestEnrolmentService
 import org.scalatest.concurrent.ScalaFutures
-import core.utils.TestConstants._
-import core.utils.UnitTestTrait
+import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
+import uk.gov.hmrc.auth.core.retrieve.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 
 import scala.concurrent.Future
 
 class EnrolmentServiceSpec extends UnitTestTrait with TestEnrolmentService with ScalaFutures {
-  "addKnownFacts" must {
-    def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentService.enrol(testMTDID, testNino)
+  "addKnownFacts" when {
+    "the ES8 feature switch is turned off" should {
+      def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentService.enrol(testMTDID, testNino)
 
-    "return a success from the GGConnector" in {
-      mockEnrolSuccess(expectedRequestModel)
+      "return a success from the GGConnector" in {
+        mockEnrolSuccess(expectedRequestModel)
 
-      whenReady(result)(_ mustBe Right(EnrolSuccess))
+        whenReady(result)(_ mustBe Right(EnrolSuccess))
+      }
+
+      "return a failure from the GGConnector" in {
+        mockEnrolFailure(expectedRequestModel)
+
+        whenReady(result)(_ mustBe Left(EnrolFailure(testErrorMessage)))
+      }
+
+      "pass through the exception if the GGConnector fails" in {
+        mockEnrolException(expectedRequestModel)
+
+        whenReady(result.failed)(_ mustBe testException)
+      }
     }
 
-    "return a failure from the GGAdminConnector" in {
-      mockEnrolFailure(expectedRequestModel)
+    "the ES8 feature switch is turned on" should {
+      def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentServiceFeatureSwitched.enrol(testMTDID, testNino)
 
-      whenReady(result)(_ mustBe Left(EnrolFailure(testErrorMessage)))
-    }
+      "return a success from the EnrolmentStoreConnector" in {
+        mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
+        mockAllocateEnrolmentSuccess(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
-    "pass through the exception if the GGAdminConnector fails" in {
-      mockEnrolException(expectedRequestModel)
+        whenReady(result)(_ mustBe Right(EnrolSuccess))
+      }
 
-      whenReady(result.failed)(_ mustBe testException)
+      "return a failure from the EnrolmentStoreConnector" in {
+        mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
+        mockAllocateEnrolmentFailure(testGroupId, testEnrolmentKey, testEnrolmentRequest)
+
+        whenReady(result)(_ mustBe Left(EnrolFailure(testErrorMessage)))
+      }
+
+      "pass through the exception if the EnrolmentStoreConnector fails" in {
+        mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
+        mockAllocateEnrolmentException(testGroupId, testEnrolmentKey, testEnrolmentRequest)
+
+        whenReady(result.failed)(_ mustBe testException)
+      }
     }
   }
 }

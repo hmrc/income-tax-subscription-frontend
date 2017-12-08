@@ -26,6 +26,7 @@ object Constants {
   val utrEnrolmentIdentifierKey = "UTR"
 
   object GovernmentGateway {
+    val GGProviderId = "GovernmentGateway"
     val MTDITID = "MTDITID"
     val NINO = "NINO"
     val ggPortalId = "Default"
