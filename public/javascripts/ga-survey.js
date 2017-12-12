@@ -10,11 +10,7 @@ $(document).ready($(function () {
 
         if (typeof ga === "function" && satisfactionSelection != undefined) {
             e.preventDefault();
-            ga('send', 'event', 'itsa-exit-survey', 'satisfaction', satisfactionSelection, {
-                hitCallback: function () {
-                    $form.submit();
-                }
-            });
+            ga('send', 'event', 'itsa-exit-survey', 'satisfaction', satisfactionSelection);
             ga('send', 'event', 'itsa-exit-survey', 'origin', exitOrigin, {
                 hitCallback: function () {
                     $form.submit();
