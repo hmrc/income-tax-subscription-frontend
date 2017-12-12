@@ -36,15 +36,20 @@
     </ul>
 }
 
-@main_template(title = Messages("business.accounting_method.title"), form = accountingMethodForm) {
+@scripts = {
+    <link rel="stylesheet" href=@routes.Assets.at("stylesheets/accounting-method-radio_fix.css")>
+}
+
+@main_template(title = Messages("business.accounting_method.title"), form = accountingMethodForm, scriptElem = Some(scripts)) {
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingMethodForm)
 
     <h1 class="heading-large">@question</h1>
 
-    @accordionHelper(Messages("business.accounting_method.accordion"), accordionInfo)
-
+    <div class="form-group">
+        @accordionHelper(Messages("business.accounting_method.accordion"), accordionInfo)
+    </div>
     @form(action = postAction) {
 
         @radioHelper(
