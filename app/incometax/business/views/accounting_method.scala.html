@@ -47,8 +47,9 @@
 
     <h1 class="heading-large">@question</h1>
 
-    @accordionHelper(Messages("business.accounting_method.accordion"), accordionInfo)
-
+    <div class="form-group">
+        @accordionHelper(Messages("business.accounting_method.accordion"), accordionInfo)
+    </div>
     @form(action = postAction) {
 
         @radioHelper(
