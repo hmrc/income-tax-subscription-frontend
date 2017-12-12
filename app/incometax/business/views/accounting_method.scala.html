@@ -36,7 +36,11 @@
     </ul>
 }
 
-@main_template(title = Messages("business.accounting_method.title"), form = accountingMethodForm) {
+@scripts = {
+    <link rel="stylesheet" href=@routes.Assets.at("stylesheets/accounting-method-radio_fix.css")>
+}
+
+@main_template(title = Messages("business.accounting_method.title"), form = accountingMethodForm, scriptElem = Some(scripts)) {
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingMethodForm)
