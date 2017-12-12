@@ -45,7 +45,7 @@ class SignOutControllerSpec extends ControllerBaseSpec {
         val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get should be(
-          appConfig.ggSignOutUrl(ContinueUrl(_root_.agent.controllers.routes.ExitSurveyController.show(testOrigin).url).encodedUrl)
+          appConfig.ggSignOutUrl(_root_.agent.controllers.routes.ExitSurveyController.show(testOrigin).url)
         )
       }
     }
@@ -56,7 +56,7 @@ class SignOutControllerSpec extends ControllerBaseSpec {
         val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get should be(
-          appConfig.ggSignOutUrl(ContinueUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show(testOrigin).url).encodedUrl)
+          appConfig.ggSignOutUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show(testOrigin).url)
         )
       }
     }
@@ -67,7 +67,7 @@ class SignOutControllerSpec extends ControllerBaseSpec {
         val result = TestSignOutController.signOut(testOrigin)(subscriptionRequest)
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).get should be(
-          appConfig.ggSignOutUrl(ContinueUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show(testOrigin).url).encodedUrl)
+          appConfig.ggSignOutUrl(_root_.incometax.subscription.controllers.routes.ExitSurveyController.show(testOrigin).url)
         )
       }
     }
