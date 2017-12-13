@@ -23,15 +23,16 @@ import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
 import core.models.DateModel
 import core.services.mocks.MockKeystoreService
+import core.utils.TestConstants._
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Request}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import uk.gov.hmrc.http.{HttpResponse, NotFoundException, SessionKeys}
 import usermatching.forms.UserDetailsForm
 import usermatching.models.UserDetailsModel
 import usermatching.services.mocks.MockUserLockoutService
-import core.utils.TestConstants._
 
 class UserDetailsControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
@@ -54,6 +55,14 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
   )
 
   lazy val TestUserDetailsController = createTestUserDetailsController(enableMatchingFeature = true)
+
+  val testUserDetails =
+    UserDetailsModel(
+      firstName = "Abc",
+      lastName = "Abc",
+      nino = testNino,
+      dateOfBirth = DateModel("01", "01", "1980")
+    )
 
   lazy val request = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
@@ -84,15 +93,19 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
   "When user matching is disabled" should {
 
     "Calling the show action of the UserDetailsController with an authorised user" should {
-      lazy val result = await(TestUserDetailsController.show(isEditMode = false)(request))
+      def call(request: Request[AnyContent]) = TestUserDetailsController.show(isEditMode = false)(request)
 
       "return ok (200)" in {
-        setupMockKeystore(fetchUserDetails = None)
         setupMockNotLockedOut(testUserId.value)
 
-        status(result) must be(Status.OK)
+        val r = request.buildRequest(None)
 
-        verifyKeystore(fetchUserDetails = 1, saveUserDetails = 0, deleteAll = 0)
+        val result = call(r)
+
+        status(result) must be(Status.OK)
+        await(result).verifyStoredUserDetailsIs(None)(r)
+
+        verifyKeystore(deleteAll = 0)
 
         contentType(result) must be(Some("text/html"))
         charset(result) must be(Some("utf-8"))
@@ -109,35 +122,30 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
         "Calling the submit action of the UserDetailsController with an authorised user and valid submission and" when {
 
-          val testUserDetails =
-            UserDetailsModel(
-              firstName = "Abc",
-              lastName = "Abc",
-              nino = testNino,
-              dateOfBirth = DateModel("01", "01", "1980")
-            )
-
-          def callSubmit(isEditMode: Boolean) =
+          def callSubmit(request: FakeRequest[_], isEditMode: Boolean) = {
             TestUserDetailsController.submit(isEditMode = isEditMode)(
               request.post(UserDetailsForm.userDetailsForm.form, testUserDetails)
             )
+          }
 
           "there are no stored data" should {
 
             s"redirect to '${usermatching.controllers.routes.ConfirmUserController.show().url}" in {
               setupMockKeystore(
-                fetchUserDetails = None,
                 deleteAll = HttpResponse(OK)
               )
               setupMockNotLockedOut(testUserId.value)
 
-              val goodResult = callSubmit(isEditMode = editMode)
+              val r = request.buildRequest(None)
+
+              val goodResult = callSubmit(r, isEditMode = editMode)
 
               status(goodResult) must be(Status.SEE_OTHER)
               redirectLocation(goodResult) mustBe Some(usermatching.controllers.routes.ConfirmUserController.show().url)
 
-              await(goodResult)
-              verifyKeystore(fetchUserDetails = 1, saveUserDetails = 1, deleteAll = 0)
+              // the submitted details is now stored in session
+              await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
+              verifyKeystore(deleteAll = 0)
             }
 
           }
@@ -146,18 +154,21 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
             s"redirect to '${usermatching.controllers.routes.ConfirmUserController.show().url} and deleted all pre-existing entries in keystore" in {
               setupMockKeystore(
-                fetchUserDetails = testUserDetails.copy(firstName = testUserDetails.firstName + "NOT"),
                 deleteAll = HttpResponse(OK)
               )
               setupMockNotLockedOut(testUserId.value)
 
-              val goodResult = callSubmit(isEditMode = editMode)
+              val previousUserDetails = testUserDetails.copy(firstName = testUserDetails.firstName + "NOT")
+
+              val r = request.buildRequest(previousUserDetails)
+
+              val goodResult = callSubmit(r, isEditMode = editMode)
 
               status(goodResult) must be(Status.SEE_OTHER)
               redirectLocation(goodResult) mustBe Some(usermatching.controllers.routes.ConfirmUserController.show().url)
 
-              await(goodResult)
-              verifyKeystore(fetchUserDetails = 1, saveUserDetails = 1, deleteAll = 1)
+              await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
+              verifyKeystore(deleteAll = 1)
             }
 
           }
@@ -166,18 +177,19 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
             s"redirect to '${usermatching.controllers.routes.ConfirmUserController.show().url} but do not delete keystore" in {
               setupMockKeystore(
-                fetchUserDetails = testUserDetails,
                 deleteAll = HttpResponse(OK)
               )
               setupMockNotLockedOut(testUserId.value)
 
-              val goodResult = callSubmit(isEditMode = editMode)
+              val r = request.buildRequest(testUserDetails)
+
+              val goodResult = callSubmit(r, isEditMode = editMode)
 
               status(goodResult) must be(Status.SEE_OTHER)
               redirectLocation(goodResult) mustBe Some(usermatching.controllers.routes.ConfirmUserController.show().url)
 
-              await(goodResult)
-              verifyKeystore(fetchUserDetails = 1, saveUserDetails = 0, deleteAll = 0)
+              await(goodResult).verifyStoredUserDetailsIs(testUserDetails)(r)
+              verifyKeystore(deleteAll = 0)
             }
 
           }
@@ -185,15 +197,15 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
         "Calling the submit action of the UserDetailsController with an authorised user and invalid submission" should {
 
+          lazy val testRequest = request
+            .post(UserDetailsForm.userDetailsForm.form, UserDetailsModel(
+              firstName = "Abc",
+              lastName = "Abc",
+              nino = testNino,
+              dateOfBirth = DateModel("00", "01", "1980")))
+
           def callSubmit(isEditMode: Boolean) =
-            TestUserDetailsController.submit(isEditMode = isEditMode)(
-              request
-                .post(UserDetailsForm.userDetailsForm.form, UserDetailsModel(
-                  firstName = "Abc",
-                  lastName = "Abc",
-                  nino = testNino,
-                  dateOfBirth = DateModel("00", "01", "1980")))
-            )
+            TestUserDetailsController.submit(isEditMode = isEditMode)(testRequest)
 
           "return a redirect status (BAD_REQUEST - 400)" in {
             setupMockKeystoreSaveFunctions()
@@ -203,8 +215,8 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
             status(badResult) must be(Status.BAD_REQUEST)
 
-            await(badResult)
-            verifyKeystore(fetchUserDetails = 0, saveUserDetails = 0, deleteAll = 0)
+            await(badResult).verifyStoredUserDetailsIs(None)(testRequest)
+            verifyKeystore(deleteAll = 0)
           }
 
           "return HTML" in {

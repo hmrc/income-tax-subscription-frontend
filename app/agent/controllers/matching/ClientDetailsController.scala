@@ -72,10 +72,8 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
           clientDetails => {
             val continue = Redirect(routes.ConfirmClientController.show()).saveUserDetails(clientDetails)
 
-            if (request.fetchUserDetails.fold(false)(_ != clientDetails))
-              keystoreService.deleteAll().map(_ => continue)
-            else
-              Future.successful(continue)
+            if (request.fetchUserDetails.fold(false)(_ != clientDetails)) keystoreService.deleteAll().map(_ => continue)
+            else Future.successful(continue)
           }
         )
       }

@@ -24,8 +24,7 @@ import agent.utils.TestModels.testClientDetails
 import incometax.subscription.services.mocks.MockSubscriptionService
 import usermatching.services.mocks.MockUserMatchingService
 
-trait MockAgentQualificationService extends MockKeystoreService
-  with MockClientRelationshipService
+trait MockAgentQualificationService extends MockClientRelationshipService
   with MockUserMatchingService
   with MockSubscriptionService
   with MockAuditingService {
@@ -34,7 +33,6 @@ trait MockAgentQualificationService extends MockKeystoreService
     mockUserMatchingService,
     mockClientRelationshipService,
     mockSubscriptionService,
-    MockKeystoreService,
     mockAuditingService
   )
 

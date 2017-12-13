@@ -19,7 +19,7 @@ package agent.controllers.matching
 import agent.auth.AgentUserMatched
 import agent.controllers.{AgentControllerBaseSpec, ITSASessionKeys}
 import agent.services._
-import agent.services.mocks.MockAgentQualificationService
+import agent.services.mocks.{MockAgentQualificationService, MockKeystoreService}
 import agent.utils.{TestConstants, TestModels}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -33,7 +33,8 @@ import scala.concurrent.Future
 
 class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   with MockAgentQualificationService
-  with MockUserLockoutService {
+  with MockUserLockoutService
+  with MockKeystoreService {
 
   override val controllerName: String = "ConfirmClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -46,7 +47,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   object TestConfirmClientController extends ConfirmClientController(
     MockBaseControllerConfig,
     messagesApi,
-    MockKeystoreService,
     mockAgentQualificationService,
     mockAuthService,
     mockUserLockoutService

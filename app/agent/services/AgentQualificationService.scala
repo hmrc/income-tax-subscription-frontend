@@ -49,7 +49,6 @@ case class ApprovedAgent(clientNino: String, clientUtr: Option[String])
 class AgentQualificationService @Inject()(clientMatchingService: UserMatchingService,
                                           clientRelationshipService: ClientRelationshipService,
                                           subscriptionService: SubscriptionService,
-                                          keystoreService: KeystoreService,
                                           auditingService: AuditingService) {
 
   import usermatching.utils.UserMatchingSessionUtil._

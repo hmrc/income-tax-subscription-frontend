@@ -56,8 +56,7 @@ object IntegrationTestModels {
       businessPhoneNumber = Some(testBusinessPhoneNumber),
       businessAddress = Some(testAddress),
       accountingMethod = Some(testAccountingMethod),
-      terms = Some(testTerms),
-      userDetails = Some(testUserDetails)
+      terms = Some(testTerms)
     )
 
   def keystoreData(incomeSource: Option[IncomeSourceModel] = None,
@@ -68,8 +67,7 @@ object IntegrationTestModels {
                    businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
                    businessAddress: Option[Address] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
-                   terms: Option[Boolean] = None,
-                   userDetails: Option[UserDetailsModel] = None): Map[String, JsValue] = {
+                   terms: Option[Boolean] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++
@@ -79,8 +77,7 @@ object IntegrationTestModels {
       businessPhoneNumber.map(model => BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model)) ++
       businessAddress.map(model => BusinessAddress -> Address.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      terms.map(model => Terms -> Json.toJson(model)) ++
-      userDetails.map(model => UserDetails -> Json.toJson(model))
+      terms.map(model => Terms -> Json.toJson(model))
   }
 
   lazy val testIncomeSourceBusiness = IncomeSourceModel(IncomeSourceForm.option_business)

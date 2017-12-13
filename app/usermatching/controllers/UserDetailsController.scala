@@ -16,7 +16,6 @@
 
 package usermatching.controllers
 
-import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 
 import core.auth.{IncomeTaxSAUser, UserMatchingController}
@@ -26,7 +25,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException, UserId}
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.forms.UserDetailsForm
 import usermatching.models.{NotLockedOut, UserDetailsModel}
 import usermatching.services.UserLockoutService
@@ -35,11 +34,11 @@ import scala.concurrent.Future
 
 @Singleton
 class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
-                                        val messagesApi: MessagesApi,
-                                        val keystoreService: KeystoreService,
-                                        val authService: AuthService,
-                                        val lockOutService: UserLockoutService
-                                       ) extends UserMatchingController {
+                                      val messagesApi: MessagesApi,
+                                      val keystoreService: KeystoreService,
+                                      val authService: AuthService,
+                                      val lockOutService: UserLockoutService
+                                     ) extends UserMatchingController {
 
   def view(userDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     usermatching.views.html.user_details(
@@ -62,9 +61,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-        keystoreService.fetchUserDetails() map {
-          userDetails => Ok(view(UserDetailsForm.userDetailsForm.form.fill(userDetails), isEditMode = isEditMode))
-        }
+        Future.successful(Ok(view(UserDetailsForm.userDetailsForm.form.fill(request.fetchUserDetails), isEditMode = isEditMode)))
       }
   }
 
@@ -74,23 +71,10 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
         UserDetailsForm.userDetailsForm.bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
           userDetails => {
-            val persist = keystoreService.fetchUserDetails().flatMap {
-              case Some(oldDetails) if oldDetails == userDetails =>
-                Future.successful(Unit)
-              case Some(_) =>
-                // n.b. the delete must come before the save otherwise nothing will ever be saved.
-                // this feature is currently NOT unit testable
-                for {
-                  _ <- keystoreService.deleteAll()
-                  _ <- keystoreService.saveUserDetails(userDetails)
-                } yield Unit
-              case None =>
-                keystoreService.saveUserDetails(userDetails)
-            }
+            val continue = Redirect(usermatching.controllers.routes.ConfirmUserController.show()).saveUserDetails(userDetails)
 
-            for {
-              _ <- persist
-            } yield Redirect(usermatching.controllers.routes.ConfirmUserController.show())
+            if (request.fetchUserDetails.fold(false)(_ != userDetails)) keystoreService.deleteAll().map(_ => continue)
+            else Future.successful(continue)
           }
         )
       }

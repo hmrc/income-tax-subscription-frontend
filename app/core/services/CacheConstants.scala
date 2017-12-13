@@ -31,6 +31,5 @@ object CacheConstants {
   val Terms = "Terms"
   val OtherIncome = "OtherIncome"
   val MtditId = "MtditId"
-  val UserDetails = "UserDetails"
   val PaperlessPreferenceToken = "PaperlessPreferenceKey"
 }

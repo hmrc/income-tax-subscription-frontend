@@ -40,7 +40,6 @@ import scala.util.Left
 @Singleton
 class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                                         val messagesApi: MessagesApi,
-                                        val keystoreService: KeystoreService,
                                         val agentQualificationService: AgentQualificationService,
                                         val authService: AuthService,
                                         val lockOutService: UserLockoutService

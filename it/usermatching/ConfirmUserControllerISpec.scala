@@ -60,7 +60,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
         KeystoreStub.stubEmptyKeystore()
 
         When("I call POST /confirm-user")
-        val res = IncomeTaxSubscriptionFrontend.submitConfirmUser()
+        val res = IncomeTaxSubscriptionFrontend.submitConfirmUser(storedUserDetails = None)
 
         Then("The result should have a status of SEE_OTHER and redirect to user details page")
         res should have(
