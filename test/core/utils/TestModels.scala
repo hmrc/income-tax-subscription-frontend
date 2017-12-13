@@ -25,7 +25,7 @@ import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import incometax.subscription.models.SummaryModel
+import incometax.subscription.models.{Both, StoredSubscription, SummaryModel}
 import models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
@@ -151,6 +151,17 @@ object TestModels extends Implicits {
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
     accountingMethod = testAccountingMethod
+  )
+
+  val testStoredSubscription = StoredSubscription(
+    arn = testArn,
+    incomeSource = Both,
+    otherIncome = false,
+    currentPeriodIsPrior = Some(true),
+    accountingPeriodStart = Some(testAccountingPeriod.startDate),
+    accountingPeriodEnd = Some(testAccountingPeriod.endDate),
+    tradingName = Some(testBusinessName.businessName),
+    cashOrAccruals = Some(testAccountingMethod.accountingMethod)
   )
 
 }

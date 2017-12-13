@@ -37,6 +37,7 @@ object TestConstants {
   lazy val testNino: String = new Generator().nextNino.nino
   lazy val testUtr: String = UUID.randomUUID().toString
   //Not an actual UTR
+  lazy val testArn: String = UUID.randomUUID().toString
   lazy val testToken: String = s"${UUID.randomUUID()}"
   lazy val testMTDID = "XE0001234567890"
   lazy val startDate = DateModel("05", "04", "2017")
