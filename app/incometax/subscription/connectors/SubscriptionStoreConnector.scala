@@ -19,6 +19,7 @@ package incometax.subscription.connectors
 import javax.inject.Inject
 
 import core.config.AppConfig
+import incometax.subscription.httpparsers.RetrieveSubscriptionResponseHttpParser._
 import incometax.subscription.httpparsers.StoreSubscriptionResponseHttpParser._
 import incometax.subscription.models.StoredSubscription
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,5 +31,9 @@ class SubscriptionStoreConnector @Inject()(appConfig: AppConfig,
                                            httpClient: HttpClient)(implicit ec: ExecutionContext) {
   def storeSubscriptionData(nino: String, subscriptionData: StoredSubscription)(implicit hc: HeaderCarrier): Future[StoreSubscriptionResponse] = {
     httpClient.POST[StoredSubscription, StoreSubscriptionResponse](appConfig.storeSubscriptionUrl(nino), subscriptionData)
+  }
+
+  def retrieveSubscriptionData(nino: String)(implicit hc: HeaderCarrier): Future[RetrieveSubscriptionResponse] = {
+    httpClient.GET[RetrieveSubscriptionResponse](appConfig.storeSubscriptionUrl(nino))
   }
 }
