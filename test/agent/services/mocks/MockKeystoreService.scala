@@ -24,7 +24,6 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import usermatching.models.UserDetailsModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,7 +64,6 @@ trait MockKeystoreService extends MockTrait {
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
-                                         fetchClientDetails: MFO[UserDetailsModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
@@ -78,7 +76,6 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
-    mockFetchFromKeyStore[UserDetailsModel](ClientDetails, fetchClientDetails)
 
     setupMockKeystoreSaveFunctions()
 
@@ -105,8 +102,6 @@ trait MockKeystoreService extends MockTrait {
                                       saveSubscriptionId: Option[Int] = None,
                                       fetchAccountingPeriodPrior: Option[Int] = None,
                                       saveAccountingPeriodPrior: Option[Int] = None,
-                                      fetchClientDetails: Option[Int] = None,
-                                      saveClientDetails: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
@@ -128,8 +123,6 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(MtditId, saveSubscriptionId)
     verifyKeystoreFetch(AccountingPeriodPrior, fetchAccountingPeriodPrior)
     verifyKeystoreSave(AccountingPeriodPrior, saveAccountingPeriodPrior)
-    verifyKeystoreFetch(ClientDetails, fetchClientDetails)
-    verifyKeystoreSave(ClientDetails, saveClientDetails)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext]))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext]))

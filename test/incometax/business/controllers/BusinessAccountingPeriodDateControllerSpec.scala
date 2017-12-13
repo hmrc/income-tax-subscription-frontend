@@ -79,8 +79,8 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
     "Calling the submit action of the BusinessAccountingPeriodDate with a valid submission" should {
 
-      val testAccountingPeriodDates = AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2018"))
-      val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2019"))
+      val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2018"))
+      val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2019"))
 
       def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(request
         .post(AccountingPeriodDateForm.accountingPeriodDateForm, testAccountingPeriodDates))
@@ -219,8 +219,8 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
     "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
 
-      val testAccountingPeriodDates = AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2018"))
-      val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2019"))
+      val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2018"))
+      val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2019"))
 
       def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(request
         .post(AccountingPeriodDateForm.accountingPeriodDateForm, testAccountingPeriodDates))

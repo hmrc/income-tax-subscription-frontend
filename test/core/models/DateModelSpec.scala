@@ -30,7 +30,6 @@ class DateModelSpec extends PlaySpec with OneAppPerTest {
 
     "convert correctly to java.time.LocalDate" in {
       date.toLocalDate shouldBe LocalDate.parse("01/02/2017", DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-      date.toLocalDate.isEqual(date) shouldBe true
     }
 
     "correctly format a date output to a view into d MMMMM uuuu" in {

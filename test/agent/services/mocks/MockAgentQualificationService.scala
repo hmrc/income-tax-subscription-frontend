@@ -39,18 +39,12 @@ trait MockAgentQualificationService extends MockKeystoreService
   )
 
   def setupOrchestrateAgentQualificationSuccess(arn: String = TestConstants.testARN, nino: String = TestConstants.testNino): Unit = {
-    setupMockKeystore(fetchClientDetails = testClientDetails)
     mockUserMatchSuccess(testClientDetails)
     setupMockGetSubscriptionNotFound(testNino)
     preExistingRelationship(testARN, testNino)(isPreExistingRelationship = true)
   }
 
   def setupOrchestrateAgentQualificationFailure(expectedResult: UnqualifiedAgent): Unit = {
-    expectedResult match {
-      case NoClientDetails => setupMockKeystore(fetchClientDetails = None)
-      case _ => setupMockKeystore(fetchClientDetails = testClientDetails)
-    }
-
     expectedResult match {
       case NoClientMatched => mockUserMatchNotFound(testClientDetails)
       case _ => mockUserMatchSuccess(testClientDetails)

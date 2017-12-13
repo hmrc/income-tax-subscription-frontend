@@ -24,7 +24,7 @@ import agent.utils.{TestConstants, TestModels}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers.{await, _}
 import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 import usermatching.services.mocks.MockUserLockoutService
@@ -58,46 +58,45 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   }
 
   def mockOrchestrateAgentQualificationSuccess(arn: String, nino: String, utr: Option[String]): Unit =
-    when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any()))
+    when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(Future.successful(Right(ApprovedAgent(nino, utr))))
 
   def mockOrchestrateAgentQualificationFailure(arn: String, expectedResult: UnqualifiedAgent): Unit =
-    when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any()))
+    when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
       .thenReturn(Future.successful(Left(expectedResult)))
 
   val arn = TestConstants.testARN
   val utr = TestConstants.testUtr
   val nino = TestConstants.testNino
 
-  lazy val request = userMatchingRequest
+  lazy val request = userMatchingRequest.buildRequest(TestModels.testClientDetails)
 
   "Calling the show action of the ConfirmClientController with an authorised user" should {
 
-    def call = TestConfirmClientController.show()(request)
+    def call(request: Request[AnyContent]) = TestConfirmClientController.show()(request)
 
     "when there are no client details store redirect them to client details" in {
-      setupMockKeystore(fetchClientDetails = None)
       setupMockNotLockedOut(arn)
+      val r = request.buildRequest(None)
 
-      val result = call
+      val result = call(r)
 
       status(result) must be(Status.SEE_OTHER)
 
-      await(result)
-      verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+      await(result).verifyStoredUserDetailsIs(None)(r)
 
     }
 
     "if there is are client details return ok (200)" in {
-      setupMockKeystore(fetchClientDetails = TestModels.testClientDetails)
       setupMockNotLockedOut(arn)
 
-      val result = call
+      val r = request.buildRequest(TestModels.testClientDetails)
+
+      val result = call(r)
 
       status(result) must be(Status.OK)
 
-      await(result)
-      verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0)
+      await(result).verifyStoredUserDetailsIs(TestModels.testClientDetails)(r)
     }
   }
 
@@ -171,15 +170,18 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
           setupMockNotLockedOut(arn)
 
-          val result = callSubmit()
+          val fresult = callSubmit()
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(agent.controllers.routes.HomeController.index().url)
+          status(fresult) mustBe SEE_OTHER
+          redirectLocation(fresult) mustBe Some(agent.controllers.routes.HomeController.index().url)
 
-          val session = await(result).session(userMatchingRequest)
+          val result = await(fresult)
+          val session = result.session(request)
+
           session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
           session.get(ITSASessionKeys.NINO) mustBe Some(nino)
           session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+          result.verifyStoredUserDetailsIs(None)(request)
         }
       }
 

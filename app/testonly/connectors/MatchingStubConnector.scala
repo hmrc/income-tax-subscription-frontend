@@ -53,7 +53,7 @@ case class UserData(nino: Value = Value("AA 11 11 11 A"),
     lastName = lastName.value,
     nino = nino.value,
     sautr = sautr.map(_.value),
-    dateOfBirth = LocalDate.parse(dob.value, UserData.dobFormat): DateModel
+    dateOfBirth = DateModel.dateConvert(LocalDate.parse(dob.value, UserData.dobFormat))
   )
 
   // $COVERAGE-ON$

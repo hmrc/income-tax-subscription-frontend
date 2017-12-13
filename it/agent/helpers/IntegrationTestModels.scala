@@ -46,8 +46,6 @@ object IntegrationTestModels {
 
   val fullKeystoreData: Map[String, JsValue] =
     keystoreData(
-      clientDetailsModel = Some(testClientDetails),
-      matchedNino = Some(testNino),
       incomeSource = Some(testIncomeSourceBoth),
       otherIncome = Some(testOtherIncomeNo),
       accountingPeriodPrior = Some(testAccountingPeriodPriorCurrent),
@@ -57,8 +55,7 @@ object IntegrationTestModels {
       terms = Some(testTerms)
     )
 
-  def keystoreData(clientDetailsModel: Option[UserDetailsModel] = None,
-                   matchedNino: Option[String] = None,
+  def keystoreData(
                    incomeSource: Option[IncomeSourceModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
@@ -67,8 +64,6 @@ object IntegrationTestModels {
                    accountingMethod: Option[AccountingMethodModel] = None,
                    terms: Option[Boolean] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
-      clientDetailsModel.map(model => ClientDetails -> UserDetailsModel.format.writes(model)) ++
-      matchedNino.map(model => MatchedNino -> Json.toJson(model)) ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++
       accountingPeriodPrior.map(model => AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model)) ++

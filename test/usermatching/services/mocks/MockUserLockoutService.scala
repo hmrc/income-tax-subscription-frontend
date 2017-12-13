@@ -29,10 +29,11 @@ import usermatching.connectors.mocks.MockUserLockoutConnector
 import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import usermatching.models.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import usermatching.services.{LockoutUpdate, UserLockoutService}
+import usermatching.utils.UserMatchingTestSupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockUserLockoutService extends MockTrait {
+trait MockUserLockoutService extends MockTrait with UserMatchingTestSupport {
   val mockUserLockoutService = mock[UserLockoutService]
 
   override def beforeEach(): Unit = {

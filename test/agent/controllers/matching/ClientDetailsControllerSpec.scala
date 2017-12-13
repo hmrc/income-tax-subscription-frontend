@@ -24,7 +24,8 @@ import agent.utils.TestConstants
 import core.models.DateModel
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Request}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import uk.gov.hmrc.http.HttpResponse
 import usermatching.models.UserDetailsModel
@@ -54,26 +55,28 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
   "Calling the show action of the ClientDetailsController with an authorised user" should {
 
-    lazy val result = TestClientDetailsController.show(isEditMode = false)(userMatchingRequest)
+    def call(request: Request[AnyContent]) = TestClientDetailsController.show(isEditMode = false)(request)
+
+
 
     "return ok (200)" in {
-      setupMockKeystore(fetchClientDetails = None)
+      lazy val r = userMatchingRequest.buildRequest(None)
       setupMockNotLockedOut(testARN)
+      lazy val result = call(r)
 
       status(result) must be(Status.OK)
 
-      await(result)
-      verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0, deleteAll = 0)
-    }
+      await(result).verifyStoredUserDetailsIs(None)(r)
 
-    "return HTML" in {
-      contentType(result) must be(Some("text/html"))
-      charset(result) must be(Some("utf-8"))
-    }
+      withClue("return HTML") {
+        contentType(result) must be(Some("text/html"))
+        charset(result) must be(Some("utf-8"))
+      }
 
-    "render the 'Not subscribed to Agent Services page'" in {
-      val document = Jsoup.parse(contentAsString(result))
-      document.title mustBe messages.title
+      withClue("render the 'Not subscribed to Agent Services page'") {
+        val document = Jsoup.parse(contentAsString(result))
+        document.title mustBe messages.title
+      }
     }
   }
 
@@ -92,27 +95,28 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             dateOfBirth = DateModel("01", "01", "1980")
           )
 
-        def callSubmit(isEditMode: Boolean) =
+        def callSubmit(request: FakeRequest[AnyContentAsEmpty.type])(isEditMode: Boolean) =
           TestClientDetailsController.submit(isEditMode = isEditMode)(
-            userMatchingRequest.post(ClientDetailsForm.clientDetailsForm.form, testClientDetails)
+            request.post(ClientDetailsForm.clientDetailsForm.form, testClientDetails)
           )
 
         "there are no stored data" should {
 
           s"redirect to '${agent.controllers.matching.routes.ConfirmClientController.show().url}" in {
             setupMockKeystore(
-              fetchClientDetails = None,
               deleteAll = HttpResponse(OK)
             )
             setupMockNotLockedOut(testARN)
 
-            val goodResult = callSubmit(isEditMode = editMode)
+            lazy val r = userMatchingRequest.buildRequest(None)
+
+            val goodResult = callSubmit(r)(isEditMode = editMode)
 
             status(goodResult) must be(Status.SEE_OTHER)
             redirectLocation(goodResult) mustBe Some(agent.controllers.matching.routes.ConfirmClientController.show().url)
 
-            await(goodResult)
-            verifyKeystore(fetchClientDetails = 1, saveClientDetails = 1, deleteAll = 0)
+            await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
+            verifyKeystore(deleteAll = 0)
           }
 
         }
@@ -121,18 +125,21 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
           s"redirect to '${agent.controllers.matching.routes.ConfirmClientController.show().url} and deleted all pre-existing entries in keystore" in {
             setupMockKeystore(
-              fetchClientDetails = testClientDetails.copy(firstName = testClientDetails.firstName + "NOT"),
               deleteAll = HttpResponse(OK)
             )
             setupMockNotLockedOut(testARN)
 
-            val goodResult = callSubmit(isEditMode = editMode)
+            val newUserDetails = testClientDetails.copy(firstName = testClientDetails.firstName + "NOT")
+
+            lazy val r = userMatchingRequest.buildRequest(newUserDetails)
+
+            val goodResult = callSubmit(r)(isEditMode = editMode)
 
             status(goodResult) must be(Status.SEE_OTHER)
             redirectLocation(goodResult) mustBe Some(agent.controllers.matching.routes.ConfirmClientController.show().url)
 
-            await(goodResult)
-            verifyKeystore(fetchClientDetails = 1, saveClientDetails = 1, deleteAll = 1)
+            await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
+            verifyKeystore( deleteAll = 1)
           }
 
         }
@@ -141,18 +148,19 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
           s"redirect to '${agent.controllers.matching.routes.ConfirmClientController.show().url} but do not delete keystore" in {
             setupMockKeystore(
-              fetchClientDetails = testClientDetails,
               deleteAll = HttpResponse(OK)
             )
             setupMockNotLockedOut(testARN)
 
-            val goodResult = callSubmit(isEditMode = editMode)
+            lazy val r = userMatchingRequest.buildRequest(testClientDetails)
+
+            val goodResult = callSubmit(r)(isEditMode = editMode)
 
             status(goodResult) must be(Status.SEE_OTHER)
             redirectLocation(goodResult) mustBe Some(agent.controllers.matching.routes.ConfirmClientController.show().url)
 
-            await(goodResult)
-            verifyKeystore(fetchClientDetails = 1, saveClientDetails = 0, deleteAll = 0)
+            await(goodResult).verifyStoredUserDetailsIs(testClientDetails)(r)
+            verifyKeystore(deleteAll = 0)
           }
 
         }
@@ -160,14 +168,16 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
       "Calling the submit action of the ClientDetailsController with an authorised user and invalid submission" should {
 
+        val newTestUserDetails = UserDetailsModel(
+          firstName = "Abc",
+          lastName = "Abc",
+          nino = testNino,
+          dateOfBirth = DateModel("00", "01", "1980"))
+
         def callSubmit(isEditMode: Boolean) =
           TestClientDetailsController.submit(isEditMode = isEditMode)(
             userMatchingRequest
-              .post(ClientDetailsForm.clientDetailsForm.form, UserDetailsModel(
-                firstName = "Abc",
-                lastName = "Abc",
-                nino = testNino,
-                dateOfBirth = DateModel("00", "01", "1980")))
+              .post(ClientDetailsForm.clientDetailsForm.form, newTestUserDetails)
           )
 
         "return a redirect status (BAD_REQUEST - 400)" in {
@@ -178,8 +188,9 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
           status(badResult) must be(Status.BAD_REQUEST)
 
-          await(badResult)
-          verifyKeystore(fetchClientDetails = 0, saveClientDetails = 0, deleteAll = 0)
+          // bad requests do not trigger a save
+          await(badResult).verifyStoredUserDetailsIs(None)(userMatchingRequest)
+          verifyKeystore( deleteAll = 0)
         }
 
         "return HTML" in {

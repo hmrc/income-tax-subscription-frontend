@@ -66,7 +66,6 @@ class CacheUtilSpec extends UnitTestTrait {
       // relevant to the journey
       val overPopulatedPropertyCacheMap =
         agent.utils.TestModels.testCacheMap(
-          Some(testUserDetails),
           Some(agent.utils.TestModels.testIncomeSourceProperty),
           Some(agent.utils.TestModels.testOtherIncomeNo),
           Some(agent.utils.TestModels.testAccountingPeriodPriorCurrent),

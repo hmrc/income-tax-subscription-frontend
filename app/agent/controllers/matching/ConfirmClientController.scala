@@ -66,14 +66,14 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withLockOutCheck {
-        keystoreService.fetchClientDetails() map {
-          case Some(clientDetails) => Ok(view(clientDetails))
-          case _ => Redirect(agent.controllers.matching.routes.ClientDetailsController.show())
+        request.fetchUserDetails match {
+          case Some(clientDetails) => Future.successful(Ok(view(clientDetails)))
+          case _ => Future.successful(Redirect(agent.controllers.matching.routes.ClientDetailsController.show()))
         }
       }
   }
 
-  private def handleFailedMatch(arn: String)(implicit request: Request[_]) = {
+  private def handleFailedMatch(arn: String)(implicit request: Request[AnyContent]) = {
     val currentCount = request.session.get(FailedClientMatching).fold(0)(_.toInt)
     lockOutService.incrementLockout(arn, currentCount).flatMap {
       case Right(LockoutUpdate(NotLockedOut, Some(newCount))) =>
@@ -81,7 +81,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
           .addingToSession(FailedClientMatching -> newCount.toString))
       case Right(LockoutUpdate(_: LockedOut, _)) =>
         successful(Redirect(agent.controllers.matching.routes.ClientDetailsLockoutController.show())
-          .removingFromSession(FailedClientMatching))
+          .removingFromSession(FailedClientMatching).clearUserDetails)
       case Left(failure) => failed(new InternalServerException("ConfirmClientControllerr.lockUser: " + failure))
     }
   }
@@ -115,7 +115,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
               case Some(utr) => resultWithoutUTR.addingToSession(ITSASessionKeys.UTR -> utr)
               case _ => resultWithoutUTR.removingFromSession(ITSASessionKeys.UTR)
             }
-            successful(result)
+            successful(result.clearUserDetails)
         }
       }
   }

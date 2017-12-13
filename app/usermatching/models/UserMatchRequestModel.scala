@@ -18,6 +18,7 @@ package usermatching.models
 
 import java.time.LocalDate
 
+import core.models.DateModel
 import play.api.libs.json.Json
 import uk.gov.hmrc.domain.Nino
 
@@ -29,7 +30,7 @@ object UserMatchRequestModel {
     UserMatchRequestModel(
       userDetailsModel.firstName,
       userDetailsModel.lastName,
-      userDetailsModel.dateOfBirth,
+      DateModel.dateConvert(userDetailsModel.dateOfBirth),
       Nino(userDetailsModel.ninoInBackendFormat)
     )
 

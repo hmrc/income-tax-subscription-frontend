@@ -68,25 +68,25 @@ object AccountingPeriodDateForm {
   val startDateBeforeApr17: Constraint[DateModel] = constraint[DateModel](
     date => {
       lazy val invalid = ErrorMessageFactory.error(TargetIds(startDate), "error.business_accounting_period.minStartDate")
-      if (date.isBefore(minStartDate)) invalid else Valid
+      if (DateModel.dateConvert(date).isBefore(minStartDate)) invalid else Valid
     }
   )
 
   val endDateAfterStart: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
     accountingPeriod => {
       lazy val invalid = ErrorMessageFactory.error(TargetIds(endDate), "error.end_date_violation")
-      if (accountingPeriod.endDate.isAfter(accountingPeriod.startDate)) Valid else invalid
+      if (DateModel.dateConvert(accountingPeriod.endDate).isAfter(DateModel.dateConvert(accountingPeriod.startDate))) Valid else invalid
     }
   )
 
   val endDate24MonthRule: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
     accountingPeriod => {
-      lazy val maxEndDate = accountingPeriod.startDate.plusMonths(maxMonths).minusDays(1)
+      lazy val maxEndDate = DateModel.dateConvert(accountingPeriod.startDate).plusMonths(maxMonths).minusDays(1)
       lazy val invalid = ErrorMessageFactory.error(
         TargetIds(endDate),
         "error.business_accounting_period.maxEndDate"
       )
-      if (accountingPeriod.endDate.isAfter(maxEndDate)) invalid else Valid
+      if (DateModel.dateConvert(accountingPeriod.endDate).isAfter(maxEndDate)) invalid else Valid
     }
   )
 
