@@ -16,18 +16,16 @@
 
 package agent.controllers.matching
 
-import _root_.agent.helpers.ImplicitConversions._
 import _root_.agent.helpers.IntegrationTestConstants.{agentLockedOutURI, testARN}
 import _root_.agent.helpers.servicemocks.{AgentLockoutStub, AuthStub, KeystoreStub}
 import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
+import helpers.UserMatchingIntegrationResultSupport
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
-import play.api.libs.json.JsValue
 import play.api.libs.ws.WSResponse
-import _root_.agent.services.CacheConstants.ClientDetails
 import usermatching.models.UserDetailsModel
 
-class ClientDetailsControllerISpec extends ComponentSpecBase {
+class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
 
   "GET /client-details" when {
     def fixture(agentLocked: Boolean): WSResponse = {
@@ -75,7 +73,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase {
         KeystoreStub.stubFullKeystore()
         AgentLockoutStub.stubAgentIsLocked(testARN)
 
-        val res = IncomeTaxSubscriptionFrontend.submitClientDetails(None)
+        val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
 
         Then("The result should have a status of SEE_OTHER")
         res should have(
@@ -92,14 +90,15 @@ class ClientDetailsControllerISpec extends ComponentSpecBase {
         KeystoreStub.stubEmptyKeystore()
 
         When("I call POST /client-details")
-        val res = IncomeTaxSubscriptionFrontend.submitClientDetails(None)
+        val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
 
         Then("The result should have a status of BadRequest")
         res should have(
           httpStatus(BAD_REQUEST),
           pageTitle("Error: " + Messages("agent.client-details.title"))
         )
-        KeystoreStub.verifyKeyStoreSave(ClientDetails, None, Some(0))
+
+        res.verifyStoredUserDetailsIs(None)
         KeystoreStub.verifyKeyStoreDelete(Some(0))
       }
     }
@@ -109,11 +108,10 @@ class ClientDetailsControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
-        KeystoreStub.stubKeystoreSave(ClientDetails, clientDetails)
         KeystoreStub.stubEmptyKeystore()
 
         When("I call POST /client-details")
-        val res = IncomeTaxSubscriptionFrontend.submitClientDetails(Some(clientDetails))
+        val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(clientDetails), storedSubmission = None)
 
         Then("The result should have a status of SEE_OTHER")
         res should have(
@@ -121,7 +119,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase {
           redirectURI(routes.ConfirmClientController.show().url)
         )
 
-        KeystoreStub.verifyKeyStoreSave(ClientDetails, clientDetails, Some(1))
+        res.verifyStoredUserDetailsIs(Some(clientDetails))
         KeystoreStub.verifyKeyStoreDelete(Some(0))
       }
     }
@@ -131,11 +129,9 @@ class ClientDetailsControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
-        val clientDetailsJs: JsValue = clientDetails
-        KeystoreStub.stubKeystoreData(Map(ClientDetails -> clientDetailsJs))
 
         When("I call POST /client-details")
-        val res = IncomeTaxSubscriptionFrontend.submitClientDetails(Some(clientDetails))
+        val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(clientDetails), storedSubmission = Some(clientDetails))
 
         Then("The result should have a status of SEE_OTHER")
         res should have(
@@ -143,7 +139,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase {
           redirectURI(routes.ConfirmClientController.show().url)
         )
 
-        KeystoreStub.verifyKeyStoreSave(ClientDetails, clientDetails, Some(0))
+        res.verifyStoredUserDetailsIs(Some(clientDetails))
         KeystoreStub.verifyKeyStoreDelete(Some(0))
       }
     }
@@ -153,14 +149,11 @@ class ClientDetailsControllerISpec extends ComponentSpecBase {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val clientDetails = IntegrationTestModels.testClientDetails
-        val clientDetailsJs: JsValue = clientDetails
-        KeystoreStub.stubKeystoreData(Map(ClientDetails -> clientDetailsJs))
-        KeystoreStub.stubKeystoreSave(ClientDetails, clientDetailsJs)
         KeystoreStub.stubKeystoreDelete()
 
         When("I call POST /client-details")
         val submittedUserDetails = clientDetails.copy(firstName = "NotMatching")
-        val res = IncomeTaxSubscriptionFrontend.submitClientDetails(Some(submittedUserDetails))
+        val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = Some(submittedUserDetails), storedSubmission = Some(clientDetails))
 
         Then("The result should have a status of SEE_OTHER")
         res should have(
@@ -169,7 +162,8 @@ class ClientDetailsControllerISpec extends ComponentSpecBase {
         )
 
         KeystoreStub.verifyKeyStoreDelete(Some(1))
-        KeystoreStub.verifyKeyStoreSave(ClientDetails, submittedUserDetails, Some(1))
+        res.verifyStoredUserDetailsIs(Some(submittedUserDetails))
+
       }
     }
   }

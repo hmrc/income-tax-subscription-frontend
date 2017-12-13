@@ -20,11 +20,12 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.AuditingService
 import agent.audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
-import usermatching.models.UserDetailsModel
 import core.utils.Implicits._
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionService
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.HeaderCarrier
+import usermatching.models.UserDetailsModel
 import usermatching.services.UserMatchingService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -48,19 +49,18 @@ case class ApprovedAgent(clientNino: String, clientUtr: Option[String])
 class AgentQualificationService @Inject()(clientMatchingService: UserMatchingService,
                                           clientRelationshipService: ClientRelationshipService,
                                           subscriptionService: SubscriptionService,
-                                          keystoreService: KeystoreService,
                                           auditingService: AuditingService) {
+
+  import usermatching.utils.UserMatchingSessionUtil._
 
   type ReturnType = Either[UnqualifiedAgent, ApprovedAgent]
 
   private[services]
-  def matchClient(arn: String)(implicit hc: HeaderCarrier): Future[ReturnType] = {
-    val clientDetails: Future[Either[UnqualifiedAgent, UserDetailsModel]] = keystoreService.fetchClientDetails()
-      .collect {
-        case Some(cd) => Right(cd)
-        case _ => Left(NoClientDetails)
-      }
-      .recoverWith { case _ => Left(UnexpectedFailure) }
+  def matchClient(arn: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] = {
+    val clientDetails: Future[Either[UnqualifiedAgent, UserDetailsModel]] = request.fetchUserDetails match {
+      case Some(cd) => Right(cd)
+      case _ => Left(NoClientDetails)
+    }
 
     clientDetails.flatMap {
       case Left(x) => Left(x)
@@ -108,7 +108,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       }
   }
 
-  def orchestrateAgentQualification(arn: String)(implicit hc: HeaderCarrier): Future[ReturnType] =
+  def orchestrateAgentQualification(arn: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] =
     matchClient(arn)
       .flatMapRight(checkClientRelationship(arn, _))
       .flatMapRight(checkExistingSubscription)

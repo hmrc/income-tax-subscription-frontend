@@ -24,8 +24,7 @@ import agent.utils.TestModels.testClientDetails
 import incometax.subscription.services.mocks.MockSubscriptionService
 import usermatching.services.mocks.MockUserMatchingService
 
-trait MockAgentQualificationService extends MockKeystoreService
-  with MockClientRelationshipService
+trait MockAgentQualificationService extends MockClientRelationshipService
   with MockUserMatchingService
   with MockSubscriptionService
   with MockAuditingService {
@@ -34,23 +33,16 @@ trait MockAgentQualificationService extends MockKeystoreService
     mockUserMatchingService,
     mockClientRelationshipService,
     mockSubscriptionService,
-    MockKeystoreService,
     mockAuditingService
   )
 
   def setupOrchestrateAgentQualificationSuccess(arn: String = TestConstants.testARN, nino: String = TestConstants.testNino): Unit = {
-    setupMockKeystore(fetchClientDetails = testClientDetails)
     mockUserMatchSuccess(testClientDetails)
     setupMockGetSubscriptionNotFound(testNino)
     preExistingRelationship(testARN, testNino)(isPreExistingRelationship = true)
   }
 
   def setupOrchestrateAgentQualificationFailure(expectedResult: UnqualifiedAgent): Unit = {
-    expectedResult match {
-      case NoClientDetails => setupMockKeystore(fetchClientDetails = None)
-      case _ => setupMockKeystore(fetchClientDetails = testClientDetails)
-    }
-
     expectedResult match {
       case NoClientMatched => mockUserMatchNotFound(testClientDetails)
       case _ => mockUserMatchSuccess(testClientDetails)

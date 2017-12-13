@@ -137,10 +137,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
       lazy val result = call(request)
 
-      // This is used to verify that the nino returned from client matching is used instead of whatever the user entered
-      lazy val testSummary = TestModels.testCacheMapCustom(
-        clientDetailsModel = TestModels.testClientDetails.copy(nino = testNino)
-      )
+      lazy val testSummary = TestModels.testCacheMap
 
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockKeystore(

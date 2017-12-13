@@ -21,12 +21,12 @@ import _root_.agent.controllers.ITSASessionKeys
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
-import _root_.agent.services.CacheConstants
+import helpers.UserMatchingIntegrationResultSupport
 import helpers.servicemocks.{AuditStub, AuthenticatorStub, SubscriptionStub, UserLockoutStub}
 import play.api.http.Status._
 
 
-class ConfirmClientControllerISpec extends ComponentSpecBase {
+class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
 
   import IncomeTaxSubscriptionFrontend._
 
@@ -57,7 +57,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
         KeystoreStub.stubEmptyKeystore()
 
         When("I call POST /confirm-client")
-        val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
+        val res = IncomeTaxSubscriptionFrontend.submitConfirmClient(storedUserDetails = None)
 
         Then("The result should have a status of SEE_OTHER and redirect to client details page")
         res should have(
@@ -166,7 +166,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
         KeystoreStub.stubFullKeystore()
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
         AuthenticatorStub.stubMatchFound(testNino, None)
-        KeystoreStub.stubKeystoreSave(CacheConstants.MatchedNino, testNino)
         SubscriptionStub.stubGetNoSubscription()
 
         When("I call POST /confirm-client")
@@ -196,7 +195,6 @@ class ConfirmClientControllerISpec extends ComponentSpecBase {
         AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
         SubscriptionStub.stubGetNoSubscription()
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
-        KeystoreStub.stubKeystoreSave(CacheConstants.MatchedNino, testNino)
 
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()

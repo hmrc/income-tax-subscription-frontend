@@ -17,18 +17,16 @@
 package usermatching
 
 import core.config.featureswitch.{FeatureSwitching, UserMatchingFeature}
-import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, UserLockoutStub}
-import helpers.{ComponentSpecBase, IntegrationTestModels}
+import helpers.{ComponentSpecBase, IntegrationTestModels, UserMatchingIntegrationResultSupport}
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
 import usermatching.controllers.routes
 import usermatching.models.UserDetailsModel
 
-class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching with UserMatchingIntegrationResultSupport {
 
   // TODO remove this when the routes are moved into prod.routes
   override def config: Map[String, String] = super.config.+("application.router" -> "testOnlyDoNotUseInAppConf.Routes")
@@ -81,7 +79,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         KeystoreStub.stubFullKeystore()
         UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
 
-        val res = IncomeTaxSubscriptionFrontend.submitUserDetails(None)
+        val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = None, storedSubmission = None)
 
         Then("The result should have a status of SEE_OTHER")
         res should have(
@@ -99,14 +97,14 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
-        val res = IncomeTaxSubscriptionFrontend.submitUserDetails(None)
+        val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = None, storedSubmission = None)
 
         Then("The result should have a status of BadRequest")
         res should have(
           httpStatus(BAD_REQUEST),
           pageTitle("Error: " + Messages("user-details.title"))
         )
-        KeystoreStub.verifyKeyStoreSave(CacheConstants.UserDetails, None, Some(0))
+        res.verifyStoredUserDetailsIs(None)
         KeystoreStub.verifyKeyStoreDelete(Some(0))
       }
     }
@@ -116,12 +114,11 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val userDetails: UserDetailsModel = IntegrationTestModels.testUserDetails
-        KeystoreStub.stubKeystoreSave(CacheConstants.UserDetails, userDetails)
         KeystoreStub.stubEmptyKeystore()
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
-        val res = IncomeTaxSubscriptionFrontend.submitUserDetails(Some(userDetails))
+        val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = Some(userDetails), storedSubmission = Some(userDetails))
 
         Then("The result should have a status of SEE_OTHER")
         res should have(
@@ -129,7 +126,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
           redirectURI(routes.ConfirmUserController.show().url)
         )
 
-        KeystoreStub.verifyKeyStoreSave(CacheConstants.UserDetails, userDetails, Some(1))
+        res.verifyStoredUserDetailsIs(Some(userDetails))
         KeystoreStub.verifyKeyStoreDelete(Some(0))
       }
     }
@@ -139,12 +136,10 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val userDetails: UserDetailsModel = IntegrationTestModels.testUserDetails
-        val userDetailsJs = Json.toJson(userDetails)
-        KeystoreStub.stubKeystoreData(Map(CacheConstants.UserDetails -> userDetailsJs))
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
-        val res = IncomeTaxSubscriptionFrontend.submitUserDetails(Some(userDetails))
+        val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = Some(userDetails), storedSubmission = Some(userDetails))
 
         Then("The result should have a status of SEE_OTHER")
         res should have(
@@ -152,7 +147,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
           redirectURI(routes.ConfirmUserController.show().url)
         )
 
-        KeystoreStub.verifyKeyStoreSave(CacheConstants.UserDetails, userDetails, Some(0))
+        res.verifyStoredUserDetailsIs(Some(userDetails))
         KeystoreStub.verifyKeyStoreDelete(Some(0))
       }
     }
@@ -162,15 +157,12 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val userDetails = IntegrationTestModels.testUserDetails
-        val userDetailsJs = Json.toJson(userDetails)
-        KeystoreStub.stubKeystoreData(Map(CacheConstants.UserDetails -> userDetailsJs))
-        KeystoreStub.stubKeystoreSave(CacheConstants.UserDetails, userDetailsJs)
         KeystoreStub.stubKeystoreDelete()
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /user-details")
         val submittedUserDetails = userDetails.copy(firstName = "NotMatching")
-        val res = IncomeTaxSubscriptionFrontend.submitUserDetails(Some(submittedUserDetails))
+        val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = Some(submittedUserDetails), storedSubmission = Some(userDetails))
 
         Then("The result should have a status of SEE_OTHER")
         res should have(
@@ -179,7 +171,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
         )
 
         KeystoreStub.verifyKeyStoreDelete(Some(1))
-        KeystoreStub.verifyKeyStoreSave(CacheConstants.UserDetails, submittedUserDetails, Some(1))
+        res.verifyStoredUserDetailsIs(Some(submittedUserDetails))
       }
     }
   }

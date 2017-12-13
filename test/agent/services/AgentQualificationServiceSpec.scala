@@ -22,6 +22,10 @@ import agent.services.mocks.MockAgentQualificationService
 import agent.utils.TestConstants._
 import agent.utils.TestModels._
 import agent.utils.{TestConstants, TestModels}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
+import play.api.test.FakeRequest
+import uk.gov.hmrc.http.HeaderCarrier
+import usermatching.models.UserDetailsModel
 
 class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
@@ -35,23 +39,23 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
   val matchedClient = ApprovedAgent(testNino, testUtr)
 
+  def request(clientDetails: Option[UserDetailsModel] = None): FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest().buildRequest(clientDetails)
+
   "AgentQualificationService.matchClient" should {
 
-    def call = TestAgentQualificationService.matchClient(testARN)
+    def call(request: Request[AnyContent]) = TestAgentQualificationService.matchClient(testARN)(implicitly[HeaderCarrier], request)
 
-    "return NoClientDetails if there's no client details in keystore" in {
-      setupMockKeystore(fetchClientDetails = None)
-
-      val result = call
+    "return NoClientDetails if there's no client details in session" in {
+      val result = call(request())
 
       await(result) mustBe Left(NoClientDetails)
     }
 
     "return NoClientMatched if the client matching was unsuccessful" in {
-      setupMockKeystore(fetchClientDetails = testClientDetails)
       mockUserMatchNotFound(testClientDetails)
 
-      val result = call
+      val result = call(request(testClientDetails))
 
       await(result) mustBe Left(NoClientMatched)
 
@@ -59,10 +63,9 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     }
 
     "return ApprovedAgent if the client matching was successful" in {
-      setupMockKeystore(fetchClientDetails = testClientDetails)
       mockUserMatchSuccess(testClientDetails)
 
-      val result = call
+      val result = call(request(testClientDetails))
 
       await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat, testUtr))
 
@@ -128,68 +131,62 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
   "AgentQualificationService.orchestrateAgentQualification" should {
 
-    def call = TestAgentQualificationService.orchestrateAgentQualification(testARN)
+    def call(request: Request[AnyContent]) = TestAgentQualificationService.orchestrateAgentQualification(testARN)(implicitly[HeaderCarrier], request)
 
     "return UnexpectedFailure if something went awry" in {
       setupOrchestrateAgentQualificationFailure(UnexpectedFailure)
 
-      val response = await(call)
+      val response = await(call(request(testClientDetails)))
 
       response mustBe Left(UnexpectedFailure)
-      verifyKeystore(fetchClientDetails = 1)
     }
 
-    "return NoClientDetails if there's no client details in keystore" in {
+    "return NoClientDetails if there's no client details in session" in {
       setupOrchestrateAgentQualificationFailure(NoClientDetails)
 
-      val result = call
+      val result = call(request())
 
       await(result) mustBe Left(NoClientDetails)
-      verifyKeystore(fetchClientDetails = 1)
     }
 
     "return NoClientMatched if the client matching was unsuccessful" in {
       setupOrchestrateAgentQualificationFailure(NoClientMatched)
 
-      val result = call
+      val result = call(request(testClientDetails))
 
       await(result) mustBe Left(NoClientMatched)
 
       verifyClientMatchingFailureAudit()
-      verifyKeystore(fetchClientDetails = 1)
     }
 
     "return ClientAlreadySubscribed if the client already has subscription" in {
       setupOrchestrateAgentQualificationFailure(ClientAlreadySubscribed)
 
-      val result = call
+      val result = call(request(testClientDetails))
 
       await(result) mustBe Left(ClientAlreadySubscribed)
 
       verifyClientMatchingSuccessAudit()
-      verifyKeystore(fetchClientDetails = 1)
     }
 
     "return NoClientRelationship if the agent does not have prior relationship with the client" in {
       setupOrchestrateAgentQualificationFailure(NoClientRelationship)
 
-      val result = call
+      val result = call(request(testClientDetails))
 
       await(result) mustBe Left(NoClientRelationship)
 
       verifyClientMatchingSuccessAudit()
-      verifyKeystore(fetchClientDetails = 1)
     }
 
     "return ApprovedAgent if the client matching was successful" in {
       setupOrchestrateAgentQualificationSuccess()
 
-      val result = call
+      val result =  call(request(testClientDetails))
 
       await(result) mustBe Right(ApprovedAgent(testClientDetails.ninoInBackendFormat, testUtr))
 
       verifyClientMatchingSuccessAudit()
-      verifyKeystore(fetchClientDetails = 1)
     }
   }
 

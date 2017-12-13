@@ -17,7 +17,9 @@
 package agent.auth
 
 import core.auth.BaseFrontendController
+import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
+import usermatching.utils.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
 
 
 trait UserMatchingController extends BaseFrontendController {
@@ -29,5 +31,9 @@ trait UserMatchingController extends BaseFrontendController {
     override val async: AuthenticatedAction[IncomeTaxAgentUser] = asyncInternal(agent.auth.AuthPredicates.userMatchingPredicates)
 
   }
+
+  implicit def requestUtil(request: Request[AnyContent]): UserMatchingSessionRequestUtil = UserMatchingSessionRequestUtil(request)
+
+  implicit def resultUtil(result: Result): UserMatchingSessionResultUtil = UserMatchingSessionResultUtil(result)
 
 }

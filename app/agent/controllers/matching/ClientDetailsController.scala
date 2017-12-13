@@ -60,9 +60,7 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-        keystoreService.fetchClientDetails() map {
-          clientDetails => Ok(view(ClientDetailsForm.clientDetailsForm.form.fill(clientDetails), isEditMode = isEditMode))
-        }
+        Future.successful(Ok(view(ClientDetailsForm.clientDetailsForm.form.fill(request.fetchUserDetails), isEditMode = isEditMode)))
       }
   }
 
@@ -72,23 +70,10 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
         ClientDetailsForm.clientDetailsForm.bindFromRequest.fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
           clientDetails => {
-            val persist = keystoreService.fetchClientDetails().flatMap {
-              case Some(oldDetails) if oldDetails == clientDetails =>
-                Future.successful(Unit)
-              case Some(_) =>
-                // n.b. the delete must come before the save otherwise nothing will ever be saved.
-                // this feature is currently NOT unit testable
-                for {
-                  _ <- keystoreService.deleteAll()
-                  _ <- keystoreService.saveClientDetails(clientDetails)
-                } yield Unit
-              case None =>
-                keystoreService.saveClientDetails(clientDetails)
-            }
+            val continue = Redirect(routes.ConfirmClientController.show()).saveUserDetails(clientDetails)
 
-            for {
-              _ <- persist
-            } yield Redirect(routes.ConfirmClientController.show())
+            if (request.fetchUserDetails.fold(false)(_ != clientDetails)) keystoreService.deleteAll().map(_ => continue)
+            else Future.successful(continue)
           }
         )
       }

@@ -22,7 +22,7 @@ import core.ITSASessionKeys._
 import core.auth.JourneyState._
 import core.auth.{IncomeTaxSAUser, UserMatched, UserMatchingController}
 import core.config.BaseControllerConfig
-import core.services.{AuthService, KeystoreService}
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
@@ -37,7 +37,6 @@ import scala.util.Left
 @Singleton
 class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
-                                      val keystoreService: KeystoreService,
                                       val authService: AuthService,
                                       val userMatching: UserMatchingService,
                                       val lockOutService: UserLockoutService
@@ -64,17 +63,19 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withLockOutCheck {
-        keystoreService.fetchUserDetails() map {
-          case Some(userDetails) => Ok(view(userDetails))
-          case _ => Redirect(usermatching.controllers.routes.UserDetailsLockoutController.show())
-        }
+        Future.successful(
+          request.fetchUserDetails match {
+            case Some(userDetails) => Ok(view(userDetails))
+            case _ => Redirect(usermatching.controllers.routes.UserDetailsLockoutController.show())
+          }
+        )
       }
   }
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       withLockOutCheck {
-        keystoreService.fetchUserDetails() flatMap {
+        request.fetchUserDetails match {
           case None =>
             Future.successful(Redirect(usermatching.controllers.routes.UserDetailsController.show()))
           case Some(userDetails) =>
@@ -123,7 +124,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
             .addingToSession(NINO -> matchedDetails.nino)
         )
     }
-  }.map(_.removingFromSession(FailedUserMatching).withJourneyState(UserMatched))
+  }.map(_.removingFromSession(FailedUserMatching).withJourneyState(UserMatched).clearUserDetails)
 
 }
 

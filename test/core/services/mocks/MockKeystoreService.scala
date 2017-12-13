@@ -69,7 +69,6 @@ trait MockKeystoreService extends MockTrait {
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
-                                         fetchUserDetails: MFO[UserDetailsModel] = DoNotConfigure,
                                          fetchPaperlessPreferenceToken: MFO[String] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
@@ -84,7 +83,6 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[Boolean](Terms, fetchTerms)
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
-    mockFetchFromKeyStore[UserDetailsModel](UserDetails, fetchUserDetails)
     mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
     mockFetchFromKeyStore[String](PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
 
@@ -117,8 +115,6 @@ trait MockKeystoreService extends MockTrait {
                                       saveSubscriptionId: Option[Int] = None,
                                       fetchAccountingPeriodPrior: Option[Int] = None,
                                       saveAccountingPeriodPrior: Option[Int] = None,
-                                      fetchUserDetails: Option[Int] = None,
-                                      saveUserDetails: Option[Int] = None,
                                       fetchPaperlessPreferenceToken: Option[Int] = None,
                                       savePaperlessPreferenceToken: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
@@ -146,8 +142,6 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(MtditId, saveSubscriptionId)
     verifyKeystoreFetch(AccountingPeriodPrior, fetchAccountingPeriodPrior)
     verifyKeystoreSave(AccountingPeriodPrior, saveAccountingPeriodPrior)
-    verifyKeystoreFetch(UserDetails, fetchUserDetails)
-    verifyKeystoreSave(UserDetails, saveUserDetails)
     verifyKeystoreFetch(PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
     verifyKeystoreSave(PaperlessPreferenceToken, savePaperlessPreferenceToken)
 

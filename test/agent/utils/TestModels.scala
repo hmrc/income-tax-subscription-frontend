@@ -56,7 +56,6 @@ object TestModels extends Implicits {
 
   val testCacheMap: CacheMap =
     testCacheMap(
-      clientDetailsModel = testClientDetails,
       incomeSource = testIncomeSourceBoth,
       otherIncome = testOtherIncomeNo,
       accountingPeriodPrior = testAccountingPeriodPriorCurrent,
@@ -66,7 +65,6 @@ object TestModels extends Implicits {
       terms = testTerms)
 
   def testCacheMapCustom(
-                          clientDetailsModel: Option[UserDetailsModel] = testClientDetails,
                           incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
                           otherIncome: Option[OtherIncomeModel] = testOtherIncomeNo,
                           accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
@@ -75,7 +73,6 @@ object TestModels extends Implicits {
                           accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
                           terms: Option[Boolean] = testTerms): CacheMap =
     testCacheMap(
-      clientDetailsModel = clientDetailsModel,
       incomeSource = incomeSource,
       otherIncome = otherIncome,
       accountingPeriodPrior = accountingPeriodPrior,
@@ -84,8 +81,7 @@ object TestModels extends Implicits {
       accountingMethod = accountingMethod,
       terms = terms)
 
-  def testCacheMap(clientDetailsModel: Option[UserDetailsModel] = None,
-                   incomeSource: Option[IncomeSourceModel] = None,
+  def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
@@ -94,7 +90,6 @@ object TestModels extends Implicits {
                    terms: Option[Boolean] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
-      clientDetailsModel.fold(emptyMap)(model => Map(ClientDetails -> UserDetailsModel.format.writes(model))) ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
       otherIncome.fold(emptyMap)(model => Map(OtherIncome -> OtherIncomeModel.format.writes(model))) ++
       accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++

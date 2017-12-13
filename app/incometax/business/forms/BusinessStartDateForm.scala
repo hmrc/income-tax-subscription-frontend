@@ -55,7 +55,7 @@ object BusinessStartDateForm {
   val startDateBeforeApr17: Constraint[DateModel] = constraint[DateModel](
     date => {
       lazy val invalid = ErrorMessageFactory.error(TargetIds(startDate), "error.business_accounting_period.minStartDate")
-      if (date.isBefore(minStartDate)) invalid else Valid
+      if (DateModel.dateConvert(date).isBefore(minStartDate)) invalid else Valid
     }
   )
 

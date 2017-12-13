@@ -111,7 +111,7 @@ trait ComponentSpecBase extends UnitSpec
     FeatureSwitch.switches foreach disable
   }
 
-  object IncomeTaxSubscriptionFrontend {
+  object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
     val csrfToken = UUID.randomUUID().toString
 
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse = await(
@@ -302,9 +302,9 @@ trait ComponentSpecBase extends UnitSpec
 
     def showUserDetails(): WSResponse = get("/user-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
 
-    def submitUserDetails(clientDetails: Option[UserDetailsModel]): WSResponse =
-      post("/user-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))(
-        clientDetails.fold(Map.empty: Map[String, Seq[String]])(
+    def submitUserDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
+      post("/user-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name).addUserDetails(storedSubmission))(
+        newSubmission.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(UserDetailsForm.userDetailsValidationForm, cd)
         )
       )
@@ -313,12 +313,15 @@ trait ComponentSpecBase extends UnitSpec
 
     def showUserDetailsLockout(): WSResponse = get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
 
-    def submitConfirmUser(previouslyFailedAttempts: Int = 0): WSResponse = {
+    def submitConfirmUser(previouslyFailedAttempts: Int = 0,
+                          storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testUserDetails)): WSResponse = {
       val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
         case 0 => Map.empty
         case count => Map(ITSASessionKeys.FailedUserMatching -> previouslyFailedAttempts.toString)
       }
-      post("/confirm-user", additionalCookies = Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name) ++ failedAttemptCounter)(Map.empty)
+      post("/confirm-user",
+        additionalCookies = Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name) ++ failedAttemptCounter.addUserDetails(storedUserDetails)
+      )(Map.empty)
     }
 
     def showAffinityGroupError(): WSResponse = get("/error/affinity-group")

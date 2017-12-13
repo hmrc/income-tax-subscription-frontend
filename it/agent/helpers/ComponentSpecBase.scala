@@ -28,6 +28,7 @@ import _root_.agent.models._
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import helpers.UserMatchingIntegrationRequestSupport
 import helpers.servicemocks.AuditStub
 import incometax.business.models.AccountingPeriodModel
 import org.scalatest._
@@ -114,7 +115,7 @@ trait ComponentSpecBase extends UnitSpec
   }
 
 
-  object IncomeTaxSubscriptionFrontend {
+  object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
     val csrfToken = UUID.randomUUID().toString
 
     val defaultCookies = Map(
@@ -164,9 +165,9 @@ trait ComponentSpecBase extends UnitSpec
 
     def showClientDetails(): WSResponse = get("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def submitClientDetails(clientDetails: Option[UserDetailsModel]): WSResponse =
-      post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(
-        clientDetails.fold(Map.empty: Map[String, Seq[String]])(
+    def submitClientDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
+      post("/client-details", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name).addUserDetails(storedSubmission))(
+        newSubmission.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(ClientDetailsForm.clientDetailsValidationForm, cd)
         )
       )
@@ -211,12 +212,16 @@ trait ComponentSpecBase extends UnitSpec
       ITSASessionKeys.UTR -> testUtr
     ))(Map.empty)
 
-    def submitConfirmClient(previouslyFailedAttempts: Int = 0): WSResponse = {
+    def submitConfirmClient(previouslyFailedAttempts: Int = 0,
+                            storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testClientDetails)): WSResponse = {
       val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
         case 0 => Map.empty
         case count => Map(ITSASessionKeys.FailedClientMatching -> previouslyFailedAttempts.toString)
       }
-      post("/confirm-client", additionalCookies = failedAttemptCounter ++ Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
+      post("/confirm-client",
+        additionalCookies = failedAttemptCounter ++ Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name)
+          .addUserDetails(storedUserDetails)
+      )(Map.empty)
     }
 
     def submitTerms(): WSResponse = post("/terms")(Map.empty)
