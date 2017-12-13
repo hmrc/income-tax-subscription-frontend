@@ -79,6 +79,8 @@ trait AppConfig {
 
   def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String
 
+  def storeSubscriptionUrl(nino: String): String
+
   val addressLookupFrontendURL: String
   val signUpToSaLink: String
   val agentSignUpUrl: String
@@ -218,5 +220,10 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String =
     s"$enrolmentStore/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments/$enrolmentKey"
+
+  lazy val subscriptionStore = baseUrl("income-tax-subscription-store")
+
+  override def storeSubscriptionUrl(nino: String): String =
+    s"$subscriptionStore/income-tax-subscription-store/client-subscription-data/$nino"
 }
 
