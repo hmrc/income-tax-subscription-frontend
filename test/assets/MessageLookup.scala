@@ -37,6 +37,8 @@ object MessageLookup {
     val goBack = "Go back"
     val navTitle = "Report your income and expenses quarterly"
     val titleError = "Error: "
+    val yes = "Yes"
+    val no = "No"
   }
 
   object FrontPage {
@@ -97,6 +99,12 @@ object MessageLookup {
       val line_1 = "As a sole trader, you run your own business as an individual. You can keep all your business's profits after you've paid tax on them. 'Sole trader' means you're responsible for the business, not that you have to work alone."
       val yes = "Yes - I'm a sole trader"
       val no = "No - I am a different type of business"
+    }
+
+    object MatchTaxYear {
+      val title = "Does your accounting period match the tax year?"
+      val heading: String = "Does your accounting period match the tax year?"
+      val line1 = "The tax year runs from 6 April to 5 April. Your accounting period is usually the same, unless you chose different dates when you registered for Self Assessment."
     }
 
     object AccountingPeriodPrior {
@@ -361,6 +369,11 @@ object MessageLookup {
     object Business {
 
       object SoleTrader {
+        val empty = "You must select an option to continue"
+        val invalid = "You must select an option to continue"
+      }
+
+      object MatchTaxYear {
         val empty = "You must select an option to continue"
         val invalid = "You must select an option to continue"
       }

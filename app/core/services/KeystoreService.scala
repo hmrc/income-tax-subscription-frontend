@@ -78,6 +78,12 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveBusinessStartDate(businessStartDate: BusinessStartDateModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessStartDateModel]): FC =
     save[BusinessStartDateModel](BusinessStartDate, businessStartDate)
 
+  def fetchMatchTaxYear()(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FO[MatchTaxYearModel] =
+    fetch[MatchTaxYearModel](MatchTaxYear)
+
+  def saveMatchTaxYear(accountingPeriod: MatchTaxYearModel)(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FC =
+    save[MatchTaxYearModel](MatchTaxYear, accountingPeriod)
+
   def fetchAccountingPeriodDate()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FO[AccountingPeriodModel] =
     fetch[AccountingPeriodModel](AccountingPeriodDate)
 

@@ -86,6 +86,12 @@ business.address.edit.add_line_1                                = Address line 1
 business.address.edit.add_line_2                                = Address line 2
 business.address.edit.add_line_3                                = Address line 3
 
+
+# Match tax year
+business.match_tax_year.title                                   = Does your accounting period match the tax year?
+business.match_tax_year.heading                                 = Does your accounting period match the tax year?
+business.match_tax_year.line_1                                  = The tax year runs from 6 April to 5 April. Your accounting period is usually the same, unless you chose different dates when you registered for Self Assessment.
+
 # Business start date
 business.start_date.title                                        = Business start date
 business.start_date.heading                                      = When did your business start trading?
@@ -231,6 +237,9 @@ error.property.income.invalid                                   = You must selec
 
 error.date.empty                                                = You must enter a date
 error.date.invalid                                              = You must enter a valid date
+
+error.business.match_tax_year.empty                             = You must select an option to continue
+error.business.match_tax_year.invalid                           = You must select an option to continue
 
 error.business.current_financial_period_prior.empty             = You must select an option to continue
 error.business.current_financial_period_prior.invalid           = You must select an option to continue
