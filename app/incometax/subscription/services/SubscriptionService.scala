@@ -19,10 +19,13 @@ package incometax.subscription.services
 import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
+import incometax.business.forms.MatchTaxYearForm
+import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.connectors.SubscriptionConnector
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import incometax.subscription.models.{IncomeSourceType, SubscriptionRequest, SummaryModel}
+import incometax.util.AccountingPeriodUtil
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -33,8 +36,13 @@ class SubscriptionService @Inject()(logging: Logging,
 
   private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
     val incomeSource = IncomeSourceType(summaryData.incomeSource.get.source)
-    val accountingPeriodStart = summaryData.accountingPeriod map (_.startDate)
-    val accountingPeriodEnd = summaryData.accountingPeriod map (_.endDate)
+    val (accountingPeriodStart, accountingPeriodEnd) = summaryData.matchTaxYear match {
+      case Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)) =>
+        val cty = AccountingPeriodUtil.getCurrentTaxEndYear
+        (Some(AccountingPeriodUtil.getCurrentTaxYearStartDate), Some(AccountingPeriodUtil.getCurrentTaxYearEndDate))
+      case Some(MatchTaxYearModel(MatchTaxYearForm.option_no)) =>
+        (summaryData.accountingPeriod map (_.startDate), summaryData.accountingPeriod map (_.endDate))
+    }
     val cashOrAccruals = summaryData.accountingMethod map (_.accountingMethod)
     val tradingName = summaryData.businessName map (_.businessName)
 

@@ -22,7 +22,7 @@ import incometax.business.models.AccountingPeriodModel
 import uk.gov.hmrc.play.test.UnitSpec
 
 
-class AccountingPeriodUtilSpec extends UnitSpec  {
+class AccountingPeriodUtilSpec extends UnitSpec {
 
   "AccountingPeriodUtil.getTaxEndYear" should {
     "return 2018 if the tax year ends between 6th April 2017 and 5th April 2018" in {
@@ -47,6 +47,18 @@ class AccountingPeriodUtilSpec extends UnitSpec  {
       val testPeriodAboveUpperBound = AccountingPeriodModel(TestModels.testStartDate, DateModel("6", "4", "2019"))
       AccountingPeriodUtil.getTaxEndYear(testPeriodUpperBound) shouldBe 2019
       AccountingPeriodUtil.getTaxEndYear(testPeriodAboveUpperBound) shouldBe 2020
+    }
+  }
+
+  "AccountingPeriodUtil.getCurrentTaxYearStartDate" should {
+    "return the start date for the current tax year" in {
+      AccountingPeriodUtil.getCurrentTaxYearStartDate shouldBe DateModel("6", "4", AccountingPeriodUtil.getCurrentTaxEndYear.toString)
+    }
+  }
+
+  "AccountingPeriodUtil.getCurrentTaxYearEndDate" should {
+    "return the end date for the current tax year" in {
+      AccountingPeriodUtil.getCurrentTaxYearEndDate shouldBe DateModel("5", "4", (AccountingPeriodUtil.getCurrentTaxEndYear + 1).toString)
     }
   }
 
