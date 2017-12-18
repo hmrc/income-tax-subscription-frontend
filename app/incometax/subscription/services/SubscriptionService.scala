@@ -36,11 +36,16 @@ class SubscriptionService @Inject()(logging: Logging,
 
   private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
     val incomeSource = IncomeSourceType(summaryData.incomeSource.get.source)
-    val (accountingPeriodStart, accountingPeriodEnd) = summaryData.matchTaxYear match {
-      case Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)) =>
+    val (accountingPeriodStart, accountingPeriodEnd) = (summaryData.matchTaxYear, summaryData.accountingPeriodPrior) match {
+      // individual journey
+      case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), None) =>
         val cty = AccountingPeriodUtil.getCurrentTaxEndYear
         (Some(AccountingPeriodUtil.getCurrentTaxYearStartDate), Some(AccountingPeriodUtil.getCurrentTaxYearEndDate))
-      case Some(MatchTaxYearModel(MatchTaxYearForm.option_no)) =>
+      // individual journey
+      case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), None) =>
+        (summaryData.accountingPeriod map (_.startDate), summaryData.accountingPeriod map (_.endDate))
+      case (None, Some(_)) =>
+        // agent journey
         (summaryData.accountingPeriod map (_.startDate), summaryData.accountingPeriod map (_.endDate))
     }
     val cashOrAccruals = summaryData.accountingMethod map (_.accountingMethod)

@@ -26,7 +26,6 @@ import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import incometax.subscription.models.{Both, StoredSubscription, SummaryModel}
-import models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -45,8 +44,8 @@ object TestModels extends Implicits {
   val testStartDate = DateModel("06", "04", "2017")
   val testEndDate = DateModel("01", "04", "2018")
 
-  val testMatchTaxYearYes : MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_yes)
-  val testMatchTaxYearNo : MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_no)
+  val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_yes)
+  val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_no)
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
   val testAccountingPeriod: AccountingPeriodModel =
@@ -70,6 +69,7 @@ object TestModels extends Implicits {
     testCacheMap(incomeSource = testIncomeSourceBoth,
       otherIncome = testOtherIncomeNo,
       matchTaxYear = testMatchTaxYearNo,
+      accountingPeriodPrior = testAccountingPeriodPriorCurrent,
       accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
       businessPhoneNumber = testBusinessPhoneNumber,
@@ -82,6 +82,7 @@ object TestModels extends Implicits {
                           incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
                           otherIncome: Option[OtherIncomeModel] = testOtherIncomeNo,
                           matchTaxYear: Option[MatchTaxYearModel] = testMatchTaxYearNo,
+                          accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                           businessName: Option[BusinessNameModel] = testBusinessName,
                           businessPhoneNumber: Option[BusinessPhoneNumberModel] = testBusinessPhoneNumber,
@@ -104,6 +105,7 @@ object TestModels extends Implicits {
   def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
+                   accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
@@ -115,6 +117,7 @@ object TestModels extends Implicits {
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
       otherIncome.fold(emptyMap)(model => Map(OtherIncome -> OtherIncomeModel.format.writes(model))) ++
+      accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
       matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++

@@ -16,10 +16,9 @@
 
 package core.services
 
-import incometax.subscription.models.SummaryModel
-import models._
-import org.scalatest.Matchers._
 import core.utils.UnitTestTrait
+import incometax.subscription.models.SummaryModel
+import org.scalatest.Matchers._
 
 class CacheUtilSpec extends UnitTestTrait {
 
@@ -57,31 +56,34 @@ class CacheUtilSpec extends UnitTestTrait {
     "The getSummary should populate the Summary model correctly" in {
       testCacheMap.getSummary() shouldBe
         SummaryModel(
-          testIncomeSourceBoth,
-          testOtherIncomeNo,
-          testMatchTaxYearNo,
-          testAccountingPeriod,
-          testBusinessName,
-          testBusinessPhoneNumber,
-          testAddress,
-          testBusinessStartDate,
-          testAccountingMethod,
-          testTerms
+          incomeSource = testIncomeSourceBoth,
+          otherIncome = testOtherIncomeNo,
+          matchTaxYear = testMatchTaxYearNo,
+          accountingPeriod = testAccountingPeriod,
+          businessName = testBusinessName,
+          businessPhoneNumber = testBusinessPhoneNumber,
+          businessAddress = testAddress,
+          businessStartDate = testBusinessStartDate,
+          accountingMethod = testAccountingMethod,
+          terms = testTerms
         )
 
       // for the property only journey, this should only populate the subset of views
       // relevant to the journey
       val overPopulatedPropertyCacheMap =
-      testCacheMap(testIncomeSourceProperty,
-        testOtherIncomeNo,
-        testMatchTaxYearNo,
-        testAccountingPeriod,
-        testBusinessName,
-        testBusinessPhoneNumber,
-        testAddress,
-        testBusinessStartDate,
-        testAccountingMethod,
-        testTerms)
+      testCacheMap(
+        incomeSource = testIncomeSourceProperty,
+        otherIncome = testOtherIncomeNo,
+        matchTaxYear = testMatchTaxYearNo,
+        accountingPeriodDate = testAccountingPeriod,
+        businessName = testBusinessName,
+        businessPhoneNumber = testBusinessPhoneNumber,
+        businessAddress = testAddress,
+        businessStartDate = testBusinessStartDate,
+        accountingMethod = testAccountingMethod,
+        terms = testTerms,
+        accountingPeriodPrior = None // no longer used in individual journey
+      )
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceProperty,

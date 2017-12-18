@@ -73,16 +73,16 @@ object CacheUtil {
               )
             case _ =>
               SummaryModel(
-                incomeSource,
-                getOtherIncome(),
-                getMatchTaxYear(),
-                getAccountingPeriodDate(),
-                getBusinessName(),
-                getBusinessPhoneNumber(),
-                getBusinessAddress(),
-                getBusinessStartDate(),
-                getAccountingMethod(),
-                getTerms()
+                incomeSource = incomeSource,
+                otherIncome = getOtherIncome(),
+                matchTaxYear = getMatchTaxYear(),
+                accountingPeriod = getAccountingPeriodDate(),
+                businessName = getBusinessName(),
+                businessPhoneNumber = getBusinessPhoneNumber(),
+                businessAddress = getBusinessAddress(),
+                businessStartDate = getBusinessStartDate(),
+                accountingMethod = getAccountingMethod(),
+                terms = getTerms()
               )
           }
         case _ => SummaryModel()

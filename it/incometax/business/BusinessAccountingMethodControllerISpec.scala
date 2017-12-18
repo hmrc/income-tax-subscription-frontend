@@ -18,11 +18,11 @@ package incometax.business
 
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels.keystoreData
+import helpers.IntegrationTestModels.{keystoreData, testMatchTaxYearNo, testMatchTaxYearYes}
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
-import incometax.business.forms.{AccountingMethodForm, AccountingPeriodPriorForm}
-import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, AccountingPeriodPriorModel}
+import incometax.business.forms.{AccountingMethodForm, AccountingPeriodPriorForm, MatchTaxYearForm}
+import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, AccountingPeriodPriorModel, MatchTaxYearModel}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import play.api.http.Status._
@@ -56,7 +56,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       "show the accounting method page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(testMatchTaxYearYes)))
 
         When("GET /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
@@ -114,9 +114,11 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
     "not select an option on the accounting method page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(testMatchTaxYearYes))) // for the back url
       KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "")
 
       When("POST /business/accounting-method is called")
+
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, None)
 
       Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
@@ -131,6 +133,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(testMatchTaxYearYes))) // for the back url
       KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "madeup")
 
       When("POST /business/accounting-method is called")
@@ -159,7 +162,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
           keystoreData(
             incomeSource = Some(keystoreIncomeSource),
             otherIncome = Some(keystoreIncomeOther),
-            accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
+            matchTaxYear = Some(testMatchTaxYearNo),
             accountingPeriodDate = Some(keystoreAccountingPeriodDates),
             accountingMethod = Some(keystoreAccountingMethod)
           )
@@ -179,7 +182,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       "simulate not changing accounting method when calling page from Check Your Answers" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+        val keystoreTaxYear = MatchTaxYearModel(MatchTaxYearForm.option_no)
         val keystoreAccountingPeriodDates: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
         val keystoreAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
         val userInput = AccountingMethodModel(AccountingMethodForm.option_cash)
@@ -190,7 +193,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
           keystoreData(
             incomeSource = Some(keystoreIncomeSource),
             otherIncome = Some(keystoreIncomeOther),
-            accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
+            matchTaxYear = Some(keystoreTaxYear),
             accountingPeriodDate = Some(keystoreAccountingPeriodDates),
             accountingMethod = Some(keystoreAccountingMethod)
           )

@@ -51,6 +51,7 @@ class CacheUtilSpec extends UnitTestTrait {
           testIncomeSourceBoth,
           testOtherIncomeNo,
           None, // match tax year
+          testAccountingPeriodPriorCurrent,
           testAccountingPeriod,
           testBusinessName,
           None,
@@ -66,6 +67,7 @@ class CacheUtilSpec extends UnitTestTrait {
       agent.utils.TestModels.testCacheMap(
         Some(agent.utils.TestModels.testIncomeSourceProperty),
         Some(agent.utils.TestModels.testOtherIncomeNo),
+        Some(agent.utils.TestModels.testAccountingPeriodPriorCurrent),
         Some(agent.utils.TestModels.testAccountingPeriod),
         Some(agent.utils.TestModels.testBusinessName),
         Some(agent.utils.TestModels.testAccountingMethod),

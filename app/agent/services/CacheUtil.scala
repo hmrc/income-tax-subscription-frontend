@@ -34,6 +34,8 @@ object CacheUtil {
 
     def getOtherIncome()(implicit read: Reads[OtherIncomeModel]): Option[OtherIncomeModel] = cacheMap.getEntry(OtherIncome)
 
+    def getAccountingPeriodPrior()(implicit read: Reads[AccountingPeriodPriorModel]): Option[AccountingPeriodPriorModel] = cacheMap.getEntry(AccountingPeriodPrior)
+
     def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriodDate)
 
     def getBusinessName()(implicit read: Reads[BusinessNameModel]): Option[BusinessNameModel] = cacheMap.getEntry(BusinessName)
@@ -45,6 +47,7 @@ object CacheUtil {
     def getSummary()(implicit
                      isrc: Reads[IncomeSourceModel],
                      oirc: Reads[OtherIncomeModel],
+                     accP: Reads[AccountingPeriodPriorModel],
                      accD: Reads[AccountingPeriodModel],
                      bus: Reads[BusinessNameModel],
                      accM: Reads[AccountingMethodModel],
@@ -63,6 +66,7 @@ object CacheUtil {
               SummaryModel(
                 incomeSource = incomeSource,
                 otherIncome = getOtherIncome(),
+                accountingPeriodPrior = getAccountingPeriodPrior(),
                 accountingPeriod = getAccountingPeriodDate(),
                 businessName = getBusinessName(),
                 businessPhoneNumber = None,
