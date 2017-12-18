@@ -52,13 +52,13 @@ class AccountingPeriodUtilSpec extends UnitSpec {
 
   "AccountingPeriodUtil.getCurrentTaxYearStartDate" should {
     "return the start date for the current tax year" in {
-      AccountingPeriodUtil.getCurrentTaxYearStartDate shouldBe DateModel("6", "4", AccountingPeriodUtil.getCurrentTaxEndYear.toString)
+      AccountingPeriodUtil.getCurrentTaxYearStartDate shouldBe DateModel("6", "4", (AccountingPeriodUtil.getCurrentTaxEndYear -1).toString)
     }
   }
 
   "AccountingPeriodUtil.getCurrentTaxYearEndDate" should {
     "return the end date for the current tax year" in {
-      AccountingPeriodUtil.getCurrentTaxYearEndDate shouldBe DateModel("5", "4", (AccountingPeriodUtil.getCurrentTaxEndYear + 1).toString)
+      AccountingPeriodUtil.getCurrentTaxYearEndDate shouldBe DateModel("5", "4", AccountingPeriodUtil.getCurrentTaxEndYear.toString)
     }
   }
 

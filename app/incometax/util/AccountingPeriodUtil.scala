@@ -35,8 +35,8 @@ object AccountingPeriodUtil {
 
   def getCurrentTaxEndYear: Int = getTaxEndYear(LocalDate.now())
 
-  def getCurrentTaxYearStartDate = DateModel(sixth.toString, april.toString, getCurrentTaxEndYear.toString)
+  def getCurrentTaxYearStartDate = DateModel(sixth.toString, april.toString, (getCurrentTaxEndYear -1).toString)
 
-  def getCurrentTaxYearEndDate = DateModel(fifth.toString, april.toString, (getCurrentTaxEndYear + 1).toString)
+  def getCurrentTaxYearEndDate = DateModel(fifth.toString, april.toString, getCurrentTaxEndYear.toString)
 
 }
