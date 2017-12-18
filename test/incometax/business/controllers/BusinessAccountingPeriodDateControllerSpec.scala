@@ -34,8 +34,8 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "BusinessAccountingPeriodDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestBusinessAccountingPeriodController.show(isEditMode = false),
-    "submit" -> TestBusinessAccountingPeriodController.submit(isEditMode = false)
+    "show" -> TestBusinessAccountingPeriodController.show(isEditMode = false, editMatch = false),
+    "submit" -> TestBusinessAccountingPeriodController.submit(isEditMode = false, editMatch = false)
   )
 
   def createTestBusinessAccountingPeriodController(setEnableRegistration: Boolean): BusinessAccountingPeriodDateController =
@@ -59,7 +59,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
     "Calling the showAccountingPeriod action of the BusinessAccountingPeriodDate" should {
 
-      lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(request)
+      lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false, editMatch = false)(request)
 
       "return ok (200)" in {
         setupMockKeystore(fetchAccountingPeriodDate = None)
@@ -82,7 +82,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
       val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2018"))
       val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2019"))
 
-      def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(request
+      def callShow(isEditMode: Boolean, editMatch: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode, editMatch = editMatch)(request
         .post(AccountingPeriodDateForm.accountingPeriodDateForm, testAccountingPeriodDates))
 
       "When it is not in edit mode" when {
@@ -90,7 +90,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
           s"return a redirect status (SEE_OTHER - 303) but do not update terms" in {
             setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates)
 
-            val goodRequest = callShow(isEditMode = false)
+            val goodRequest = callShow(isEditMode = false, editMatch = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
@@ -104,7 +104,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
           s"return a redirect status (SEE_OTHER - 303) and update terms" in {
             setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear)
 
-            val goodRequest = callShow(isEditMode = false)
+            val goodRequest = callShow(isEditMode = false, editMatch = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
@@ -120,7 +120,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
           "return a redirect status (SEE_OTHER - 303)" in {
             setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates)
 
-            val goodRequest = callShow(isEditMode = true)
+            val goodRequest = callShow(isEditMode = true, editMatch = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
@@ -134,7 +134,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
           "return a redirect status (SEE_OTHER - 303)" in {
             setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear)
 
-            val goodRequest = callShow(isEditMode = true)
+            val goodRequest = callShow(isEditMode = true, editMatch = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true).url)
@@ -148,7 +148,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     }
 
     "Calling the submit action of the BusinessAccountingPeriodDate with an invalid submission" should {
-      lazy val badrequest = TestBusinessAccountingPeriodController.submit(isEditMode = false)(request)
+      lazy val badrequest = TestBusinessAccountingPeriodController.submit(isEditMode = false, editMatch = false)(request)
 
       "return a bad request status (400)" in {
         status(badrequest) must be(Status.BAD_REQUEST)
@@ -160,13 +160,19 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
     "The back url" should {
       s"point to ${incometax.business.controllers.routes.BusinessStartDateController.show().url}" in {
-        await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(request)) mustBe incometax.business.controllers.routes.BusinessStartDateController.show().url
+        TestBusinessAccountingPeriodController.backUrl(isEditMode = false, editMatch = false)(request) mustBe incometax.business.controllers.routes.BusinessStartDateController.show().url
       }
     }
 
-    "The back url in edit mode" should {
+    "The back url in edit mode if editmatch is false" should {
       s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
-        await(TestBusinessAccountingPeriodController.backUrl(isEditMode = true)(request)) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+        TestBusinessAccountingPeriodController.backUrl(isEditMode = true, editMatch = false)(request) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+      }
+    }
+
+    "The back url for edit journey if editmatch is true" should {
+      s"point to ${incometax.business.controllers.routes.RegisterNextAccountingPeriodController.show().url}" in {
+        TestBusinessAccountingPeriodController.backUrl(isEditMode = true, editMatch = true)(request) mustBe incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
       }
     }
   }
@@ -175,13 +181,12 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
     lazy val request = subscriptionRequest
 
-    "Calling the showAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user with is current period as yes" should {
+    "Calling the showAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user on a signup journey" should {
 
-      lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(request)
+      lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false, editMatch = false)(request)
 
       "return ok (200)" in {
-        // required for backurl
-        setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+        setupMockKeystore(fetchAccountingPeriodDate = None)
 
         status(result) must be(Status.OK)
 
@@ -190,30 +195,9 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
       }
 
-      s"the rendered view should have the heading '${MessageLookup.AccountingPeriod.heading_current}'" in {
+      s"the rendered view should have the heading '${MessageLookup.AccountingPeriod.heading_signup}'" in {
         val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading_current
-      }
-    }
-
-    "Calling the show action of the BusinessAccountingPeriodDate with an authorised user with is current period prior as no" should {
-
-      lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(request)
-
-      "return ok (200)" in {
-        // required for backurl
-        setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
-
-        status(result) must be(Status.OK)
-
-        await(result)
-        verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 0, fetchAccountingPeriodPrior = 2)
-
-      }
-
-      s"the rendered view should have the heading '${MessageLookup.AccountingPeriod.heading_next}'" in {
-        val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading_next
+        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading_signup
       }
     }
 
@@ -222,7 +206,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
       val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2018"))
       val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2019"))
 
-      def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(request
+      def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode, editMatch = false)(request
         .post(AccountingPeriodDateForm.accountingPeriodDateForm, testAccountingPeriodDates))
 
       "When it is not in edit mode" when {
@@ -302,7 +286,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     }
 
     "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and invalid submission" should {
-      lazy val badrequest = TestBusinessAccountingPeriodController.submit(isEditMode = false)(request)
+      lazy val badrequest = TestBusinessAccountingPeriodController.submit(isEditMode = false, editMatch = false)(request)
 
       "return a bad request status (400)" in {
         // required for backurl
@@ -315,19 +299,21 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "The back url when the user is submitting details for current period" should {
+    "The back url for linear journey" should {
       s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url}" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
-        await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(request)) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url
-        verifyKeystore(fetchAccountingPeriodPrior = 1)
+        TestBusinessAccountingPeriodController.backUrl(isEditMode = false, editMatch = false)(request) mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
       }
     }
 
-    "The back url when the user is submitting details for next period" should {
+    "The back url for edit journey if editmatch is false" should {
       s"point to ${incometax.business.controllers.routes.RegisterNextAccountingPeriodController.show().url}" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = TestModels.testIsNextPeriod)
-        await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(request)) mustBe incometax.business.controllers.routes.RegisterNextAccountingPeriodController.show().url
-        verifyKeystore(fetchAccountingPeriodPrior = 1)
+        TestBusinessAccountingPeriodController.backUrl(isEditMode = true, editMatch = false)(request) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+      }
+    }
+
+    "The back url for edit journey if editmatch is true" should {
+      s"point to ${incometax.business.controllers.routes.RegisterNextAccountingPeriodController.show().url}" in {
+        TestBusinessAccountingPeriodController.backUrl(isEditMode = true, editMatch = true)(request) mustBe incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
       }
     }
 

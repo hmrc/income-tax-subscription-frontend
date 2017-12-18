@@ -76,13 +76,13 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
       )
 
     "When it is not in edit mode" should {
-      s"return a redirect status (SEE_OTHER - 303) '${incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url}'" in {
+      s"return a redirect status (SEE_OTHER - 303) '${incometax.business.controllers.routes.MatchTaxYearController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url)
+        redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.MatchTaxYearController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)

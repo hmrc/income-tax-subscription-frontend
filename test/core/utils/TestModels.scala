@@ -20,7 +20,7 @@ package core.utils
 import core.models.DateModel
 import core.services.CacheConstants
 import core.utils.TestConstants._
-import incometax.business.forms.{AccountingMethodForm, AccountingPeriodPriorForm}
+import incometax.business.forms.{AccountingMethodForm, AccountingPeriodPriorForm, MatchTaxYearForm}
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
@@ -45,6 +45,8 @@ object TestModels extends Implicits {
   val testStartDate = DateModel("06", "04", "2017")
   val testEndDate = DateModel("01", "04", "2018")
 
+  val testMatchTaxYearYes : MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_yes)
+  val testMatchTaxYearNo : MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_no)
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
   val testAccountingPeriod: AccountingPeriodModel =

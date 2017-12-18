@@ -14,16 +14,14 @@
  * limitations under the License.
  *@
 
-@import play.api.data.Form
-@import models._
-@import incometax.business.forms.AccountingPeriodDateForm._
-@import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
-@import incometax.business.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView, RegistrationAccountingPeriodView}
-
-@import incometax.business.models.AccountingPeriodModel
-@import core.views.html.templates.main_template
 @import core.views.html.helpers._
+@import core.views.html.templates.main_template
+@import incometax.business.forms.AccountingPeriodDateForm._
+@import incometax.business.models.AccountingPeriodModel
+@import incometax.business.models.enums.{AccountingPeriodViewType, RegistrationAccountingPeriodView, SignUpAccountingPeriodView}
+@import play.api.data.Form
+@import uk.gov.hmrc.play.views.html.helpers.form
 
 @(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, viewType: AccountingPeriodViewType, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -38,11 +36,8 @@
         @Messages("accounting_period.heading")
     } else {
         @viewType match {
-            case CurrentAccountingPeriodView => {
-                @Messages("accounting_period.heading.current")
-            }
-            case NextAccountingPeriodView => {
-                @Messages("accounting_period.heading.next")
+            case SignUpAccountingPeriodView => {
+                @Messages("accounting_period.heading.signup")
             }
             case RegistrationAccountingPeriodView => {
                 @Messages("accounting_period.heading.registration")
@@ -53,8 +48,7 @@
 
     <div class="form-group">
         <p>@viewType match {
-            case CurrentAccountingPeriodView => {@Messages("accounting_period.line_1.current")}
-            case NextAccountingPeriodView => {@Messages("accounting_period.line_1.next")}
+            case SignUpAccountingPeriodView => {@Messages("accounting_period.line_1.signup")}
             case RegistrationAccountingPeriodView => {@Messages("accounting_period.line_1.registration")}
         }</p>
     </div>
@@ -66,10 +60,8 @@
             label = Messages("base.startDate"),
             parentForm = accountingPeriodForm,
             hintText = viewType match {
-                case CurrentAccountingPeriodView =>
-                    Messages("accounting_period.exampleStartDate.current")
-                case NextAccountingPeriodView =>
-                    Messages("accounting_period.exampleStartDate.next")
+                case SignUpAccountingPeriodView =>
+                    Messages("accounting_period.exampleStartDate.signup")
                 case RegistrationAccountingPeriodView =>
                     Messages("accounting_period.exampleStartDate.registration")
             }
@@ -80,10 +72,8 @@
             label = Messages("base.endDate"),
             parentForm = accountingPeriodForm,
             hintText = viewType match {
-                case CurrentAccountingPeriodView =>
-                    Messages("accounting_period.exampleEndDate.current")
-                case NextAccountingPeriodView =>
-                    Messages("accounting_period.exampleEndDate.next")
+                case SignUpAccountingPeriodView =>
+                    Messages("accounting_period.exampleEndDate.signup")
                 case RegistrationAccountingPeriodView =>
                     Messages("accounting_period.exampleEndDate.registration")
             }

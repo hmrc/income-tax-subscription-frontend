@@ -19,24 +19,7 @@ package incometax.business.models.enums
 
 sealed trait AccountingPeriodViewType
 
-case object CurrentAccountingPeriodView extends AccountingPeriodViewType
-
-case object NextAccountingPeriodView extends AccountingPeriodViewType
+case object SignUpAccountingPeriodView extends AccountingPeriodViewType
 
 case object RegistrationAccountingPeriodView extends AccountingPeriodViewType
 
-
-object AccountingPeriodViewType {
-
-  import incometax.business.forms.AccountingPeriodPriorForm
-  import incometax.business.models.AccountingPeriodPriorModel
-
-  implicit def conv(accountingPeriodPrior: AccountingPeriodPriorModel): AccountingPeriodViewType =
-    accountingPeriodPrior.currentPeriodIsPrior match {
-      case AccountingPeriodPriorForm.option_yes =>
-        NextAccountingPeriodView
-      case AccountingPeriodPriorForm.option_no =>
-        CurrentAccountingPeriodView
-    }
-
-}

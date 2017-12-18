@@ -21,12 +21,13 @@ import javax.inject.{Inject, Singleton}
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import incometax.business.forms.AccountingMethodForm
-import incometax.business.models.AccountingMethodModel
+import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
+import incometax.business.models.{AccountingMethodModel, MatchTaxYearModel}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
@@ -37,25 +38,29 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
                                                    val authService: AuthService
                                                   ) extends SignUpController {
 
-  def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    incometax.business.views.html.accounting_method(
-      accountingMethodForm = accountingMethodForm,
-      postAction = incometax.business.controllers.routes.BusinessAccountingMethodController.submit(editMode = isEditMode),
-      isEditMode,
-      backUrl = backUrl(isEditMode)
-    )
+  def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
+    for {
+      back <- backUrl(isEditMode)
+    } yield
+      incometax.business.views.html.accounting_method(
+        accountingMethodForm = accountingMethodForm,
+        postAction = incometax.business.controllers.routes.BusinessAccountingMethodController.submit(editMode = isEditMode),
+        isEditMode,
+        backUrl = back
+      )
+  }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchAccountingMethod() map {
-        accountingMethod => Ok(view(accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(accountingMethod), isEditMode = isEditMode))
+      keystoreService.fetchAccountingMethod() flatMap { accountingMethod =>
+        view(accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(accountingMethod), isEditMode = isEditMode).map(view => Ok(view))
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       AccountingMethodForm.accountingMethodForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(accountingMethodForm = formWithErrors, isEditMode = isEditMode))),
+        formWithErrors => view(accountingMethodForm = formWithErrors, isEditMode = isEditMode).map(view => BadRequest(view)),
         accountingMethod => {
           keystoreService.saveAccountingMethod(accountingMethod) map (_ => isEditMode match {
             case true => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
@@ -65,10 +70,15 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       )
   }
 
-  def backUrl(isEditMode: Boolean): String =
+  def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): Future[String] =
     if (isEditMode)
-      incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+      Future.successful(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
     else
-      incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
+      keystoreService.fetchMatchTaxYear() map {
+        case Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)) =>
+          incometax.business.controllers.routes.MatchTaxYearController.show().url
+        case Some(MatchTaxYearModel(MatchTaxYearForm.option_no)) =>
+          incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
+      }
 
 }

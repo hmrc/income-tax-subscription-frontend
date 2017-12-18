@@ -61,7 +61,7 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
             case (false, MatchTaxYearForm.option_yes) => Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
             case (false, MatchTaxYearForm.option_no) => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show())
             case (true, MatchTaxYearForm.option_yes) => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-            case (true, MatchTaxYearForm.option_no) => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true))
+            case (true, MatchTaxYearForm.option_no) => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true))
           })
         }
       )

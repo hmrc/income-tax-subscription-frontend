@@ -18,6 +18,7 @@ package incometax.business.controllers
 
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
+import core.utils.TestModels._
 import incometax.business.forms.AccountingMethodForm
 import incometax.business.models.AccountingMethodModel
 import play.api.http.Status
@@ -45,12 +46,15 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     lazy val result = TestBusinessAccountingMethodController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
-      setupMockKeystore(fetchAccountingMethod = None)
+      setupMockKeystore(
+        fetchAccountingMethod = None,
+        fetchMatchTaxYear = testMatchTaxYearYes // for the back url
+      )
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchAccountingMethod = 1, saveAccountingMethod = 0)
+      verifyKeystore(fetchAccountingMethod = 1, saveAccountingMethod = 0, fetchMatchTaxYear = 1)
     }
   }
 
@@ -112,22 +116,35 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     lazy val badRequest = TestBusinessAccountingMethodController.submit(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
+      // for the back url
+      setupMockKeystore(fetchMatchTaxYear = testMatchTaxYearYes)
+
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 0)
+      verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 0, fetchMatchTaxYear = 1)
     }
   }
 
-  "The back url not in edit mode" should {
-    s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url}" in {
-      TestBusinessAccountingMethodController.backUrl(isEditMode = false) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
+  "The back url not in edit mode" when {
+    "match tax year is answered with yes" should {
+      s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show().url}" in {
+        setupMockKeystore(fetchMatchTaxYear = testMatchTaxYearYes)
+        await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
+      }
+    }
+
+    "match tax year is answered with no" should {
+      s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url}" in {
+        setupMockKeystore(fetchMatchTaxYear = testMatchTaxYearNo)
+        await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
+      }
     }
   }
 
   "The back url in edit mode" should {
     s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
-      TestBusinessAccountingMethodController.backUrl(isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+      await(TestBusinessAccountingMethodController.backUrl(isEditMode = true)) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

@@ -19,20 +19,18 @@ package incometax.subscription.views
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
 import core.models.DateModel
+import core.utils.{TestModels, UnitTestTrait}
+import core.views.html.helpers.SummaryIdConstants._
+import incometax.business.models._
+import incometax.business.models.address.Address
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import incometax.subscription.models.SummaryModel
-import models._
-import incometax.business.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import core.utils.{TestModels, UnitTestTrait}
-import core.views.html.helpers.SummaryIdConstants._
-import incometax.business.models._
-import incometax.business.models.address.Address
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
 
@@ -58,7 +56,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   lazy val postAction: Call = incometax.subscription.controllers.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = incometax.subscription.controllers.routes.TermsController.showTerms().url
 
-  def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView, isRegistration: Boolean): Html =
+  def page(isRegistration: Boolean): Html =
     incometax.subscription.views.html.check_your_answers(
       summaryModel = testSummary,
       isRegistration = isRegistration,
@@ -66,8 +64,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       backUrl = backUrl
     )(FakeRequest(), applicationMessages, appConfig)
 
-  def document(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView, isRegistration: Boolean = false): Document =
-    page(accountingPeriodViewType, isRegistration = isRegistration).doc
+  def document(isRegistration: Boolean = false): Document =
+    page(isRegistration = isRegistration).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -125,8 +123,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     }
 
     def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String],
-                    accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView, isRegistration: Boolean = false): Unit = {
-      val doc = document(accountingPeriodViewType, isRegistration)
+                    isRegistration: Boolean = false): Unit = {
+      val doc = document(isRegistration)
       val accountingPeriod = doc.getElementById(sectionId)
       val question = doc.getElementById(questionId(sectionId))
       val answer = doc.getElementById(answerId(sectionId))
