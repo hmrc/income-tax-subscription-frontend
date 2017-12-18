@@ -20,6 +20,8 @@ object CacheConstants {
   val IncomeSource = "IncomeSource"
   val PropertyIncome = "PropertyIncome"
   val SoleTrader = "SoleTrader"
+  val MatchTaxYear = "MatchTaxYear"
+  //TODO remove
   val AccountingPeriodPrior = "AccountingPeriodPrior"
   val RegisterNextAccountingPeriod = "RegisterNextAccountingPeriod"
   val BusinessName = "BusinessName"
@@ -27,7 +29,6 @@ object CacheConstants {
   val BusinessAddress = "BusinessAddress"
   val BusinessStartDate = "BusinessStartDate"
   val AccountingPeriodDate = "AccountingPeriodDate"
-  val MatchTaxYear = "MatchTaxYear"
   val AccountingMethod = "AccountingMethod"
   val Terms = "Terms"
   val OtherIncome = "OtherIncome"

@@ -23,7 +23,7 @@ import models._
 
 case class SummaryModel(incomeSource: Option[IncomeSourceModel] = None,
                         otherIncome: Option[OtherIncomeModel] = None,
-                        accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
+                        matchTaxYear: Option[MatchTaxYearModel] = None,
                         accountingPeriod: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,

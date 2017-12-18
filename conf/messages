@@ -197,6 +197,7 @@ summary.income_source.business                                  = Sole trader bu
 summary.income_source.property                                  = Property
 summary.income_source.both                                      = Sole trader business and property
 summary.other_income                                            = Do you have any other sources of income?
+summary.match_tax_year                                          = Does your accounting period match the tax year?
 summary.accounting_period                                       = Your accounting period dates
 summary.accounting_period.registration                          = When''s your current accounting period?
 summary.business_name                                           = What''s the name of your business?

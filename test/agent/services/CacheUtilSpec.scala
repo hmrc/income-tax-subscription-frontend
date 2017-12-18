@@ -31,7 +31,6 @@ class CacheUtilSpec extends UnitTestTrait {
       emptyCacheMap.getIncomeSource() shouldBe None
       emptyCacheMap.getOtherIncome() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
-      emptyCacheMap.getAccountingPeriodPrior() shouldBe None
       emptyCacheMap.getAccountingPeriodDate() shouldBe None
       emptyCacheMap.getAccountingMethod() shouldBe None
       emptyCacheMap.getTerms() shouldBe None
@@ -41,7 +40,6 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
       testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
-      testCacheMap.getAccountingPeriodPrior() shouldBe Some(testAccountingPeriodPriorCurrent)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingMethod() shouldBe Some(testAccountingMethod)
       testCacheMap.getTerms() shouldBe Some(testTerms)
@@ -52,7 +50,7 @@ class CacheUtilSpec extends UnitTestTrait {
         SummaryModel(
           testIncomeSourceBoth,
           testOtherIncomeNo,
-          testAccountingPeriodPriorCurrent,
+          None, // match tax year
           testAccountingPeriod,
           testBusinessName,
           None,
@@ -65,15 +63,14 @@ class CacheUtilSpec extends UnitTestTrait {
       // for the property only journey, this should only populate the subset of views
       // relevant to the journey
       val overPopulatedPropertyCacheMap =
-        agent.utils.TestModels.testCacheMap(
-          Some(agent.utils.TestModels.testIncomeSourceProperty),
-          Some(agent.utils.TestModels.testOtherIncomeNo),
-          Some(agent.utils.TestModels.testAccountingPeriodPriorCurrent),
-          Some(agent.utils.TestModels.testAccountingPeriod),
-          Some(agent.utils.TestModels.testBusinessName),
-          Some(agent.utils.TestModels.testAccountingMethod),
-          Some(agent.utils.TestModels.testTerms)
-        )
+      agent.utils.TestModels.testCacheMap(
+        Some(agent.utils.TestModels.testIncomeSourceProperty),
+        Some(agent.utils.TestModels.testOtherIncomeNo),
+        Some(agent.utils.TestModels.testAccountingPeriod),
+        Some(agent.utils.TestModels.testBusinessName),
+        Some(agent.utils.TestModels.testAccountingMethod),
+        Some(agent.utils.TestModels.testTerms)
+      )
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceProperty,

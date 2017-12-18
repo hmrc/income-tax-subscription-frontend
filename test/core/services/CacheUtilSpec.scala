@@ -35,7 +35,7 @@ class CacheUtilSpec extends UnitTestTrait {
       emptyCacheMap.getBusinessPhoneNumber() shouldBe None
       emptyCacheMap.getBusinessAddress() shouldBe None
       emptyCacheMap.getBusinessStartDate() shouldBe None
-      emptyCacheMap.getAccountingPeriodPrior() shouldBe None
+      emptyCacheMap.getMatchTaxYear() shouldBe None
       emptyCacheMap.getAccountingPeriodDate() shouldBe None
       emptyCacheMap.getAccountingMethod() shouldBe None
       emptyCacheMap.getTerms() shouldBe None
@@ -48,7 +48,7 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getBusinessPhoneNumber() shouldBe Some(testBusinessPhoneNumber)
       testCacheMap.getBusinessAddress() shouldBe Some(testAddress)
       testCacheMap.getBusinessStartDate() shouldBe Some(testBusinessStartDate)
-      testCacheMap.getAccountingPeriodPrior() shouldBe Some(testAccountingPeriodPriorCurrent)
+      testCacheMap.getMatchTaxYear() shouldBe Some(testMatchTaxYearNo)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingMethod() shouldBe Some(testAccountingMethod)
       testCacheMap.getTerms() shouldBe Some(testTerms)
@@ -59,7 +59,7 @@ class CacheUtilSpec extends UnitTestTrait {
         SummaryModel(
           testIncomeSourceBoth,
           testOtherIncomeNo,
-          testAccountingPeriodPriorCurrent,
+          testMatchTaxYearNo,
           testAccountingPeriod,
           testBusinessName,
           testBusinessPhoneNumber,
@@ -74,7 +74,7 @@ class CacheUtilSpec extends UnitTestTrait {
       val overPopulatedPropertyCacheMap =
       testCacheMap(testIncomeSourceProperty,
         testOtherIncomeNo,
-        testAccountingPeriodPriorCurrent,
+        testMatchTaxYearNo,
         testAccountingPeriod,
         testBusinessName,
         testBusinessPhoneNumber,

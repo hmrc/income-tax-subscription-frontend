@@ -238,7 +238,7 @@ object MessageLookup {
       val both = "Sole trader business and property"
     }
 
-    val accounting_period_prior = "Did your current accounting period start before 1 April 2017?"
+    val match_tax_year = "Does your accounting period match the tax year?"
     val accounting_period = s"Your accounting period dates"
     val accounting_period_registration = s"When's your current accounting period?"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
