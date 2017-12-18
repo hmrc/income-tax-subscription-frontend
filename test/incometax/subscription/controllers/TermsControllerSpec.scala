@@ -17,8 +17,11 @@
 package incometax.subscription.controllers
 
 import core.controllers.ControllerBaseSpec
+import core.models.DateModel
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
+import incometax.business.models.AccountingPeriodModel
+import incometax.util.AccountingPeriodUtil
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
@@ -41,14 +44,57 @@ class TermsControllerSpec extends ControllerBaseSpec
     mockAuthService
   )
 
+  "The private getCurrentTaxYear" when {
+
+    val testNextAccountingPeriod: AccountingPeriodModel =
+      AccountingPeriodModel(
+        DateModel("6", "4", AccountingPeriodUtil.getCurrentTaxEndYear.toString),
+        DateModel("31", "3", (AccountingPeriodUtil.getCurrentTaxEndYear + 1).toString)
+      )
+
+    def call = TestTermsController.getCurrentTaxYear(subscriptionRequest)
+
+    "the user answered yes to match tax year" should {
+      "return the current tax year" in {
+        setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearYes)
+        val result = call
+        await(result) mustBe AccountingPeriodUtil.getCurrentTaxEndYear
+      }
+    }
+
+    "the user answered no to match tax year" should {
+      "return the the text year for the accounting period date provided" in {
+        setupMockKeystore(
+          fetchMatchTaxYear = TestModels.testMatchTaxYearNo,
+          fetchAccountingPeriodDate = testNextAccountingPeriod
+        )
+        val result = call
+        await(result) mustBe AccountingPeriodUtil.getTaxEndYear(testNextAccountingPeriod)
+      }
+    }
+
+    "the user answered no to match tax year but does not provide an answer" should {
+      "an exception is thrown" in {
+        setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
+        intercept[Exception] {
+          val result = call
+          await(result)
+        }
+      }
+    }
+  }
+
   "Calling the showTerms action of the TermsController with an authorised user" should {
 
     lazy val result = TestTermsController.showTerms(editMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchAccountingPeriodDate = TestModels.testAccountingPeriod())
-
-      setupMockKeystore(fetchTerms = None)
+      setupMockKeystore(
+        fetchIncomeSource = TestModels.testIncomeSourceBusiness,
+        fetchMatchTaxYear = TestModels.testMatchTaxYearNo,
+        fetchAccountingPeriodDate = TestModels.testAccountingPeriod(),
+        fetchTerms = None
+      )
 
       status(result) must be(Status.OK)
 
@@ -67,7 +113,6 @@ class TermsControllerSpec extends ControllerBaseSpec
     "submit" should {
 
       "return a redirect status (SEE_OTHER - 303)" in {
-
         val goodResult = callShow()
 
         status(goodResult) must be(Status.SEE_OTHER)

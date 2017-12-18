@@ -23,6 +23,8 @@ import core.audit.Logging
 import core.auth.{IncomeTaxSAUser, Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
+import incometax.business.forms.MatchTaxYearForm
+import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionOrchestrationService
 import play.api.i18n.MessagesApi
@@ -77,7 +79,13 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
       implicit user =>
         keystoreService.fetchAll().flatMap {
           case Some(cache) => cache.getTerms match {
-            case Some(true) => processFunc(user)(request)(cache)
+            case Some(true) =>
+              (cache.getMatchTaxYear(), cache.getAccountingPeriodDate()) match {
+                case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) | (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(_)) =>
+                  processFunc(user)(request)(cache)
+                case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), _) =>
+                  Future.successful(Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
+              }
             case Some(false) => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true)))
             case _ => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.showTerms()))
           }

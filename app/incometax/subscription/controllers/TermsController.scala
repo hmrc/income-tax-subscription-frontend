@@ -22,6 +22,7 @@ import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import core.utils.Implicits._
+import incometax.business.forms.MatchTaxYearForm
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.OtherIncomeModel
 import incometax.util.AccountingPeriodUtil
@@ -46,13 +47,25 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       backUrl
     )
 
+  private[controllers] def getCurrentTaxYear(implicit request: Request[AnyContent]): Future[Int] = {
+    keystoreService.fetchMatchTaxYear().map {
+      case Some(matchTaxYear) => matchTaxYear.matchTaxYear match {
+        case MatchTaxYearForm.option_yes => true
+        case _ => false
+      }
+    }
+  }.flatMap { matchTaxYear =>
+    if (!matchTaxYear) keystoreService.fetchAccountingPeriodDate().map(date => AccountingPeriodUtil.getTaxEndYear(date.get))
+    else AccountingPeriodUtil.getCurrentTaxEndYear
+  }
+
   def showTerms(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         incomeSource <- keystoreService.fetchIncomeSource().collect { case Some(is) => is.source }
         taxEndYear <- incomeSource match {
           case IncomeSourceForm.option_property => Future.successful(AccountingPeriodUtil.getCurrentTaxEndYear)
-          case _ => keystoreService.fetchAccountingPeriodDate().collect { case Some(ad) => AccountingPeriodUtil.getTaxEndYear(ad) }
+          case _ => getCurrentTaxYear
         }
         backUrl <- backUrl(editMode)
       } yield Ok(view(backUrl = backUrl, taxEndYear = taxEndYear))

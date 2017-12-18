@@ -92,6 +92,22 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
     }
+
+    "When match tax year is no and the accounting date is not specified" should {
+      "redirect back to Accounting period dates" in {
+        setupMockKeystore(fetchAll = testCacheMapCustom(
+          matchTaxYear = testMatchTaxYearNo,
+          accountingPeriodDate = None
+        ))
+
+        val result = call
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) must contain(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url)
+        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+      }
+    }
+
     "When the terms have not been agreed" should {
 
       "redirect back to Terms if there is no terms in keystore" in {
