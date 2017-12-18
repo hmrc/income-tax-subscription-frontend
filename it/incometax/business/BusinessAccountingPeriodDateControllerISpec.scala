@@ -22,8 +22,7 @@ import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
-import incometax.business.forms.AccountingPeriodPriorForm
-import incometax.business.models.{AccountingPeriodModel, AccountingPeriodPriorModel}
+import incometax.business.models.AccountingPeriodModel
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import play.api.http.Status._
@@ -57,7 +56,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
       "show the accounting period dates page without date values entered" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+        val keystoreMatchTaxYear = testMatchTaxYearNo
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -65,7 +64,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
           keystoreData(
             incomeSource = Some(keystoreIncomeSource),
             otherIncome = Some(keystoreIncomeOther),
-            matchTaxYear = Some(testMatchTaxYearNo)
+            matchTaxYear = Some(keystoreMatchTaxYear)
           )
         )
 
@@ -87,7 +86,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
 
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-period-dates" when {
-    val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+    val keystoreMatchTaxYear = testMatchTaxYearNo
 
     "not in edit mode" should {
 
@@ -97,7 +96,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(
-          keystoreData(matchTaxYear = Some(testMatchTaxYearNo))
+          keystoreData(matchTaxYear = Some(keystoreMatchTaxYear))
         )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
@@ -156,7 +155,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
       "simulate not changing accounting period dates when calling page from Check Your Answers" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+        val keystoreMatchTaxYear = testMatchTaxYearNo
         val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "04", "2017"), DateModel("05", "04", "2018"))
         val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
@@ -166,7 +165,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
           keystoreData(
             incomeSource = Some(keystoreIncomeSource),
             otherIncome = Some(keystoreIncomeOther),
-            matchTaxYear = Some(testMatchTaxYearNo),
+            matchTaxYear = Some(keystoreMatchTaxYear),
             accountingPeriodDate = Some(keystoreAccountingPeriodDates)
           )
         )
@@ -186,7 +185,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         "The new accounting period ends in the same tax year" in {
           val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
           val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
-          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+          val keystoreMatchTaxYear = testMatchTaxYearNo
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("04", "05", "2019"))
           val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("05", "05", "2019"))
 
@@ -196,7 +195,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
             keystoreData(
               incomeSource = Some(keystoreIncomeSource),
               otherIncome = Some(keystoreIncomeOther),
-              matchTaxYear = Some(testMatchTaxYearNo),
+              matchTaxYear = Some(keystoreMatchTaxYear),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates)
             )
           )
@@ -215,9 +214,9 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         "The new accounting period ends in a different tax year" in {
           val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
           val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
-          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+          val keystoreMatchTaxYear = testMatchTaxYearNo
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2020"))
-          val userInput: AccountingPeriodModel =  AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2019"))
+          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2019"))
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -225,7 +224,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
             keystoreData(
               incomeSource = Some(keystoreIncomeSource),
               otherIncome = Some(keystoreIncomeOther),
-              matchTaxYear = Some(testMatchTaxYearNo),
+              matchTaxYear = Some(keystoreMatchTaxYear),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates)
             )
           )

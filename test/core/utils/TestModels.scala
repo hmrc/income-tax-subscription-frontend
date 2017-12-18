@@ -17,10 +17,12 @@
 package core.utils
 
 
+import agent.forms.AccountingPeriodPriorForm
+import agent.models.AccountingPeriodPriorModel
 import core.models.DateModel
 import core.services.CacheConstants
 import core.utils.TestConstants._
-import incometax.business.forms.{AccountingMethodForm, AccountingPeriodPriorForm, MatchTaxYearForm}
+import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}

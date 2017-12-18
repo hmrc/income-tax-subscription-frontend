@@ -21,8 +21,8 @@ import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{keystoreData, testMatchTaxYearNo, testMatchTaxYearYes}
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
-import incometax.business.forms.{AccountingMethodForm, AccountingPeriodPriorForm, MatchTaxYearForm}
-import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, AccountingPeriodPriorModel, MatchTaxYearModel}
+import incometax.business.forms.AccountingMethodForm
+import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import play.api.http.Status._
@@ -151,7 +151,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       "changing to the Accruals radio button on the accounting method page" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+        val keystoreMatchTaxYear = testMatchTaxYearNo
         val keystoreAccountingPeriodDates: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
         val keystoreAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
         val userInput = AccountingMethodModel(AccountingMethodForm.option_accruals)
@@ -162,7 +162,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
           keystoreData(
             incomeSource = Some(keystoreIncomeSource),
             otherIncome = Some(keystoreIncomeOther),
-            matchTaxYear = Some(testMatchTaxYearNo),
+            matchTaxYear = Some(keystoreMatchTaxYear),
             accountingPeriodDate = Some(keystoreAccountingPeriodDates),
             accountingMethod = Some(keystoreAccountingMethod)
           )
@@ -182,7 +182,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       "simulate not changing accounting method when calling page from Check Your Answers" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
-        val keystoreTaxYear = MatchTaxYearModel(MatchTaxYearForm.option_no)
+        val keystoreTaxYear = testMatchTaxYearNo
         val keystoreAccountingPeriodDates: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
         val keystoreAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
         val userInput = AccountingMethodModel(AccountingMethodForm.option_cash)

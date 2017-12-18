@@ -16,10 +16,11 @@
 
 package core.forms.validation.testutils
 
+import agent.forms.AccountingPeriodPriorForm
 import incometax.incomesource.forms.IncomeSourceForm
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil.constraint
-import incometax.business.forms.{AccountingPeriodPriorForm, MatchTaxYearForm}
+import incometax.business.forms.MatchTaxYearForm
 import play.api.data.validation.{Constraint, Invalid}
 
 object DataMap {

@@ -112,13 +112,6 @@ class KeystoreService @Inject()(val session: SessionCache) {
 
   def saveSubscriptionId(mtditId: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC = save[String](MtditId, mtditId)
 
-  def fetchAccountingPeriodPrior()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodPriorModel]): FO[AccountingPeriodPriorModel] =
-    fetch[AccountingPeriodPriorModel](AccountingPeriodPrior)
-
-  def saveAccountingPeriodPrior(accountingPeriodPrior: AccountingPeriodPriorModel)
-                               (implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodPriorModel]): FC =
-    save[AccountingPeriodPriorModel](AccountingPeriodPrior, accountingPeriodPrior)
-
   def fetchPaperlessPreferenceToken()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] =
     fetch[String](PaperlessPreferenceToken)
 

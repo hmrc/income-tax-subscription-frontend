@@ -22,15 +22,6 @@ POST        /start-date                             incometax.business.controlle
 GET         /accounting-method                      incometax.business.controllers.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /accounting-method                      incometax.business.controllers.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
 
-#Current Financial Period Prior Routes
-GET         /accounting-period-prior                incometax.business.controllers.BusinessAccountingPeriodPriorController.show(editMode: Boolean ?= false)
-POST        /accounting-period-prior                incometax.business.controllers.BusinessAccountingPeriodPriorController.submit(editMode: Boolean ?= false)
-
-#Register Next Accounting Period Routes
-GET         /register-next-accounting-period        incometax.business.controllers.RegisterNextAccountingPeriodController.show
-POST        /register-next-accounting-period        incometax.business.controllers.RegisterNextAccountingPeriodController.submit
-
-
 GET         /address                                incometax.business.controllers.BusinessAddressController.show(editMode: Boolean ?= false)
 POST        /address                                incometax.business.controllers.BusinessAddressController.submit(editMode: Boolean ?= false)
 GET         /address/init                           incometax.business.controllers.BusinessAddressController.init(editMode: Boolean ?= false)

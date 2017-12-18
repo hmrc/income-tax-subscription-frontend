@@ -171,7 +171,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     }
 
     "The back url for edit journey if editmatch is true" should {
-      s"point to ${incometax.business.controllers.routes.RegisterNextAccountingPeriodController.show().url}" in {
+      s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url}" in {
         TestBusinessAccountingPeriodController.backUrl(isEditMode = true, editMatch = true)(request) mustBe incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
       }
     }
@@ -213,7 +213,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
         "the tax year remained the same" should {
           s"return a redirect status (SEE_OTHER - 303) and do not update terms" in {
             setupMockKeystore(
-              fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod, // required for backurl
+              fetchMatchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
               fetchAccountingPeriodDate = testAccountingPeriodDates
             )
 
@@ -230,7 +230,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
         "the tax year changed" should {
           s"return a redirect status (SEE_OTHER - 303) and update terms" in {
             setupMockKeystore(
-              fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod, // required for backurl
+              fetchMatchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
               fetchAccountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear
             )
 
@@ -249,7 +249,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
         "the tax year remained the same" should {
           s"return a redirect status (SEE_OTHER - 303) and redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
             setupMockKeystore(
-              fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod, // required for backurl
+              fetchMatchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
               fetchAccountingPeriodDate = testAccountingPeriodDates
             )
 
@@ -268,7 +268,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true).url
           }" in {
             setupMockKeystore(
-              fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod, // required for backurl
+              fetchMatchTaxYear =  TestModels.testMatchTaxYearNo, // required for backurl
               fetchAccountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear
             )
 
@@ -290,7 +290,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
       "return a bad request status (400)" in {
         // required for backurl
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchAccountingPeriodPrior = TestModels.testIsCurrentPeriod)
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
 
         status(badrequest) must be(Status.BAD_REQUEST)
 
@@ -300,19 +300,19 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     }
 
     "The back url for linear journey" should {
-      s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url}" in {
+      s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show().url}" in {
         TestBusinessAccountingPeriodController.backUrl(isEditMode = false, editMatch = false)(request) mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
       }
     }
 
     "The back url for edit journey if editmatch is false" should {
-      s"point to ${incometax.business.controllers.routes.RegisterNextAccountingPeriodController.show().url}" in {
+      s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
         TestBusinessAccountingPeriodController.backUrl(isEditMode = true, editMatch = false)(request) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
       }
     }
 
     "The back url for edit journey if editmatch is true" should {
-      s"point to ${incometax.business.controllers.routes.RegisterNextAccountingPeriodController.show().url}" in {
+      s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url}" in {
         TestBusinessAccountingPeriodController.backUrl(isEditMode = true, editMatch = true)(request) mustBe incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
       }
     }

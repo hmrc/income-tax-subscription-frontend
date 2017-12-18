@@ -67,7 +67,6 @@ trait MockKeystoreService extends MockTrait {
                                          fetchTerms: MFO[Boolean] = DoNotConfigure,
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
-                                         fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
                                          fetchPaperlessPreferenceToken: MFO[String] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
@@ -83,7 +82,6 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[Boolean](Terms, fetchTerms)
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
-    mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
     mockFetchFromKeyStore[String](PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
 
     setupMockKeystoreSaveFunctions()

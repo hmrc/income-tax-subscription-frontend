@@ -6,7 +6,7 @@ import core.Constants.GovernmentGateway._
 import core.models.DateModel
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
-import incometax.business.forms.{AccountingMethodForm, AccountingPeriodPriorForm, MatchTaxYearForm}
+import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
@@ -29,8 +29,6 @@ object IntegrationTestModels {
   val testEndDate = DateModel("05", "04", "2018")
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_yes)
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_no)
-  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
@@ -86,10 +84,6 @@ object IntegrationTestModels {
   lazy val testIncomeSourceProperty = IncomeSourceModel(IncomeSourceForm.option_property)
 
   lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
-
-  lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-
-  lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
   lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
 
