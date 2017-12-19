@@ -25,6 +25,7 @@ import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
+import incometax.incomesource.forms.IncomeSourceForm
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionOrchestrationService
 import play.api.i18n.MessagesApi
@@ -80,6 +81,9 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         keystoreService.fetchAll().flatMap {
           case Some(cache) => cache.getTerms match {
             case Some(true) =>
+              if (cache.getIncomeSource().fold(false)(_.source == IncomeSourceForm.option_property))
+                processFunc(user)(request)(cache)
+              else
               (cache.getMatchTaxYear(), cache.getAccountingPeriodDate()) match {
                 case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) | (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(_)) =>
                   processFunc(user)(request)(cache)
