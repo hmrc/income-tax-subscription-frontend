@@ -159,8 +159,8 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
     }
 
     "The back url" should {
-      s"point to ${incometax.business.controllers.routes.BusinessStartDateController.show().url}" in {
-        TestBusinessAccountingPeriodController.backUrl(isEditMode = false, editMatch = false)(request) mustBe incometax.business.controllers.routes.BusinessStartDateController.show().url
+      s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show().url}" in {
+        TestBusinessAccountingPeriodController.backUrl(isEditMode = false, editMatch = false)(request) mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
       }
     }
 
@@ -268,7 +268,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true).url
           }" in {
             setupMockKeystore(
-              fetchMatchTaxYear =  TestModels.testMatchTaxYearNo, // required for backurl
+              fetchMatchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
               fetchAccountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear
             )
 

@@ -69,11 +69,14 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec with MockKeystoreSer
 
 
   "The back url" should {
-    s"in linear journey points to ${incometax.business.controllers.routes.BusinessNameController.show().url}" in {
-      TestMatchTaxYearController.backUrl(isEditMode = false) mustBe incometax.business.controllers.routes.BusinessNameController.show().url
+    s"in linear journey for subscription points to ${incometax.business.controllers.routes.BusinessNameController.show().url}" in {
+      TestMatchTaxYearController.backUrl(isEditMode = false)(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessNameController.show().url
+    }
+    s"in linear journey for registration points to ${incometax.business.controllers.routes.BusinessStartDateController.show().url}" in {
+      TestMatchTaxYearController.backUrl(isEditMode = false)(registrationRequest) mustBe incometax.business.controllers.routes.BusinessStartDateController.show().url
     }
     s"edit mode points to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
-      TestMatchTaxYearController.backUrl(isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+      TestMatchTaxYearController.backUrl(isEditMode = true)(subscriptionRequest) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

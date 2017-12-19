@@ -18,7 +18,7 @@ package incometax.business.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import core.auth.SignUpController
+import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
@@ -37,7 +37,7 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
                                        val authService: AuthService
                                       ) extends SignUpController {
 
-  def view(matchTaxYearForm: Form[MatchTaxYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
+  def view(matchTaxYearForm: Form[MatchTaxYearModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html =
     incometax.business.views.html.match_to_tax_year(
       matchTaxYearForm = matchTaxYearForm,
       postAction = incometax.business.controllers.routes.MatchTaxYearController.submit(editMode = isEditMode),
@@ -71,9 +71,11 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  def backUrl(isEditMode: Boolean): String =
+  def backUrl(isEditMode: Boolean)(implicit request: Request[AnyContent]): String =
     if (isEditMode)
       incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+    else if(request.isInState(Registration))
+      incometax.business.controllers.routes.BusinessStartDateController.show().url
     else
       incometax.business.controllers.routes.BusinessNameController.show().url
 

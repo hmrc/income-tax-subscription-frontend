@@ -117,8 +117,6 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
       if (editMatch) incometax.business.controllers.routes.MatchTaxYearController.show(editMode = isEditMode).url
       else incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     }
-    else if (request.isInState(Registration))
-      incometax.business.controllers.routes.BusinessStartDateController.show().url
     else
       incometax.business.controllers.routes.MatchTaxYearController.show(editMode = isEditMode).url
 
