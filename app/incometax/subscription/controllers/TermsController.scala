@@ -27,7 +27,7 @@ import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.OtherIncomeModel
 import incometax.util.AccountingPeriodUtil
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 
@@ -47,7 +47,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       backUrl
     )
 
-  private[controllers] def getCurrentTaxYear(implicit request: Request[AnyContent]): Future[Int] = {
+  private[controllers] def getCurrentTaxYear(editMode: Boolean)(implicit request: Request[AnyContent]): Future[Either[Result, Int]] = {
     keystoreService.fetchMatchTaxYear().map {
       case Some(matchTaxYear) => matchTaxYear.matchTaxYear match {
         case MatchTaxYearForm.option_yes => true
@@ -55,20 +55,29 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       }
     }
   }.flatMap { matchTaxYear =>
-    if (!matchTaxYear) keystoreService.fetchAccountingPeriodDate().map(date => AccountingPeriodUtil.getTaxEndYear(date.get))
-    else AccountingPeriodUtil.getCurrentTaxEndYear
+    if (!matchTaxYear) keystoreService.fetchAccountingPeriodDate().map {
+      case Some(date) => Right(AccountingPeriodUtil.getTaxEndYear(date))
+      // editMatch is set to editMode because if we're in edit mode then we can only get into this situation if they went and edited the match
+      // if we're not then keep everything the same in the linear flow
+      case _ => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = editMode, editMatch = editMode))
+    }
+    else Future.successful(Right(AccountingPeriodUtil.getCurrentTaxEndYear))
   }
 
   def showTerms(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         incomeSource <- keystoreService.fetchIncomeSource().collect { case Some(is) => is.source }
-        taxEndYear <- incomeSource match {
-          case IncomeSourceForm.option_property => Future.successful(AccountingPeriodUtil.getCurrentTaxEndYear)
-          case _ => getCurrentTaxYear
+        taxEndYearEither: Either[Result, Int] <- incomeSource match {
+          case IncomeSourceForm.option_property => Future.successful(Right(AccountingPeriodUtil.getCurrentTaxEndYear))
+          case _ => getCurrentTaxYear(editMode = editMode)
         }
         backUrl <- backUrl(editMode)
-      } yield Ok(view(backUrl = backUrl, taxEndYear = taxEndYear))
+      } yield
+        taxEndYearEither match {
+          case Right(taxEndYear) => Ok(view(backUrl = backUrl, taxEndYear = taxEndYear))
+          case Left(result) => result
+        }
   }
 
   def submitTerms(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>

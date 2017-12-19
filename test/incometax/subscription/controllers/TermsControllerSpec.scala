@@ -52,13 +52,13 @@ class TermsControllerSpec extends ControllerBaseSpec
         DateModel("31", "3", (AccountingPeriodUtil.getCurrentTaxEndYear + 1).toString)
       )
 
-    def call = TestTermsController.getCurrentTaxYear(subscriptionRequest)
+    def call(editMode: Boolean) = TestTermsController.getCurrentTaxYear(editMode = editMode)(subscriptionRequest)
 
     "the user answered yes to match tax year" should {
       "return the current tax year" in {
         setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearYes)
-        val result = call
-        await(result) mustBe AccountingPeriodUtil.getCurrentTaxEndYear
+        val result = call(editMode = false)
+        await(result) mustBe Right(AccountingPeriodUtil.getCurrentTaxEndYear)
       }
     }
 
@@ -68,18 +68,29 @@ class TermsControllerSpec extends ControllerBaseSpec
           fetchMatchTaxYear = TestModels.testMatchTaxYearNo,
           fetchAccountingPeriodDate = testNextAccountingPeriod
         )
-        val result = call
-        await(result) mustBe AccountingPeriodUtil.getTaxEndYear(testNextAccountingPeriod)
+        val result = call(editMode = false)
+        await(result) mustBe Right(AccountingPeriodUtil.getTaxEndYear(testNextAccountingPeriod))
       }
     }
 
     "the user answered no to match tax year but does not provide an answer" should {
-      "an exception is thrown" in {
-        setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
-        intercept[Exception] {
-          val result = call
-          await(result)
-        }
+      "when edit mode is false" in {
+        setupMockKeystore(
+          fetchMatchTaxYear = TestModels.testMatchTaxYearNo,
+          fetchAccountingPeriodDate = None
+        )
+        val result = call(editMode = false)
+        await(result.map(_.isLeft)) mustBe true
+        redirectLocation(result.map(_.left.get)).get mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = false).url
+      }
+      "when edit mode is true" in {
+        setupMockKeystore(
+          fetchMatchTaxYear = TestModels.testMatchTaxYearNo,
+          fetchAccountingPeriodDate = None
+        )
+        val result = call(editMode = true)
+        await(result.map(_.isLeft)) mustBe true
+        redirectLocation(result.map(_.left.get)).get mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url
       }
     }
   }
