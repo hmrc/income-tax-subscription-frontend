@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package core
+@import core.config.AppConfig
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import core.views.html.helpers._
+@import core.views.html.templates.main_template
 
-object ITSASessionKeys {
-  val StartTime = "StartTime"
-  val RequestURI = "Request-URI"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val FailedUserMatching = "Failed-User-Matching"
-  val JourneyStateKey = "Journey-State"
-  val PreferencesRedirectUrl = "Preferences-Redirect-Url"
-  val AgentReferenceNumber = "Agent-Reference-Number"
+@(arn: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@main_template(title = Messages("confirm-agent-subscription.title")) {
+    <h1 class="heading-large">@Messages("confirm-agent-subscription.heading")</h1>
+    <p>@Messages("confirm-agent-subscription.line_1", arn)</p>
+    <div class="form-group">
+        @continueButton()
+    </div>
+    @signOutLink()
 }

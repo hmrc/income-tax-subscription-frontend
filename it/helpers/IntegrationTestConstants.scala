@@ -41,6 +41,7 @@ object IntegrationTestConstants {
   val testId = "12345"
   val testGroupId = UUID.randomUUID.toString
   val testCredId = UUID.randomUUID.toString
+  val testArn = UUID.randomUUID.toString
 
   val testUrl = "/test/url/"
 
@@ -76,6 +77,7 @@ object IntegrationTestConstants {
   val ivURI = s"$baseURI/iv"
   val userLockedOutURI = s"$baseURI/error/lockout"
   val userDetailsErrorURI = s"$baseURI/error/user-details"
+  val confirmAgentSubscriptionUri = s"$baseURI/confirm-agent-subscription"
 
   object Auth {
     def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(

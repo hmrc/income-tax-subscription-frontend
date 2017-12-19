@@ -17,13 +17,13 @@
 package core.auth
 
 import _root_.uk.gov.hmrc.http.SessionKeys._
+import cats.implicits._
 import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import core.auth.JourneyState._
-import cats.implicits._
 import core.config.AppConfig
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup._
-import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
+import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
 
 import scala.concurrent.Future
@@ -92,6 +92,7 @@ trait AuthPredicates extends Results {
     if (request.session.isInState(Registration) && user.confidenceLevel < ConfidenceLevel.L200) Left(Future.successful(goToIv))
     else Right(AuthPredicateSuccess)
 
+
   val defaultPredicates = timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 
   val homePredicates = defaultPredicates |+| mtdidPredicate
@@ -104,4 +105,42 @@ trait AuthPredicates extends Results {
 
   val enrolledPredicates = timeoutPredicate |+| enrolledPredicate
 
+}
+
+object AuthPredicates extends Results {
+  val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
+
+  lazy val resolveNino: Result = Redirect(usermatching.controllers.routes.NinoResolverController.resolveNinoAction())
+
+  val ninoPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if (user.nino(request).isDefined) {
+      Right(AuthPredicateSuccess)
+    }
+    else if (user.utr(request).isDefined) {
+      Left(Future.failed(new InternalServerException("AuthPredicates.ninoPredicate: unexpected user state, the user has a utr but no nino")))
+    } else {
+      Left(Future.successful(resolveNino))
+    }
+
+  lazy val homeRoute = Redirect(usermatching.controllers.routes.HomeController.index())
+
+  lazy val timeoutRoute = Redirect(core.controllers.routes.SessionTimeoutController.timeout())
+
+  lazy val wrongAffinity: Result = Redirect(usermatching.controllers.routes.AffinityGroupErrorController.show())
+
+  val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
+      Left(Future.successful(timeoutRoute))
+    }
+    else Right(AuthPredicateSuccess)
+
+  def affinityPredicate(implicit appConfig: AppConfig): AuthPredicate[IncomeTaxSAUser] = request => user =>
+    (appConfig.userMatchingFeature, user.affinityGroup) match {
+      case (true, Some(Individual) | Some(Organisation)) => Right(AuthPredicateSuccess)
+      case (false, Some(Individual)) => Right(AuthPredicateSuccess)
+      case _ => Left(Future.successful(wrongAffinity))
+    }
+
+  def defaultPredicates(implicit appConfig: AppConfig): AuthPredicate[IncomeTaxSAUser] =
+    timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 }
