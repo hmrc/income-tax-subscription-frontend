@@ -26,7 +26,7 @@ import play.api.data.validation.{Constraint, Valid}
 
 object MatchTaxYearForm {
 
-  val matchTaxYear = "matchTaxYear"
+  val matchTaxYear = "matchToTaxYear"
   val option_yes = "Yes"
   val option_no = "No"
 

@@ -42,7 +42,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(Messages("business.match_tax_year.title.signup")),
-          radioButtonSet(id = "matchTaxYear", selectedRadioButton = Some(Messages("base.no")))
+          radioButtonSet(id = MatchTaxYearForm.matchTaxYear, selectedRadioButton = Some(Messages("base.no")))
         )
       }
     }
