@@ -54,14 +54,14 @@ class ConfirmAgentSubscriptionControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
+        SubscriptionStub.stubSuccessfulSubscription(confirmAgentSubscriptionUri)
         GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(OK)
         GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
         KeystoreStub.stubPutMtditId()
 
-        When("POST /check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+        When("POST  confirm-agent-subscription is called")
+        val res = IncomeTaxSubscriptionFrontend.submitConfirmAgentSubscription()
 
         Then("Should return a SEE_OTHER with a redirect location of confirmation")
         res should have(

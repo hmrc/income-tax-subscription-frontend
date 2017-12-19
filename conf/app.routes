@@ -89,3 +89,4 @@ POST        /error/user-details           usermatching.controllers.UserDetailsEr
 
 # Confirm agent subscription
 GET         /confirm-agent-subscription   usermatching.controllers.ConfirmAgentSubscriptionController.show()
+POST        /confirm-agent-subscription   usermatching.controllers.ConfirmAgentSubscriptionController.submit()

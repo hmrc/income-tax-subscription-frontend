@@ -18,6 +18,7 @@ package usermatching.controllers
 
 import javax.inject.{Inject, Singleton}
 
+import core.ITSASessionKeys
 import core.services.KeystoreService
 import core.ITSASessionKeys._
 import core.auth.AuthenticatedController
@@ -28,7 +29,7 @@ import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionOrchestrationService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.InternalServerException
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.userjourneys.ConfirmAgentSubscription
 
 import scala.concurrent.Future
@@ -52,7 +53,9 @@ class ConfirmAgentSubscriptionController @Inject()(val baseConfig: BaseControlle
       implicit user =>
         keystoreService.fetchAll flatMap {
           case Some(cache) =>
-            subscriptionOrchestrationService.createSubscription(user.nino.get, cache.getSummary()) flatMap {
+            val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> req.uri)
+
+            subscriptionOrchestrationService.createSubscription(user.nino.get, cache.getSummary())(headerCarrier) flatMap {
               case Right(SubscriptionSuccess(id)) =>
                 keystoreService.saveSubscriptionId(id) map {
                   _ => Redirect(incometax.subscription.controllers.routes.ConfirmationController.showConfirmation())

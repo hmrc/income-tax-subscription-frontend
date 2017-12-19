@@ -334,6 +334,13 @@ trait ComponentSpecBase extends UnitSpec
         AgentReferenceNumber -> IntegrationTestConstants.testArn
       )
     )
+
+    def submitConfirmAgentSubscription(): WSResponse = post(
+      "/confirm-agent-subscription",
+      Map(
+        JourneyStateKey -> ConfirmAgentSubscription.name,
+        AgentReferenceNumber -> IntegrationTestConstants.testArn
+      ))(Map.empty)
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
