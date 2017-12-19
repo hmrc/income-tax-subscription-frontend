@@ -47,6 +47,8 @@ class SubscriptionService @Inject()(logging: Logging,
       case (None, Some(_)) =>
         // agent journey
         (summaryData.accountingPeriod map (_.startDate), summaryData.accountingPeriod map (_.endDate))
+      // property journeys
+      case _ => (None, None)
     }
     val cashOrAccruals = summaryData.accountingMethod map (_.accountingMethod)
     val tradingName = summaryData.businessName map (_.businessName)
