@@ -86,45 +86,57 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec with MockKeystoreSer
       def callShow(answer: String): Future[Result] = callShowCore(answer, isEditMode = false)
 
       "Option 'Yes' is selected " in {
-        setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchMatchTaxYear = None)
+
         val goodRequest = callShow(MatchTaxYearForm.option_yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
-        verifyKeystore(fetchMatchTaxYear = 0, saveMatchTaxYear = 1)
+        verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
       }
 
       "Option 'No' is selected and there were no previous entries" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchMatchTaxYear = None)
+
         val goodRequest = callShow(MatchTaxYearForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
-        verifyKeystore(fetchMatchTaxYear = 0, saveMatchTaxYear = 1)
+        verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
       }
-
     }
 
     "Is in edit mode and " when {
       def callShow(answer: String): Future[Result] = callShowCore(answer, isEditMode = true)
 
-
       "Option 'Yes' is selected" in {
-        setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
+
         val goodRequest = callShow(MatchTaxYearForm.option_yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
-        verifyKeystore(fetchMatchTaxYear = 0, saveMatchTaxYear = 1)
+        verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 1)
       }
 
       "Option 'No' is selected " in {
-        setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearYes)
 
         val goodRequest = callShow(MatchTaxYearForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url
         await(goodRequest)
-        verifyKeystore(fetchMatchTaxYear = 0, saveMatchTaxYear = 1)
+        verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 1)
       }
+
+      "if the answer is not changed then do not update terms" in {
+        setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
+
+        val goodRequest = callShow(MatchTaxYearForm.option_no)
+        status(goodRequest) mustBe Status.SEE_OTHER
+        redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url
+        await(goodRequest)
+        verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
+      }
+
     }
   }
 
