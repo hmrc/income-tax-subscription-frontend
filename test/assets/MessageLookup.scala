@@ -102,9 +102,17 @@ object MessageLookup {
     }
 
     object MatchTaxYear {
-      val title = "Does your accounting period match the tax year?"
-      val heading: String = "Does your accounting period match the tax year?"
-      val line1 = "The tax year runs from 6 April to 5 April. Your accounting period is usually the same, unless you chose different dates when you registered for Self Assessment."
+      object SignUp {
+        val title = "Does your accounting period match the tax year?"
+        val heading: String = "Does your accounting period match the tax year?"
+        val line1 = "The tax year runs from 6 April to 5 April. Your accounting period is usually the same, unless you chose different dates when you registered for Self Assessment."
+      }
+      object Registration {
+        val title = "Do you want to match your accounting period to the tax year?"
+        val heading: String = "Do you want to match your accounting period to the tax year?"
+        val line1 = "The tax year runs from 6 April to 5 April. Most sole traders match their accounting period to the tax year."
+        val line2 = "You can do this even if the tax year has already started."
+      }
     }
 
     object AccountingPeriodPrior {

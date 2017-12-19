@@ -41,7 +41,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the match tax yearpage")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.match_tax_year.title")),
+          pageTitle(Messages("business.match_tax_year.title.signup")),
           radioButtonSet(id = "matchTaxYear", selectedRadioButton = Some(Messages("base.no")))
         )
       }
@@ -59,7 +59,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         Then("Should return a OK with the match tax year page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("business.match_tax_year.title")),
+          pageTitle(Messages("business.match_tax_year.title.signup")),
           radioButtonSet(id = "matchTaxYear", selectedRadioButton = None)
         )
       }

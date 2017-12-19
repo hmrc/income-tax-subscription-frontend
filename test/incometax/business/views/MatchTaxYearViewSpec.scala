@@ -28,59 +28,112 @@ class MatchTaxYearViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  private def page(isEditMode: Boolean, addFormErrors: Boolean) = incometax.business.views.html.match_to_tax_year(
+  private def page(isEditMode: Boolean, isRegistration: Boolean, addFormErrors: Boolean) = incometax.business.views.html.match_to_tax_year(
     matchTaxYearForm = MatchTaxYearForm.matchTaxYearForm.addError(addFormErrors),
     postAction = action,
+    isRegistration = isRegistration,
     backUrl = backUrl,
     isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(isEditMode: Boolean) =
-    TestView(
-      name = "Match tax year View",
-      title = messages.title,
-      heading = messages.heading,
-      page = page(isEditMode = isEditMode, addFormErrors = false)
-    )
 
-  "The Match tax year view" should {
+  "The Match tax year view" when {
+    "in subscription mode" should {
 
-    val testPage = documentCore(isEditMode = false)
+      def documentCore(isEditMode: Boolean) =
+        TestView(
+          name = "Match tax year View",
+          title = messages.SignUp.title,
+          heading = messages.SignUp.heading,
+          page = page(isEditMode = isEditMode, isRegistration = false, addFormErrors = false)
+        )
 
-    testPage.mustHaveBackLinkTo(backUrl)
+      val testPage = documentCore(isEditMode = false)
 
-    testPage.mustHaveParaSeq(
-      messages.line1
-    )
+      testPage.mustHaveBackLinkTo(backUrl)
 
-    val form = testPage.getForm("Match tax year form")(actionCall = action)
+      testPage.mustHaveParaSeq(
+        messages.SignUp.line1
+      )
 
-    form.mustHaveRadioSet(
-      legend = messages.heading,
-      radioName = MatchTaxYearForm.matchTaxYear
-    )(
-      MatchTaxYearForm.option_yes -> common.yes,
-      MatchTaxYearForm.option_no -> common.no
-    )
+      val form = testPage.getForm("Match tax year form")(actionCall = action)
 
-    form.mustHaveContinueButton()
+      form.mustHaveRadioSet(
+        legend = messages.SignUp.heading,
+        radioName = MatchTaxYearForm.matchTaxYear
+      )(
+        MatchTaxYearForm.option_yes -> common.yes,
+        MatchTaxYearForm.option_no -> common.no
+      )
 
-  }
+      form.mustHaveContinueButton()
 
-  "The Match tax year view in edit mode" should {
-    val editModePage = documentCore(isEditMode = true)
+      "The Match tax year view in edit mode" should {
+        val editModePage = documentCore(isEditMode = true)
 
-    editModePage.mustHaveUpdateButton()
-  }
+        editModePage.mustHaveUpdateButton()
+      }
 
-  "Append Error to the page title if the form has error" should {
-    def documentCore() = TestView(
-      name = "Match tax year View",
-      title = titleErrPrefix + messages.title,
-      heading = messages.heading,
-      page = page(isEditMode = false, addFormErrors = true)
-    )
+      "Append Error to the page title if the form has error" should {
+        def documentCore() = TestView(
+          name = "Match tax year View",
+          title = titleErrPrefix + messages.SignUp.title,
+          heading = messages.SignUp.heading,
+          page = page(isEditMode = false, addFormErrors = true, isRegistration = false)
+        )
 
-    val testPage = documentCore()
+        val testPage = documentCore()
+      }
+    }
+
+    "in registration mode" should {
+
+      def documentCore(isEditMode: Boolean) =
+        TestView(
+          name = "Match tax year View",
+          title = messages.Registration.title,
+          heading = messages.Registration.heading,
+          page = page(isEditMode = isEditMode, isRegistration = true, addFormErrors = false)
+        )
+
+      val testPage = documentCore(isEditMode = false)
+
+      testPage.mustHaveBackLinkTo(backUrl)
+
+      testPage.mustHaveParaSeq(
+        messages.Registration.line1,
+        messages.Registration.line2
+      )
+
+      val form = testPage.getForm("Match tax year form")(actionCall = action)
+
+      form.mustHaveRadioSet(
+        legend = messages.Registration.heading,
+        radioName = MatchTaxYearForm.matchTaxYear
+      )(
+        MatchTaxYearForm.option_yes -> common.yes,
+        MatchTaxYearForm.option_no -> common.no
+      )
+
+      form.mustHaveContinueButton()
+
+      "The Match tax year view in edit mode" should {
+        val editModePage = documentCore(isEditMode = true)
+
+        editModePage.mustHaveUpdateButton()
+      }
+
+      "Append Error to the page title if the form has error" should {
+        def documentCore() = TestView(
+          name = "Match tax year View",
+          title = titleErrPrefix + messages.Registration.title,
+          heading = messages.Registration.heading,
+          page = page(isEditMode = false, addFormErrors = true, isRegistration = true)
+        )
+
+        val testPage = documentCore()
+      }
+
+    }
   }
 }

@@ -41,6 +41,7 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
     incometax.business.views.html.match_to_tax_year(
       matchTaxYearForm = matchTaxYearForm,
       postAction = incometax.business.controllers.routes.MatchTaxYearController.submit(editMode = isEditMode),
+      isRegistration = request.isInState(Registration),
       backUrl = backUrl(isEditMode = isEditMode),
       isEditMode
     )

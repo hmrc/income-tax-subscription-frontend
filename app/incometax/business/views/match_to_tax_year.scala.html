@@ -22,18 +22,24 @@
 @import incometax.business.models.MatchTaxYearModel
 @import core.views.html.templates.main_template
 
-@(matchTaxYearForm: Form[MatchTaxYearModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(matchTaxYearForm: Form[MatchTaxYearModel], postAction: Call, isRegistration: Boolean,  backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@question=@{Messages("business.match_tax_year.heading")}
+@question=@{if(isRegistration){Messages("business.match_tax_year.heading.registration")} else {Messages("business.match_tax_year.heading.signup")}}
+@pageTitle = @{if(isRegistration){Messages("business.match_tax_year.title.registration")} else {Messages("business.match_tax_year.title.signup")}}
 
-@main_template(title = Messages("business.match_tax_year.title"), form = matchTaxYearForm) {
+@main_template(title = pageTitle, form = matchTaxYearForm) {
 
     @back_link(backUrl)
 
     @summaryErrorHelper(matchTaxYearForm)
 
     <h1 class="heading-large">@question</h1>
-    <p>@Messages("business.match_tax_year.line_1")</p>
+    @if(isRegistration){
+        <p>@Messages("business.match_tax_year.line_1.registration")</p>
+        <p>@Messages("business.match_tax_year.line_2.registration")</p>
+    }else {
+        <p>@Messages("business.match_tax_year.line_1.signup")</p>
+    }
 
     @form(action = postAction) {
 

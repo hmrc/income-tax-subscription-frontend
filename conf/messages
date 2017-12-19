@@ -88,9 +88,15 @@ business.address.edit.add_line_3                                = Address line 3
 
 
 # Match tax year
-business.match_tax_year.title                                   = Does your accounting period match the tax year?
-business.match_tax_year.heading                                 = Does your accounting period match the tax year?
-business.match_tax_year.line_1                                  = The tax year runs from 6 April to 5 April. Your accounting period is usually the same, unless you chose different dates when you registered for Self Assessment.
+business.match_tax_year.title.signup                            = Does your accounting period match the tax year?
+business.match_tax_year.heading.signup                          = Does your accounting period match the tax year?
+business.match_tax_year.line_1.signup                           = The tax year runs from 6 April to 5 April. Your accounting period is usually the same, unless you chose different dates when you registered for Self Assessment.
+
+business.match_tax_year.title.registration                      = Do you want to match your accounting period to the tax year?
+business.match_tax_year.heading.registration                    = Do you want to match your accounting period to the tax year?
+business.match_tax_year.line_1.registration                     = The tax year runs from 6 April to 5 April. Most sole traders match their accounting period to the tax year.
+business.match_tax_year.line_2.registration                     = You can do this even if the tax year has already started.
+
 
 # Business start date
 business.start_date.title                                        = Business start date
