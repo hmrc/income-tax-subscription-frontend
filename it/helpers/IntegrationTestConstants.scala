@@ -41,6 +41,7 @@ object IntegrationTestConstants {
   val testId = "12345"
   val testGroupId = UUID.randomUUID.toString
   val testCredId = UUID.randomUUID.toString
+  val testArn = UUID.randomUUID.toString
 
   val testUrl = "/test/url/"
 

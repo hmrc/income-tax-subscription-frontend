@@ -86,3 +86,6 @@ POST        /confirm-user                 usermatching.controllers.ConfirmUserCo
 # User Details Error
 GET         /error/user-details           usermatching.controllers.UserDetailsErrorController.show()
 POST        /error/user-details           usermatching.controllers.UserDetailsErrorController.submit()
+
+# Confirm agent subscription
+GET         /confirm-agent-subscription   usermatching.controllers.ConfirmAgentSubscriptionController.show()

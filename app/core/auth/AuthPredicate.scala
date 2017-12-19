@@ -23,7 +23,7 @@ import scala.concurrent.Future
 
 object AuthPredicate {
 
-  object AuthPredicateSuccess
+  case object AuthPredicateSuccess
 
   type AuthPredicateSuccess = AuthPredicateSuccess.type
 

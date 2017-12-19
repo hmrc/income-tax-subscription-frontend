@@ -18,7 +18,7 @@ package helpers
 
 import java.util.UUID
 
-import core.ITSASessionKeys
+import core.ITSASessionKeys._
 import core.auth.{JourneyState, Registration, SignUp, UserMatching}
 import core.config.AppConfig
 import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
@@ -42,6 +42,7 @@ import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.play.test.UnitSpec
 import usermatching.forms.UserDetailsForm
 import usermatching.models.UserDetailsModel
+import usermatching.userjourneys.ConfirmAgentSubscription
 
 trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite
@@ -116,13 +117,13 @@ trait ComponentSpecBase extends UnitSpec
 
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse = await(
       buildClient(uri)
-        .withHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(ITSASessionKeys.JourneyStateKey -> SignUp.name) ++ additionalCookies))
+        .withHeaders(HeaderNames.COOKIE -> bakeSessionCookie(Map(JourneyStateKey -> SignUp.name) ++ additionalCookies))
         .get()
     )
 
     def post(uri: String, additionalCookies: Map[String, String] = Map.empty)(body: Map[String, Seq[String]]): WSResponse = await(
       buildClient(uri)
-        .withHeaders(HeaderNames.COOKIE -> SessionCookieBaker.bakeSessionCookie(Map(ITSASessionKeys.JourneyStateKey -> SignUp.name) ++ additionalCookies), "Csrf-Token" -> "nocheck")
+        .withHeaders(HeaderNames.COOKIE -> SessionCookieBaker.bakeSessionCookie(Map(JourneyStateKey -> SignUp.name) ++ additionalCookies), "Csrf-Token" -> "nocheck")
         .post(body)
     )
 
@@ -179,7 +180,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessAccountingPeriodDates(): WSResponse = get("/business/accounting-period-dates")
 
-    def businessStartDate(): WSResponse = get("/business/start-date", Map(ITSASessionKeys.JourneyStateKey -> Registration.name))
+    def businessStartDate(): WSResponse = get("/business/start-date", Map(JourneyStateKey -> Registration.name))
 
     def registerNextAccountingPeriod(): WSResponse = get("/business/register-next-accounting-period")
 
@@ -187,19 +188,19 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessName(): WSResponse = get("/business/name")
 
-    def businessAddress(state: JourneyState): WSResponse = get("/business/address", Map(ITSASessionKeys.JourneyStateKey -> state.name))
+    def businessAddress(state: JourneyState): WSResponse = get("/business/address", Map(JourneyStateKey -> state.name))
 
     def submitBusinessAddress(editMode: Boolean, state: JourneyState): WSResponse =
-      post(s"/business/address${if (editMode) "?editMode=true" else ""}", Map(ITSASessionKeys.JourneyStateKey -> state.name))(Map.empty)
+      post(s"/business/address${if (editMode) "?editMode=true" else ""}", Map(JourneyStateKey -> state.name))(Map.empty)
 
-    def businessAddressInit(state: JourneyState): WSResponse = get("/business/address/init", Map(ITSASessionKeys.JourneyStateKey -> state.name))
+    def businessAddressInit(state: JourneyState): WSResponse = get("/business/address/init", Map(JourneyStateKey -> state.name))
 
     def businessAddressCallback(editMode: Boolean, state: JourneyState): WSResponse = {
       val url = s"/business/address/callback${if (editMode) "/edit" else ""}?id=$testId"
-      get(url, Map(ITSASessionKeys.JourneyStateKey -> state.name))
+      get(url, Map(JourneyStateKey -> state.name))
     }
 
-    def businessPhoneNumber(): WSResponse = get("/business/phone-number", Map(ITSASessionKeys.JourneyStateKey -> Registration.name))
+    def businessPhoneNumber(): WSResponse = get("/business/phone-number", Map(JourneyStateKey -> Registration.name))
 
     def maintenance(): WSResponse = get("/error/maintenance")
 
@@ -270,7 +271,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitBusinessPhoneNumber(inEditMode: Boolean, request: Option[BusinessPhoneNumberModel]): WSResponse = {
       val uri = s"/business/phone-number?editMode=$inEditMode"
-      post(uri, Map(ITSASessionKeys.JourneyStateKey -> Registration.name))(
+      post(uri, Map(JourneyStateKey -> Registration.name))(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             BusinessPhoneNumberForm.businessPhoneNumberValidationForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
@@ -280,7 +281,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitBusinessStartDate(inEditMode: Boolean, request: Option[BusinessStartDateModel]): WSResponse = {
       val uri = s"/business/start-date?editMode=$inEditMode"
-      post(uri, Map(ITSASessionKeys.JourneyStateKey -> Registration.name))(
+      post(uri, Map(JourneyStateKey -> Registration.name))(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             BusinessStartDateForm.businessStartDateForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
@@ -300,31 +301,39 @@ trait ComponentSpecBase extends UnitSpec
 
     def iv(): WSResponse = get("/iv")
 
-    def showUserDetails(): WSResponse = get("/user-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
+    def showUserDetails(): WSResponse = get("/user-details", Map(JourneyStateKey -> UserMatching.name))
 
     def submitUserDetails(newSubmission: Option[UserDetailsModel], storedSubmission: Option[UserDetailsModel]): WSResponse =
-      post("/user-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name).addUserDetails(storedSubmission))(
+      post("/user-details", Map(JourneyStateKey -> UserMatching.name).addUserDetails(storedSubmission))(
         newSubmission.fold(Map.empty: Map[String, Seq[String]])(
           cd => toFormData(UserDetailsForm.userDetailsValidationForm, cd)
         )
       )
 
-    def showUserDetailsError(): WSResponse = get("/error/user-details", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
+    def showUserDetailsError(): WSResponse = get("/error/user-details", Map(JourneyStateKey -> UserMatching.name))
 
-    def showUserDetailsLockout(): WSResponse = get("/error/lockout", Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name))
+    def showUserDetailsLockout(): WSResponse = get("/error/lockout", Map(JourneyStateKey -> UserMatching.name))
 
     def submitConfirmUser(previouslyFailedAttempts: Int = 0,
                           storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testUserDetails)): WSResponse = {
       val failedAttemptCounter: Map[String, String] = previouslyFailedAttempts match {
         case 0 => Map.empty
-        case count => Map(ITSASessionKeys.FailedUserMatching -> previouslyFailedAttempts.toString)
+        case count => Map(FailedUserMatching -> previouslyFailedAttempts.toString)
       }
       post("/confirm-user",
-        additionalCookies = Map(ITSASessionKeys.JourneyStateKey -> UserMatching.name) ++ failedAttemptCounter.addUserDetails(storedUserDetails)
+        additionalCookies = Map(JourneyStateKey -> UserMatching.name) ++ failedAttemptCounter.addUserDetails(storedUserDetails)
       )(Map.empty)
     }
 
     def showAffinityGroupError(): WSResponse = get("/error/affinity-group")
+
+    def confirmAgentSubscription(): WSResponse = get(
+      "/confirm-agent-subscription",
+      Map(
+        JourneyStateKey -> ConfirmAgentSubscription.name,
+        AgentReferenceNumber -> IntegrationTestConstants.testArn
+      )
+    )
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
