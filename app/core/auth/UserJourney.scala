@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package core
+package core.auth
 
-object ITSASessionKeys {
-  val StartTime = "StartTime"
-  val RequestURI = "Request-URI"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val FailedUserMatching = "Failed-User-Matching"
-  val JourneyStateKey = "Journey-State"
-  val PreferencesRedirectUrl = "Preferences-Redirect-Url"
-  val AgentReferenceNumber = "Agent-Reference-Number"
+import core.auth.AuthPredicate._
+import core.config.AppConfig
+import core.config.featureswitch.FeatureSwitch
+
+trait UserJourney[User <: IncomeTaxUser] {
+  final implicit lazy val instance: this.type = this
+
+  final def isEnabled(implicit appConfig: AppConfig): Boolean = featureSwitch.fold(true)(appConfig.isEnabled)
+
+  val featureSwitch: Option[FeatureSwitch] = None
+
+  def authPredicates(implicit appConfig: AppConfig): AuthPredicate[User]
 }
+

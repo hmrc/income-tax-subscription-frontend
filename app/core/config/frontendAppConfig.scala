@@ -23,7 +23,7 @@ import play.api.mvc.Call
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
 
-trait AppConfig {
+trait AppConfig extends FeatureSwitching {
   val analyticsToken: String
   val analyticsHost: String
   val contactFormServiceIdentifier: String
@@ -73,6 +73,8 @@ trait AppConfig {
 
   def emacEs8ApiEnabled: Boolean
 
+  def unauthorisedAgentEnabled: Boolean
+
   def storeNinoUrl(token: String): String
 
   def upsertEnrolmentUrl(enrolmentKey: String): String
@@ -91,7 +93,7 @@ trait AppConfig {
 @Singleton
 class FrontendAppConfig @Inject()(configuration: Configuration,
                                   environment: Environment
-                                 ) extends AppConfig with ServicesConfig with FeatureSwitching {
+                                 ) extends AppConfig with ServicesConfig {
 
   override lazy val mode = environment.mode
 
@@ -206,6 +208,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override def emacEs6ApiEnabled: Boolean = isEnabled(featureswitch.EmacEs6ApiFeature)
 
   override def emacEs8ApiEnabled: Boolean = isEnabled(featureswitch.EmacEs8ApiFeature)
+
+  override def unauthorisedAgentEnabled: Boolean = isEnabled(featureswitch.UnauthorisedAgentFeature)
 
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 

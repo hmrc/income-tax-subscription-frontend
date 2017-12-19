@@ -68,6 +68,8 @@ trait MockConfig extends AppConfig {
 
   override val emacEs8ApiEnabled: Boolean = false
 
+  override def unauthorisedAgentEnabled: Boolean = false
+
   override def storeNinoUrl(token: String): String = s"income-tax-subscription/identifier-mapping/$token"
 
   override lazy val addressLookupFrontendURL: String = ""

@@ -736,3 +736,7 @@ agent.thank-you.go_to_gov                                             = Go to th
 agent.no-sa.title                                                     = Your client hasn''t registered for Self Assessment
 agent.no-sa.heading                                                   = Your client hasn''t registered for Self Assessment
 agent.no-sa.line_1                                                    = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
+
+confirm-agent-subscription.title                                      = Confirm your agent''s subscription
+confirm-agent-subscription.heading                                    = Confirm your agent''s subscription
+confirm-agent-subscription.line_1                                     = Your agent with the reference number {0} wants to subscribe you, continue to accept

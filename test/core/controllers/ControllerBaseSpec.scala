@@ -28,6 +28,7 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
+import usermatching.userjourneys.ConfirmAgentSubscription
 
 trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
 
@@ -88,8 +89,13 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
 
   lazy val registrationRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> Registration.name,
-    ITSASessionKeys.JourneyStateKey -> Registration.name,
     ITSASessionKeys.NINO -> TestConstants.testNino
+  )
+
+  lazy val confirmAgentSubscriptionRequest = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> ConfirmAgentSubscription.name,
+    ITSASessionKeys.NINO -> TestConstants.testNino,
+    ITSASessionKeys.AgentReferenceNumber -> TestConstants.testArn
   )
 
 }

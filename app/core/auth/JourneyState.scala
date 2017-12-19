@@ -17,10 +17,19 @@
 package core.auth
 
 import core.ITSASessionKeys
+import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import play.api.mvc._
+import AuthPredicates._
+import JourneyState._
 
-sealed trait JourneyState {
+import scala.concurrent.Future
+
+trait JourneyState {
   val name: String
+
+  lazy val journeyStatePredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if (request.isInState(this)) Right(AuthPredicateSuccess)
+    else Left(Future.successful(homeRoute))
 }
 
 object UserMatching extends JourneyState {
