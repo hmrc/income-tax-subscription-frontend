@@ -182,7 +182,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing accounting period dates when calling page from Check Your Answers" when {
-        "The new accounting period ends in the same tax year" in {
+        "the new accounting period ends in the same tax year" in {
           val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
           val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
           val keystoreMatchTaxYear = testMatchTaxYearNo
@@ -237,7 +237,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
           Then("Should return a SEE_OTHER with a redirect location of check your answers")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(termsURI)
+            redirectURI(checkYourAnswersURI)
           )
         }
       }

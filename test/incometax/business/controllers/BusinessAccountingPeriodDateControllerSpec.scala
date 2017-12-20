@@ -137,7 +137,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             val goodRequest = callShow(isEditMode = true, editMatch = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true).url)
+            redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
 
             await(goodRequest)
             verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1)
@@ -277,7 +277,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             status(goodRequest) must be(Status.SEE_OTHER)
             await(goodRequest)
 
-            redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true).url)
+            redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
             verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 1, saveTerms = 1)
           }
         }

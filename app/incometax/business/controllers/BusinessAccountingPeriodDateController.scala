@@ -25,10 +25,9 @@ import core.utils.Implicits._
 import incometax.business.forms.AccountingPeriodDateForm
 import incometax.business.models.AccountingPeriodModel
 import incometax.business.models.enums._
-import incometax.util.AccountingPeriodUtil
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 
 import scala.concurrent.Future
@@ -76,41 +75,26 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
               editMatch = editMatch,
               viewType = viewType
             ))),
-            accountingPeriod => {
-              lazy val linearRedirect = Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-              lazy val checkYourAnswersRedirect = Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-              lazy val termsRedirect = Redirect(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true))
-
-              def saveAndUpdate(taxYearChanged: Boolean): Future[Result] =
-                if (taxYearChanged) keystoreService.saveTerms(terms = false) flatMap { _ =>
-                  Future.successful(if (isEditMode) termsRedirect else linearRedirect)
+            accountingPeriod =>
+              for {
+                optOldAccountingPeriodDates <- keystoreService.fetchAccountingPeriodDate()
+                _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
+                _ <- optOldAccountingPeriodDates match {
+                  case Some(oldAccountingPeriodDates) if oldAccountingPeriodDates.taxEndYear != accountingPeriod.taxEndYear =>
+                    keystoreService.saveTerms(terms = false)
+                  case _ => Future.successful(Unit)
                 }
-                else Future.successful(if (isEditMode) checkYourAnswersRedirect else linearRedirect)
-
-              {
-                for {
-                  optOldAccountingPeriodDates <- keystoreService.fetchAccountingPeriodDate()
-                  _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
-                } yield optOldAccountingPeriodDates match {
-                  case Some(oldAccountingPeriodDates) =>
-                    val oldEndYear = AccountingPeriodUtil.getTaxEndYear(oldAccountingPeriodDates)
-                    val newEndYear = AccountingPeriodUtil.getTaxEndYear(accountingPeriod)
-                    saveAndUpdate(oldEndYear != newEndYear)
-                  case _ => saveAndUpdate(taxYearChanged = false) // can only happen on linear journey so we don't want to update terms
-                }
-              } flatMap identity
-            }
+              } yield
+                if (isEditMode) Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+                else Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
           )
       }
     }
   }
 
-  def whichView(implicit request: Request[_]): Future[AccountingPeriodViewType] = {
+  def whichView(implicit request: Request[_]): Future[AccountingPeriodViewType] =
     if (request.isInState(Registration)) RegistrationAccountingPeriodView
-    else {
-      SignUpAccountingPeriodView
-    }
-  }
+    else SignUpAccountingPeriodView
 
   def backUrl(isEditMode: Boolean, editMatch: Boolean)(implicit request: Request[_]): String =
     if (isEditMode) {
