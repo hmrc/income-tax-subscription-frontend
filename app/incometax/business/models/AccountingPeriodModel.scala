@@ -17,10 +17,13 @@
 package incometax.business.models
 
 import core.models.DateModel
+import incometax.util.AccountingPeriodUtil
 import play.api.libs.json.Json
 
 
-case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel)
+case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel) {
+  lazy val taxEndYear = AccountingPeriodUtil.getTaxEndYear(this)
+}
 
 object AccountingPeriodModel {
   implicit val format = Json.format[AccountingPeriodModel]
