@@ -12,6 +12,7 @@ import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import incometax.subscription.models.EnrolmentKey
+import incometax.subscription.models.{Both, EnrolmentKey, StoredSubscription}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import usermatching.models.UserDetailsModel
@@ -95,4 +96,14 @@ object IntegrationTestModels {
 
   lazy val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMTDID)
 
+  val testStoredSubscription = StoredSubscription(
+    arn = testArn,
+    incomeSource = Both,
+    otherIncome = false,
+    currentPeriodIsPrior = Some(true),
+    accountingPeriodStart = Some(testAccountingPeriod.startDate),
+    accountingPeriodEnd = Some(testAccountingPeriod.endDate),
+    tradingName = Some(testBusinessName.businessName),
+    cashOrAccruals = Some(testAccountingMethod.accountingMethod)
+  )
 }

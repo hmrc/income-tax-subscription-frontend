@@ -16,11 +16,13 @@
 
 package usermatching
 
+import agent.services.CacheConstants
+import agent.services.CacheConstants._
 import core.ITSASessionKeys
 import core.config.featureswitch
 import core.config.featureswitch.FeatureSwitching
 import helpers.IntegrationTestConstants._
-import helpers.servicemocks.{AuthStub, CitizenDetailsStub, KeystoreStub, SubscriptionStub}
+import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -142,8 +144,8 @@ class HomeControllerISpec extends ComponentSpecBase {
         "continue normally" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthNoUtr()
-          CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
           SubscriptionStub.stubGetNoSubscription()
+          CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
 
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -164,6 +166,7 @@ class HomeControllerISpec extends ComponentSpecBase {
         "continue normally" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthNoUtr()
+          SubscriptionStub.stubGetNoSubscription()
           CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
 
           When("GET /index is called")
@@ -184,6 +187,7 @@ class HomeControllerISpec extends ComponentSpecBase {
         "display error page" in {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthNoUtr()
+          SubscriptionStub.stubGetNoSubscription()
           CitizenDetailsStub.stubCIDNotFound(testNino)
 
           When("GET /index is called")
@@ -201,6 +205,32 @@ class HomeControllerISpec extends ComponentSpecBase {
       }
     }
 
+    "the unauthorised agent feature switch is on" when {
+      "the user has an unfinished unauthorised agent journey" should {
+        "redirect to the confirm agent subscription journey" in {
+          enable(featureswitch.UnauthorisedAgentFeature)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthNoUtr()
+          SubscriptionStub.stubGetNoSubscription()
+          SubscriptionStoreStub.stubSuccessfulSubscription()
+          KeystoreStub.stubKeystoreSave(IncomeSource)
+          KeystoreStub.stubKeystoreSave(OtherIncome)
+          KeystoreStub.stubKeystoreSave(AccountingPeriodDate)
+          KeystoreStub.stubKeystoreSave(BusinessName)
+          KeystoreStub.stubKeystoreSave(AccountingMethod)
+
+          When("GET /index is called")
+          val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+          Then("Should return SEE_OTHER with a redirect of confirm agent subscription")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(confirmAgentSubscriptionUri)
+          )
+        }
+      }
+    }
   }
 
 }
@@ -289,6 +319,7 @@ class HomeControllerRegEnabledISpec extends ComponentSpecBase with FeatureSwitch
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthNoUtr()
+          SubscriptionStub.stubGetNoSubscription()
           CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
 
           When("GET /index is called")

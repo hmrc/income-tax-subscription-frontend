@@ -19,15 +19,16 @@ package usermatching.services
 import javax.inject.{Inject, Singleton}
 
 import core.config.AppConfig
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.connectors.CitizenDetailsConnector
 import usermatching.httpparsers.CitizenDetailsResponseHttpParser.GetCitizenDetailsResponse
+import usermatching.models.CitizenDetailsSuccess
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CitizenDetailsService @Inject()(appConfig: AppConfig,
-                                      citizenDetailsConnector: CitizenDetailsConnector) {
+                                      citizenDetailsConnector: CitizenDetailsConnector)(implicit ec: ExecutionContext) {
 
   /* N.B. this is header update is to be used in conjunction with the test only route
 *  MatchingStubController
@@ -40,7 +41,12 @@ class CitizenDetailsService @Inject()(appConfig: AppConfig,
       case false => hc
     }
 
-  def lookupUtr(nino: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
-    citizenDetailsConnector.lookupUtr(nino)(amendHCForTest)
+  def lookupUtr(nino: String)(implicit hc: HeaderCarrier): Future[Option[String]] =
+    citizenDetailsConnector.lookupUtr(nino)(amendHCForTest) map {
+      case Right(Some(CitizenDetailsSuccess(utr))) =>
+        utr
+      case _ =>
+        throw new InternalServerException("unexpected error calling the citizen details service")
+    }
 
 }

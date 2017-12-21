@@ -24,7 +24,8 @@ import core.config.{BaseControllerConfig, MockConfig}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants
-import incometax.subscription.services.mocks.MockSubscriptionService
+import core.utils.TestConstants._
+import incometax.subscription.services.mocks.{MockSubscriptionService, MockSubscriptionStoreService}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -38,13 +39,22 @@ import scala.concurrent.Future
 class HomeControllerSpec extends ControllerBaseSpec
   with MockSubscriptionService
   with MockKeystoreService
-  with MockCitizenDetailsService {
+  with MockCitizenDetailsService
+  with MockSubscriptionStoreService {
 
   override val controllerName: String = "HomeControllerSpec"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "index" -> TestHomeController(showGuidance = false).index()
   )
+
+  override def beforeEach(): Unit = {
+    import org.mockito.Mockito._
+
+    super.beforeEach()
+    reset(mockAuthService)
+    mockNinoRetrieval()
+  }
 
   def mockBaseControllerConfig(showStartPage: Boolean, userMatching: Boolean, registrationFeature: Boolean): BaseControllerConfig = {
     val mockConfig = new MockConfig {
@@ -62,6 +72,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     MockKeystoreService,
     mockAuthService,
     mockCitizenDetailsService,
+    mockSubscriptionStoreService,
     app.injector.instanceOf[Logging]
   )
 
@@ -96,234 +107,112 @@ class HomeControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the index action of the HomeController with an authorised user with both utr and nino enrolments" should {
-    def call() = TestHomeController(showGuidance = false).index()(subscriptionRequest)
+  "index" when {
+    "the user has a nino" when {
+      "the user already has an MTDIT subscription on ETMP" should {
+        "redirect to the claim subscription page" in {
+          setupMockGetSubscriptionFound(testNino)
+          setupMockKeystoreSaveFunctions()
 
-    "redirect them to already subscribed page if they already has a subscription" in {
-      setupMockGetSubscriptionFound(testNino)
-      setupMockKeystoreSaveFunctions()
+          val result = TestHomeController().index(fakeRequest)
 
-      val result = call()
-      status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get mustBe incometax.subscription.controllers.routes.ClaimSubscriptionController.claim().url
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result).get mustBe incometax.subscription.controllers.routes.ClaimSubscriptionController.claim().url
 
-      verifyKeystore(saveSubscriptionId = 1)
-    }
-
-    "display the error page if there was an error checking the subscription" in {
-      setupMockGetSubscriptionFailure(testNino)
-
-      intercept[InternalServerException](await(call()))
-    }
-
-    // N.B. the subscribeNone case is covered below
-  }
-
-  "Calling the index action of the HomeController with an authorised user with only a nino enrolments" when {
-    def call(request: Request[AnyContent] = subscriptionRequest) = TestHomeController(showGuidance = false).index()(request)
-
-    def userSetup(): Unit = {
-      import org.mockito.Mockito._
-      reset(mockAuthService)
-      mockNinoRetrieval()
-    }
-
-    "user is found but their utr is not in CID" when {
-      "the registration feature flag is off" should {
-        "redirect the user to no SA page" in {
-          userSetup()
-          mockLookupUserWithoutUtr(testNino)
-
-          val result = call(registrationRequest)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe usermatching.controllers.routes.NoSAController.show().url
-
-          await(result).session(registrationRequest).get(ITSASessionKeys.UTR) mustBe None
+          verifyKeystore(saveSubscriptionId = 1)
         }
       }
-      "the registration feature flag is on" should {
-        "redirect the user to the income source page with the Registration journey state added to session" in {
-          userSetup()
+      "the user does not already have an MTDIT subscription on ETMP" when {
+        "the user's unauthorised agent has already started the subscription journey" should {
+          "redirect to the confirm agent subscription page" in {
+            setupMockGetSubscriptionNotFound(testNino)
+            mockRetrieveSubscriptionData(testNino)(successfulStoredSubscriptionFound)
 
-          val result = TestHomeController(registrationFeature = true).index()(registrationRequest)
+            val result = TestHomeController().index(fakeRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
-          await(result).session(registrationRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
+            status(result) must be(Status.SEE_OTHER)
+            redirectLocation(result).get mustBe usermatching.controllers.routes.ConfirmAgentSubscriptionController.show().url
+            session(result).get(ITSASessionKeys.AgentReferenceNumber) must contain(testArn)
+          }
+        }
+
+        "the user does not have a current unauthorised subscription journey" when {
+          "the user has a UTR" should {
+            "redirect to the sign up journey" in {
+              mockNinoAndUtrRetrieval()
+              setupMockGetSubscriptionNotFound(testNino)
+              mockRetrieveSubscriptionData(testNino)(successfulSubscriptionNotFound)
+
+              val result = await(TestHomeController().index(fakeRequest))
+
+              status(result) must be(Status.SEE_OTHER)
+
+              redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
+            }
+          }
+
+          "the user does not have a utr" when {
+            "the user has a matching utr in CID against their NINO" in {
+              mockNinoRetrieval()
+              setupMockGetSubscriptionNotFound(testNino)
+              mockRetrieveSubscriptionData(testNino)(successfulSubscriptionNotFound)
+              mockLookupUserWithUtr(testNino)(testUtr)
+
+              val result = await(TestHomeController().index(fakeRequest))
+
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
+
+              session(result).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
+            }
+
+            "the user does not have a matching utr in CID" when {
+              "the registration feature flag is on" should {
+                "redirect to the registration journey" in {
+                  mockNinoRetrieval()
+                  setupMockGetSubscriptionNotFound(testNino)
+                  mockRetrieveSubscriptionData(testNino)(successfulSubscriptionNotFound)
+                  mockLookupUserWithoutUtr(testNino)
+
+                  val result = TestHomeController(registrationFeature = true).index()(registrationRequest)
+
+                  status(result) mustBe SEE_OTHER
+                  redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
+                  await(result).session(registrationRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
+                }
+              }
+              "the registration feature flag is off" should {
+                "redirect to the no SA page" in {
+                  mockNinoRetrieval()
+                  setupMockGetSubscriptionNotFound(testNino)
+                  mockRetrieveSubscriptionData(testNino)(successfulSubscriptionNotFound)
+                  mockLookupUserWithoutUtr(testNino)
+
+                  val result = TestHomeController(registrationFeature = false).index()(registrationRequest)
+
+                  status(result) mustBe SEE_OTHER
+                  redirectLocation(result).get mustBe usermatching.controllers.routes.NoSAController.show().url
+
+                  await(result).session(registrationRequest).get(ITSASessionKeys.UTR) mustBe None
+                }
+              }
+            }
+          }
         }
       }
-    }
+      "the call to check the user's subscription status fails" should {
+        "return an error page" in {
+          setupMockGetSubscriptionFailure(testNino)
 
-    "user had successfully been through user matching" when {
-      "a user with a UTR should be marked as sign up" in {
-        userSetup()
-
-        setupMockGetSubscriptionNotFound(testNino)
-
-        val request = userMatchedRequest
-        val result = call(request)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
-
-        await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(SignUp.name)
-      }
-
-      "the registration feature flag is off" should {
-        "a user with no UTR should see the no sa page" in {
-          userSetup()
-
-          setupMockGetSubscriptionNotFound(testNino)
-
-          val request = userMatchedRequestNoUtr
-          val result = call(request)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe usermatching.controllers.routes.NoSAController.show().url
-
-          await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) mustBe None
-        }
-      }
-
-      "the registration feature flag is on" should {
-        "a user with no UTR should be marked as registration" in {
-          userSetup()
-
-          setupMockGetSubscriptionNotFound(testNino)
-
-          val request = userMatchedRequestNoUtr
-          val result = TestHomeController(registrationFeature = true).index()(request)
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
-
-          await(result).session(subscriptionRequest).get(ITSASessionKeys.JourneyStateKey) must contain(Registration.name)
+          intercept[InternalServerException](await(TestHomeController().index(fakeRequest)))
         }
       }
     }
-
-    "user is found and their utr is in CID" should {
-      "the user should be allowed to continue normally" in {
-        userSetup()
-        mockLookupUserWithUtr(testNino)(testUtr)
-
-        setupMockGetSubscriptionNotFound(testNino)
-
-        val result = call()
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
-
-        await(result).session(subscriptionRequest).get(ITSASessionKeys.UTR) mustBe Some(testUtr)
-      }
-    }
-
-    "user is not found in CID" should {
-      "show error page" in {
-        userSetup()
-        mockLookupUserNotFound(testNino)
-
-        val result = call(userMatchingRequest)
-
-        val e = intercept[InternalServerException] {
-          await(result)
-        }
-
-        e.message mustBe "HomeController.checkCID: unexpected error calling the citizen details service"
-      }
-    }
-
-    "calls to CID failed" should {
-      "show error page" in {
-        userSetup()
-        mockLookupFailure(testNino)
-
-        val result = call(userMatchingRequest)
-
-        val e = intercept[InternalServerException] {
-          await(result)
-        }
-
-        e.message mustBe "HomeController.checkCID: unexpected error calling the citizen details service"
-      }
-    }
-  }
-
-  "Calling the index action of the HomeController with an authorised user with only a utr enrolments" should {
-    def call() = TestHomeController(showGuidance = false).index()(fakeRequest)
-
-    def userSetup(): Unit = {
-      import org.mockito.Mockito._
-      reset(mockAuthService)
-      mockUtrRetrieval()
-    }
-
-    // n.b. since gateway should have used the utr to look up the nino from CID during user login
-    "return an internal server error" in {
-      userSetup()
-
-      val result = call()
-
-      val ex = intercept[InternalServerException](status(result))
-      ex.message mustBe "AuthPredicates.ninoPredicate: unexpected user state, the user has a utr but no nino"
-    }
-  }
-
-  "Calling the index action of the HomeController with an authorised user who does not already have a subscription" should {
-
-    def getResult: Future[Result] = TestHomeController(showGuidance = false).index()(fakeRequest)
-
-    "redirect to check preferences if the user qualifies" in {
-      setupMockGetSubscriptionNotFound(testNino)
-
-      val result = getResult
-
-      status(result) must be(Status.SEE_OTHER)
-
-      redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
-    }
-
-    "redirect when auth returns an org affinity" in {
-      mockNinoRetrievalWithOrg()
-
-      val result = getResult
-
-      status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result).get mustBe usermatching.controllers.routes.AffinityGroupErrorController.show().url
-    }
-
-    "redirect when auth returns no affinity" in {
-      mockNinoRetrievalWithNoAffinity()
-
-      val result = getResult
-
-      status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result).get mustBe usermatching.controllers.routes.AffinityGroupErrorController.show().url
-    }
-  }
-
-  "If a user doesn't have a NINO" when {
-
-    def getResult(userMatchingFeature: Boolean): Future[Result] =
-      TestHomeController(showGuidance = false, userMatchingFeature = userMatchingFeature).index()(fakeRequest)
-
-    "userMatchingFeature in core.config is set to true" should {
-      "redirect them to user details" in {
+    "the user does not have a nino" should {
+      "redirect to the NINO resolver" in {
         mockIndividualWithNoEnrolments()
 
-        val result = getResult(userMatchingFeature = true)
-
-        status(result) mustBe Status.SEE_OTHER
-        redirectLocation(result).get mustBe usermatching.controllers.routes.NinoResolverController.resolveNinoAction().url
-      }
-    }
-
-    "userMatchingFeature in core.config is set to false" should {
-      "redirect them to iv" in {
-        mockIndividualWithNoEnrolments()
-
-        val result = getResult(userMatchingFeature = false)
+        val result = TestHomeController().index(fakeRequest)
 
         status(result) mustBe Status.SEE_OTHER
         redirectLocation(result).get mustBe usermatching.controllers.routes.NinoResolverController.resolveNinoAction().url

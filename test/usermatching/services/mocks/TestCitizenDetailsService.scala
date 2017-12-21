@@ -37,7 +37,7 @@ trait TestCitizenDetailsService extends MockCitizenDetailsConnector {
 trait MockCitizenDetailsService extends MockTrait {
   val mockCitizenDetailsService: CitizenDetailsService = mock[CitizenDetailsService]
 
-  private def mockLookupUtr(nino: String)(response: Future[Either[CitizenDetailsFailureResponse, Option[CitizenDetailsSuccess]]]) =
+  private def mockLookupUtr(nino: String)(response: Future[Option[String]]) =
     when(
       mockCitizenDetailsService.lookupUtr(
         ArgumentMatchers.eq(nino)
@@ -47,16 +47,10 @@ trait MockCitizenDetailsService extends MockTrait {
     ).thenReturn(response)
 
   def mockLookupUserWithUtr(nino: String)(utr: String): Unit =
-    mockLookupUtr(nino)(Future.successful(Right(Some(CitizenDetailsSuccess(Some(utr))))))
+    mockLookupUtr(nino)(Future.successful(Some(utr)))
 
   def mockLookupUserWithoutUtr(nino: String): Unit =
-    mockLookupUtr(nino)(Future.successful(Right(Some(CitizenDetailsSuccess(None)))))
-
-  def mockLookupUserNotFound(nino: String): Unit =
-    mockLookupUtr(nino)(Future.successful(Right(None)))
-
-  def mockLookupFailure(nino: String): Unit =
-    mockLookupUtr(nino)(Future.successful(Left(CitizenDetailsFailureResponse(BAD_REQUEST))))
+    mockLookupUtr(nino)(Future.successful(None))
 
   def mockLookupException(nino: String): Unit =
     mockLookupUtr(nino)(Future.failed(testException))

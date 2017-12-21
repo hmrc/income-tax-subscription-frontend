@@ -17,8 +17,8 @@
 package incometax.subscription.models
 
 import agent.models.AccountingPeriodPriorModel
-import incometax.business.models.address.Address
 import incometax.business.models._
+import incometax.business.models.address.Address
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 
 case class SummaryModel(incomeSource: Option[IncomeSourceModel] = None,

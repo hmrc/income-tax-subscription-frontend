@@ -18,7 +18,6 @@ package usermatching.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import core.ITSASessionKeys
 import core.ITSASessionKeys._
 import core.audit.Logging
 import core.auth.JourneyState._
@@ -27,11 +26,10 @@ import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import core.utils.Implicits._
 import incometax.subscription.models.SubscriptionSuccess
-import incometax.subscription.services.SubscriptionService
+import incometax.subscription.services.{SubscriptionService, SubscriptionStoreService}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
-import usermatching.models.CitizenDetailsSuccess
 import usermatching.services.CitizenDetailsService
 
 import scala.concurrent.Future
@@ -43,6 +41,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                keystoreService: KeystoreService,
                                val authService: AuthService,
                                citizenDetailsService: CitizenDetailsService,
+                               subscriptionStoreService: SubscriptionStoreService,
                                logging: Logging
                               ) extends StatelessController {
 
@@ -51,71 +50,72 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
   def home: Action[AnyContent] = Action { implicit request =>
     val redirect = routes.HomeController.index()
 
-    showGuidance match {
-      case true =>
-        Ok(views.html.frontpage(redirect))
-      case _ =>
-        Redirect(redirect)
-    }
+    if (showGuidance) Ok(views.html.frontpage(redirect))
+    else Redirect(redirect)
   }
-
-  private def checkCID(defaultAction: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] = {
-
-    lazy val error = Future.failed(new InternalServerException("HomeController.checkCID: unexpected error calling the citizen details service"))
-
-    (user.nino, user.utr) match {
-      case (Some(_), Some(_)) => defaultAction
-      case (Some(nino), None) =>
-        if (request.isInState(UserMatched)) gotoRegistration
-        else {
-          citizenDetailsService.lookupUtr(nino).flatMap {
-            case Right(optResult) =>
-              optResult match {
-                case Some(CitizenDetailsSuccess(optUtr@Some(utr))) => defaultAction.flatMap(_.addingToSession(ITSASessionKeys.UTR -> utr))
-                case Some(CitizenDetailsSuccess(None)) => gotoRegistration
-                case _ => error
-              }
-            case _ => error
-          }.recoverWith { case _ => error }
-        }
-      case (None, _) => // n.b. This should not happen as the user have been redirected by the no nino predicates
-        Future.failed(new InternalServerException("HomeController.checkCID: unexpected user state, the user has a utr but no nino"))
-    }
-  }
-
-  private def gotoRegistration(implicit request: Request[AnyContent]) = Future.successful(
-    if (applicationConfig.enableRegistration) {
-      val timestamp: String = java.time.LocalDateTime.now().toString
-
-      gotoPreferences
-        .addingToSession(StartTime -> timestamp)
-        .withJourneyState(Registration)
-    }
-    else {
-      Redirect(routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey)
-    }
-  )
-
-  private def checkAlreadySubscribed(default: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[AnyContent]): Future[Result] =
-    subscriptionService.getSubscription(user.nino.get).flatMap {
-      case Right(None) => default
-      case Right(Some(SubscriptionSuccess(mtditId))) =>
-        keystoreService.saveSubscriptionId(mtditId) map { _ =>
-          Redirect(incometax.subscription.controllers.routes.ClaimSubscriptionController.claim()).withJourneyState(SignUp)
-        }
-      case err@_ =>
-        Future.failed(new InternalServerException(s"HomeController.index: unexpected error calling the subscription service:\n$err"))
-    }
 
   def index: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       val timestamp: String = java.time.LocalDateTime.now().toString
-      checkCID(
-        checkAlreadySubscribed(
-          gotoPreferences.addingToSession(StartTime -> timestamp).withJourneyState(SignUp)
-        )
-      )
+
+      user.nino match {
+        case Some(nino) =>
+          getSubscription(nino) flatMap {
+            case None =>
+              subscriptionStoreService.retrieveSubscriptionData(nino) flatMap {
+                case Some(storedSubscription) =>
+                  Future.successful(goToConfirmAgentSubscription(storedSubscription.arn))
+                case None =>
+                  resolveUtr(user, nino) map {
+                    case Some(utr) =>
+                      goToSignUp(timestamp)
+                        .addingToSession(UTR -> utr)
+                    case None =>
+                      goToRegistration(timestamp)
+                  }
+              }
+            case Some(SubscriptionSuccess(mtditId)) =>
+              claimSubscription(mtditId)
+          }
+        case None => goToResolveNino
+      }
   }
 
-  lazy val gotoPreferences = Redirect(digitalcontact.controllers.routes.PreferencesController.checkPreferences())
+  private def goToConfirmAgentSubscription(arn: String)(implicit request: Request[AnyContent]): Result =
+    Redirect(usermatching.controllers.routes.ConfirmAgentSubscriptionController.show())
+      .addingToSession(AgentReferenceNumber -> arn)
+
+  lazy val goToPreferences = Redirect(digitalcontact.controllers.routes.PreferencesController.checkPreferences())
+
+  lazy val goToResolveNino = Future.successful(Redirect(usermatching.controllers.routes.NinoResolverController.resolveNinoAction()))
+
+  private def resolveUtr(user: IncomeTaxSAUser, nino: String)(implicit request: Request[AnyContent]): Future[Option[String]] =
+    user.utr.fold(citizenDetailsService.lookupUtr(nino))(Future.successful(_))
+
+  private def getSubscription(nino: String)(implicit request: Request[AnyContent]): Future[Option[SubscriptionSuccess]] =
+    subscriptionService.getSubscription(nino) map {
+      case Right(optionalSubscription) => optionalSubscription
+      case Left(err) => throw new InternalServerException(s"HomeController.index: unexpected error calling the subscription service:\n$err")
+    }
+
+  private def goToSignUp(timestamp: String)(implicit request: Request[AnyContent]): Result =
+    goToPreferences
+      .addingToSession(StartTime -> timestamp)
+      .withJourneyState(SignUp)
+
+  private def goToRegistration(timestamp: String)(implicit request: Request[AnyContent]): Result =
+    if (applicationConfig.enableRegistration) {
+      goToPreferences
+        .addingToSession(StartTime -> timestamp)
+        .withJourneyState(Registration)
+    } else {
+      Redirect(routes.NoSAController.show())
+        .removingFromSession(JourneyStateKey)
+    }
+
+  private def claimSubscription(mtditId: String)(implicit request: Request[AnyContent]): Future[Result] =
+    keystoreService.saveSubscriptionId(mtditId) map { _ =>
+      Redirect(incometax.subscription.controllers.routes.ClaimSubscriptionController.claim())
+        .withJourneyState(SignUp)
+    }
 }

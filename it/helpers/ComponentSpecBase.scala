@@ -83,7 +83,9 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.address-lookup-frontend.host" -> mockHost,
     "microservice.services.address-lookup-frontend.port" -> mockPort,
     "microservice.services.enrolment-store-proxy.host" -> mockHost,
-    "microservice.services.enrolment-store-proxy.port" -> mockPort
+    "microservice.services.enrolment-store-proxy.port" -> mockPort,
+    "microservice.services.income-tax-subscription-store.host" -> mockHost,
+    "microservice.services.income-tax-subscription-store.port" -> mockPort
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()

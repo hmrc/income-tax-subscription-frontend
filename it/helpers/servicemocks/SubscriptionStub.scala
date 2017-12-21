@@ -22,7 +22,7 @@ import incometax.subscription.models.SubscriptionSuccess
 import play.api.http.Status
 import play.api.libs.json.Json
 
-object SubscriptionStub extends WireMockMethods{
+object SubscriptionStub extends WireMockMethods {
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"
 
   def stubSuccessfulSubscription(callingPageUri: String): Unit = {
