@@ -21,7 +21,6 @@ import javax.inject.{Inject, Singleton}
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import core.utils.Implicits._
 import incometax.business.forms.AccountingPeriodDateForm
 import incometax.business.models.AccountingPeriodModel
 import incometax.business.models.enums._
@@ -39,60 +38,53 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
                                                        val authService: AuthService
                                                       ) extends SignUpController {
 
-  def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, editMatch: Boolean, viewType: AccountingPeriodViewType)(implicit request: Request[_]): Html =
+  def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, editMatch: Boolean)(implicit request: Request[_]): Html =
     incometax.business.views.html.accounting_period_date(
-      form,
-      incometax.business.controllers.routes.BusinessAccountingPeriodDateController.submit(editMode = isEditMode, editMatch = editMatch),
-      viewType,
-      isEditMode,
-      backUrl
+      accountingPeriodForm = form,
+      postAction = incometax.business.controllers.routes.BusinessAccountingPeriodDateController.submit(editMode = isEditMode, editMatch = editMatch),
+      viewType = whichView,
+      isEditMode = isEditMode,
+      backUrl = backUrl
     )
 
   def show(isEditMode: Boolean, editMatch: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
-        viewType <- whichView
       } yield
         Ok(view(
           AccountingPeriodDateForm.accountingPeriodDateForm.fill(accountingPeriod),
           backUrl = backUrl(isEditMode, editMatch),
           isEditMode = isEditMode,
-          editMatch = editMatch,
-          viewType = viewType
+          editMatch = editMatch
         ))
   }
 
   def submit(isEditMode: Boolean, editMatch: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => {
-      whichView.flatMap {
-        viewType =>
-          AccountingPeriodDateForm.accountingPeriodDateForm.bindFromRequest().fold(
-            formWithErrors => Future.successful(BadRequest(view(
-              form = formWithErrors,
-              backUrl = backUrl(isEditMode, editMatch),
-              isEditMode = isEditMode,
-              editMatch = editMatch,
-              viewType = viewType
-            ))),
-            accountingPeriod =>
-              for {
-                optOldAccountingPeriodDates <- keystoreService.fetchAccountingPeriodDate()
-                _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
-                _ <- optOldAccountingPeriodDates match {
-                  case Some(oldAccountingPeriodDates) if oldAccountingPeriodDates.taxEndYear != accountingPeriod.taxEndYear =>
-                    keystoreService.saveTerms(terms = false)
-                  case _ => Future.successful(Unit)
-                }
-              } yield
-                if (isEditMode) Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-                else Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-          )
-      }
-    }
+    implicit user =>
+      AccountingPeriodDateForm.accountingPeriodDateForm.bindFromRequest().fold(
+        formWithErrors => Future.successful(BadRequest(view(
+          form = formWithErrors,
+          backUrl = backUrl(isEditMode, editMatch),
+          isEditMode = isEditMode,
+          editMatch = editMatch
+        ))),
+        accountingPeriod =>
+          for {
+            optOldAccountingPeriodDates <- keystoreService.fetchAccountingPeriodDate()
+            _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
+            _ <- optOldAccountingPeriodDates match {
+              case Some(oldAccountingPeriodDates) if oldAccountingPeriodDates.taxEndYear != accountingPeriod.taxEndYear =>
+                keystoreService.saveTerms(terms = false)
+              case _ => Future.successful(Unit)
+            }
+          } yield
+            if (isEditMode) Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+            else Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
+      )
   }
 
-  def whichView(implicit request: Request[_]): Future[AccountingPeriodViewType] =
+  def whichView(implicit request: Request[_]): AccountingPeriodViewType =
     if (request.isInState(Registration)) RegistrationAccountingPeriodView
     else SignUpAccountingPeriodView
 

@@ -113,8 +113,6 @@ trait MockKeystoreService extends MockTrait {
                                       saveOtherIncome: Option[Int] = None,
                                       fetchSubscriptionId: Option[Int] = None,
                                       saveSubscriptionId: Option[Int] = None,
-                                      fetchAccountingPeriodPrior: Option[Int] = None,
-                                      saveAccountingPeriodPrior: Option[Int] = None,
                                       fetchPaperlessPreferenceToken: Option[Int] = None,
                                       savePaperlessPreferenceToken: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
@@ -142,8 +140,6 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(OtherIncome, saveOtherIncome)
     verifyKeystoreFetch(MtditId, fetchSubscriptionId)
     verifyKeystoreSave(MtditId, saveSubscriptionId)
-    verifyKeystoreFetch(AccountingPeriodPrior, fetchAccountingPeriodPrior)
-    verifyKeystoreSave(AccountingPeriodPrior, saveAccountingPeriodPrior)
     verifyKeystoreFetch(PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
     verifyKeystoreSave(PaperlessPreferenceToken, savePaperlessPreferenceToken)
 

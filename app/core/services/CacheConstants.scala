@@ -21,7 +21,6 @@ object CacheConstants {
   val PropertyIncome = "PropertyIncome"
   val SoleTrader = "SoleTrader"
   val MatchTaxYear = "MatchTaxYear"
-  //TODO remove
   val AccountingPeriodPrior = "AccountingPeriodPrior"
   val RegisterNextAccountingPeriod = "RegisterNextAccountingPeriod"
   val BusinessName = "BusinessName"

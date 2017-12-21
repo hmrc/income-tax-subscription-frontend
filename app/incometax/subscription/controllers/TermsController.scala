@@ -50,14 +50,15 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
     implicit user =>
       for {
         cacheMap <- keystoreService.fetchAll() map (_.get)
-        backUrl = getBackUrl(editMode, cacheMap.getIncomeSource().get.source, cacheMap.getOtherIncome().get.choice)
+        incomeSource = cacheMap.getIncomeSource().get
+        backUrl = getBackUrl(editMode, incomeSource.source, cacheMap.getOtherIncome().get.choice)
       } yield
-        (cacheMap.getIncomeSource(), cacheMap.getMatchTaxYear(), cacheMap.getAccountingPeriodDate()) match {
-          case (Some(IncomeSourceModel(incomeSource)), _, _) if incomeSource == option_property =>
+        (incomeSource, cacheMap.getMatchTaxYear(), cacheMap.getAccountingPeriodDate()) match {
+          case (IncomeSourceModel(source), _, _) if source == option_property =>
             Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
           case (_, Some(MatchTaxYearModel(matchTaxYear)), _) if matchTaxYear == MatchTaxYearForm.option_yes =>
             Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
-          case(_, _, Some(date)) =>
+          case (_, _, Some(date)) =>
             Ok(view(backUrl = backUrl, taxEndYear = date.taxEndYear))
           case _ =>
             Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = editMode, editMatch = editMode))
@@ -75,7 +76,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
     else
       incomeSource match {
-        case (IncomeSourceForm.option_business | IncomeSourceForm.option_both)  =>
+        case (IncomeSourceForm.option_business | IncomeSourceForm.option_both) =>
           incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
         case IncomeSourceForm.option_property =>
           otherIncome match {
