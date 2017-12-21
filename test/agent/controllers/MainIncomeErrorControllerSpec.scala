@@ -25,7 +25,7 @@ class MainIncomeErrorControllerSpec extends AgentControllerBaseSpec {
 
   override val controllerName: String = "MainIncomeErrorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "mainIncomeError" -> TestMainIncomeErrorController.mainIncomeError
+    "mainIncomeError" -> TestMainIncomeErrorController.show
   )
 
   object TestMainIncomeErrorController extends MainIncomeErrorController(
@@ -36,7 +36,7 @@ class MainIncomeErrorControllerSpec extends AgentControllerBaseSpec {
 
   "Calling the mainIncomeError action of the MainIncomeErrorController" should {
 
-    lazy val result = TestMainIncomeErrorController.mainIncomeError(subscriptionRequest)
+    lazy val result = TestMainIncomeErrorController.show(subscriptionRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -51,8 +51,8 @@ class MainIncomeErrorControllerSpec extends AgentControllerBaseSpec {
   }
 
   "The back url" should {
-    s"point to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
-      TestMainIncomeErrorController.backUrl mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
+    s"point to ${agent.controllers.routes.IncomeSourceController.show().url}" in {
+      TestMainIncomeErrorController.backUrl mustBe agent.controllers.routes.IncomeSourceController.show().url
     }
   }
 

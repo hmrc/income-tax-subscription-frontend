@@ -42,7 +42,7 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
 
   "Calling the showOtherIncomeError action of the OtherIncomeErrorController" should {
 
-    lazy val result = TestOtherIncomeErrorController.showOtherIncomeError(FakeRequest())
+    lazy val result = TestOtherIncomeErrorController.show(FakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -58,7 +58,7 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
 
   "Calling the submitOtherIncomeError action of the OtherIncomeError controller with an authorised user" should {
 
-    def callSubmit = TestOtherIncomeErrorController.submitOtherIncomeError(subscriptionRequest
+    def callSubmit = TestOtherIncomeErrorController.submit(subscriptionRequest
       .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
 
     "return a redirect status (SEE_OTHER - 303)" in {
@@ -85,13 +85,13 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
       verifyKeystore(fetchIncomeSource = 1)
     }
 
-    s"redirect to '${agent.controllers.routes.TermsController.showTerms().url}' on the property journey" in {
+    s"redirect to '${agent.controllers.routes.TermsController.show().url}' on the property journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
 
       val goodRequest = callSubmit
 
-      redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
+      redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.show().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)

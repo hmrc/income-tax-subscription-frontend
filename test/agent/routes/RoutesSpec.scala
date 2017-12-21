@@ -25,7 +25,7 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Timeout routes
   "The URL for the timeout.timeout action" should {
     s"be equal to $contextRoute/session-timeout" in {
-      agent.controllers.routes.SessionTimeoutController.timeout().url must be (s"$contextRoute/session-timeout")
+      agent.controllers.routes.SessionTimeoutController.show().url must be (s"$contextRoute/session-timeout")
     }
   }
 
@@ -45,7 +45,7 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
 
   "The URL for the ConfirmationController.showConfirmation action" should {
     s"be equal to $contextRoute/confirmation" in {
-      agent.controllers.routes.ConfirmationController.showConfirmation().url must be (s"$contextRoute/confirmation")
+      agent.controllers.routes.ConfirmationController.show().url must be (s"$contextRoute/confirmation")
     }
   }
 
@@ -78,13 +78,13 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Terms and Conditions routes
   "The URL for the Terms.showTerms action" should {
     s"be equal to $contextRoute/terms" in {
-      agent.controllers.routes.TermsController.showTerms().url must be (s"$contextRoute/terms")
+      agent.controllers.routes.TermsController.show().url must be (s"$contextRoute/terms")
     }
   }
 
   "The URL for the Terms.submitTerms(true) action" should {
     s"be equal to $contextRoute/terms" in {
-      agent.controllers.routes.TermsController.submitTerms().url must be (s"$contextRoute/terms")
+      agent.controllers.routes.TermsController.show().url must be (s"$contextRoute/terms")
     }
   }
 

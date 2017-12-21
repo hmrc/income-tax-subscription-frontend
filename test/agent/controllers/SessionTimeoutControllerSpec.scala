@@ -34,7 +34,7 @@ class SessionTimeoutControllerSpec extends AgentControllerBaseSpec {
 
   "Calling the timeout action of the SessionTimeoutController" should {
 
-    lazy val result = TestSessionTimeoutController.timeout(FakeRequest())
+    lazy val result = TestSessionTimeoutController.show(FakeRequest())
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {

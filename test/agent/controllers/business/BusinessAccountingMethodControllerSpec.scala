@@ -71,12 +71,12 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
       }
 
-      s"redirect to '${agent.controllers.routes.TermsController.showTerms().url}'" in {
+      s"redirect to '${agent.controllers.routes.TermsController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
@@ -120,8 +120,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   }
 
   "The back url when not in edit mode" should {
-    s"point to ${agent.controllers.business.routes.BusinessNameController.showBusinessName().url}" in {
-      TestBusinessAccountingMethodController.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessNameController.showBusinessName().url
+    s"point to ${agent.controllers.business.routes.BusinessNameController.show().url}" in {
+      TestBusinessAccountingMethodController.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessNameController.show().url
     }
   }
 

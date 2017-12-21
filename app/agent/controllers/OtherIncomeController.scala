@@ -46,12 +46,12 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
     agent.views.html.other_income(
       otherIncomeForm = otherIncomeForm,
       incomeSource = incomeSource,
-      postAction = agent.controllers.routes.OtherIncomeController.submitOtherIncome(editMode = isEditMode),
+      postAction = agent.controllers.routes.OtherIncomeController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl
     )
 
-  def showOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         optIncomeSource <- keystoreService.fetchIncomeSource()
@@ -60,21 +60,21 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
         case (Some(IncomeSourceModel(incomeSource)), _) =>
           Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), incomeSource, isEditMode, backUrl(isEditMode)))
         case _ =>
-          Redirect(agent.controllers.routes.IncomeSourceController.showIncomeSource())
+          Redirect(agent.controllers.routes.IncomeSourceController.show())
       }
   }
 
   def defaultRedirections(optIncomeSource: Option[IncomeSourceModel], otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
     otherIncomeModel.choice match {
       case OtherIncomeForm.option_yes =>
-        Redirect(agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError())
+        Redirect(agent.controllers.routes.OtherIncomeErrorController.show())
       case OtherIncomeForm.option_no =>
         optIncomeSource match {
           case Some(incomeSource) => incomeSource.source match {
             case IncomeSourceForm.option_business =>
               Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
             case IncomeSourceForm.option_property =>
-              Redirect(agent.controllers.routes.TermsController.showTerms())
+              Redirect(agent.controllers.routes.TermsController.show())
             case IncomeSourceForm.option_both =>
               Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
           }
@@ -84,7 +84,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
         }
     }
 
-  def submitOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.fetchIncomeSource().flatMap {
         case optIncomeSource@Some(IncomeSourceModel(incomeSource)) =>
@@ -103,7 +103,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
               }
           )
         case _ =>
-          Future.successful(Redirect(agent.controllers.routes.IncomeSourceController.showIncomeSource()))
+          Future.successful(Redirect(agent.controllers.routes.IncomeSourceController.show()))
       }
   }
 
@@ -111,6 +111,6 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
     if (isEditMode)
       agent.controllers.routes.CheckYourAnswersController.show().url
     else
-      agent.controllers.routes.IncomeSourceController.showIncomeSource().url
+      agent.controllers.routes.IncomeSourceController.show().url
 
 }

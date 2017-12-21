@@ -60,7 +60,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
         accountingMethod => {
           keystoreService.saveAccountingMethod(accountingMethod) map (_ => isEditMode match {
             case true => Redirect(agent.controllers.routes.CheckYourAnswersController.show())
-            case _ => Redirect(agent.controllers.routes.TermsController.showTerms())
+            case _ => Redirect(agent.controllers.routes.TermsController.show())
           })
         }
       )
@@ -70,6 +70,6 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
     if (isEditMode)
       agent.controllers.routes.CheckYourAnswersController.show().url
     else
-      agent.controllers.business.routes.BusinessNameController.showBusinessName().url
+      agent.controllers.business.routes.BusinessNameController.show().url
 
 }

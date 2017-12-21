@@ -38,18 +38,18 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
                                            val logging: Logging
                                           ) extends AuthenticatedController {
 
-  val showOtherIncomeError = Action.async { implicit request =>
-    Future.successful(Ok(agent.views.html.other_income_error(postAction = agent.controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(), backUrl)))
+  val show = Action.async { implicit request =>
+    Future.successful(Ok(agent.views.html.other_income_error(postAction = agent.controllers.routes.OtherIncomeErrorController.submit(), backUrl)))
   }
 
-  val submitOtherIncomeError: Action[AnyContent] = Authenticated.async { implicit request =>
+  val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.fetchIncomeSource() map {
         case Some(incomeSource) => incomeSource.source match {
           case IncomeSourceForm.option_business =>
             Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
           case IncomeSourceForm.option_property =>
-            Redirect(agent.controllers.routes.TermsController.showTerms())
+            Redirect(agent.controllers.routes.TermsController.show())
           case IncomeSourceForm.option_both =>
             Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
         }
@@ -59,7 +59,7 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
       }
   }
 
-  lazy val backUrl: String = agent.controllers.routes.OtherIncomeController.showOtherIncome().url
+  lazy val backUrl: String = agent.controllers.routes.OtherIncomeController.show().url
 
 
 }

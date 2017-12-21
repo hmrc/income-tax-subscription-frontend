@@ -32,10 +32,10 @@ class MainIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                          ) extends AuthenticatedController {
 
 
-  val mainIncomeError = Authenticated.async { implicit request =>
+  val show = Authenticated.async { implicit request =>
     implicit user =>
       Future.successful(Ok(agent.views.html.main_income_error(backUrl)))
   }
 
-  lazy val backUrl: String = agent.controllers.routes.IncomeSourceController.showIncomeSource().url
+  lazy val backUrl: String = agent.controllers.routes.IncomeSourceController.show().url
 }

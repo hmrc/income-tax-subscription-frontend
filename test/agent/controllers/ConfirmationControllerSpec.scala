@@ -36,14 +36,14 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
   override val controllerName: String = "ConfirmationControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showConfirmation" -> TestConfirmationController.showConfirmation
+    "showConfirmation" -> TestConfirmationController.show
   )
 
   "ConfirmationController" when {
 
     "submitted is not in session" should {
       "return a NotFoundException" in {
-        val result = TestConfirmationController.showConfirmation(subscriptionRequest)
+        val result = TestConfirmationController.show(subscriptionRequest)
 
         intercept[NotFoundException](await(result))
       }
@@ -51,7 +51,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session" should {
       "Get the ID from keystore" in {
-        val result = TestConfirmationController.showConfirmation(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))
+        val result = TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))
         status(result) shouldBe OK
 
         await(result)

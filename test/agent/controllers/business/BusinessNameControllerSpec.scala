@@ -29,8 +29,8 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
 
   override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showBusinessName" -> TestBusinessNameController.showBusinessName(isEditMode = false),
-    "submitBusinessName" -> TestBusinessNameController.submitBusinessName(isEditMode = false)
+    "showBusinessName" -> TestBusinessNameController.show(isEditMode = false),
+    "submitBusinessName" -> TestBusinessNameController.submit(isEditMode = false)
   )
 
   object TestBusinessNameController extends BusinessNameController(
@@ -42,7 +42,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
 
   "Calling the showBusinessName action of the BusinessNameController with an authorised user" should {
 
-    lazy val result = TestBusinessNameController.showBusinessName(isEditMode = false)(subscriptionRequest)
+    lazy val result = TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
       setupMockKeystore(fetchBusinessName = None)
@@ -58,7 +58,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
   "Calling the submitBusinessName action of the BusinessNameController with an authorised user and valid submission" should {
 
     def callShow(isEditMode: Boolean) =
-      TestBusinessNameController.submitBusinessName(isEditMode = isEditMode)(
+      TestBusinessNameController.submit(isEditMode = isEditMode)(
         subscriptionRequest.post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
       )
 
@@ -112,7 +112,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
   }
 
   "Calling the submitBusinessName action of the BusinessNameController with an authorised user and invalid submission" should {
-    lazy val badRequest = TestBusinessNameController.submitBusinessName(isEditMode = false)(subscriptionRequest)
+    lazy val badRequest = TestBusinessNameController.submit(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
       status(badRequest) must be(Status.BAD_REQUEST)
@@ -123,8 +123,8 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
   }
 
   "The back url when not in edit mode" should {
-    s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url}" in {
-      TestBusinessNameController.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+    s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
+      TestBusinessNameController.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
     }
   }
 

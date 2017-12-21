@@ -41,19 +41,19 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
   def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     agent.views.html.income_source(
       incomeSourceForm = incomeSourceForm,
-      postAction = agent.controllers.routes.IncomeSourceController.submitIncomeSource(editMode = isEditMode),
+      postAction = agent.controllers.routes.IncomeSourceController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl
     )
 
-  def showIncomeSource(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.fetchIncomeSource() map {
         incomeSource => Ok(view(incomeSourceForm = IncomeSourceForm.incomeSourceForm.fill(incomeSource), isEditMode = isEditMode))
       }
   }
 
-  def submitIncomeSource(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       IncomeSourceForm.incomeSourceForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
@@ -84,13 +84,13 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  def business(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.OtherIncomeController.showOtherIncome()))
+  def business(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.OtherIncomeController.show()))
 
-  def property(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.OtherIncomeController.showOtherIncome()))
+  def property(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.OtherIncomeController.show()))
 
-  def both(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.OtherIncomeController.showOtherIncome()))
+  def both(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.OtherIncomeController.show()))
 
-  def other(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.MainIncomeErrorController.mainIncomeError()))
+  def other(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.MainIncomeErrorController.show()))
 
   lazy val backUrl: String =
     agent.controllers.routes.CheckYourAnswersController.show().url

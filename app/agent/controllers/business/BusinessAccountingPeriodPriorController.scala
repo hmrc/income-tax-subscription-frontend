@@ -78,13 +78,13 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
 
   def yes(implicit request: Request[_]): Future[Result] = Redirect(agent.controllers.business.routes.RegisterNextAccountingPeriodController.show())
 
-  def no(implicit request: Request[_]): Future[Result] = Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod())
+  def no(implicit request: Request[_]): Future[Result] = Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.show())
 
   def backUrl(implicit request: Request[_]): Future[String] = {
     import agent.forms.OtherIncomeForm._
     keystoreService.fetchOtherIncome().map {
-      case Some(OtherIncomeModel(`option_yes`)) => agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
-      case _ => agent.controllers.routes.OtherIncomeController.showOtherIncome().url
+      case Some(OtherIncomeModel(`option_yes`)) => agent.controllers.routes.OtherIncomeErrorController.show().url
+      case _ => agent.controllers.routes.OtherIncomeController.show().url
     }
   }
 
