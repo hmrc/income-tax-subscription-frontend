@@ -41,14 +41,14 @@ class MatchingStubController @Inject()(implicit val applicationConfig: AppConfig
   def view(clientToStubForm: Form[UserToStubModel])(implicit request: Request[_]): Html =
     testonly.views.html.stub_user(
       clientToStubForm,
-      routes.MatchingStubController.stubUser()
+      routes.MatchingStubController.submit()
     )
 
   def show = Action.async { implicit request =>
     Ok(view(UserToStubForm.userToStubForm.form.fill(UserData().toUserToStubModel)))
   }
 
-  def stubUser = Action.async { implicit request =>
+  def submit = Action.async { implicit request =>
     UserToStubForm.userToStubForm.bindFromRequest.fold(
       formWithErrors => BadRequest(view(formWithErrors)),
       userDetails =>

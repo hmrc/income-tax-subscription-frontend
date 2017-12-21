@@ -80,7 +80,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.showTerms().url)
+        redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)

@@ -37,8 +37,8 @@ class TermsControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "TermsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showTerms" -> TestTermsController.showTerms(editMode = false),
-    "submitTerms" -> TestTermsController.submitTerms()
+    "showTerms" -> TestTermsController.show(editMode = false),
+    "submitTerms" -> TestTermsController.submit()
   )
 
   object TestTermsController extends TermsController(
@@ -51,7 +51,7 @@ class TermsControllerSpec extends ControllerBaseSpec
   "Calling the showTerms action of the TermsController with an authorised user" when {
 
     implicit lazy val request = subscriptionRequest
-    def result = await(TestTermsController.showTerms(editMode = false)(subscriptionRequest))
+    def result = await(TestTermsController.show(editMode = false)(subscriptionRequest))
 
     "The user selected business, and did not match the tax year" should {
       "return OK with the tax year from the accounting period date" in {
@@ -67,7 +67,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         status(result) must be(Status.OK)
 
         val expectedPage = incometax.subscription.views.html.terms.apply(
-          incometax.subscription.controllers.routes.TermsController.submitTerms(),
+          incometax.subscription.controllers.routes.TermsController.submit(),
           testAccountingPeriod().taxEndYear,
           incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
         )
@@ -89,7 +89,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         status(result) must be(Status.OK)
 
         val expectedPage = incometax.subscription.views.html.terms.apply(
-          incometax.subscription.controllers.routes.TermsController.submitTerms(),
+          incometax.subscription.controllers.routes.TermsController.submit(),
           AccountingPeriodUtil.getCurrentTaxEndYear,
           incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
         )
@@ -110,9 +110,9 @@ class TermsControllerSpec extends ControllerBaseSpec
         status(result) must be(Status.OK)
 
         val expectedPage = incometax.subscription.views.html.terms.apply(
-          incometax.subscription.controllers.routes.TermsController.submitTerms(),
+          incometax.subscription.controllers.routes.TermsController.submit(),
           AccountingPeriodUtil.getCurrentTaxEndYear,
-          incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
+          incometax.incomesource.controllers.routes.OtherIncomeController.show().url
         )
 
         contentAsString(result) mustBe expectedPage.body
@@ -143,7 +143,7 @@ class TermsControllerSpec extends ControllerBaseSpec
 
     def callShow(): Future[Result] = {
       setupMockKeystoreSaveFunctions()
-      TestTermsController.submitTerms()(subscriptionRequest)
+      TestTermsController.submit()(subscriptionRequest)
     }
 
     "submit" should {
@@ -198,20 +198,20 @@ class TermsControllerSpec extends ControllerBaseSpec
         )(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
       }
 
-      s"point to ${incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url} on the property journey if they answered yes to other incomes" in {
+      s"point to ${incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url} on the property journey if they answered yes to other incomes" in {
         TestTermsController.getBackUrl(
           editMode = false,
           IncomeSourceForm.option_property,
           OtherIncomeForm.option_yes
-        )(subscriptionRequest) mustBe incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+        )(subscriptionRequest) mustBe incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url
       }
 
-      s"point to ${incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url} on the property journey if they answered no to other incomes" in {
+      s"point to ${incometax.incomesource.controllers.routes.OtherIncomeController.show().url} on the property journey if they answered no to other incomes" in {
         TestTermsController.getBackUrl(
           editMode = false,
           IncomeSourceForm.option_property,
           OtherIncomeForm.option_no
-        )(subscriptionRequest) mustBe incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
+        )(subscriptionRequest) mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
       }
     }
 

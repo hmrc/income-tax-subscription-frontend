@@ -58,7 +58,7 @@ class ConfirmAgentSubscriptionController @Inject()(val baseConfig: BaseControlle
             subscriptionOrchestrationService.createSubscription(user.nino.get, cache.getSummary())(headerCarrier) flatMap {
               case Right(SubscriptionSuccess(id)) =>
                 keystoreService.saveSubscriptionId(id) map {
-                  _ => Redirect(incometax.subscription.controllers.routes.ConfirmationController.showConfirmation())
+                  _ => Redirect(incometax.subscription.controllers.routes.ConfirmationController.show())
                 }
               case Left(failure) =>
                 Future.failed(new InternalServerException(failure.toString))

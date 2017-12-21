@@ -18,18 +18,18 @@ GET         /paperless-error              digitalcontact.controllers.Preferences
 POST        /paperless-error              digitalcontact.controllers.PreferencesController.submitGoBackToPreferences
 
 # Income Source Routes
-GET         /income                       incometax.incomesource.controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
-POST        /income                       incometax.incomesource.controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
+GET         /income                       incometax.incomesource.controllers.IncomeSourceController.show(editMode: Boolean ?= false)
+POST        /income                       incometax.incomesource.controllers.IncomeSourceController.submit(editMode: Boolean ?= false)
 
 # Summary Routes
 GET         /check-your-answers           incometax.subscription.controllers.CheckYourAnswersController.show
 POST        /check-your-answers           incometax.subscription.controllers.CheckYourAnswersController.submit
 
 # Confirmation Routes
-GET         /confirmation                 incometax.subscription.controllers.ConfirmationController.showConfirmation
+GET         /confirmation                 incometax.subscription.controllers.ConfirmationController.show
 
 # Session Timeout Route
-GET         /session-timeout              core.controllers.SessionTimeoutController.timeout
+GET         /session-timeout              core.controllers.SessionTimeoutController.show
 
 # Feedback Routes
 GET         /feedback                     core.controllers.FeedbackController.show
@@ -37,22 +37,22 @@ POST        /feedback                     core.controllers.FeedbackController.su
 GET         /thankyou                     core.controllers.FeedbackController.thankyou
 
 # Terms Routes
-GET         /terms                        incometax.subscription.controllers.TermsController.showTerms(editMode: Boolean ?= false)
-POST        /terms                        incometax.subscription.controllers.TermsController.submitTerms()
+GET         /terms                        incometax.subscription.controllers.TermsController.show(editMode: Boolean ?= false)
+POST        /terms                        incometax.subscription.controllers.TermsController.submit()
 
 # Other Income Sources Routes
-GET         /income-other                 incometax.incomesource.controllers.OtherIncomeController.showOtherIncome(editMode: Boolean ?= false)
-POST        /income-other                 incometax.incomesource.controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
+GET         /income-other                 incometax.incomesource.controllers.OtherIncomeController.show(editMode: Boolean ?= false)
+POST        /income-other                 incometax.incomesource.controllers.OtherIncomeController.submit(editMode: Boolean ?= false)
 
 # Already enrolled
-GET         /already-enrolled             incometax.subscription.controllers.AlreadyEnrolledController.enrolled
+GET         /already-enrolled             incometax.subscription.controllers.AlreadyEnrolledController.show
 
 # No NINO Routes
 GET         /register-for-SA              usermatching.controllers.NoSAController.show
 
 # Other Income Error Routes
-GET         /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.showOtherIncomeError
-POST        /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.submitOtherIncomeError
+GET         /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.show
+POST        /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.submit
 
 # Affinity Group Error
 GET         /error/affinity-group         usermatching.controllers.AffinityGroupErrorController.show

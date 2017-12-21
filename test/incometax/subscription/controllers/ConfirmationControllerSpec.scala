@@ -44,7 +44,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "ConfirmationControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showConfirmation" -> TestConfirmationController.showConfirmation
+    "showConfirmation" -> TestConfirmationController.show
   )
 
   implicit class SessionUtil[T](fakeRequest: FakeRequest[T]) {
@@ -58,7 +58,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "get the ID from keystore if the user is enrolled" in {
       mockAuthEnrolled()
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
-      val result: Future[Result] = TestConfirmationController.showConfirmation(
+      val result: Future[Result] = TestConfirmationController.show(
         subscriptionRequest.addStartTime(startTime)
       )
 
@@ -69,7 +69,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
     "return not found if the user is not enrolled" in {
       setupMockKeystore(fetchSubscriptionId = "testId")
-      val result = TestConfirmationController.showConfirmation(subscriptionRequest)
+      val result = TestConfirmationController.show(subscriptionRequest)
 
       intercept[NotFoundException](await(result)).message shouldBe "AuthPredicates.enrolledPredicate"
     }

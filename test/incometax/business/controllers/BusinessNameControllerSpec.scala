@@ -165,14 +165,14 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
       TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
     }
 
-    s"When the user previously answered yes to otherIncome, it should point to '${incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
+    s"When the user previously answered yes to otherIncome, it should point to '${incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url}'" in {
       val document = Jsoup.parse(contentAsString(result(option_yes)))
-      document.select("#back").attr("href") mustBe incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+      document.select("#back").attr("href") mustBe incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url
     }
 
-    s"When the user previously answered no to otherIncome, it should point to '${incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url}'" in {
+    s"When the user previously answered no to otherIncome, it should point to '${incometax.incomesource.controllers.routes.OtherIncomeController.show().url}'" in {
       val document = Jsoup.parse(contentAsString(result(option_no)))
-      document.select("#back").attr("href") mustBe incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
+      document.select("#back").attr("href") mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
     }
   }
 

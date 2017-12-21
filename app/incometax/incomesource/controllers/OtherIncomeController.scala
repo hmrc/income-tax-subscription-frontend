@@ -44,12 +44,12 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
   def view(otherIncomeForm: Form[OtherIncomeModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     incometax.incomesource.views.html.other_income(
       otherIncomeForm = otherIncomeForm,
-      postAction = incometax.incomesource.controllers.routes.OtherIncomeController.submitOtherIncome(editMode = isEditMode),
+      postAction = incometax.incomesource.controllers.routes.OtherIncomeController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl
     )
 
-  def showOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         choice <- keystoreService.fetchOtherIncome()
@@ -59,14 +59,14 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
   def defaultRedirections(otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
     otherIncomeModel.choice match {
       case OtherIncomeForm.option_yes =>
-        Redirect(incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError())
+        Redirect(incometax.incomesource.controllers.routes.OtherIncomeErrorController.show())
       case OtherIncomeForm.option_no =>
         keystoreService.fetchIncomeSource() map {
           case Some(incomeSource) => incomeSource.source match {
             case IncomeSourceForm.option_business =>
               Redirect(incometax.business.controllers.routes.BusinessNameController.show())
             case IncomeSourceForm.option_property =>
-              Redirect(incometax.subscription.controllers.routes.TermsController.showTerms())
+              Redirect(incometax.subscription.controllers.routes.TermsController.show())
             case IncomeSourceForm.option_both =>
               Redirect(incometax.business.controllers.routes.BusinessNameController.show())
           }
@@ -77,7 +77,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
         }
     }
 
-  def submitOtherIncome(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
         formWithErrors => BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl(isEditMode), isEditMode = isEditMode)),
@@ -98,6 +98,6 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
     if (isEditMode)
       incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     else
-      incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url
+      incometax.incomesource.controllers.routes.IncomeSourceController.show().url
 
 }

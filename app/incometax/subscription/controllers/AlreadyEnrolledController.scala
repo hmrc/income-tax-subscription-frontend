@@ -23,22 +23,14 @@ import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.i18n.MessagesApi
 
-import scala.concurrent.Future
-
 @Singleton
 class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
                                           val messagesApi: MessagesApi,
                                           val authService: AuthService
                                          ) extends PostSubmissionController {
 
-  val enrolled = Authenticated.async {
-    implicit request =>
-      implicit val headerCarrier = hc(request)
-      user =>
-        Future.successful(
-          Ok(
-            incometax.subscription.views.html.enrolled.already_enrolled()          )
-        )
+  val show = Authenticated { implicit request =>
+    user => Ok(incometax.subscription.views.html.enrolled.already_enrolled())
   }
 
 }

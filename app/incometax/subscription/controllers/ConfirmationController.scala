@@ -40,7 +40,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
                                        val authService: AuthService
                                       ) extends PostSubmissionController {
 
-  val showConfirmation: Action[AnyContent] = Authenticated.async { implicit request =>
+  val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
       val endTime = java.time.LocalDateTime.now()

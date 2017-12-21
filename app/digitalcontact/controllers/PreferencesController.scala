@@ -50,7 +50,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
   private def skipPreferences = baseConfig.applicationConfig.userMatchingFeature && !applicationConfig.newPreferencesApiEnabled
 
   private def goToIncomeSource = Redirect(
-    incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource()
+    incometax.incomesource.controllers.routes.IncomeSourceController.show()
   )
 
   def checkPreferences: Action[AnyContent] = Authenticated.async { implicit request =>
