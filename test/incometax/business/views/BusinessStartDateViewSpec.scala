@@ -19,7 +19,6 @@ package incometax.business.views
 import assets.MessageLookup.{Base => common, BusinessStartDate => messages}
 import core.views.ViewSpecTrait
 import incometax.business.forms.BusinessStartDateForm
-import incometax.business.models.enums.{CurrentAccountingPeriodView, NextAccountingPeriodView}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
@@ -43,35 +42,30 @@ class BusinessStartDateViewSpec extends ViewSpecTrait {
   )
 
   "The Business Start Date view" should {
-    Seq(CurrentAccountingPeriodView, NextAccountingPeriodView).foreach {
-      viewType =>
 
-        val prefix = s"When the viewtype=$viewType"
+    val testPage = documentCore(
+      prefix = "Business Start Date view",
+      isEditMode = false
+    )
 
-        val testPage = documentCore(
-          prefix = prefix,
-          isEditMode = false
-        )
+    testPage.mustHaveBackLinkTo(backUrl)
 
-        testPage.mustHaveBackLinkTo(backUrl)
+    val form = testPage.getForm(s"Business Start Date form")(actionCall = action)
 
-        val form = testPage.getForm(s"$prefix Business Start Date form")(actionCall = action)
+    form.mustHaveDateField(
+      id = "startDate",
+      legend = common.startDate,
+      exampleDate = messages.exampleStartDate
+    )
 
-        form.mustHaveDateField(
-          id = "startDate",
-          legend = common.startDate,
-          exampleDate = messages.exampleStartDate
-        )
+    val editModePage = documentCore(
+      prefix = "Business Start Date view",
+      suffix = " and it is in edit mode",
+      isEditMode = true
+    )
 
-        val editModePage = documentCore(
-          prefix = prefix,
-          suffix = " and it is in edit mode",
-          isEditMode = true
-        )
+    editModePage.mustHaveUpdateButton()
 
-        editModePage.mustHaveUpdateButton()
-
-    }
   }
 
   "Append Error to the page title if the form has error" should {

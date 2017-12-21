@@ -19,20 +19,18 @@ package incometax.subscription.views
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
 import core.models.DateModel
+import core.utils.{TestModels, UnitTestTrait}
+import core.views.html.helpers.SummaryIdConstants._
+import incometax.business.models._
+import incometax.business.models.address.Address
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import incometax.subscription.models.SummaryModel
-import models._
-import incometax.business.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import core.utils.{TestModels, UnitTestTrait}
-import core.views.html.helpers.SummaryIdConstants._
-import incometax.business.models._
-import incometax.business.models.address.Address
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
 
@@ -44,10 +42,14 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
   val testOtherIncome: OtherIncomeModel = TestModels.testOtherIncomeNo
-  val testSummary = SummaryModel(
+  val testSummary = customTestSummary(matchTaxYear = TestModels.testMatchTaxYearNo, testAccountingPeriod)
+
+  def customTestSummary(matchTaxYear: Option[MatchTaxYearModel],
+                        accountingPeriod: Option[AccountingPeriodModel]) = SummaryModel(
     incomeSource = testIncomeSource,
     otherIncome = testOtherIncome,
-    accountingPeriod = testAccountingPeriod,
+    matchTaxYear = matchTaxYear,
+    accountingPeriod = accountingPeriod,
     businessName = testBusinessName,
     businessAddress = testBusinessAddress,
     businessStartDate = testBusinessStartDate,
@@ -58,16 +60,16 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   lazy val postAction: Call = incometax.subscription.controllers.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = incometax.subscription.controllers.routes.TermsController.showTerms().url
 
-  def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView, isRegistration: Boolean): Html =
+  def page(isRegistration: Boolean, testSummaryModel: SummaryModel): Html =
     incometax.subscription.views.html.check_your_answers(
-      summaryModel = testSummary,
+      summaryModel = testSummaryModel,
       isRegistration = isRegistration,
       postAction = postAction,
       backUrl = backUrl
     )(FakeRequest(), applicationMessages, appConfig)
 
-  def document(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView, isRegistration: Boolean = false): Document =
-    page(accountingPeriodViewType, isRegistration = isRegistration).doc
+  def document(isRegistration: Boolean = false, testSummaryModel: SummaryModel = testSummary): Document =
+    page(isRegistration = isRegistration, testSummaryModel).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -125,9 +127,9 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     }
 
     def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String],
-                    accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView, isRegistration: Boolean = false): Unit = {
-      val doc = document(accountingPeriodViewType, isRegistration)
-      val accountingPeriod = doc.getElementById(sectionId)
+                    isRegistration: Boolean = false, testSummaryModel: SummaryModel = testSummary): Unit = {
+      val doc = document(isRegistration, testSummaryModel)
+      val section = doc.getElementById(sectionId)
       val question = doc.getElementById(questionId(sectionId))
       val answer = doc.getElementById(answerId(sectionId))
       val editLink = doc.getElementById(editLinkId(sectionId))
@@ -146,7 +148,30 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       }
     }
 
+    "display match tax year" in {
+      val sectionId = MatchTaxYearId
+      val expectedQuestion = messages.match_tax_year
+      val expectedAnswer = MessageLookup.Base.no
+      val expectedEditLink = incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )
+    }
+
     "display the correct info for the accounting period date" when {
+      "do not display if the user is on the sign up journey and chose yes to match tax year" in {
+        val sectionId = AccountingPeriodDateId
+        val doc = document(testSummaryModel = customTestSummary(Some(TestModels.testMatchTaxYearYes), accountingPeriod = None))
+        doc.getElementById(sectionId) mustBe null
+
+        val doc2 = document(testSummaryModel = customTestSummary(Some(TestModels.testMatchTaxYearYes), accountingPeriod = Some(testAccountingPeriod)))
+        doc2.getElementById(sectionId) mustBe null
+      }
+
       "the user is on the sign up journey" in {
         val sectionId = AccountingPeriodDateId
         val expectedQuestion = messages.accounting_period

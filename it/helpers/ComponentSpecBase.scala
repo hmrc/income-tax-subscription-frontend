@@ -176,13 +176,11 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitExitSurvey(): WSResponse = post("/exit-survey")(Map.empty)
 
-    def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
+    def matchTaxYear(): WSResponse = get("/business/match-to-tax-year")
 
     def businessAccountingPeriodDates(): WSResponse = get("/business/accounting-period-dates")
 
     def businessStartDate(): WSResponse = get("/business/start-date", Map(JourneyStateKey -> Registration.name))
-
-    def registerNextAccountingPeriod(): WSResponse = get("/business/register-next-accounting-period")
 
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 
@@ -208,19 +206,17 @@ trait ComponentSpecBase extends UnitSpec
 
     def exitSurvey(origin: String): WSResponse = get(s"/exit-survey?origin=$origin")
 
+    def submitMatchTaxYear(inEditMode: Boolean, request: Option[MatchTaxYearModel]): WSResponse = {
+      val uri = s"/business/match-to-tax-year?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => MatchTaxYearForm.matchTaxYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        ))
+    }
+
     def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
 
     def submitMaintenance(): WSResponse = post("/error/maintenance")(Map.empty)
-
-    def submitBusinessAccountingPeriodPrior(inEditMode: Boolean, request: Option[AccountingPeriodPriorModel]): WSResponse = {
-      val uri = s"/business/accounting-period-prior?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def claimSubscription(): WSResponse = {
       val uri = s"/claim-subscription"

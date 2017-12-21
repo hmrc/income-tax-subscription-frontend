@@ -17,16 +17,14 @@
 package core.services.mocks
 
 import core.services.KeystoreService
+import core.utils.MockTrait
+import incometax.business.models._
+import incometax.business.models.address.Address
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import usermatching.models.UserDetailsModel
-import core.utils.MockTrait
-import incometax.business.models._
-import incometax.business.models.address.Address
 
 import scala.concurrent.Future
 
@@ -62,13 +60,13 @@ trait MockKeystoreService extends MockTrait {
                                          fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
                                          fetchBusinessPhoneNumber: MFO[BusinessPhoneNumberModel] = DoNotConfigure,
                                          fetchBusinessAddress: MFO[Address] = DoNotConfigure,
+                                         fetchMatchTaxYear: MFO[MatchTaxYearModel] = DoNotConfigure,
                                          fetchBusinessStartDate: MFO[BusinessStartDateModel] = DoNotConfigure,
                                          fetchAccountingPeriodDate: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchAccountingMethod: MFO[AccountingMethodModel] = DoNotConfigure,
                                          fetchTerms: MFO[Boolean] = DoNotConfigure,
                                          fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
-                                         fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
                                          fetchPaperlessPreferenceToken: MFO[String] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
@@ -77,13 +75,13 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
     mockFetchFromKeyStore[BusinessPhoneNumberModel](BusinessPhoneNumber, fetchBusinessPhoneNumber)
     mockFetchFromKeyStore[Address](BusinessAddress, fetchBusinessAddress)
+    mockFetchFromKeyStore[MatchTaxYearModel](MatchTaxYear, fetchMatchTaxYear)
     mockFetchFromKeyStore[BusinessStartDateModel](BusinessStartDate, fetchBusinessStartDate)
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
     mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
     mockFetchFromKeyStore[Boolean](Terms, fetchTerms)
     mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
-    mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
     mockFetchFromKeyStore[String](PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
 
     setupMockKeystoreSaveFunctions()
@@ -101,6 +99,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveBusinessPhoneNumber: Option[Int] = None,
                                       fetchBusinessAddress: Option[Int] = None,
                                       saveBusinessAddress: Option[Int] = None,
+                                      fetchMatchTaxYear: Option[Int] = None,
+                                      saveMatchTaxYear: Option[Int] = None,
                                       fetchBusinessStartDate: Option[Int] = None,
                                       saveBusinessStartDate: Option[Int] = None,
                                       fetchAccountingPeriodDate: Option[Int] = None,
@@ -113,8 +113,6 @@ trait MockKeystoreService extends MockTrait {
                                       saveOtherIncome: Option[Int] = None,
                                       fetchSubscriptionId: Option[Int] = None,
                                       saveSubscriptionId: Option[Int] = None,
-                                      fetchAccountingPeriodPrior: Option[Int] = None,
-                                      saveAccountingPeriodPrior: Option[Int] = None,
                                       fetchPaperlessPreferenceToken: Option[Int] = None,
                                       savePaperlessPreferenceToken: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
@@ -130,6 +128,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(BusinessAddress, saveBusinessAddress)
     verifyKeystoreFetch(BusinessStartDate, fetchBusinessStartDate)
     verifyKeystoreSave(BusinessStartDate, saveBusinessStartDate)
+    verifyKeystoreFetch(MatchTaxYear, fetchMatchTaxYear)
+    verifyKeystoreSave(MatchTaxYear, saveMatchTaxYear)
     verifyKeystoreFetch(AccountingPeriodDate, fetchAccountingPeriodDate)
     verifyKeystoreSave(AccountingPeriodDate, saveAccountingPeriodDate)
     verifyKeystoreFetch(AccountingMethod, fetchAccountingMethod)
@@ -140,8 +140,6 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(OtherIncome, saveOtherIncome)
     verifyKeystoreFetch(MtditId, fetchSubscriptionId)
     verifyKeystoreSave(MtditId, saveSubscriptionId)
-    verifyKeystoreFetch(AccountingPeriodPrior, fetchAccountingPeriodPrior)
-    verifyKeystoreSave(AccountingPeriodPrior, saveAccountingPeriodPrior)
     verifyKeystoreFetch(PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
     verifyKeystoreSave(PaperlessPreferenceToken, savePaperlessPreferenceToken)
 

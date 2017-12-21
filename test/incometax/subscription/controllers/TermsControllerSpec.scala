@@ -17,11 +17,18 @@
 package incometax.subscription.controllers
 
 import core.controllers.ControllerBaseSpec
+import core.models.DateModel
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
+import core.utils.TestModels._
+import incometax.business.models.AccountingPeriodModel
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.util.AccountingPeriodUtil
+import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import play.api.i18n.Messages.Implicits._
 
 import scala.concurrent.Future
 
@@ -41,19 +48,94 @@ class TermsControllerSpec extends ControllerBaseSpec
     mockAuthService
   )
 
-  "Calling the showTerms action of the TermsController with an authorised user" should {
+  "Calling the showTerms action of the TermsController with an authorised user" when {
 
-    lazy val result = TestTermsController.showTerms(editMode = false)(subscriptionRequest)
+    implicit lazy val request = subscriptionRequest
+    def result = await(TestTermsController.showTerms(editMode = false)(subscriptionRequest))
 
-    "return ok (200)" in {
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchAccountingPeriodDate = TestModels.testAccountingPeriod())
+    "The user selected business, and did not match the tax year" should {
+      "return OK with the tax year from the accounting period date" in {
+        setupMockKeystore(
+          fetchAll = testCacheMap(
+            incomeSource = testIncomeSourceBusiness,
+            matchTaxYear = testMatchTaxYearNo,
+            accountingPeriodDate = testAccountingPeriod(),
+            otherIncome = testOtherIncomeNo
+          )
+        )
 
-      setupMockKeystore(fetchTerms = None)
+        status(result) must be(Status.OK)
 
-      status(result) must be(Status.OK)
+        val expectedPage = incometax.subscription.views.html.terms.apply(
+          incometax.subscription.controllers.routes.TermsController.submitTerms(),
+          testAccountingPeriod().taxEndYear,
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+        )
 
-      await(result)
-      verifyKeystore(fetchTerms = 0, saveTerms = 0, fetchAccountingPeriodDate = 1)
+        contentAsString(result) mustBe expectedPage.body
+      }
+    }
+    "The user selected business, and matched the tax year" should {
+      "return OK with the current tax year" in {
+        setupMockKeystore(
+          fetchAll = testCacheMap(
+            incomeSource = testIncomeSourceBusiness,
+            matchTaxYear = testMatchTaxYearYes,
+            accountingPeriodDate = testAccountingPeriod(),
+            otherIncome = testOtherIncomeNo
+          )
+        )
+
+        status(result) must be(Status.OK)
+
+        val expectedPage = incometax.subscription.views.html.terms.apply(
+          incometax.subscription.controllers.routes.TermsController.submitTerms(),
+          AccountingPeriodUtil.getCurrentTaxEndYear,
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+        )
+
+        contentAsString(result) mustBe expectedPage.body
+      }
+    }
+
+    "The user selected property" should {
+      "return OK with the current tax year" in {
+        setupMockKeystore(
+          fetchAll = testCacheMap(
+            incomeSource = testIncomeSourceProperty,
+            otherIncome = testOtherIncomeNo
+          )
+        )
+
+        status(result) must be(Status.OK)
+
+        val expectedPage = incometax.subscription.views.html.terms.apply(
+          incometax.subscription.controllers.routes.TermsController.submitTerms(),
+          AccountingPeriodUtil.getCurrentTaxEndYear,
+          incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
+        )
+
+        contentAsString(result) mustBe expectedPage.body
+      }
+    }
+
+    "The user selected business, and did not match the tax year but did not provide an accounting period" should {
+      "return OK with the current tax year" in {
+        setupMockKeystore(
+          fetchAll = testCacheMap(
+            incomeSource = testIncomeSourceBusiness,
+            matchTaxYear = testMatchTaxYearNo,
+            otherIncome = testOtherIncomeNo
+          )
+        )
+
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result) must contain(
+          incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(
+            editMode = false, editMatch = false)
+            .url
+        )
+      }
     }
   }
 
@@ -67,7 +149,6 @@ class TermsControllerSpec extends ControllerBaseSpec
     "submit" should {
 
       "return a redirect status (SEE_OTHER - 303)" in {
-
         val goodResult = callShow()
 
         status(goodResult) must be(Status.SEE_OTHER)
@@ -93,38 +174,44 @@ class TermsControllerSpec extends ControllerBaseSpec
   "The back url" when {
     "edit mode is true" should {
       s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url} on any journey" in {
-        await(TestTermsController.backUrl(editMode = true)(subscriptionRequest)) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+        TestTermsController.getBackUrl(
+          editMode = true,
+          IncomeSourceForm.option_property,
+          OtherIncomeForm.option_yes
+        )(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
       }
     }
     "edit mode is false" should {
       s"point to ${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url} on the business journey" in {
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-        await(TestTermsController.backUrl(editMode = false)(subscriptionRequest)) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
-        verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
+        TestTermsController.getBackUrl(
+          editMode = false,
+          IncomeSourceForm.option_business,
+          OtherIncomeForm.option_yes
+        )(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
       }
 
       s"point to ${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url} on the both journey" in {
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
-        await(TestTermsController.backUrl(editMode = false)(subscriptionRequest)) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
-        verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
+        TestTermsController.getBackUrl(
+          editMode = false,
+          IncomeSourceForm.option_both,
+          OtherIncomeForm.option_yes
+        )(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
       }
 
       s"point to ${incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url} on the property journey if they answered yes to other incomes" in {
-        setupMockKeystore(
-          fetchIncomeSource = TestModels.testIncomeSourceProperty,
-          fetchOtherIncome = TestModels.testOtherIncomeYes
-        )
-        await(TestTermsController.backUrl(editMode = false)(subscriptionRequest)) mustBe incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
-        verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
+        TestTermsController.getBackUrl(
+          editMode = false,
+          IncomeSourceForm.option_property,
+          OtherIncomeForm.option_yes
+        )(subscriptionRequest) mustBe incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
       }
 
       s"point to ${incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url} on the property journey if they answered no to other incomes" in {
-        setupMockKeystore(
-          fetchIncomeSource = TestModels.testIncomeSourceProperty,
-          fetchOtherIncome = TestModels.testOtherIncomeNo
-        )
-        await(TestTermsController.backUrl(editMode = false)(subscriptionRequest)) mustBe incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
-        verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
+        TestTermsController.getBackUrl(
+          editMode = false,
+          IncomeSourceForm.option_property,
+          OtherIncomeForm.option_no
+        )(subscriptionRequest) mustBe incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
       }
     }
 
@@ -132,3 +219,4 @@ class TermsControllerSpec extends ControllerBaseSpec
 
   authorisationTests()
 }
+

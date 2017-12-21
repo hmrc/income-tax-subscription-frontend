@@ -62,7 +62,7 @@ class BusinessStartDateController @Inject()(val baseConfig: BaseControllerConfig
             if (isEditMode)
               Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
             else
-              Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show())
+              Redirect(incometax.business.controllers.routes.MatchTaxYearController.show())
             )
       )
   }

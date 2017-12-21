@@ -18,8 +18,8 @@ package incometax.business.models
 
 import play.api.libs.json.Json
 
-case class AccountingPeriodPriorModel(currentPeriodIsPrior: String)
+case class MatchTaxYearModel(matchTaxYear: String)
 
-object AccountingPeriodPriorModel {
-  implicit val format = Json.format[AccountingPeriodPriorModel]
+object MatchTaxYearModel {
+  implicit val format = Json.format[MatchTaxYearModel]
 }

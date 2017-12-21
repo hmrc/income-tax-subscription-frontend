@@ -20,17 +20,17 @@ import javax.inject.{Inject, Singleton}
 
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
+import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
-import core.utils.Implicits._
+import incometax.business.forms.MatchTaxYearForm
+import incometax.business.models.MatchTaxYearModel
+import incometax.incomesource.forms.IncomeSourceForm.option_property
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.OtherIncomeModel
-import incometax.util.AccountingPeriodUtil
+import incometax.incomesource.models.IncomeSourceModel
+import incometax.util.AccountingPeriodUtil._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import uk.gov.hmrc.http.InternalServerException
-
-import scala.concurrent.Future
 
 @Singleton
 class TermsController @Inject()(val baseConfig: BaseControllerConfig,
@@ -49,13 +49,20 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
   def showTerms(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
-        incomeSource <- keystoreService.fetchIncomeSource().collect { case Some(is) => is.source }
-        taxEndYear <- incomeSource match {
-          case IncomeSourceForm.option_property => Future.successful(AccountingPeriodUtil.getCurrentTaxEndYear)
-          case _ => keystoreService.fetchAccountingPeriodDate().collect { case Some(ad) => AccountingPeriodUtil.getTaxEndYear(ad) }
+        cacheMap <- keystoreService.fetchAll() map (_.get)
+        incomeSource = cacheMap.getIncomeSource().get
+        backUrl = getBackUrl(editMode, incomeSource.source, cacheMap.getOtherIncome().get.choice)
+      } yield
+        (incomeSource, cacheMap.getMatchTaxYear(), cacheMap.getAccountingPeriodDate()) match {
+          case (IncomeSourceModel(source), _, _) if source == option_property =>
+            Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
+          case (_, Some(MatchTaxYearModel(matchTaxYear)), _) if matchTaxYear == MatchTaxYearForm.option_yes =>
+            Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
+          case (_, _, Some(date)) =>
+            Ok(view(backUrl = backUrl, taxEndYear = date.taxEndYear))
+          case _ =>
+            Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = editMode, editMatch = editMode))
         }
-        backUrl <- backUrl(editMode)
-      } yield Ok(view(backUrl = backUrl, taxEndYear = taxEndYear))
   }
 
   def submitTerms(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -64,29 +71,20 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         _ => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
   }
 
-  def backUrl(editMode: Boolean)(implicit request: Request[_]): Future[String] =
+  def getBackUrl(editMode: Boolean, incomeSource: String, otherIncome: String)(implicit request: Request[_]): String =
     if (editMode)
       incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
     else
-      keystoreService.fetchIncomeSource() flatMap {
-        case Some(source) => source.source match {
-          case IncomeSourceForm.option_business =>
-            incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
-          case IncomeSourceForm.option_both =>
-            incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
-          case IncomeSourceForm.option_property =>
-            import OtherIncomeForm._
-            keystoreService.fetchOtherIncome() flatMap {
-              case Some(OtherIncomeModel(`option_yes`)) =>
-                incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
-              case Some(OtherIncomeModel(`option_no`)) =>
-                incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
-              case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
-            }
-          case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
-        }
-        case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no income source retrieve from Keystore")
+      incomeSource match {
+        case (IncomeSourceForm.option_business | IncomeSourceForm.option_both) =>
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+        case IncomeSourceForm.option_property =>
+          otherIncome match {
+            case OtherIncomeForm.option_yes =>
+              incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+            case OtherIncomeForm.option_no =>
+              incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
+          }
       }
-
 }
 

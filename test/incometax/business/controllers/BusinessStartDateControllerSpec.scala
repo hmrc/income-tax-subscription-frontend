@@ -120,12 +120,12 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchBusinessStartDate = 0, saveBusinessStartDate = 1)
         }
 
-        s"redirect to '${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url}'" in {
+        s"redirect to '${incometax.business.controllers.routes.MatchTaxYearController.show().url}'" in {
           setupMockKeystoreSaveFunctions()
 
           val goodRequest = callShow(isEditMode = false)
 
-          redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url)
+          redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.MatchTaxYearController.show().url)
 
           await(goodRequest)
           verifyKeystore(fetchBusinessStartDate = 0, saveBusinessStartDate = 1)

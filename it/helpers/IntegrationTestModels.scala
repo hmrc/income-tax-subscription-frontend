@@ -6,13 +6,12 @@ import core.Constants.GovernmentGateway._
 import core.models.DateModel
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
-import incometax.business.forms.{AccountingMethodForm, AccountingPeriodPriorForm}
-import incometax.business.models.address.{Address, Country, ReturnedAddress}
+import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models._
+import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import incometax.subscription.models.EnrolmentKey
-import models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import usermatching.models.UserDetailsModel
@@ -28,8 +27,8 @@ object IntegrationTestModels {
 
   val testStartDate = DateModel("06", "04", "2017")
   val testEndDate = DateModel("05", "04", "2018")
-  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
+  val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_yes)
+  val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_no)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
@@ -50,7 +49,7 @@ object IntegrationTestModels {
     keystoreData(
       incomeSource = Some(testIncomeSourceBoth),
       otherIncome = Some(testOtherIncomeNo),
-      accountingPeriodPrior = Some(testAccountingPeriodPriorCurrent),
+      matchTaxYear = Some(testMatchTaxYearNo),
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       businessPhoneNumber = Some(testBusinessPhoneNumber),
@@ -61,7 +60,7 @@ object IntegrationTestModels {
 
   def keystoreData(incomeSource: Option[IncomeSourceModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
-                   accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
+                   matchTaxYear: Option[MatchTaxYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
@@ -71,7 +70,7 @@ object IntegrationTestModels {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++
-      accountingPeriodPrior.map(model => AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model)) ++
+      matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       businessPhoneNumber.map(model => BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model)) ++
@@ -85,10 +84,6 @@ object IntegrationTestModels {
   lazy val testIncomeSourceProperty = IncomeSourceModel(IncomeSourceForm.option_property)
 
   lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
-
-  lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-
-  lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
   lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
 

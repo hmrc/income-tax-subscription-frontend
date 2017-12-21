@@ -234,7 +234,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         }
 
         s"the previous OtherIncome entry in keystore is the same as the new input then redirect to '${
-          expectedRedirectionForSameInput(incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url)
+          expectedRedirectionForSameInput(incometax.business.controllers.routes.BusinessNameController.show().url)
         }' on the both journey" in {
 
           setupMockKeystore(
