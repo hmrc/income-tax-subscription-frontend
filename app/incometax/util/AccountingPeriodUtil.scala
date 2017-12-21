@@ -18,11 +18,13 @@ package incometax.util
 
 import java.time.LocalDate
 
+import core.models.DateModel
 import incometax.business.models.AccountingPeriodModel
 
 
 object AccountingPeriodUtil {
   private val april = 4
+  private val fifth = 5
   private val sixth = 6
 
   private def getTaxEndYear(date: LocalDate): Int =
@@ -32,5 +34,9 @@ object AccountingPeriodUtil {
   def getTaxEndYear(accountingPeriodModel: AccountingPeriodModel): Int = getTaxEndYear(accountingPeriodModel.endDate.toLocalDate)
 
   def getCurrentTaxEndYear: Int = getTaxEndYear(LocalDate.now())
+
+  def getCurrentTaxYearStartDate = DateModel(sixth.toString, april.toString, (getCurrentTaxEndYear -1).toString)
+
+  def getCurrentTaxYearEndDate = DateModel(fifth.toString, april.toString, getCurrentTaxEndYear.toString)
 
 }

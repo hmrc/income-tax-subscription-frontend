@@ -70,7 +70,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
             else if (request.isInState(Registration))
               Redirect(incometax.business.controllers.routes.BusinessPhoneNumberController.show())
             else
-              Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show())
+              Redirect(incometax.business.controllers.routes.MatchTaxYearController.show())
             )
       )
   }

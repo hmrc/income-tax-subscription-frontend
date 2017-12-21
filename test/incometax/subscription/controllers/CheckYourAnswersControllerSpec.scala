@@ -49,10 +49,21 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   "Calling the show action of the CheckYourAnswersController with an authorised user" should {
 
-    lazy val result = TestCheckYourAnswersController.show(subscriptionRequest)
+    def result = TestCheckYourAnswersController.show(subscriptionRequest)
 
-    "return ok (200)" in {
+    "return ok (200) for business journey" in {
       setupMockKeystore(fetchAll = testCacheMap)
+
+      status(result) must be(Status.OK)
+    }
+
+    "return ok (200) for property journey" in {
+      val testPropertyCacheMap = testCacheMap(
+        incomeSource = testIncomeSourceProperty,
+        otherIncome = testOtherIncomeNo,
+        terms = testTerms
+      )
+      setupMockKeystore(fetchAll = testPropertyCacheMap)
 
       status(result) must be(Status.OK)
     }
@@ -80,8 +91,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       s"redirect to '${incometax.subscription.controllers.routes.ConfirmationController.showConfirmation().url}'" in {
         redirectLocation(result) mustBe Some(incometax.subscription.controllers.routes.ConfirmationController.showConfirmation().url)
       }
-
     }
+
     "When the submission is unsuccessful" should {
       lazy val result = call
 
@@ -92,6 +103,22 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
     }
+
+    "When match tax year is no and the accounting date is not specified" should {
+      "redirect back to Accounting period dates" in {
+        setupMockKeystore(fetchAll = testCacheMapCustom(
+          matchTaxYear = testMatchTaxYearNo,
+          accountingPeriodDate = None
+        ))
+
+        val result = call
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) must contain(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url)
+        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+      }
+    }
+
     "When the terms have not been agreed" should {
 
       "redirect back to Terms if there is no terms in keystore" in {

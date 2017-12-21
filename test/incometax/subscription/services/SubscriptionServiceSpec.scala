@@ -16,14 +16,17 @@
 
 package incometax.subscription.services
 
-import incometax.subscription.models.{BadlyFormattedSubscriptionResponse, IncomeSourceType, SubscriptionFailureResponse, SubscriptionSuccess}
-import incometax.subscription.services.mocks.TestSubscriptionService
-import org.scalatest.EitherValues
-import org.scalatest.Matchers._
-import play.api.test.Helpers._
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.{TestConstants, TestModels}
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.subscription.models._
+import incometax.subscription.services.mocks.TestSubscriptionService
+import incometax.util.AccountingPeriodUtil
+import org.scalatest.EitherValues
+import org.scalatest.Matchers._
+import play.api.test.Helpers._
 
 
 class SubscriptionServiceSpec extends TestSubscriptionService with EitherValues {
@@ -42,6 +45,36 @@ class SubscriptionServiceSpec extends TestSubscriptionService with EitherValues 
       IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
       request.isAgent mustBe false
       request.tradingName.get mustBe testSummaryData.businessName.get.businessName
+    }
+
+    "use the current tax year and ignore the accounting period dates if match tax year is answered yes" in {
+      val nino = TestModels.newNino
+      val request = TestSubscriptionService.buildRequest(nino, testSummaryData.copy(matchTaxYear = testMatchTaxYearYes), None)
+      request.nino mustBe nino
+      request.accountingPeriodStart.get must not be testSummaryData.accountingPeriod.get.startDate
+      request.accountingPeriodStart.get mustBe AccountingPeriodUtil.getCurrentTaxYearStartDate
+      request.accountingPeriodEnd.get must not be testSummaryData.accountingPeriod.get.endDate
+      request.accountingPeriodEnd.get mustBe AccountingPeriodUtil.getCurrentTaxYearEndDate
+      request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
+      IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
+      request.isAgent mustBe false
+      request.tradingName.get mustBe testSummaryData.businessName.get.businessName
+    }
+
+    "property requests should copy None into start and end dates" in {
+      val nino = TestModels.newNino
+      val testSummaryData = SummaryModel(
+        incomeSource = IncomeSourceModel(IncomeSourceForm.option_property),
+        otherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
+      )
+      val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
+      request.nino mustBe nino
+      request.accountingPeriodStart mustBe None
+      request.accountingPeriodEnd mustBe None
+      request.cashOrAccruals mustBe None
+      IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
+      request.isAgent mustBe false
+      request.tradingName mustBe None
     }
   }
 

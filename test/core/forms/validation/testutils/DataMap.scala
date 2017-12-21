@@ -16,10 +16,11 @@
 
 package core.forms.validation.testutils
 
+import agent.forms.AccountingPeriodPriorForm
 import incometax.incomesource.forms.IncomeSourceForm
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil.constraint
-import incometax.business.forms.AccountingPeriodPriorForm
+import incometax.business.forms.MatchTaxYearForm
 import play.api.data.validation.{Constraint, Invalid}
 
 object DataMap {
@@ -44,6 +45,8 @@ object DataMap {
   def busName(name: String): DataMap = Map(businessName -> name)
 
   def busPhoneNumber(number: String): DataMap = Map(phoneNumber -> number)
+
+  def matchTaxYear(iType: String): DataMap = Map(MatchTaxYearForm.matchTaxYear -> iType)
 
   def accountingPeriodPrior(currentPeriodIsPrior: String): DataMap = Map(AccountingPeriodPriorForm.accountingPeriodPrior -> currentPeriodIsPrior)
 

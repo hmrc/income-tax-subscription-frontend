@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package core.views.html.helpers
+package incometax.business.models
 
-object SummaryIdConstants {
+import play.api.libs.json.Json
 
-  val ReceiveEmail = "receiveEmail"
-  val IncomeSourceId = "incomeSource"
-  val OtherIncomeId = "otherIncome"
-  val AccountingPeriodPriorId = "accountingPeriodPrior"
-  val MatchTaxYearId = "matchTaxYear"
-  val AccountingPeriodDateId = "accountingPeriodDate"
-  val BusinessNameId = "businessName"
-  val BusinessPhoneNumberId = "businessPhoneNumber"
-  val BusinessAddressId = "businessAddress"
-  val BusinessStartDateId = "businessStartDate"
-  val AccountingMethodId = "accountingMethod"
-  val TermsId = "terms"
+case class MatchTaxYearModel(matchTaxYear: String)
 
+object MatchTaxYearModel {
+  implicit val format = Json.format[MatchTaxYearModel]
 }

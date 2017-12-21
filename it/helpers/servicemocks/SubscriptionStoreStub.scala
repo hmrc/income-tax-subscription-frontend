@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package incometax.business.models
+package helpers.servicemocks
 
-import play.api.libs.json.Json
+import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestModels._
+import play.api.http.Status
 
-case class AccountingPeriodPriorModel(currentPeriodIsPrior: String)
+object SubscriptionStoreStub extends WireMockMethods {
+  def storeSubscriptionUrl(nino: String): String = s"/income-tax-subscription-store/client-subscription-data/$nino"
 
-object AccountingPeriodPriorModel {
-  implicit val format = Json.format[AccountingPeriodPriorModel]
+  def stubSuccessfulSubscription(): Unit = {
+    when(method = GET, uri = storeSubscriptionUrl(testNino))
+      .thenReturn(Status.OK, testStoredSubscription)
+  }
 }

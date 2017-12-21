@@ -37,6 +37,8 @@ object MessageLookup {
     val goBack = "Go back"
     val navTitle = "Report your income and expenses quarterly"
     val titleError = "Error: "
+    val yes = "Yes"
+    val no = "No"
   }
 
   object FrontPage {
@@ -99,6 +101,20 @@ object MessageLookup {
       val no = "No - I am a different type of business"
     }
 
+    object MatchTaxYear {
+      object SignUp {
+        val title = "Does your accounting period match the tax year?"
+        val heading: String = "Does your accounting period match the tax year?"
+        val line1 = "The tax year runs from 6 April to 5 April. Your accounting period is usually the same, unless you chose different dates when you registered for Self Assessment."
+      }
+      object Registration {
+        val title = "Do you want to match your accounting period to the tax year?"
+        val heading: String = "Do you want to match your accounting period to the tax year?"
+        val line1 = "The tax year runs from 6 April to 5 April. Most sole traders match their accounting period to the tax year."
+        val line2 = "You can do this even if the tax year has already started."
+      }
+    }
+
     object AccountingPeriodPrior {
       val title = "Business accounting period"
       val heading: String = "Did your current accounting period start before 6 April 2017?"
@@ -128,17 +144,13 @@ object MessageLookup {
 
   object AccountingPeriod {
     val title = "Business accounting period"
-    val heading_current = "What are the dates of your current accounting period?"
-    val heading_next = "When is your next accounting period?"
+    val heading_signup = "Enter your accounting period dates"
     val heading_registration = "When is your current accounting period?"
-    val heading_editMode = "What are the dates of your accounting period?"
-    val line_1_current = "Your accounting period is usually 6 April to 5 April (the same as the tax year), unless you selected different dates when you registered for Self Assessment."
-    val line_1_next = "Your accounting period is usually 12 months. For example, 1 May 2017 to 30 April 2018."
+    val heading_editMode = "Change your accounting period dates"
+    val line_1_signup = "Your accounting period is usually 12 months. For example, 1 May 2017 to 30 April 2018."
     val line_1_registration = "Your accounting period is usually 12 months. For example, 6 April 2017 to 5 April 2018"
-    val exampleStartDate_current = "For example, 6 4 2017"
-    val exampleEndDate_current = "For example, 5 4 2018"
-    val exampleStartDate_next = "For example, 1 4 2018"
-    val exampleEndDate_next = "For example, 31 3 2019"
+    val exampleStartDate_signup = "For example, 1 4 2018"
+    val exampleEndDate_signup = "For example, 31 3 2019"
     val exampleStartDate_registration = "For example, 6 4 2017"
     val exampleEndDate_registration = "For example, 5 4 2018"
   }
@@ -234,7 +246,7 @@ object MessageLookup {
       val both = "Sole trader business and property"
     }
 
-    val accounting_period_prior = "Did your current accounting period start before 1 April 2017?"
+    val match_tax_year = "Does your accounting period match the tax year?"
     val accounting_period = s"Your accounting period dates"
     val accounting_period_registration = s"When's your current accounting period?"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
@@ -361,6 +373,11 @@ object MessageLookup {
     object Business {
 
       object SoleTrader {
+        val empty = "You must select an option to continue"
+        val invalid = "You must select an option to continue"
+      }
+
+      object MatchTaxYear {
         val empty = "You must select an option to continue"
         val invalid = "You must select an option to continue"
       }

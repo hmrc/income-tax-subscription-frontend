@@ -83,7 +83,7 @@ class BusinessStartDateControllerISpec extends ComponentSpecBase with FeatureSwi
       Then("Should return a SEE_OTHER with a redirect location of accounting period dates")
       res should have(
         httpStatus(SEE_OTHER),
-        redirectURI(accountingPeriodDatesURI)
+        redirectURI(matchTaxYearURI)
       )
     }
 

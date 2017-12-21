@@ -19,27 +19,27 @@ package incometax.business.forms
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil._
 import core.forms.validation.utils.MappingUtil._
-import incometax.business.models.AccountingPeriodPriorModel
+import incometax.business.models.MatchTaxYearModel
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Valid}
 
-object AccountingPeriodPriorForm {
+object MatchTaxYearForm {
 
-  val accountingPeriodPrior = "accountingPeriodPrior"
+  val matchTaxYear = "matchToTaxYear"
   val option_yes = "Yes"
   val option_no = "No"
 
   val nonEmpty: Constraint[String] = constraint[String](
     source => {
-      lazy val emptySource = ErrorMessageFactory.error("error.business.current_financial_period_prior.empty")
+      lazy val emptySource = ErrorMessageFactory.error("error.business.match_tax_year.empty")
       if (source.isEmpty) emptySource else Valid
     }
   )
 
   val validOption: Constraint[String] = constraint[String](
     source => {
-      lazy val invalidSource = ErrorMessageFactory.error("error.business.current_financial_period_prior.invalid")
+      lazy val invalidSource = ErrorMessageFactory.error("error.business.match_tax_year.invalid")
       source match {
         case `option_yes` | `option_no` => Valid
         case _ => invalidSource
@@ -47,10 +47,10 @@ object AccountingPeriodPriorForm {
     }
   )
 
-  val accountingPeriodPriorForm = Form(
+  val matchTaxYearForm = Form(
     mapping(
-      accountingPeriodPrior -> oText.toText.verifying(nonEmpty andThen validOption)
-    )(AccountingPeriodPriorModel.apply)(AccountingPeriodPriorModel.unapply)
+      matchTaxYear -> oText.toText.verifying(nonEmpty andThen validOption)
+    )(MatchTaxYearModel.apply)(MatchTaxYearModel.unapply)
   )
 
 }

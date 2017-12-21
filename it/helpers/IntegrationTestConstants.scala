@@ -63,6 +63,7 @@ object IntegrationTestConstants {
   val preferencesURI = s"$baseURI/preferences"
   val choosePaperlessURI = s"/paperless/choose?returnUrl"
   val errorPreferencesURI = s"$baseURI/paperless-error"
+  val matchTaxYearURI = s"$baseURI/business/match-to-tax-year"
   val accountingPeriodPriorURI = s"$baseURI/business/accounting-period-prior"
   val registerNextAccountingPeriodURI = s"$baseURI/business/register-next-accounting-period"
   val accountingPeriodDatesURI = s"$baseURI/business/accounting-period-dates"

@@ -1,6 +1,10 @@
+#Name Routes
+GET         /match-to-tax-year                      incometax.business.controllers.MatchTaxYearController.show(editMode: Boolean ?= false)
+POST        /match-to-tax-year                      incometax.business.controllers.MatchTaxYearController.submit(editMode: Boolean ?= false)
+
 #Accounting Period Routes
-GET         /accounting-period-dates                incometax.business.controllers.BusinessAccountingPeriodDateController.show(editMode: Boolean ?= false)
-POST        /accounting-period-dates                incometax.business.controllers.BusinessAccountingPeriodDateController.submit(editMode: Boolean ?= false)
+GET         /accounting-period-dates                incometax.business.controllers.BusinessAccountingPeriodDateController.show(editMode: Boolean ?= false, editMatch: Boolean?= false)
+POST        /accounting-period-dates                incometax.business.controllers.BusinessAccountingPeriodDateController.submit(editMode: Boolean ?= false, editMatch: Boolean?= false)
 
 #Name Routes
 GET         /name                                   incometax.business.controllers.BusinessNameController.show(editMode: Boolean ?= false)
@@ -17,15 +21,6 @@ POST        /start-date                             incometax.business.controlle
 #Income Type Routes
 GET         /accounting-method                      incometax.business.controllers.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /accounting-method                      incometax.business.controllers.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
-
-#Current Financial Period Prior Routes
-GET         /accounting-period-prior                incometax.business.controllers.BusinessAccountingPeriodPriorController.show(editMode: Boolean ?= false)
-POST        /accounting-period-prior                incometax.business.controllers.BusinessAccountingPeriodPriorController.submit(editMode: Boolean ?= false)
-
-#Register Next Accounting Period Routes
-GET         /register-next-accounting-period        incometax.business.controllers.RegisterNextAccountingPeriodController.show
-POST        /register-next-accounting-period        incometax.business.controllers.RegisterNextAccountingPeriodController.submit
-
 
 GET         /address                                incometax.business.controllers.BusinessAddressController.show(editMode: Boolean ?= false)
 POST        /address                                incometax.business.controllers.BusinessAddressController.submit(editMode: Boolean ?= false)

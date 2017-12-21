@@ -26,7 +26,6 @@ import CacheConstants._
 import incometax.business.models._
 import incometax.business.models.address.Address
 
-
 object CacheUtil {
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
@@ -35,7 +34,7 @@ object CacheUtil {
 
     def getOtherIncome()(implicit read: Reads[OtherIncomeModel]): Option[OtherIncomeModel] = cacheMap.getEntry(OtherIncome)
 
-    def getAccountingPeriodPrior()(implicit read: Reads[AccountingPeriodPriorModel]): Option[AccountingPeriodPriorModel] = cacheMap.getEntry(AccountingPeriodPrior)
+    def getMatchTaxYear()(implicit read: Reads[MatchTaxYearModel]): Option[MatchTaxYearModel] = cacheMap.getEntry(MatchTaxYear)
 
     def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriodDate)
 
@@ -54,7 +53,7 @@ object CacheUtil {
     def getSummary()(implicit
                      isrc: Reads[IncomeSourceModel],
                      oirc: Reads[OtherIncomeModel],
-                     accP: Reads[AccountingPeriodPriorModel],
+                     matchT: Reads[MatchTaxYearModel],
                      accD: Reads[AccountingPeriodModel],
                      busName: Reads[BusinessNameModel],
                      busPhone: Reads[BusinessPhoneNumberModel],
@@ -74,22 +73,22 @@ object CacheUtil {
               )
             case _ =>
               SummaryModel(
-                incomeSource,
-                getOtherIncome(),
-                getAccountingPeriodPrior(),
-                getAccountingPeriodDate(),
-                getBusinessName(),
-                getBusinessPhoneNumber(),
-                getBusinessAddress(),
-                getBusinessStartDate(),
-                getAccountingMethod(),
-                getTerms()
+                incomeSource = incomeSource,
+                otherIncome = getOtherIncome(),
+                matchTaxYear = getMatchTaxYear(),
+                accountingPeriod = getAccountingPeriodDate(),
+                businessName = getBusinessName(),
+                businessPhoneNumber = getBusinessPhoneNumber(),
+                businessAddress = getBusinessAddress(),
+                businessStartDate = getBusinessStartDate(),
+                accountingMethod = getAccountingMethod(),
+                terms = getTerms()
               )
           }
         case _ => SummaryModel()
       }
-
     }
+
   }
 
 }

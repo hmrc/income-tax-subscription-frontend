@@ -17,7 +17,8 @@
 package agent.services
 
 
-import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, AccountingPeriodPriorModel, BusinessNameModel}
+import agent.models.AccountingPeriodPriorModel
+import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel}
 import incometax.incomesource.forms.IncomeSourceForm
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import incometax.subscription.models.SummaryModel

@@ -49,32 +49,6 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
     }
   }
 
-  // Business accounting period prior to April 2017 routes
-  "The URL for the BusinessAccountingPeriodController.show action" should {
-    s"be equal to $contextRoute/business/accounting-period" in {
-      incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url must be(s"$contextRoute/business/accounting-period-prior")
-    }
-  }
-
-  "The URL for the BusinessAccountingPeriodController.submit action" should {
-    s"be equal to $contextRoute/business/accounting-period" in {
-      incometax.business.controllers.routes.BusinessAccountingPeriodPriorController.show().url must be(s"$contextRoute/business/accounting-period-prior")
-    }
-  }
-
-  // Register Next Accounting Period routes
-  "The URL for the RegisterNextAccountingPeriod.show action" should {
-    s"be equal to $contextRoute/business/register-next-accounting-period" in {
-      incometax.business.controllers.routes.RegisterNextAccountingPeriodController.show().url must be(s"$contextRoute/business/register-next-accounting-period")
-    }
-  }
-
-  "The URL for the RegisterNextAccountingPeriod.submit action" should {
-    s"be equal to $contextRoute/business/register-next-accounting-period" in {
-      incometax.business.controllers.routes.RegisterNextAccountingPeriodController.show().url must be(s"$contextRoute/business/register-next-accounting-period")
-    }
-  }
-
   // Terms and Conditions routes
   "The URL for the Terms.showTerms action" should {
     s"be equal to $contextRoute/terms" in {
