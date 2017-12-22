@@ -37,21 +37,21 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                            val authService: AuthService
                                           ) extends SignUpController {
 
-  val showOtherIncomeError = Action.async { implicit request =>
+  val show = Action.async { implicit request =>
     Future.successful(Ok(incometax.incomesource.views.html.other_income_error(
-          postAction = incometax.incomesource.controllers.routes.OtherIncomeErrorController.submitOtherIncomeError(),
+          postAction = incometax.incomesource.controllers.routes.OtherIncomeErrorController.submit(),
           backUrl
         )))
   }
 
-  val submitOtherIncomeError: Action[AnyContent] = Authenticated.async { implicit request =>
+  val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.fetchIncomeSource() map {
         case Some(incomeSource) => incomeSource.source match {
           case IncomeSourceForm.option_business =>
             Redirect(incometax.business.controllers.routes.BusinessNameController.show())
           case IncomeSourceForm.option_property =>
-            Redirect(incometax.subscription.controllers.routes.TermsController.showTerms())
+            Redirect(incometax.subscription.controllers.routes.TermsController.show())
           case IncomeSourceForm.option_both =>
             Redirect(incometax.business.controllers.routes.BusinessNameController.show())
         }
@@ -62,7 +62,7 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  lazy val backUrl: String = incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
+  lazy val backUrl: String = incometax.incomesource.controllers.routes.OtherIncomeController.show().url
 
 
 }

@@ -1,10 +1,10 @@
 #Accounting Period Routes
-GET         /accounting-period-dates                agent.controllers.business.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode: Boolean ?= false)
-POST        /accounting-period-dates                agent.controllers.business.BusinessAccountingPeriodDateController.submitAccountingPeriod(editMode: Boolean ?= false)
+GET         /accounting-period-dates                agent.controllers.business.BusinessAccountingPeriodDateController.show(editMode: Boolean ?= false)
+POST        /accounting-period-dates                agent.controllers.business.BusinessAccountingPeriodDateController.submit(editMode: Boolean ?= false)
 
 #Name Routes
-GET         /name                                   agent.controllers.business.BusinessNameController.showBusinessName(editMode: Boolean ?= false)
-POST        /name                                   agent.controllers.business.BusinessNameController.submitBusinessName(editMode: Boolean ?= false)
+GET         /name                                   agent.controllers.business.BusinessNameController.show(editMode: Boolean ?= false)
+POST        /name                                   agent.controllers.business.BusinessNameController.submit(editMode: Boolean ?= false)
 
 #Income Type Routes
 GET         /accounting-method                      agent.controllers.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)

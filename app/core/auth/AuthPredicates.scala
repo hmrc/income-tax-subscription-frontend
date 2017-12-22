@@ -45,7 +45,7 @@ trait AuthPredicates extends Results {
       Left(Future.successful(resolveNino))
     }
 
-  lazy val alreadyEnrolled: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.enrolled())
+  lazy val alreadyEnrolled: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.show())
 
   val mtdidPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
@@ -57,7 +57,7 @@ trait AuthPredicates extends Results {
 
   lazy val homeRoute = Redirect(usermatching.controllers.routes.HomeController.index())
 
-  lazy val timeoutRoute = Redirect(core.controllers.routes.SessionTimeoutController.timeout())
+  lazy val timeoutRoute = Redirect(core.controllers.routes.SessionTimeoutController.show())
 
   val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
@@ -124,7 +124,7 @@ object AuthPredicates extends Results {
 
   lazy val homeRoute = Redirect(usermatching.controllers.routes.HomeController.index())
 
-  lazy val timeoutRoute = Redirect(core.controllers.routes.SessionTimeoutController.timeout())
+  lazy val timeoutRoute = Redirect(core.controllers.routes.SessionTimeoutController.show())
 
   lazy val wrongAffinity: Result = Redirect(usermatching.controllers.routes.AffinityGroupErrorController.show())
 

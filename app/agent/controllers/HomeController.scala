@@ -54,7 +54,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
         case Some(arn) =>
             (user.clientNino, user.clientUtr) match {
               case (Some(nino), Some(utr)) =>
-                successful(Redirect(agent.controllers.routes.IncomeSourceController.showIncomeSource()).withJourneyState(AgentSignUp))
+                successful(Redirect(agent.controllers.routes.IncomeSourceController.show()).withJourneyState(AgentSignUp))
               case (Some(nino), _) =>
                 successful(Redirect(agent.controllers.matching.routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey))
               case _ =>

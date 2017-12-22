@@ -82,9 +82,9 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
     else
       keystoreService.fetchOtherIncome().map {
         case Some(OtherIncomeModel(`option_yes`)) =>
-          incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+          incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url
         case _ =>
-          incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
+          incometax.incomesource.controllers.routes.OtherIncomeController.show().url
       }
   }
 

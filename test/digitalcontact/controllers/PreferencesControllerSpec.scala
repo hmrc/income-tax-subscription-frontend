@@ -71,7 +71,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
           mockCheckPaperlessActivated(testToken)
 
           status(result) must be(Status.SEE_OTHER)
-          redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url)
+          redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.show().url)
         }
 
         "Redirect to returned preferences service if paperless was previously unspecified" in {
@@ -103,7 +103,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
           mockCheckPaperlessActivated(testToken)
 
           status(result) must be(Status.SEE_OTHER)
-          redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url)
+          redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.show().url)
         }
 
         "Redirect to the preferences error page if paperless preferences was not selected" in {
@@ -190,7 +190,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
       status(result) must be(Status.SEE_OTHER)
 
-      redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url
+      redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
     }
 
     "Calling the showGoBackToPreferences controller should redirect us to income source" in {
@@ -198,7 +198,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
       status(result) must be(Status.SEE_OTHER)
 
-      redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url
+      redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
     }
 
     "Calling the submitGoBackToPreferences" in {
@@ -206,7 +206,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
       status(result) must be(Status.SEE_OTHER)
 
-      redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource().url
+      redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
     }
 
   }

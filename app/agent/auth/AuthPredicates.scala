@@ -33,9 +33,9 @@ object AuthPredicates extends Results {
 
   lazy val noArnRoute: Result = Redirect(agent.controllers.routes.NotEnrolledAgentServicesController.show())
 
-  lazy val confirmationRoute: Result = Redirect(agent.controllers.routes.ConfirmationController.showConfirmation())
+  lazy val confirmationRoute: Result = Redirect(agent.controllers.routes.ConfirmationController.show())
 
-  lazy val timeoutRoute = Redirect(agent.controllers.routes.SessionTimeoutController.timeout())
+  lazy val timeoutRoute = Redirect(agent.controllers.routes.SessionTimeoutController.show())
 
   lazy val homeRoute = Redirect(agent.controllers.routes.HomeController.index())
 

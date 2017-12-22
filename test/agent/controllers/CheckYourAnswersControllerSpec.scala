@@ -85,7 +85,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         val result = call()
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
+        redirectLocation(result) mustBe Some(agent.controllers.routes.TermsController.show().url)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
 
@@ -95,7 +95,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         val result = call()
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain(agent.controllers.routes.TermsController.showTerms(editMode = true).url)
+        redirectLocation(result) must contain(agent.controllers.routes.TermsController.show(editMode = true).url)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
     }
@@ -118,14 +118,14 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     }
 
     "There is a matched nino but no terms in keystore" should {
-      s"return redirect ${agent.controllers.routes.TermsController.showTerms().url}" in {
+      s"return redirect ${agent.controllers.routes.TermsController.show().url}" in {
         lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
 
         setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(terms = None))
         val result = call(request)
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
+        redirectLocation(result) mustBe Some(agent.controllers.routes.TermsController.show().url)
       }
     }
 
@@ -153,8 +153,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         // verifySubscriptionHeader(ITSASessionKeys.RequestURI -> request.uri)
       }
 
-      s"redirect to '${agent.controllers.routes.ConfirmationController.showConfirmation().url}'" in {
-        redirectLocation(result) mustBe Some(agent.controllers.routes.ConfirmationController.showConfirmation().url)
+      s"redirect to '${agent.controllers.routes.ConfirmationController.show().url}'" in {
+        redirectLocation(result) mustBe Some(agent.controllers.routes.ConfirmationController.show().url)
       }
     }
 
@@ -186,8 +186,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${agent.controllers.routes.TermsController.showTerms().url}" in {
-      TestCheckYourAnswersController.backUrl mustBe agent.controllers.routes.TermsController.showTerms().url
+    s"point to ${agent.controllers.routes.TermsController.show().url}" in {
+      TestCheckYourAnswersController.backUrl mustBe agent.controllers.routes.TermsController.show().url
     }
   }
 

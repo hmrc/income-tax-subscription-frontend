@@ -30,8 +30,8 @@ class TermsControllerSpec extends AgentControllerBaseSpec
 
   override val controllerName: String = "TermsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showTerms" -> TestTermsController.showTerms(editMode = false),
-    "submitTerms" -> TestTermsController.submitTerms()
+    "showTerms" -> TestTermsController.show(editMode = false),
+    "submitTerms" -> TestTermsController.submit()
   )
 
   object TestTermsController extends TermsController(
@@ -43,7 +43,7 @@ class TermsControllerSpec extends AgentControllerBaseSpec
 
   "Calling the showTerms action of the TermsController with an authorised user" should {
 
-    lazy val result = TestTermsController.showTerms(editMode = false)(subscriptionRequest)
+    lazy val result = TestTermsController.show(editMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness, fetchAccountingPeriodDate = TestModels.testAccountingPeriod())
@@ -61,7 +61,7 @@ class TermsControllerSpec extends AgentControllerBaseSpec
 
     def callShow(): Future[Result] = {
       setupMockKeystoreSaveFunctions()
-      TestTermsController.submitTerms()(subscriptionRequest)
+      TestTermsController.submit()(subscriptionRequest)
     }
 
     "submit" should {
@@ -91,8 +91,8 @@ class TermsControllerSpec extends AgentControllerBaseSpec
 
   "The back url" when {
     "edit mode is true" should {
-      s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url} on any journey" in {
-        await(TestTermsController.backUrl(editMode = true)(subscriptionRequest)) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
+      s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url} on any journey" in {
+        await(TestTermsController.backUrl(editMode = true)(subscriptionRequest)) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
       }
     }
     "edit mode is false" should {
@@ -108,21 +108,21 @@ class TermsControllerSpec extends AgentControllerBaseSpec
         verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
       }
 
-      s"point to ${agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url} on the property journey if they answered yes to other incomes" in {
+      s"point to ${agent.controllers.routes.OtherIncomeErrorController.show().url} on the property journey if they answered yes to other incomes" in {
         setupMockKeystore(
           fetchIncomeSource = TestModels.testIncomeSourceProperty,
           fetchOtherIncome = TestModels.testOtherIncomeYes
         )
-        await(TestTermsController.backUrl(editMode = false)(FakeRequest())) mustBe agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+        await(TestTermsController.backUrl(editMode = false)(FakeRequest())) mustBe agent.controllers.routes.OtherIncomeErrorController.show().url
         verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
       }
 
-      s"point to ${agent.controllers.routes.OtherIncomeController.showOtherIncome().url} on the property journey if they answered no to other incomes" in {
+      s"point to ${agent.controllers.routes.OtherIncomeController.show().url} on the property journey if they answered no to other incomes" in {
         setupMockKeystore(
           fetchIncomeSource = TestModels.testIncomeSourceProperty,
           fetchOtherIncome = TestModels.testOtherIncomeNo
         )
-        await(TestTermsController.backUrl(editMode = false)(FakeRequest())) mustBe agent.controllers.routes.OtherIncomeController.showOtherIncome().url
+        await(TestTermsController.backUrl(editMode = false)(FakeRequest())) mustBe agent.controllers.routes.OtherIncomeController.show().url
         verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
       }
     }

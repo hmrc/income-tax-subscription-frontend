@@ -27,7 +27,7 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
 
   override val controllerName: String = "AlreadyEnrolledController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "enrolled" -> TestAlreadyEnrolledController.enrolled()
+    "enrolled" -> TestAlreadyEnrolledController.show()
   )
 
   object TestAlreadyEnrolledController extends AlreadyEnrolledController(
@@ -40,7 +40,7 @@ class AlreadyEnrolledControllerSpec extends ControllerBaseSpec {
     "return an OK with the error page" in {
       mockAuthEnrolled()
 
-      lazy val result = TestAlreadyEnrolledController.enrolled(subscriptionRequest)
+      lazy val result = TestAlreadyEnrolledController.show(subscriptionRequest)
       lazy val document = Jsoup.parse(contentAsString(result))
 
       status(result) must be(Status.OK)

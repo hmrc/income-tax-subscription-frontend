@@ -88,8 +88,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         //        verifySubscriptionHeader(ITSASessionKeys.RequestURI -> request.uri)
       }
 
-      s"redirect to '${incometax.subscription.controllers.routes.ConfirmationController.showConfirmation().url}'" in {
-        redirectLocation(result) mustBe Some(incometax.subscription.controllers.routes.ConfirmationController.showConfirmation().url)
+      s"redirect to '${incometax.subscription.controllers.routes.ConfirmationController.show().url}'" in {
+        redirectLocation(result) mustBe Some(incometax.subscription.controllers.routes.ConfirmationController.show().url)
       }
     }
 
@@ -127,7 +127,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         val result = call
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain(incometax.subscription.controllers.routes.TermsController.showTerms().url)
+        redirectLocation(result) must contain(incometax.subscription.controllers.routes.TermsController.show().url)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
 
@@ -137,15 +137,15 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         val result = call
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true).url)
+        redirectLocation(result) must contain(incometax.subscription.controllers.routes.TermsController.show(editMode = true).url)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
     }
   }
 
   "The back url" should {
-    s"point to ${incometax.subscription.controllers.routes.TermsController.showTerms().url}" in {
-      TestCheckYourAnswersController.backUrl mustBe incometax.subscription.controllers.routes.TermsController.showTerms().url
+    s"point to ${incometax.subscription.controllers.routes.TermsController.show().url}" in {
+      TestCheckYourAnswersController.backUrl mustBe incometax.subscription.controllers.routes.TermsController.show().url
     }
   }
 

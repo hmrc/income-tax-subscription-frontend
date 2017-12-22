@@ -66,9 +66,9 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
       verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 0)
     }
 
-    s"The back url should point to '${agent.controllers.routes.OtherIncomeController.showOtherIncome().url}'" in {
+    s"The back url should point to '${agent.controllers.routes.OtherIncomeController.show().url}'" in {
       val document = Jsoup.parse(contentAsString(result))
-      document.select("#back").attr("href") mustBe agent.controllers.routes.OtherIncomeController.showOtherIncome().url
+      document.select("#back").attr("href") mustBe agent.controllers.routes.OtherIncomeController.show().url
     }
   }
 
@@ -82,14 +82,14 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
       TestAccountingPeriodPriorController.show(isEditMode = false)(subscriptionRequest)
     }
 
-    s"When the user previously answered yes to otherIncome, it should point to '${agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
+    s"When the user previously answered yes to otherIncome, it should point to '${agent.controllers.routes.OtherIncomeErrorController.show().url}'" in {
       val document = Jsoup.parse(contentAsString(result(option_yes)))
-      document.select("#back").attr("href") mustBe agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+      document.select("#back").attr("href") mustBe agent.controllers.routes.OtherIncomeErrorController.show().url
     }
 
-    s"When the user previously answered no to otherIncome, it should point to '${agent.controllers.routes.OtherIncomeController.showOtherIncome().url}'" in {
+    s"When the user previously answered no to otherIncome, it should point to '${agent.controllers.routes.OtherIncomeController.show().url}'" in {
       val document = Jsoup.parse(contentAsString(result(option_no)))
-      document.select("#back").attr("href") mustBe agent.controllers.routes.OtherIncomeController.showOtherIncome().url
+      document.select("#back").attr("href") mustBe agent.controllers.routes.OtherIncomeController.show().url
     }
 
   }
@@ -122,7 +122,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
         setupMockKeystore(fetchAccountingPeriodPrior = None)
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
@@ -131,7 +131,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
         setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
@@ -170,7 +170,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
         setupMockKeystore(fetchAccountingPeriodPrior = None)
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
@@ -188,7 +188,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
         setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
         val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }

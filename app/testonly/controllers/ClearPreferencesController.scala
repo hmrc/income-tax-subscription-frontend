@@ -66,14 +66,14 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
   private def showView(form: Form[ClearPreferencesModel])(implicit request: Request[_]): Html =
     testonly.views.html.clear_preferences(
       clearPreferencesForm = form,
-      postAction = testonly.controllers.routes.ClearPreferencesController.submitClearUser()
+      postAction = testonly.controllers.routes.ClearPreferencesController.submit()
     )
 
-  val showClearUser = Action.async { implicit request =>
+  val show = Action.async { implicit request =>
     Future.successful(Ok(showView(ClearPreferencesForm.ClearPreferenceValidationForm)))
   }
 
-  val submitClearUser = Action.async { implicit request =>
+  val submit = Action.async { implicit request =>
     ClearPreferencesForm.ClearPreferenceForm.bindFromRequest().fold(
       badRequest => Future.successful(BadRequest(showView(badRequest))),
       clearPreferences =>

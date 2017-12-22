@@ -89,7 +89,7 @@ class ConfirmAgentSubscriptionControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
 
           status(result) must be(Status.SEE_OTHER)
-          redirectLocation(result) mustBe Some(incometax.subscription.controllers.routes.ConfirmationController.showConfirmation().url)
+          redirectLocation(result) mustBe Some(incometax.subscription.controllers.routes.ConfirmationController.show().url)
         }
       }
 

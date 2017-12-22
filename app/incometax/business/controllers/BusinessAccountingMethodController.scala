@@ -64,7 +64,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
         accountingMethod => {
           keystoreService.saveAccountingMethod(accountingMethod) map (_ => isEditMode match {
             case true => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-            case _ => Redirect(incometax.subscription.controllers.routes.TermsController.showTerms())
+            case _ => Redirect(incometax.subscription.controllers.routes.TermsController.show())
           })
         }
       )

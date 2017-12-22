@@ -45,7 +45,7 @@ class ErrorHandler @Inject()(val appConfig: AppConfig,
         super.resolveError(rh, ex)
       case _: BearerTokenExpired =>
         Logger.debug("[AuthenticationPredicate][async] Bearer Token Timed Out.")
-        Redirect(core.controllers.routes.SessionTimeoutController.timeout())
+        Redirect(core.controllers.routes.SessionTimeoutController.show())
       case _: AuthorisationException =>
         Logger.debug("[AuthenticationPredicate][async] Unauthorised request. Redirect to Sign In.")
         toGGLogin(rh.path)

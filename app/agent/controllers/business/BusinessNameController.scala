@@ -41,19 +41,19 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     agent.views.html.business.business_name(
       businessNameForm = businessNameForm,
-      postAction = agent.controllers.business.routes.BusinessNameController.submitBusinessName(editMode = isEditMode),
+      postAction = agent.controllers.business.routes.BusinessNameController.submit(editMode = isEditMode),
       isEditMode,
       backUrl = backUrl(isEditMode)
     )
 
-  def showBusinessName(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.fetchBusinessName() map {
         businessName => Ok(view(BusinessNameForm.businessNameForm.form.fill(businessName), isEditMode = isEditMode))
       }
   }
 
-  def submitBusinessName(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
@@ -70,8 +70,8 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
 
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode)
-      agent.controllers.routes.CheckYourAnswersController.show.url
+      agent.controllers.routes.CheckYourAnswersController.show().url
     else
-      agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod().url
+      agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
 
 }

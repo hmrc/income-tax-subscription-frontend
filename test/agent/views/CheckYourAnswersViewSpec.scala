@@ -16,10 +16,11 @@
 
 package agent.views
 
+import _root_.agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
+import _root_.agent.views.html.helpers.SummaryIdConstants._
+import _root_.core.utils.UnitTestTrait
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
-import agent.models._
-import _root_.agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 import core.utils.TestModels._
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
@@ -27,14 +28,11 @@ import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import _root_.core.utils.UnitTestTrait
-import _root_.agent.views.html.helpers.SummaryIdConstants._
-import incometax.subscription.models.SummaryModel
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
 
   lazy val postAction: Call = _root_.agent.controllers.routes.CheckYourAnswersController.submit()
-  lazy val backUrl: String = _root_.agent.controllers.routes.TermsController.showTerms().url
+  lazy val backUrl: String = _root_.agent.controllers.routes.TermsController.show().url
 
   def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Html = _root_.agent.views.html.check_your_answers(
     summaryModel = testSummaryData,
@@ -124,7 +122,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val expectedQuestion = messages.accounting_period
       val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
       val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
-      val expectedEditLink = _root_.agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
+      val expectedEditLink = _root_.agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -138,7 +136,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = IncomeSourceId
       val expectedQuestion = messages.income_source
       val expectedAnswer = MessageLookup.Summary.IncomeSource.both
-      val expectedEditLink = _root_.agent.controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
+      val expectedEditLink = _root_.agent.controllers.routes.IncomeSourceController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -152,7 +150,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = OtherIncomeId
       val expectedQuestion = messages.other_income
       val expectedAnswer = MessageLookup.OtherIncome.no
-      val expectedEditLink = _root_.agent.controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
+      val expectedEditLink = _root_.agent.controllers.routes.OtherIncomeController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -166,7 +164,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = BusinessNameId
       val expectedQuestion = messages.business_name
       val expectedAnswer = testBusinessName.businessName
-      val expectedEditLink = _root_.agent.controllers.business.routes.BusinessNameController.showBusinessName(editMode = true).url
+      val expectedEditLink = _root_.agent.controllers.business.routes.BusinessNameController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

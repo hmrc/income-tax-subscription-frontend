@@ -58,7 +58,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   )
 
   lazy val postAction: Call = incometax.subscription.controllers.routes.CheckYourAnswersController.submit()
-  lazy val backUrl: String = incometax.subscription.controllers.routes.TermsController.showTerms().url
+  lazy val backUrl: String = incometax.subscription.controllers.routes.TermsController.show().url
 
   def page(isRegistration: Boolean, testSummaryModel: SummaryModel): Html =
     incometax.subscription.views.html.check_your_answers(
@@ -208,7 +208,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = IncomeSourceId
       val expectedQuestion = messages.income_source
       val expectedAnswer = MessageLookup.Summary.IncomeSource.both
-      val expectedEditLink = incometax.incomesource.controllers.routes.IncomeSourceController.showIncomeSource(editMode = true).url
+      val expectedEditLink = incometax.incomesource.controllers.routes.IncomeSourceController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -222,7 +222,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = OtherIncomeId
       val expectedQuestion = messages.other_income
       val expectedAnswer = MessageLookup.OtherIncome.no
-      val expectedEditLink = incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome(editMode = true).url
+      val expectedEditLink = incometax.incomesource.controllers.routes.OtherIncomeController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

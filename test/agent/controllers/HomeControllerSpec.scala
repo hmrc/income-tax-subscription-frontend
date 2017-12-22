@@ -128,10 +128,10 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
 
         def result = testHomeController(showGuidance = false).index()(request)
 
-        s"redirect user to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+        s"redirect user to ${agent.controllers.routes.IncomeSourceController.show().url}" in {
           status(result) must be(Status.SEE_OTHER)
 
-          redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
+          redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.show().url
 
           await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
         }

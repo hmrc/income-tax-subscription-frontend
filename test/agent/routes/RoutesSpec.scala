@@ -23,13 +23,13 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   val contextRoute: String = "/report-quarterly/income-and-expenses/sign-up/client"
 
   // Timeout routes
-  "The URL for the timeout.timeout action" should {
+  "The URL for the timeout.show action" should {
     s"be equal to $contextRoute/session-timeout" in {
-      agent.controllers.routes.SessionTimeoutController.timeout().url must be (s"$contextRoute/session-timeout")
+      agent.controllers.routes.SessionTimeoutController.show().url must be (s"$contextRoute/session-timeout")
     }
   }
 
-  "The URL for the SummaryController.showSummary action" should {
+  "The URL for the SummaryController.show action" should {
     s"be equal to $contextRoute/check-your-answers" in {
       agent.controllers.routes.CheckYourAnswersController.show().url must be (s"$contextRoute/check-your-answers")
     }
@@ -37,15 +37,15 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
 
 
   // Summary routes
-  "The URL for the SummaryController.submitSummary action" should {
+  "The URL for the SummaryController.submit action" should {
     s"be equal to $contextRoute/check-your-answers" in {
       agent.controllers.routes.CheckYourAnswersController.submit().url must be (s"$contextRoute/check-your-answers")
     }
   }
 
-  "The URL for the ConfirmationController.showConfirmation action" should {
+  "The URL for the ConfirmationController.show action" should {
     s"be equal to $contextRoute/confirmation" in {
-      agent.controllers.routes.ConfirmationController.showConfirmation().url must be (s"$contextRoute/confirmation")
+      agent.controllers.routes.ConfirmationController.show().url must be (s"$contextRoute/confirmation")
     }
   }
 
@@ -76,15 +76,15 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   }
 
   // Terms and Conditions routes
-  "The URL for the Terms.showTerms action" should {
+  "The URL for the Terms.show action" should {
     s"be equal to $contextRoute/terms" in {
-      agent.controllers.routes.TermsController.showTerms().url must be (s"$contextRoute/terms")
+      agent.controllers.routes.TermsController.show().url must be (s"$contextRoute/terms")
     }
   }
 
-  "The URL for the Terms.submitTerms(true) action" should {
+  "The URL for the Terms.submit() action" should {
     s"be equal to $contextRoute/terms" in {
-      agent.controllers.routes.TermsController.submitTerms().url must be (s"$contextRoute/terms")
+      agent.controllers.routes.TermsController.submit().url must be (s"$contextRoute/terms")
     }
   }
 

@@ -45,13 +45,13 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, viewType: AccountingPeriodViewType)(implicit request: Request[_]): Html =
     agent.views.html.business.accounting_period_date(
       form,
-      agent.controllers.business.routes.BusinessAccountingPeriodDateController.submitAccountingPeriod(editMode = isEditMode),
+      agent.controllers.business.routes.BusinessAccountingPeriodDateController.submit(editMode = isEditMode),
       isEditMode,
       backUrl,
       viewType
     )
 
-  def showAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
@@ -66,7 +66,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
         ))
   }
 
-  def submitAccountingPeriod(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       whichView.flatMap {
         viewType =>
@@ -78,9 +78,9 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
               viewType = viewType
             ))),
             accountingPeriod => {
-              lazy val linearRedirect = Redirect(agent.controllers.business.routes.BusinessNameController.showBusinessName())
+              lazy val linearRedirect = Redirect(agent.controllers.business.routes.BusinessNameController.show())
               lazy val checkYourAnswersRedirect = Redirect(agent.controllers.routes.CheckYourAnswersController.show())
-              lazy val termsRedirect = Redirect(agent.controllers.routes.TermsController.showTerms(editMode = true))
+              lazy val termsRedirect = Redirect(agent.controllers.routes.TermsController.show(editMode = true))
 
               def saveAndUpdate(taxYearChanged: Boolean): Future[Result] =
                 if (taxYearChanged) keystoreService.saveTerms(terms = false) flatMap { _ => Future.successful(if (isEditMode) termsRedirect else linearRedirect) }

@@ -3,18 +3,18 @@ GET         /                                       agent.controllers.HomeContro
 GET         /index                                  agent.controllers.HomeController.index
 
 # Income Source Routes
-GET         /income                                 agent.controllers.IncomeSourceController.showIncomeSource(editMode: Boolean ?= false)
-POST        /income                                 agent.controllers.IncomeSourceController.submitIncomeSource(editMode: Boolean ?= false)
+GET         /income                                 agent.controllers.IncomeSourceController.show(editMode: Boolean ?= false)
+POST        /income                                 agent.controllers.IncomeSourceController.submit(editMode: Boolean ?= false)
 
 # Summary Routes
 GET         /check-your-answers                     agent.controllers.CheckYourAnswersController.show
 POST        /check-your-answers                     agent.controllers.CheckYourAnswersController.submit
 
 # Confirmation Routes
-GET         /confirmation                           agent.controllers.ConfirmationController.showConfirmation
+GET         /confirmation                           agent.controllers.ConfirmationController.show
 
 # Session Timeout Route
-GET         /session-timeout                        agent.controllers.SessionTimeoutController.timeout
+GET         /session-timeout                        agent.controllers.SessionTimeoutController.show
 
 # Feedback Routes
 GET         /feedback                               agent.controllers.FeedbackController.show
@@ -22,19 +22,19 @@ POST        /feedback                               agent.controllers.FeedbackCo
 GET         /thankyou                               agent.controllers.FeedbackController.thankyou
 
 # Terms Routes
-GET         /terms                                  agent.controllers.TermsController.showTerms(editMode: Boolean ?= false)
-POST        /terms                                  agent.controllers.TermsController.submitTerms()
+GET         /terms                                  agent.controllers.TermsController.show(editMode: Boolean ?= false)
+POST        /terms                                  agent.controllers.TermsController.submit()
 
 # Other Income Sources Routes
-GET         /income-other                           agent.controllers.OtherIncomeController.showOtherIncome(editMode: Boolean ?= false)
-POST        /income-other                           agent.controllers.OtherIncomeController.submitOtherIncome(editMode: Boolean ?= false)
+GET         /income-other                           agent.controllers.OtherIncomeController.show(editMode: Boolean ?= false)
+POST        /income-other                           agent.controllers.OtherIncomeController.submit(editMode: Boolean ?= false)
 
 # Main Income Error Routes
-GET         /error/main-income                      agent.controllers.MainIncomeErrorController.mainIncomeError
+GET         /error/main-income                      agent.controllers.MainIncomeErrorController.show
 
 # Other Income Error Routes
-GET         /error/other-income                     agent.controllers.OtherIncomeErrorController.showOtherIncomeError
-POST        /error/other-income                     agent.controllers.OtherIncomeErrorController.submitOtherIncomeError
+GET         /error/other-income                     agent.controllers.OtherIncomeErrorController.show
+POST        /error/other-income                     agent.controllers.OtherIncomeErrorController.submit
 
 #
 GET         /error/client-already-subscribed        agent.controllers.ClientAlreadySubscribedController.show

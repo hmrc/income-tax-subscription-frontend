@@ -265,7 +265,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
         "the tax year changed" should {
           s"return a redirect status (SEE_OTHER - 303) and redirect to '${
-            incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true).url
+            incometax.subscription.controllers.routes.TermsController.show(editMode = true).url
           }" in {
             setupMockKeystore(
               fetchMatchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl

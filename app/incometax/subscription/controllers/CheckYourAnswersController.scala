@@ -46,7 +46,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
 
   import core.services.CacheUtil._
 
-  lazy val backUrl: String = incometax.subscription.controllers.routes.TermsController.showTerms().url
+  lazy val backUrl: String = incometax.subscription.controllers.routes.TermsController.show().url
   val show = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
@@ -68,7 +68,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
 
         subscriptionService.createSubscription(nino, cache.getSummary())(headerCarrier).flatMap {
           case Right(SubscriptionSuccess(id)) =>
-            keystoreService.saveSubscriptionId(id).map(_ => Redirect(incometax.subscription.controllers.routes.ConfirmationController.showConfirmation()))
+            keystoreService.saveSubscriptionId(id).map(_ => Redirect(incometax.subscription.controllers.routes.ConfirmationController.show()))
           case _ =>
             error("Successful response not received from submission")
         }
@@ -90,8 +90,8 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                 case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), _) =>
                   Future.successful(Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
               }
-            case Some(false) => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.showTerms(editMode = true)))
-            case _ => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.showTerms()))
+            case Some(false) => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show(editMode = true)))
+            case _ => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show()))
           }
           case _ => error(noCacheMapErrMessage)
         }

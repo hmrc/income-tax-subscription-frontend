@@ -30,8 +30,8 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
   override val controllerName: String = "OtherIncomeController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showOtherIncome" -> TestOtherIncomeController.showOtherIncome(isEditMode = true),
-    "submitOtherIncome" -> TestOtherIncomeController.submitOtherIncome(isEditMode = true)
+    "showOtherIncome" -> TestOtherIncomeController.show(isEditMode = true),
+    "submitOtherIncome" -> TestOtherIncomeController.submit(isEditMode = true)
   )
 
   object TestOtherIncomeController extends OtherIncomeController(
@@ -44,7 +44,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
   "Calling the showOtherIncome action of the OtherIncome controller with an authorised user" when {
 
-    def call = TestOtherIncomeController.showOtherIncome(isEditMode = true)(subscriptionRequest)
+    def call = TestOtherIncomeController.show(isEditMode = true)(subscriptionRequest)
 
     "income source is in keystore" should {
       "return ok (200)" in {
@@ -63,7 +63,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
     }
 
     "income source is not in keystore" should {
-      s"return redirect (303) to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+      s"return redirect (303) to ${agent.controllers.routes.IncomeSourceController.show().url}" in {
         setupMockKeystore(
           fetchIncomeSource = None,
           fetchOtherIncome = None
@@ -72,7 +72,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
         val result = call
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
+        redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.show().url
 
         await(result)
         verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0, saveOtherIncome = 0)
@@ -82,11 +82,11 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
 
   "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user" when {
-    def callSubmit = TestOtherIncomeController.submitOtherIncome(isEditMode = true)(subscriptionRequest
+    def callSubmit = TestOtherIncomeController.submit(isEditMode = true)(subscriptionRequest
       .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_yes)))
 
     "income source is not in keystore" should {
-      s"return redirect (303) to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url}" in {
+      s"return redirect (303) to ${agent.controllers.routes.IncomeSourceController.show().url}" in {
         setupMockKeystore(
           fetchIncomeSource = None,
           fetchOtherIncome = None
@@ -95,7 +95,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
         val result = callSubmit
 
         status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
+        redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.show().url
 
         await(result)
         verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0, saveOtherIncome = 0)
@@ -105,7 +105,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
     "income source is in keystore and saying yes to other income" should {
 
-      def callSubmit = TestOtherIncomeController.submitOtherIncome(isEditMode = true)(subscriptionRequest
+      def callSubmit = TestOtherIncomeController.submit(isEditMode = true)(subscriptionRequest
         .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_yes)))
 
       "return a redirect status (SEE_OTHER - 303)" in {
@@ -122,7 +122,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
         verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
       }
 
-      s"redirect to '${agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url}'" in {
+      s"redirect to '${agent.controllers.routes.OtherIncomeErrorController.show().url}'" in {
         setupMockKeystore(
           fetchIncomeSource = TestModels.testIncomeSourceBoth,
           fetchOtherIncome = None
@@ -130,7 +130,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callSubmit
 
-        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.OtherIncomeErrorController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
@@ -140,7 +140,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
     "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and saying no to other income" should {
 
-      def callSubmit = TestOtherIncomeController.submitOtherIncome(isEditMode = true)(subscriptionRequest
+      def callSubmit = TestOtherIncomeController.submit(isEditMode = true)(subscriptionRequest
         .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
 
       "return a redirect status (SEE_OTHER - 303)" in {
@@ -173,7 +173,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
         verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
       }
 
-      s"redirect to '${agent.controllers.routes.TermsController.showTerms().url}' on the property journey" in {
+      s"redirect to '${agent.controllers.routes.TermsController.show().url}' on the property journey" in {
 
         setupMockKeystore(
           fetchIncomeSource = TestModels.testIncomeSourceProperty,
@@ -182,7 +182,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callSubmit
 
-        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.showTerms().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.show().url)
 
         await(goodRequest)
         verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
@@ -207,7 +207,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
         val dummy = "Invalid"
 
-        def badrequest = TestOtherIncomeController.submitOtherIncome(isEditMode = true)(subscriptionRequest
+        def badrequest = TestOtherIncomeController.submit(isEditMode = true)(subscriptionRequest
           .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(dummy)))
 
         "return a bad request status (400)" in {
@@ -227,8 +227,8 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
   }
 
   "The back url not in edit mode" should {
-    s"point to ${agent.controllers.routes.IncomeSourceController.showIncomeSource().url} on other income page" in {
-      TestOtherIncomeController.backUrl(isEditMode = false) mustBe agent.controllers.routes.IncomeSourceController.showIncomeSource().url
+    s"point to ${agent.controllers.routes.IncomeSourceController.show().url} on other income page" in {
+      TestOtherIncomeController.backUrl(isEditMode = false) mustBe agent.controllers.routes.IncomeSourceController.show().url
     }
   }
 

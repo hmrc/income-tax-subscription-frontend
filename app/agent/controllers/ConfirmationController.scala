@@ -36,12 +36,12 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
                                        val logging: Logging
                                       ) extends PostSubmissionController {
 
-  val showConfirmation: Action[AnyContent] = Authenticated { implicit request =>
+  val show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
       Ok(agent.views.html.confirmation(
         submissionDate = dateConvert(LocalDate.now()),
         postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
-        signOutAction = core.controllers.SignOutController.signOut(origin = routes.ConfirmationController.showConfirmation())
+        signOutAction = core.controllers.SignOutController.signOut(origin = routes.ConfirmationController.show())
       ))
   }
 

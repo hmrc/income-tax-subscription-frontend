@@ -41,12 +41,12 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
 
   def view(backUrl: String, taxEndYear: Int)(implicit request: Request[_]): Html =
     incometax.subscription.views.html.terms(
-      postAction = incometax.subscription.controllers.routes.TermsController.submitTerms(),
+      postAction = incometax.subscription.controllers.routes.TermsController.submit(),
       taxEndYear = taxEndYear,
       backUrl
     )
 
-  def showTerms(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         cacheMap <- keystoreService.fetchAll() map (_.get)
@@ -65,7 +65,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         }
   }
 
-  def submitTerms(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.saveTerms(terms = true) map (
         _ => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
@@ -81,9 +81,9 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         case IncomeSourceForm.option_property =>
           otherIncome match {
             case OtherIncomeForm.option_yes =>
-              incometax.incomesource.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+              incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url
             case OtherIncomeForm.option_no =>
-              incometax.incomesource.controllers.routes.OtherIncomeController.showOtherIncome().url
+              incometax.incomesource.controllers.routes.OtherIncomeController.show().url
           }
       }
 }

@@ -52,14 +52,14 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
             (user.clientNino, cache.getTerms()) match {
               case (None, _) => Future.successful(Redirect(agent.controllers.matching.routes.ConfirmClientController.show()))
               case (_, Some(true)) => processFunc(user)(request)(cache)
-              case (_, Some(false)) => Future.successful(Redirect(agent.controllers.routes.TermsController.showTerms(editMode = true)))
-              case _ => Future.successful(Redirect(agent.controllers.routes.TermsController.showTerms()))
+              case (_, Some(false)) => Future.successful(Redirect(agent.controllers.routes.TermsController.show(editMode = true)))
+              case _ => Future.successful(Redirect(agent.controllers.routes.TermsController.show()))
             }
           case _ => error(noCacheMapErrMessage)
         }
     }
 
-  lazy val backUrl: String = agent.controllers.routes.TermsController.showTerms().url
+  lazy val backUrl: String = agent.controllers.routes.TermsController.show().url
 
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
@@ -89,7 +89,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
             .recoverWith { case _ => error("Successful response not received from submission") }
           cacheMap <- keystoreService.saveSubscriptionId(mtditid)
             .recoverWith { case _ => error("Failed to save to keystore") }
-        } yield Redirect(agent.controllers.routes.ConfirmationController.showConfirmation()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
+        } yield Redirect(agent.controllers.routes.ConfirmationController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any keystore cached data")
 
   def error(message: String): Future[Nothing] = {

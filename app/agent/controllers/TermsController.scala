@@ -42,12 +42,12 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
 
   def view(backUrl: String, taxEndYear: Int)(implicit request: Request[_]): Html =
     agent.views.html.terms(
-      postAction = agent.controllers.routes.TermsController.submitTerms(),
+      postAction = agent.controllers.routes.TermsController.submit(),
       taxEndYear = taxEndYear,
       backUrl
     )
 
-  def showTerms(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+  def show(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         incomeSource <- keystoreService.fetchIncomeSource().collect { case Some(is) => is.source }
@@ -59,7 +59,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       } yield Ok(view(backUrl = backUrl, taxEndYear = taxEndYear))
   }
 
-  def submitTerms(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.saveTerms(terms = true) map (
         _ => Redirect(agent.controllers.routes.CheckYourAnswersController.show()))
@@ -67,7 +67,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
 
   def backUrl(editMode: Boolean)(implicit request: Request[_]): Future[String] =
     if (editMode)
-      agent.controllers.business.routes.BusinessAccountingPeriodDateController.showAccountingPeriod(editMode = true).url
+      agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
     else
     keystoreService.fetchIncomeSource() flatMap {
       case Some(source) => source.source match {
@@ -79,9 +79,9 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
           import agent.forms.OtherIncomeForm._
           keystoreService.fetchOtherIncome() flatMap {
             case Some(OtherIncomeModel(`option_yes`)) =>
-              agent.controllers.routes.OtherIncomeErrorController.showOtherIncomeError().url
+              agent.controllers.routes.OtherIncomeErrorController.show().url
             case Some(OtherIncomeModel(`option_no`)) =>
-              agent.controllers.routes.OtherIncomeController.showOtherIncome().url
+              agent.controllers.routes.OtherIncomeController.show().url
             case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
           }
         case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
