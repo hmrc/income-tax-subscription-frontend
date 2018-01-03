@@ -35,6 +35,7 @@ object MessageLookup {
     val startNow = "Start now"
     val dateOfBirth = "Date of birth"
     val goBack = "Go back"
+    val tryAgain = "Try again"
   }
 
   object FrontPage {
@@ -204,7 +205,7 @@ object MessageLookup {
   object ClientAlreadySubscribed {
     val title = "Your client has already signed up"
     val heading = "Your client has already signed up"
-    val para1 = "The details you've entered are already in use."
+    val para1 = "This client's details are already in use."
   }
 
   object NoClientRelationship {
@@ -344,9 +345,9 @@ object MessageLookup {
   }
 
   object NoNino {
-    val title = "You can't sign up for quarterly reporting yet"
+    val title = "Your client can't use this service yet"
     val heading = title
-    val line1 = "You can sign up later in the year when this service is available to you."
+    val line1 = "This client can sign up later in the year."
   }
 
   object MainIncomeError {
@@ -385,15 +386,15 @@ object MessageLookup {
 
 
   object NotEnrolledAgentServices {
-    val title = "You can't sign up your clients yet"
+    val title = "You can't use this service yet"
     val heading = title
-    val linkText = "create an Agent Services account"
-    val para1 = s"To sign up for quarterly reporting, you must $linkText."
+    val linkText = "set up an agent services account"
+    val para1 = s"To use this service, you need to $linkText."
   }
 
   object ClientDetailsError {
-    val title = "Client match error"
-    val heading = "We couldn't confirm your client"
+    val title = "There's a problem"
+    val heading = "There's a problem"
     val line1 = "The details you've entered are not on our system."
   }
 

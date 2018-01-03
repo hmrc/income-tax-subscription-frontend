@@ -424,6 +424,7 @@ agent.base.change                                                     = Change
 agent.base.yes                                                        = Yes
 agent.base.no                                                         = No
 agent.base.go_back                                                    = Go back
+agent.base.try_again                                                  = Try again
 
 # Agent front page
 agent.frontpage.title                                                 = Sign up to report your client''s income and expenses quarterly
@@ -448,8 +449,8 @@ agent.frontpage.bullet_9                                              = you need
 agent.frontpage.bullet_10                                             = your client needs to <a href="{0}">authorise you as their agent</a>
 
 # Client details page
-agent.client-details-error.title                                      = Client match error
-agent.client-details-error.heading                                    = We couldn''t confirm your client
+agent.client-details-error.title                                      = There''s a problem
+agent.client-details-error.heading                                    = There''s a problem
 agent.client-details-error.line_1                                     = The details you''ve entered are not on our system.
 
 # Client Details Lockout
@@ -550,7 +551,7 @@ agent.timeout.returnToHome                                            = To sign 
 ## Client already subscribed page ##
 agent.client-already-subscribed.title                                 = Your client has already signed up
 agent.client-already-subscribed.heading                               = Your client has already signed up
-agent.client-already-subscribed.para1                                 = The details you''ve entered are already in use.
+agent.client-already-subscribed.para1                                 = This client''s details are already in use.
 
 ## No client relationship page ##
 agent.no-client-relationship.title                                    = You''re not authorised for this client
@@ -663,8 +664,8 @@ agent.not-eligible.signup                                             = I want t
 agent.not-eligible.signout                                            = I don''t want to sign up - sign me out
 
 ## No NINO page ##
-agent.no-nino.title                                                   = You can''t sign up for quarterly reporting yet
-agent.no-nino.heading                                                 = You can''t sign up for quarterly reporting yet
+agent.no-nino.title                                                   = Your client can''t use this service yet
+agent.no-nino.heading                                                 = Your client can''t use this service yet
 agent.no-nino.line_1                                                  = You can sign up later in the year when this service is available to you.
 
 ## Main income error page ##
@@ -699,9 +700,9 @@ agent.income-other.yes                                                = Yes
 agent.income-other.no                                                 = No
 
 ## Not Enrolled to Agent Services
-agent.not_enrolled_agent_services.title                               = You can''t sign up your clients yet
-agent.not_enrolled_agent_services.heading                             = You can''t sign up your clients yet
-agent.not_enrolled_agent_services.para1                               = To sign up for quarterly reporting, you must <a href="{0}">create an Agent Services account</a>.
+agent.not_enrolled_agent_services.title                               = You can''t use this service yet
+agent.not_enrolled_agent_services.heading                             = You can''t use this service yet
+agent.not_enrolled_agent_services.para1                               = To use this service, you need to <a href="{0}">set up an agent services account</a>.
 
 ## Client Details ##
 agent.client-details.title                                            = Enter your client''s details
