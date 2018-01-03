@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -360,9 +360,13 @@ object MessageLookup {
   }
 
   object OtherIncomeError {
-    val title = "You can only send quarterly reports on part of your client's income"
+    val title = "You can use software to report your client's Income Tax"
     val heading: String = title
-    val para1 = "You'll be able to use this reporting method for your client's other income later in the year."
+    val para1 = "You only need to send quarterly reports on your client’s income from either:"
+    val para2 = "You can tell us about your client’s other income sources in their final summary report. Your client needs to submit this report by 31 January."
+    val bullet1 ="their sole trader business"
+    val bullet2 = "renting out a UK property"
+    val bullet3 = "their sole trader business and renting out a UK property"
   }
 
   object OtherIncome {
