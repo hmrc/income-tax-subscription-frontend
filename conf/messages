@@ -2,6 +2,7 @@
 base.service_name                                               = Report your income and expenses quarterly
 base.back                                                       = Back
 base.continue                                                   = Continue
+base.continue-sign-up                                           = Continue to sign up
 base.update                                                     = Update
 base.sign-out                                                   = Sign out
 base.sign-up                                                    = Sign up
@@ -409,6 +410,7 @@ iv-error.try_again                                              = <a id="try-aga
 agent.base.service_name                                         = Sign up your client for quarterly reporting
 agent.base.back                                                       = Back
 agent.base.continue                                                   = Continue
+agent.base.continue                                                   = Continue
 agent.base.update                                                     = Update
 agent.base.sign-out                                                   = Sign out
 agent.base.sign-up                                                    = Sign up
@@ -556,6 +558,13 @@ agent.client-already-subscribed.para1                                 = The deta
 agent.no-client-relationship.title                                    = You''re not authorised for this client
 agent.no-client-relationship.heading                                  = You''re not authorised for this client
 agent.no-client-relationship.para1                                    = To send quarterly reports, your client must authorise you as their agent.
+
+## Agent not authorised page ##
+agent.not-authorised-error.title                                      = You''re not authorised for this client
+agent.not-authorised-error.heading                                    = You''re not authorised for this client
+agent.not-authorised-error.para1                                      = You can still sign up your client, but we''ll hold their information until they''ve authorised you as their agent.
+agent.not-authorised-error.para2                                      = To authorise you, your client needs to <a href="{0}" >sign in to this service</a> using their own Government Gateway details.
+
 
 ## Summary page ##
 agent.summary.title                                                   = Check your answers

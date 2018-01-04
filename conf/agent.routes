@@ -73,3 +73,8 @@ GET         /feedback-submitted                     agent.controllers.ThankYouCo
 
 # No NINO Routes
 GET         /register-for-SA                        agent.controllers.matching.NoSAController.show
+
+# Agent not Authorised
+GET         /error/not-authorised                   agent.controllers.AgentNotAuthorisedController.show
+POST        /error/not-authorised                   agent.controllers.AgentNotAuthorisedController.submit
+
