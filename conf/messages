@@ -563,7 +563,6 @@ agent.no-client-relationship.para1                                    = To send 
 agent.not-authorised-error.title                                      = You''re not authorised for this client
 agent.not-authorised-error.heading                                    = You''re not authorised for this client
 agent.not-authorised-error.para1                                      = You can still sign up your client, but we''ll hold their information until they''ve authorised you as their agent.
-agent.not-authorised-error.para2                                      = To authorise you, your client needs to <a href="{0}" >sign in to this service</a> using their own Government Gateway details.
 
 
 ## Summary page ##

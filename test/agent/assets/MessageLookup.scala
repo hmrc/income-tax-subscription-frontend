@@ -417,7 +417,6 @@ object MessageLookup {
     val heading: String = title
     val linkText = "sign in to this service"
     val para1 = "You can still sign up your client, but we’ll hold their information until they’ve authorised you as their agent."
-    val para2 = s"To authorise you, your client needs to $linkText using their own Government Gateway details."
   }
 
   object ConfirmClient {

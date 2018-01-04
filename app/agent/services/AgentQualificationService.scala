@@ -41,7 +41,7 @@ case object ClientAlreadySubscribed extends UnqualifiedAgent
 
 case object UnexpectedFailure extends UnqualifiedAgent
 
-case object NoClientRelationship extends UnqualifiedAgent
+case class NoClientRelationship(clientNino: String, clientUtr: Option[String]) extends UnqualifiedAgent
 
 case class ApprovedAgent(clientNino: String, clientUtr: Option[String])
 
@@ -97,7 +97,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
       isPreExistingRelationship <- clientRelationshipService.isPreExistingRelationship(arn, matchedClient.clientNino)
     } yield
       if (isPreExistingRelationship) Right(matchedClient)
-      else Left(NoClientRelationship)
+      else Left(NoClientRelationship(matchedClient.clientNino, matchedClient.clientUtr))
   }.recoverWith { case _ => Left(UnexpectedFailure) }
 
   private implicit class Util[A, B](first: Future[Either[A, B]]) {

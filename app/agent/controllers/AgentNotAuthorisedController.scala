@@ -19,29 +19,30 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.UserMatchingController
+import agent.services.{ClientRelationshipService, KeystoreService}
 import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import agent.services.{ClientRelationshipService, KeystoreService}
-import core.services.AuthService
 
 import scala.concurrent.Future
 
 @Singleton
 class AgentNotAuthorisedController @Inject()(val baseConfig: BaseControllerConfig,
                                                val messagesApi: MessagesApi,
-                                               clientRelationshipService: ClientRelationshipService,
                                                keystoreService: KeystoreService,
                                                val authService: AuthService) extends UserMatchingController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Future.successful(Ok(agent.views.html.agent_not_authorised(
-        postAction = agent.controllers.routes.AgentNotAuthorisedController.submit())))
+        postAction = routes.AgentNotAuthorisedController.submit(),
+        signOut = core.controllers.SignOutController.signOut(routes.AgentNotAuthorisedController.show())))
+    )
   }
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Redirect(agent.controllers.matching.routes.ClientDetailsController.show()))
+      Future.successful(Redirect(routes.HomeController.index()))
   }
 }
