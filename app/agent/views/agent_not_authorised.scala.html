@@ -19,7 +19,7 @@
 @import core.views.html.helpers._
 @import core.config.AppConfig
 
-@(postAction: Call, signOut: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("agent.not-authorised-error.title")) {
 

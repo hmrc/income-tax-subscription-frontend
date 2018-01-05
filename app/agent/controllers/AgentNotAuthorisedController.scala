@@ -36,8 +36,7 @@ class AgentNotAuthorisedController @Inject()(val baseConfig: BaseControllerConfi
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       Future.successful(Ok(agent.views.html.agent_not_authorised(
-        postAction = routes.AgentNotAuthorisedController.submit(),
-        signOut = core.controllers.SignOutController.signOut(routes.AgentNotAuthorisedController.show())))
+        postAction = routes.AgentNotAuthorisedController.submit()))
     )
   }
 

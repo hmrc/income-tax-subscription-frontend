@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -415,7 +415,6 @@ object MessageLookup {
   object AgentNotAuthorisedError {
     val title = "You're not authorised for this client"
     val heading: String = title
-    val linkText = "sign in to this service"
     val para1 = "You can still sign up your client, but we’ll hold their information until they’ve authorised you as their agent."
   }
 
