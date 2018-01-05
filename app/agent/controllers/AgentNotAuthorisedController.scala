@@ -29,19 +29,17 @@ import scala.concurrent.Future
 
 @Singleton
 class AgentNotAuthorisedController @Inject()(val baseConfig: BaseControllerConfig,
-                                               val messagesApi: MessagesApi,
-                                               keystoreService: KeystoreService,
-                                               val authService: AuthService) extends UserMatchingController {
+                                             val messagesApi: MessagesApi,
+                                             val authService: AuthService) extends UserMatchingController {
 
-  val show: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
+  val show: Action[AnyContent] = Action.async { implicit request =>
       Future.successful(Ok(agent.views.html.agent_not_authorised(
-        postAction = routes.AgentNotAuthorisedController.submit()))
+        postAction = agent.controllers.routes.AgentNotAuthorisedController.submit()))
     )
   }
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Redirect(routes.HomeController.index()))
+      Future.successful(Redirect(agent.controllers.routes.HomeController.index()))
   }
 }

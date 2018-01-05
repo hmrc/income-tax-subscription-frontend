@@ -16,7 +16,7 @@
 
 package agent.views
 
-import agent.assets.MessageLookup.{Base => common, AgentNotAuthorisedError => messages}
+import agent.assets.MessageLookup.{AgentNotAuthorisedError => messages, Base => common}
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 
@@ -39,7 +39,8 @@ class AgentNotAuthorisedErrorViewSpec extends ViewSpecTrait {
       messages.para1
     )
 
-    testPage.mustHaveSignOutLink(common.signOut, request.path)
+    testPage.mustHaveContinueToSignUpButton()
 
+    testPage.mustHaveSignOutLink(common.signOut, request.path)
   }
 }

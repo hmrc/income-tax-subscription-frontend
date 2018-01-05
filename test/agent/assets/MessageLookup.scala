@@ -415,7 +415,7 @@ object MessageLookup {
   object AgentNotAuthorisedError {
     val title = "You're not authorised for this client"
     val heading: String = title
-    val para1 = "You can still sign up your client, but we’ll hold their information until they’ve authorised you as their agent."
+    val para1 = "You can still sign up your client, but we'll hold their information until they've authorised you as their agent."
   }
 
   object ConfirmClient {
