@@ -17,6 +17,7 @@
 package agent.controllers
 
 import agent.assets.MessageLookup.{AgentNotAuthorisedError => messages}
+import core.config.MockConfig
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -30,15 +31,20 @@ class AgentNotAuthorisedControllerSpec extends AgentControllerBaseSpec {
     "submit" -> TestAgentNotAuthorisedController.submit()
   )
 
-  object TestAgentNotAuthorisedController extends AgentNotAuthorisedController(
-    MockBaseControllerConfig,
+  private def createTestAgentNotAuthorisedController(enableMatchingFeature: Boolean) = new AgentNotAuthorisedController(
+    mockBaseControllerConfig(new MockConfig {
+      override val userMatchingFeature = enableMatchingFeature
+    }),
     messagesApi,
     mockAuthService
   )
 
+
+  lazy val TestAgentNotAuthorisedController = createTestAgentNotAuthorisedController(enableMatchingFeature = true)
+
   "Calling the show action of the AgentNotAuthorisedController with an Authenticated User" should {
 
-    lazy val result = TestAgentNotAuthorisedController.show(userMatchedRequest)
+    lazy val result = TestAgentNotAuthorisedController.show(userMatchingRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {

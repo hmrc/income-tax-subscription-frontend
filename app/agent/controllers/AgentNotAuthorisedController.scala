@@ -32,7 +32,8 @@ class AgentNotAuthorisedController @Inject()(val baseConfig: BaseControllerConfi
                                              val messagesApi: MessagesApi,
                                              val authService: AuthService) extends UserMatchingController {
 
-  val show: Action[AnyContent] = Action.async { implicit request =>
+  val show: Action[AnyContent] = Authenticated.async { implicit request =>
+      implicit user =>
       Future.successful(Ok(agent.views.html.agent_not_authorised(
         postAction = agent.controllers.routes.AgentNotAuthorisedController.submit()))
     )
