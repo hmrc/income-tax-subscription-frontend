@@ -104,7 +104,7 @@ class ConfirmationViewSpec extends UnitTestTrait {
 
     "have a add another client button" in {
       val b = document.getElementById("add-another-button")
-      b.text() mustBe MessageLookup.Confirmation.addAnother
+      b.text() mustBe MessageLookup.Base.addAnother
     }
 
   }

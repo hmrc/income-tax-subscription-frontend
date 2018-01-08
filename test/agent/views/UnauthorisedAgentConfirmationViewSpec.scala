@@ -16,35 +16,99 @@
 
 package agent.views
 
-import agent.assets.MessageLookup.{Base => common, ClientAlreadySubscribed => messages}
-import core.views.ViewSpecTrait
+import agent.assets.MessageLookup
+import core.models.DateModel
+import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import core.utils.UnitTestTrait
+import core.views.ViewSpecTrait
 
-class ClientAlreadySubscribedViewSpec extends ViewSpecTrait {
+class UnauthorisedAgentConfirmationViewSpec extends UnitTestTrait {
 
+  val submissionDateValue = DateModel("1", "1", "2016")
   val action = ViewSpecTrait.testCall
-  val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = agent.views.html.client_already_subscribed(action)(request, applicationMessages, appConfig)
+  lazy val page = agent.views.html.unauthorised_agent_confirmation(
+    submissionDate = submissionDateValue,
+    postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
+    signOutAction = action
+  )(FakeRequest(), applicationMessages, appConfig)
+  lazy val document = Jsoup.parse(page.body)
 
-  "The Client Already Enrolled view" should {
-    val testPage = TestView(
-      name = "Client Already Enrolled View",
-      title = messages.title,
-      heading = messages.heading,
-      page = page
-    )
+  "The Unauthorised Agent Confirmation view" should {
 
-    testPage.mustHavePara(
-      messages.para1
-    )
+    s"have the title '${MessageLookup.UnauthorisedAgentConfirmation.title}'" in {
+      document.title() must be(MessageLookup.UnauthorisedAgentConfirmation.title)
+    }
 
-    val form = testPage.getForm("Client Already Enrolled form")(actionCall = action)
+    "have a successful transaction confirmation banner" which {
 
-    form.mustHaveSubmitButton(common.goBack)
+      "has a turquoise background" in {
+        document.select("#confirmation-heading").hasClass("transaction-banner--complete") mustBe true
+      }
 
-    testPage.mustHaveSignOutLink(common.signOut, request.path)
+      s"has a heading (H1)" which {
+
+        lazy val heading = document.select("H1")
+
+        s"has the text '${MessageLookup.UnauthorisedAgentConfirmation.heading}'" in {
+          heading.text() mustBe MessageLookup.UnauthorisedAgentConfirmation.heading
+        }
+
+        "has the class 'transaction-banner__heading'" in {
+          heading.hasClass("transaction-banner__heading") mustBe true
+        }
+      }
+
+    }
+
+    "have a 'What happens next' section" which {
+
+      s"has the section heading '${MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.heading}'" in {
+        document.select("#whatHappensNext h2").text() mustBe MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.heading
+      }
+
+      s"has a paragraph stating HMRC process '${MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para1}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para1)
+      }
+
+      s"has a paragraph stating HMRC process '${MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para2}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para2)
+      }
+
+      s"has a paragraph stating HMRC process '${MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para3}'" in {
+        document.select("#whatHappensNext p").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para2)
+      }
+    }
+
+    "have a 'Give us feedback' section" which {
+
+      s"has the section heading '${MessageLookup.Confirmation.giveUsFeedback.heading}'" in {
+        document.select("#giveUsFeedback h2").text() mustBe MessageLookup.Confirmation.giveUsFeedback.heading
+      }
+
+      s"has a paragraph stating feedback details '${MessageLookup.Confirmation.giveUsFeedback.para1}'" in {
+        document.select("#giveUsFeedback p").text() must include(MessageLookup.Confirmation.giveUsFeedback.para1)
+      }
+
+      s"has a link stating feedback question" which {
+
+        s"has the link text '${MessageLookup.Confirmation.giveUsFeedback.link}'" in {
+          document.select("#confirmation-feedback").text() must include(MessageLookup.Confirmation.giveUsFeedback.link)
+        }
+
+        s"has a link to ${action.url}" in {
+          document.select("#confirmation-feedback").attr("href") mustBe action.url
+        }
+      }
+
+    }
+
+    "have a add another client button" in {
+      val b = document.getElementById("add-another-button")
+      b.text() mustBe MessageLookup.Base.addAnother
+    }
 
   }
 }
