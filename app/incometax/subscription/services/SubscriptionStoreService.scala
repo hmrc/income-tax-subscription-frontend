@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, 
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import incometax.subscription.connectors.SubscriptionStoreConnector
-import incometax.subscription.models.{IncomeSourceType, StoredSubscription}
+import incometax.subscription.httpparsers.DeleteSubscriptionResponseHttpParser.DeleteSubscriptionResponse
+import incometax.subscription.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess, IncomeSourceType, StoredSubscription}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -69,5 +70,14 @@ class SubscriptionStoreService @Inject()(subscriptionStoreConnector: Subscriptio
       _ <- businessName.fold(Future.successful(Unit))(keystoreService.saveBusinessName(_) map (_ => Unit))
       _ <- accountingMethod.fold(Future.successful(Unit))(keystoreService.saveAccountingMethod(_) map (_ => Unit))
     } yield Some(storedSubscription)
+  }
+
+  def deleteSubscriptionData(nino: String)(implicit hc: HeaderCarrier): Future[DeleteSubscriptionSuccess.type] = {
+    subscriptionStoreConnector.deleteSubscriptionData(nino) map {
+      case Right(success) =>
+        success
+      case Left(DeleteSubscriptionFailure(reason)) =>
+        throw new InternalServerException(s"Delete subscription failed: $reason")
+    }
   }
 }

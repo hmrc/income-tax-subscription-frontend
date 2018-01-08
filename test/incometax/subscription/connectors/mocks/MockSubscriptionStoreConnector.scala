@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
 import core.utils.TestModels._
 import core.utils.TestConstants._
-import incometax.subscription.models.RetrieveSubscriptionFailure
+import incometax.subscription.httpparsers.DeleteSubscriptionResponseHttpParser.DeleteSubscriptionResponse
+import incometax.subscription.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess, RetrieveSubscriptionFailure}
 
 import scala.concurrent.Future
 
@@ -44,4 +45,15 @@ trait MockSubscriptionStoreConnector extends MockTrait {
 
   val retrieveSubscriptionFailure: Future[RetrieveSubscriptionResponse] =
     Future.successful(Left(RetrieveSubscriptionFailure(testErrorMessage)))
+
+  def mockDeleteSubscriptionData(nino: String)(response: Future[DeleteSubscriptionResponse]): Unit = {
+    when(mockSubscriptionStoreConnector.deleteSubscriptionData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(response)
+  }
+
+  val deleteSubscriptionSuccess: Future[DeleteSubscriptionResponse] =
+    Future.successful(Right(DeleteSubscriptionSuccess))
+
+  val deleteSubscriptionFailure: Future[DeleteSubscriptionResponse] =
+    Future.successful(Left(DeleteSubscriptionFailure(testErrorMessage)))
 }
