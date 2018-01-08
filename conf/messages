@@ -184,9 +184,11 @@ contact_email.line_1                                            = We''ll use thi
 preferences.returnLinkText                                      = Continue
 
 ## Timeout page ##
-timeout.title                                                   = Your session has timed out
-timeout.heading                                                 = Your session has timed out
-timeout.returnToHome                                            = To sign up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
+timeout.title                                                   = You''ve been signed out
+timeout.heading                                                 = You''ve been signed out
+timeout.para1                                                   = For your security, we signed you out of this service because you did not do anything for 15 minutes.
+timeout.para2                                                   = Any information you did not submit was deleted.
+timeout.sign-in                                                 = Sign in
 
 ## Already enrolled page ##
 already-enrolled.title                                          = You''ve already signed up for quarterly reporting
@@ -543,11 +545,6 @@ agent.contact_email.line_1                                            = We''ll u
 
 ## Email Preferences ##
 agent.preferences.returnLinkText                                      = Continue
-
-## Timeout page ##
-agent.timeout.title                                                   = Your session has timed out
-agent.timeout.heading                                                 = Your session has timed out
-agent.timeout.returnToHome                                            = To sign your client up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Client already subscribed page ##
 agent.client-already-subscribed.title                                 = Your client has already signed up

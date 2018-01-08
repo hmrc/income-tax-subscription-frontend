@@ -15,13 +15,16 @@
  *@
 
 @import core.config.AppConfig
+@import core.views.html.helpers.signInButton
 @import core.views.html.templates.main_template
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("timeout.title"), showSignOutLink = false) {
 
-<h1>@Messages("timeout.title")</h1>
-<p>@Html(Messages("timeout.returnToHome", usermatching.controllers.routes.HomeController.index().url))</p>
+ <h1>@Messages("timeout.title")</h1>
+ <p>@Messages("timeout.para1")</p>
+ <p>@Messages("timeout.para2")</p>
 
+ @signInButton()
 }

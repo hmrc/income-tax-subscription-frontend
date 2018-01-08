@@ -15,16 +15,7 @@
  *@
 
 @import core.config.AppConfig
-@import core.views.html.helpers.signInButton
-@import core.views.html.templates.main_template
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(alternativeText: Option[String] = None)(implicit request: Request[_], messages: Messages,  appConfig: AppConfig)
 
-@main_template(title = Messages("timeout.title"), showSignOutLink = false) {
-
- <h1>@Messages("timeout.title")</h1>
- <p>@Messages("timeout.para1")</p>
- <p>@Messages("timeout.para2")</p>
-
- @signInButton()
-}
+<a  id="sign-in-button" class="button" role="button" href="@appConfig.ggSignInContinueUrl">@alternativeText.fold(Messages("timeout.sign-in"))(x => x)</a>
