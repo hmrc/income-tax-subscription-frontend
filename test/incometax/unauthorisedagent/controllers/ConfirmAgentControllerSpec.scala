@@ -16,21 +16,25 @@
 
 package incometax.unauthorisedagent.controllers
 
+import core.ITSASessionKeys.AgencyName
 import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockAuthService
+import core.utils.TestConstants._
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
+import incometax.unauthorisedagent.services.mocks.MockAgencyNameService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Request}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.NotFoundException
 
 class ConfirmAgentControllerSpec extends ControllerBaseSpec
   with MockAuthService
+  with MockAgencyNameService
   with FeatureSwitching {
 
   override val controllerName = "ConfirmAgentController"
@@ -42,6 +46,7 @@ class ConfirmAgentControllerSpec extends ControllerBaseSpec
 
   object TestConfirmAgentController extends ConfirmAgentController(
     MockBaseControllerConfig,
+    mockAgencyNameService,
     messagesApi,
     mockAuthService
   )
@@ -51,12 +56,19 @@ class ConfirmAgentControllerSpec extends ControllerBaseSpec
       "the user is of the correct affinity group and has a nino in session" should {
         "return the confirm-agent-subscription page" in {
           enable(UnauthorisedAgentFeature)
+          mockGetAgencyNameSuccess(testArn)
 
-          val result = await(TestConfirmAgentController.show().apply(confirmAgentSubscriptionRequest))
+          val testRequest = confirmAgentSubscriptionRequest
+
+          testRequest.session.get(AgencyName) mustBe None
+
+          val result = await(TestConfirmAgentController.show().apply(testRequest))
           val document = Jsoup.parse(contentAsString(result))
 
           status(result) mustBe OK
-          document.title().replaceAll("  "," ") mustBe Messages("confirm-agent.title","").replaceAll("  "," ") // todo update agent name once it's mocked
+          document.title() mustBe Messages("confirm-agent.title", testAgencyName)
+          result.session(testRequest).get(AgencyName) mustBe Some(testAgencyName)
+
         }
       }
     }
@@ -81,7 +93,7 @@ class ConfirmAgentControllerSpec extends ControllerBaseSpec
         "the user answered yes" should {
           "" in {
             enable(UnauthorisedAgentFeature)
-
+            mockGetAgencyNameSuccess(testArn)
 
             val result = await(submit(ConfirmAgentForm.option_yes))
 
@@ -110,4 +122,22 @@ class ConfirmAgentControllerSpec extends ControllerBaseSpec
       }
     }
   }
+
+  "getAgentName" should {
+    def getAgencyName(request: Request[AnyContent] = confirmAgentSubscriptionRequest) = TestConfirmAgentController.getAgentName(request)
+
+    "return the agency name if it's stored in session" in {
+      val name = getAgencyName(confirmAgentSubscriptionRequest.withSession(AgencyName -> testAgencyName))
+      await(name) mustBe testAgencyName
+    }
+
+    "return the agency name by calling the agency name service if it's not in session" in {
+      mockGetAgencyNameSuccess(testArn)
+
+      val name = getAgencyName()
+
+      await(name) mustBe testAgencyName
+    }
+  }
+
 }

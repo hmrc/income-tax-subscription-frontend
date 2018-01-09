@@ -18,11 +18,13 @@ package incometax.unauthorisedagent.controllers
 
 import javax.inject.{Inject, Singleton}
 
+import core.ITSASessionKeys.{AgencyName, AgentReferenceNumber}
 import core.auth.AuthenticatedController
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
+import incometax.unauthorisedagent.services.AgencyNameService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -33,11 +35,16 @@ import scala.concurrent.Future
 
 @Singleton
 class ConfirmAgentController @Inject()(val baseConfig: BaseControllerConfig,
+                                       val agencyNameService: AgencyNameService,
                                        val messagesApi: MessagesApi,
                                        val authService: AuthService
                                       ) extends AuthenticatedController[ConfirmAgentSubscription.type] {
 
-  def getAgentName: Future[String] = Future.successful("") //TODO
+  private[controllers] def getAgentName(implicit request: Request[AnyContent]): Future[String] =
+    request.session.get(AgencyName) match {
+      case Some(name) => Future.successful(name)
+      case _ => agencyNameService.getAgencyName(request.session(AgentReferenceNumber))
+    }
 
   def view(form: Form[ConfirmAgentModel], agentName: String)(implicit request: Request[_]): Html =
     incometax.unauthorisedagent.views.html.confirm_agent(
@@ -48,7 +55,7 @@ class ConfirmAgentController @Inject()(val baseConfig: BaseControllerConfig,
 
   def show(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      getAgentName.map(agentName => Ok(view(ConfirmAgentForm.confirmAgentForm, agentName = agentName)))
+      getAgentName.map(agentName => Ok(view(ConfirmAgentForm.confirmAgentForm, agentName = agentName)).addingToSession(AgencyName -> agentName))
   }
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit request =>
