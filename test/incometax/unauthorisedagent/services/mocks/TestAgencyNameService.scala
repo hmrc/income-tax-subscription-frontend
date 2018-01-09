@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package incometax.unauthorisedagent.httpparsers
+package incometax.unauthorisedagent.services.mocks
 
-import core.utils.{HttpParser, HttpStatus}
-import incometax.unauthorisedagent.models.{StoreSubscriptionFailure, StoreSubscriptionSuccess}
-import play.api.http.Status._
+import incometax.unauthorisedagent.connectors.mocks.MockAgentServicesAccountConnector
+import incometax.unauthorisedagent.services.AgencyNameService
 
-object StoreSubscriptionResponseHttpParser {
-  type StoreSubscriptionResponse = Either[StoreSubscriptionFailure, StoreSubscriptionSuccess.type ]
-
-  implicit val storeSubscriptionResponseHttpReads = HttpParser[StoreSubscriptionResponse] {
-    case HttpStatus(CREATED) => Right(StoreSubscriptionSuccess)
-    case response => Left(StoreSubscriptionFailure(response.body))
-  }
+trait TestAgencyNameService extends MockAgentServicesAccountConnector {
+  object TestAgencyNameService extends AgencyNameService(
+    mockAgentServicesAccountConnector
+  )
 }
-
-
-

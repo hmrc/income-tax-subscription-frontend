@@ -24,6 +24,7 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig extends FeatureSwitching {
+
   val analyticsToken: String
   val analyticsHost: String
   val contactFormServiceIdentifier: String
@@ -88,12 +89,13 @@ trait AppConfig extends FeatureSwitching {
   val agentSignUpUrl: String
 
   val backendFeatureSwitchUrl: String
+
+  def getAgencyNameUrl(arn: String): String
 }
 
 @Singleton
 class FrontendAppConfig @Inject()(configuration: Configuration,
-                                  environment: Environment
-                                 ) extends AppConfig with ServicesConfig {
+                                  environment: Environment) extends AppConfig with ServicesConfig {
 
   override lazy val mode = environment.mode
 
@@ -229,5 +231,9 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override def storeSubscriptionUrl(nino: String): String =
     s"$subscriptionStore/income-tax-subscription-store/client-subscription-data/$nino"
+
+  lazy val agentServicesAccount = baseUrl("agent-services-account")
+
+  override def getAgencyNameUrl(arn: String): String = s"$agentServicesAccount/agent-services-account/client/agency-name/$arn"
 }
 
