@@ -16,7 +16,8 @@
 
 package incometax.unauthorisedagent.views
 
-import assets.MessageLookup.{AgentNotAuthorised => messages, Base => common}
+import assets.MessageLookup.UnauthorisedAgent.{AgentNotAuthorised => messages}
+import assets.MessageLookup.{Base => common}
 import core.utils.TestConstants._
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._

@@ -24,7 +24,7 @@ import play.api.i18n.Messages
 import helpers.IntegrationTestConstants._
 
 class AgentNotAuthorisedControllerISpec extends ComponentSpecBase {
-  "GET /report-quarterly/income-and-expenses/sign-up/confirm-agent-subscription" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/agent-not-authorised " when {
     "the unauthorised agent feature switch is enabled" should {
       "return the subscription confirmation page" in {
         Given("The feature switch is on")
@@ -34,7 +34,7 @@ class AgentNotAuthorisedControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         SubscriptionStoreStub.stubSuccessfulDeletion()
 
-        When("GET /confirm-agent-subscription is called")
+        When("GET /agent-not-authorised  is called")
         val res = IncomeTaxSubscriptionFrontend.agentNotAuthorised()
 
         Then("Should return an OK with the error main income page")
