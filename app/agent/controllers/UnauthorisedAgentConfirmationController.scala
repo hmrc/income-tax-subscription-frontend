@@ -34,7 +34,7 @@ class UnauthorisedAgentConfirmationController @Inject()(val baseConfig: BaseCont
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Ok(agent.views.html.client_already_subscribed(
+      Future.successful(Ok(agent.views.html.unauthorised_agent_confirmation(
         postAction = agent.controllers.routes.UnauthorisedAgentConfirmationController.show()
       )))
   }

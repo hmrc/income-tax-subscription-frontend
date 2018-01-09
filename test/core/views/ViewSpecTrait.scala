@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package core.views
 
 import assets.MessageLookup
 import assets.MessageLookup.{Base => common}
+import agent.assets.MessageLookup.{Base => agentCommon}
 import core.controllers.SignOutController
 import core.forms.validation.models.{SummaryError, TargetIds}
 import core.utils.UnitTestTrait
@@ -327,8 +328,6 @@ trait ViewSpecTrait extends UnitTestTrait {
     def mustHaveContinueButton(): Unit = mustHaveSubmitButton(common.continue)
 
     def mustHaveContinueToSignUpButton(): Unit = mustHaveSubmitButton(common.continueToSignUp)
-
-    def mustHaveSignUpAnotherClient(): Unit = mustHaveSubmitButton(common.)
 
     def mustHaveUpdateButton(): Unit = mustHaveSubmitButton(common.update)
 

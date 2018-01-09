@@ -15,34 +15,46 @@
  *@
 
 @import core.config.AppConfig
-@import core.models.DateModel
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 
-@(submissionDate: DateModel, postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-    @core.views.html.templates.main_template(title = Messages("agent.confirmation.title")) {
+    @core.views.html.templates.main_template(title = Messages("agent.confirmation.unauthorised.title")) {
 
         <div class="form-group">
             <section id="confirmation-heading" class="transaction-banner--complete">
-                <h1 class="transaction-banner__heading" style="color: #fff">@Messages("agent.confirmation.heading")</h1>
+                <h1 class="transaction-banner__heading" style="color: #fff">@Messages("agent.confirmation.unauthorised.heading")</h1>
+                <span>@Messages("agent.confirmation.unauthorised.url")</span>
             </section>
         </div>
 
         <section class="form-group" id="whatHappensNext">
-            <h2>@Messages("agent.confirmation.whatHappensNext.heading")</h2>
-            <p>@Messages("agent.confirmation.whatHappensNext.para1")</p>
-            <p>@Messages("agent.confirmation.whatHappensNext.para2")</p>
+            <h2>@Messages("agent.confirmation.unauthorised.whatHappensNext.heading")</h2>
+            <p>@Html(Messages("agent.confirmation.unauthorised.whatHappensNext.para1"))</p>
+
+            <ul class="list list-bullet">
+                <li>@Messages("agent.confirmation.unauthorised.whatHappensNext.bullet1")</li>
+                <li>@Messages("agent.confirmation.unauthorised.whatHappensNext.bullet2")</li>
+            </ul>
+
+            <p>@Html(Messages("agent.confirmation.unauthorised.whatHappensNext.para2"))</p>
         </section>
 
-        <section class="form-group" id="giveUsFeedback">
-            <h2>@Messages("agent.confirmation.giveUsFeedback.heading")</h2>
-            <p><a id="confirmation-feedback" href="@signOutAction">@Messages("agent.confirmation.giveUsFeedback.link")</a> @Messages("agent.confirmation.giveUsFeedback.para1")</p>
+        <section class="form-group" id="whenAuthorised">
+            <h2>@Messages("agent.confirmation.unauthorised.whenAuthorised.heading")</h2>
+            <p>@Html(Messages("agent.confirmation.unauthorised.whenAuthorised.para1"))</p>
+
+            <ul class="list list-number">
+                <li>@Messages("agent.confirmation.unauthorised.whenAuthorised.number1")</li>
+                <li>@Messages("agent.confirmation.unauthorised.whenAuthorised.number2")</li>
+                <li>@Messages("agent.confirmation.unauthorised.whenAuthorised.number3")</li>
+            </ul>
         </section>
 
         <div class = "form-group">
         @form(action = postAction) {
-            <button formnovalidate class="button" type="submit" id="add-another-button">@Messages("agent.confirmation.add_another")</button>
+            <button formnovalidate class="button" type="submit" id="add-another-button">@Messages("agent.confirmation.unauthorised.add_another")</button>
         }
         </div>
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -239,19 +239,20 @@ object MessageLookup {
 
     object whatHappensNext {
       val heading = "What happens next"
-      val linkText = "choose accounting software"
-      val para1 = "Your client needs to authorise you as their agent within 28 days."
-      val para2 = s"You need to $linkText that supports this service to record your client's income and expenses."
-      val para3 = "Once you've chosen your software, you'll need to sign in using your Government Gateway details and authorise this software to interact with HMRC."
+      val para1 = "You must send your client this link for them to authorise you as their agent. They must do this within 10 days. You still need to:"
+      val bullet1 = "choose accounting software if you haven't already"
+      val bullet2 = "sign in to the software with your Government Gateway details and authorise it to interact with HMRC."
+      val para2 = "If your client doesn't authorise you within 10 days, you'll need to invite them again."
     }
 
     object whenAuthorised {
       val heading = "When you're authorised"
       val linkText = "business tax account"
-      val para1 = "You need to add any income and expenses that your client has already received or paid out. Then use your software to send HMRC a report, at least once a quarter."
-      val para2 = s"After you’ve sent a report you'll get your client's Income Tax estimate. Your client can view this estimate and report deadlines in their $linkText."
+      val para1 = "Either you or your client need to complete the steps below."
+      val number1 = "Add any income and expenses that your client has already received or paid out"
+      val number2 = "Record their future income and expenses using the software, then send HMRC a report at least every quarter"
+      val number3 = "Add any other income sources in your client's final report, they need to send this report by 31 January"
     }
-
   }
 
   object Error {

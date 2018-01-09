@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,18 @@
 package agent.views
 
 import agent.assets.MessageLookup
-import core.models.DateModel
+import core.utils.UnitTestTrait
+import core.views.ViewSpecTrait
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import core.utils.UnitTestTrait
-import core.views.ViewSpecTrait
 
 class UnauthorisedAgentConfirmationViewSpec extends UnitTestTrait {
 
-  val submissionDateValue = DateModel("1", "1", "2016")
   val action = ViewSpecTrait.testCall
 
   lazy val page = agent.views.html.unauthorised_agent_confirmation(
-    submissionDate = submissionDateValue,
-    postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
-    signOutAction = action
+    postAction = agent.controllers.routes.AddAnotherClientController.addAnother()
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
@@ -48,9 +44,9 @@ class UnauthorisedAgentConfirmationViewSpec extends UnitTestTrait {
         document.select("#confirmation-heading").hasClass("transaction-banner--complete") mustBe true
       }
 
-      s"has a heading (H1)" which {
+      s"has a heading (h1)" which {
 
-        lazy val heading = document.select("H1")
+        lazy val heading = document.select("#confirmation-heading h1")
 
         s"has the text '${MessageLookup.UnauthorisedAgentConfirmation.heading}'" in {
           heading.text() mustBe MessageLookup.UnauthorisedAgentConfirmation.heading
@@ -58,6 +54,15 @@ class UnauthorisedAgentConfirmationViewSpec extends UnitTestTrait {
 
         "has the class 'transaction-banner__heading'" in {
           heading.hasClass("transaction-banner__heading") mustBe true
+        }
+      }
+
+      s"has a URL (span)" which {
+
+        lazy val url = document.select("#confirmation-heading span")
+
+        s"has the text '${MessageLookup.UnauthorisedAgentConfirmation.url}'" in {
+          url.text() mustBe MessageLookup.UnauthorisedAgentConfirmation.url
         }
       }
 
@@ -69,38 +74,43 @@ class UnauthorisedAgentConfirmationViewSpec extends UnitTestTrait {
         document.select("#whatHappensNext h2").text() mustBe MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.heading
       }
 
-      s"has a paragraph stating HMRC process '${MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para1}'" in {
+      s"has an opening paragraph '${MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para1}'" in {
         document.select("#whatHappensNext p").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para1)
       }
 
-      s"has a paragraph stating HMRC process '${MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para2}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para2)
+      s"has a bullet point '${MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.bullet1}'" in {
+        document.select("#whatHappensNext li").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.bullet1)
       }
 
-      s"has a paragraph stating HMRC process '${MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para3}'" in {
+      s"has a further bullet point '${MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.bullet2}'" in {
+        document.select("#whatHappensNext li").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.bullet2)
+      }
+
+      s"has a closing paragraph '${MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para2}'" in {
         document.select("#whatHappensNext p").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whatHappensNext.para2)
       }
     }
 
-    "have a 'Give us feedback' section" which {
+    "have a 'When you're authorised' section" which {
 
-      s"has the section heading '${MessageLookup.Confirmation.giveUsFeedback.heading}'" in {
-        document.select("#giveUsFeedback h2").text() mustBe MessageLookup.Confirmation.giveUsFeedback.heading
+      s"has the section heading '${MessageLookup.UnauthorisedAgentConfirmation.whenAuthorised.heading}'" in {
+        document.select("#whenAuthorised h2").text() mustBe MessageLookup.UnauthorisedAgentConfirmation.whenAuthorised.heading
       }
 
-      s"has a paragraph stating feedback details '${MessageLookup.Confirmation.giveUsFeedback.para1}'" in {
-        document.select("#giveUsFeedback p").text() must include(MessageLookup.Confirmation.giveUsFeedback.para1)
+      s"has an opening paragraph '${MessageLookup.UnauthorisedAgentConfirmation.whenAuthorised.para1}'" in {
+        document.select("#whenAuthorised p").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whenAuthorised.para1)
       }
 
-      s"has a link stating feedback question" which {
+      s"has an initial numeric point '${MessageLookup.UnauthorisedAgentConfirmation.whenAuthorised.number1}'" in {
+        document.select("#whenAuthorised li").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whenAuthorised.number1)
+      }
 
-        s"has the link text '${MessageLookup.Confirmation.giveUsFeedback.link}'" in {
-          document.select("#confirmation-feedback").text() must include(MessageLookup.Confirmation.giveUsFeedback.link)
-        }
+      s"has a 2nd numeric point '${MessageLookup.UnauthorisedAgentConfirmation.whenAuthorised.number2}'" in {
+        document.select("#whenAuthorised li").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whenAuthorised.number2)
+      }
 
-        s"has a link to ${action.url}" in {
-          document.select("#confirmation-feedback").attr("href") mustBe action.url
-        }
+      s"has a final numeric point '${MessageLookup.UnauthorisedAgentConfirmation.whenAuthorised.number3}'" in {
+        document.select("#whenAuthorised li").text() must include(MessageLookup.UnauthorisedAgentConfirmation.whenAuthorised.number3)
       }
 
     }
@@ -108,6 +118,7 @@ class UnauthorisedAgentConfirmationViewSpec extends UnitTestTrait {
     "have a add another client button" in {
       val b = document.getElementById("add-another-button")
       b.text() mustBe MessageLookup.Base.addAnother
+
     }
 
   }
