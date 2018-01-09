@@ -16,34 +16,37 @@
 
 package incometax.unauthorisedagent.httpparsers
 
+import core.utils.TestConstants._
 import core.utils.UnitTestTrait
-import incometax.unauthorisedagent.httpparsers.StoreSubscriptionResponseHttpParser.storeSubscriptionResponseHttpReads
-import incometax.unauthorisedagent.models.{StoreSubscriptionFailure, StoreSubscriptionSuccess}
+import incometax.unauthorisedagent.httpparsers.RetrieveSubscriptionResponseHttpParser.RetrieveSubscriptionResponseHttpReads
+import incometax.unauthorisedagent.models.{GetAgencyNameFailure, GetAgencyNameSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
+import GetAgencyNameResponseHttpParser._
 
-class StoreSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {
-  val testHttpVerb = "PUT"
+class GetAgencyNameHttpParserSpec extends UnitTestTrait with EitherValues {
+  val testHttpVerb = "GET"
   val testUri = "/"
 
   "StoreSubscriptionResponseHttpReads" when {
     "read" should {
-      "parse a CREATED response as an StoreSubscriptionSuccess" in {
-        val httpResponse = HttpResponse(CREATED)
+      "parse an OK response as a GetAgencyNameSuccess" in {
+        val response = GetAgencyNameSuccess(testAgencyName)
+        val httpResponse = HttpResponse(OK, Json.toJson(response))
 
-        val res = storeSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
+        val res = getAgencyNameResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe StoreSubscriptionSuccess
+        res.right.value mustBe response
       }
 
-      "parse any other  response as an StoreSubscriptionFailure" in {
+      "parse any other response as a GetAgencyNameFailure" in {
         val httpResponse = HttpResponse(BAD_REQUEST, Json.obj())
 
-        val res = storeSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
+        val res = getAgencyNameResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.left.value mustBe StoreSubscriptionFailure(httpResponse.body)
+        res.left.value mustBe GetAgencyNameFailure(httpResponse.body)
       }
     }
   }

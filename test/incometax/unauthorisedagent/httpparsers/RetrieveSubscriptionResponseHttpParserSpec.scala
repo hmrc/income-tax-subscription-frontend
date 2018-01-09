@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package incometax.subscription.httpparsers
+package incometax.unauthorisedagent.httpparsers
 
 import core.utils.TestModels._
 import core.utils.UnitTestTrait
-import incometax.subscription.httpparsers.RetrieveSubscriptionResponseHttpParser.RetrieveSubscriptionResponseHttpReads
-import incometax.subscription.models.RetrieveSubscriptionFailure
+import incometax.unauthorisedagent.httpparsers.RetrieveSubscriptionResponseHttpParser.RetrieveSubscriptionResponseHttpReads
+import incometax.unauthorisedagent.models.RetrieveSubscriptionFailure
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -48,7 +48,7 @@ class RetrieveSubscriptionResponseHttpParserSpec extends UnitTestTrait with Eith
         res.right.value mustBe empty
       }
 
-      "parse any other response as an StoreSubscriptionSuccess" in {
+      "parse any other response as an RetrieveSubscriptionFailure" in {
         val httpResponse = HttpResponse(BAD_REQUEST, Json.obj())
 
         val res = RetrieveSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)

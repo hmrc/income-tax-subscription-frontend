@@ -19,10 +19,10 @@ package incometax.unauthorisedagent.connectors
 import javax.inject.Inject
 
 import core.config.AppConfig
-import incometax.subscription.httpparsers.DeleteSubscriptionResponseHttpParser._
-import incometax.subscription.httpparsers.RetrieveSubscriptionResponseHttpParser._
+import incometax.unauthorisedagent.httpparsers.DeleteSubscriptionResponseHttpParser._
+import incometax.unauthorisedagent.httpparsers.RetrieveSubscriptionResponseHttpParser._
 import incometax.unauthorisedagent.httpparsers.StoreSubscriptionResponseHttpParser._
-import incometax.subscription.models.StoredSubscription
+import incometax.unauthorisedagent.models.StoredSubscription
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 

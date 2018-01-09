@@ -19,10 +19,10 @@ package incometax.unauthorisedagent.connectors.mocks
 import core.utils.MockTrait
 import core.utils.TestConstants._
 import core.utils.TestModels._
-import incometax.subscription.httpparsers.DeleteSubscriptionResponseHttpParser.DeleteSubscriptionResponse
-import incometax.subscription.httpparsers.RetrieveSubscriptionResponseHttpParser._
-import incometax.subscription.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess, RetrieveSubscriptionFailure}
 import incometax.unauthorisedagent.connectors.SubscriptionStoreConnector
+import incometax.unauthorisedagent.httpparsers.DeleteSubscriptionResponseHttpParser.DeleteSubscriptionResponse
+import incometax.unauthorisedagent.httpparsers.RetrieveSubscriptionResponseHttpParser.RetrieveSubscriptionResponse
+import incometax.unauthorisedagent.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess, RetrieveSubscriptionFailure}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier

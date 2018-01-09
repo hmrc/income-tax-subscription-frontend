@@ -23,8 +23,9 @@ import core.services.KeystoreService
 import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel}
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import incometax.subscription.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess, IncomeSourceType, StoredSubscription}
+import incometax.subscription.models.IncomeSourceType
 import incometax.unauthorisedagent.connectors.SubscriptionStoreConnector
+import incometax.unauthorisedagent.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess, StoredSubscription}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}
