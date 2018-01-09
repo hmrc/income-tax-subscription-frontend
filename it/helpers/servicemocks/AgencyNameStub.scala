@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package core
+package helpers.servicemocks
 
-object ITSASessionKeys {
-  val StartTime = "StartTime"
-  val RequestURI = "Request-URI"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val FailedUserMatching = "Failed-User-Matching"
-  val JourneyStateKey = "Journey-State"
-  val PreferencesRedirectUrl = "Preferences-Redirect-Url"
-  val AgentReferenceNumber = "Agent-Reference-Number"
-  val AgencyName = "Agency-Name"
+import helpers.IntegrationTestConstants._
+import incometax.unauthorisedagent.models.GetAgencyNameSuccess
+import play.api.http.Status
+
+
+object AgencyNameStub extends WireMockMethods {
+
+  lazy val agencyNameUrl = s"/agent-services-account/client/agency-name/$testArn"
+
+  def stubAgencyName(): Unit =
+    when(method = GET, uri = agencyNameUrl)
+      .thenReturn(Status.OK, GetAgencyNameSuccess(testAgencyName))
+
 }

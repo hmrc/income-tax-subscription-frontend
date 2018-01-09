@@ -16,11 +16,36 @@
 
 package incometax.unauthorisedagent.services.mocks
 
+import core.utils.MockTrait
 import incometax.unauthorisedagent.connectors.mocks.MockAgentServicesAccountConnector
 import incometax.unauthorisedagent.services.AgencyNameService
+import org.mockito.ArgumentMatchers
+import uk.gov.hmrc.http.HeaderCarrier
+import org.mockito.Mockito._
+import core.utils.TestConstants._
+
+import scala.concurrent.Future
+
+trait MockAgencyNameService extends MockTrait {
+  val mockAgencyNameService = mock[AgencyNameService]
+
+  override def beforeEach(): Unit ={
+    super.beforeEach()
+    reset(mockAgencyNameService)
+  }
+
+  def mockGetAgencyName(arn: String)(result: Future[String]): Unit =
+    when(mockAgencyNameService.getAgencyName(ArgumentMatchers.eq(arn))(ArgumentMatchers.any[HeaderCarrier])) thenReturn result
+
+  def mockGetAgencyNameSuccess(arn: String): Unit = mockGetAgencyName(arn)(testAgencyName)
+
+  def mockGetAgencyNameFailure(arn: String): Unit = Future.failed(testException)
+}
 
 trait TestAgencyNameService extends MockAgentServicesAccountConnector {
+
   object TestAgencyNameService extends AgencyNameService(
     mockAgentServicesAccountConnector
   )
+
 }

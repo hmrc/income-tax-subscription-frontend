@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package core
+package incometax.unauthorisedagent.models
 
-object ITSASessionKeys {
-  val StartTime = "StartTime"
-  val RequestURI = "Request-URI"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val FailedUserMatching = "Failed-User-Matching"
-  val JourneyStateKey = "Journey-State"
-  val PreferencesRedirectUrl = "Preferences-Redirect-Url"
-  val AgentReferenceNumber = "Agent-Reference-Number"
-  val AgencyName = "Agency-Name"
+import play.api.libs.json.Json
+
+case class ConfirmAgentModel(choice: String)
+
+object ConfirmAgentModel {
+  implicit val format = Json.format[ConfirmAgentModel]
 }
