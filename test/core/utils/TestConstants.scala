@@ -44,6 +44,7 @@ object TestConstants {
   lazy val endDate = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
   lazy val testLockoutResponse = LockedOut(testNino, OffsetDateTime.now())
+  lazy val testAgencyName = UUID.randomUUID().toString
 
   val testUserId = UserId(s"/auth/oid/1234567")
   val escapedUserId = URLEncoder.encode(testUserId.value, "UTF-8")

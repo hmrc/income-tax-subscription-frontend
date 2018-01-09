@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package incometax.unauthorisedagent.httpparsers
+package core.utils
 
-import core.utils.{HttpParser, HttpStatus}
-import incometax.unauthorisedagent.models.{StoreSubscriptionFailure, StoreSubscriptionSuccess}
-import play.api.http.Status._
+import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object StoreSubscriptionResponseHttpParser {
-  type StoreSubscriptionResponse = Either[StoreSubscriptionFailure, StoreSubscriptionSuccess.type ]
-
-  implicit val storeSubscriptionResponseHttpReads = HttpParser[StoreSubscriptionResponse] {
-    case HttpStatus(CREATED) => Right(StoreSubscriptionSuccess)
-    case response => Left(StoreSubscriptionFailure(response.body))
+object HttpParser {
+  def apply[T](parser: HttpResponse => T): HttpReads[T] = new HttpReads[T] {
+    override def read(method: String, url: String, response: HttpResponse): T = parser.apply(response)
   }
 }
 
-
-
+object HttpStatus {
+  def unapply(httpResponse: HttpResponse): Option[Int] = Some(httpResponse.status)
+}

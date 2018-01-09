@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package incometax.subscription.httpparsers
+package incometax.unauthorisedagent.httpparsers
 
 import core.utils.UnitTestTrait
-import incometax.subscription.httpparsers.DeleteSubscriptionResponseHttpParser.DeleteSubscriptionResponseHttpReads
-import incometax.subscription.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess}
+import incometax.unauthorisedagent.httpparsers.DeleteSubscriptionResponseHttpParser.DeleteSubscriptionResponseHttpReads
+import incometax.unauthorisedagent.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
@@ -38,7 +38,7 @@ class DeleteSubscriptionResponseHttpParserSpec extends UnitTestTrait with Either
         res.right.value mustBe DeleteSubscriptionSuccess
       }
 
-      "parse any other  response as an DeleteSubscriptionSuccess" in {
+      "parse any other  response as an DeleteSubscriptionFailure" in {
         val httpResponse = HttpResponse(BAD_REQUEST, Json.obj())
 
         val res = DeleteSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)

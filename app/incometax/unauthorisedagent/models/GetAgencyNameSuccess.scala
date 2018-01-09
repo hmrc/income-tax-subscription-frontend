@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package incometax.unauthorisedagent.httpparsers
+package incometax.unauthorisedagent.models
 
-import core.utils.{HttpParser, HttpStatus}
-import incometax.unauthorisedagent.models.{StoreSubscriptionFailure, StoreSubscriptionSuccess}
-import play.api.http.Status._
+import play.api.libs.json.Json
 
-object StoreSubscriptionResponseHttpParser {
-  type StoreSubscriptionResponse = Either[StoreSubscriptionFailure, StoreSubscriptionSuccess.type ]
+case class GetAgencyNameSuccess(agencyName: String)
 
-  implicit val storeSubscriptionResponseHttpReads = HttpParser[StoreSubscriptionResponse] {
-    case HttpStatus(CREATED) => Right(StoreSubscriptionSuccess)
-    case response => Left(StoreSubscriptionFailure(response.body))
-  }
+object GetAgencyNameSuccess {
+  implicit val reads = Json.format[GetAgencyNameSuccess]
 }
 
-
-
+case class GetAgencyNameFailure(reason: String)
