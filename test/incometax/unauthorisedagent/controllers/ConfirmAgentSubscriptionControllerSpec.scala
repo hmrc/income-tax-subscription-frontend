@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package usermatching.controllers
+package incometax.unauthorisedagent.controllers
 
 import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import core.controllers.ControllerBaseSpec
+import core.services.CacheUtil._
 import core.services.mocks.{MockAuthService, MockKeystoreService}
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
+import incometax.unauthorisedagent.controllers.ConfirmAgentSubscriptionController
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.i18n.Messages
@@ -29,7 +31,6 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.NotFoundException
-import core.services.CacheUtil._
 
 class ConfirmAgentSubscriptionControllerSpec extends ControllerBaseSpec
   with MockAuthService

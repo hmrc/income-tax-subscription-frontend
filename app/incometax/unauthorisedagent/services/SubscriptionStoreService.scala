@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package incometax.subscription.services
+package incometax.unauthorisedagent.services
 
 import javax.inject.Inject
 
@@ -23,9 +23,8 @@ import core.services.KeystoreService
 import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel}
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import incometax.subscription.connectors.SubscriptionStoreConnector
-import incometax.subscription.httpparsers.DeleteSubscriptionResponseHttpParser.DeleteSubscriptionResponse
 import incometax.subscription.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess, IncomeSourceType, StoredSubscription}
+import incometax.unauthorisedagent.connectors.SubscriptionStoreConnector
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}

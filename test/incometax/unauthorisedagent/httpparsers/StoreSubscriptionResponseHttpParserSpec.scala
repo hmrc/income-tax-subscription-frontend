@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package incometax.subscription.httpparsers
+package incometax.unauthorisedagent.httpparsers
 
 import core.utils.UnitTestTrait
-import incometax.subscription.httpparsers.StoreSubscriptionResponseHttpParser.StoreSubscriptionResponseHttpReads
+import incometax.unauthorisedagent.httpparsers.StoreSubscriptionResponseHttpParser.StoreSubscriptionResponseHttpReads
 import incometax.subscription.models.{StoreSubscriptionFailure, StoreSubscriptionSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package usermatching
+package incometax.unauthorisedagent
 
 import core.config.featureswitch.UnauthorisedAgentFeature
 import helpers.ComponentSpecBase
