@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package incometax.subscription.httpparsers
+package incometax.unauthorisedagent.httpparsers
 
-import incometax.subscription.models.{KnownFactsFailure, KnownFactsSuccess, StoreSubscriptionFailure, StoreSubscriptionSuccess}
+import incometax.subscription.models.{StoreSubscriptionFailure, StoreSubscriptionSuccess}
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
