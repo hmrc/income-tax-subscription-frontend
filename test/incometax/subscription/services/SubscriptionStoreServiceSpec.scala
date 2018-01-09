@@ -20,6 +20,7 @@ import core.config.featureswitch.FeatureSwitching
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.UnitTestTrait
+import incometax.subscription.models.DeleteSubscriptionSuccess
 import incometax.subscription.services.mocks.TestSubscriptionStoreService
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
@@ -67,6 +68,25 @@ class SubscriptionStoreServiceSpec extends UnitTestTrait with TestSubscriptionSt
         val res = await(TestSubscriptionStoreServiceDisabled.retrieveSubscriptionData(testNino))
 
         res mustBe empty
+      }
+    }
+  }
+
+  "deleteStoredSubscription" when {
+    "the subscription store connector returns a success" should {
+      "return a success" in {
+        mockDeleteSubscriptionData(testNino)(deleteSubscriptionSuccess)
+
+        val res = await(TestSubscriptionStoreServiceDisabled.deleteSubscriptionData(testNino))
+
+        res mustBe DeleteSubscriptionSuccess
+      }
+    }
+    "the subscription store connector returns a failure" should {
+      "throw an exception" in {
+        mockDeleteSubscriptionData(testNino)(deleteSubscriptionFailure)
+
+        intercept[InternalServerException](await(TestSubscriptionStoreService.deleteSubscriptionData(testNino)))
       }
     }
   }

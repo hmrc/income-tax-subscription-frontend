@@ -19,6 +19,7 @@ package incometax.subscription.connectors
 import javax.inject.Inject
 
 import core.config.AppConfig
+import incometax.subscription.httpparsers.DeleteSubscriptionResponseHttpParser._
 import incometax.subscription.httpparsers.RetrieveSubscriptionResponseHttpParser._
 import incometax.subscription.httpparsers.StoreSubscriptionResponseHttpParser._
 import incometax.subscription.models.StoredSubscription
@@ -35,5 +36,9 @@ class SubscriptionStoreConnector @Inject()(appConfig: AppConfig,
 
   def retrieveSubscriptionData(nino: String)(implicit hc: HeaderCarrier): Future[RetrieveSubscriptionResponse] = {
     httpClient.GET[RetrieveSubscriptionResponse](appConfig.storeSubscriptionUrl(nino))
+  }
+
+  def deleteSubscriptionData(nino: String)(implicit hc: HeaderCarrier): Future[DeleteSubscriptionResponse] = {
+    httpClient.DELETE[DeleteSubscriptionResponse](appConfig.storeSubscriptionUrl(nino))
   }
 }
