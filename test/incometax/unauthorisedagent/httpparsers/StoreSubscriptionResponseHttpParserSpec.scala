@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package incometax.unauthroisedagent.httpparsers
+package incometax.unauthorisedagent.httpparsers
 
 import core.utils.UnitTestTrait
 import incometax.unauthorisedagent.httpparsers.StoreSubscriptionResponseHttpParser.StoreSubscriptionResponseHttpReads

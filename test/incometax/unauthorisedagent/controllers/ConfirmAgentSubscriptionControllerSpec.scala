@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package incometax.unauthroisedagent.controllers
+package incometax.unauthorisedagent.controllers
 
 import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import core.controllers.ControllerBaseSpec

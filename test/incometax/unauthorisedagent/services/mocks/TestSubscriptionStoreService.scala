@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package incometax.unauthroisedagent.services.mocks
+package incometax.unauthorisedagent.services.mocks
 
 import core.config.MockConfig
 import core.services.mocks.MockKeystoreService
@@ -22,7 +22,7 @@ import core.utils.MockTrait
 import core.utils.TestModels._
 import incometax.subscription.models.StoredSubscription
 import incometax.unauthorisedagent.services.SubscriptionStoreService
-import incometax.unauthroisedagent.connectors.mocks.MockSubscriptionStoreConnector
+import incometax.unauthorisedagent.connectors.mocks.MockSubscriptionStoreConnector
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier

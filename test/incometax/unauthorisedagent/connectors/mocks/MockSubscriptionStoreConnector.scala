@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package incometax.unauthroisedagent.connectors.mocks
+package incometax.unauthorisedagent.connectors.mocks
 
 import core.utils.MockTrait
 import core.utils.TestConstants._

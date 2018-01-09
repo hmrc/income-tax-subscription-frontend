@@ -26,7 +26,7 @@ import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants
 import core.utils.TestConstants._
 import incometax.subscription.services.mocks.MockSubscriptionService
-import incometax.unauthroisedagent.services.mocks.MockSubscriptionStoreService
+import incometax.unauthorisedagent.services.mocks.MockSubscriptionStoreService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}

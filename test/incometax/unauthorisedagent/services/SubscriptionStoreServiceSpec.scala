@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package incometax.unauthroisedagent.services
+package incometax.unauthorisedagent.services
 
 import core.config.featureswitch.FeatureSwitching
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.UnitTestTrait
 import incometax.subscription.models.DeleteSubscriptionSuccess
-import incometax.unauthroisedagent.services.mocks.TestSubscriptionStoreService
+import incometax.unauthorisedagent.services.mocks.TestSubscriptionStoreService
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
 
