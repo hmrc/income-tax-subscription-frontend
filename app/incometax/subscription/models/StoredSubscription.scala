@@ -38,3 +38,7 @@ case class RetrieveSubscriptionFailure(reason: String)
 object StoredSubscription {
   implicit val format = Json.format[StoredSubscription]
 }
+
+case object DeleteSubscriptionSuccess
+
+case class DeleteSubscriptionFailure(reason: String)

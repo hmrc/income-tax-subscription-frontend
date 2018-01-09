@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package incometax.subscription.connectors.mocks
+package incometax.unauthorisedagent.connectors.mocks
 
 import core.utils.MockTrait
-import incometax.subscription.connectors.SubscriptionStoreConnector
+import core.utils.TestConstants._
+import core.utils.TestModels._
+import incometax.subscription.httpparsers.DeleteSubscriptionResponseHttpParser.DeleteSubscriptionResponse
 import incometax.subscription.httpparsers.RetrieveSubscriptionResponseHttpParser._
+import incometax.subscription.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess, RetrieveSubscriptionFailure}
+import incometax.unauthorisedagent.connectors.SubscriptionStoreConnector
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
-import core.utils.TestModels._
-import core.utils.TestConstants._
-import incometax.subscription.models.RetrieveSubscriptionFailure
 
 import scala.concurrent.Future
 
@@ -44,4 +45,15 @@ trait MockSubscriptionStoreConnector extends MockTrait {
 
   val retrieveSubscriptionFailure: Future[RetrieveSubscriptionResponse] =
     Future.successful(Left(RetrieveSubscriptionFailure(testErrorMessage)))
+
+  def mockDeleteSubscriptionData(nino: String)(response: Future[DeleteSubscriptionResponse]): Unit = {
+    when(mockSubscriptionStoreConnector.deleteSubscriptionData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(response)
+  }
+
+  val deleteSubscriptionSuccess: Future[DeleteSubscriptionResponse] =
+    Future.successful(Right(DeleteSubscriptionSuccess))
+
+  val deleteSubscriptionFailure: Future[DeleteSubscriptionResponse] =
+    Future.successful(Left(DeleteSubscriptionFailure(testErrorMessage)))
 }

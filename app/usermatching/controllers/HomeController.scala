@@ -26,7 +26,8 @@ import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import core.utils.Implicits._
 import incometax.subscription.models.SubscriptionSuccess
-import incometax.subscription.services.{SubscriptionService, SubscriptionStoreService}
+import incometax.subscription.services.SubscriptionService
+import incometax.unauthorisedagent.services.SubscriptionStoreService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
@@ -82,7 +83,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
   }
 
   private def goToConfirmAgentSubscription(arn: String)(implicit request: Request[AnyContent]): Result =
-    Redirect(usermatching.controllers.routes.ConfirmAgentSubscriptionController.show())
+    Redirect(incometax.unauthorisedagent.controllers.routes.ConfirmAgentSubscriptionController.show())
       .addingToSession(AgentReferenceNumber -> arn)
 
   lazy val goToPreferences = Redirect(digitalcontact.controllers.routes.PreferencesController.checkPreferences())

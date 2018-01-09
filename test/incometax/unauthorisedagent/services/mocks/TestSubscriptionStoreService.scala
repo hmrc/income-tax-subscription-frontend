@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package incometax.subscription.services.mocks
+package incometax.unauthorisedagent.services.mocks
 
 import core.config.MockConfig
 import core.services.mocks.MockKeystoreService
 import core.utils.MockTrait
-import incometax.subscription.connectors.mocks.MockSubscriptionStoreConnector
+import core.utils.TestModels._
 import incometax.subscription.models.StoredSubscription
-import incometax.subscription.services.SubscriptionStoreService
+import incometax.unauthorisedagent.services.SubscriptionStoreService
+import incometax.unauthorisedagent.connectors.mocks.MockSubscriptionStoreConnector
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
-import core.utils.TestModels._
 
 import scala.concurrent.Future
 
