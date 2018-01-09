@@ -76,4 +76,3 @@ GET         /register-for-SA                        agent.controllers.matching.N
 
 # Agent not authorised Confirmation
 GET         /sign-up-complete                       agent.controllers.UnauthorisedAgentConfirmationController.show
-POST        /sign-up-complete                       agent.controllers.UnauthorisedAgentConfirmationController.submit

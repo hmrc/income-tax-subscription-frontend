@@ -16,32 +16,31 @@
 
 package agent.controllers
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
-import agent.auth.UserMatchingController
+import agent.audit.Logging
+import agent.auth.PostSubmissionController
+import core.models.DateModel.dateConvert
+import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 
-import scala.concurrent.Future
-
 @Singleton
 class UnauthorisedAgentConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
-                                                        val messagesApi: MessagesApi,
-                                                        val authService: AuthService
-                                                 ) extends UserMatchingController {
+                                       val messagesApi: MessagesApi,
+                                       val keystoreService: KeystoreService,
+                                       val authService: AuthService,
+                                       val logging: Logging
+                                      ) extends PostSubmissionController {
 
-  val show: Action[AnyContent] = Authenticated.async { implicit request =>
+  val show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Future.successful(Ok(agent.views.html.unauthorised_agent_confirmation(
-        postAction = agent.controllers.routes.UnauthorisedAgentConfirmationController.show()
-      )))
-  }
-
-  val submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      Future.successful(Redirect(agent.controllers.matching.routes.ClientDetailsController.submit()))
+      Ok(agent.views.html.unauthorised_agent_confirmation(
+        postAction = agent.controllers.routes.AddAnotherClientController.addAnother()
+      ))
   }
 
 }
