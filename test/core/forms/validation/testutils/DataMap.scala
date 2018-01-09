@@ -21,6 +21,7 @@ import incometax.incomesource.forms.IncomeSourceForm
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil.constraint
 import incometax.business.forms.MatchTaxYearForm
+import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import play.api.data.validation.{Constraint, Invalid}
 
 object DataMap {
@@ -55,6 +56,8 @@ object DataMap {
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 
   def otherIncome(iType: String): DataMap = Map(OtherIncomeForm.choice -> iType)
+
+  def confirmAgent(iType: String): DataMap = Map(ConfirmAgentForm.choice -> iType)
 
   val alwaysFailInvalid: Invalid = ErrorMessageFactory.error("always fail")
 

@@ -102,17 +102,20 @@ object MessageLookup {
     }
 
     object MatchTaxYear {
+
       object SignUp {
         val title = "Does your accounting period match the tax year?"
         val heading: String = "Does your accounting period match the tax year?"
         val line1 = "The tax year runs from 6 April to 5 April. Your accounting period is usually the same, unless you chose different dates when you registered for Self Assessment."
       }
+
       object Registration {
         val title = "Do you want to match your accounting period to the tax year?"
         val heading: String = "Do you want to match your accounting period to the tax year?"
         val line1 = "The tax year runs from 6 April to 5 April. Most sole traders match their accounting period to the tax year."
         val line2 = "You can do this even if the tax year has already started."
       }
+
     }
 
     object AccountingPeriodPrior {
@@ -473,6 +476,12 @@ object MessageLookup {
       val maxLength = "You can't enter more than 1200 characters for your feedback"
     }
 
+    object UnauthroisedAgent {
+      object ConfirmAgent {
+        val empty = "You must select an option to continue"
+        val invalid = "You must select an option to continue"
+      }
+    }
   }
 
   object Eligible {
@@ -571,6 +580,19 @@ object MessageLookup {
     def title(agencyName: String) = s"You have not authorised $agencyName"
     def heading(agencyName: String) = title(agencyName)
     val line_1 = "We've deleted any information they've asked to submit for you."
+  }
+
+  object UnauthorisedAgent {
+
+    object ConfirmAgent {
+      def title(agentName:String) = s"Is $agentName your agent?"
+      def heading(agentName:String) = s"Is $agentName your agent?"
+      val para1 = "HMRC will sometimes contact you and your agent, or you instead of your agent."
+      val yes = "Yes"
+      val no = "No"
+    }
+
+
   }
 
 }

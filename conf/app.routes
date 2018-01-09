@@ -87,6 +87,10 @@ POST        /confirm-user                 usermatching.controllers.ConfirmUserCo
 GET         /error/user-details           usermatching.controllers.UserDetailsErrorController.show()
 POST        /error/user-details           usermatching.controllers.UserDetailsErrorController.submit()
 
+# Confirm agent
+GET         /confirm-agent                incometax.unauthorisedagent.controllers.ConfirmAgentController.show()
+POST        /confirm-agent                incometax.unauthorisedagent.controllers.ConfirmAgentController.submit()
+
 # Confirm agent subscription
 GET         /confirm-agent-subscription   incometax.unauthorisedagent.controllers.ConfirmAgentSubscriptionController.show()
 POST        /confirm-agent-subscription   incometax.unauthorisedagent.controllers.ConfirmAgentSubscriptionController.submit()

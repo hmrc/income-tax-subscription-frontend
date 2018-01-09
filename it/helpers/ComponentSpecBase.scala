@@ -29,6 +29,8 @@ import incometax.business.forms._
 import incometax.business.models._
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.unauthorisedagent.forms.ConfirmAgentForm
+import incometax.unauthorisedagent.models.ConfirmAgentModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -85,7 +87,9 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.enrolment-store-proxy.host" -> mockHost,
     "microservice.services.enrolment-store-proxy.port" -> mockPort,
     "microservice.services.income-tax-subscription-store.host" -> mockHost,
-    "microservice.services.income-tax-subscription-store.port" -> mockPort
+    "microservice.services.income-tax-subscription-store.port" -> mockPort,
+    "microservice.services.agent-services-account.host" -> mockHost,
+    "microservice.services.agent-services-account.port" -> mockPort
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -324,6 +328,22 @@ trait ComponentSpecBase extends UnitSpec
     }
 
     def showAffinityGroupError(): WSResponse = get("/error/affinity-group")
+
+
+    def confirmAgent(): WSResponse = get(
+      "/confirm-agent",
+      Map(
+        JourneyStateKey -> ConfirmAgentSubscription.name,
+        AgentReferenceNumber -> IntegrationTestConstants.testArn
+      )
+    )
+
+    def submitConfirmAgent(model: ConfirmAgentModel): WSResponse = post(
+      "/confirm-agent",
+      Map(
+        JourneyStateKey -> ConfirmAgentSubscription.name,
+        AgentReferenceNumber -> IntegrationTestConstants.testArn
+      ))(ConfirmAgentForm.confirmAgentForm.fill(model).data.map { case (k, v) => (k, Seq(v)) })
 
     def confirmAgentSubscription(): WSResponse = get(
       "/confirm-agent-subscription",
