@@ -33,7 +33,7 @@ class AgentNotAuthorisedControllerSpec extends AgentControllerBaseSpec {
 
   private def createTestAgentNotAuthorisedController(enableMatchingFeature: Boolean) = new AgentNotAuthorisedController(
     mockBaseControllerConfig(new MockConfig {
-      override val userMatchingFeature = enableMatchingFeature
+      override val unauthorisedAgentEnabled = enableMatchingFeature
     }),
     messagesApi,
     mockAuthService
@@ -44,7 +44,7 @@ class AgentNotAuthorisedControllerSpec extends AgentControllerBaseSpec {
 
   "Calling the show action of the AgentNotAuthorisedController with an Authenticated User" should {
 
-    lazy val result = TestAgentNotAuthorisedController.show(userMatchingRequest)
+    lazy val result = TestAgentNotAuthorisedController.show(userMatchedRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -68,7 +68,7 @@ class AgentNotAuthorisedControllerSpec extends AgentControllerBaseSpec {
 
   "Calling the submit action of the AgentNotAuthorisedController with an Authenticated User" should {
 
-    lazy val result = TestAgentNotAuthorisedController.submit(userMatchingRequest)
+    lazy val result = TestAgentNotAuthorisedController.submit(userMatchedRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 303" in {

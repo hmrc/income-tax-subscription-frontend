@@ -44,7 +44,7 @@ object AgentJourneyState {
   implicit class SessionFunctions(session: Session) {
     def isInState(state: AgentJourneyState): Boolean = session.get(ITSASessionKeys.JourneyStateKey) contains state.name
     def isAuthorisedAgent: Boolean = session.get(ITSASessionKeys.AuthorisedAgentKey).isDefined
-    def setAuthorisedAgentFlag(authorisedFlag: Boolean): Unit = session + ITSASessionKeys.AuthorisedAgentKey -> authorisedFlag.toString
+    def setAuthorisedAgent(isAuthorised: Boolean): Unit = session + ITSASessionKeys.AuthorisedAgentKey -> isAuthorised.toString
   }
 
   implicit class RequestFunctions(request: Request[_]) {
@@ -55,7 +55,7 @@ object AgentJourneyState {
   implicit class ResultFunctions(result: Result) {
     def withJourneyState(state: AgentJourneyState)(implicit header: RequestHeader): Result =
       result.addingToSession(ITSASessionKeys.JourneyStateKey -> state.name)
-    def setAuthorisedAgentFlag(authorisedFlag: Boolean): Unit = setAuthorisedAgentFlag(authorisedFlag)
+    def setAuthorisedAgent(isAuthorised: Boolean): Unit = setAuthorisedAgent(isAuthorised)
   }
 
 }
