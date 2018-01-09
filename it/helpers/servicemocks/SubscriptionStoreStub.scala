@@ -27,4 +27,9 @@ object SubscriptionStoreStub extends WireMockMethods {
     when(method = GET, uri = storeSubscriptionUrl(testNino))
       .thenReturn(Status.OK, testStoredSubscription)
   }
+
+  def stubSuccessfulDeletion(): Unit = {
+    when(method = DELETE, uri = storeSubscriptionUrl(testNino))
+      .thenReturn(Status.NO_CONTENT)
+  }
 }

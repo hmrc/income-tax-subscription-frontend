@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,18 +12,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package core
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import core.config.AppConfig
 
-object ITSASessionKeys {
-  val StartTime = "StartTime"
-  val RequestURI = "Request-URI"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val FailedUserMatching = "Failed-User-Matching"
-  val JourneyStateKey = "Journey-State"
-  val PreferencesRedirectUrl = "Preferences-Redirect-Url"
-  val AgentReferenceNumber = "Agent-Reference-Number"
-  val AgencyName = "Agency-Name"
+@import core.views.html.templates.main_template
+@import core.views.html.helpers._
+
+@(agencyName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@main_template(title = Messages("agent-not-authorised.title", agencyName), showSignOutLink = false) {
+
+    <h1 class="heading-large">@Messages("agent-not-authorised.heading", agencyName)</h1>
+
+    <div class = "form-group">
+        <p>@Messages("agent-not-authorised.line_1")</p>
+    </div>
+
+    @signOutButton()
+
 }

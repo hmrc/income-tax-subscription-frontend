@@ -567,4 +567,10 @@ object MessageLookup {
     val tryAgainLink = "Try to confirm your identity again."
   }
 
+  object AgentNotAuthorised {
+    def title(agencyName: String) = s"You have not authorised $agencyName"
+    def heading(agencyName: String) = title(agencyName)
+    val line_1 = "We've deleted any information they've asked to submit for you."
+  }
+
 }

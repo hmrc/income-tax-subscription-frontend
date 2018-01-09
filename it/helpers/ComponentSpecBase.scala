@@ -339,6 +339,14 @@ trait ComponentSpecBase extends UnitSpec
         JourneyStateKey -> ConfirmAgentSubscription.name,
         AgentReferenceNumber -> IntegrationTestConstants.testArn
       ))(Map.empty)
+
+    def agentNotAuthorised(): WSResponse = get(
+      "/agent-not-authorised",
+      Map(
+        JourneyStateKey -> ConfirmAgentSubscription.name,
+        AgencyName -> IntegrationTestConstants.testAgencyName
+      )
+    )
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
