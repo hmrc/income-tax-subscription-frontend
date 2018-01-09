@@ -66,6 +66,10 @@ object AuthPredicates extends Results {
     if (request.session.isInState(AgentUserMatching)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
+  val userMatchedJourneyPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
+    if (request.session.isInState(AgentUserMatched)) Right(AuthPredicateSuccess)
+    else Left(Future.successful(homeRoute))
+
   val arnPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
     if (user.enrolments.getEnrolment(agentServiceEnrolmentName).nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(noArnRoute))
@@ -76,6 +80,8 @@ object AuthPredicates extends Results {
   val homePredicates = defaultPredicates |+| notSubmitted
 
   val userMatchingPredicates = homePredicates |+| userMatchingJourneyPredicate
+
+  val userMatchedPredicates = homePredicates   |+| userMatchedJourneyPredicate
 
   val subscriptionPredicates = homePredicates |+| signUpJourneyPredicate
 
