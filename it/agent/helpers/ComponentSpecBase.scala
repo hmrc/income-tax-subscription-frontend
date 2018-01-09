@@ -182,6 +182,12 @@ trait ComponentSpecBase extends UnitSpec
       else
         get("/confirmation")
 
+    def showUnauthorisedAgentConfirmation(hasSubmitted: Boolean): WSResponse =
+      if (hasSubmitted)
+        get("/sign-up-complete", Map(ITSASessionKeys.MTDITID -> testMTDID))
+      else
+        get("/sign-up-complete")
+
     def thankYou(): WSResponse = get("/thankyou")
 
     def feedback(): WSResponse = get("/feedback-submitted")
