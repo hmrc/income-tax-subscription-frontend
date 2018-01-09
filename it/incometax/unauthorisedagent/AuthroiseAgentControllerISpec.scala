@@ -23,8 +23,8 @@ import helpers.servicemocks.{GGAuthenticationStub, _}
 import play.api.http.Status._
 import play.api.i18n.Messages
 
-class ConfirmAgentSubscriptionControllerISpec extends ComponentSpecBase {
-  "GET /report-quarterly/income-and-expenses/sign-up/confirm-agent-subscription" when {
+class AuthroiseAgentControllerISpec extends ComponentSpecBase {
+  "GET /report-quarterly/income-and-expenses/sign-up/authorise-agent" when {
     "the unauthorised agent feature switch is enabled" should {
       "return the subscription confirmation page" in {
         Given("The feature switch is on")
@@ -33,19 +33,19 @@ class ConfirmAgentSubscriptionControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        When("GET /confirm-agent-subscription is called")
+        When("GET /authorise-agent is called")
         val res = IncomeTaxSubscriptionFrontend.confirmAgentSubscription()
 
         Then("Should return an OK with the error main income page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("confirm-agent-subscription.title"))
+          pageTitle(Messages("authorise-agent.title"))
         )
       }
     }
   }
 
-  "POST /report-quarterly/income-and-expenses/sign-up/confirm-agent-subscription" when {
+  "POST /report-quarterly/income-and-expenses/sign-up/authorise-agent" when {
     "the unauthorised agent feature switch is enabled" should {
       "submit to DES and redirect to the confirmation page" in {
         Given("The feature switch is on")
@@ -60,7 +60,7 @@ class ConfirmAgentSubscriptionControllerISpec extends ComponentSpecBase {
         GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
         KeystoreStub.stubPutMtditId()
 
-        When("POST  confirm-agent-subscription is called")
+        When("POST authorise-agent is called")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmAgentSubscription()
 
         Then("Should return a SEE_OTHER with a redirect location of confirmation")

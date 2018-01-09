@@ -35,7 +35,7 @@ class ConfirmAgentControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         AgencyNameStub.stubAgencyName()
 
-        When("GET /confirm-agent-subscription is called")
+        When("GET /confirm-agent is called")
         val res = IncomeTaxSubscriptionFrontend.confirmAgent()
 
         Then("Should return an OK with the confirm agent page")
@@ -56,7 +56,7 @@ class ConfirmAgentControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        When("POST  confirm-agent-subscription is called")
+        When("POST confirm-agent is called")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmAgent(testConfirmAgentYes)
 
         Then("Should return a SEE_OTHER with a redirect location of ")
@@ -72,7 +72,7 @@ class ConfirmAgentControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
 
-        When("POST  confirm-agent-subscription is called")
+        When("POST confirm-agent is called")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmAgent(testConfirmAgentNo)
 
         Then("Should return a SEE_OTHER with a redirect location of ")

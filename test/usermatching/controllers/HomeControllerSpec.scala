@@ -132,7 +132,7 @@ class HomeControllerSpec extends ControllerBaseSpec
             val result = TestHomeController().index(fakeRequest)
 
             status(result) must be(Status.SEE_OTHER)
-            redirectLocation(result).get mustBe incometax.unauthorisedagent.controllers.routes.ConfirmAgentSubscriptionController.show().url
+            redirectLocation(result).get mustBe incometax.unauthorisedagent.controllers.routes.AuthoriseAgentController.show().url
             session(result).get(ITSASessionKeys.AgentReferenceNumber) must contain(testArn)
           }
         }
