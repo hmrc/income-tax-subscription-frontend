@@ -16,7 +16,7 @@
 
 package incometax.unauthorisedagent.views
 
-import assets.MessageLookup.UnauthroisedAgent.{ConfirmAgent => messages}
+import assets.MessageLookup.UnauthorisedAgent.{ConfirmAgent => messages}
 import core.views.ViewSpecTrait
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import play.api.i18n.Messages.Implicits._
