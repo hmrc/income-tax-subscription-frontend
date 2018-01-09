@@ -34,12 +34,12 @@ class UnauthorisedAgentConfirmationControllerSpec extends AgentControllerBaseSpe
     app.injector.instanceOf[Logging]
   )
 
-  override val controllerName: String = "UnauthorisedConfirmationControllerSpec"
+  override val controllerName: String = "UnauthorisedAgentConfirmationControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showConfirmation" -> TestUnauthorisedAgentConfirmationController.show
+    "showUnauthorisedAgentConfirmation" -> TestUnauthorisedAgentConfirmationController.show
   )
 
-  "ConfirmationController" when {
+  "UnauthorisedAgentConfirmationController" when {
 
     "submitted is not in session" should {
       "return a NotFoundException" in {

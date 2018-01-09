@@ -16,12 +16,10 @@
 
 package agent.controllers
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.auth.PostSubmissionController
-import core.models.DateModel.dateConvert
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.services.AuthService
