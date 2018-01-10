@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package incometax.subscription.services.mocks
+package incometax.unauthorisedagent.services.mocks
 
 import core.config.MockConfig
 import core.services.mocks.MockKeystoreService
 import core.utils.MockTrait
-import incometax.subscription.connectors.mocks.MockSubscriptionStoreConnector
-import incometax.subscription.models.StoredSubscription
-import incometax.subscription.services.SubscriptionStoreService
+import core.utils.TestModels._
+import incometax.unauthorisedagent.services.SubscriptionStoreService
+import incometax.unauthorisedagent.connectors.mocks.MockSubscriptionStoreConnector
+import incometax.unauthorisedagent.models.{DeleteSubscriptionSuccess, StoredSubscription}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
-import core.utils.TestModels._
 
 import scala.concurrent.Future
 
@@ -45,6 +45,11 @@ trait MockSubscriptionStoreService extends MockTrait {
   val successfulStoredSubscriptionFound = Future(Some(testStoredSubscription))
 
   val successfulSubscriptionNotFound = Future(None)
+
+  def mockDeleteSubscriptionData(nino:String): Unit = {
+    when(mockSubscriptionStoreService.deleteSubscriptionData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(Future.successful(DeleteSubscriptionSuccess))
+  }
 }
 
 trait TestSubscriptionStoreService extends MockSubscriptionStoreConnector with MockKeystoreService with MockConfig {

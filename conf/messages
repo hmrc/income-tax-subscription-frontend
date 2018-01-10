@@ -302,6 +302,9 @@ error.other-income.invalid                                      = You must selec
 
 error.survey-feedback.maxLength                                 = You can''t enter more than 1200 characters for your feedback
 
+error.confirm-agent.empty                                       = You must select an option to continue
+error.confirm-agent.invalid                                     = You must select an option to continue
+
 ## Eligible page ##
 eligible.title                                                  = You can send digital updates
 eligible.heading                                                = You can send digital updates
@@ -742,6 +745,14 @@ agent.no-sa.title                                                     = Your cli
 agent.no-sa.heading                                                   = Your client hasn''t registered for Self Assessment
 agent.no-sa.line_1                                                    = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
-confirm-agent-subscription.title                                      = Confirm your agent''s subscription
-confirm-agent-subscription.heading                                    = Confirm your agent''s subscription
-confirm-agent-subscription.line_1                                     = Your agent with the reference number {0} wants to subscribe you, continue to accept
+confirm-agent.title                                                   = Is {0} your agent?
+confirm-agent.heading                                                 = Is {0} your agent?
+confirm-agent.line_1                                                  = HMRC will sometimes contact you and your agent, or you instead of your agent.
+
+authorise-agent.title                                                 = Confirm your agent''s subscription
+authorise-agent.heading                                               = Confirm your agent''s subscription
+authorise-agent.line_1                                                = Your agent with the reference number {0} wants to subscribe you, continue to accept
+
+agent-not-authorised.title                                            = You have not authorised {0}
+agent-not-authorised.heading                                          = You have not authorised {0}
+agent-not-authorised.line_1                                           = We''ve deleted any information they''ve asked to submit for you.

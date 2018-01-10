@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package incometax.subscription.models
+package incometax.unauthorisedagent.models
 
 import core.models.DateModel
+import incometax.subscription.models.IncomeSourceType
 import play.api.libs.json.Json
 
 case class StoredSubscription(arn: String,
@@ -26,8 +27,7 @@ case class StoredSubscription(arn: String,
                               accountingPeriodStart: Option[DateModel] = None,
                               accountingPeriodEnd: Option[DateModel] = None,
                               tradingName: Option[String] = None,
-                              cashOrAccruals: Option[String] = None
-                                 )
+                              cashOrAccruals: Option[String] = None)
 
 case object StoreSubscriptionSuccess
 
@@ -38,3 +38,7 @@ case class RetrieveSubscriptionFailure(reason: String)
 object StoredSubscription {
   implicit val format = Json.format[StoredSubscription]
 }
+
+case object DeleteSubscriptionSuccess
+
+case class DeleteSubscriptionFailure(reason: String)

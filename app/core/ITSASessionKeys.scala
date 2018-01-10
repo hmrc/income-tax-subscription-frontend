@@ -25,4 +25,5 @@ object ITSASessionKeys {
   val JourneyStateKey = "Journey-State"
   val PreferencesRedirectUrl = "Preferences-Redirect-Url"
   val AgentReferenceNumber = "Agent-Reference-Number"
+  val AgencyName = "Agency-Name"
 }
