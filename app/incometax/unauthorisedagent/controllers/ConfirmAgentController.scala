@@ -66,7 +66,7 @@ class ConfirmAgentController @Inject()(val baseConfig: BaseControllerConfig,
           case ConfirmAgentForm.option_yes =>
             Future.successful(Redirect(routes.AuthoriseAgentController.show()))
           case ConfirmAgentForm.option_no =>
-            Future.successful(NotImplemented) //TODO
+            Future.successful(Redirect(routes.AgentNotAuthorisedController.show()))
         }
       )
   }

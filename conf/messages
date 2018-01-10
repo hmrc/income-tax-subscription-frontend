@@ -744,9 +744,8 @@ confirm-agent.title                                                   = Is {0} y
 confirm-agent.heading                                                 = Is {0} your agent?
 confirm-agent.line_1                                                  = HMRC will sometimes contact you and your agent, or you instead of your agent.
 
-authorise-agent.title                                                 = Confirm your agent''s subscription
-authorise-agent.heading                                               = Confirm your agent''s subscription
-authorise-agent.line_1                                                = Your agent with the reference number {0} wants to subscribe you, continue to accept
+authorise-agent.title                                                 = Do you authorise {0} to use software to report your Income Tax?
+authorise-agent.heading                                               = Do you authorise {0} to use software to report your Income Tax?
 
 agent-not-authorised.title                                            = You have not authorised {0}
 agent-not-authorised.heading                                          = You have not authorised {0}

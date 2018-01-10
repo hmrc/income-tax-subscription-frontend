@@ -16,6 +16,7 @@
 
 package incometax.unauthorisedagent.controllers
 
+import core.ITSASessionKeys
 import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import core.controllers.ControllerBaseSpec
 import core.services.CacheUtil._
@@ -23,7 +24,8 @@ import core.services.mocks.{MockAuthService, MockKeystoreService}
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
-import incometax.unauthorisedagent.controllers.AuthoriseAgentController
+import incometax.unauthorisedagent.forms.ConfirmAgentForm
+import incometax.unauthorisedagent.models.ConfirmAgentModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.i18n.Messages
@@ -53,17 +55,19 @@ class AuthoriseAgentControllerSpec extends ControllerBaseSpec
     mockSubscriptionOrchestrationService
   )
 
+  lazy val request = confirmAgentSubscriptionRequest.withSession(ITSASessionKeys.AgencyName -> testAgencyName)
+
   "show" when {
     "the unauthorised agent flow is enabled" when {
       "the user is of the correct affinity group and has a nino in session" should {
         "return the authorise-agent page" in {
           enable(UnauthorisedAgentFeature)
 
-          val result = await(TestAuthoriseAgentController.show().apply(confirmAgentSubscriptionRequest))
+          val result = await(TestAuthoriseAgentController.show().apply(request))
           val document = Jsoup.parse(contentAsString(result))
 
           status(result) mustBe OK
-          document.title() mustBe Messages("authorise-agent.title")
+          document.title() mustBe Messages("authorise-agent.title", testAgencyName)
         }
       }
     }
@@ -71,26 +75,51 @@ class AuthoriseAgentControllerSpec extends ControllerBaseSpec
       "throw a NotFoundException" in {
         disable(UnauthorisedAgentFeature)
 
-        intercept[NotFoundException](await(TestAuthoriseAgentController.show().apply(confirmAgentSubscriptionRequest)))
+        intercept[NotFoundException](await(TestAuthoriseAgentController.show().apply(request)))
       }
     }
   }
 
   "submit" when {
     "the unauthorised agent flow is enabled" when {
-      "the user is of the correct affinity group and has a nino in session" should {
-        "submit to ETMP, store the MTDITID in keystore and redirect to the confirmation page" in {
-          enable(UnauthorisedAgentFeature)
+      "the user is of the correct affinity group and has a nino in session" when {
+        def submit(option: String) = TestAuthoriseAgentController.submit().apply(
+          request.post(ConfirmAgentForm.confirmAgentForm, ConfirmAgentModel(option))
+        )
 
-          setupMockKeystore(fetchAll = testCacheMap)
-          mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
+        "the user answered yes" should {
+          "submit to ETMP, store the MTDITID in keystore and redirect to the confirmation page" in {
+            enable(UnauthorisedAgentFeature)
+            setupMockKeystore(fetchAll = testCacheMap)
+            mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
 
-          val result = await(TestAuthoriseAgentController.submit().apply(confirmAgentSubscriptionRequest))
+            val result = await(submit(ConfirmAgentForm.option_yes))
 
-          verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
+            verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
 
-          status(result) must be(Status.SEE_OTHER)
-          redirectLocation(result) mustBe Some(incometax.subscription.controllers.routes.ConfirmationController.show().url)
+            status(result) must be(Status.SEE_OTHER)
+            redirectLocation(result) mustBe Some(incometax.subscription.controllers.routes.ConfirmationController.show().url)
+          }
+        }
+
+        "the user answered no" should {
+          "redirects to agent not authorised" in {
+            val result = await(submit(ConfirmAgentForm.option_no))
+            status(result) must be(Status.SEE_OTHER)
+            redirectLocation(result) mustBe Some(routes.AgentNotAuthorisedController.show().url)
+          }
+        }
+
+        "the user answered badly" should {
+          "return bad request" in {
+            enable(UnauthorisedAgentFeature)
+
+            val result = await(submit("this triggers a validation error"))
+
+            status(result) must be(Status.BAD_REQUEST)
+            val document = Jsoup.parse(contentAsString(result))
+            document.title() must include(Messages("authorise-agent.title", testAgencyName))
+          }
         }
       }
 
@@ -98,7 +127,7 @@ class AuthoriseAgentControllerSpec extends ControllerBaseSpec
         "throw a NotFoundException" in {
           disable(UnauthorisedAgentFeature)
 
-          intercept[NotFoundException](await(TestAuthoriseAgentController.submit().apply(confirmAgentSubscriptionRequest)))
+          intercept[NotFoundException](await(TestAuthoriseAgentController.submit().apply(request)))
         }
       }
     }
