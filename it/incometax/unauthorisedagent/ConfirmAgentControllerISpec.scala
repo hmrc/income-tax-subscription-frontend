@@ -61,7 +61,8 @@ class ConfirmAgentControllerISpec extends ComponentSpecBase {
 
         Then("Should return a SEE_OTHER with a redirect location of ")
         res should have(
-          httpStatus(NOT_IMPLEMENTED)
+          httpStatus(SEE_OTHER),
+          redirectURI(authoriseAgentUri)
         )
       }
 

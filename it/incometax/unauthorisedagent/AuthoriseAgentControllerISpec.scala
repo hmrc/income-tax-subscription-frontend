@@ -54,7 +54,7 @@ class AuthoriseAgentControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription(confirmAgentSubscriptionUri)
+        SubscriptionStub.stubSuccessfulSubscription(authoriseAgentUri)
         GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(OK)
         GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)

@@ -97,7 +97,8 @@ class ConfirmAgentControllerSpec extends ControllerBaseSpec
 
             val result = await(submit(ConfirmAgentForm.option_yes))
 
-            status(result) must be(Status.NOT_IMPLEMENTED)
+            status(result) must be(Status.SEE_OTHER)
+            redirectLocation(result) mustBe Some(incometax.unauthorisedagent.controllers.routes.AuthoriseAgentController.show().url)
           }
         }
 
