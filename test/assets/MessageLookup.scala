@@ -489,7 +489,7 @@ object MessageLookup {
     val line1 = s"Before you can sign up to use software to report your Income Tax, you need to $linkText."
 
     object Agent {
-      val title = "Your client hasn't registered for Self Assessment"
+      val title = "Your client is not registered for Self Assessment"
       val heading = title
       val linkText = "register for Self Assessment"
       val line1 = s"To use this service, your client needs to $linkText."
