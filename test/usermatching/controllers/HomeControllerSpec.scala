@@ -25,7 +25,8 @@ import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants
 import core.utils.TestConstants._
-import incometax.subscription.services.mocks.{MockSubscriptionService, MockSubscriptionStoreService}
+import incometax.subscription.services.mocks.MockSubscriptionService
+import incometax.unauthorisedagent.services.mocks.MockSubscriptionStoreService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -131,7 +132,7 @@ class HomeControllerSpec extends ControllerBaseSpec
             val result = TestHomeController().index(fakeRequest)
 
             status(result) must be(Status.SEE_OTHER)
-            redirectLocation(result).get mustBe usermatching.controllers.routes.ConfirmAgentSubscriptionController.show().url
+            redirectLocation(result).get mustBe incometax.unauthorisedagent.controllers.routes.AuthoriseAgentController.show().url
             session(result).get(ITSASessionKeys.AgentReferenceNumber) must contain(testArn)
           }
         }

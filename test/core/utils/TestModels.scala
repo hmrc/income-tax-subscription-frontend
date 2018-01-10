@@ -28,7 +28,8 @@ import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import incometax.subscription.models.{Both, StoredSubscription, SummaryModel}
+import incometax.subscription.models.{Both, SummaryModel}
+import incometax.unauthorisedagent.models.StoredSubscription
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
