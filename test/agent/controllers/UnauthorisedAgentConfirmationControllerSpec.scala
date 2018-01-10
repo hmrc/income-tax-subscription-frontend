@@ -18,13 +18,14 @@ package agent.controllers
 
 import agent.audit.Logging
 import agent.services.mocks.MockKeystoreService
+import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.NotFoundException
 
 class UnauthorisedAgentConfirmationControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService {
+  with MockKeystoreService with FeatureSwitching {
 
   object TestUnauthorisedAgentConfirmationController extends UnauthorisedAgentConfirmationController(
     MockBaseControllerConfig,
@@ -49,16 +50,29 @@ class UnauthorisedAgentConfirmationControllerSpec extends AgentControllerBaseSpe
       }
     }
 
-    "submitted is in session" should {
-      "Get the ID from keystore" in {
-        val result = TestUnauthorisedAgentConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))
-        status(result) shouldBe OK
+    "show" when {
+      "the unauthorised agent feature switch is enabled" when {
+            "submitted is in session" should {
+              "Get the ID from keystore" in {
+                enable(UnauthorisedAgentFeature)
 
-        await(result)
+                val result = TestUnauthorisedAgentConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))
+                status(result) shouldBe OK
+
+                await(result)
+              }
+            }
+          }
+
+      "the feature switch is not enabled" should {
+        "return NOT_FOUND" in {
+          disable(UnauthorisedAgentFeature)
+
+          intercept[NotFoundException](await(TestUnauthorisedAgentConfirmationController.show(subscriptionRequest)))
+        }
       }
-    }
-  }
+          authorisationTests()
 
-  authorisationTests()
-
-}
+        }
+      }
+   }

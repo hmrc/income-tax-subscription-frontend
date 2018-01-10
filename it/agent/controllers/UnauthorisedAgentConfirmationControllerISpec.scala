@@ -19,40 +19,47 @@ package agent.controllers
 import _root_.agent.helpers.ComponentSpecBase
 import _root_.agent.helpers.IntegrationTestConstants.testMTDID
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
+import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.Json
 
-class UnauthorisedAgentConfirmationControllerISpec extends ComponentSpecBase {
+class UnauthorisedAgentConfirmationControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   "GET /sign-up/complete" when {
-    s"There is ${ITSASessionKeys.MTDITID} in session" should {
-      "call subscription on the back end service" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(Map("MtditId" -> Json.toJson(testMTDID)))
+    "the unauthorised agent feature switch is enabled" when {
+      s"There is ${ITSASessionKeys.MTDITID} in session" should {
+        "call subscription on the back end service" in {
+          enable(UnauthorisedAgentFeature)
 
-        When("I call GET /sign-up/complete")
-        val res = IncomeTaxSubscriptionFrontend.showUnauthorisedAgentConfirmation(hasSubmitted = true)
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(Map("MtditId" -> Json.toJson(testMTDID)))
 
-        Then("The result should have a status of OK and display the Unauthorised Agent confirmation page")
-        res should have(
-          httpStatus(OK)
-        )
+          When("I call GET /sign-up/complete")
+          val res = IncomeTaxSubscriptionFrontend.showUnauthorisedAgentConfirmation(hasSubmitted = true)
+
+          Then("The result should have a status of OK and display the Unauthorised Agent confirmation page")
+          res should have(
+            httpStatus(OK)
+          )
+        }
       }
-    }
 
-    s"There is not ${ITSASessionKeys.MTDITID} in session" should {
-      "call subscription on the back end service" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
+      s"There is not ${ITSASessionKeys.MTDITID} in session" should {
+        "call subscription on the back end service" in {
+          disable(UnauthorisedAgentFeature)
 
-        When("I call GET //sign-up/complete")
-        val res = IncomeTaxSubscriptionFrontend.showUnauthorisedAgentConfirmation(hasSubmitted = false)
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
 
-        Then("The result should have a status of NOT_FOUND")
-        res should have(
-          httpStatus(NOT_FOUND)
-        )
+          When("I call GET //sign-up/complete")
+          val res = IncomeTaxSubscriptionFrontend.showUnauthorisedAgentConfirmation(hasSubmitted = false)
+
+          Then("The result should have a status of NOT_FOUND")
+          res should have(
+            httpStatus(NOT_FOUND)
+          )
+        }
       }
     }
   }

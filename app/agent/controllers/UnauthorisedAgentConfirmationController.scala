@@ -22,6 +22,7 @@ import agent.audit.Logging
 import agent.auth.PostSubmissionController
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
+import core.config.featureswitch.UnauthorisedAgentFeature
 import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -37,7 +38,7 @@ class UnauthorisedAgentConfirmationController @Inject()(val baseConfig: BaseCont
 
   val show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      if (applicationConfig.unauthorisedAgentEnabled) {
+      if (applicationConfig.isEnabled(UnauthorisedAgentFeature)) {
         Ok(agent.views.html.unauthorised_agent_confirmation(
           postAction = agent.controllers.routes.AddAnotherClientController.addAnother()
         ))
