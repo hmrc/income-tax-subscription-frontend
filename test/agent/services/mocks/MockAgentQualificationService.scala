@@ -55,7 +55,7 @@ trait MockAgentQualificationService extends MockClientRelationshipService
     }
 
     expectedResult match {
-      case NoClientRelationship => preExistingRelationship(testARN, testNino)(isPreExistingRelationship = false)
+      case NoClientRelationship(_, _) => preExistingRelationship(testARN, testNino)(isPreExistingRelationship = false)
       case _ => preExistingRelationship(testARN, testNino)(isPreExistingRelationship = true)
     }
   }

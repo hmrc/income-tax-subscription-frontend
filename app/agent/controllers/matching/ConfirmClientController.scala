@@ -101,9 +101,17 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
             Redirect(agent.controllers.routes.ClientAlreadySubscribedController.show())
               .removingFromSession(FailedClientMatching)
           )
-          case Left(NoClientRelationship) => successful(
-            Redirect(agent.controllers.routes.NoClientRelationshipController.show())
+          case Left(NoClientRelationship(nino, optUtr)) =>
+            if(applicationConfig.unauthorisedAgentEnabled)
+            successful(
+            Redirect(agent.controllers.routes.AgentNotAuthorisedController.show())
               .removingFromSession(FailedClientMatching)
+              .addingToSession(ITSASessionKeys.NINO -> nino)
+              .addingToSession(ITSASessionKeys.UTR -> optUtr.get))
+            else
+            successful(
+              Redirect(agent.controllers.routes.NoClientRelationshipController.show())
+                .removingFromSession(FailedClientMatching)
           )
           case Right(ApprovedAgent(nino, optUtr)) =>
             val resultWithoutUTR = Redirect(agent.controllers.routes.HomeController.index())

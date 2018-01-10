@@ -26,6 +26,7 @@ import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.models.UserDetailsModel
+import agent.utils.TestConstants._
 
 class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
@@ -117,7 +118,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
       preExistingRelationship(testARN, testNino)(isPreExistingRelationship = false)
       val response = await(call)
 
-      response mustBe Left(NoClientRelationship)
+      response mustBe Left(NoClientRelationship(testNino, testUtr))
     }
 
     "return ApprovedAgent if there is an existing relationship" in {
@@ -170,11 +171,11 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     }
 
     "return NoClientRelationship if the agent does not have prior relationship with the client" in {
-      setupOrchestrateAgentQualificationFailure(NoClientRelationship)
+      setupOrchestrateAgentQualificationFailure(NoClientRelationship(testNino, testUtr))
 
       val result = call(request(testClientDetails))
 
-      await(result) mustBe Left(NoClientRelationship)
+      await(result) mustBe Left(NoClientRelationship(testNino, testUtr))
 
       verifyClientMatchingSuccessAudit()
     }

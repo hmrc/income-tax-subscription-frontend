@@ -2,6 +2,7 @@
 base.service_name                                               = Report your income and expenses quarterly
 base.back                                                       = Back
 base.continue                                                   = Continue
+base.continue-sign-up                                           = Continue to sign up
 base.update                                                     = Update
 base.sign-out                                                   = Sign out
 base.sign-up                                                    = Sign up
@@ -183,9 +184,11 @@ contact_email.line_1                                            = We''ll use thi
 preferences.returnLinkText                                      = Continue
 
 ## Timeout page ##
-timeout.title                                                   = Your session has timed out
-timeout.heading                                                 = Your session has timed out
-timeout.returnToHome                                            = To sign up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
+timeout.title                                                   = You''ve been signed out
+timeout.heading                                                 = You''ve been signed out
+timeout.para1                                                   = For your security, we signed you out of this service because you did not do anything for 15 minutes.
+timeout.para2                                                   = Any information you did not submit was deleted.
+timeout.sign-in                                                 = Sign in
 
 ## Already enrolled page ##
 already-enrolled.title                                          = You''ve already signed up for quarterly reporting
@@ -299,6 +302,9 @@ error.other-income.invalid                                      = You must selec
 
 error.survey-feedback.maxLength                                 = You can''t enter more than 1200 characters for your feedback
 
+error.confirm-agent.empty                                       = You must select an option to continue
+error.confirm-agent.invalid                                     = You must select an option to continue
+
 ## Eligible page ##
 eligible.title                                                  = You can send digital updates
 eligible.heading                                                = You can send digital updates
@@ -408,6 +414,7 @@ iv-error.try_again                                              = <a id="try-aga
 ## Base ##
 agent.base.service_name                                         = Sign up your client for quarterly reporting
 agent.base.back                                                       = Back
+agent.base.continue                                                   = Continue
 agent.base.continue                                                   = Continue
 agent.base.update                                                     = Update
 agent.base.sign-out                                                   = Sign out
@@ -543,11 +550,6 @@ agent.contact_email.line_1                                            = We''ll u
 ## Email Preferences ##
 agent.preferences.returnLinkText                                      = Continue
 
-## Timeout page ##
-agent.timeout.title                                                   = Your session has timed out
-agent.timeout.heading                                                 = Your session has timed out
-agent.timeout.returnToHome                                            = To sign your client up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
-
 ## Client already subscribed page ##
 agent.client-already-subscribed.title                                 = Your client has already signed up
 agent.client-already-subscribed.heading                               = Your client has already signed up
@@ -557,6 +559,12 @@ agent.client-already-subscribed.para1                                 = This cli
 agent.no-client-relationship.title                                    = You''re not authorised for this client
 agent.no-client-relationship.heading                                  = You''re not authorised for this client
 agent.no-client-relationship.para1                                    = To send quarterly reports, your client must authorise you as their agent.
+
+## Agent not authorised page ##
+agent.not-authorised-error.title                                      = You''re not authorised for this client
+agent.not-authorised-error.heading                                    = You''re not authorised for this client
+agent.not-authorised-error.para1                                      = You can still sign up your client, but we''ll hold their information until they''ve authorised you as their agent.
+
 
 ## Summary page ##
 agent.summary.title                                                   = Check your answers
@@ -742,6 +750,14 @@ agent.no-sa.title                                                     = Your cli
 agent.no-sa.heading                                                   = Your client is not registered for Self Assessment
 agent.no-sa.line_1                                                    = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
-confirm-agent-subscription.title                                      = Confirm your agent''s subscription
-confirm-agent-subscription.heading                                    = Confirm your agent''s subscription
-confirm-agent-subscription.line_1                                     = Your agent with the reference number {0} wants to subscribe you, continue to accept
+confirm-agent.title                                                   = Is {0} your agent?
+confirm-agent.heading                                                 = Is {0} your agent?
+confirm-agent.line_1                                                  = HMRC will sometimes contact you and your agent, or you instead of your agent.
+
+authorise-agent.title                                                 = Confirm your agent''s subscription
+authorise-agent.heading                                               = Confirm your agent''s subscription
+authorise-agent.line_1                                                = Your agent with the reference number {0} wants to subscribe you, continue to accept
+
+agent-not-authorised.title                                            = You have not authorised {0}
+agent-not-authorised.heading                                          = You have not authorised {0}
+agent-not-authorised.line_1                                           = We''ve deleted any information they''ve asked to submit for you.

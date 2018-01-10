@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,5 +26,10 @@ object SubscriptionStoreStub extends WireMockMethods {
   def stubSuccessfulSubscription(): Unit = {
     when(method = GET, uri = storeSubscriptionUrl(testNino))
       .thenReturn(Status.OK, testStoredSubscription)
+  }
+
+  def stubSuccessfulDeletion(): Unit = {
+    when(method = DELETE, uri = storeSubscriptionUrl(testNino))
+      .thenReturn(Status.NO_CONTENT)
   }
 }
