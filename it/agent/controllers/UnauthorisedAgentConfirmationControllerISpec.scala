@@ -25,7 +25,7 @@ import play.api.libs.json.Json
 
 class UnauthorisedAgentConfirmationControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
-  "GET /sign-up/complete" when {
+  "GET /send-client-link" when {
     "the unauthorised agent feature switch is enabled" when {
       s"There is ${ITSASessionKeys.MTDITID} in session" should {
         "call subscription on the back end service" in {
@@ -35,7 +35,7 @@ class UnauthorisedAgentConfirmationControllerISpec extends ComponentSpecBase wit
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(Map("MtditId" -> Json.toJson(testMTDID)))
 
-          When("I call GET /sign-up/complete")
+          When("I call GET /send-client-link")
           val res = IncomeTaxSubscriptionFrontend.showUnauthorisedAgentConfirmation(hasSubmitted = true)
 
           Then("The result should have a status of OK and display the Unauthorised Agent confirmation page")
@@ -52,7 +52,7 @@ class UnauthorisedAgentConfirmationControllerISpec extends ComponentSpecBase wit
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
 
-          When("I call GET //sign-up/complete")
+          When("I call GET /send-client-link")
           val res = IncomeTaxSubscriptionFrontend.showUnauthorisedAgentConfirmation(hasSubmitted = false)
 
           Then("The result should have a status of NOT_FOUND")

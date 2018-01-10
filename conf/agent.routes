@@ -75,4 +75,4 @@ GET         /feedback-submitted                     agent.controllers.ThankYouCo
 GET         /register-for-SA                        agent.controllers.matching.NoSAController.show
 
 # Agent not authorised Confirmation
-GET         /sign-up-complete                       agent.controllers.UnauthorisedAgentConfirmationController.show
+GET         /send-client-link                       agent.controllers.UnauthorisedAgentConfirmationController.show

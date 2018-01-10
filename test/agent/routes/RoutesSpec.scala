@@ -91,8 +91,8 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
 
   // Agent not authorised Confirmation routes
   "The URL for the unauthorised Sign up complete.show action" should {
-    s"be equal to $contextRoute/sign-up-complete" in {
-      agent.controllers.routes.UnauthorisedAgentConfirmationController.show().url must be (s"$contextRoute/sign-up-complete")
+    s"be equal to $contextRoute/send-client-link" in {
+      agent.controllers.routes.UnauthorisedAgentConfirmationController.show().url must be (s"$contextRoute/send-client-link")
     }
   }
 
