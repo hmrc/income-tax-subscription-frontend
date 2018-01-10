@@ -271,7 +271,7 @@ object MessageLookup {
 
   object Timeout {
     val title = "Your session has timed out"
-    val heading = "Your session has timed out"
+    val heading: String = title
     val returnToHome = """To sign up for quarterly reporting, you'll have to sign in using your Government Gateway ID."""
   }
 
@@ -492,10 +492,10 @@ object MessageLookup {
   }
 
   object NoSA {
-    val title = "You can't use this service yet"
+    val title = "You need to register for Self Assessment"
     val heading = title
     val linkText = "register for Self Assessment"
-    val line1 = s"You need to $linkText before you can sign up for quarterly reporting."
+    val line1 = s"Before you can sign up to use software to report your Income Tax, you need to $linkText."
 
     object Agent {
       val title = "Your client hasn't registered for Self Assessment"
@@ -517,13 +517,13 @@ object MessageLookup {
   }
 
   object OtherIncomeError {
-    val title = "You can only use software to report some of your income"
+    val title = "You can use software to report your Income Tax"
     val heading: String = title
-    val para1 = "As this is a trial service, you can only use software to report income from:"
-    val bullet1 = "your sole trader business"
-    val bullet2 = "renting out UK property"
-    val bullet3 = "your sole trader business and renting out UK property"
-    val para2 = "You'll be able to use software to report your other income later in the year."
+    val para1 = "You only need to send quarterly reports on income you earn from either:"
+    val bullet1 = "working for yourself"
+    val bullet2 = "renting out a UK property"
+    val bullet3 = "working for yourself and renting out a UK property"
+    val para2 = "Tell us about your other income sources in your final report. You need to submit this report by 31 January."
   }
 
   object OtherIncome {
