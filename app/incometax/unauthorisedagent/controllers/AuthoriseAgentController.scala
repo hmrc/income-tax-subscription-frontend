@@ -64,7 +64,7 @@ class AuthoriseAgentController @Inject()(val baseConfig: BaseControllerConfig,
     implicit user =>
       ConfirmAgentForm.confirmAgentForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, agentName = getAgentName))),
-        isAgent => isAgent.choice match {
+        authoriseAgent => authoriseAgent.choice match {
           case ConfirmAgentForm.option_yes =>
             keystoreService.fetchAll flatMap {
               case Some(cache) =>
