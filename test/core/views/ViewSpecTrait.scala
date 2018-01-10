@@ -18,7 +18,6 @@ package core.views
 
 import assets.MessageLookup
 import assets.MessageLookup.{Base => common}
-import agent.assets.MessageLookup.{Base => agentCommon}
 import core.controllers.SignOutController
 import core.forms.validation.models.{SummaryError, TargetIds}
 import core.utils.UnitTestTrait
