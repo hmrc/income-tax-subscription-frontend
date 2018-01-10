@@ -28,10 +28,10 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AuthenticatorConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                       http: HttpClient)(implicit ec: ExecutionContext) extends RawResponseReads {
+class GGAuthenticationConnector @Inject()(appConfig: TestOnlyAppConfig,
+                                          http: HttpClient)(implicit ec: ExecutionContext) extends RawResponseReads {
 
-  lazy val refreshURI = s"${appConfig.authenticatorUrl}/authenticator/refresh-profile"
+  lazy val refreshURI = s"${appConfig.ggAuthenticationURL}/government-gateway-authentication/refresh-profile"
 
   def refreshProfile()(implicit hc: HeaderCarrier): Future[HttpResponse] =
     http.POSTEmpty[HttpResponse](refreshURI)
