@@ -94,3 +94,6 @@ POST        /confirm-agent                incometax.unauthorisedagent.controller
 # Confirm agent subscription
 GET         /authorise-agent              incometax.unauthorisedagent.controllers.AuthoriseAgentController.show()
 POST        /authorise-agent              incometax.unauthorisedagent.controllers.AuthoriseAgentController.submit()
+
+#Agent not authorised
+GET         /agent-not-authorised         incometax.unauthorisedagent.controllers.AgentNotAuthorisedController.show()
