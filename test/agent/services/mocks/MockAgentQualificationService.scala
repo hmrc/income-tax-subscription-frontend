@@ -36,10 +36,12 @@ trait MockAgentQualificationService extends MockClientRelationshipService
     mockAuditingService
   )
 
-  def setupOrchestrateAgentQualificationSuccess(arn: String = TestConstants.testARN, nino: String = TestConstants.testNino): Unit = {
+  def setupOrchestrateAgentQualificationSuccess(arn: String = TestConstants.testARN,
+                                                nino: String = TestConstants.testNino,
+                                                isPreExistingRelationship: Boolean): Unit = {
     mockUserMatchSuccess(testClientDetails)
     setupMockGetSubscriptionNotFound(testNino)
-    preExistingRelationship(testARN, testNino)(isPreExistingRelationship = true)
+    preExistingRelationship(testARN, testNino)(isPreExistingRelationship)
   }
 
   def setupOrchestrateAgentQualificationFailure(expectedResult: UnqualifiedAgent): Unit = {
@@ -52,11 +54,6 @@ trait MockAgentQualificationService extends MockClientRelationshipService
       case ClientAlreadySubscribed => setupMockGetSubscriptionFound(testNino)
       case UnexpectedFailure => setupMockGetSubscriptionFailure(testNino)
       case _ => setupMockGetSubscriptionNotFound(testNino)
-    }
-
-    expectedResult match {
-      case NoClientRelationship => preExistingRelationship(testARN, testNino)(isPreExistingRelationship = false)
-      case _ => preExistingRelationship(testARN, testNino)(isPreExistingRelationship = true)
     }
   }
 

@@ -19,6 +19,7 @@ package agent.controllers
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import agent.auth.{AgentRegistration, AgentSignUp, AgentUserMatched, AgentUserMatching}
+import agent.controllers
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc._
@@ -85,6 +86,14 @@ trait AgentControllerBaseSpec extends ControllerBaseTrait with MockAgentAuthServ
     ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr
   )
+
+  lazy val unauthorisedUserMatchedRequest = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name,
+    ITSASessionKeys.NINO -> TestConstants.testNino,
+    ITSASessionKeys.UTR -> TestConstants.testUtr,
+    ITSASessionKeys.AuthorisedAgentKey -> false.toString
+  )
+
 
   lazy val userMatchedRequestNoUtr = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name,

@@ -21,6 +21,7 @@ import agent.controllers.{AgentControllerBaseSpec, ITSASessionKeys}
 import agent.services._
 import agent.services.mocks.{MockAgentQualificationService, MockKeystoreService}
 import agent.utils.{TestConstants, TestModels}
+import core.config.MockConfig
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status
@@ -44,22 +45,28 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
   lazy val mockAgentQualificationService: AgentQualificationService = mock[AgentQualificationService]
 
-  object TestConfirmClientController extends ConfirmClientController(
-    MockBaseControllerConfig,
+  private def createTestConfirmClientController(enableMatchingFeature: Boolean = false) = new ConfirmClientController(
+    mockBaseControllerConfig(new MockConfig {
+      override val unauthorisedAgentEnabled = enableMatchingFeature
+    }),
     messagesApi,
     mockAgentQualificationService,
     mockAuthService,
     mockUserLockoutService
   )
 
+  lazy val TestConfirmClientController = createTestConfirmClientController()
+  lazy val TestConfirmClientControllerWithUnauthorisedAgent = createTestConfirmClientController(true)
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockAgentQualificationService)
   }
 
-  def mockOrchestrateAgentQualificationSuccess(arn: String, nino: String, utr: Option[String]): Unit =
+  def mockOrchestrateAgentQualificationSuccess(arn: String, nino: String, utr: Option[String], preExistingRelationship: Boolean = true): Unit =
+
     when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-      .thenReturn(Future.successful(Right(ApprovedAgent(nino, utr))))
+      .thenReturn(Future.successful(if(preExistingRelationship) Right(ApprovedAgent(nino, utr)) else Right(UnApprovedAgent(nino, utr))))
 
   def mockOrchestrateAgentQualificationFailure(arn: String, expectedResult: UnqualifiedAgent): Unit =
     when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
@@ -152,15 +159,35 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "AgentQualificationService returned NoClientRelationship" should {
-      s"redirect user to ${agent.controllers.routes.ClientAlreadySubscribedController.show().url}" in {
-        mockOrchestrateAgentQualificationFailure(arn, ClientAlreadySubscribed)
-        setupMockNotLockedOut(arn)
+    "AgentQualificationService returned UnQualifiedAgent" should {
+      s"redirect user to ${agent.controllers.routes.AgentNotAuthorisedController.show().url}" when {
+        "the unauthorised agent journey is enabled" in {
+          mockOrchestrateAgentQualificationSuccess(arn, nino, utr, false)
+          setupMockNotLockedOut(arn)
 
-        val result = callSubmit()
+          val result = TestConfirmClientControllerWithUnauthorisedAgent.submit()(request)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(agent.controllers.routes.ClientAlreadySubscribedController.show().url)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(agent.controllers.routes.AgentNotAuthorisedController.show().url)
+
+          val session = await(result).session(request)
+
+          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+          session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+          session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+          session.get(ITSASessionKeys.AuthorisedAgentKey) mustBe Some("false")
+        }
+      }
+      s"redirect user to ${agent.controllers.routes.ClientAlreadySubscribedController.show().url}" when {
+        "the unauthorised agent journey is disabled" in {
+          mockOrchestrateAgentQualificationSuccess(arn, nino, utr, false)
+          setupMockNotLockedOut(arn)
+
+          val result = callSubmit()
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(agent.controllers.routes.NoClientRelationshipController.show().url)
+        }
       }
     }
 
