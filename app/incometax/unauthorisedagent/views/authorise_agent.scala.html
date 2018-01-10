@@ -18,14 +18,28 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 @import core.views.html.templates.main_template
+@import incometax.unauthorisedagent.models.ConfirmAgentModel
+@import incometax.unauthorisedagent.forms.ConfirmAgentForm
 
-@(arn: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(authoriseAgentForm: Form[ConfirmAgentModel], agentName: String, postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("authorise-agent.title")) {
-    <h1 class="heading-large">@Messages("authorise-agent.heading")</h1>
-    <p>@Messages("authorise-agent.line_1", arn)</p>
-    <div class="form-group">
+@question = @{
+    Messages("authorise-agent.heading", agentName)
+}
+
+@main_template(title = Messages("authorise-agent.title", agentName), form = authoriseAgentForm) {
+    <h1 class="heading-large">@question</h1>
+    @form(action = postAction) {
+        @radioHelper(
+            field = authoriseAgentForm(ConfirmAgentForm.choice),
+            legend = question,
+            options = Seq(
+                RadioOption(ConfirmAgentForm.option_yes, Messages("base.yes")),
+                RadioOption(ConfirmAgentForm.option_no, Messages("base.no"))
+            ),
+            parentForm = authoriseAgentForm
+        )
+
         @continueButton()
-    </div>
-    @signOutLink()
+    }
 }

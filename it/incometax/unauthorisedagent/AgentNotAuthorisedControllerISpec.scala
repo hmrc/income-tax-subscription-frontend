@@ -26,7 +26,7 @@ import helpers.IntegrationTestConstants._
 class AgentNotAuthorisedControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/agent-not-authorised " when {
     "the unauthorised agent feature switch is enabled" should {
-      "return the subscription confirmation page" in {
+      "return the agent not authorised page" in {
         Given("The feature switch is on")
         enable(UnauthorisedAgentFeature)
 
@@ -37,7 +37,7 @@ class AgentNotAuthorisedControllerISpec extends ComponentSpecBase {
         When("GET /agent-not-authorised  is called")
         val res = IncomeTaxSubscriptionFrontend.agentNotAuthorised()
 
-        Then("Should return an OK with the error main income page")
+        Then("Should return an OK with the agent not authorised page")
         res should have(
           httpStatus(OK),
           pageTitle(Messages("agent-not-authorised.title", testAgencyName))

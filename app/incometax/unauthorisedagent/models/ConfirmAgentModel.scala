@@ -18,6 +18,7 @@ package incometax.unauthorisedagent.models
 
 import play.api.libs.json.Json
 
+// n.b. this is currently used by both the confirm agent and authorise agent page
 case class ConfirmAgentModel(choice: String)
 
 object ConfirmAgentModel {

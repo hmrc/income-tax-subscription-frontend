@@ -19,6 +19,7 @@ package incometax.unauthorisedagent
 import core.config.featureswitch.UnauthorisedAgentFeature
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestModels._
 import helpers.servicemocks.{GGAuthenticationStub, _}
 import play.api.http.Status._
 import play.api.i18n.Messages
@@ -26,7 +27,7 @@ import play.api.i18n.Messages
 class AuthoriseAgentControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/authorise-agent" when {
     "the unauthorised agent feature switch is enabled" should {
-      "return the subscription confirmation page" in {
+      "return the authorise agent page" in {
         Given("The feature switch is on")
         enable(UnauthorisedAgentFeature)
 
@@ -34,40 +35,62 @@ class AuthoriseAgentControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
 
         When("GET /authorise-agent is called")
-        val res = IncomeTaxSubscriptionFrontend.confirmAgentSubscription()
+        val res = IncomeTaxSubscriptionFrontend.authoriseAgent()
 
-        Then("Should return an OK with the error main income page")
+        Then("Should return an OK with the authorise agent page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("authorise-agent.title"))
+          pageTitle(Messages("authorise-agent.title", testAgencyName))
         )
       }
     }
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/authorise-agent" when {
-    "the unauthorised agent feature switch is enabled" should {
-      "submit to DES and redirect to the confirmation page" in {
-        Given("The feature switch is on")
-        enable(UnauthorisedAgentFeature)
+    "the unauthorised agent feature switch is enabled" when {
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription(confirmAgentSubscriptionUri)
-        GGAdminStub.stubAddKnownFactsResult(OK)
-        GGConnectorStub.stubEnrolResult(OK)
-        GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
-        KeystoreStub.stubPutMtditId()
+      "the user answers yes" should {
+        "submit to DES and redirect to the confirmation page" in {
+          Given("The feature switch is on")
+          enable(UnauthorisedAgentFeature)
 
-        When("POST authorise-agent is called")
-        val res = IncomeTaxSubscriptionFrontend.submitConfirmAgentSubscription()
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          SubscriptionStub.stubSuccessfulSubscription(authoriseAgentUri)
+          GGAdminStub.stubAddKnownFactsResult(OK)
+          GGConnectorStub.stubEnrolResult(OK)
+          GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
+          KeystoreStub.stubPutMtditId()
 
-        Then("Should return a SEE_OTHER with a redirect location of confirmation")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(confirmationURI)
-        )
+          When("POST authorise-agent is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAuthoriseAgent(testConfirmAgentYes)
+
+          Then("Should return a SEE_OTHER with a redirect location of confirmation")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(confirmationURI)
+          )
+        }
+      }
+
+      "the user answers no" should {
+        "submit to DES and redirect to the agent not authorised page" in {
+          Given("The feature switch is on")
+          enable(UnauthorisedAgentFeature)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          When("POST authorise-agent is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAuthoriseAgent(testConfirmAgentNo)
+
+          Then("Should return a SEE_OTHER with a redirect location of agent not authorised")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(agentNotAuthorisedUri)
+          )
+        }
       }
     }
   }
