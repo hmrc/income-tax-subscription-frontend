@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package incometax.subscription.httpparsers
+package incometax.unauthorisedagent.httpparsers
 
-import incometax.subscription.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess}
+import incometax.unauthorisedagent.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess}
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 

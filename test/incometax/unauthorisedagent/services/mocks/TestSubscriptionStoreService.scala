@@ -20,9 +20,9 @@ import core.config.MockConfig
 import core.services.mocks.MockKeystoreService
 import core.utils.MockTrait
 import core.utils.TestModels._
-import incometax.subscription.models.StoredSubscription
 import incometax.unauthorisedagent.services.SubscriptionStoreService
 import incometax.unauthorisedagent.connectors.mocks.MockSubscriptionStoreConnector
+import incometax.unauthorisedagent.models.{DeleteSubscriptionSuccess, StoredSubscription}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -45,6 +45,11 @@ trait MockSubscriptionStoreService extends MockTrait {
   val successfulStoredSubscriptionFound = Future(Some(testStoredSubscription))
 
   val successfulSubscriptionNotFound = Future(None)
+
+  def mockDeleteSubscriptionData(nino:String): Unit = {
+    when(mockSubscriptionStoreService.deleteSubscriptionData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(Future.successful(DeleteSubscriptionSuccess))
+  }
 }
 
 trait TestSubscriptionStoreService extends MockSubscriptionStoreConnector with MockKeystoreService with MockConfig {

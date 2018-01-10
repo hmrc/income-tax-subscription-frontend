@@ -11,8 +11,9 @@ import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import incometax.subscription.models.EnrolmentKey
-import incometax.subscription.models.{Both, EnrolmentKey, StoredSubscription}
+import incometax.subscription.models.{Both, EnrolmentKey}
+import incometax.unauthorisedagent.forms.ConfirmAgentForm
+import incometax.unauthorisedagent.models.{ConfirmAgentModel, StoredSubscription}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import usermatching.models.UserDetailsModel
@@ -106,4 +107,7 @@ object IntegrationTestModels {
     tradingName = Some(testBusinessName.businessName),
     cashOrAccruals = Some(testAccountingMethod.accountingMethod)
   )
+
+  val testConfirmAgentYes = ConfirmAgentModel(ConfirmAgentForm.option_yes)
+  val testConfirmAgentNo = ConfirmAgentModel(ConfirmAgentForm.option_no)
 }

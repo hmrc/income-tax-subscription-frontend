@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package incometax.unauthorisedagent.httpparsers
+package incometax.unauthorisedagent.models
 
-import core.utils.{HttpParser, HttpStatus}
-import incometax.unauthorisedagent.models.{StoreSubscriptionFailure, StoreSubscriptionSuccess}
-import play.api.http.Status._
+import play.api.libs.json.Json
 
-object StoreSubscriptionResponseHttpParser {
-  type StoreSubscriptionResponse = Either[StoreSubscriptionFailure, StoreSubscriptionSuccess.type ]
+// n.b. this is currently used by both the confirm agent and authorise agent page
+case class ConfirmAgentModel(choice: String)
 
-  implicit val storeSubscriptionResponseHttpReads = HttpParser[StoreSubscriptionResponse] {
-    case HttpStatus(CREATED) => Right(StoreSubscriptionSuccess)
-    case response => Left(StoreSubscriptionFailure(response.body))
-  }
+object ConfirmAgentModel {
+  implicit val format = Json.format[ConfirmAgentModel]
 }
-
-
-

@@ -93,6 +93,8 @@ trait MockConfig extends AppConfig {
   override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = "enrolment-store/"
 
   override def storeSubscriptionUrl(nino: String): String = ""
+
+  override def getAgencyNameUrl(arn: String): String = s"/agent-services-account/client/agency-name/$arn"
 }
 
 object MockConfig extends MockConfig

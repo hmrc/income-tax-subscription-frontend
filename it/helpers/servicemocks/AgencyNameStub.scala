@@ -17,19 +17,16 @@
 package helpers.servicemocks
 
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels._
+import incometax.unauthorisedagent.models.GetAgencyNameSuccess
 import play.api.http.Status
 
-object SubscriptionStoreStub extends WireMockMethods {
-  def storeSubscriptionUrl(nino: String): String = s"/income-tax-subscription-store/client-subscription-data/$nino"
 
-  def stubSuccessfulSubscription(): Unit = {
-    when(method = GET, uri = storeSubscriptionUrl(testNino))
-      .thenReturn(Status.OK, testStoredSubscription)
-  }
+object AgencyNameStub extends WireMockMethods {
 
-  def stubSuccessfulDeletion(): Unit = {
-    when(method = DELETE, uri = storeSubscriptionUrl(testNino))
-      .thenReturn(Status.NO_CONTENT)
-  }
+  lazy val agencyNameUrl = s"/agent-services-account/client/agency-name/$testArn"
+
+  def stubAgencyName(): Unit =
+    when(method = GET, uri = agencyNameUrl)
+      .thenReturn(Status.OK, GetAgencyNameSuccess(testAgencyName))
+
 }

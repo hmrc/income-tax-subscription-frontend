@@ -83,7 +83,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
   }
 
   private def goToConfirmAgentSubscription(arn: String)(implicit request: Request[AnyContent]): Result =
-    Redirect(incometax.unauthorisedagent.controllers.routes.ConfirmAgentSubscriptionController.show())
+    Redirect(incometax.unauthorisedagent.controllers.routes.AuthoriseAgentController.show())
       .addingToSession(AgentReferenceNumber -> arn)
 
   lazy val goToPreferences = Redirect(digitalcontact.controllers.routes.PreferencesController.checkPreferences())
