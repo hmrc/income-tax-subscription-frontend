@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package usermatching.controllers
+package incometax.unauthorisedagent.controllers
 
 import javax.inject.{Inject, Singleton}
 
 import core.ITSASessionKeys
-import core.services.KeystoreService
 import core.ITSASessionKeys._
 import core.auth.AuthenticatedController
 import core.config.BaseControllerConfig
-import core.services.AuthService
 import core.services.CacheUtil._
+import core.services.{AuthService, KeystoreService}
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionOrchestrationService
 import play.api.i18n.MessagesApi
@@ -35,17 +34,17 @@ import usermatching.userjourneys.ConfirmAgentSubscription
 import scala.concurrent.Future
 
 @Singleton
-class ConfirmAgentSubscriptionController @Inject()(val baseConfig: BaseControllerConfig,
-                                                   val messagesApi: MessagesApi,
-                                                   val authService: AuthService,
-                                                   keystoreService: KeystoreService,
-                                                   subscriptionOrchestrationService: SubscriptionOrchestrationService
+class AuthoriseAgentController @Inject()(val baseConfig: BaseControllerConfig,
+                                         val messagesApi: MessagesApi,
+                                         val authService: AuthService,
+                                         keystoreService: KeystoreService,
+                                         subscriptionOrchestrationService: SubscriptionOrchestrationService
                                                   ) extends AuthenticatedController[ConfirmAgentSubscription.type] {
   def show(): Action[AnyContent] = Authenticated {
     implicit req =>
       user =>
         val arn = req.session(AgentReferenceNumber)
-        Ok(usermatching.views.html.confirm_agent_subscription(arn))
+        Ok(incometax.unauthorisedagent.views.html.authorise_agent(arn))
   }
 
   def submit(): Action[AnyContent] = Authenticated.async {

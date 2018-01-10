@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package usermatching.controllers
+package incometax.unauthorisedagent.controllers
 
 import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import core.controllers.ControllerBaseSpec
+import core.services.CacheUtil._
 import core.services.mocks.{MockAuthService, MockKeystoreService}
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
+import incometax.unauthorisedagent.controllers.AuthoriseAgentController
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.i18n.Messages
@@ -29,22 +31,21 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.NotFoundException
-import core.services.CacheUtil._
 
-class ConfirmAgentSubscriptionControllerSpec extends ControllerBaseSpec
+class AuthoriseAgentControllerSpec extends ControllerBaseSpec
   with MockAuthService
   with MockKeystoreService
   with MockSubscriptionOrchestrationService
   with FeatureSwitching {
 
-  override val controllerName = "ConfirmAgentSubscriptionController"
+  override val controllerName = "AuthoriseAgentController"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "show" -> TestConfirmAgentSubscriptionController.show(),
-    "submit" -> TestConfirmAgentSubscriptionController.submit()
+    "show" -> TestAuthoriseAgentController.show(),
+    "submit" -> TestAuthoriseAgentController.submit()
   )
 
-  object TestConfirmAgentSubscriptionController extends ConfirmAgentSubscriptionController(
+  object TestAuthoriseAgentController extends AuthoriseAgentController(
     MockBaseControllerConfig,
     messagesApi,
     mockAuthService,
@@ -55,14 +56,14 @@ class ConfirmAgentSubscriptionControllerSpec extends ControllerBaseSpec
   "show" when {
     "the unauthorised agent flow is enabled" when {
       "the user is of the correct affinity group and has a nino in session" should {
-        "return the confirm-agent-subscription page" in {
+        "return the authorise-agent page" in {
           enable(UnauthorisedAgentFeature)
 
-          val result = await(TestConfirmAgentSubscriptionController.show().apply(confirmAgentSubscriptionRequest))
+          val result = await(TestAuthoriseAgentController.show().apply(confirmAgentSubscriptionRequest))
           val document = Jsoup.parse(contentAsString(result))
 
           status(result) mustBe OK
-          document.title() mustBe Messages("confirm-agent-subscription.title")
+          document.title() mustBe Messages("authorise-agent.title")
         }
       }
     }
@@ -70,7 +71,7 @@ class ConfirmAgentSubscriptionControllerSpec extends ControllerBaseSpec
       "throw a NotFoundException" in {
         disable(UnauthorisedAgentFeature)
 
-        intercept[NotFoundException](await(TestConfirmAgentSubscriptionController.show().apply(confirmAgentSubscriptionRequest)))
+        intercept[NotFoundException](await(TestAuthoriseAgentController.show().apply(confirmAgentSubscriptionRequest)))
       }
     }
   }
@@ -84,7 +85,7 @@ class ConfirmAgentSubscriptionControllerSpec extends ControllerBaseSpec
           setupMockKeystore(fetchAll = testCacheMap)
           mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
 
-          val result = await(TestConfirmAgentSubscriptionController.submit().apply(confirmAgentSubscriptionRequest))
+          val result = await(TestAuthoriseAgentController.submit().apply(confirmAgentSubscriptionRequest))
 
           verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
 
@@ -97,7 +98,7 @@ class ConfirmAgentSubscriptionControllerSpec extends ControllerBaseSpec
         "throw a NotFoundException" in {
           disable(UnauthorisedAgentFeature)
 
-          intercept[NotFoundException](await(TestConfirmAgentSubscriptionController.submit().apply(confirmAgentSubscriptionRequest)))
+          intercept[NotFoundException](await(TestAuthoriseAgentController.submit().apply(confirmAgentSubscriptionRequest)))
         }
       }
     }

@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package incometax.subscription.httpparsers
+package incometax.unauthorisedagent.httpparsers
 
 import core.utils.UnitTestTrait
-import incometax.subscription.httpparsers.StoreSubscriptionResponseHttpParser.StoreSubscriptionResponseHttpReads
-import incometax.subscription.models.{StoreSubscriptionFailure, StoreSubscriptionSuccess}
+import incometax.unauthorisedagent.httpparsers.DeleteSubscriptionResponseHttpParser.DeleteSubscriptionResponseHttpReads
+import incometax.unauthorisedagent.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpResponse
 
-class StoreSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {
+class DeleteSubscriptionResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "PUT"
   val testUri = "/"
 
-  "StoreSubscriptionResponseHttpReads" when {
+  "DeleteSubscriptionResponseHttpReads" when {
     "read" should {
-      "parse a CREATED response as an StoreSubscriptionSuccess" in {
-        val httpResponse = HttpResponse(CREATED)
+      "parse a CREATED response as an DeleteSubscriptionSuccess" in {
+        val httpResponse = HttpResponse(NO_CONTENT)
 
-        val res = StoreSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
+        val res = DeleteSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.right.value mustBe StoreSubscriptionSuccess
+        res.right.value mustBe DeleteSubscriptionSuccess
       }
 
-      "parse any other  response as an StoreSubscriptionSuccess" in {
+      "parse any other  response as an DeleteSubscriptionFailure" in {
         val httpResponse = HttpResponse(BAD_REQUEST, Json.obj())
 
-        val res = StoreSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
+        val res = DeleteSubscriptionResponseHttpReads.read(testHttpVerb, testUri, httpResponse)
 
-        res.left.value mustBe StoreSubscriptionFailure(httpResponse.body)
+        res.left.value mustBe DeleteSubscriptionFailure(httpResponse.body)
       }
     }
   }

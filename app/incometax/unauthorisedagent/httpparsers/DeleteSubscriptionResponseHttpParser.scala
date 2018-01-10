@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package incometax.subscription.httpparsers
+package incometax.unauthorisedagent.httpparsers
 
-import incometax.subscription.models.{KnownFactsFailure, KnownFactsSuccess, StoreSubscriptionFailure, StoreSubscriptionSuccess}
+import incometax.unauthorisedagent.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess}
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
-object StoreSubscriptionResponseHttpParser {
-  type StoreSubscriptionResponse = Either[StoreSubscriptionFailure, StoreSubscriptionSuccess.type ]
+object DeleteSubscriptionResponseHttpParser {
+  type DeleteSubscriptionResponse = Either[DeleteSubscriptionFailure, DeleteSubscriptionSuccess.type ]
 
-  implicit object StoreSubscriptionResponseHttpReads extends HttpReads[StoreSubscriptionResponse] {
-    override def read(method: String, url: String, response: HttpResponse): StoreSubscriptionResponse =
+  implicit object DeleteSubscriptionResponseHttpReads extends HttpReads[DeleteSubscriptionResponse] {
+    override def read(method: String, url: String, response: HttpResponse): DeleteSubscriptionResponse =
       response.status match {
-        case CREATED => Right(StoreSubscriptionSuccess)
-        case _ => Left(StoreSubscriptionFailure(response.body))
+        case NO_CONTENT => Right(DeleteSubscriptionSuccess)
+        case _ => Left(DeleteSubscriptionFailure(response.body))
       }
   }
 }
