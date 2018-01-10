@@ -413,7 +413,6 @@ iv-error.try_again                                              = <a id="try-aga
 agent.base.service_name                                         = Sign up your client for quarterly reporting
 agent.base.back                                                       = Back
 agent.base.continue                                                   = Continue
-agent.base.continue                                                   = Continue
 agent.base.update                                                     = Update
 agent.base.sign-out                                                   = Sign out
 agent.base.sign-up                                                    = Sign up

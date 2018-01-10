@@ -75,7 +75,7 @@ object AuthPredicates extends Results {
     else Left(Future.successful(noArnRoute))
 
   val unauthorizedAgentPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
-    if (request.session.isAuthorisedAgent) Right(AuthPredicateSuccess)
+    if (request.session.isUnauthorisedAgent) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
 
