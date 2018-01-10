@@ -23,7 +23,7 @@ import helpers.servicemocks.{GGAuthenticationStub, _}
 import play.api.http.Status._
 import play.api.i18n.Messages
 
-class AuthroiseAgentControllerISpec extends ComponentSpecBase {
+class AuthoriseAgentControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/authorise-agent" when {
     "the unauthorised agent feature switch is enabled" should {
       "return the subscription confirmation page" in {
