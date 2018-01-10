@@ -346,7 +346,7 @@ trait ComponentSpecBase extends UnitSpec
       ))(ConfirmAgentForm.confirmAgentForm.fill(model).data.map { case (k, v) => (k, Seq(v)) })
 
     def confirmAgentSubscription(): WSResponse = get(
-      "/confirm-agent-subscription",
+      "/authorise-agent",
       Map(
         JourneyStateKey -> ConfirmAgentSubscription.name,
         AgentReferenceNumber -> IntegrationTestConstants.testArn
@@ -354,7 +354,7 @@ trait ComponentSpecBase extends UnitSpec
     )
 
     def submitConfirmAgentSubscription(): WSResponse = post(
-      "/confirm-agent-subscription",
+      "/authorise-agent",
       Map(
         JourneyStateKey -> ConfirmAgentSubscription.name,
         AgentReferenceNumber -> IntegrationTestConstants.testArn

@@ -54,7 +54,7 @@ class ConfirmAgentControllerSpec extends ControllerBaseSpec
   "show" when {
     "the unauthorised agent flow is enabled" when {
       "the user is of the correct affinity group and has a nino in session" should {
-        "return the confirm-agent-subscription page" in {
+        "return the authorise-agent page" in {
           enable(UnauthorisedAgentFeature)
           mockGetAgencyNameSuccess(testArn)
 

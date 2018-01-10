@@ -34,17 +34,17 @@ import usermatching.userjourneys.ConfirmAgentSubscription
 import scala.concurrent.Future
 
 @Singleton
-class ConfirmAgentSubscriptionController @Inject()(val baseConfig: BaseControllerConfig,
-                                                   val messagesApi: MessagesApi,
-                                                   val authService: AuthService,
-                                                   keystoreService: KeystoreService,
-                                                   subscriptionOrchestrationService: SubscriptionOrchestrationService
+class AuthoriseAgentController @Inject()(val baseConfig: BaseControllerConfig,
+                                         val messagesApi: MessagesApi,
+                                         val authService: AuthService,
+                                         keystoreService: KeystoreService,
+                                         subscriptionOrchestrationService: SubscriptionOrchestrationService
                                                   ) extends AuthenticatedController[ConfirmAgentSubscription.type] {
   def show(): Action[AnyContent] = Authenticated {
     implicit req =>
       user =>
         val arn = req.session(AgentReferenceNumber)
-        Ok(incometax.unauthorisedagent.views.html.confirm_agent_subscription(arn))
+        Ok(incometax.unauthorisedagent.views.html.authorise_agent(arn))
   }
 
   def submit(): Action[AnyContent] = Authenticated.async {
