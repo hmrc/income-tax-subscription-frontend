@@ -49,7 +49,7 @@ class ConfirmAgentControllerISpec extends ComponentSpecBase {
 
   "POST /report-quarterly/income-and-expenses/sign-up/confirm-agent" when {
     "the unauthorised agent feature switch is enabled" should {
-      "when the user answered yes should redirects to " in {
+      "when the user answered yes should redirects to authorise agent page" in {
         Given("The feature switch is on")
         enable(UnauthorisedAgentFeature)
 
@@ -61,11 +61,12 @@ class ConfirmAgentControllerISpec extends ComponentSpecBase {
 
         Then("Should return a SEE_OTHER with a redirect location of ")
         res should have(
-          httpStatus(NOT_IMPLEMENTED)
+          httpStatus(SEE_OTHER),
+          redirectURI(authoriseAgentUri)
         )
       }
 
-      "when the user answered no should redirects to " in {
+      "when the user answered no should redirects to agent not authorised page" in {
         Given("The feature switch is on")
         enable(UnauthorisedAgentFeature)
 
@@ -77,7 +78,8 @@ class ConfirmAgentControllerISpec extends ComponentSpecBase {
 
         Then("Should return a SEE_OTHER with a redirect location of ")
         res should have(
-          httpStatus(NOT_IMPLEMENTED)
+          httpStatus(SEE_OTHER),
+          redirectURI(agentNotAuthorisedUri)
         )
       }
     }
