@@ -73,3 +73,6 @@ GET         /feedback-submitted                     agent.controllers.ThankYouCo
 
 # No NINO Routes
 GET         /register-for-SA                        agent.controllers.matching.NoSAController.show
+
+# Agent not authorised Confirmation
+GET         /send-client-link                       agent.controllers.UnauthorisedAgentConfirmationController.show
