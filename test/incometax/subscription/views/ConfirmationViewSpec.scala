@@ -23,7 +23,7 @@ import core.views.ViewSpecTrait
 import incometax.incomesource.forms.IncomeSourceForm
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
-import play.api.test.FakeRequest
+import play.twirl.api.Html
 
 class ConfirmationViewSpec extends ViewSpecTrait {
 
@@ -33,8 +33,7 @@ class ConfirmationViewSpec extends ViewSpecTrait {
   val incomeSource = "Not both"
   val request = ViewSpecTrait.viewTestRequest
 
-  def page(incomeSource: String) = incometax.subscription.views.html.confirmation(
-    submissionDate = submissionDateValue,
+  def page(incomeSource: String): Html = incometax.subscription.views.html.confirmation(
     journeyDuration = duration,
     incomeSource = incomeSource
   )(request, applicationMessages, appConfig)
@@ -85,7 +84,7 @@ class ConfirmationViewSpec extends ViewSpecTrait {
         document.select("#whatHappensNext li").first().text() mustBe MessageLookup.Confirmation.whatHappensNext.bul1
       }
 
-      s"has a bullet point to BTAk '${MessageLookup.Confirmation.whatHappensNext.bul2}'" in {
+      s"has a bullet point to BTA '${MessageLookup.Confirmation.whatHappensNext.bul2}'" in {
         val bul2 = document.select("#whatHappensNext li").get(1)
         bul2.text() mustBe MessageLookup.Confirmation.whatHappensNext.bul2
         bul2.select("a").attr("href") mustBe appConfig.btaUrl
