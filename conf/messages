@@ -779,3 +779,19 @@ authorise-agent.heading                                               = Do you a
 agent-not-authorised.title                                            = You have not authorised {0}
 agent-not-authorised.heading                                          = You have not authorised {0}
 agent-not-authorised.line_1                                           = We''ve deleted any information they''ve asked to submit for you.
+
+## Unauthorised Agent Confirmation page ##
+confirmation.unauthorised.title                                       = Sign up complete
+confirmation.unauthorised.heading                                     = Sign up complete
+confirmation.unauthorised.whatHappensNext.heading                     = What happens next
+confirmation.unauthorised.whatHappensNext.para1                       = Either you or your agent need to complete the steps below.
+confirmation.unauthorised.whatHappensNext.para2                       = It''s important to choose a software package that can interact with your agent''s.
+confirmation.unauthorised.whatHappensNext.list1                       = Choose accounting software if you haven''t already.
+confirmation.unauthorised.whatHappensNext.list2                       = Sign in to the software with your Government Gateway details and authorise it to interact with HMRC.
+confirmation.unauthorised.whatHappensNext.list3                       = Add any income and expenses that you''ve already received or paid out.
+confirmation.unauthorised.whatHappensNext.list4                       = Record your future income and expenses using the software, then send HMRC a report at least every quarter.
+confirmation.unauthorised.whatHappensNext.list5                       = Add any other income sources in your final report, you need to send this report by 31 January.
+confirmation.unauthorised.whatHappensNext.para3                       = After you''ve sent a report you''ll get an Income Tax estimate. You can view your estimate and report deadlines in your:
+confirmation.unauthorised.whatHappensNext.bullet1                     = accounting software
+confirmation.unauthorised.whatHappensNext.bullet2                     = <a id="bta" href="{0}">business tax account</a>
+confirmation.unauthorised.whatHappensNext.para4                       = It may take a few hours for them all to appear.

@@ -24,11 +24,15 @@ import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
+import core.config.featureswitch.UnauthorisedAgentFeature
 import core.models.DateModel.dateConvert
 import core.services.{AuthService, KeystoreService}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.InternalServerException
+import usermatching.userjourneys.ConfirmAgentSubscription
+import incometax.unauthorisedagent.views.html.unauthorised_agent_confirmation
+import incometax.subscription.views.html.confirmation
 
 import scala.concurrent.Future
 
@@ -45,18 +49,16 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
       val endTime = java.time.LocalDateTime.now()
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
-      keystoreService.fetchIncomeSource.flatMap {
+      keystoreService.fetchIncomeSource.map {
         case Some(incomeSource) =>
-          Future.successful(
-            Ok(incometax.subscription.views.html.confirmation(
-              submissionDate = dateConvert(LocalDate.now()),
-              journeyDuration,
-              incomeSource.source
-            ))
-          )
+          if(request.isInState(ConfirmAgentSubscription)) {
+            val agencyName = request.session(ITSASessionKeys.AgencyName)
+            Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource.source, agencyName))
+          } else {
+            Ok(confirmation(journeyDuration, incomeSource.source))
+          }
         case _ =>
-          logging.info("User attempted to view confirmation with no incomeSource stored in Keystore")
-          Future.failed(new InternalServerException("Confirmation Controller, call to show confirmation with no income source"))
+          throw new InternalServerException("Confirmation Controller, call to show confirmation with no income source")
       }
   }
 
