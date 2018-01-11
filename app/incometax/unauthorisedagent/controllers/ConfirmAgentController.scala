@@ -64,9 +64,9 @@ class ConfirmAgentController @Inject()(val baseConfig: BaseControllerConfig,
         formWithErrors => getAgentName.map(agentName => BadRequest(view(formWithErrors, agentName = agentName))),
         isAgent => isAgent.choice match {
           case ConfirmAgentForm.option_yes =>
-            Future.successful(NotImplemented) //TODO
+            Future.successful(Redirect(routes.AuthoriseAgentController.show()))
           case ConfirmAgentForm.option_no =>
-            Future.successful(NotImplemented) //TODO
+            Future.successful(Redirect(routes.AgentNotAuthorisedController.show()))
         }
       )
   }

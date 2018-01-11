@@ -16,7 +16,7 @@
 
 package incometax.unauthorisedagent.services
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import core.config.AppConfig
 import core.services.KeystoreService
@@ -30,9 +30,10 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubscriptionStoreService @Inject()(subscriptionStoreConnector: SubscriptionStoreConnector,
-                                         keystoreService: KeystoreService,
-                                         appConfig: AppConfig)(implicit ec: ExecutionContext) {
+@Singleton
+class SubscriptionStoreRetrievalService @Inject()(subscriptionStoreConnector: SubscriptionStoreConnector,
+                                                  keystoreService: KeystoreService,
+                                                  appConfig: AppConfig)(implicit ec: ExecutionContext) {
   def retrieveSubscriptionData(nino: String)(implicit hc: HeaderCarrier): Future[Option[StoredSubscription]] = {
     if(appConfig.unauthorisedAgentEnabled) {
       subscriptionStoreConnector.retrieveSubscriptionData(nino) flatMap {

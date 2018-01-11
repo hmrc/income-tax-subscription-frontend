@@ -28,6 +28,11 @@ import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.NotFoundException
+import core.utils.TestConstants._
+import org.jsoup.Jsoup
+import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
+
 
 import scala.concurrent.Future
 
@@ -53,25 +58,44 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     )
   }
 
-  "ConfirmationController" should {
+  "ConfirmationController" when {
     val startTime: LocalDateTime = LocalDateTime.now()
-    "get the ID from keystore if the user is enrolled" in {
-      mockAuthEnrolled()
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
-      val result: Future[Result] = TestConfirmationController.show(
-        subscriptionRequest.addStartTime(startTime)
-      )
+    "the user is not in the unauthorised agent journey state" should {
+      "get the ID from keystore if the user is enrolled" in {
+        mockAuthEnrolled()
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+        val result: Future[Result] = TestConfirmationController.show(
+          subscriptionRequest.addStartTime(startTime)
+        )
 
-      status(result) shouldBe OK
+        status(result) shouldBe OK
 
-      await(result)
+        await(result)
+      }
+
+      "return not found if the user is not enrolled" in {
+        setupMockKeystore(fetchSubscriptionId = "testId")
+        val result = TestConfirmationController.show(subscriptionRequest)
+
+        intercept[NotFoundException](await(result)).message shouldBe "AuthPredicates.enrolledPredicate"
+      }
     }
+    "the user is in the unauthorised agent journey state" should {
+      "return OK with the confirm subscription request view" in {
+        mockAuthEnrolled()
+        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+        val result: Future[Result] = TestConfirmationController.show(
+          confirmAgentSubscriptionRequest
+            .addStartTime(startTime)
+            .withSession(ITSASessionKeys.AgencyName -> testAgencyName)
+        )
 
-    "return not found if the user is not enrolled" in {
-      setupMockKeystore(fetchSubscriptionId = "testId")
-      val result = TestConfirmationController.show(subscriptionRequest)
+        status(result) shouldBe OK
 
-      intercept[NotFoundException](await(result)).message shouldBe "AuthPredicates.enrolledPredicate"
+        Jsoup.parse(contentAsString(result)).title shouldBe Messages("confirmation.unauthorised.title")
+
+        await(result)
+      }
     }
   }
 

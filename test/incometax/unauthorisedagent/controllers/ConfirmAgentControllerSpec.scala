@@ -91,24 +91,38 @@ class ConfirmAgentControllerSpec extends ControllerBaseSpec
 
       "the user is of the correct affinity group and has a nino in session" when {
         "the user answered yes" should {
-          "" in {
+          "redirects to authorise agent" in {
             enable(UnauthorisedAgentFeature)
             mockGetAgencyNameSuccess(testArn)
 
             val result = await(submit(ConfirmAgentForm.option_yes))
 
-            status(result) must be(Status.NOT_IMPLEMENTED)
+            status(result) must be(Status.SEE_OTHER)
+            redirectLocation(result) mustBe Some(incometax.unauthorisedagent.controllers.routes.AuthoriseAgentController.show().url)
           }
         }
 
         "the user answered no" should {
-          "" in {
+          "redirect to agent not authorised" in {
             enable(UnauthorisedAgentFeature)
-
 
             val result = await(submit(ConfirmAgentForm.option_no))
 
-            status(result) must be(Status.NOT_IMPLEMENTED)
+            status(result) must be(Status.SEE_OTHER)
+            redirectLocation(result) mustBe Some(routes.AgentNotAuthorisedController.show().url)
+          }
+        }
+
+        "the user answered badly" should {
+          "return bad request" in {
+            enable(UnauthorisedAgentFeature)
+            mockGetAgencyNameSuccess(testArn)
+
+            val result = await(submit("this triggers a validation error"))
+
+            status(result) must be(Status.BAD_REQUEST)
+            val document = Jsoup.parse(contentAsString(result))
+            document.title() must include(Messages("confirm-agent.title", testAgencyName))
           }
         }
       }

@@ -36,6 +36,7 @@ object MessageLookup {
     val dateOfBirth = "Date of birth"
     val goBack = "Go back"
     val tryAgain = "Try again"
+    val addAnother = "Sign up another client"
   }
 
   object FrontPage {
@@ -217,7 +218,6 @@ object MessageLookup {
   object Confirmation {
     val title = "Confirmation page"
     val heading = "Sign up complete"
-    val addAnother = "Sign up another client"
 
   object whatHappensNext {
       val heading = "What happens next"
@@ -231,6 +231,29 @@ object MessageLookup {
       val link = "What did you think of this service?"
   }
 
+  }
+
+  object UnauthorisedAgentConfirmation {
+    val title = "Send client link"
+    val heading = "Send your client this link"
+    val url = "www.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up/"
+
+    object whatHappensNext {
+      val heading = "What happens next"
+      val para1 = "You must send your client this link for them to authorise you as their agent. They must do this within 10 days. You still need to:"
+      val bullet1 = "choose accounting software if you haven't already"
+      val bullet2 = "sign in to the software with your Government Gateway details and authorise it to interact with HMRC."
+      val para2 = "If your client doesn't authorise you within 10 days, you'll need to invite them again."
+    }
+
+    object whenAuthorised {
+      val heading = "When you're authorised"
+      val linkText = "business tax account"
+      val para1 = "Either you or your client need to complete the steps below."
+      val number1 = "Add any income and expenses that your client has already received or paid out"
+      val number2 = "Record their future income and expenses using the software, then send HMRC a report at least every quarter"
+      val number3 = "Add any other income sources in your client's final report, they need to send this report by 31 January"
+    }
   }
 
   object Error {

@@ -27,7 +27,7 @@ import core.services.{AuthService, KeystoreService}
 import core.utils.Implicits._
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionService
-import incometax.unauthorisedagent.services.SubscriptionStoreService
+import incometax.unauthorisedagent.services.SubscriptionStoreRetrievalService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
@@ -42,7 +42,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                keystoreService: KeystoreService,
                                val authService: AuthService,
                                citizenDetailsService: CitizenDetailsService,
-                               subscriptionStoreService: SubscriptionStoreService,
+                               subscriptionStoreService: SubscriptionStoreRetrievalService,
                                logging: Logging
                               ) extends StatelessController {
 

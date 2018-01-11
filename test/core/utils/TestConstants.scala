@@ -110,4 +110,5 @@ object TestConstants {
   val testEnrolmentKey = EnrolmentKey(mtdItsaEnrolmentName, MTDITID -> testMTDID)
 
   val testEnrolmentRequest = EmacEnrolmentRequest(testCredId, testNino)
+
 }

@@ -337,6 +337,27 @@ object MessageLookup {
       val para4 = "It may take a few hours for them all to appear."
     }
 
+    object Unauthorised {
+      val title = "Sign up complete"
+      val heading = "Sign up complete"
+      val signOut = "Sign out"
+
+      object whatHappensNext {
+        val heading = "What happens next"
+        val para1 = "Either you or your agent need to complete the steps below."
+        val para2 = "It's important to choose a software package that can interact with your agent's."
+        val list1 = "Choose accounting software if you haven't already."
+        val list2 = "Sign in to the software with your Government Gateway details and authorise it to interact with HMRC."
+        val list3 = "Add any income and expenses that you've already received or paid out."
+        val list4 = "Record your future income and expenses using the software, then send HMRC a report at least every quarter."
+        val list5 = "Add any other income sources in your final report, you need to send this report by 31 January."
+        val para3 = "After you've sent a report you'll get an Income Tax estimate. You can view your estimate and report deadlines in your:"
+        val bul1 = "accounting software"
+        val bul2 = "business tax account"
+        val para4 = "It may take a few hours for them all to appear."
+      }
+    }
+
   }
 
   object AffinityGroup {
@@ -594,6 +615,13 @@ object MessageLookup {
       def title(agentName:String) = s"Is $agentName your agent?"
       def heading(agentName:String) = s"Is $agentName your agent?"
       val para1 = "HMRC will sometimes contact you and your agent, or you instead of your agent."
+      val yes = "Yes"
+      val no = "No"
+    }
+
+    object AuthoriseAgent {
+      def title(agentName:String) = s"Do you authorise $agentName to use software to report your Income Tax?"
+      def heading(agentName:String) = s"Do you authorise $agentName to use software to report your Income Tax?"
       val yes = "Yes"
       val no = "No"
     }

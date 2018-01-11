@@ -22,14 +22,14 @@ import core.ITSASessionKeys
 import core.auth.AuthenticatedController
 import core.config.BaseControllerConfig
 import core.services.AuthService
-import incometax.unauthorisedagent.services.SubscriptionStoreService
+import incometax.unauthorisedagent.services.SubscriptionStoreRetrievalService
 import play.api.i18n.{I18nSupport, MessagesApi}
 import usermatching.userjourneys.ConfirmAgentSubscription
 
 class AgentNotAuthorisedController @Inject()(val baseConfig: BaseControllerConfig,
                                              val messagesApi: MessagesApi,
                                              val authService: AuthService,
-                                             subscriptionStoreService: SubscriptionStoreService
+                                             subscriptionStoreService: SubscriptionStoreRetrievalService
                                             ) extends AuthenticatedController[ConfirmAgentSubscription.type] with I18nSupport {
   val show = Authenticated.async {
     implicit request =>
