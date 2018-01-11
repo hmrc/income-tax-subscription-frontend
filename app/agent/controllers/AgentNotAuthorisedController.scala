@@ -18,13 +18,12 @@ package agent.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import agent.auth.{AuthenticatedController, UnauthorisedAgentController}
-import core.auth.StatelessController
+import agent.auth.{AgentUserMatched, UnauthorisedAgentController}
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.NotFoundException
+import agent.auth.AgentJourneyState._
 
 import scala.concurrent.Future
 
@@ -40,6 +39,6 @@ class AgentNotAuthorisedController @Inject()(val baseConfig: BaseControllerConfi
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Redirect(agent.controllers.routes.HomeController.index()))
+      Future.successful(Redirect(agent.controllers.routes.HomeController.index()).withJourneyState(AgentUserMatched))
   }
 }

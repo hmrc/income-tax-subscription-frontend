@@ -16,7 +16,7 @@
 
 package agent.controllers.matching
 
-import agent.auth.AgentUserMatched
+import agent.auth.{AgentUserMatched, AgentUserMatching}
 import agent.controllers.{AgentControllerBaseSpec, ITSASessionKeys}
 import agent.services._
 import agent.services.mocks.{MockAgentQualificationService, MockKeystoreService}
@@ -172,7 +172,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
           val session = await(result).session(request)
 
-          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
           session.get(ITSASessionKeys.NINO) mustBe Some(nino)
           session.get(ITSASessionKeys.UTR) mustBe Some(utr)
           session.get(ITSASessionKeys.AuthorisedAgentKey) mustBe Some("false")

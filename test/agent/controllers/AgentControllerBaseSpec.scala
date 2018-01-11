@@ -87,8 +87,16 @@ trait AgentControllerBaseSpec extends ControllerBaseTrait with MockAgentAuthServ
     ITSASessionKeys.UTR -> TestConstants.testUtr
   )
 
+
   lazy val unauthorisedUserMatchedRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name,
+    ITSASessionKeys.NINO -> TestConstants.testNino,
+    ITSASessionKeys.UTR -> TestConstants.testUtr,
+    ITSASessionKeys.AuthorisedAgentKey -> false.toString
+  )
+
+  lazy val unauthorisedUserMatchingRequest = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name,
     ITSASessionKeys.NINO -> TestConstants.testNino,
     ITSASessionKeys.UTR -> TestConstants.testUtr,
     ITSASessionKeys.AuthorisedAgentKey -> false.toString

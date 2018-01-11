@@ -19,10 +19,11 @@ package agent.controllers.matching
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.AgentJourneyState._
-import agent.auth.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
+import agent.auth._
 import agent.controllers.ITSASessionKeys
 import agent.controllers.ITSASessionKeys.FailedClientMatching
 import agent.services._
+import core.auth.JourneyState
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.i18n.MessagesApi
@@ -104,22 +105,22 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
           case unapprovedAgent @ Right(UnApprovedAgent(clientNino, clientUtr)) =>
             if (applicationConfig.unauthorisedAgentEnabled) {
               successful(matched(unapprovedAgent.b,
-                agent.controllers.routes.AgentNotAuthorisedController.show()).setAuthorisedAgent(false))
+                agent.controllers.routes.AgentNotAuthorisedController.show(), AgentUserMatching).setAuthorisedAgent(false))
             } else {
               successful(
                 Redirect(agent.controllers.routes.NoClientRelationshipController.show())
                   .removingFromSession(FailedClientMatching))
             }
           case approvedAgent @ Right(ApprovedAgent(nino, optUtr)) =>
-            successful(matched(approvedAgent.b, agent.controllers.routes.HomeController.index())
+            successful(matched(approvedAgent.b, agent.controllers.routes.HomeController.index(), AgentUserMatched)
               .clearUserDetails)
         }
       }
   }
 
-  private def matched(qualifiedAgent: QualifiedAgent, call: Call)(implicit req: Request[_]): Result = {
+  private def matched(qualifiedAgent: QualifiedAgent, call: Call, journeyState: AgentJourneyState)(implicit req: Request[_]): Result = {
     val resultWithoutUTR = Redirect(call)
-      .withJourneyState(AgentUserMatched)
+      .withJourneyState(journeyState)
       .removingFromSession(FailedClientMatching)
       .addingToSession(ITSASessionKeys.NINO -> qualifiedAgent.clientNino)
 

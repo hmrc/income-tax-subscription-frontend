@@ -200,9 +200,9 @@ trait ComponentSpecBase extends UnitSpec
 
     def noClientRelationship(): WSResponse = get("/error/no-client-relationship", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def agentNotAuthorised(): WSResponse = get("/error/not-authorised", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name, ITSASessionKeys.AuthorisedAgentKey -> false.toString))
+    def agentNotAuthorised(): WSResponse = get("/error/not-authorised", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name, ITSASessionKeys.AuthorisedAgentKey -> false.toString))
 
-    def submitAgentNotAuthorised(): WSResponse = post("/error/not-authorised", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name))(Map.empty)
+    def submitAgentNotAuthorised(): WSResponse = post("/error/not-authorised", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
 
     def clientAlreadySubscribed(): WSResponse = get("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 

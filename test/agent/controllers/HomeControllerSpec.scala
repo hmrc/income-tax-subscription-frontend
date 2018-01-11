@@ -151,6 +151,38 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
         }
       }
     }
+
+    "journey state is user matched" when {
+      "the agent is unauthorised" should {
+        lazy val request = unauthorisedUserMatchedRequest
+
+        def result = testHomeController(showGuidance = false).index()(request)
+
+        s"redirect user to ${agent.controllers.routes.IncomeSourceController.show().url}" in {
+          status(result) must be(Status.SEE_OTHER)
+
+          redirectLocation(result).get mustBe agent.controllers.routes.IncomeSourceController.show().url
+
+          await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
+        }
+      }
+    }
+
+    "journey state is user matching" when {
+      "the agent is unauthorised" should {
+        lazy val request = unauthorisedUserMatchingRequest
+
+        def result = testHomeController(showGuidance = false).index()(request)
+
+        s"redirect user to ${agent.controllers.routes.AgentNotAuthorisedController.show().url}" in {
+          status(result) must be(Status.SEE_OTHER)
+
+          redirectLocation(result).get mustBe agent.controllers.routes.AgentNotAuthorisedController.show().url
+
+          await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
+        }
+      }
+    }
   }
 
   authorisationTests()

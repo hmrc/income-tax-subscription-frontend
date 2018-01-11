@@ -44,7 +44,7 @@ class AgentNotAuthorisedControllerSpec extends AgentControllerBaseSpec {
 
   "Calling the show action of the AgentNotAuthorisedController with an Authenticated User" should {
 
-    lazy val result = TestAgentNotAuthorisedController.show(unauthorisedUserMatchedRequest)
+    lazy val result = TestAgentNotAuthorisedController.show(unauthorisedUserMatchingRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 200" in {
@@ -68,7 +68,7 @@ class AgentNotAuthorisedControllerSpec extends AgentControllerBaseSpec {
 
   "Calling the submit action of the AgentNotAuthorisedController with an Authenticated User" should {
 
-    lazy val result = TestAgentNotAuthorisedController.submit(userMatchedRequest)
+    lazy val result = TestAgentNotAuthorisedController.submit(unauthorisedUserMatchingRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
     "return 303" in {
