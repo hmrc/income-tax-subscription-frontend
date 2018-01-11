@@ -596,6 +596,28 @@ agent.confirmation.giveUsFeedback.heading                             = Give us 
 agent.confirmation.giveUsFeedback.link                                = What did you think of this service?
 agent.confirmation.giveUsFeedback.para1                               = Your feedback helps us improve.
 
+## Unauthorised Agent Confirmation page ##
+agent.confirmation.unauthorised.title                                 = Send client link
+agent.confirmation.unauthorised.heading                               = Send your client this link
+agent.confirmation.unauthorised.url                                   = www.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up/
+
+agent.confirmation.unauthorised.whatHappensNext.heading               = What happens next
+agent.confirmation.unauthorised.whatHappensNext.para1                 = You must send your client this link for them to authorise you as their agent. They must do this within 10 days. You still need to:
+agent.confirmation.unauthorised.whatHappensNext.bullet1               = choose accounting software if you haven''t already
+agent.confirmation.unauthorised.whatHappensNext.bullet2               = sign in to the software with your Government Gateway details and authorise it to interact with HMRC.
+agent.confirmation.unauthorised.whatHappensNext.para2                 = If your client doesn''t authorise you within 10 days, you''ll need to invite them again.
+
+
+agent.confirmation.unauthorised.whenAuthorised.heading                = When you''re authorised
+agent.confirmation.unauthorised.whenAuthorised.para1                  = Either you or your client need to complete the steps below.
+agent.confirmation.unauthorised.whenAuthorised.number1                = Add any income and expenses that your client has already received or paid out
+agent.confirmation.unauthorised.whenAuthorised.number2                = Record their future income and expenses using the software, then send HMRC a report at least every quarter
+agent.confirmation.unauthorised.whenAuthorised.number3                = Add any other income sources in your client''s final report, they need to send this report by 31 January
+
+
+agent.confirmation.unauthorised.add_another                           = Sign up another client
+
+
 ## Errors ##
 agent.error.back_to_preferences.empty                                 = You must select an option to continue
 

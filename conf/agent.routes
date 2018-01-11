@@ -78,3 +78,5 @@ GET         /register-for-SA                        agent.controllers.matching.N
 GET         /error/not-authorised                   agent.controllers.AgentNotAuthorisedController.show
 POST        /error/not-authorised                   agent.controllers.AgentNotAuthorisedController.submit
 
+# Agent not authorised Confirmation
+GET         /send-client-link                       agent.controllers.UnauthorisedAgentConfirmationController.show
