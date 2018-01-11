@@ -20,7 +20,7 @@ import core.config.MockConfig
 import core.services.mocks.MockKeystoreService
 import core.utils.MockTrait
 import core.utils.TestModels._
-import incometax.unauthorisedagent.services.SubscriptionStoreService
+import incometax.unauthorisedagent.services.SubscriptionStoreRetrievalService
 import incometax.unauthorisedagent.connectors.mocks.MockSubscriptionStoreConnector
 import incometax.unauthorisedagent.models.{DeleteSubscriptionSuccess, StoredSubscription}
 import org.mockito.ArgumentMatchers
@@ -29,16 +29,16 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-trait MockSubscriptionStoreService extends MockTrait {
-  val mockSubscriptionStoreService = mock[SubscriptionStoreService]
+trait MockSubscriptionStoreRetrievalService extends MockTrait {
+  val mockSubscriptionStoreRetrievalService = mock[SubscriptionStoreRetrievalService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    reset(mockSubscriptionStoreService)
+    reset(mockSubscriptionStoreRetrievalService)
   }
 
   def mockRetrieveSubscriptionData(nino: String)(result: Future[Option[StoredSubscription]]): Unit = {
-    when(mockSubscriptionStoreService.retrieveSubscriptionData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+    when(mockSubscriptionStoreRetrievalService.retrieveSubscriptionData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
   }
 
@@ -47,13 +47,13 @@ trait MockSubscriptionStoreService extends MockTrait {
   val successfulSubscriptionNotFound = Future(None)
 
   def mockDeleteSubscriptionData(nino:String): Unit = {
-    when(mockSubscriptionStoreService.deleteSubscriptionData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
+    when(mockSubscriptionStoreRetrievalService.deleteSubscriptionData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(Future.successful(DeleteSubscriptionSuccess))
   }
 }
 
-trait TestSubscriptionStoreService extends MockSubscriptionStoreConnector with MockKeystoreService with MockConfig {
-  object TestSubscriptionStoreService extends SubscriptionStoreService(
+trait TestSubscriptionStoreRetrievalService extends MockSubscriptionStoreConnector with MockKeystoreService with MockConfig {
+  object TestSubscriptionStoreRetrievalService extends SubscriptionStoreRetrievalService(
     subscriptionStoreConnector = mockSubscriptionStoreConnector,
     keystoreService = MockKeystoreService,
     appConfig = new MockConfig {
@@ -61,7 +61,7 @@ trait TestSubscriptionStoreService extends MockSubscriptionStoreConnector with M
     }
   )
 
-  object TestSubscriptionStoreServiceDisabled extends SubscriptionStoreService(
+  object TestSubscriptionStoreRetrievalServiceDisabled extends SubscriptionStoreRetrievalService(
     subscriptionStoreConnector = mockSubscriptionStoreConnector,
     keystoreService = MockKeystoreService,
     appConfig = MockConfig

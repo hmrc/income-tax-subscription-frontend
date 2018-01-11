@@ -22,7 +22,8 @@ import core.utils.TestModels._
 import incometax.unauthorisedagent.connectors.SubscriptionStoreConnector
 import incometax.unauthorisedagent.httpparsers.DeleteSubscriptionResponseHttpParser.DeleteSubscriptionResponse
 import incometax.unauthorisedagent.httpparsers.RetrieveSubscriptionResponseHttpParser.RetrieveSubscriptionResponse
-import incometax.unauthorisedagent.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess, RetrieveSubscriptionFailure}
+import incometax.unauthorisedagent.httpparsers.StoreSubscriptionResponseHttpParser.StoreSubscriptionResponse
+import incometax.unauthorisedagent.models._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -31,6 +32,22 @@ import scala.concurrent.Future
 
 trait MockSubscriptionStoreConnector extends MockTrait {
   val mockSubscriptionStoreConnector = mock[SubscriptionStoreConnector]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockSubscriptionStoreConnector)
+  }
+
+  def mockStoreSubscriptionData(nino: String, subscriptionData: StoredSubscription)(response: Future[StoreSubscriptionResponse]): Unit = {
+    when(mockSubscriptionStoreConnector.storeSubscriptionData(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(subscriptionData))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(response)
+  }
+
+  def mockStoreSubscriptionDataSuccess(nino: String, subscriptionData: StoredSubscription): Unit =
+    mockStoreSubscriptionData(nino = nino, subscriptionData = subscriptionData)(Right(StoreSubscriptionSuccess))
+
+  def mockStoreSubscriptionDataFailure(nino: String, subscriptionData: StoredSubscription): Unit =
+    mockStoreSubscriptionData(nino = nino, subscriptionData = subscriptionData)(Left(StoreSubscriptionFailure(testErrorMessage)))
 
   def mockRetrieveSubscriptionData(nino: String)(response: Future[RetrieveSubscriptionResponse]): Unit = {
     when(mockSubscriptionStoreConnector.retrieveSubscriptionData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
