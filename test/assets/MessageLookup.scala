@@ -276,8 +276,9 @@ object MessageLookup {
   }
 
   object AlreadyEnrolled {
-    val title = "You've already signed up for quarterly reporting"
-    val heading = "You've already signed up for quarterly reporting"
+    val title = "You've already signed up"
+    val heading = "You've already signed up"
+    val line1 ="Your sign in details are already in use."
   }
 
   object UserDetailsError {

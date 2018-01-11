@@ -33,74 +33,30 @@ class AlreadyEnrolledViewSpec extends ViewSpecTrait {
   lazy val page = incometax.subscription.views.html.enrolled.already_enrolled()(request, applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)
 
-  "The Confirmation view" should {
+  "The Already Enrolled view" should {
 
-    s"have the title '${MessageLookup.Confirmation.title}'" in {
+    s"have the title '${MessageLookup.AlreadyEnrolled.title}'" in {
       document.title() must be(MessageLookup.AlreadyEnrolled.title)
     }
 
-    "have a successful transaction confirmation banner" which {
-
-      "has a turquoise background" in {
-        document.select("#confirmation-heading").hasClass("transaction-banner--complete") mustBe true
-      }
-
-      s"has a heading (H1)" which {
+          s"has a heading (H1)" which {
 
         lazy val heading = document.select("H1")
 
-        s"has the text '${MessageLookup.Confirmation.heading}'" in {
+        s"has the text '${MessageLookup.AlreadyEnrolled.heading}'" in {
           heading.text() mustBe MessageLookup.AlreadyEnrolled.heading
         }
 
-        "has the class 'transaction-banner__heading'" in {
-          heading.hasClass("transaction-banner__heading") mustBe true
+        s"has a line '${MessageLookup.AlreadyEnrolled.line1}'" in {
+          document.select(".form-group").text must be(MessageLookup.AlreadyEnrolled.line1)
         }
       }
-
-    }
-
-    "have a 'What happens next' section" which {
-
-      s"has the section heading '${MessageLookup.Confirmation.whatHappensNext.heading}'" in {
-        document.select("#whatHappensNext h2").text() mustBe MessageLookup.Confirmation.whatHappensNext.heading
-      }
-
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para1)
-      }
-
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para2)
-      }
-
-      s"has a bullet point '${MessageLookup.Confirmation.whatHappensNext.bul1}'" in {
-        document.select("#whatHappensNext li").first().text() mustBe MessageLookup.Confirmation.whatHappensNext.bul1
-      }
-
-      s"has a bullet point to BTAk '${MessageLookup.Confirmation.whatHappensNext.bul2}'" in {
-        val bul2 = document.select("#whatHappensNext li").get(1)
-        bul2.text() mustBe MessageLookup.Confirmation.whatHappensNext.bul2
-        bul2.select("a").attr("href") mustBe appConfig.btaUrl
-      }
-
-      s"does not have a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para4}'" in {
-        document.select("#whatHappensNext p").text() must not include MessageLookup.Confirmation.whatHappensNext.para4
-      }
-    }
 
     "have a sign out button" in {
       val actionSignOut = document.getElementById("sign-out-button")
       actionSignOut.attr("role") mustBe "button"
       actionSignOut.text() mustBe MessageLookup.Base.signOut
       actionSignOut.attr("href") mustBe SignOutController.signOut(request.path).url
-    }
-
-    // N.B. both of these should be directed to the special sign out call which also takes them to the exit survey page
-    "The banner sign out button must be directed to the same as the sign out button" in {
-      val bannerSignout = document.getElementById("logOutNavHref")
-      bannerSignout.text() mustBe MessageLookup.Base.signOut
-      bannerSignout.attr("href") mustBe SignOutController.signOut(request.path).url
     }
 
   }

@@ -188,8 +188,9 @@ timeout.heading                                                 = Your session h
 timeout.returnToHome                                            = To sign up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Already enrolled page ##
-already-enrolled.title                                          = You''ve already signed up for quarterly reporting
-already-enrolled.heading                                        = You''ve already signed up for quarterly reporting
+already-enrolled.title                                          = You''ve already signed up
+already-enrolled.heading                                        = You''ve already signed up
+already-enrolled.line1                                          = Your sign in details are already in use.
 
 ## Summary page ##
 summary.title                                                   = Check your answers
