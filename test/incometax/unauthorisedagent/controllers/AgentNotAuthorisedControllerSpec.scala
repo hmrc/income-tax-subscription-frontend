@@ -21,7 +21,7 @@ import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import core.connectors.mocks.MockAuth
 import core.controllers.ControllerBaseSpec
 import core.utils.TestConstants._
-import incometax.unauthorisedagent.services.mocks.MockSubscriptionStoreService
+import incometax.unauthorisedagent.services.mocks.MockSubscriptionStoreRetrievalService
 import org.jsoup.Jsoup
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
@@ -32,7 +32,7 @@ import uk.gov.hmrc.http.NotFoundException
 
 
 class AgentNotAuthorisedControllerSpec extends ControllerBaseSpec
-  with MockAuth with MockSubscriptionStoreService with FeatureSwitching {
+  with MockAuth with MockSubscriptionStoreRetrievalService with FeatureSwitching {
   override val controllerName = "AgentNotAuthorisedController"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -43,7 +43,7 @@ class AgentNotAuthorisedControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     mockAuthService,
-    mockSubscriptionStoreService
+    mockSubscriptionStoreRetrievalService
   )
 
   "show" when {

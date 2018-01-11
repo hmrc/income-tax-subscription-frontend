@@ -26,7 +26,7 @@ import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants
 import core.utils.TestConstants._
 import incometax.subscription.services.mocks.MockSubscriptionService
-import incometax.unauthorisedagent.services.mocks.MockSubscriptionStoreService
+import incometax.unauthorisedagent.services.mocks.MockSubscriptionStoreRetrievalService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -41,7 +41,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockSubscriptionService
   with MockKeystoreService
   with MockCitizenDetailsService
-  with MockSubscriptionStoreService {
+  with MockSubscriptionStoreRetrievalService {
 
   override val controllerName: String = "HomeControllerSpec"
 
@@ -73,7 +73,7 @@ class HomeControllerSpec extends ControllerBaseSpec
     MockKeystoreService,
     mockAuthService,
     mockCitizenDetailsService,
-    mockSubscriptionStoreService,
+    mockSubscriptionStoreRetrievalService,
     app.injector.instanceOf[Logging]
   )
 

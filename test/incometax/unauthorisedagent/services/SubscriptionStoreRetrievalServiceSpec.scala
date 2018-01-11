@@ -21,11 +21,11 @@ import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.UnitTestTrait
 import incometax.unauthorisedagent.models.DeleteSubscriptionSuccess
-import incometax.unauthorisedagent.services.mocks.TestSubscriptionStoreService
+import incometax.unauthorisedagent.services.mocks.TestSubscriptionStoreRetrievalService
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
 
-class SubscriptionStoreServiceSpec extends UnitTestTrait with TestSubscriptionStoreService with FeatureSwitching {
+class SubscriptionStoreRetrievalServiceSpec extends UnitTestTrait with TestSubscriptionStoreRetrievalService with FeatureSwitching {
   "retrieveStoredSubscription" when {
     "the unauthorised agent feature switch is on" when {
       "the subscription store connector returns a successful stored submission" should {
@@ -33,7 +33,7 @@ class SubscriptionStoreServiceSpec extends UnitTestTrait with TestSubscriptionSt
           mockRetrieveSubscriptionData(testNino)(successfulRetrieveSubscriptionResponse)
           setupMockKeystoreSaveFunctions()
 
-          val res = await(TestSubscriptionStoreService.retrieveSubscriptionData(testNino))
+          val res = await(TestSubscriptionStoreRetrievalService.retrieveSubscriptionData(testNino))
 
           res must contain(testStoredSubscription)
           verifyKeystore(
@@ -49,7 +49,7 @@ class SubscriptionStoreServiceSpec extends UnitTestTrait with TestSubscriptionSt
         "return Future(None)" in {
           mockRetrieveSubscriptionData(testNino)(successfulSubscriptionNotFound)
 
-          val res = await(TestSubscriptionStoreService.retrieveSubscriptionData(testNino))
+          val res = await(TestSubscriptionStoreRetrievalService.retrieveSubscriptionData(testNino))
 
           res mustBe empty
         }
@@ -59,13 +59,13 @@ class SubscriptionStoreServiceSpec extends UnitTestTrait with TestSubscriptionSt
         "return future failed" in {
           mockRetrieveSubscriptionData(testNino)(retrieveSubscriptionFailure)
 
-          intercept[InternalServerException](await(TestSubscriptionStoreService.retrieveSubscriptionData(testNino)))
+          intercept[InternalServerException](await(TestSubscriptionStoreRetrievalService.retrieveSubscriptionData(testNino)))
         }
       }
     }
     "the unauthorised agent feature switch is off" should {
       "return Future(None)" in {
-        val res = await(TestSubscriptionStoreServiceDisabled.retrieveSubscriptionData(testNino))
+        val res = await(TestSubscriptionStoreRetrievalServiceDisabled.retrieveSubscriptionData(testNino))
 
         res mustBe empty
       }
@@ -77,7 +77,7 @@ class SubscriptionStoreServiceSpec extends UnitTestTrait with TestSubscriptionSt
       "return a success" in {
         mockDeleteSubscriptionData(testNino)(deleteSubscriptionSuccess)
 
-        val res = await(TestSubscriptionStoreServiceDisabled.deleteSubscriptionData(testNino))
+        val res = await(TestSubscriptionStoreRetrievalServiceDisabled.deleteSubscriptionData(testNino))
 
         res mustBe DeleteSubscriptionSuccess
       }
@@ -86,7 +86,7 @@ class SubscriptionStoreServiceSpec extends UnitTestTrait with TestSubscriptionSt
       "throw an exception" in {
         mockDeleteSubscriptionData(testNino)(deleteSubscriptionFailure)
 
-        intercept[InternalServerException](await(TestSubscriptionStoreService.deleteSubscriptionData(testNino)))
+        intercept[InternalServerException](await(TestSubscriptionStoreRetrievalService.deleteSubscriptionData(testNino)))
       }
     }
   }
