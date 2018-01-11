@@ -105,7 +105,8 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
           case unapprovedAgent @ Right(UnApprovedAgent(clientNino, clientUtr)) =>
             if (applicationConfig.unauthorisedAgentEnabled) {
               successful(matched(unapprovedAgent.b,
-                agent.controllers.routes.AgentNotAuthorisedController.show(), AgentUserMatching).setAuthorisedAgent(false))
+                agent.controllers.routes.AgentNotAuthorisedController.show(), AgentUserMatching)
+                .setAuthorisedAgent(false))
             } else {
               successful(
                 Redirect(agent.controllers.routes.NoClientRelationshipController.show())
