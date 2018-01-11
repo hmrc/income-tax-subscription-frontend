@@ -281,6 +281,11 @@ object MessageLookup {
     val line1 ="Your sign in details are already in use."
   }
 
+  object ClaimSubscription {
+    val title = "You've already signed up for quarterly reporting"
+    val heading = "You've already signed up for quarterly reporting"
+  }
+
   object UserDetailsError {
     val title = "User match error"
     val heading = "We couldn't confirm your details"

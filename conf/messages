@@ -192,6 +192,11 @@ already-enrolled.title                                          = You''ve alread
 already-enrolled.heading                                        = You''ve already signed up
 already-enrolled.line1                                          = Your sign in details are already in use.
 
+## Claim subscription page ##
+claim-subscription.title                                        = You''ve already signed up for quarterly reporting
+claim-subscription.heading                                      = You''ve already signed up for quarterly reporting
+
+
 ## Summary page ##
 summary.title                                                   = Check your answers
 summary.heading                                                 = Check your answers
