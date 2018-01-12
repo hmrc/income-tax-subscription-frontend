@@ -52,7 +52,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     }
 
     "the user has completed their submission" should {
-      lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue")
+      lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue", ITSASessionKeys.AuthorisedAgentKey -> "anyValue")
 
       def call = TestAddAnotherClientController.addAnother()(request)
 
@@ -80,6 +80,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
         // test validity check
         request.session.get(ITSASessionKeys.MTDITID) must not be None
         request.session.get(ITSASessionKeys.JourneyStateKey) must not be None
+        request.session.get(ITSASessionKeys.AuthorisedAgentKey) must not be None
         request.session.get(ITSASessionKeys.UTR) must not be None
         request.session.get(ITSASessionKeys.NINO) must not be None
 
@@ -87,6 +88,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
 
         result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
         result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
+        result.session(request).get(ITSASessionKeys.AuthorisedAgentKey) mustBe None
         result.session(request).get(ITSASessionKeys.UTR) mustBe None
         result.session(request).get(ITSASessionKeys.NINO) mustBe None
       }

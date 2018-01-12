@@ -59,6 +59,7 @@ class AddAnotherClientControllerISpec extends ComponentSpecBase {
         val cookie = SessionCookieCrumbler.getSessionMap(res)
         cookie.keys should not contain ITSASessionKeys.MTDITID
         cookie.keys should not contain ITSASessionKeys.JourneyStateKey
+        cookie.keys should not contain ITSASessionKeys.AuthorisedAgentKey
 
         KeystoreStub.verifyKeyStoreDelete(Some(1))
       }

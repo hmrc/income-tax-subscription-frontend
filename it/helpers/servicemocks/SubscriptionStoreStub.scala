@@ -18,12 +18,18 @@ package helpers.servicemocks
 
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
+import incometax.unauthorisedagent.models.StoredSubscription
 import play.api.http.Status
 
 object SubscriptionStoreStub extends WireMockMethods {
   def storeSubscriptionUrl(nino: String): String = s"/income-tax-subscription-store/client-subscription-data/$nino"
 
-  def stubSuccessfulSubscription(): Unit = {
+  def stubSuccessfulStore(storedSubscription: StoredSubscription): Unit = {
+    when(method = POST, uri = storeSubscriptionUrl(testNino), body = storedSubscription)
+      .thenReturn(Status.CREATED, storedSubscription)
+  }
+
+  def stubSuccessfulRetrieval(): Unit = {
     when(method = GET, uri = storeSubscriptionUrl(testNino))
       .thenReturn(Status.OK, testStoredSubscription)
   }

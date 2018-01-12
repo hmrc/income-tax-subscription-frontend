@@ -40,6 +40,7 @@ class AddAnotherClientController @Inject()(override val baseConfig: BaseControll
         _ <- keystore.deleteAll()
       } yield Redirect(agent.controllers.matching.routes.ClientDetailsController.show().url)
         .removingFromSession(ITSASessionKeys.JourneyStateKey)
+        .removingFromSession(ITSASessionKeys.AuthorisedAgentKey)
         .removingFromSession(ITSASessionKeys.clientData: _*)
     }.recover {
       case e =>

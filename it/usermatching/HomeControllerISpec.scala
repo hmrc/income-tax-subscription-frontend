@@ -213,7 +213,7 @@ class HomeControllerISpec extends ComponentSpecBase {
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthNoUtr()
           SubscriptionStub.stubGetNoSubscription()
-          SubscriptionStoreStub.stubSuccessfulSubscription()
+          SubscriptionStoreStub.stubSuccessfulRetrieval()
           KeystoreStub.stubKeystoreSave(IncomeSource)
           KeystoreStub.stubKeystoreSave(OtherIncome)
           KeystoreStub.stubKeystoreSave(AccountingPeriodDate)

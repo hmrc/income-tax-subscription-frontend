@@ -22,6 +22,8 @@ import _root_.agent.models._
 import _root_.agent.services.CacheConstants
 import core.models.DateModel
 import incometax.business.models.AccountingPeriodModel
+import incometax.subscription.models.Both
+import incometax.unauthorisedagent.models.StoredSubscription
 import play.api.libs.json.{JsValue, Json}
 import usermatching.models.UserDetailsModel
 
@@ -44,6 +46,19 @@ object IntegrationTestModels {
   val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
   val testTerms = true
 
+  //n.b. this must match the data in fullKeystoreData
+  val testStoredSubscription =
+    StoredSubscription(
+      arn = testARN,
+      incomeSource = Both,
+      otherIncome = false,
+      currentPeriodIsPrior = Some(false),
+      accountingPeriodStart = Some(testAccountingPeriod.startDate),
+      accountingPeriodEnd = Some(testAccountingPeriod.endDate),
+      tradingName = Some(testBusinessName.businessName),
+      cashOrAccruals = Some(testAccountingMethod.accountingMethod)
+    )
+
   val fullKeystoreData: Map[String, JsValue] =
     keystoreData(
       incomeSource = Some(testIncomeSourceBoth),
@@ -56,13 +71,13 @@ object IntegrationTestModels {
     )
 
   def keystoreData(
-                   incomeSource: Option[IncomeSourceModel] = None,
-                   otherIncome: Option[OtherIncomeModel] = None,
-                   accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
-                   accountingPeriodDate: Option[AccountingPeriodModel] = None,
-                   businessName: Option[BusinessNameModel] = None,
-                   accountingMethod: Option[AccountingMethodModel] = None,
-                   terms: Option[Boolean] = None): Map[String, JsValue] = {
+                    incomeSource: Option[IncomeSourceModel] = None,
+                    otherIncome: Option[OtherIncomeModel] = None,
+                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
+                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
+                    businessName: Option[BusinessNameModel] = None,
+                    accountingMethod: Option[AccountingMethodModel] = None,
+                    terms: Option[Boolean] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++

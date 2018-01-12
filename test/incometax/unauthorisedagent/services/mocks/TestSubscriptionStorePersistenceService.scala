@@ -20,9 +20,9 @@ import agent.services.mocks.MockKeystoreService
 import core.config.MockConfig
 import core.utils.MockTrait
 import core.utils.TestConstants._
-import core.utils.TestModels._
 import incometax.unauthorisedagent.connectors.mocks.MockSubscriptionStoreConnector
 import incometax.unauthorisedagent.httpparsers.StoreSubscriptionResponseHttpParser.StoreSubscriptionResponse
+import incometax.unauthorisedagent.models.{StoreSubscriptionFailure, StoreSubscriptionSuccess}
 import incometax.unauthorisedagent.services.SubscriptionStorePersistenceService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -42,10 +42,13 @@ trait MockSubscriptionStorePersistenceService extends MockTrait {
     when(mockSubscriptionStorePersistenceService.storeSubscription(ArgumentMatchers.eq(arn), ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
   }
+  val successfulStoredSubscription = Future(Right(StoreSubscriptionSuccess))
 
-  val successfulStoredSubscription = Future(Some(testStoredSubscription))
+  val failureStoredSubscription = Future(Left(StoreSubscriptionFailure(testErrorMessage)))
 
-  val successfulSubscriptionFailure = Future(testException)
+  def mockStoredSubscriptionSuccess(arn: String, nino: String): Unit = mockStoreSubscription(arn, nino)(successfulStoredSubscription)
+
+  def mockStoredSubscriptionFailure(arn: String, nino: String): Unit = mockStoreSubscription(arn, nino)(failureStoredSubscription)
 
 }
 

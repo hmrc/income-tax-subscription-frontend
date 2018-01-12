@@ -19,11 +19,13 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
+import agent.auth.AgentJourneyState._
 import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
 import agent.services.{ClientRelationshipService, KeystoreService, SubscriptionOrchestrationService}
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import incometax.subscription.models.SubscriptionSuccess
+import incometax.unauthorisedagent.services.SubscriptionStorePersistenceService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -37,6 +39,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val keystoreService: KeystoreService,
                                            val subscriptionService: SubscriptionOrchestrationService,
                                            val clientRelationshipService: ClientRelationshipService,
+                                           val subscriptionStorePersistenceService: SubscriptionStorePersistenceService,
                                            val authService: AuthService,
                                            logging: Logging
                                           ) extends AuthenticatedController {
@@ -73,23 +76,38 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         )
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any keystore cached data")
 
+  private def submitForAuthorisedAgent(arn: String, nino: String
+                                      )(implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap
+                                      ): Future[Result] = {
+    val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
+    for {
+      mtditid <- subscriptionService.createSubscription(arn, nino, cache.getSummary())(headerCarrier)
+        .collect { case Right(SubscriptionSuccess(id)) => id }
+        .recoverWith { case _ => error("Successful response not received from submission") }
+      cacheMap <- keystoreService.saveSubscriptionId(mtditid)
+        .recoverWith { case _ => error("Failed to save to keystore") }
+    } yield Redirect(agent.controllers.routes.ConfirmationController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
+  }
+
+  private def submitForUnauthorisedAgent(arn: String, nino: String
+                                        )(implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap
+                                        ): Future[Result] =
+    subscriptionStorePersistenceService.storeSubscription(arn, nino) flatMap {
+      case Right(_) => Future.successful(Redirect(agent.controllers.routes.UnauthorisedAgentConfirmationController.show()))
+      case Left(err) => error("Error calling income-tax-subscription-store: " + err)
+    }
+
   val submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
-      cache =>
+      implicit cache =>
         // Will fail if there is no NINO
         val nino = user.clientNino.get
-
         // Will fail if there is no ARN in session
         val arn = user.arn.get
-        val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
-        for {
-          mtditid <- subscriptionService.createSubscription(arn, nino, cache.getSummary())(headerCarrier)
-            .collect { case Right(SubscriptionSuccess(id)) => id }
-            .recoverWith { case _ => error("Successful response not received from submission") }
-          cacheMap <- keystoreService.saveSubscriptionId(mtditid)
-            .recoverWith { case _ => error("Failed to save to keystore") }
-        } yield Redirect(agent.controllers.routes.ConfirmationController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
+        if (request.isAuthorisedAgent) submitForAuthorisedAgent(arn, nino)
+        else submitForUnauthorisedAgent(arn, nino)
+
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any keystore cached data")
 
   def error(message: String): Future[Nothing] = {

@@ -93,6 +93,8 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.authenticator.port" -> mockPort,
     "microservice.services.agent-microservice.host" -> mockHost,
     "microservice.services.agent-microservice.port" -> mockPort,
+    "microservice.services.income-tax-subscription-store.host" -> mockHost,
+    "microservice.services.income-tax-subscription-store.port" -> mockPort,
     "microservice.services.feature-switch.show-guidance" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> mockPort
@@ -211,12 +213,17 @@ trait ComponentSpecBase extends UnitSpec
       ITSASessionKeys.UTR -> testUtr
     ))
 
-    def submitCheckYourAnswers(): WSResponse = post("/check-your-answers", Map(
-      ITSASessionKeys.ArnKey -> testARN,
-      ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
-      ITSASessionKeys.NINO -> testNino,
-      ITSASessionKeys.UTR -> testUtr
-    ))(Map.empty)
+    def submitCheckYourAnswers(isAgentAuthorised: Boolean = true): WSResponse = post("/check-your-answers", {
+      val default = Map(
+        ITSASessionKeys.ArnKey -> testARN,
+        ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
+        ITSASessionKeys.NINO -> testNino,
+        ITSASessionKeys.UTR -> testUtr
+      )
+      if (isAgentAuthorised) default
+      else default.+(ITSASessionKeys.AuthorisedAgentKey -> false.toString)
+    }
+    )(Map.empty)
 
     def submitConfirmClient(previouslyFailedAttempts: Int = 0,
                             storedUserDetails: Option[UserDetailsModel] = Some(IntegrationTestModels.testClientDetails)): WSResponse = {
@@ -248,7 +255,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def getAddAnotherClient(hasSubmitted: Boolean): WSResponse =
       if (hasSubmitted)
-        get("/add-another", Map(ITSASessionKeys.MTDITID -> testMTDID))
+        get("/add-another", Map(ITSASessionKeys.MTDITID -> testMTDID, ITSASessionKeys.AuthorisedAgentKey -> false.toString))
       else
         get("/add-another")
 

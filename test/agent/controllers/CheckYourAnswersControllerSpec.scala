@@ -19,9 +19,10 @@ package agent.controllers
 import agent.audit.Logging
 import agent.services.CacheUtil._
 import agent.services.mocks._
-import agent.utils.TestConstants._
+import agent.utils.TestConstants.{testNino, _}
 import agent.utils.TestModels
 import agent.utils.TestModels.testCacheMap
+import incometax.unauthorisedagent.services.mocks.MockSubscriptionStorePersistenceService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
@@ -33,7 +34,8 @@ import scala.concurrent.Future
 class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService
   with MockClientRelationshipService
-  with MockSubscriptionOrchestrationService {
+  with MockSubscriptionOrchestrationService
+  with MockSubscriptionStorePersistenceService {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -51,6 +53,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     MockKeystoreService,
     subscriptionService = mockSubscriptionOrchestrationService,
     clientRelationshipService = mockClientRelationshipService,
+    mockSubscriptionStorePersistenceService,
     mockAuthService,
     app.injector.instanceOf[Logging]
   )
@@ -102,6 +105,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   }
 
   "Calling the submit action of the CheckYourAnswersController with an authorised user" when {
+    lazy val testSummary = TestModels.testCacheMap
 
     def call(request: Request[AnyContent]): Future[Result] = TestCheckYourAnswersController.submit(request)
 
@@ -129,59 +133,90 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "There are both a matched nino and terms in keystore and the submission is successful" should {
-      // generate a new nino specifically for this test,
-      // since the default value in test constant may be used by accident
-      lazy val newTestNino = new Generator().nextNino.nino
-      lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN, ITSASessionKeys.NINO -> newTestNino)
+    "The agent is authorised and" should {
 
-      lazy val result = call(request)
+      "There are both a matched nino and terms in keystore and the submission is successful" should {
+        // generate a new nino specifically for this test,
+        // since the default value in test constant may be used by accident
+        lazy val newTestNino = new Generator().nextNino.nino
+        lazy val authorisedAgentRequest = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN, ITSASessionKeys.NINO -> newTestNino)
 
-      lazy val testSummary = TestModels.testCacheMap
+        lazy val result = call(authorisedAgentRequest)
 
-      "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystore(
-          fetchAll = testSummary
-        )
-        mockCreateSubscriptionSuccess(testARN, newTestNino, testSummary.getSummary())
+        "return a redirect status (SEE_OTHER - 303)" in {
+          setupMockKeystore(
+            fetchAll = testSummary
+          )
+          mockCreateSubscriptionSuccess(testARN, newTestNino, testSummary.getSummary())
 
-        status(result) must be(Status.SEE_OTHER)
-        await(result)
-        verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
+          status(result) must be(Status.SEE_OTHER)
+          await(result)
+          verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
 
-        //TODO - Test path header being sent to backend
-        // verifySubscriptionHeader(ITSASessionKeys.RequestURI -> request.uri)
+          //TODO - Test path header being sent to backend
+          // verifySubscriptionHeader(ITSASessionKeys.RequestURI -> request.uri)
+        }
+
+        s"redirect to '${agent.controllers.routes.ConfirmationController.show().url}'" in {
+          redirectLocation(result) mustBe Some(agent.controllers.routes.ConfirmationController.show().url)
+        }
       }
 
-      s"redirect to '${agent.controllers.routes.ConfirmationController.show().url}'" in {
-        redirectLocation(result) mustBe Some(agent.controllers.routes.ConfirmationController.show().url)
+      "When the submission is unsuccessful" should {
+        lazy val authorisedAgentRequest = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN, ITSASessionKeys.NINO -> testNino)
+
+        "return a failure if subscription fails" in {
+          setupMockKeystore(fetchAll = TestModels.testCacheMap)
+          mockCreateSubscriptionFailure(testARN, testNino, TestModels.testCacheMap.getSummary())
+
+          val ex = intercept[InternalServerException](await(call(authorisedAgentRequest)))
+          ex.message mustBe "Successful response not received from submission"
+          verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+        }
+
+        // TODO re-enable create relationship test once the agent team is ready
+        "return a failure if create client relationship fails" ignore {
+          val request = authorisedAgentRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
+
+          setupMockKeystore(fetchAll = TestModels.testCacheMap)
+          mockCreateSubscriptionSuccess(testARN, testNino, testCacheMap.getSummary())
+
+          val ex = intercept[InternalServerException](await(call(request)))
+          ex.message mustBe "Failed to create client relationship"
+          verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+        }
       }
     }
 
-    "When the submission is unsuccessful" should {
-      "return a failure if subscription fails" in {
-        val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
+    "The agent is not authorised" should {
+      lazy val newTestNino = new Generator().nextNino.nino
 
-        setupMockKeystore(fetchAll = TestModels.testCacheMap)
-        mockCreateSubscriptionFailure(testARN, testNino, testCacheMap.getSummary())
+      lazy val unauthorisedAgentRequest = subscriptionRequest
+        .addingToSession(ITSASessionKeys.ArnKey -> testARN, ITSASessionKeys.NINO -> newTestNino)
+        .addingToSession(ITSASessionKeys.AuthorisedAgentKey -> false.toString)
 
-        val ex = intercept[InternalServerException](await(call(request)))
-        ex.message mustBe "Successful response not received from submission"
-        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+      "There are both a matched nino and terms in keystore" should {
+        "send the data to the subscription store service and if successful redirect to the send client link page" in {
+          setupMockKeystore(fetchAll = testSummary)
+          mockStoredSubscriptionSuccess(testARN, newTestNino)
+
+          lazy val result = call(unauthorisedAgentRequest)
+
+          status(result) must be(Status.SEE_OTHER)
+          await(result)
+
+          redirectLocation(result) mustBe Some(agent.controllers.routes.UnauthorisedAgentConfirmationController.show().url)
+        }
       }
 
-      // TODO re-enable create relationship test once the agent team is ready
-      "return a failure if create client relationship fails" ignore {
-        val request = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
+      "send the data to the subscription store service and if unsuccessful throw internal server exception" in {
+        setupMockKeystore(fetchAll = testSummary)
+        mockStoredSubscriptionFailure(testARN, newTestNino)
 
-        setupMockKeystore(fetchAll = TestModels.testCacheMap)
-        mockCreateSubscriptionSuccess(testARN, testNino, testCacheMap.getSummary())
+        lazy val result = call(unauthorisedAgentRequest)
 
-        val ex = intercept[InternalServerException](await(call(request)))
-        ex.message mustBe "Failed to create client relationship"
-        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+        intercept[InternalServerException](await(result))
       }
-
     }
   }
 
