@@ -52,15 +52,18 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
     implicit user =>
       user.arn match {
         case Some(arn) =>
-            (user.clientNino, user.clientUtr) match {
-              case (Some(nino), Some(utr)) =>
+          (user.clientNino, user.clientUtr) match {
+            case (Some(nino), Some(utr)) =>
+              if (!request.isAuthorisedAgent && request.isInAgentState(AgentUserMatching))
+                successful(Redirect(agent.controllers.routes.AgentNotAuthorisedController.show()))
+              else
                 successful(Redirect(agent.controllers.routes.IncomeSourceController.show()).withJourneyState(AgentSignUp))
-              case (Some(nino), _) =>
-                successful(Redirect(agent.controllers.matching.routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey))
-              case _ =>
-                successful(Redirect(agent.controllers.matching.routes.ClientDetailsController.show())
-                  .addingToSession(ArnKey -> arn).withJourneyState(AgentUserMatching))
-            }
+            case (Some(nino), _) =>
+              successful(Redirect(agent.controllers.matching.routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey))
+            case _ =>
+              successful(Redirect(agent.controllers.matching.routes.ClientDetailsController.show())
+                .addingToSession(ArnKey -> arn).withJourneyState(AgentUserMatching))
+          }
         case None =>
           successful(Redirect(agent.controllers.routes.NotEnrolledAgentServicesController.show()))
       }

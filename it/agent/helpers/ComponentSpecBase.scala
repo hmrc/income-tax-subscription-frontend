@@ -18,7 +18,7 @@ package agent.helpers
 
 import java.util.UUID
 
-import _root_.agent.auth.{AgentJourneyState, AgentSignUp, AgentUserMatching}
+import _root_.agent.auth.{AgentJourneyState, AgentSignUp, AgentUserMatched, AgentUserMatching}
 import _root_.agent.controllers.ITSASessionKeys
 import _root_.agent.forms._
 import _root_.agent.helpers.IntegrationTestConstants._
@@ -201,6 +201,10 @@ trait ComponentSpecBase extends UnitSpec
     def notEnrolledAgentServices(): WSResponse = get("/not-enrolled-agent-services")
 
     def noClientRelationship(): WSResponse = get("/error/no-client-relationship", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
+
+    def agentNotAuthorised(): WSResponse = get("/error/not-authorised", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name, ITSASessionKeys.AuthorisedAgentKey -> false.toString))
+
+    def submitAgentNotAuthorised(): WSResponse = post("/error/not-authorised", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
 
     def clientAlreadySubscribed(): WSResponse = get("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 

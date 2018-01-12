@@ -19,14 +19,15 @@ package agent.controllers.matching
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.AgentJourneyState._
-import agent.auth.{AgentUserMatched, IncomeTaxAgentUser, UserMatchingController}
+import agent.auth._
 import agent.controllers.ITSASessionKeys
 import agent.controllers.ITSASessionKeys.FailedClientMatching
 import agent.services._
+import core.auth.JourneyState
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.models.{LockedOut, NotLockedOut, UserDetailsModel}
@@ -101,22 +102,33 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
             Redirect(agent.controllers.routes.ClientAlreadySubscribedController.show())
               .removingFromSession(FailedClientMatching)
           )
-          case Left(NoClientRelationship) => successful(
-            Redirect(agent.controllers.routes.NoClientRelationshipController.show())
-              .removingFromSession(FailedClientMatching)
-          )
-          case Right(ApprovedAgent(nino, optUtr)) =>
-            val resultWithoutUTR = Redirect(agent.controllers.routes.HomeController.index())
-              .withJourneyState(AgentUserMatched)
-              .removingFromSession(FailedClientMatching)
-              .addingToSession(ITSASessionKeys.NINO -> nino)
-            val result = optUtr match {
-              case Some(utr) => resultWithoutUTR.addingToSession(ITSASessionKeys.UTR -> utr)
-              case _ => resultWithoutUTR.removingFromSession(ITSASessionKeys.UTR)
+          case Right(unapprovedAgent @ UnApprovedAgent(clientNino, clientUtr)) =>
+            if (applicationConfig.unauthorisedAgentEnabled) {
+              successful(matched(unapprovedAgent,
+                agent.controllers.routes.AgentNotAuthorisedController.show(), AgentUserMatching)
+                .setAuthorisedAgent(false))
+            } else {
+              successful(
+                Redirect(agent.controllers.routes.NoClientRelationshipController.show())
+                  .removingFromSession(FailedClientMatching))
             }
-            successful(result.clearUserDetails)
+          case Right(approvedAgent @ ApprovedAgent(nino, optUtr)) =>
+            successful(matched(approvedAgent, agent.controllers.routes.HomeController.index(), AgentUserMatched)
+              .clearUserDetails)
         }
       }
+  }
+
+  private def matched(qualifiedAgent: QualifiedAgent, call: Call, journeyState: AgentJourneyState)(implicit req: Request[_]): Result = {
+    val resultWithoutUTR = Redirect(call)
+      .withJourneyState(journeyState)
+      .removingFromSession(FailedClientMatching)
+      .addingToSession(ITSASessionKeys.NINO -> qualifiedAgent.clientNino)
+
+    qualifiedAgent.clientUtr match {
+      case Some(utr) => resultWithoutUTR.addingToSession(ITSASessionKeys.UTR -> utr)
+      case _ => resultWithoutUTR.removingFromSession(ITSASessionKeys.UTR)
+    }
   }
 
   lazy val backUrl: String = routes.ClientDetailsController.show().url

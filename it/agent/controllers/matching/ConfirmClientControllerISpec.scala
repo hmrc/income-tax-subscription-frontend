@@ -144,6 +144,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         KeystoreStub.stubFullKeystore()
         AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = false)
+        SubscriptionStub.stubGetNoSubscription()
 
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()

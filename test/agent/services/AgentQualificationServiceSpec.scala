@@ -38,6 +38,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
     verifyAudit(ClientMatchingAuditModel(TestConstants.testARN, TestModels.testClientDetails, isSuccess = false), auditPath)
 
   val matchedClient = ApprovedAgent(testNino, testUtr)
+  val unapprovedMatchedClient = UnApprovedAgent(testNino, testUtr)
 
   def request(clientDetails: Option[UserDetailsModel] = None): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest().buildRequest(clientDetails)
@@ -112,12 +113,12 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
       response mustBe Left(UnexpectedFailure)
     }
-
-    "return NoClientRelationship if there are no existing relationships" in {
+//
+    "return UnApprovedAgent if there are no existing relationships" in {
       preExistingRelationship(testARN, testNino)(isPreExistingRelationship = false)
       val response = await(call)
 
-      response mustBe Left(NoClientRelationship)
+      response mustBe Right(unapprovedMatchedClient)
     }
 
     "return ApprovedAgent if there is an existing relationship" in {
@@ -169,18 +170,19 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
       verifyClientMatchingSuccessAudit()
     }
 
-    "return NoClientRelationship if the agent does not have prior relationship with the client" in {
-      setupOrchestrateAgentQualificationFailure(NoClientRelationship)
+    "return UnApprovedAgent if the agent does not have prior relationship with the client" in {
+
+      setupOrchestrateAgentQualificationSuccess(isPreExistingRelationship = false)
 
       val result = call(request(testClientDetails))
 
-      await(result) mustBe Left(NoClientRelationship)
+      await(result) mustBe Right(UnApprovedAgent(testClientDetails.ninoInBackendFormat, testUtr))
 
       verifyClientMatchingSuccessAudit()
     }
 
     "return ApprovedAgent if the client matching was successful" in {
-      setupOrchestrateAgentQualificationSuccess()
+      setupOrchestrateAgentQualificationSuccess(isPreExistingRelationship = true)
 
       val result =  call(request(testClientDetails))
 

@@ -41,9 +41,13 @@ case object ClientAlreadySubscribed extends UnqualifiedAgent
 
 case object UnexpectedFailure extends UnqualifiedAgent
 
-case object NoClientRelationship extends UnqualifiedAgent
+trait QualifiedAgent{
+  def clientNino: String
+  def clientUtr: Option[String]
+}
 
-case class ApprovedAgent(clientNino: String, clientUtr: Option[String])
+case class ApprovedAgent(clientNino: String, clientUtr: Option[String]) extends QualifiedAgent
+case class UnApprovedAgent(clientNino: String, clientUtr: Option[String]) extends QualifiedAgent
 
 @Singleton
 class AgentQualificationService @Inject()(clientMatchingService: UserMatchingService,
@@ -53,7 +57,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
 
   import usermatching.utils.UserMatchingSessionUtil._
 
-  type ReturnType = Either[UnqualifiedAgent, ApprovedAgent]
+  type ReturnType = Either[UnqualifiedAgent, QualifiedAgent]
 
   private[services]
   def matchClient(arn: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] = {
@@ -79,7 +83,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
   }
 
   private[services]
-  def checkExistingSubscription(matchedClient: ApprovedAgent)(implicit hc: HeaderCarrier): Future[ReturnType] = {
+  def checkExistingSubscription(matchedClient: QualifiedAgent)(implicit hc: HeaderCarrier): Future[ReturnType] = {
     for {
       agentClientResponse <- subscriptionService.getSubscription(matchedClient.clientNino)
         .collect {
@@ -91,13 +95,13 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
 
   private[services]
   def checkClientRelationship(arn: String,
-                              matchedClient: ApprovedAgent
+                              matchedClient: QualifiedAgent
                              )(implicit hc: HeaderCarrier): Future[ReturnType] = {
     for {
       isPreExistingRelationship <- clientRelationshipService.isPreExistingRelationship(arn, matchedClient.clientNino)
     } yield
       if (isPreExistingRelationship) Right(matchedClient)
-      else Left(NoClientRelationship)
+      else Right(UnApprovedAgent(matchedClient.clientNino, matchedClient.clientUtr))
   }.recoverWith { case _ => Left(UnexpectedFailure) }
 
   private implicit class Util[A, B](first: Future[Either[A, B]]) {
@@ -110,12 +114,8 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
 
   def orchestrateAgentQualification(arn: String)(implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[ReturnType] =
     matchClient(arn)
-      .flatMapRight(checkClientRelationship(arn, _))
       .flatMapRight(checkExistingSubscription)
-      .flatMapRight {
-        case returnValue@ApprovedAgent(nino, utr) => Future.successful(Right(returnValue))
-      }
-
+      .flatMapRight(checkClientRelationship(arn, _))
 }
 
 

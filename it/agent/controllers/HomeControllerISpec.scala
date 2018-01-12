@@ -16,7 +16,7 @@
 
 package agent.controllers
 
-import _root_.agent.auth.{AgentRegistration, AgentSignUp, AgentUserMatched, AgentUserMatching}
+import _root_.agent.auth.{AgentSignUp, AgentUserMatched, AgentUserMatching}
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks.AuthStub
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
@@ -64,7 +64,7 @@ class HomeControllerISpec extends ComponentSpecBase {
       }
 
       "journey state is UserMatching" should {
-        "redirect to client details" in {
+        "redirect to client details when the agent is authorised" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
 
@@ -75,6 +75,26 @@ class HomeControllerISpec extends ComponentSpecBase {
           res should have(
             httpStatus(SEE_OTHER),
             redirectURI(clientDetailsURI)
+          )
+
+          Then("the JourneyStateKey should remain as UserMatching")
+          SessionCookieCrumbler.getSessionMap(res).get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatching.name)
+        }
+
+        "redirect to the 'not authorised' page when the agent is unauthorised" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+
+          When("I call GET /index")
+          val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatching),
+            Map(ITSASessionKeys.AuthorisedAgentKey -> false.toString,
+              ITSASessionKeys.NINO -> testNino,
+              ITSASessionKeys.UTR -> testUtr))
+
+          Then("the result should have a status of SEE_OTHER and a redirect location of /not-authorised")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(errorNotAuthorisedURI)
           )
 
           Then("the JourneyStateKey should remain as UserMatching")
