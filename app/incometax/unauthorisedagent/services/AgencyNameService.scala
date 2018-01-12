@@ -16,6 +16,7 @@
 
 package incometax.unauthorisedagent.services
 
+import java.util.UUID
 import javax.inject.Inject
 
 import incometax.unauthorisedagent.connectors.AgentServicesAccountConnector
@@ -26,11 +27,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AgencyNameService @Inject()(agentServicesAccountConnector: AgentServicesAccountConnector
                                     )(implicit ec: ExecutionContext) {
+  private val stubbedAgencyName = UUID.randomUUID().toString
+
   def getAgencyName(arn: String)(implicit hc: HeaderCarrier): Future[String] =
-    agentServicesAccountConnector.getAgencyName(arn) map {
-      case Right(GetAgencyNameSuccess(agencyName)) =>
-        agencyName
-      case Left(GetAgencyNameFailure(reason)) =>
-        throw new InternalServerException(s"Failed to get agency name: $reason")
-    }
+    //TODO - re-enable when agent services are ready
+      Future.successful(stubbedAgencyName)
+
+//    agentServicesAccountConnector.getAgencyName(arn) map {
+//      case Right(GetAgencyNameSuccess(agencyName)) =>
+//        agencyName
+//      case Left(GetAgencyNameFailure(reason)) =>
+//        throw new InternalServerException(s"Failed to get agency name: $reason")
+//    }
 }

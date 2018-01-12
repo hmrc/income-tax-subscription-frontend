@@ -188,12 +188,12 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "The agent is not authorised" should {
+    "The agent is not authorised" when {
       lazy val newTestNino = new Generator().nextNino.nino
 
       lazy val unauthorisedAgentRequest = subscriptionRequest
         .addingToSession(ITSASessionKeys.ArnKey -> testARN, ITSASessionKeys.NINO -> newTestNino)
-        .addingToSession(ITSASessionKeys.AuthorisedAgentKey -> false.toString)
+        .addingToSession(ITSASessionKeys.UnauthorisedAgentKey -> true.toString)
 
       "There are both a matched nino and terms in keystore" should {
         "send the data to the subscription store service and if successful redirect to the send client link page" in {

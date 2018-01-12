@@ -32,6 +32,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.CitizenDetailsService
+import usermatching.userjourneys.ConfirmAgentSubscription
 
 import scala.concurrent.Future
 
@@ -65,7 +66,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
             case None =>
               subscriptionStoreService.retrieveSubscriptionData(nino) flatMap {
                 case Some(storedSubscription) =>
-                  Future.successful(goToConfirmAgentSubscription(storedSubscription.arn))
+                  Future.successful(goToConfirmAgentSubscription(timestamp, storedSubscription.arn))
                 case None =>
                   resolveUtr(user, nino) map {
                     case Some(utr) =>
@@ -82,9 +83,11 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       }
   }
 
-  private def goToConfirmAgentSubscription(arn: String)(implicit request: Request[AnyContent]): Result =
-    Redirect(incometax.unauthorisedagent.controllers.routes.AuthoriseAgentController.show())
+  private def goToConfirmAgentSubscription(timestamp: String, arn: String)(implicit request: Request[AnyContent]): Result =
+    Redirect(incometax.unauthorisedagent.controllers.routes.ConfirmAgentController.show())
       .addingToSession(AgentReferenceNumber -> arn)
+      .addingToSession(StartTime -> timestamp)
+      .withJourneyState(ConfirmAgentSubscription)
 
   lazy val goToPreferences = Redirect(digitalcontact.controllers.routes.PreferencesController.checkPreferences())
 

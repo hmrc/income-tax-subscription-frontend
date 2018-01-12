@@ -18,6 +18,7 @@ package agent.controllers
 
 import agent.audit.Logging
 import agent.services.mocks.MockKeystoreService
+import core.config.MockConfig
 import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import org.scalatest.Matchers._
 import play.api.mvc.{Action, AnyContent}
@@ -28,7 +29,11 @@ class UnauthorisedAgentConfirmationControllerSpec extends AgentControllerBaseSpe
   with MockKeystoreService with FeatureSwitching {
 
   object TestUnauthorisedAgentConfirmationController extends UnauthorisedAgentConfirmationController(
-    MockBaseControllerConfig,
+    mockBaseControllerConfig(
+      new MockConfig {
+        override val unauthorisedAgentEnabled = true
+      }
+    ),
     messagesApi,
     MockKeystoreService,
     mockAuthService,
@@ -40,39 +45,50 @@ class UnauthorisedAgentConfirmationControllerSpec extends AgentControllerBaseSpe
     "showUnauthorisedAgentConfirmation" -> TestUnauthorisedAgentConfirmationController.show
   )
 
-  "UnauthorisedAgentConfirmationController" when {
+  "show" when {
+    "the unauthorised agent feature switch is enabled" should {
+      "return OK" in {
+        object TestUnauthorisedAgentConfirmationController extends UnauthorisedAgentConfirmationController(
+          mockBaseControllerConfig(
+            new MockConfig {
+              override val unauthorisedAgentEnabled = true
+            }
+          ),
+          messagesApi,
+          MockKeystoreService,
+          mockAuthService,
+          app.injector.instanceOf[Logging]
+        )
 
-    "submitted is not in session" should {
-      "return a NotFoundException" in {
-        val result = TestUnauthorisedAgentConfirmationController.show(subscriptionRequest)
+        val result = TestUnauthorisedAgentConfirmationController.show(
+          subscriptionRequest.withSession(ITSASessionKeys.UnauthorisedAgentKey -> true.toString)
+        )
 
-        intercept[NotFoundException](await(result))
+        status(result) shouldBe OK
+
+        await(result)
       }
     }
 
-    "show" when {
-      "the unauthorised agent feature switch is enabled" when {
-            "submitted is in session" should {
-              "Get the ID from keystore" in {
-                enable(UnauthorisedAgentFeature)
-
-                val result = TestUnauthorisedAgentConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))
-                status(result) shouldBe OK
-
-                await(result)
-              }
+    "the feature switch is not enabled" should {
+      "return NOT_FOUND" in {
+        object TestUnauthorisedAgentConfirmationController extends UnauthorisedAgentConfirmationController(
+          mockBaseControllerConfig(
+            new MockConfig {
+              override val unauthorisedAgentEnabled = false
             }
-          }
+          ),
+          messagesApi,
+          MockKeystoreService,
+          mockAuthService,
+          app.injector.instanceOf[Logging]
+        )
 
-      "the feature switch is not enabled" should {
-        "return NOT_FOUND" in {
-          disable(UnauthorisedAgentFeature)
-
-          intercept[NotFoundException](await(TestUnauthorisedAgentConfirmationController.show(subscriptionRequest)))
-        }
+        intercept[NotFoundException](await(TestUnauthorisedAgentConfirmationController.show(subscriptionRequest)))
       }
-          authorisationTests()
+    }
 
-        }
-      }
-   }
+    authorisationTests()
+
+  }
+}

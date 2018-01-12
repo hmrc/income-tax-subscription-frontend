@@ -105,8 +105,8 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         // Will fail if there is no ARN in session
         val arn = user.arn.get
 
-        if (request.isAuthorisedAgent) submitForAuthorisedAgent(arn, nino)
-        else submitForUnauthorisedAgent(arn, nino)
+        if (request.isUnauthorisedAgent) submitForUnauthorisedAgent(arn, nino)
+        else submitForAuthorisedAgent(arn, nino)
 
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any keystore cached data")
 
