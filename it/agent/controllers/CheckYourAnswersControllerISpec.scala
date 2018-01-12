@@ -16,14 +16,14 @@
 
 package agent.controllers
 
-import _root_.agent.helpers.IntegrationTestConstants.{testMTDID, _}
-import _root_.agent.helpers.IntegrationTestModels.fullKeystoreData
+import _root_.agent.helpers.IntegrationTestConstants._
+import _root_.agent.helpers.IntegrationTestModels.{fullKeystoreData, testStoredSubscription}
 import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 import play.api.i18n.Messages
 import _root_.agent.services.CacheConstants._
-import helpers.servicemocks.SubscriptionStub
+import helpers.servicemocks.{SubscriptionStoreStub, SubscriptionStub}
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase {
 
@@ -64,32 +64,52 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
 
 
   "POST /check-your-answers" when {
-    "The whole subscription process was successful" should {
-      "call subscription on the back end service and redirect to confirmation page" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        GGAdminStub.stubKnowFactsSuccess(testNino, testMTDID)
-        KeystoreStub.stubPutMtditId()
+    "The whole subscription process was successful" when {
+      "agent is authorised" should {
+        "call subscription on the back end service and redirect to confirmation page" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
+          GGAdminStub.stubKnowFactsSuccess(testNino, testMTDID)
+          KeystoreStub.stubPutMtditId()
 
-        When("I call POST /check-your-answers")
-        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+          When("I call POST /check-your-answers")
+          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
 
-        Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(confirmationURI)
-        )
+          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(confirmationURI)
+          )
 
-        val cookieMap = SessionCookieCrumbler.getSessionMap(res)
-        cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
 
-        GGAdminStub.verifyKnownFacts(testNino, testMTDID, Some(1))
+          GGAdminStub.verifyKnownFacts(testNino, testMTDID, Some(1))
+        }
+      }
+
+      "agent is unauthorised" should {
+        "call subscription on the back end service and redirect to confirmation page" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          SubscriptionStoreStub.stubSuccessfulStore(testStoredSubscription)
+
+          When("I call POST /check-your-answers")
+          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(isAgentAuthorised = false)
+
+          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(unauthorisedAgentConfirmationURI)
+          )
+        }
       }
     }
 
-    "The whole subscription process was unsuccessful" should {
+    "The whole subscription process was unsuccessful" when {
 
       "show an error page when subscription failed" in {
         Given("I setup the wiremock stubs")
