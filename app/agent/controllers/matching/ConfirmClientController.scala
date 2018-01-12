@@ -102,9 +102,9 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
             Redirect(agent.controllers.routes.ClientAlreadySubscribedController.show())
               .removingFromSession(FailedClientMatching)
           )
-          case unapprovedAgent @ Right(UnApprovedAgent(clientNino, clientUtr)) =>
+          case Right(unapprovedAgent @ UnApprovedAgent(clientNino, clientUtr)) =>
             if (applicationConfig.unauthorisedAgentEnabled) {
-              successful(matched(unapprovedAgent.b,
+              successful(matched(unapprovedAgent,
                 agent.controllers.routes.AgentNotAuthorisedController.show(), AgentUserMatching)
                 .setAuthorisedAgent(false))
             } else {
@@ -112,8 +112,8 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                 Redirect(agent.controllers.routes.NoClientRelationshipController.show())
                   .removingFromSession(FailedClientMatching))
             }
-          case approvedAgent @ Right(ApprovedAgent(nino, optUtr)) =>
-            successful(matched(approvedAgent.b, agent.controllers.routes.HomeController.index(), AgentUserMatched)
+          case Right(approvedAgent @ ApprovedAgent(nino, optUtr)) =>
+            successful(matched(approvedAgent, agent.controllers.routes.HomeController.index(), AgentUserMatched)
               .clearUserDetails)
         }
       }
