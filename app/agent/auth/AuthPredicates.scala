@@ -85,7 +85,7 @@ object AuthPredicates extends Results {
 
   val userMatchingPredicates = homePredicates |+| userMatchingJourneyPredicate
 
-  val unauthorisedUserMatchingPredicates = homePredicates |+| userMatchingJourneyPredicate |+| unauthorizedAgentPredicate
+  val unauthorisedUserMatchingPredicates = homePredicates |+| userMatchingJourneyPredicate |+| unauthorisedAgentPredicate
 
   val userMatchedPredicates = homePredicates |+| userMatchedJourneyPredicate
 
@@ -95,6 +95,6 @@ object AuthPredicates extends Results {
 
   val confirmationPredicates = defaultPredicates |+| hasSubmitted
 
-  val unauthorisedConfirmationPredicates = defaultPredicates |+| hasSubmitted |+| unauthorizedAgentPredicate
+  val unauthorisedConfirmationPredicates = defaultPredicates |+| hasSubmitted |+| unauthorisedAgentPredicate
 
 }
