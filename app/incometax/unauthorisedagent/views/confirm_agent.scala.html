@@ -28,17 +28,18 @@
 }
 
 @main_template(title = Messages("confirm-agent.title", agentName), form = confirmAgentForm) {
-  <h1 class="heading-large">@question</h1>
-  <p>@Messages("confirm-agent.line_1")</p>
-  @form(action = postAction) {
-    @radioHelper(
-      field = confirmAgentForm(ConfirmAgentForm.choice),
-      legend = question,
-      options = Seq(
-        RadioOption(ConfirmAgentForm.option_yes, Messages("base.yes")),
-        RadioOption(ConfirmAgentForm.option_no, Messages("base.no"))
-      ),
-      parentForm = confirmAgentForm
+    @summaryErrorHelper(confirmAgentForm)
+    <h1 class="heading-large">@question</h1>
+    <p>@Messages("confirm-agent.line_1")</p>
+    @form(action = postAction) {
+        @radioHelper(
+            field = confirmAgentForm(ConfirmAgentForm.choice),
+            legend = question,
+            options = Seq(
+            RadioOption(ConfirmAgentForm.option_yes, Messages("base.yes")),
+            RadioOption(ConfirmAgentForm.option_no, Messages("base.no"))
+        ),
+        parentForm = confirmAgentForm
     )
 
     @continueButton()

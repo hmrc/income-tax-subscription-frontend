@@ -28,6 +28,7 @@
 }
 
 @main_template(title = Messages("authorise-agent.title", agentName), form = authoriseAgentForm) {
+    @summaryErrorHelper(authoriseAgentForm)
     <h1 class="heading-large">@question</h1>
     @form(action = postAction) {
         @radioHelper(
