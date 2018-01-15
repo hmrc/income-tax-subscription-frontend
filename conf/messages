@@ -189,8 +189,14 @@ timeout.heading                                                 = Your session h
 timeout.returnToHome                                            = To sign up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Already enrolled page ##
-already-enrolled.title                                          = You''ve already signed up for quarterly reporting
-already-enrolled.heading                                        = You''ve already signed up for quarterly reporting
+already-enrolled.title                                          = You''ve already signed up
+already-enrolled.heading                                        = You''ve already signed up
+already-enrolled.line1                                          = Your sign in details are already in use.
+
+## Claim subscription page ##
+claim-subscription.title                                        = You''ve already signed up for quarterly reporting
+claim-subscription.heading                                      = You''ve already signed up for quarterly reporting
+
 
 ## Summary page ##
 summary.title                                                   = Check your answers
@@ -342,18 +348,18 @@ user-details.summary.dob                                        = Date of birth
 
 
 ## No SA page ##
-no-sa.title                                                     = You can''t use this service yet
-no-sa.heading                                                   = You can''t use this service yet
-no-sa.line_1                                                    = You need to <a id="sa-signup" href="{0}">register for Self Assessment</a> before you can sign up for quarterly reporting.
+no-sa.title                                                     = You need to register for Self Assessment
+no-sa.heading                                                   = You need to register for Self Assessment
+no-sa.line_1                                                    = Before you can sign up to use software to report your Income Tax, you need to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
 ## Other income error page ##
-other-income-error.title                                        = You can only use software to report some of your income
-other-income-error.heading                                      = You can only use software to report some of your income
-other-income-error.para1                                        = As this is a trial service, you can only use software to report income from:
-other-income-error.bullet1                                      = your sole trader business
-other-income-error.bullet2                                      = renting out UK property
-other-income-error.bullet3                                      = your sole trader business and renting out UK property
-other-income-error.para2                                        = You''ll be able to use software to report your other income later in the year.
+other-income-error.title                                        = You can use software to report your Income Tax
+other-income-error.heading                                      = You can use software to report your Income Tax
+other-income-error.para1                                        = You only need to send quarterly reports on income you earn from either:
+other-income-error.bullet1                                      = working for yourself
+other-income-error.bullet2                                      = renting out a UK property
+other-income-error.bullet3                                      = working for yourself and renting out a UK property
+other-income-error.para2                                        = Tell us about your other income sources in your final report. You need to submit this report by 31 January.
 
 ## Other sources of income page ##
 income-other.title                                              = Do you have any other sources of income?
@@ -428,6 +434,7 @@ agent.base.change                                                     = Change
 agent.base.yes                                                        = Yes
 agent.base.no                                                         = No
 agent.base.go_back                                                    = Go back
+agent.base.try_again                                                  = Try again
 
 # Agent front page
 agent.frontpage.title                                                 = Sign up to report your client''s income and expenses quarterly
@@ -452,8 +459,8 @@ agent.frontpage.bullet_9                                              = you need
 agent.frontpage.bullet_10                                             = your client needs to <a href="{0}">authorise you as their agent</a>
 
 # Client details page
-agent.client-details-error.title                                      = Client match error
-agent.client-details-error.heading                                    = We couldn''t confirm your client
+agent.client-details-error.title                                      = There''s a problem
+agent.client-details-error.heading                                    = There''s a problem
 agent.client-details-error.line_1                                     = The details you''ve entered are not on our system.
 
 # Client Details Lockout
@@ -554,7 +561,7 @@ agent.timeout.returnToHome                                            = To sign 
 ## Client already subscribed page ##
 agent.client-already-subscribed.title                                 = Your client has already signed up
 agent.client-already-subscribed.heading                               = Your client has already signed up
-agent.client-already-subscribed.para1                                 = The details you''ve entered are already in use.
+agent.client-already-subscribed.para1                                 = This client''s details are already in use.
 
 ## No client relationship page ##
 agent.no-client-relationship.title                                    = You''re not authorised for this client
@@ -695,8 +702,8 @@ agent.not-eligible.signup                                             = I want t
 agent.not-eligible.signout                                            = I don''t want to sign up - sign me out
 
 ## No NINO page ##
-agent.no-nino.title                                                   = You can''t sign up for quarterly reporting yet
-agent.no-nino.heading                                                 = You can''t sign up for quarterly reporting yet
+agent.no-nino.title                                                   = Your client can''t use this service yet
+agent.no-nino.heading                                                 = Your client can''t use this service yet
 agent.no-nino.line_1                                                  = You can sign up later in the year when this service is available to you.
 
 ## Main income error page ##
@@ -709,9 +716,13 @@ agent.main-income-error.bullet2                                       = someone 
 agent.main-income-error.bullet3                                       = a sole trader with income from one business and they rent out a UK property
 
 ## Other income error page ##
-agent.other-income-error.title                                        = You can only send quarterly reports on part of your client''s income
-agent.other-income-error.heading                                      = You can only send quarterly reports on part of your client''s income
-agent.other-income-error.para1                                        = You''ll be able to use this reporting method for your client''s other income later in the year.
+agent.other-income-error.title                                        = You can use software to report your client''s Income Tax
+agent.other-income-error.heading                                      = You can use software to report your client''s Income Tax
+agent.other-income-error.para1                                        = You only need to send quarterly reports on your client’s income from either:
+agent.other-income-error.bullet1                                      = their sole trader business
+agent.other-income-error.bullet2                                      = renting out a UK property
+agent.other-income-error.bullet3                                      = their sole trader business and renting out a UK property
+agent.other-income-error.para2                                        = You can tell us about your client’s other income sources in their final summary report. Your client needs to submit this report by 31 January.
 
 ## Other sources of income page ##
 agent.income-other.title                                              = Does your client have any other sources of income?
@@ -727,9 +738,9 @@ agent.income-other.yes                                                = Yes
 agent.income-other.no                                                 = No
 
 ## Not Enrolled to Agent Services
-agent.not_enrolled_agent_services.title                               = You can''t sign up your clients yet
-agent.not_enrolled_agent_services.heading                             = You can''t sign up your clients yet
-agent.not_enrolled_agent_services.para1                               = To sign up for quarterly reporting, you must <a href="{0}">create an Agent Services account</a>.
+agent.not_enrolled_agent_services.title                               = You can''t use this service yet
+agent.not_enrolled_agent_services.heading                             = You can''t use this service yet
+agent.not_enrolled_agent_services.para1                               = To use this service, you need to <a href="{0}">set up an agent services account</a>.
 
 ## Client Details ##
 agent.client-details.title                                            = Enter your client''s details
@@ -765,8 +776,8 @@ agent.thank-you.heading                                               = Thank yo
 agent.thank-you.line_1                                                = Your feedback will help us improve this service.
 agent.thank-you.go_to_gov                                             = Go to the GOV.UK page
 
-agent.no-sa.title                                                     = Your client hasn''t registered for Self Assessment
-agent.no-sa.heading                                                   = Your client hasn''t registered for Self Assessment
+agent.no-sa.title                                                     = Your client is not registered for Self Assessment
+agent.no-sa.heading                                                   = Your client is not registered for Self Assessment
 agent.no-sa.line_1                                                    = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
 confirm-agent.title                                                   = Is {0} your agent?
