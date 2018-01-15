@@ -21,12 +21,13 @@ import _root_.agent.controllers.ITSASessionKeys
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.servicemocks.{AuditStub, AuthenticatorStub, SubscriptionStub, UserLockoutStub}
 import play.api.http.Status._
 
 
-class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
+class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport with FeatureSwitching {
 
   import IncomeTaxSubscriptionFrontend._
 
@@ -137,26 +138,54 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       }
     }
 
-    "there are no prior agent client relationships" should {
-      "redirects to no agent client relationship page" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
-        AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
-        AgentServicesStub.stubClientRelationship(testARN, testNino, exists = false)
-        SubscriptionStub.stubGetNoSubscription()
+    "there are no prior agent client relationships" when {
+      "the unauthorised agent feature switch is disabled" should {
+        "redirects to no agent client relationship page" in {
+          disable(UnauthorisedAgentFeature)
 
-        When("I call POST /confirm-client")
-        val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
+          AgentServicesStub.stubClientRelationship(testARN, testNino, exists = false)
+          SubscriptionStub.stubGetNoSubscription()
 
-        Then("The result should have a status of SEE_OTHER and redirect to check client relationship")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(noClientRelationshipURI)
-        )
+          When("I call POST /confirm-client")
+          val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-        Then("The client matching request should have been audited")
-        AuditStub.verifyAudit()
+          Then("The result should have a status of SEE_OTHER and redirect to check client relationship")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(noClientRelationshipURI)
+          )
+
+          Then("The client matching request should have been audited")
+          AuditStub.verifyAudit()
+        }
+      }
+      "the unauthorised agent feature switch is enabled" should {
+        "redirect to the agent not authorised page" in {
+          enable(UnauthorisedAgentFeature)
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
+          AgentServicesStub.stubClientRelationship(testARN, testNino, exists = false)
+          SubscriptionStub.stubGetNoSubscription()
+
+          When("I call POST /confirm-client")
+          val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
+
+          Then("The result should have a status of SEE_OTHER and redirect to check client relationship")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(errorNotAuthorisedURI)
+          )
+
+          Then("The client matching request should have been audited")
+          AuditStub.verifyAudit()
+        }
       }
     }
 

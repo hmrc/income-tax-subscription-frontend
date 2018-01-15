@@ -98,7 +98,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
           SubscriptionStoreStub.stubSuccessfulStore(testStoredSubscription)
 
           When("I call POST /check-your-answers")
-          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(isAgentAuthorised = false)
+          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(isAgentUnauthorised = true)
 
           Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
           res should have(
@@ -106,49 +106,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
             redirectURI(unauthorisedAgentConfirmationURI)
           )
         }
-      }
-    }
-
-    "The whole subscription process was unsuccessful" when {
-
-      "show an error page when subscription failed" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
-
-        When("I call POST /check-your-answers")
-        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-        Then("The result show the error page")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-
-        val cookieMap = SessionCookieCrumbler.getSessionMap(res)
-        cookieMap.get(ITSASessionKeys.MTDITID) shouldBe None
-
-        GGAdminStub.verifyKnownFacts(testNino, testMTDID, Some(0))
-      }
-
-      "show an error page when add known facts failed" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        GGAdminStub.stubKnowFactsFailure(testNino, testMTDID)
-
-        When("I call POST /check-your-answers")
-        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-        Then("The result show the error page")
-        res should have(
-          httpStatus(INTERNAL_SERVER_ERROR)
-        )
-
-        val cookieMap = SessionCookieCrumbler.getSessionMap(res)
-        cookieMap.get(ITSASessionKeys.MTDITID) shouldBe None
-
-        GGAdminStub.verifyKnownFacts(testNino, testMTDID, Some(1))
       }
     }
 
@@ -164,21 +121,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(termsURI)
-      )
-    }
-
-    "return an INTERNAL_SERVER_ERROR when the backend service returns a NOT_FOUND" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystore()
-      SubscriptionStub.stubCreateSubscriptionNotFound(checkYourAnswersURI)
-
-      When("POST /check-your-answers is called")
-      val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-      Then("Should return an INTERNAL_SERVER_ERROR")
-      res should have(
-        httpStatus(INTERNAL_SERVER_ERROR)
       )
     }
   }

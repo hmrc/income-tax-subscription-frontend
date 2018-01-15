@@ -24,7 +24,7 @@ object ITSASessionKeys {
   val JourneyStateKey = "Journey-State"
   val NINO = "NINO"
   val UTR = "UTR"
-  val AuthorisedAgentKey = "Authorised-Agent"
+  val UnauthorisedAgentKey = "Authorised-Agent"
 
   val clientData = Seq(MTDITID, NINO, UTR)
 }

@@ -26,40 +26,20 @@ import play.api.libs.json.Json
 class UnauthorisedAgentConfirmationControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   "GET /send-client-link" when {
-    "the unauthorised agent feature switch is enabled" when {
-      s"There is ${ITSASessionKeys.MTDITID} in session" should {
-        "call subscription on the back end service" in {
-          enable(UnauthorisedAgentFeature)
+    "the unauthorised agent feature switch is enabled" should {
+      "return the confirmation page" in {
+        enable(UnauthorisedAgentFeature)
 
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(Map("MtditId" -> Json.toJson(testMTDID)))
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
 
-          When("I call GET /send-client-link")
-          val res = IncomeTaxSubscriptionFrontend.showUnauthorisedAgentConfirmation(hasSubmitted = true)
+        When("I call GET /send-client-link")
+        val res = IncomeTaxSubscriptionFrontend.showUnauthorisedAgentConfirmation()
 
-          Then("The result should have a status of OK and display the Unauthorised Agent confirmation page")
-          res should have(
-            httpStatus(OK)
-          )
-        }
-      }
-
-      s"There is not ${ITSASessionKeys.MTDITID} in session" should {
-        "call subscription on the back end service" in {
-          disable(UnauthorisedAgentFeature)
-
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-
-          When("I call GET /send-client-link")
-          val res = IncomeTaxSubscriptionFrontend.showUnauthorisedAgentConfirmation(hasSubmitted = false)
-
-          Then("The result should have a status of NOT_FOUND")
-          res should have(
-            httpStatus(NOT_FOUND)
-          )
-        }
+        Then("The result should have a status of OK and display the Unauthorised Agent confirmation page")
+        res should have(
+          httpStatus(OK)
+        )
       }
     }
   }

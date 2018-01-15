@@ -87,7 +87,7 @@ class HomeControllerISpec extends ComponentSpecBase {
 
           When("I call GET /index")
           val res = IncomeTaxSubscriptionFrontend.indexPage(Some(AgentUserMatching),
-            Map(ITSASessionKeys.AuthorisedAgentKey -> false.toString,
+            Map(ITSASessionKeys.UnauthorisedAgentKey -> true.toString,
               ITSASessionKeys.NINO -> testNino,
               ITSASessionKeys.UTR -> testUtr))
 

@@ -33,7 +33,7 @@ trait UnauthorisedAgentController extends BaseFrontendController {
     private val unauthorisedAgentUnavailableMessage = "This page for unauthorised agents is not yet available to the public: "
 
     override def async: AuthenticatedAction[IncomeTaxAgentUser] =
-      if (applicationConfig.unauthorisedAgentEnabled)  asyncInternal(agent.auth.AuthPredicates.unauthorisedUserMatchingPredicates)
+      if (applicationConfig.unauthorisedAgentEnabled) asyncInternal(agent.auth.AuthPredicates.unauthorisedUserMatchingPredicates)
       else _ =>
         Action.async(request => Future.failed(new NotFoundException(unauthorisedAgentUnavailableMessage + request.uri)))
   }

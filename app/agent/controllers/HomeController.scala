@@ -54,7 +54,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
         case Some(arn) =>
           (user.clientNino, user.clientUtr) match {
             case (Some(nino), Some(utr)) =>
-              if (!request.isAuthorisedAgent && request.isInAgentState(AgentUserMatching))
+              if (request.isUnauthorisedAgent && request.isInAgentState(AgentUserMatching))
                 successful(Redirect(agent.controllers.routes.AgentNotAuthorisedController.show()))
               else
                 successful(Redirect(agent.controllers.routes.IncomeSourceController.show()).withJourneyState(AgentSignUp))

@@ -19,14 +19,12 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import agent.auth.PostSubmissionController
+import agent.auth.UnauthorisedAgentController
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.UnauthorisedAgentFeature
 import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.NotFoundException
 
 @Singleton
 class UnauthorisedAgentConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
@@ -34,16 +32,12 @@ class UnauthorisedAgentConfirmationController @Inject()(val baseConfig: BaseCont
                                                         val keystoreService: KeystoreService,
                                                         val authService: AuthService,
                                                         val logging: Logging
-                                                       ) extends PostSubmissionController {
+                                                       ) extends UnauthorisedAgentController {
 
-  val show: Action[AnyContent] = Authenticated { implicit request =>
+  def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      if (applicationConfig.isEnabled(UnauthorisedAgentFeature)) {
-        Ok(agent.views.html.unauthorised_agent_confirmation(
-          postAction = agent.controllers.routes.AddAnotherClientController.addAnother()
-        ))
-      } else {
-        throw new NotFoundException("Cannot access unauthorised agent confirmation when feature switch not enabled")
-      }
+      Ok(agent.views.html.unauthorised_agent_confirmation(
+        postAction = agent.controllers.routes.AddAnotherClientController.addAnother()
+      ))
   }
 }

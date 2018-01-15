@@ -175,7 +175,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
           session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
           session.get(ITSASessionKeys.NINO) mustBe Some(nino)
           session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-          session.get(ITSASessionKeys.AuthorisedAgentKey) mustBe Some("false")
+          session.get(ITSASessionKeys.UnauthorisedAgentKey) mustBe Some("true")
         }
       }
       s"redirect user to ${agent.controllers.routes.ClientAlreadySubscribedController.show().url}" when {

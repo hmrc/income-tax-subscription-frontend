@@ -184,11 +184,7 @@ trait ComponentSpecBase extends UnitSpec
       else
         get("/confirmation")
 
-    def showUnauthorisedAgentConfirmation(hasSubmitted: Boolean): WSResponse =
-      if (hasSubmitted)
-        get("/send-client-link", Map(ITSASessionKeys.MTDITID -> testMTDID))
-      else
-        get("/send-client-link")
+    def showUnauthorisedAgentConfirmation(): WSResponse = get("/send-client-link", Map(ITSASessionKeys.UnauthorisedAgentKey -> true.toString))
 
     def thankYou(): WSResponse = get("/thankyou")
 
@@ -202,7 +198,10 @@ trait ComponentSpecBase extends UnitSpec
 
     def noClientRelationship(): WSResponse = get("/error/no-client-relationship", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def agentNotAuthorised(): WSResponse = get("/error/not-authorised", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name, ITSASessionKeys.AuthorisedAgentKey -> false.toString))
+    def agentNotAuthorised(): WSResponse = get("/error/not-authorised",
+      Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name,
+        ITSASessionKeys.UnauthorisedAgentKey -> true.toString)
+    )
 
     def submitAgentNotAuthorised(): WSResponse = post("/error/not-authorised", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
 
@@ -217,15 +216,15 @@ trait ComponentSpecBase extends UnitSpec
       ITSASessionKeys.UTR -> testUtr
     ))
 
-    def submitCheckYourAnswers(isAgentAuthorised: Boolean = true): WSResponse = post("/check-your-answers", {
+    def submitCheckYourAnswers(isAgentUnauthorised: Boolean = false): WSResponse = post("/check-your-answers", {
       val default = Map(
         ITSASessionKeys.ArnKey -> testARN,
         ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
         ITSASessionKeys.NINO -> testNino,
         ITSASessionKeys.UTR -> testUtr
       )
-      if (isAgentAuthorised) default
-      else default.+(ITSASessionKeys.AuthorisedAgentKey -> false.toString)
+      if (isAgentUnauthorised) default + (ITSASessionKeys.UnauthorisedAgentKey -> true.toString)
+      else default
     }
     )(Map.empty)
 
@@ -259,7 +258,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def getAddAnotherClient(hasSubmitted: Boolean): WSResponse =
       if (hasSubmitted)
-        get("/add-another", Map(ITSASessionKeys.MTDITID -> testMTDID, ITSASessionKeys.AuthorisedAgentKey -> false.toString))
+        get("/add-another", Map(ITSASessionKeys.MTDITID -> testMTDID, ITSASessionKeys.UnauthorisedAgentKey -> false.toString))
       else
         get("/add-another")
 

@@ -226,7 +226,7 @@ class HomeControllerISpec extends ComponentSpecBase {
           Then("Should return SEE_OTHER with a redirect of confirm agent subscription")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(authoriseAgentUri)
+            redirectURI(confirmAgentUri)
           )
         }
       }
