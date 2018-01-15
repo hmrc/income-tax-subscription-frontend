@@ -20,12 +20,14 @@ import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
 import incometax.business.forms.MatchTaxYearForm
+import incometax.business.forms.MatchTaxYearForm.option_yes
 import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.connectors.SubscriptionConnector
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import incometax.subscription.models.{IncomeSourceType, SubscriptionRequest, SummaryModel}
 import incometax.util.AccountingPeriodUtil
+import incometax.util.AccountingPeriodUtil._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -36,20 +38,12 @@ class SubscriptionService @Inject()(logging: Logging,
 
   private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
     val incomeSource = IncomeSourceType(summaryData.incomeSource.get.source)
-    val (accountingPeriodStart, accountingPeriodEnd) = (summaryData.matchTaxYear, summaryData.accountingPeriodPrior) match {
-      // individual journey
-      case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), None) =>
-        val cty = AccountingPeriodUtil.getCurrentTaxEndYear
-        (Some(AccountingPeriodUtil.getCurrentTaxYearStartDate), Some(AccountingPeriodUtil.getCurrentTaxYearEndDate))
-      // individual journey
-      case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), None) =>
+    val (accountingPeriodStart, accountingPeriodEnd) =
+      if (summaryData.matchTaxYear exists (_.matchTaxYear == option_yes)) {
+        (Some(getCurrentTaxYearStartDate), Some(getCurrentTaxYearEndDate))
+      } else {
         (summaryData.accountingPeriod map (_.startDate), summaryData.accountingPeriod map (_.endDate))
-      case (None, Some(_)) =>
-        // agent journey
-        (summaryData.accountingPeriod map (_.startDate), summaryData.accountingPeriod map (_.endDate))
-      // property journeys
-      case _ => (None, None)
-    }
+      }
     val cashOrAccruals = summaryData.accountingMethod map (_.accountingMethod)
     val tradingName = summaryData.businessName map (_.businessName)
 
