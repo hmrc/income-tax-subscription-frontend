@@ -21,7 +21,7 @@ import cats.implicits._
 import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import core.auth.JourneyState._
 import core.config.AppConfig
-import play.api.mvc.{Result, Results}
+import play.api.mvc.{Call, Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
@@ -121,6 +121,12 @@ object AuthPredicates extends Results {
     } else {
       Left(Future.successful(resolveNino))
     }
+
+  private lazy val alreadyEnrolled: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.show())
+
+  lazy val notEnrolledPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
+    else Left(Future.successful(alreadyEnrolled))
 
   lazy val homeRoute = Redirect(usermatching.controllers.routes.HomeController.index())
 
