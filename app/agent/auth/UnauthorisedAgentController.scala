@@ -23,8 +23,9 @@ import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
 
-
 trait UnauthorisedAgentController extends BaseFrontendController {
+
+  protected val unauthorisedDefaultPredicate = agent.auth.AuthPredicates.unauthorisedUserMatchingPredicates
 
   object Authenticated extends AuthenticatedActions[IncomeTaxAgentUser] {
 
@@ -33,8 +34,10 @@ trait UnauthorisedAgentController extends BaseFrontendController {
     private val unauthorisedAgentUnavailableMessage = "This page for unauthorised agents is not yet available to the public: "
 
     override def async: AuthenticatedAction[IncomeTaxAgentUser] =
-      if (applicationConfig.unauthorisedAgentEnabled) asyncInternal(agent.auth.AuthPredicates.unauthorisedUserMatchingPredicates)
+      if (applicationConfig.unauthorisedAgentEnabled)
+        asyncInternal(unauthorisedDefaultPredicate)
       else _ =>
         Action.async(request => Future.failed(new NotFoundException(unauthorisedAgentUnavailableMessage + request.uri)))
   }
+
 }

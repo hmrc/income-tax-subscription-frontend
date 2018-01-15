@@ -16,6 +16,7 @@
 
 package core.auth
 
+import agent.auth.IncomeTaxAgentUser
 import core.auth.AuthPredicate._
 import core.auth.JourneyState.{RequestFunctions, SessionFunctions}
 import core.config.BaseControllerConfig
@@ -61,6 +62,9 @@ trait BaseFrontendController extends FrontendController with I18nSupport with Au
       }
 
     def async: AuthenticatedAction[User]
+
+    final def asyncWithCustomPredicates(predicates: AuthPredicate[User]): ActionBody[User] => Action[AnyContent] = asyncInternal(predicates)
+
   }
 
   implicit class FormUtil[T](form: Form[T]) {

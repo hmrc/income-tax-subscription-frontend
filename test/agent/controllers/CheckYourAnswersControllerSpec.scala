@@ -200,12 +200,14 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           setupMockKeystore(fetchAll = testSummary)
           mockStoredSubscriptionSuccess(testARN, newTestNino)
 
-          lazy val result = call(unauthorisedAgentRequest)
+          lazy val fresult = call(unauthorisedAgentRequest)
 
-          status(result) must be(Status.SEE_OTHER)
-          await(result)
+          status(fresult) must be(Status.SEE_OTHER)
+          val result = await(fresult)
 
-          redirectLocation(result) mustBe Some(agent.controllers.routes.UnauthorisedAgentConfirmationController.show().url)
+          redirectLocation(fresult) mustBe Some(agent.controllers.routes.UnauthorisedAgentConfirmationController.show().url)
+
+          result.session(unauthorisedAgentRequest).get(ITSASessionKeys.MTDITID) mustBe defined
         }
       }
 

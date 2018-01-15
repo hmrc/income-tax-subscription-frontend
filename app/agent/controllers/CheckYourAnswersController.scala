@@ -93,7 +93,12 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                         )(implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap
                                         ): Future[Result] =
     subscriptionStorePersistenceService.storeSubscription(arn, nino) flatMap {
-      case Right(_) => Future.successful(Redirect(agent.controllers.routes.UnauthorisedAgentConfirmationController.show()))
+      case Right(_) =>
+        Future.successful(
+          Redirect(agent.controllers.routes.UnauthorisedAgentConfirmationController.show())
+            // n.b. we're only using this flag to safeguard the reset of the journey so that the user can't go back to them
+            .addingToSession(ITSASessionKeys.MTDITID -> "")
+        )
       case Left(err) => error("Error calling income-tax-subscription-store: " + err)
     }
 

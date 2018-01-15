@@ -24,22 +24,6 @@ import play.api.http.Status.{NOT_FOUND, SEE_OTHER}
 class AddAnotherClientControllerISpec extends ComponentSpecBase {
 
   "GET /add-another" when {
-    "the session does not mark the journey as complete" should {
-      "return a not found page" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-
-        When("I call GET /add-another")
-        val res = IncomeTaxSubscriptionFrontend.getAddAnotherClient(hasSubmitted = false)
-
-        Then(s"The result should have a status of NOT_FOUND")
-        res should have(
-          httpStatus(NOT_FOUND)
-        )
-
-        KeystoreStub.verifyKeyStoreDelete(Some(0))
-      }
-    }
 
     "the session marked the journey as complete" should {
       s"clear the keystore and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {

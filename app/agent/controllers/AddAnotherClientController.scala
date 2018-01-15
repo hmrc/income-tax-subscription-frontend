@@ -19,12 +19,12 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import agent.auth.PostSubmissionController
+import agent.auth.StatelessController
+import agent.services.KeystoreService
 import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import agent.services.KeystoreService
-import core.services.AuthService
 
 @Singleton
 class AddAnotherClientController @Inject()(override val baseConfig: BaseControllerConfig,
@@ -32,9 +32,9 @@ class AddAnotherClientController @Inject()(override val baseConfig: BaseControll
                                            keystore: KeystoreService,
                                            val authService: AuthService,
                                            logging: Logging
-                                          ) extends PostSubmissionController {
+                                          ) extends StatelessController {
 
-  def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
+  def addAnother(): Action[AnyContent] = Authenticated.asyncWithCustomPredicates(agent.auth.AuthPredicates.defaultPredicates) { implicit request =>
     implicit user => {
       for {
         _ <- keystore.deleteAll()

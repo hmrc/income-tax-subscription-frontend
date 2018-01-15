@@ -23,7 +23,6 @@ import agent.auth._
 import agent.controllers.ITSASessionKeys
 import agent.controllers.ITSASessionKeys.FailedClientMatching
 import agent.services._
-import core.auth.JourneyState
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.i18n.MessagesApi
@@ -102,7 +101,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
             Redirect(agent.controllers.routes.ClientAlreadySubscribedController.show())
               .removingFromSession(FailedClientMatching)
           )
-          case Right(unapprovedAgent @ UnApprovedAgent(clientNino, clientUtr)) =>
+          case Right(unapprovedAgent@UnApprovedAgent(clientNino, clientUtr)) =>
             if (applicationConfig.unauthorisedAgentEnabled) {
               successful(matched(unapprovedAgent,
                 agent.controllers.routes.AgentNotAuthorisedController.show(), AgentUserMatching)
@@ -112,7 +111,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                 Redirect(agent.controllers.routes.NoClientRelationshipController.show())
                   .removingFromSession(FailedClientMatching))
             }
-          case Right(approvedAgent @ ApprovedAgent(nino, optUtr)) =>
+          case Right(approvedAgent@ApprovedAgent(nino, optUtr)) =>
             successful(matched(approvedAgent, agent.controllers.routes.HomeController.index(), AgentUserMatched)
               .clearUserDetails)
         }

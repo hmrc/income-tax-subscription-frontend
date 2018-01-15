@@ -57,8 +57,6 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
 
     def call(request: Request[AnyContent]) = TestClientDetailsController.show(isEditMode = false)(request)
 
-
-
     "return ok (200)" in {
       lazy val r = userMatchingRequest.buildRequest(None)
       setupMockNotLockedOut(testARN)

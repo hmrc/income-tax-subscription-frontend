@@ -26,7 +26,6 @@ trait StatelessController extends BaseFrontendController {
     override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxAgentUser = IncomeTaxAgentUser.apply
 
     override val async: AuthenticatedAction[IncomeTaxAgentUser] = asyncInternal(agent.auth.AuthPredicates.homePredicates)
-
   }
 
 }

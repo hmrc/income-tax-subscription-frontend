@@ -18,27 +18,30 @@ package agent.controllers
 
 import javax.inject.{Inject, Singleton}
 
+import agent.auth.AgentJourneyState._
 import agent.auth.{AgentUserMatched, UnauthorisedAgentController}
+import cats.implicits._
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import agent.auth.AgentJourneyState._
-
-import scala.concurrent.Future
+import usermatching.utils.UserMatchingSessionUtil._
 
 @Singleton
 class AgentNotAuthorisedController @Inject()(val baseConfig: BaseControllerConfig,
                                              val messagesApi: MessagesApi,
                                              val authService: AuthService) extends UnauthorisedAgentController {
 
-  def show: Action[AnyContent] = Authenticated.async { implicit request =>
-      implicit user => Future.successful(Ok(agent.views.html.agent_not_authorised(
-        postAction = agent.controllers.routes.AgentNotAuthorisedController.submit())))
+  override val unauthorisedDefaultPredicate = agent.auth.AuthPredicates.unauthorisedUserMatchingPredicates |+| agent.auth.AuthPredicates.userMatchingJourneyPredicate
+
+  def show: Action[AnyContent] = Authenticated { implicit request =>
+    implicit user =>
+      Ok(agent.views.html.agent_not_authorised(postAction = agent.controllers.routes.AgentNotAuthorisedController.submit()))
   }
 
-  def submit: Action[AnyContent] = Authenticated.async { implicit request =>
+  def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Future.successful(Redirect(agent.controllers.routes.HomeController.index()).withJourneyState(AgentUserMatched))
+      Redirect(agent.controllers.routes.HomeController.index()).withJourneyState(AgentUserMatched).clearUserDetails
   }
+
 }
