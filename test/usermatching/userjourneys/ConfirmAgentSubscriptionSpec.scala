@@ -16,17 +16,18 @@
 
 package usermatching.userjourneys
 
-import core.ITSASessionKeys
 import core.auth.AuthPredicate.AuthPredicateSuccess
 import core.auth.AuthPredicates._
 import core.auth.IncomeTaxSAUser
 import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
-import core.utils.UnitTestTrait
+import core.utils.TestConstants._
+import core.utils.{TestConstants, UnitTestTrait}
+import core.{Constants, ITSASessionKeys}
 import org.scalatest.EitherValues
 import play.api.test.FakeRequest
-import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core._
 
 
 class ConfirmAgentSubscriptionSpec extends UnitTestTrait with FeatureSwitching with MockConfig with EitherValues {
@@ -48,18 +49,34 @@ class ConfirmAgentSubscriptionSpec extends UnitTestTrait with FeatureSwitching w
     }
   }
 
-  lazy val request = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> journeyState.name)
+  lazy val request = FakeRequest().withSession(
+    ITSASessionKeys.JourneyStateKey -> journeyState.name,
+    ITSASessionKeys.NINO -> testNino,
+    ITSASessionKeys.UTR -> testUtr
+  )
   lazy val testUser = IncomeTaxSAUser(Enrolments(Set.empty), Some(AffinityGroup.Individual), ConfidenceLevel.L200)
+  lazy val testEnrolledUser = IncomeTaxSAUser(Enrolments(Set(
+    Enrolment(Constants.mtdItsaEnrolmentName,
+      Seq(EnrolmentIdentifier(Constants.mtdItsaEnrolmentIdentifierKey, TestConstants.testMTDID)),
+      "Activated"
+    ))
+  ), Some(AffinityGroup.Individual), ConfidenceLevel.L200)
 
-  "journeyStatePredicate" should {
+  "authPredicates" should {
     s"return $AuthPredicateSuccess when the session contains the correct state" in {
-      val res = journeyState.journeyStatePredicate.apply(request)(testUser)
+      val res = journeyState.authPredicates.apply(request)(testUser)
       res.right.value mustBe AuthPredicateSuccess
     }
 
     s"return $homeRoute when the session is not in the correct state" in {
-      val res = journeyState.journeyStatePredicate.apply(FakeRequest())(testUser)
+      val res = journeyState.authPredicates.apply(FakeRequest().withSession((request.session.data - ITSASessionKeys.JourneyStateKey).toSeq: _*))(testUser)
       await(res.left.value) mustBe homeRoute
+    }
+
+    s"return $alreadyEnrolledRoute if the user already has a mtdit enrollment" in {
+      val res = journeyState.authPredicates.apply(request)(testEnrolledUser)
+      println(res)
+      await(res.left.value) mustBe alreadyEnrolledRoute
     }
   }
 

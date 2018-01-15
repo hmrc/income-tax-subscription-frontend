@@ -122,11 +122,11 @@ object AuthPredicates extends Results {
       Left(Future.successful(resolveNino))
     }
 
-  private lazy val alreadyEnrolled: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.show())
+  lazy val alreadyEnrolledRoute: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.show())
 
   lazy val notEnrolledPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
-    else Left(Future.successful(alreadyEnrolled))
+    else Left(Future.successful(alreadyEnrolledRoute))
 
   lazy val homeRoute = Redirect(usermatching.controllers.routes.HomeController.index())
 
