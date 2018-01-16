@@ -75,7 +75,6 @@ class ConfirmAgentSubscriptionSpec extends UnitTestTrait with FeatureSwitching w
 
     s"return $alreadyEnrolledRoute if the user already has a mtdit enrollment" in {
       val res = journeyState.authPredicates.apply(request)(testEnrolledUser)
-      println(res)
       await(res.left.value) mustBe alreadyEnrolledRoute
     }
   }
