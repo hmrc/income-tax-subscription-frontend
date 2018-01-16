@@ -172,13 +172,26 @@ class TermsControllerSpec extends ControllerBaseSpec
   }
 
   "The back url" when {
-    "edit mode is true" should {
-      s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url} on any journey" in {
-        TestTermsController.getBackUrl(
-          editMode = true,
-          IncomeSourceForm.option_property,
-          OtherIncomeForm.option_yes
-        )(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+    "edit mode is true" when {
+      "match tax year is true" should {
+        s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url} on any journey" in {
+          TestTermsController.getBackUrl(
+            editMode = true,
+            IncomeSourceForm.option_property,
+            OtherIncomeForm.option_yes,
+            matchTaxYear = true
+          )(subscriptionRequest) mustBe incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
+        }
+      }
+      "match tax year is false" should {
+        s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url} on any journey" in {
+          TestTermsController.getBackUrl(
+            editMode = true,
+            IncomeSourceForm.option_property,
+            OtherIncomeForm.option_yes,
+            matchTaxYear = false
+          )(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+        }
       }
     }
     "edit mode is false" should {
@@ -186,7 +199,8 @@ class TermsControllerSpec extends ControllerBaseSpec
         TestTermsController.getBackUrl(
           editMode = false,
           IncomeSourceForm.option_business,
-          OtherIncomeForm.option_yes
+          OtherIncomeForm.option_yes,
+          matchTaxYear = false
         )(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
       }
 
@@ -194,7 +208,8 @@ class TermsControllerSpec extends ControllerBaseSpec
         TestTermsController.getBackUrl(
           editMode = false,
           IncomeSourceForm.option_both,
-          OtherIncomeForm.option_yes
+          OtherIncomeForm.option_yes,
+          matchTaxYear = false
         )(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
       }
 
@@ -202,7 +217,8 @@ class TermsControllerSpec extends ControllerBaseSpec
         TestTermsController.getBackUrl(
           editMode = false,
           IncomeSourceForm.option_property,
-          OtherIncomeForm.option_yes
+          OtherIncomeForm.option_yes,
+          matchTaxYear = false
         )(subscriptionRequest) mustBe incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url
       }
 
@@ -210,7 +226,8 @@ class TermsControllerSpec extends ControllerBaseSpec
         TestTermsController.getBackUrl(
           editMode = false,
           IncomeSourceForm.option_property,
-          OtherIncomeForm.option_no
+          OtherIncomeForm.option_no,
+          matchTaxYear = false
         )(subscriptionRequest) mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
       }
     }
