@@ -26,6 +26,7 @@ import core.utils.TestModels._
 import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
+import incometax.unauthorisedagent.services.mocks.MockSubscriptionStoreRetrievalService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.i18n.Messages
@@ -38,6 +39,7 @@ class AuthoriseAgentControllerSpec extends ControllerBaseSpec
   with MockAuthService
   with MockKeystoreService
   with MockSubscriptionOrchestrationService
+  with MockSubscriptionStoreRetrievalService
   with FeatureSwitching {
 
   override val controllerName = "AuthoriseAgentController"
@@ -52,6 +54,7 @@ class AuthoriseAgentControllerSpec extends ControllerBaseSpec
     messagesApi,
     mockAuthService,
     MockKeystoreService,
+    mockSubscriptionStoreRetrievalService,
     mockSubscriptionOrchestrationService
   )
 
@@ -92,6 +95,7 @@ class AuthoriseAgentControllerSpec extends ControllerBaseSpec
             enable(UnauthorisedAgentFeature)
             setupMockKeystore(fetchAll = testCacheMap)
             mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
+            mockDeleteSubscriptionData(testNino)
 
             val result = await(submit(ConfirmAgentForm.option_yes))
 

@@ -62,6 +62,7 @@ class AuthoriseAgentControllerISpec extends ComponentSpecBase {
           GGConnectorStub.stubEnrolResult(OK)
           GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
           KeystoreStub.stubPutMtditId()
+          SubscriptionStoreStub.stubSuccessfulDeletion()
 
           When("POST authorise-agent is called")
           val res = IncomeTaxSubscriptionFrontend.submitAuthoriseAgent(testConfirmAgentYes)
