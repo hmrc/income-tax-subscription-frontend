@@ -28,6 +28,7 @@ import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionOrchestrationService
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
+import incometax.unauthorisedagent.services.SubscriptionStoreRetrievalService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -42,6 +43,7 @@ class AuthoriseAgentController @Inject()(val baseConfig: BaseControllerConfig,
                                          val messagesApi: MessagesApi,
                                          val authService: AuthService,
                                          keystoreService: KeystoreService,
+                                         subscriptionStoreRetrievalService: SubscriptionStoreRetrievalService,
                                          subscriptionOrchestrationService: SubscriptionOrchestrationService
                                         ) extends AuthenticatedController[ConfirmAgentSubscription.type] {
 
@@ -72,9 +74,10 @@ class AuthoriseAgentController @Inject()(val baseConfig: BaseControllerConfig,
 
                 subscriptionOrchestrationService.createSubscription(user.nino.get, cache.getSummary())(headerCarrier) flatMap {
                   case Right(SubscriptionSuccess(id)) =>
-                    keystoreService.saveSubscriptionId(id) map {
-                      _ => Redirect(incometax.subscription.controllers.routes.ConfirmationController.show())
-                    }
+                    for {
+                      _ <- keystoreService.saveSubscriptionId(id)
+                      _ <- subscriptionStoreRetrievalService.deleteSubscriptionData(user.nino.get)
+                    } yield Redirect(incometax.subscription.controllers.routes.ConfirmationController.show())
                   case Left(failure) =>
                     Future.failed(new InternalServerException(failure.toString))
                 }
@@ -83,7 +86,6 @@ class AuthoriseAgentController @Inject()(val baseConfig: BaseControllerConfig,
             Future.successful(Redirect(routes.AgentNotAuthorisedController.show()))
         }
       )
-
-
   }
+
 }
