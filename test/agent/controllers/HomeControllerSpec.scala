@@ -183,6 +183,32 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
         }
       }
     }
+
+    "the user has an mtd flag" when {
+      "the agent is authorised" should {
+        lazy val request = subscriptionRequest.withSession(ITSASessionKeys.MTDITID -> "any")
+
+        def result = testHomeController(showGuidance = false).index()(request)
+
+        s"redirect user to ${agent.controllers.routes.ConfirmationController.show().url}" in {
+          status(result) must be(Status.SEE_OTHER)
+
+          redirectLocation(result).get mustBe agent.controllers.routes.ConfirmationController.show().url
+        }
+      }
+
+      "the agent is unauthorised" should {
+        lazy val request = subscriptionRequest.withSession(ITSASessionKeys.MTDITID -> "any", ITSASessionKeys.UnauthorisedAgentKey -> true.toString)
+
+        def result = testHomeController(showGuidance = false).index()(request)
+
+        s"redirect user to ${agent.controllers.routes.UnauthorisedAgentConfirmationController.show().url}" in {
+          status(result) must be(Status.SEE_OTHER)
+
+          redirectLocation(result).get mustBe agent.controllers.routes.UnauthorisedAgentConfirmationController.show().url
+        }
+      }
+    }
   }
 
   authorisationTests()

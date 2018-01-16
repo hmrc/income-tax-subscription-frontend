@@ -19,8 +19,9 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.AgentJourneyState._
-import agent.auth.{AgentUserMatched, UnauthorisedAgentController}
+import agent.auth.{AgentUserMatched, IncomeTaxAgentUser, UnauthorisedAgentController}
 import cats.implicits._
+import core.auth.AuthPredicate.AuthPredicate
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.i18n.MessagesApi
@@ -32,7 +33,8 @@ class AgentNotAuthorisedController @Inject()(val baseConfig: BaseControllerConfi
                                              val messagesApi: MessagesApi,
                                              val authService: AuthService) extends UnauthorisedAgentController {
 
-  override val unauthorisedDefaultPredicate = agent.auth.AuthPredicates.unauthorisedUserMatchingPredicates |+| agent.auth.AuthPredicates.userMatchingJourneyPredicate
+  override val unauthorisedDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] =
+    agent.auth.AuthPredicates.unauthorisedUserMatchingPredicates |+| agent.auth.AuthPredicates.userMatchingJourneyPredicate |+| agent.auth.AuthPredicates.notSubmitted
 
   def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>

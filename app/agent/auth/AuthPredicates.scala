@@ -35,6 +35,8 @@ object AuthPredicates extends Results {
 
   lazy val confirmationRoute: Result = Redirect(agent.controllers.routes.ConfirmationController.show())
 
+  lazy val unauthorisedAgentConfirmationRoute: Result = Redirect(agent.controllers.routes.UnauthorisedAgentConfirmationController.show())
+
   lazy val timeoutRoute = Redirect(agent.controllers.routes.SessionTimeoutController.show())
 
   lazy val homeRoute = Redirect(agent.controllers.routes.HomeController.index())
@@ -42,6 +44,7 @@ object AuthPredicates extends Results {
 
   val notSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>
     if (request.session.get(ITSASessionKeys.MTDITID).isEmpty) Right(AuthPredicateSuccess)
+    else if (request.isUnauthorisedAgent) Left(Future.successful(unauthorisedAgentConfirmationRoute))
     else Left(Future.successful(confirmationRoute))
 
   val hasSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>
@@ -88,7 +91,7 @@ object AuthPredicates extends Results {
 
   val userMatchingPredicates = homePredicates |+| userMatchingJourneyPredicate |+| isNotUnauthorisedAgentPredicate
 
-  val unauthorisedUserMatchingPredicates = homePredicates |+| unauthorisedAgentPredicate
+  val unauthorisedUserMatchingPredicates = defaultPredicates |+| unauthorisedAgentPredicate
 
   val userMatchedPredicates = homePredicates |+| userMatchedJourneyPredicate
 
@@ -96,5 +99,5 @@ object AuthPredicates extends Results {
 
   val registrationPredicates = homePredicates |+| registrationJourneyPredicate
 
-  val confirmationPredicates = defaultPredicates |+| hasSubmitted
+  val confirmationPredicates = defaultPredicates |+| hasSubmitted |+| isNotUnauthorisedAgentPredicate
 }
