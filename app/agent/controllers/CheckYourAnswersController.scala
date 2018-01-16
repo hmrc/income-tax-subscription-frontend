@@ -21,6 +21,7 @@ import javax.inject.{Inject, Singleton}
 import agent.audit.Logging
 import agent.auth.AgentJourneyState._
 import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
+import agent.common.Constants
 import agent.services.{ClientRelationshipService, KeystoreService, SubscriptionOrchestrationService}
 import core.config.BaseControllerConfig
 import core.services.AuthService
@@ -97,7 +98,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         Future.successful(
           Redirect(agent.controllers.routes.UnauthorisedAgentConfirmationController.show())
             // n.b. we're only using this flag to safeguard the reset of the journey so that the user can't go back to them
-            .addingToSession(ITSASessionKeys.MTDITID -> "")
+            .addingToSession(ITSASessionKeys.MTDITID -> Constants.unauthorisedAgentMtdValue)
         )
       case Left(err) => error("Error calling income-tax-subscription-store: " + err)
     }

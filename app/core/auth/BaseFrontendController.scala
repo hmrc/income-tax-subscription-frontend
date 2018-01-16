@@ -63,8 +63,6 @@ trait BaseFrontendController extends FrontendController with I18nSupport with Au
 
     def async: AuthenticatedAction[User]
 
-    final def asyncWithCustomPredicates(predicates: AuthPredicate[User]): ActionBody[User] => Action[AnyContent] = asyncInternal(predicates)
-
   }
 
   implicit class FormUtil[T](form: Form[T]) {
