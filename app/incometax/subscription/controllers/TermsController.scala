@@ -51,7 +51,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       for {
         cacheMap <- keystoreService.fetchAll() map (_.get)
         incomeSource = cacheMap.getIncomeSource().get
-        backUrl = getBackUrl(editMode, incomeSource.source, cacheMap.getOtherIncome().get.choice)
+        backUrl = getBackUrl(editMode, incomeSource.source, cacheMap.getOtherIncome().get.choice, cacheMap.getMatchTaxYear().fold(false)(_.matchTaxYear == MatchTaxYearForm.option_yes))
       } yield
         (incomeSource, cacheMap.getMatchTaxYear(), cacheMap.getAccountingPeriodDate()) match {
           case (IncomeSourceModel(source), _, _) if source == option_property =>
@@ -71,8 +71,10 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         _ => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
   }
 
-  def getBackUrl(editMode: Boolean, incomeSource: String, otherIncome: String)(implicit request: Request[_]): String =
-    if (editMode)
+  def getBackUrl(editMode: Boolean, incomeSource: String, otherIncome: String, matchTaxYear: Boolean)(implicit request: Request[_]): String =
+    if (editMode && matchTaxYear)
+      incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
+    else if (editMode)
       incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
     else
       incomeSource match {
