@@ -29,5 +29,5 @@ object ConfirmAgentSubscription extends UserJourney[IncomeTaxSAUser] with Journe
   override val featureSwitch = Some(UnauthorisedAgentFeature)
 
   override def authPredicates(implicit appConfig: AppConfig): AuthPredicate[IncomeTaxSAUser] =
-    defaultPredicates |+| journeyStatePredicate
+    defaultPredicates |+| journeyStatePredicate |+| notEnrolledPredicate
 }
