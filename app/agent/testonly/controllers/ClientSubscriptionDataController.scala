@@ -38,7 +38,7 @@ class ClientSubscriptionDataController @Inject()(val baseConfig: BaseControllerC
                                                  val messagesApi: MessagesApi,
                                                  val authService: AuthService,
                                                  val subscriptionStoreConnector: SubscriptionStoreConnector
-                                      ) extends FrontendController with I18nSupport {
+                                                ) extends FrontendController with I18nSupport {
 
 
   implicit lazy val appConfig: AppConfig = baseConfig.applicationConfig
