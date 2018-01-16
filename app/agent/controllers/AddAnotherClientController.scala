@@ -19,12 +19,13 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
-import agent.auth.PostSubmissionController
+import agent.auth.{IncomeTaxAgentUser, StatelessController}
+import agent.services.KeystoreService
+import core.auth.AuthPredicate.AuthPredicate
 import core.config.BaseControllerConfig
+import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import agent.services.KeystoreService
-import core.services.AuthService
 
 @Singleton
 class AddAnotherClientController @Inject()(override val baseConfig: BaseControllerConfig,
@@ -32,7 +33,9 @@ class AddAnotherClientController @Inject()(override val baseConfig: BaseControll
                                            keystore: KeystoreService,
                                            val authService: AuthService,
                                            logging: Logging
-                                          ) extends PostSubmissionController {
+                                          ) extends StatelessController {
+
+  override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = agent.auth.AuthPredicates.defaultPredicates
 
   def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {

@@ -39,19 +39,8 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     app.injector.instanceOf[Logging]
   )
 
-  "AddAnotherClientController.addAnother" when {
+  "AddAnotherClientController.addAnother" should {
 
-    "the user has not completed their submission" should {
-      setupMockKeystore(fetchSubscriptionId = "testId")
-
-      def call = TestAddAnotherClientController.addAnother()(subscriptionRequest)
-
-      "return a NotFoundException" in {
-        intercept[NotFoundException](await(call))
-      }
-    }
-
-    "the user has completed their submission" should {
       lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue", ITSASessionKeys.UnauthorisedAgentKey -> "anyValue")
 
       def call = TestAddAnotherClientController.addAnother()(request)
@@ -92,7 +81,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
         result.session(request).get(ITSASessionKeys.UTR) mustBe None
         result.session(request).get(ITSASessionKeys.NINO) mustBe None
       }
-    }
+
   }
 
   authorisationTests()

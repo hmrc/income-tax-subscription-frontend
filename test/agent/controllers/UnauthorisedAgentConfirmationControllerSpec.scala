@@ -47,7 +47,6 @@ class UnauthorisedAgentConfirmationControllerSpec extends AgentControllerBaseSpe
 
   "show" when {
     "the unauthorised agent feature switch is enabled" should {
-      "return OK" in {
         object TestUnauthorisedAgentConfirmationController extends UnauthorisedAgentConfirmationController(
           mockBaseControllerConfig(
             new MockConfig {
@@ -60,13 +59,32 @@ class UnauthorisedAgentConfirmationControllerSpec extends AgentControllerBaseSpe
           app.injector.instanceOf[Logging]
         )
 
+      "for a user who has an mtd value in session and flagged as unauthorised return OK" in {
+        val result = TestUnauthorisedAgentConfirmationController.show(
+          subscriptionRequest.withSession(ITSASessionKeys.UnauthorisedAgentKey -> true.toString, ITSASessionKeys.MTDITID -> "any value")
+        )
+
+        status(result) shouldBe OK
+      }
+
+      "for a user who has an mtd value in session and flagged as authorised return SEE OTHER" in {
+        val result = TestUnauthorisedAgentConfirmationController.show(
+          subscriptionRequest.withSession(ITSASessionKeys.UnauthorisedAgentKey -> false.toString, ITSASessionKeys.MTDITID -> "any value")
+        )
+
+        status(result) shouldBe SEE_OTHER
+
+        redirectLocation(result) shouldBe Some(routes.HomeController.index().url)
+      }
+
+      "for a user who does not have an mtd value in session return NOT FOUND" in {
         val result = TestUnauthorisedAgentConfirmationController.show(
           subscriptionRequest.withSession(ITSASessionKeys.UnauthorisedAgentKey -> true.toString)
         )
 
-        status(result) shouldBe OK
-
-        await(result)
+        intercept[NotFoundException] {
+          await(result)
+        }
       }
     }
 

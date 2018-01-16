@@ -25,6 +25,7 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.SessionCookieBaker._
 import _root_.agent.helpers.servicemocks.WireMockMethods
 import _root_.agent.models._
+import agent.common.Constants
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
@@ -184,7 +185,10 @@ trait ComponentSpecBase extends UnitSpec
       else
         get("/confirmation")
 
-    def showUnauthorisedAgentConfirmation(): WSResponse = get("/send-client-link", Map(ITSASessionKeys.UnauthorisedAgentKey -> true.toString))
+    def showUnauthorisedAgentConfirmation(): WSResponse = get("/send-client-link",
+      Map(ITSASessionKeys.UnauthorisedAgentKey -> true.toString,
+        ITSASessionKeys.MTDITID -> Constants.unauthorisedAgentMtdValue)
+    )
 
     def thankYou(): WSResponse = get("/thankyou")
 

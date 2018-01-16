@@ -16,8 +16,6 @@
 
 package usermatching.utils
 
-import java.time.LocalDate
-
 import core.models.DateModel
 import play.api.mvc.{AnyContent, Request, Result}
 import usermatching.models.UserDetailsModel
