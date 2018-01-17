@@ -18,6 +18,7 @@ package incometax.unauthorisedagent.controllers
 
 import javax.inject.Inject
 
+import agent.services.KeystoreService
 import core.ITSASessionKeys
 import core.auth.AuthenticatedController
 import core.config.BaseControllerConfig
@@ -29,7 +30,8 @@ import usermatching.userjourneys.ConfirmAgentSubscription
 class AgentNotAuthorisedController @Inject()(val baseConfig: BaseControllerConfig,
                                              val messagesApi: MessagesApi,
                                              val authService: AuthService,
-                                             subscriptionStoreService: SubscriptionStoreRetrievalService
+                                             subscriptionStoreService: SubscriptionStoreRetrievalService,
+                                             keystoreService: KeystoreService
                                             ) extends AuthenticatedController[ConfirmAgentSubscription.type] with I18nSupport {
   val show = Authenticated.async {
     implicit request =>
@@ -37,6 +39,7 @@ class AgentNotAuthorisedController @Inject()(val baseConfig: BaseControllerConfi
         val agencyName = request.session(ITSASessionKeys.AgencyName)
 
         for {
+          _ <- keystoreService.deleteAll()
           _ <- subscriptionStoreService.deleteSubscriptionData(user.nino.get)
         } yield Ok(incometax.unauthorisedagent.views.html.agent_not_authorised(agencyName))
           .removingFromSession(ITSASessionKeys.JourneyStateKey)
