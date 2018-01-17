@@ -32,6 +32,7 @@ class AgentNotAuthorisedControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreDelete()
         SubscriptionStoreStub.stubSuccessfulDeletion()
 
         When("GET /agent-not-authorised  is called")

@@ -16,6 +16,7 @@
 
 package incometax.unauthorisedagent.controllers
 
+import agent.services.mocks.MockKeystoreService
 import core.ITSASessionKeys
 import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import core.connectors.mocks.MockAuth
@@ -28,11 +29,14 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.NotFoundException
+import uk.gov.hmrc.http.{HttpResponse, NotFoundException}
 
 
 class AgentNotAuthorisedControllerSpec extends ControllerBaseSpec
-  with MockAuth with MockSubscriptionStoreRetrievalService with FeatureSwitching {
+  with MockAuth
+  with MockSubscriptionStoreRetrievalService
+  with FeatureSwitching
+  with MockKeystoreService {
   override val controllerName = "AgentNotAuthorisedController"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -43,7 +47,8 @@ class AgentNotAuthorisedControllerSpec extends ControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     mockAuthService,
-    mockSubscriptionStoreRetrievalService
+    mockSubscriptionStoreRetrievalService,
+    MockKeystoreService
   )
 
   "show" when {
@@ -51,7 +56,7 @@ class AgentNotAuthorisedControllerSpec extends ControllerBaseSpec
       "the user is in the confirm agent subscription journey state" should {
         "show the agent not authorised page" in {
           enable(UnauthorisedAgentFeature)
-
+          setupMockKeystore(deleteAll = HttpResponse(OK))
           mockDeleteSubscriptionData(testNino)
 
           implicit val request: FakeRequest[AnyContentAsEmpty.type] = confirmAgentSubscriptionRequest.withSession(
@@ -65,6 +70,8 @@ class AgentNotAuthorisedControllerSpec extends ControllerBaseSpec
 
           document.title() mustBe Messages("agent-not-authorised.title", testAgencyName)
           res.session.get(ITSASessionKeys.JourneyStateKey) mustBe empty
+
+          verifyKeystore(deleteAll = 1)
         }
       }
       "the user is not in the correct journey state" should {

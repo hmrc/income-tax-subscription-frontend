@@ -39,7 +39,8 @@
             RadioOption(ConfirmAgentForm.option_yes, Messages("base.yes")),
             RadioOption(ConfirmAgentForm.option_no, Messages("base.no"))
         ),
-        parentForm = confirmAgentForm
+        parentForm = confirmAgentForm,
+        inline = true
     )
 
     @continueButton()
