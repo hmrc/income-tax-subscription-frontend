@@ -373,6 +373,14 @@ income-other.bullet5                                            = capital gains
 income-other.yes                                                = Yes
 income-other.no                                                 = No
 
+
+## cannot report before 6 April 2018 page ##
+cannot-report-yet.title                                        = You can''t use software to report your Income Tax yet
+cannot-report-yet.heading                                      = You can''t use software to report your Income Tax yet
+cannot-report-yet.para1                                        = You can sign up and use software to record your income and expenses, but you can''t send any reports until 6 April 2018.
+cannot-report-yet.para2                                        = You need to send a <a id="sa" href="{0}">Self Assessment tax return</a> instead.
+
+
 ## Exit survey
 exit-survey.title                                               = Give feedback
 exit-survey.heading                                             = Give feedback
