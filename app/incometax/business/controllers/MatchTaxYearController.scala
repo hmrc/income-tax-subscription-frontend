@@ -63,7 +63,7 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
             _ <- if (oldAnswer.fold(false)(_ != matchTaxYear)) keystoreService.saveTerms(terms = false) else Future.successful(Unit)
             _ <- keystoreService.saveMatchTaxYear(matchTaxYear)
           } yield (isEditMode, matchTaxYear.matchTaxYear) match {
-            case (false, MatchTaxYearForm.option_yes) => Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
+            case (false, MatchTaxYearForm.option_yes) => Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show())
             case (false, MatchTaxYearForm.option_no) => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show())
             case (true, MatchTaxYearForm.option_yes) => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
             case (true, MatchTaxYearForm.option_no) => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true))

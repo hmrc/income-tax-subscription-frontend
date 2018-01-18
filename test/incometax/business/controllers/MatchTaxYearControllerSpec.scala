@@ -93,7 +93,7 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec with MockKeystoreSer
 
         val goodRequest = callShow(MatchTaxYearForm.option_yes)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
         verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
       }
 
