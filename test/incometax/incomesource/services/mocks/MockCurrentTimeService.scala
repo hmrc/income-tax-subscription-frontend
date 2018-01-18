@@ -28,7 +28,7 @@ trait MockCurrentTimeService extends MockTrait {
     reset(mockCurrentTimeService)
   }
 
-  def mockGetTaxYear(taxYear: Int): Unit =
-    when(mockCurrentTimeService.getTaxYearForCurrentDate).thenReturn(taxYear)
+  def mockGetTaxYearEnd(taxYearEnd: Int): Unit =
+    when(mockCurrentTimeService.getTaxYearEndForCurrentDate).thenReturn(taxYearEnd)
 
 }

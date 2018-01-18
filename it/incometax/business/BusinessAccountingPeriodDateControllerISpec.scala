@@ -110,7 +110,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "enter accounting period after the 2018 tax year on the accounting period page" in {
+      "enter accounting period after the 2017 - 2018 tax year on the accounting period page" in {
         val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod(testStartDate, testEndDate2019)
 
         Given("I setup the Wiremock stubs")

@@ -92,10 +92,10 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
       def callShow(answer: String): Future[Result] = callShowCore(answer, isEditMode = false)
 
       "Option 'Yes' is selected " when {
-        "the current date is in the 2018 tax year" should {
+        "the current date is in the 2017 - 2018 tax year" should {
           s"redirect to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url}" in {
             setupMockKeystore(fetchMatchTaxYear = None)
-            mockGetTaxYear(2018)
+            mockGetTaxYearEnd(2018)
 
             val goodRequest = callShow(MatchTaxYearForm.option_yes)
             status(goodRequest) mustBe Status.SEE_OTHER
@@ -103,10 +103,10 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
             verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
           }
         }
-        "the current date is after the 2018 tax year" should {
+        "the current date is after the 2017 - 2018 tax year" should {
           s"redirect to ${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}" in {
             setupMockKeystore(fetchMatchTaxYear = None)
-            mockGetTaxYear(2019)
+            mockGetTaxYearEnd(2019)
 
             val goodRequest = callShow(MatchTaxYearForm.option_yes)
             status(goodRequest) mustBe Status.SEE_OTHER

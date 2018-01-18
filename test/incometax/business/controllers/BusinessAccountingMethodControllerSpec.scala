@@ -148,31 +148,31 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "The back url not in edit mode" when {
     "match tax year is answered with yes" when {
-      "current date is in the 2018 tax year" should {
+      "current date is in the 2017 - 2018 tax year" should {
         s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show().url}" in {
           setupMockKeystore(
             fetchAccountingMethod = None,
             fetchAll = matchTaxYearCacheMap
           )
-          mockGetTaxYear(2018)
+          mockGetTaxYearEnd(2018)
           await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
         }
       }
 
-      "current date is after the 2018 tax year" should {
+      "current date is after the 2017 - 2018 tax year" should {
         s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show().url}" in {
           setupMockKeystore(
             fetchAccountingMethod = None,
             fetchAll = matchTaxYearCacheMap
           )
-          mockGetTaxYear(2019)
+          mockGetTaxYearEnd(2019)
           await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
         }
       }
     }
 
     "match tax year is answered with no" when {
-      "tax year is 2018" should {
+      "tax year is 2017 - 2018" should {
         s"point to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url}" in {
           setupMockKeystore(
             fetchAccountingMethod = None,
@@ -181,7 +181,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
           await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
         }
       }
-      "tax year after 2018" should {
+      "tax year after 2017 - 2018" should {
         s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url}" in {
           setupMockKeystore(
             fetchAccountingMethod = None,

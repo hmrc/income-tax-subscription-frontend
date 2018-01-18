@@ -83,7 +83,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
         optEndTaxYear = cacheMap.getAccountingPeriodDate().map(_.taxEndYear)
       } yield (matchTaxYear, optEndTaxYear) match {
         case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) =>
-          if (currentTimeService.getTaxYearForCurrentDate <= 2018)
+          if (currentTimeService.getTaxYearEndForCurrentDate <= 2018)
             incometax.incomesource.controllers.routes.CannotReportYetController.show().url
           else
             incometax.business.controllers.routes.MatchTaxYearController.show().url

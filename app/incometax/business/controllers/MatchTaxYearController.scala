@@ -66,7 +66,7 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
             _ <- keystoreService.saveMatchTaxYear(matchTaxYear)
           } yield (isEditMode, matchTaxYear.matchTaxYear) match {
             case (false, MatchTaxYearForm.option_yes) =>
-              if (currentTimeService.getTaxYearForCurrentDate <= 2018)
+              if (currentTimeService.getTaxYearEndForCurrentDate <= 2018)
                 Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show())
               else
                 Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())

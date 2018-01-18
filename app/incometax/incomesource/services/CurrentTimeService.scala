@@ -24,5 +24,5 @@ import incometax.util.AccountingPeriodUtil
 // this service is so that we can test conditions which depends on the current date
 @Singleton
 class CurrentTimeService {
-  def getTaxYearForCurrentDate: Int = AccountingPeriodUtil.getTaxEndYear(LocalDate.now())
+  def getTaxYearEndForCurrentDate: Int = AccountingPeriodUtil.getTaxEndYear(LocalDate.now())
 }

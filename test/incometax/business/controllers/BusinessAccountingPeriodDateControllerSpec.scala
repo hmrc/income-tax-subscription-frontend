@@ -90,7 +90,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
       "When it is not in edit mode" when {
 
         "there are no previously entered data and" when {
-          "the tax year is 2018" should {
+          "the tax year is 2017 - 2018" should {
             s"return a redirect status (SEE_OTHER - 303) but do not update terms" in {
               setupMockKeystore(fetchAccountingPeriodDate = None)
 
@@ -104,7 +104,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             }
           }
 
-          "the tax year is after 2018" should {
+          "the tax year is after 2017 - 2018" should {
             s"return a redirect status (SEE_OTHER - 303) and update terms" in {
               setupMockKeystore(fetchAccountingPeriodDate = None)
 
@@ -247,7 +247,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
       "When it is not in edit mode" when {
         "the tax year remained the same" when {
-          "end tax year is 2018" should {
+          "end tax year is 2017 - 2018" should {
             s"return a redirect status (SEE_OTHER - 303) and do not update terms" in {
               setupMockKeystore(
                 fetchMatchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
@@ -264,7 +264,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             }
           }
 
-          "end tax year is after 2018" should {
+          "end tax year is after 2017 - 2018" should {
             s"return a redirect status (SEE_OTHER - 303) and do not update terms" in {
               setupMockKeystore(
                 fetchMatchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
@@ -283,7 +283,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
         }
 
         "the tax year changed" when {
-          "the new tax year is 2018" should {
+          "the new tax year is 2017 - 2018" should {
             s"return a redirect status (SEE_OTHER - 303) and update terms" in {
               setupMockKeystore(
                 fetchMatchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
@@ -300,7 +300,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             }
           }
 
-          "the new tax year is after 2018" should {
+          "the new tax year is after 2017 - 2018" should {
             s"return a redirect status (SEE_OTHER - 303) and update terms" in {
               setupMockKeystore(
                 fetchMatchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
@@ -321,7 +321,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
       "When it is in edit mode" when {
 
-        "the newly entered tax year is 2018 and" when {
+        "the newly entered tax year is 2017 - 2018 and" when {
           "the tax year remained the same" should {
             s"return a redirect status (SEE_OTHER - 303) and redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
               setupMockKeystore(
@@ -360,7 +360,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
         }
       }
 
-      "the newly entered tax year after 2018 and" when {
+      "the newly entered tax year is after 2017 - 2018 and" when {
         "the tax year remained the same" should {
           s"return a redirect status (SEE_OTHER - 303) and redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
             setupMockKeystore(
