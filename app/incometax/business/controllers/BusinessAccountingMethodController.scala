@@ -20,9 +20,11 @@ import javax.inject.{Inject, Singleton}
 
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
+import core.services.CacheUtil.CacheMapUtil
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models.{AccountingMethodModel, MatchTaxYearModel}
+import incometax.incomesource.services.CurrentTimeService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -35,7 +37,8 @@ import scala.concurrent.Future
 class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
-                                                   val authService: AuthService
+                                                   val authService: AuthService,
+                                                   val currentTimeService: CurrentTimeService
                                                   ) extends SignUpController {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
@@ -74,10 +77,19 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
     if (isEditMode)
       Future.successful(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
     else
-      keystoreService.fetchMatchTaxYear() map {
-        case Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)) =>
-          incometax.business.controllers.routes.MatchTaxYearController.show().url
-        case Some(MatchTaxYearModel(MatchTaxYearForm.option_no)) =>
+      for {
+        cacheMap <- keystoreService.fetchAll().map(_.get)
+        matchTaxYear = cacheMap.getMatchTaxYear()
+        optEndTaxYear = cacheMap.getAccountingPeriodDate().map(_.taxEndYear)
+      } yield (matchTaxYear, optEndTaxYear) match {
+        case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) =>
+          if (currentTimeService.getTaxYearEndForCurrentDate <= 2018)
+            incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+          else
+            incometax.business.controllers.routes.MatchTaxYearController.show().url
+        case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(taxEndYear)) if taxEndYear <= 2018 =>
+          incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+        case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(_)) =>
           incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
       }
 
