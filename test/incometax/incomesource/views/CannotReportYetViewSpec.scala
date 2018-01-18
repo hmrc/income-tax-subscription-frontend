@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package incometax.business.views
+package incometax.incomesource.views
 
 import assets.MessageLookup.{Base => common, CannotReportYet => messages}
 import core.views.ViewSpecTrait
@@ -27,7 +27,7 @@ class CannotReportYetViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  lazy val page = incometax.business.views.html.cannot_report_yet(
+  lazy val page = incometax.incomesource.views.html.cannot_report_yet(
     postAction = action,
     backUrl = backUrl)(
     FakeRequest(),

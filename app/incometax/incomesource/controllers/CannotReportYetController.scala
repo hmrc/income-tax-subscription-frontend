@@ -45,7 +45,7 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
         incomeSource = cache.getIncomeSource().get.source
         matchTaxYear = cache.getMatchTaxYear().map(_.matchTaxYear == MatchTaxYearForm.option_yes)
       } yield
-        Ok(incometax.business.views.html.cannot_report_yet(
+        Ok(incometax.incomesource.views.html.cannot_report_yet(
           postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
           backUrl(incomeSource, matchTaxYear, isEditMode)
         ))
