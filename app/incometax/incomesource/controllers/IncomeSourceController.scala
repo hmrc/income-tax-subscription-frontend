@@ -18,13 +18,13 @@ package incometax.incomesource.controllers
 
 import javax.inject.{Inject, Singleton}
 
-
-import incometax.incomesource.forms.IncomeSourceForm
-import incometax.incomesource.models.IncomeSourceModel
-import core.auth.SignUpController
+import cats.implicits._
+import core.auth.AuthPredicate.AuthPredicate
+import core.auth.{IncomeTaxSAUser, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-
+import incometax.incomesource.forms.IncomeSourceForm
+import incometax.incomesource.models.IncomeSourceModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -38,6 +38,8 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val keystoreService: KeystoreService,
                                        val authService: AuthService
                                       ) extends SignUpController {
+
+  override def defaultSignUpPredicates: AuthPredicate[IncomeTaxSAUser] = subscriptionPredicates |+| oldIncomeSourceFlowFeature
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
