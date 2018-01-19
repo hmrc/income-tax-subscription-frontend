@@ -50,27 +50,20 @@ class AuthoriseAgentControllerISpec extends ComponentSpecBase {
     "the unauthorised agent feature switch is enabled" when {
 
       "the user answers yes" should {
-        "submit to DES and redirect to the confirmation page" in {
+        "redirect to preferences" in {
           Given("The feature switch is on")
           enable(UnauthorisedAgentFeature)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
-          SubscriptionStub.stubSuccessfulSubscription(authoriseAgentUri)
-          GGAdminStub.stubAddKnownFactsResult(OK)
-          GGConnectorStub.stubEnrolResult(OK)
-          GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
-          KeystoreStub.stubPutMtditId()
-          SubscriptionStoreStub.stubSuccessfulDeletion()
 
           When("POST authorise-agent is called")
           val res = IncomeTaxSubscriptionFrontend.submitAuthoriseAgent(testConfirmAgentYes)
 
-          Then("Should return a SEE_OTHER with a redirect location of confirmation")
+          Then("Should return a SEE_OTHER with a redirect location of preferences")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(confirmationURI)
+            redirectURI(preferencesURI)
           )
         }
       }

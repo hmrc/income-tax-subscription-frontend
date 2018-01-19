@@ -26,4 +26,5 @@ object ITSASessionKeys {
   val PreferencesRedirectUrl = "Preferences-Redirect-Url"
   val AgentReferenceNumber = "Agent-Reference-Number"
   val AgencyName = "Agency-Name"
+  val ConfirmedAgent = "Confirmed-Agent"
 }

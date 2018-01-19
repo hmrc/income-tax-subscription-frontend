@@ -97,3 +97,6 @@ POST        /authorise-agent              incometax.unauthorisedagent.controller
 
 #Agent not authorised
 GET         /agent-not-authorised         incometax.unauthorisedagent.controllers.AgentNotAuthorisedController.show()
+
+#TBD
+GET         /subscribe-unauthorised       incometax.unauthorisedagent.controllers.UnauthorisedSubscriptionController.subscribeUnauthorised()
