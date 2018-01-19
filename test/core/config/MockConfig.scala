@@ -76,6 +76,8 @@ trait MockConfig extends AppConfig {
 
   override val newPreferencesApiEnabled: Boolean = false
 
+  override def newIncomeSourceFlowEnabled: Boolean = isEnabled(featureswitch.NewIncomeSourceFlowFeature)
+
   override val signUpToSaLink: String = "sa-sign-up"
 
   override val agentSignUpUrl: String = "/report-quarterly/income-and-expenses/sign-up/client"

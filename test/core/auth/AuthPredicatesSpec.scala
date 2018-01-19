@@ -254,4 +254,31 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       await(ivPredicate(registrationRequest)(blankUser).left.value) mustBe goToIv
     }
   }
+
+  "predicates for the new income source flow feature" should {
+    def predicates(enabled: Boolean) = new AuthPredicates {
+      override val applicationConfig: AppConfig = new MockConfig {
+        override val newIncomeSourceFlowEnabled = enabled
+      }
+    }
+
+    "newIncomeSourceFlowFeature" should {
+      "return AuthPredicateSuccess if newIncomeSourceFlowEnabled is set to true" in {
+        predicates(enabled = true).newIncomeSourceFlowFeature(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
+      }
+      "throw NotFoundException if newIncomeSourceFlowEnabled is set to false" in {
+        intercept[NotFoundException](await( predicates(enabled = false).newIncomeSourceFlowFeature(FakeRequest())(blankUser).left.value))
+      }
+    }
+
+    "oldIncomeSourceFlowFeature" should {
+      "return AuthPredicateSuccess if newIncomeSourceFlowEnabled is set to false" in {
+        predicates(enabled = false).oldIncomeSourceFlowFeature(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
+      }
+      "throw NotFoundException if newIncomeSourceFlowEnabled is set to true" in {
+        intercept[NotFoundException](await( predicates(enabled = true).oldIncomeSourceFlowFeature(FakeRequest())(blankUser).left.value))
+      }
+    }
+
+  }
 }

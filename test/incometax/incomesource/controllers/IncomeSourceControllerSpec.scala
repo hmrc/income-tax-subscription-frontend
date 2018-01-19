@@ -16,6 +16,7 @@
 
 package incometax.incomesource.controllers
 
+import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
@@ -25,9 +26,11 @@ import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.NotFoundException
 
 class IncomeSourceControllerSpec extends ControllerBaseSpec
-  with MockKeystoreService {
+  with MockKeystoreService
+  with FeatureSwitching {
 
   override val controllerName: String = "IncomeSourceController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -50,17 +53,28 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the showIncomeSource action of the IncomeSource controller with an authorised user" should {
+  "Calling the showIncomeSource action of the IncomeSource controller with an authorised user" when {
 
-    lazy val result = TestIncomeSourceController.show(isEditMode = true)(subscriptionRequest)
+    def call = TestIncomeSourceController.show(isEditMode = true)(subscriptionRequest)
 
-    "return ok (200)" in {
-      setupMockKeystore(fetchIncomeSource = None)
+    "the new income source flow feature is enabled" should {
+      "return not found (404)" in {
+        enable(NewIncomeSourceFlowFeature)
+        intercept[NotFoundException](await(call))
+      }
+    }
 
-      status(result) must be(Status.OK)
+    "the new income source flow feature is disabled" should {
+      "return ok (200)" in {
+        disable(NewIncomeSourceFlowFeature)
+        setupMockKeystore(fetchIncomeSource = None)
 
-      await(result)
-      verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
+        val result = call
+        status(result) must be(Status.OK)
+
+        await(result)
+        verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
+      }
     }
   }
 

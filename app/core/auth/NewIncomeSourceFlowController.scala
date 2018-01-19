@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package core.config.featureswitch
+package core.auth
 
-trait FeatureSwitching {
-  val FEATURE_SWITCH_ON = "true"
-  val FEATURE_SWITCH_OFF = "false"
 
-  def isEnabled(featureSwitch: FeatureSwitch): Boolean =
-    sys.props get featureSwitch.name contains FEATURE_SWITCH_ON
+import cats.implicits._
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
 
-  def enable(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.name -> FEATURE_SWITCH_ON
+trait NewIncomeSourceFlowController extends BaseFrontendController {
 
-  def disable(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.name -> FEATURE_SWITCH_OFF
+  object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
+
+    override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
+
+    override val async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(subscriptionPredicates |+| newIncomeSourceFlowFeature)
+
+  }
+
 }
