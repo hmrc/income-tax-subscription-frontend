@@ -90,8 +90,28 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
 
     "not in edit mode" should {
 
-      "enter accounting period start and end dates on the accounting period page" in {
+      "enter accounting period inside the 2018 tax year on the accounting period page" in {
         val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(matchTaxYear = Some(keystoreMatchTaxYear))
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of accounting method")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(cannotReportYetURI)
+        )
+      }
+
+      "enter accounting period after the 2017 - 2018 tax year on the accounting period page" in {
+        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod(testStartDate, testEndDate2019)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

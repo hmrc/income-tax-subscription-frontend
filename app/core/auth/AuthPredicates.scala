@@ -105,6 +105,13 @@ trait AuthPredicates extends Results {
     if (request.session.isInState(Registration) && user.confidenceLevel < ConfidenceLevel.L200) Left(Future.successful(goToIv))
     else Right(AuthPredicateSuccess)
 
+  val newIncomeSourceFlowFeature: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if(applicationConfig.newIncomeSourceFlowEnabled) Right(AuthPredicateSuccess)
+    else Left(Future.failed(new NotFoundException("AuthPredicates.newIncomeSourceFlowFeature")))
+
+  val oldIncomeSourceFlowFeature: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if(!applicationConfig.newIncomeSourceFlowEnabled) Right(AuthPredicateSuccess)
+    else Left(Future.failed(new NotFoundException("AuthPredicates.oldIncomeSourceFlowFeature")))
 
   val confirmedAgentPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.hasConfirmedAgent) Right(AuthPredicateSuccess)

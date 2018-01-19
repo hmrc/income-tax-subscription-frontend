@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package core.config.featureswitch
+package incometax.incomesource.services
 
-trait FeatureSwitching {
-  val FEATURE_SWITCH_ON = "true"
-  val FEATURE_SWITCH_OFF = "false"
+import java.time.LocalDate
+import javax.inject.Singleton
 
-  def isEnabled(featureSwitch: FeatureSwitch): Boolean =
-    sys.props get featureSwitch.name contains FEATURE_SWITCH_ON
+import incometax.util.AccountingPeriodUtil
 
-  def enable(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.name -> FEATURE_SWITCH_ON
-
-  def disable(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.name -> FEATURE_SWITCH_OFF
+// this service is so that we can test conditions which depends on the current date
+@Singleton
+class CurrentTimeService {
+  def getTaxYearEndForCurrentDate: Int = AccountingPeriodUtil.getTaxEndYear(LocalDate.now())
 }

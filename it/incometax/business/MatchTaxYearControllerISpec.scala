@@ -38,7 +38,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         When("GET /business/match-to-tax-year is called")
         val res = IncomeTaxSubscriptionFrontend.matchTaxYear()
 
-        Then("Should return a OK with the match tax yearpage")
+        Then("Should return a OK with the match tax year page")
         res should have(
           httpStatus(OK),
           pageTitle(Messages("business.match_tax_year.title.signup")),
@@ -84,7 +84,8 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of accounting methods")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(businessAccountingMethodURI)
+          redirectURI(cannotReportYetURI)
+          //          redirectURI(businessAccountingMethodURI) // TODO after we're in the 2018 tax year the redirection should change back
         )
       }
 

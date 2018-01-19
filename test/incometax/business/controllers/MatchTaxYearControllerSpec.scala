@@ -21,6 +21,7 @@ import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
+import incometax.incomesource.services.mocks.MockCurrentTimeService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -28,7 +29,9 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class MatchTaxYearControllerSpec extends ControllerBaseSpec with MockKeystoreService {
+class MatchTaxYearControllerSpec extends ControllerBaseSpec
+  with MockKeystoreService
+  with MockCurrentTimeService {
 
   override val controllerName: String = "MatchTaxYearController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -40,7 +43,8 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec with MockKeystoreSer
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService
+    mockAuthService,
+    mockCurrentTimeService
   )
 
   "Calling the show action of the MatchTaxYearController with an authorised user" should {
@@ -67,7 +71,6 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec with MockKeystoreSer
     }
   }
 
-
   "The back url" should {
     s"in linear journey for subscription points to ${incometax.business.controllers.routes.BusinessNameController.show().url}" in {
       TestMatchTaxYearController.backUrl(isEditMode = false)(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessNameController.show().url
@@ -88,13 +91,29 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec with MockKeystoreSer
     "Not in edit mode and " when {
       def callShow(answer: String): Future[Result] = callShowCore(answer, isEditMode = false)
 
-      "Option 'Yes' is selected " in {
-        setupMockKeystore(fetchMatchTaxYear = None)
+      "Option 'Yes' is selected " when {
+        "the current date is in the 2017 - 2018 tax year" should {
+          s"redirect to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url}" in {
+            setupMockKeystore(fetchMatchTaxYear = None)
+            mockGetTaxYearEnd(2018)
 
-        val goodRequest = callShow(MatchTaxYearForm.option_yes)
-        status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
-        verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
+            val goodRequest = callShow(MatchTaxYearForm.option_yes)
+            status(goodRequest) mustBe Status.SEE_OTHER
+            redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+            verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
+          }
+        }
+        "the current date is after the 2017 - 2018 tax year" should {
+          s"redirect to ${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}" in {
+            setupMockKeystore(fetchMatchTaxYear = None)
+            mockGetTaxYearEnd(2019)
+
+            val goodRequest = callShow(MatchTaxYearForm.option_yes)
+            status(goodRequest) mustBe Status.SEE_OTHER
+            redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+            verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
+          }
+        }
       }
 
       "Option 'No' is selected and there were no previous entries" in {

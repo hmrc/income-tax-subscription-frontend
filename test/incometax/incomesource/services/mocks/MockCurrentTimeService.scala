@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package core.config.featureswitch
+package incometax.incomesource.services.mocks
 
-trait FeatureSwitching {
-  val FEATURE_SWITCH_ON = "true"
-  val FEATURE_SWITCH_OFF = "false"
+import core.utils.MockTrait
+import incometax.incomesource.services.CurrentTimeService
+import org.mockito.Mockito.{reset, when}
 
-  def isEnabled(featureSwitch: FeatureSwitch): Boolean =
-    sys.props get featureSwitch.name contains FEATURE_SWITCH_ON
+trait MockCurrentTimeService extends MockTrait {
+  val mockCurrentTimeService = mock[CurrentTimeService]
 
-  def enable(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.name -> FEATURE_SWITCH_ON
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockCurrentTimeService)
+  }
 
-  def disable(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.name -> FEATURE_SWITCH_OFF
+  def mockGetTaxYearEnd(taxYearEnd: Int): Unit =
+    when(mockCurrentTimeService.getTaxYearEndForCurrentDate).thenReturn(taxYearEnd)
+
 }
