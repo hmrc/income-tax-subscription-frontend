@@ -28,15 +28,14 @@ object IntegrationTestModels {
   def newNino: String = new Generator().nextNino.nino
 
   val testStartDate = DateModel("06", "04", "2017")
-  val testEndDate2018 = DateModel("05", "04", "2018")
-  val testEndDate2019 = DateModel("05", "04", "2019")
+  val testEndDate = DateModel("05", "04", "2018")
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_yes)
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_no)
   val testAccountingPeriod: AccountingPeriodModel =
-    testAccountingPeriod(testStartDate, testEndDate2018)
+    testAccountingPeriod(testStartDate, testEndDate)
 
   def testAccountingPeriod(startDate: DateModel = testStartDate,
-                           endDate: DateModel = testEndDate2018): AccountingPeriodModel =
+                           endDate: DateModel = testEndDate): AccountingPeriodModel =
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")

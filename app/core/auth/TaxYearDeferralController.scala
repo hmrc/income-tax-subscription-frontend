@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package incometax.incomesource.services.mocks
+package core.auth
 
-import core.utils.MockTrait
-import incometax.incomesource.services.CurrentTimeService
-import org.mockito.Mockito.{reset, when}
+import cats.implicits._
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
 
-trait MockCurrentTimeService extends MockTrait {
-  val mockCurrentTimeService = mock[CurrentTimeService]
+trait TaxYearDeferralController extends BaseFrontendController {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockCurrentTimeService)
+  object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
+
+    override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
+
+    override val async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(subscriptionPredicates |+| taxYearDeferralFeature)
   }
-
-  def mockGetTaxYearEnd(taxYearEnd: Int): Unit =
-    when(mockCurrentTimeService.getTaxYearEndForCurrentDate).thenReturn(taxYearEnd)
 
 }

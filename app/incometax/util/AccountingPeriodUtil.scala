@@ -27,7 +27,7 @@ object AccountingPeriodUtil {
   private val fifth = 5
   private val sixth = 6
 
-  def getTaxEndYear(date: LocalDate): Int =
+  private def getTaxEndYear(date: LocalDate): Int =
     if (date.isBefore(LocalDate.of(date.getYear, april, sixth))) date.getYear
     else date.getYear + 1
 

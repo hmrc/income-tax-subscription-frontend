@@ -203,7 +203,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
     def callSubmit() = TestNewFeaturesController.submitGoBackToPreferences()(request)
 
-    "Calling the checkPreferences controller should redirect us to next page" in {
+    "Calling the checkPreferences controller should redirect us to the next page" in {
       mockStoreNinoSuccess(testNino)
       val result = callCheck()
 
@@ -212,7 +212,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
       redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
     }
 
-    "Calling the showGoBackToPreferences controller should redirect us to next page" in {
+    "Calling the showGoBackToPreferences controller should redirect us to the next page" in {
       val result = callShow()
 
       status(result) must be(Status.SEE_OTHER)

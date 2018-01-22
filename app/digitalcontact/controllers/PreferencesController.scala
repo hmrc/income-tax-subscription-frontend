@@ -53,7 +53,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   private def skipPreferences = baseConfig.applicationConfig.userMatchingFeature && !applicationConfig.newPreferencesApiEnabled
 
-  private def goToNext()(implicit request: Request[AnyContent]) =
+  private def goToNext(implicit request: Request[AnyContent]) =
     if (request.isInState(ConfirmAgentSubscription))
       Redirect(incometax.unauthorisedagent.controllers.routes.UnauthorisedSubscriptionController.subscribeUnauthorised())
     else Redirect(incometax.incomesource.controllers.routes.IncomeSourceController.show())
@@ -81,7 +81,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
       paperlessPreferenceTokenService.storeNino(user.nino.get) flatMap {
         token =>
           preferencesService.checkPaperless(token).map {
-            case Right(Activated) => goToNext()
+            case Right(Activated) => goToNext
             case Right(Unset(Some(url))) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
               .addingToSession(ITSASessionKeys.PreferencesRedirectUrl -> url)
             case Right(Unset(None)) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
@@ -92,13 +92,13 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   def showGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      if (skipPreferences) goToNext()
+      if (skipPreferences) goToNext
       else Ok(view())
   }
 
   def submitGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      if (skipPreferences) goToNext()
+      if (skipPreferences) goToNext
       else gotoPreferences
   }
 

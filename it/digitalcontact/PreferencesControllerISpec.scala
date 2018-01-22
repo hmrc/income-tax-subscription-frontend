@@ -40,7 +40,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
 
-      Then("Should return a SEE_OTHER with a re-direct location of income source page")
+      Then("Should return a SEE_OTHER with a re-direct location of the next page")
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(incomeSourceURI)
@@ -124,7 +124,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
 
-      Then("Should return a SEE_OTHER with a re-direct location of income source page")
+      Then("Should return a SEE_OTHER with a re-direct location of the next page")
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(incomeSourceURI)

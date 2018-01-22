@@ -98,6 +98,7 @@ class AuthoriseAgentControllerSpec extends ControllerBaseSpec
 
             status(result) must be(Status.SEE_OTHER)
             redirectLocation(result) mustBe Some(digitalcontact.controllers.routes.PreferencesController.checkPreferences().url)
+            session(result).get(ITSASessionKeys.ConfirmedAgent).get mustBe true.toString
           }
         }
 

@@ -24,7 +24,6 @@ import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.AccountingPeriodDateForm
 import incometax.business.models.AccountingPeriodModel
 import incometax.business.models.enums._
-import incometax.incomesource.services.CurrentTimeService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -74,23 +73,14 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
           for {
             optOldAccountingPeriodDates <- keystoreService.fetchAccountingPeriodDate()
             _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
-            enteredTaxEndYear = accountingPeriod.taxEndYear
             _ <- optOldAccountingPeriodDates match {
-              case Some(oldAccountingPeriodDates) if oldAccountingPeriodDates.taxEndYear != enteredTaxEndYear =>
+              case Some(oldAccountingPeriodDates) if oldAccountingPeriodDates.taxEndYear != accountingPeriod.taxEndYear =>
                 keystoreService.saveTerms(terms = false)
               case _ => Future.successful(Unit)
             }
           } yield
-            if (isEditMode) {
-              val acceptedTaxYearChanged = optOldAccountingPeriodDates.fold(true)(_.taxEndYear != enteredTaxEndYear)
-              if (acceptedTaxYearChanged && enteredTaxEndYear <= 2018)
-                Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show(editMode = isEditMode))
-              else
-                Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-            } else {
-              if (enteredTaxEndYear <= 2018) Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show())
-              else Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-            }
+            if (isEditMode) Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+            else Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
       )
   }
 
