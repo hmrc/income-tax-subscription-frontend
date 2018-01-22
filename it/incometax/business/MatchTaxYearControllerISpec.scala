@@ -16,16 +16,25 @@
 
 package incometax.business
 
+import java.time.LocalDate
+
+import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
+import incometax.util.AccountingPeriodUtil
 import play.api.http.Status._
 import play.api.i18n.Messages
 
-class MatchTaxYearControllerISpec extends ComponentSpecBase {
+class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def afterAll(): Unit = {
+    super.afterAll()
+    disable(TaxYearDeferralFeature)
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/match-to-tax-year" when {
 
@@ -38,7 +47,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         When("GET /business/match-to-tax-year is called")
         val res = IncomeTaxSubscriptionFrontend.matchTaxYear()
 
-        Then("Should return a OK with the match tax yearpage")
+        Then("Should return a OK with the match tax year page")
         res should have(
           httpStatus(OK),
           pageTitle(Messages("business.match_tax_year.title.signup")),
@@ -69,9 +78,11 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/match-to-tax-year" when {
 
-    "always" should {
+    "tax year deferral is disabled" should {
 
       "select the Yes radio button on the match tax year page" in {
+        disable(TaxYearDeferralFeature)
+
         val userInput = MatchTaxYearModel(MatchTaxYearForm.option_yes)
 
         Given("I setup the Wiremock stubs")
@@ -87,6 +98,36 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           redirectURI(businessAccountingMethodURI)
         )
       }
+    }
+    "tax year deferral is enabled" should {
+
+      "select the Yes radio button on the match tax year page" in {
+        enable(TaxYearDeferralFeature)
+
+        val userInput = MatchTaxYearModel(MatchTaxYearForm.option_yes)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
+
+        When("POST /business/match-to-tax-year is called")
+        val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of accounting methods")
+        if (AccountingPeriodUtil.getTaxEndYear(LocalDate.now()) <= 2018)
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(cannotReportYetURI)
+          )
+        else
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(businessAccountingMethodURI)
+          )
+      }
+    }
+
+    "always" should {
 
       "select the No radio button on the match tax year page" in {
         val userInput = MatchTaxYearModel(MatchTaxYearForm.option_no)
@@ -140,4 +181,5 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
 
     }
   }
+
 }

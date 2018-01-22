@@ -32,7 +32,7 @@ object IntegrationTestModels {
   import CacheConstants._
 
   val testStartDate = _root_.helpers.IntegrationTestModels.testStartDate
-  val testEndDate = _root_.helpers.IntegrationTestModels.testEndDate
+  val testEndDate = _root_.helpers.IntegrationTestModels.testEndDate2018
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
   val testAccountingPeriod: AccountingPeriodModel =
