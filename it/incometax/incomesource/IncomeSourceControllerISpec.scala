@@ -16,6 +16,9 @@
 
 package incometax.incomesource
 
+import java.time.LocalDate
+
+import core.config.featureswitch.TaxYearDeferralFeature
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -23,10 +26,22 @@ import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import incometax.incomesource.forms.IncomeSourceForm
 import incometax.incomesource.models.IncomeSourceModel
+import incometax.util.AccountingPeriodUtil
 import play.api.http.Status._
 import play.api.i18n.Messages
 
 class IncomeSourceControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(TaxYearDeferralFeature)
+  }
+
+  override def afterEach(): Unit = {
+    super.afterEach()
+    disable(TaxYearDeferralFeature)
+  }
+
 
   "GET /report-quarterly/income-and-expenses/sign-up/income" when {
 
@@ -106,6 +121,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       }
 
       "select the Property income source radio button on the income source page" in {
+        enable(TaxYearDeferralFeature)
+
         val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
 
         Given("I setup the Wiremock stubs")
@@ -115,11 +132,19 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of other income")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(otherIncomeURI)
-        )
+        if (AccountingPeriodUtil.getTaxEndYear(LocalDate.now()) <= 2018) {
+          Then("Should return a SEE_OTHER with a redirect location of cannot report yet")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(cannotReportYetURI)
+          )
+        } else {
+          Then("Should return a SEE_OTHER with a redirect location of other income")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(otherIncomeURI)
+          )
+        }
       }
 
       "select no income source option on the income source page" in {

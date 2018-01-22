@@ -59,6 +59,8 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
           case Some(incomeSource) => incomeSource.source match {
             case IncomeSourceForm.option_business | IncomeSourceForm.option_both =>
               Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
+            case IncomeSourceForm.option_property =>
+              Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
           }
           case _ =>
             logging.info("Tried to submit 'other income error' when no data found in Keystore for 'income source'")
@@ -68,6 +70,8 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
 
   def backUrl(incomeSource: String, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =
     (incomeSource, matchTaxYear) match {
+      case (IncomeSourceForm.option_property, _) =>
+        incometax.incomesource.controllers.routes.IncomeSourceController.show().url
       case (IncomeSourceForm.option_business | IncomeSourceForm.option_both, Some(true)) =>
         incometax.business.controllers.routes.MatchTaxYearController.show(editMode = isEditMode).url
       case (IncomeSourceForm.option_business | IncomeSourceForm.option_both, Some(false)) =>

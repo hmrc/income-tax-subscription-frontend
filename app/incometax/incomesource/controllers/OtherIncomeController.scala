@@ -25,6 +25,7 @@ import core.services.{AuthService, KeystoreService}
 import core.utils.Implicits._
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.OtherIncomeModel
+import incometax.incomesource.services.CurrentTimeService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -38,7 +39,8 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val keystoreService: KeystoreService,
                                       val logging: Logging,
-                                      val authService: AuthService
+                                      val authService: AuthService,
+                                      val currentTimeService: CurrentTimeService
                                      ) extends SignUpController {
 
   def view(otherIncomeForm: Form[OtherIncomeModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
@@ -97,7 +99,11 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode)
       incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
-    else
-      incometax.incomesource.controllers.routes.IncomeSourceController.show().url
+    else {
+      if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
+        incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+      else
+        incometax.incomesource.controllers.routes.IncomeSourceController.show().url
+    }
 
 }
