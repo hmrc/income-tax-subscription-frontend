@@ -43,7 +43,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
                                       paperlessPreferenceTokenService: PaperlessPreferenceTokenService
                                      ) extends StatelessController {
 
-  override val statelessDefaultPredicate = preferencesJourneyPredicate
+  override val statelessDefaultPredicate = preferencesPredicate
 
   def view()(implicit request: Request[AnyContent]): Html = {
     digitalcontact.views.html.continue_registration(
