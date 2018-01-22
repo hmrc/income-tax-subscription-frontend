@@ -62,7 +62,7 @@ class CannotReportYetControllerISpec extends ComponentSpecBase with FeatureSwitc
 
     "not in edit mode" should {
 
-      "select the Continue button on the error other income page whilst on Business journey" in {
+      "select the Continue button on the error other income page whilst on the Business journey" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
 
         Given("I setup the Wiremock stubs")
@@ -83,7 +83,7 @@ class CannotReportYetControllerISpec extends ComponentSpecBase with FeatureSwitc
         )
       }
 
-      "select the Continue button on the error other income page whilst on Both journey" in {
+      "select the Continue button on the error other income page whilst on the Both journey" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
 
         Given("I setup the Wiremock stubs")
@@ -104,8 +104,7 @@ class CannotReportYetControllerISpec extends ComponentSpecBase with FeatureSwitc
         )
       }
 
-      // TODO update when we do the property journey
-      "select the Continue button on the error other income page whilst on Property journey" ignore {
+      "select the Continue button on the error other income page whilst on the Property journey" in {
         val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_property)
 
         Given("I setup the Wiremock stubs")
@@ -122,7 +121,7 @@ class CannotReportYetControllerISpec extends ComponentSpecBase with FeatureSwitc
         Then("Should return a SEE_OTHER with a redirect location of terms page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(termsURI)
+          redirectURI(otherIncomeURI)
         )
       }
     }
