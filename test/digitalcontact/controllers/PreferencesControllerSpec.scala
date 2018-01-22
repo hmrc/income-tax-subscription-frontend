@@ -66,13 +66,23 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
         implicit lazy val request = subscriptionRequest
         def result = TestPreferencesController.checkPreferences(request)
 
-        "Redirect to Income Source if paperless is activated" in {
+        "Redirect to Income Source if paperless is activated and in SignUp journey" in {
           mockStoreNinoSuccess(testNino)
           mockCheckPaperlessActivated(testToken)
 
           status(result) must be(Status.SEE_OTHER)
           redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.show().url)
         }
+
+        "Redirect to Create subscription controller if paperless is activated and in ConfirmAgentSubscription journey" in {
+          mockStoreNinoSuccess(testNino)
+          mockCheckPaperlessActivated(testToken)
+
+          lazy val res = TestPreferencesController.checkPreferences(confirmAgentSubscriptionRequest)
+          status(res) must be(Status.SEE_OTHER)
+          redirectLocation(res).get must be(incometax.unauthorisedagent.controllers.routes.UnauthorisedSubscriptionController.subscribeUnauthorised().url)
+        }
+
 
         "Redirect to returned preferences service if paperless was previously unspecified" in {
           mockStoreNinoSuccess(testNino)
@@ -98,12 +108,21 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
         def result = TestPreferencesController.callback(request)
 
-        "Redirect to Terms and Conditions if paperless is activated" in {
+        "Redirect to Income Source if paperless is activated and in SignUp journey" in {
           mockStoreNinoSuccess(testNino)
           mockCheckPaperlessActivated(testToken)
 
           status(result) must be(Status.SEE_OTHER)
           redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.show().url)
+        }
+
+        "Redirect to Create Subscription controller if paperless is activated and in ConfirmAgentSubscription journey" in {
+          mockStoreNinoSuccess(testNino)
+          mockCheckPaperlessActivated(testToken)
+
+          lazy val res = TestPreferencesController.callback(confirmAgentSubscriptionRequest)
+          status(res) must be(Status.SEE_OTHER)
+          redirectLocation(res).get must be(incometax.unauthorisedagent.controllers.routes.UnauthorisedSubscriptionController.subscribeUnauthorised().url)
         }
 
         "Redirect to the preferences error page if paperless preferences was not selected" in {
@@ -184,7 +203,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
     def callSubmit() = TestNewFeaturesController.submitGoBackToPreferences()(request)
 
-    "Calling the checkPreferences controller should redirect us to income source" in {
+    "Calling the checkPreferences controller should redirect us to the next page" in {
       mockStoreNinoSuccess(testNino)
       val result = callCheck()
 
@@ -193,7 +212,7 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
       redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
     }
 
-    "Calling the showGoBackToPreferences controller should redirect us to income source" in {
+    "Calling the showGoBackToPreferences controller should redirect us to the next page" in {
       val result = callShow()
 
       status(result) must be(Status.SEE_OTHER)

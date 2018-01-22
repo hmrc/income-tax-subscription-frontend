@@ -18,8 +18,9 @@ package digitalcontact.controllers
 
 import javax.inject.{Inject, Singleton}
 
+import cats.implicits._
 import core.ITSASessionKeys
-import core.auth.SignUpController
+import core.auth.StatelessController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import digitalcontact.models.{Activated, Unset}
@@ -28,6 +29,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
+import usermatching.userjourneys.ConfirmAgentSubscription
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -39,7 +41,9 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
                                       val authService: AuthService,
                                       keystoreService: KeystoreService,
                                       paperlessPreferenceTokenService: PaperlessPreferenceTokenService
-                                     ) extends SignUpController {
+                                     ) extends StatelessController {
+
+  override val statelessDefaultPredicate = preferencesPredicate
 
   def view()(implicit request: Request[AnyContent]): Html = {
     digitalcontact.views.html.continue_registration(
@@ -49,18 +53,20 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   private def skipPreferences = baseConfig.applicationConfig.userMatchingFeature && !applicationConfig.newPreferencesApiEnabled
 
-  private def goToIncomeSource = Redirect(
-    incometax.incomesource.controllers.routes.IncomeSourceController.show()
-  )
+  private def goToNext(implicit request: Request[AnyContent]) =
+    if (request.isInState(ConfirmAgentSubscription))
+      Redirect(incometax.unauthorisedagent.controllers.routes.UnauthorisedSubscriptionController.subscribeUnauthorised())
+    else Redirect(incometax.incomesource.controllers.routes.IncomeSourceController.show())
+
 
   def checkPreferences: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         token <- paperlessPreferenceTokenService.storeNino(user.nino.get)
-        res <- if (skipPreferences) Future.successful(goToIncomeSource)
+        res <- if (skipPreferences) Future.successful(goToNext)
         else {
           preferencesService.checkPaperless(token).map {
-            case Right(Activated) => goToIncomeSource
+            case Right(Activated) => goToNext
             case Right(Unset(Some(url))) => Redirect(url)
             //TODO Remove after feature switch is removed as redirect url will become non-optional
             case Right(Unset(None)) => Redirect(preferencesService.defaultChoosePaperlessUrl)
@@ -75,7 +81,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
       paperlessPreferenceTokenService.storeNino(user.nino.get) flatMap {
         token =>
           preferencesService.checkPaperless(token).map {
-            case Right(Activated) => goToIncomeSource
+            case Right(Activated) => goToNext
             case Right(Unset(Some(url))) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
               .addingToSession(ITSASessionKeys.PreferencesRedirectUrl -> url)
             case Right(Unset(None)) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
@@ -86,13 +92,13 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   def showGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      if (skipPreferences) goToIncomeSource
+      if (skipPreferences) goToNext
       else Ok(view())
   }
 
   def submitGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      if (skipPreferences) goToIncomeSource
+      if (skipPreferences) goToNext
       else gotoPreferences
   }
 

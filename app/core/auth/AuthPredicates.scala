@@ -21,10 +21,11 @@ import cats.implicits._
 import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import core.auth.JourneyState._
 import core.config.AppConfig
-import play.api.mvc.{Call, Result, Results}
+import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import usermatching.userjourneys.ConfirmAgentSubscription
 
 import scala.concurrent.Future
 
@@ -79,7 +80,19 @@ trait AuthPredicates extends Results {
     else Left(Future.successful(homeRoute))
 
   val signUpJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (request.session.isInState(Registration) || request.session.isInState(SignUp)) Right(AuthPredicateSuccess)
+    if (request.session.isInState(Registration) || request.session.isInState(SignUp))
+      Right(AuthPredicateSuccess)
+    else Left(Future.successful(homeRoute))
+
+  val preferencesJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if (request.session.isInState(Registration) || request.session.isInState(SignUp)
+      || request.session.isInState(ConfirmAgentSubscription))
+      Right(AuthPredicateSuccess)
+    else Left(Future.successful(homeRoute))
+
+  val unauthorisedAgentSignUpJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if (request.session.isInState(ConfirmAgentSubscription))
+      Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
   val userMatchingJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
@@ -100,6 +113,10 @@ trait AuthPredicates extends Results {
     if(!applicationConfig.newIncomeSourceFlowEnabled) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.oldIncomeSourceFlowFeature")))
 
+  val confirmedAgentPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if (request.session.hasConfirmedAgent) Right(AuthPredicateSuccess)
+    else Left(Future.successful(homeRoute))
+
   val taxYearDeferralFeature: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if(applicationConfig.taxYearDeferralEnabled) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.taxYearDeferralFeature")))
@@ -116,6 +133,13 @@ trait AuthPredicates extends Results {
   val registrationPredicates = defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
 
   val enrolledPredicates = timeoutPredicate |+| enrolledPredicate
+
+  val unauthorisedAgentPredicates = defaultPredicates |+| mtdidPredicate |+|
+    unauthorisedAgentSignUpJourneyPredicate |+| ivPredicate
+
+  val unauthorisedAgentSubscriptionPredicates = unauthorisedAgentPredicates |+| confirmedAgentPredicate
+
+  val preferencesPredicate = defaultPredicates |+| mtdidPredicate |+| preferencesJourneyPredicate |+| ivPredicate
 
 }
 

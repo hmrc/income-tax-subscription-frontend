@@ -52,14 +52,18 @@ object JourneyState {
 
   implicit class SessionFunctions(session: Session) {
     def isInState(state: JourneyState): Boolean = session.get(ITSASessionKeys.JourneyStateKey) contains state.name
+    def hasConfirmedAgent: Boolean = session.get(ITSASessionKeys.ConfirmedAgent).fold(false)(_.toBoolean)
   }
 
   implicit class RequestFunctions(request: Request[_]) {
     def isInState(state: JourneyState): Boolean = request.session.isInState(state)
+    def hasConfirmedAgent: Boolean = request.session.hasConfirmedAgent
   }
 
   implicit class ResultFunctions(result: Result) {
     def withJourneyState(state: JourneyState)(implicit header: RequestHeader): Result = result.addingToSession(ITSASessionKeys.JourneyStateKey -> state.name)
+    def confirmAgent(implicit header: RequestHeader): Result =
+      result.addingToSession(ITSASessionKeys.ConfirmedAgent -> true.toString)
   }
 
 }

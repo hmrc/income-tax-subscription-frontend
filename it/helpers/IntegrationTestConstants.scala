@@ -84,6 +84,7 @@ object IntegrationTestConstants {
   val confirmAgentUri = s"$baseURI/confirm-agent"
   val authoriseAgentUri = s"$baseURI/authorise-agent"
   val agentNotAuthorisedUri = s"$baseURI/agent-not-authorised"
+  val subscribeUnauthorisedUri = s"$baseURI/subscribe-unauthorised"
 
   object Auth {
     def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(
