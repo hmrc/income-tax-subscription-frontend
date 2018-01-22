@@ -100,6 +100,11 @@ trait AuthPredicates extends Results {
     if(!applicationConfig.newIncomeSourceFlowEnabled) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.oldIncomeSourceFlowFeature")))
 
+  val taxYearDeferralFeature: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if(applicationConfig.taxYearDeferralEnabled) Right(AuthPredicateSuccess)
+    else Left(Future.failed(new NotFoundException("AuthPredicates.taxYearDeferralFeature")))
+
+
   val defaultPredicates = timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 
   val homePredicates = defaultPredicates |+| mtdidPredicate

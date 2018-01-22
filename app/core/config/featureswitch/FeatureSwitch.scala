@@ -33,7 +33,8 @@ object FeatureSwitch {
     EmacEs6ApiFeature,
     EmacEs8ApiFeature,
     UnauthorisedAgentFeature,
-    NewIncomeSourceFlowFeature
+    NewIncomeSourceFlowFeature,
+    TaxYearDeferralFeature
   )
 
   def apply(str: String): FeatureSwitch =
@@ -79,4 +80,9 @@ object UnauthorisedAgentFeature extends FeatureSwitch {
 object NewIncomeSourceFlowFeature extends FeatureSwitch {
   val name = s"$prefix.enable-new-income-source-flow"
   val displayText = "Enable new income source flow"
+}
+
+object TaxYearDeferralFeature extends FeatureSwitch {
+  val name = s"$prefix.tax-year-deferral"
+  val displayText = "Enable 17/18 tax year deferral"
 }
