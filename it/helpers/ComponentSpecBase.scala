@@ -149,11 +149,6 @@ trait ComponentSpecBase extends UnitSpec
 
     def otherIncomeError(): WSResponse = get("/error/other-income")
 
-    def cannotReportYet(): WSResponse = get("/error/cannot-report-yet")
-
-    def submitCannotReportYet(editMode: Boolean): WSResponse =
-      post(s"/error/cannot-report-yet${if (editMode) "?editMode=true" else ""}")(Map.empty)
-
     def terms(): WSResponse = get("/terms")
 
     def sessionTimeout(): WSResponse = get("/session-timeout")
