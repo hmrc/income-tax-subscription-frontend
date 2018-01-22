@@ -16,11 +16,13 @@
 
 package incometax.business.controllers
 
+import core.config.featureswitch._
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
+import incometax.incomesource.services.mocks.MockCurrentTimeService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -28,7 +30,10 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class MatchTaxYearControllerSpec extends ControllerBaseSpec with MockKeystoreService {
+class MatchTaxYearControllerSpec extends ControllerBaseSpec
+  with MockKeystoreService
+  with MockCurrentTimeService
+  with FeatureSwitching {
 
   override val controllerName: String = "MatchTaxYearController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -40,8 +45,19 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec with MockKeystoreSer
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService
+    mockAuthService,
+    mockCurrentTimeService
   )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(TaxYearDeferralFeature)
+  }
+
+  override def afterEach(): Unit = {
+    super.afterEach()
+    disable(TaxYearDeferralFeature)
+  }
 
   "Calling the show action of the MatchTaxYearController with an authorised user" should {
 
@@ -65,6 +81,7 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec with MockKeystoreSer
       val document = Jsoup.parse(contentAsString(result))
       document.select("#back").attr("href") mustBe incometax.business.controllers.routes.BusinessNameController.show().url
     }
+
   }
 
 

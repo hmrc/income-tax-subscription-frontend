@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package core.auth
+package incometax.incomesource.services
 
-import cats.implicits._
-import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
+import java.time.LocalDate
+import javax.inject.Singleton
 
-trait TaxYearDeferralController extends BaseFrontendController {
+import incometax.util.AccountingPeriodUtil
 
-  object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
-    override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
-
-    override def async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(subscriptionPredicates |+| taxYearDeferralFeature)
-  }
-
+// this service is so that we can test conditions which depends on the current date
+@Singleton
+class CurrentTimeService {
+  def getTaxYearEndForCurrentDate: Int = AccountingPeriodUtil.getTaxEndYear(LocalDate.now())
 }

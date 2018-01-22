@@ -60,6 +60,10 @@ GET         /error/affinity-group         usermatching.controllers.AffinityGroup
 # IV Error
 GET         /error/iv-failed              identityverification.controllers.IdentityVerificationController.ivFailed
 
+#Cannot report yet
+GET         /error/cannot-report-yet      incometax.incomesource.controllers.CannotReportYetController.show(editMode: Boolean ?= false)
+POST        /error/cannot-report-yet      incometax.incomesource.controllers.CannotReportYetController.submit(editMode: Boolean ?= false)
+
 # Exit Survey
 GET         /exit-survey                  incometax.subscription.controllers.ExitSurveyController.show(origin: String)
 POST        /exit-survey                  incometax.subscription.controllers.ExitSurveyController.submit

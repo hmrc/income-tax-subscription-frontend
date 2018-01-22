@@ -158,6 +158,14 @@ object MessageLookup {
     val exampleEndDate_registration = "For example, 5 4 2018"
   }
 
+  object CannotReportYet {
+    val title = "You can't use software to report your Income Tax yet"
+    val heading: String = title
+    val linkText = "Self Assessment tax return"
+    val para1 = "You can sign up and use software to record your income and expenses, but you can't send any reports until 6 April 2018."
+    val para2 = s"You need to send a $linkText instead."
+  }
+
   object BusinessName {
     val title = "Business name"
     val heading: String = "What's the name of your business?"
