@@ -55,6 +55,7 @@ object IntegrationTestConstants {
   val confirmationURI = s"$baseURI/confirmation"
   val incomeSourceURI = s"$baseURI/income"
   val otherIncomeURI = s"$baseURI/income-other"
+  val cannotReportYetURI = s"$baseURI/error/cannot-report-yet"
   val businessNameURI = s"$baseURI/business/name"
   val businessAddressURI = s"$baseURI/business/address"
   val businessAddressInitURI = s"$baseURI/business/address/init"
@@ -83,6 +84,7 @@ object IntegrationTestConstants {
   val confirmAgentUri = s"$baseURI/confirm-agent"
   val authoriseAgentUri = s"$baseURI/authorise-agent"
   val agentNotAuthorisedUri = s"$baseURI/agent-not-authorised"
+  val subscribeUnauthorisedUri = s"$baseURI/subscribe-unauthorised"
 
   object Auth {
     def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(

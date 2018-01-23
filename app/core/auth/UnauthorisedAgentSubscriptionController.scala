@@ -16,15 +16,25 @@
 
 package core.auth
 
-import cats.implicits._
+import play.api.mvc.Action
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
+import uk.gov.hmrc.http.NotFoundException
 
-trait TaxYearDeferralController extends BaseFrontendController {
+import scala.concurrent.Future
+
+trait UnauthorisedAgentSubscriptionController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
+
     override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
 
-    override def async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(subscriptionPredicates |+| taxYearDeferralFeature)
+    private val unauthorisedAgentUnavailableMessage = "This page for unauthorised agents is not yet available to the public: "
+
+    override def async: AuthenticatedAction[IncomeTaxSAUser] =
+      if (applicationConfig.unauthorisedAgentEnabled)
+        asyncInternal(unauthorisedAgentSubscriptionPredicates)
+      else _ =>
+        Action.async(request => Future.failed(new NotFoundException(unauthorisedAgentUnavailableMessage + request.uri)))
   }
 
 }

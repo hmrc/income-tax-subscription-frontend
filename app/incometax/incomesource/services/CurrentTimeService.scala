@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package core
+package incometax.incomesource.services
 
-object ITSASessionKeys {
-  val StartTime = "StartTime"
-  val RequestURI = "Request-URI"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val FailedUserMatching = "Failed-User-Matching"
-  val JourneyStateKey = "Journey-State"
-  val PreferencesRedirectUrl = "Preferences-Redirect-Url"
-  val AgentReferenceNumber = "Agent-Reference-Number"
-  val AgencyName = "Agency-Name"
-  val ConfirmedAgent = "Confirmed-Agent"
+import java.time.LocalDate
+import javax.inject.Singleton
+
+import incometax.util.AccountingPeriodUtil
+
+// this service is so that we can test conditions which depends on the current date
+@Singleton
+class CurrentTimeService {
+  def getTaxYearEndForCurrentDate: Int = AccountingPeriodUtil.getTaxEndYear(LocalDate.now())
 }

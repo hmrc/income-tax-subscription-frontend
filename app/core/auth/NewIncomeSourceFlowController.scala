@@ -23,11 +23,9 @@ import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
 trait NewIncomeSourceFlowController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
-
     override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
 
-    override val async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(subscriptionPredicates |+| newIncomeSourceFlowFeature)
-
+    override def async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(subscriptionPredicates |+| newIncomeSourceFlowFeature)
   }
 
 }

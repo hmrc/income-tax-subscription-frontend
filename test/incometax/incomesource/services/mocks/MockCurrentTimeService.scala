@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package core
+package incometax.incomesource.services.mocks
 
-object ITSASessionKeys {
-  val StartTime = "StartTime"
-  val RequestURI = "Request-URI"
-  val NINO = "NINO"
-  val UTR = "UTR"
-  val FailedUserMatching = "Failed-User-Matching"
-  val JourneyStateKey = "Journey-State"
-  val PreferencesRedirectUrl = "Preferences-Redirect-Url"
-  val AgentReferenceNumber = "Agent-Reference-Number"
-  val AgencyName = "Agency-Name"
-  val ConfirmedAgent = "Confirmed-Agent"
+import core.utils.MockTrait
+import incometax.incomesource.services.CurrentTimeService
+import org.mockito.Mockito.{reset, when}
+
+trait MockCurrentTimeService extends MockTrait {
+  val mockCurrentTimeService = mock[CurrentTimeService]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockCurrentTimeService)
+  }
+
+  def mockGetTaxYearEnd(taxYearEnd: Int): Unit =
+    when(mockCurrentTimeService.getTaxYearEndForCurrentDate).thenReturn(taxYearEnd)
+
 }

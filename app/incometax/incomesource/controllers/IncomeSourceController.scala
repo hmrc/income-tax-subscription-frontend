@@ -25,6 +25,7 @@ import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.IncomeSourceForm
 import incometax.incomesource.models.IncomeSourceModel
+import incometax.incomesource.services.CurrentTimeService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -36,7 +37,8 @@ import scala.concurrent.Future
 class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService,
-                                       val authService: AuthService
+                                       val authService: AuthService,
+                                       val currentTimeService: CurrentTimeService
                                       ) extends SignUpController {
 
   override def defaultSignUpPredicates: AuthPredicate[IncomeTaxSAUser] = subscriptionPredicates |+| oldIncomeSourceFlowFeature
@@ -89,8 +91,12 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
   def business(implicit request: Request[_]): Future[Result] =
     Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show()))
 
-  def property(implicit request: Request[_]): Future[Result] =
-    Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show()))
+  def property(implicit request: Request[_]): Future[Result] = {
+    if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
+      Future.successful(Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show()))
+    else
+      Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show()))
+  }
 
   def both(implicit request: Request[_]): Future[Result] =
     Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show()))

@@ -16,6 +16,7 @@
 
 package incometax.business
 
+import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
 import core.models.DateModel
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
@@ -28,7 +29,13 @@ import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import play.api.http.Status._
 import play.api.i18n.Messages
 
-class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
+class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def afterAll(): Unit = {
+    super.afterAll()
+    disable(TaxYearDeferralFeature)
+  }
+
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-period-dates" when {
 
@@ -88,66 +95,117 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
   "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-period-dates" when {
     val keystoreMatchTaxYear = testMatchTaxYearNo
 
-    "not in edit mode" should {
+    "not in edit mode" when {
 
-      "enter accounting period start and end dates on the accounting period page" in {
-        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
+      "when tax year deferral is not enabled" should {
+        "enter accounting period start and end dates on the accounting period page" in {
+          disable(TaxYearDeferralFeature)
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(matchTaxYear = Some(keystoreMatchTaxYear))
-        )
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+          val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
-        When("POST /business/accounting-period-dates is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(
+            keystoreData(matchTaxYear = Some(keystoreMatchTaxYear))
+          )
+          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
-        Then("Should return a SEE_OTHER with a redirect location of accounting method")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(businessAccountingMethodURI)
-        )
+          When("POST /business/accounting-period-dates is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of accounting method")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(businessAccountingMethodURI)
+          )
+        }
       }
 
-      "enter no accounting period dates on the accounting period page" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(matchTaxYear = Some(testMatchTaxYearNo))
-        )
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, "")
+      "when tax year deferral is enabled" should {
+        "enter accounting period inside the 2018 tax year on the accounting period page" in {
+          enable(TaxYearDeferralFeature)
 
-        When("POST /business/accounting-period-dates is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, None)
+          val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
-        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-        res should have(
-          httpStatus(BAD_REQUEST),
-          errorDisplayed()
-        )
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(
+            keystoreData(matchTaxYear = Some(keystoreMatchTaxYear))
+          )
+          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+
+          When("POST /business/accounting-period-dates is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of accounting method")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(cannotReportYetURI)
+          )
+        }
+
+        "enter accounting period after the 2017 - 2018 tax year on the accounting period page" in {
+          enable(TaxYearDeferralFeature)
+
+          val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod(testStartDate, testEndDate2019)
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(
+            keystoreData(matchTaxYear = Some(keystoreMatchTaxYear))
+          )
+          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+
+          When("POST /business/accounting-period-dates is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of accounting method")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(businessAccountingMethodURI)
+          )
+        }
       }
 
-      "select invalid income source option on the income source page as if the user it trying to manipulate the html" in {
-        val userInput = AccountingPeriodModel(DateModel("dd", "mm", "yyyy"), DateModel("dd", "mm", "yyyy"))
+      "disregard tax year deferral" should {
+        "enter no accounting period dates on the accounting period page" in {
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(
+            keystoreData(matchTaxYear = Some(testMatchTaxYearNo))
+          )
+          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, "")
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(matchTaxYear = Some(testMatchTaxYearNo))
-        )
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+          When("POST /business/accounting-period-dates is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, None)
 
-        When("POST /business/accounting-period-dates is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+          Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+          res should have(
+            httpStatus(BAD_REQUEST),
+            errorDisplayed()
+          )
+        }
 
-        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-        res should have(
-          httpStatus(BAD_REQUEST),
-          errorDisplayed()
-        )
+        "select invalid income source option on the income source page as if the user it trying to manipulate the html" in {
+          val userInput = AccountingPeriodModel(DateModel("dd", "mm", "yyyy"), DateModel("dd", "mm", "yyyy"))
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(
+            keystoreData(matchTaxYear = Some(testMatchTaxYearNo))
+          )
+          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+
+          When("POST /business/accounting-period-dates is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+
+          Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+          res should have(
+            httpStatus(BAD_REQUEST),
+            errorDisplayed()
+          )
+        }
       }
-
     }
 
     "in edit mode" should {
@@ -241,7 +299,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
           )
         }
       }
-
     }
   }
+
 }

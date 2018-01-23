@@ -16,15 +16,18 @@
 
 package core.auth
 
+import core.auth.AuthPredicate.AuthPredicate
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
 
 trait StatelessController extends BaseFrontendController {
+
+  protected val statelessDefaultPredicate: AuthPredicate[IncomeTaxSAUser] = homePredicates
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
 
     override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
 
-    override val async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(homePredicates)
+    override val async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(statelessDefaultPredicate)
 
     val asyncUnrestricted: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(emptyPredicate)
 

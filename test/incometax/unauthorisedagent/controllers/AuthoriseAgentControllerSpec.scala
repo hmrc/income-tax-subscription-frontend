@@ -91,18 +91,14 @@ class AuthoriseAgentControllerSpec extends ControllerBaseSpec
         )
 
         "the user answered yes" should {
-          "submit to ETMP, store the MTDITID in keystore and redirect to the confirmation page" in {
+          "go to preferences" in {
             enable(UnauthorisedAgentFeature)
-            setupMockKeystore(fetchAll = testCacheMap)
-            mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
-            mockDeleteSubscriptionData(testNino)
 
             val result = await(submit(ConfirmAgentForm.option_yes))
 
-            verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
-
             status(result) must be(Status.SEE_OTHER)
-            redirectLocation(result) mustBe Some(incometax.subscription.controllers.routes.ConfirmationController.show().url)
+            redirectLocation(result) mustBe Some(digitalcontact.controllers.routes.PreferencesController.checkPreferences().url)
+            session(result).get(ITSASessionKeys.ConfirmedAgent).get mustBe true.toString
           }
         }
 

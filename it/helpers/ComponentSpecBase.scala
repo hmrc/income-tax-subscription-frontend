@@ -149,6 +149,11 @@ trait ComponentSpecBase extends UnitSpec
 
     def otherIncomeError(): WSResponse = get("/error/other-income")
 
+    def cannotReportYet(): WSResponse = get("/error/cannot-report-yet")
+
+    def submitCannotReportYet(editMode: Boolean): WSResponse =
+      post(s"/error/cannot-report-yet${if (editMode) "?editMode=true" else ""}")(Map.empty)
+
     def terms(): WSResponse = get("/terms")
 
     def sessionTimeout(): WSResponse = get("/session-timeout")
@@ -370,6 +375,14 @@ trait ComponentSpecBase extends UnitSpec
         AgencyName -> IntegrationTestConstants.testAgencyName
       )
     )
+
+    def subscribeUnauthorised: WSResponse = get(
+      "/subscribe-unauthorised",
+      Map(
+        JourneyStateKey -> ConfirmAgentSubscription.name,
+        AgencyName -> IntegrationTestConstants.testAgencyName,
+        ConfirmedAgent -> true.toString
+      ))
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =

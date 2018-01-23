@@ -18,13 +18,11 @@ package incometax.unauthorisedagent.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import core.ITSASessionKeys
+import core.auth.JourneyState._
 import core.ITSASessionKeys._
 import core.auth.AuthenticatedController
 import core.config.BaseControllerConfig
-import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
-import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionOrchestrationService
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
@@ -33,7 +31,6 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.userjourneys.ConfirmAgentSubscription
 
 import scala.concurrent.Future
@@ -46,6 +43,8 @@ class AuthoriseAgentController @Inject()(val baseConfig: BaseControllerConfig,
                                          subscriptionStoreRetrievalService: SubscriptionStoreRetrievalService,
                                          subscriptionOrchestrationService: SubscriptionOrchestrationService
                                         ) extends AuthenticatedController[ConfirmAgentSubscription.type] {
+
+  lazy val goToPreferences = Redirect(digitalcontact.controllers.routes.PreferencesController.checkPreferences())
 
   private[controllers] def getAgentName(implicit request: Request[AnyContent]): String =
     request.session(AgencyName)
@@ -68,20 +67,7 @@ class AuthoriseAgentController @Inject()(val baseConfig: BaseControllerConfig,
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, agentName = getAgentName))),
         authoriseAgent => authoriseAgent.choice match {
           case ConfirmAgentForm.option_yes =>
-            keystoreService.fetchAll flatMap {
-              case Some(cache) =>
-                val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> req.uri)
-
-                subscriptionOrchestrationService.createSubscription(user.nino.get, cache.getSummary())(headerCarrier) flatMap {
-                  case Right(SubscriptionSuccess(id)) =>
-                    for {
-                      _ <- keystoreService.saveSubscriptionId(id)
-                      _ <- subscriptionStoreRetrievalService.deleteSubscriptionData(user.nino.get)
-                    } yield Redirect(incometax.subscription.controllers.routes.ConfirmationController.show())
-                  case Left(failure) =>
-                    Future.failed(new InternalServerException(failure.toString))
-                }
-            }
+            Future.successful(goToPreferences.confirmAgent)
           case ConfirmAgentForm.option_no =>
             Future.successful(Redirect(routes.AgentNotAuthorisedController.show()))
         }
