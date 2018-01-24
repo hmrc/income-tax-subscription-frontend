@@ -27,7 +27,7 @@ import play.api.i18n.Messages
 
 class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/error/other-income" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/other-income-in-final-report" when {
 
     "keystore not applicable" should {
       "show the error other income page" in {
@@ -47,7 +47,7 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
   }
 
 
-  "POST /report-quarterly/income-and-expenses/sign-up/error/other-income" when {
+  "POST /report-quarterly/income-and-expenses/sign-up/other-income-in-final-report" when {
 
     "not in edit mode" should {
 
