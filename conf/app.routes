@@ -104,3 +104,6 @@ GET         /agent-not-authorised         incometax.unauthorisedagent.controller
 
 # Confirm agent subscription
 GET         /subscribe-unauthorised       incometax.unauthorisedagent.controllers.UnauthorisedSubscriptionController.subscribeUnauthorised()
+
+# Cannot Sign Up Routes
+GET         /error/cannot-sign-up         incometax.incomesource.controllers.CannotSignUpController.show()
