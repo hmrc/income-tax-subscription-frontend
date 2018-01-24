@@ -20,7 +20,7 @@ import javax.inject._
 
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{IncomeSourceModel, IncomeSourceParentModel, OtherIncomeModel, RentUkPropertyModel}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, RentUkPropertyModel}
 import models._
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
@@ -59,9 +59,6 @@ class KeystoreService @Inject()(val session: SessionCache) {
 
   def saveRentUkProperty(rentUkPropertyModel: RentUkPropertyModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
     save[RentUkPropertyModel](RentUkProperty, rentUkPropertyModel)
-
-  def saveIncomeSourceParent(incomeSource: IncomeSourceParentModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceParentModel]): FC =
-    save[IncomeSourceParentModel](IncomeSource, incomeSource)
 
   def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =
     fetch[BusinessNameModel](BusinessName)
