@@ -149,6 +149,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def otherIncomeError(): WSResponse = get("/error/other-income")
 
+    def cannotSignUp(): WSResponse = get("/error/cannot-sign-up")
+
     def cannotReportYet(): WSResponse = get("/error/cannot-report-yet")
 
     def submitCannotReportYet(editMode: Boolean): WSResponse =

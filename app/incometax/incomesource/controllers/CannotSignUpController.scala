@@ -38,15 +38,10 @@ class CannotSignUpController @Inject()(val baseConfig: BaseControllerConfig,
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
     Future.successful(Ok(incometax.incomesource.views.html.cannot_sign_up(
-      postAction = incometax.incomesource.controllers.routes.CannotSignUpController.submit(),
+      postAction = incometax.incomesource.controllers.routes.CannotSignUpController.show(),
       backUrl
     )))
   }
 
-  val submit: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      Future.successful(Redirect(core.controllers.routes.SignOutController.signOut("origin = routes.CannotSignUpController.show()")))
-  }
-
-  lazy val backUrl: String = incometax.incomesource.controllers.routes.OtherIncomeController.show().url
+  lazy val backUrl: String = "" //TODO:incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
 }

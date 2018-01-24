@@ -107,4 +107,3 @@ GET         /subscribe-unauthorised       incometax.unauthorisedagent.controller
 
 # Cannot Sign Up Routes
 GET         /error/cannot-sign-up         incometax.incomesource.controllers.CannotSignUpController.show()
-POST        /error/cannot-sign-up         incometax.incomesource.controllers.CannotSignUpController.submit()

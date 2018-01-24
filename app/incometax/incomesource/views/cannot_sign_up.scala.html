@@ -32,10 +32,10 @@
             <li>@Messages("cannot-sign-up.bullet2")</li>
             <li>@Messages("cannot-sign-up.bullet3")</li>
         </ul>
-        <p>@Messages("cannot-sign-up.para2")</p>
+        <p>@Html(Messages("cannot-sign-up.para2", appConfig.sendSAReturnLink))</p>
     </div>
 
-    @form(action = postAction) {
-        <button formnovalidate class="button" type="submit" id="signOut">@Messages("base.sign-out")</button>
-    }
+    <div class="form-group">
+        @signOutButton()
+    </div>
 }

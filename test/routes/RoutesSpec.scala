@@ -66,13 +66,7 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Cannot sign up routes
   "The URL for the CannotSignUp.show() action" should {
     s"be equal to $contextRoute/error/cannot-sign-up" in {
-      incometax.subscription.controllers.routes.CannotSignUpController.show().url must be(s"$contextRoute/error/cannot-sign-up")
-    }
-  }
-
-  "The URL for the CannotSignUp.submit() action" should {
-    s"be equal to $contextRoute/error/cannot-sign-up" in {
-      incometax.subscription.controllers.routes.CannotSignUpController.submit().url must be(s"$contextRoute/error/cannot-sign-up")
+      incometax.incomesource.controllers.routes.CannotSignUpController.show().url must be(s"$contextRoute/error/cannot-sign-up")
     }
   }
 

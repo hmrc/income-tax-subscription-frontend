@@ -90,7 +90,7 @@ trait MockConfig extends AppConfig {
 
   override lazy val agentAccountUrl = "https://www.gov.uk/guidance/self-assessment-for-agents-online-service"
 
-  override lazy val cannotSignUpUrl = "https://www.gov.uk/self-assessment-tax-returns/sending-return"
+  override lazy val sendSAReturnLink = "https://www.gov.uk/self-assessment-tax-returns/sending-return"
 
   override lazy val backendFeatureSwitchUrl = "income-tax-subscription/"
 
