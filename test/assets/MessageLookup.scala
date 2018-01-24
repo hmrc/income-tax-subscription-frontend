@@ -552,13 +552,13 @@ object MessageLookup {
   }
 
   object OtherIncomeError {
-    val title = "You can use software to report your Income Tax"
+    val title = "Tell us about your other income sources in your final report"
     val heading: String = title
     val para1 = "You only need to send quarterly reports on income you earn from either:"
     val bullet1 = "working for yourself"
     val bullet2 = "renting out a UK property"
     val bullet3 = "working for yourself and renting out a UK property"
-    val para2 = "Tell us about your other income sources in your final report. You need to submit this report by 31 January."
+    val para2 = "You need to submit your final report by 31 January."
   }
 
   object OtherIncome {
