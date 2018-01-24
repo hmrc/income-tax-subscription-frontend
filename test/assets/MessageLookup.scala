@@ -563,13 +563,13 @@ object MessageLookup {
   }
 
   object OtherIncomeError {
-    val title = "You can use software to report your Income Tax"
+    val title = "Tell us about your other income sources in your final report"
     val heading: String = title
     val para1 = "You only need to send quarterly reports on income you earn from either:"
     val bullet1 = "working for yourself"
     val bullet2 = "renting out a UK property"
     val bullet3 = "working for yourself and renting out a UK property"
-    val para2 = "Tell us about your other income sources in your final report. You need to submit this report by 31 January."
+    val para2 = "You need to submit your final report by 31 January."
   }
 
   object OtherIncome {
@@ -644,8 +644,18 @@ object MessageLookup {
       val yes = "Yes"
       val no = "No"
     }
-
-
   }
+
+    object CannotSignUp {
+      val title = "You can't use this service"
+      val heading: String = title
+      val linktext = "send a Self Assessment tax return"
+      val line1 = "You can only use software to report your Income Tax if you either:"
+      val bullet1 = "work for yourself"
+      val bullet2 = "rent out UK property"
+      val bullet3 = "work for yourself and rent out UK property"
+      val line2 = s"You need to $linktext instead."
+    }
+
 
 }

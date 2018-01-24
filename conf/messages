@@ -65,10 +65,26 @@ work_for_yourself.title                                         = Do you work fo
 work_for_yourself.heading                                       = Do you work for yourself?
 work_for_yourself.para1                                         = This does not include if your business is a limited company or partnership.
 
+## Rent Uk Property page
+rent_uk_property.title                                          = Do you rent out a UK property?
+rent_uk_property.heading                                        = Do you rent out a UK property?
+rent_uk_property.line_1                                         = This includes if you use a letting agency.
+rent_uk_property.question                                       = Is this your only source of self-employed income?
+
 # Property income page
 property.income.title                                           = How much was your income from property this year?
 property.income.heading                                         = How much was your income from property this year?
 property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
+
+# Cannot Sign Up page
+cannot-sign-up.title                                            = You can''t use this service
+cannot-sign-up.heading                                          = You can''t use this service
+cannot-sign-up.para1                                            = You can only use software to report your Income Tax if you either:
+cannot-sign-up.bullet1                                          = work for yourself
+cannot-sign-up.bullet2                                          = rent out UK property
+cannot-sign-up.bullet3                                          = work for yourself and rent out UK property
+cannot-sign-up.para2                                            = You need to <a id="signOut" href="{0}">send a Self Assessment tax return</a> instead.
+
 
 # business address pages
 business.address.title                                          = Business address
@@ -312,6 +328,9 @@ error.not-eligible.invalid                                      = You must selec
 error.other-income.empty                                        = You must select an option to continue
 error.other-income.invalid                                      = You must select an option to continue
 
+error.rent-uk-property.empty                                    = Select yes if you rent out a UK property
+error.rent-uk-property.invalid                                  = Select yes if you rent out a UK property
+
 error.survey-feedback.maxLength                                 = You can''t enter more than 1200 characters for your feedback
 
 error.confirm-agent.empty                                       = You must select an option to continue
@@ -361,13 +380,13 @@ no-sa.heading                                                   = You need to re
 no-sa.line_1                                                    = Before you can sign up to use software to report your Income Tax, you need to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
 ## Other income error page ##
-other-income-error.title                                        = You can use software to report your Income Tax
-other-income-error.heading                                      = You can use software to report your Income Tax
+other-income-error.title                                        = Tell us about your other income sources in your final report
+other-income-error.heading                                      = Tell us about your other income sources in your final report
 other-income-error.para1                                        = You only need to send quarterly reports on income you earn from either:
 other-income-error.bullet1                                      = working for yourself
 other-income-error.bullet2                                      = renting out a UK property
 other-income-error.bullet3                                      = working for yourself and renting out a UK property
-other-income-error.para2                                        = Tell us about your other income sources in your final report. You need to submit this report by 31 January.
+other-income-error.para2                                        = You need to submit your final report by 31 January.
 
 ## Other sources of income page ##
 income-other.title                                              = Do you have any other sources of income?

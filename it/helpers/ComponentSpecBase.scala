@@ -147,7 +147,9 @@ trait ComponentSpecBase extends UnitSpec
 
     def otherIncome(): WSResponse = get("/income-other")
 
-    def otherIncomeError(): WSResponse = get("/error/other-income")
+    def otherIncomeError(): WSResponse = get("/other-income-in-final-report")
+
+    def cannotSignUp(): WSResponse = get("/error/cannot-sign-up")
 
     def cannotReportYet(): WSResponse = get("/error/cannot-report-yet")
 
@@ -176,7 +178,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
 
-    def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
+    def submitOtherIncomeError(): WSResponse = post("/other-income-in-final-report")(Map.empty)
 
     def submitPaperlessError(sessionKeys: Map[String, String] = Map.empty): WSResponse = post(
       uri = "/paperless-error",

@@ -90,7 +90,9 @@ trait AppConfig extends FeatureSwitching {
 
   val addressLookupFrontendURL: String
   val signUpToSaLink: String
+  val sendSAReturnLink: String
   val agentSignUpUrl: String
+
 
   val backendFeatureSwitchUrl: String
 
@@ -224,6 +226,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 
   override lazy val signUpToSaLink: String = loadConfig("sa-signup.url")
+
+  override lazy val sendSAReturnLink: String = loadConfig("sa-return.url")
 
   override lazy val backendFeatureSwitchUrl: String = s"$protectedMicroServiceUrl/income-tax-subscription/test-only/feature-switch"
 

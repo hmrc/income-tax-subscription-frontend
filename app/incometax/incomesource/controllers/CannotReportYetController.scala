@@ -69,7 +69,17 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       if (isEditMode) Future.successful(Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
-      else
+      else if (applicationConfig.newIncomeSourceFlowEnabled) {
+        for {
+          cache <- keystoreService.fetchAll()
+          newIncomeSource = cache.getNewIncomeSource().get.getIncomeSourceType
+        } yield newIncomeSource match {
+          case Right(Business | Both) =>
+            Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
+          case Right(Property) =>
+            Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
+        }
+      } else {
         keystoreService.fetchIncomeSource() map {
           case Some(incomeSource) => incomeSource.source match {
             case IncomeSourceForm.option_business | IncomeSourceForm.option_both =>
@@ -81,6 +91,7 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
             logging.info("Tried to submit 'other income error' when no data found in Keystore for 'income source'")
             throw new InternalServerException("Other Income Error Controller, call to submit 'other income error' when no 'income source'")
         }
+      }
   }
 
   def backUrl(incomeSource: String, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =

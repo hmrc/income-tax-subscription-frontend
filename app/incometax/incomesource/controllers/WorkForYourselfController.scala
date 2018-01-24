@@ -56,7 +56,7 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
         cache <- keystoreService.fetchAll()
       } yield
         if (!cache.getRentUkProperty().needSecondPage)
-          NotImplemented //TODO point to the first page
+          Redirect(incometax.incomesource.controllers.routes.RentUkPropertyController.show().url)
         else
           Ok(view(workForYourselfForm = WorkForYourselfForm.workForYourselfForm.fill(cache.getWorkForYourself()), isEditMode = isEditMode))
   }
@@ -101,11 +101,11 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
     Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
 
   def doNotQualify(implicit request: Request[_]): Result =
-    NotImplemented // todo
+    Redirect(incometax.incomesource.controllers.routes.CannotSignUpController.show())
 
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode)
       incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     else
-      incometax.subscription.controllers.routes.CheckYourAnswersController.show().url // TODO replace with actual route when it's created
+      incometax.incomesource.controllers.routes.RentUkPropertyController.show().url
 }

@@ -74,7 +74,8 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
           setupMockKeystore(fetchAll = None)
 
           val result = call
-          status(result) must be(Status.NOT_IMPLEMENTED) // TODO chanage to redirect back to first page
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.RentUkPropertyController.show().url
 
           await(result)
           verifyKeystore(fetchAll = 1, saveWorkForYourself = 0)
@@ -90,7 +91,8 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
           )
 
           val result = call
-          status(result) must be(Status.NOT_IMPLEMENTED) // TODO chanage to redirect back to first page
+          status(result) must be(Status.SEE_OTHER)
+          redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.RentUkPropertyController.show().url
 
           await(result)
           verifyKeystore(fetchAll = 1, saveWorkForYourself = 0)
@@ -216,7 +218,8 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
             )
           )
           val result = submit(testNewIncomeSourceNotQualified.workForYourself.get)
-          status(result) mustBe NOT_IMPLEMENTED //TODO change this to 303 when the page is built
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.CannotSignUpController.show().url
         }
       }
     }

@@ -21,6 +21,7 @@ import javax.inject._
 import incometax.business.models._
 import incometax.business.models.address.Address
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, WorkForYourselfModel}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, RentUkPropertyModel}
 import models._
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
@@ -66,6 +67,12 @@ class KeystoreService @Inject()(val session: SessionCache) {
   //TODO remove when we switch to the new income source flow
   def saveIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
     save[IncomeSourceModel](IncomeSource, incomeSource)
+
+  def fetchRentUkProperty()(implicit hc: HeaderCarrier, reads: Reads[RentUkPropertyModel]): FO[RentUkPropertyModel] =
+    fetch[RentUkPropertyModel](RentUkProperty)
+
+  def saveRentUkProperty(rentUkPropertyModel: RentUkPropertyModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
+    save[RentUkPropertyModel](RentUkProperty, rentUkPropertyModel)
 
   def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =
     fetch[BusinessNameModel](BusinessName)
