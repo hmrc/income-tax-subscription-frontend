@@ -60,6 +60,12 @@ income_source.property                                          = Renting out a 
 income_source.both                                              = Your sole trader business and renting out a UK property
 income_source.other                                             = Other
 
+## Rent Uk Property page
+rent_uk_property.title                                          = Do you rent out a UK property?
+rent_uk_property.heading                                        = Do you rent out a UK property?
+rent_uk_property.line_1                                         = This includes if you use a letting agency.
+rent_uk_property.question                                       = Is this your only source of self-employed income?
+
 # Property income page
 property.income.title                                           = How much was your income from property this year?
 property.income.heading                                         = How much was your income from property this year?
@@ -313,6 +319,9 @@ error.not-eligible.invalid                                      = You must selec
 
 error.other-income.empty                                        = You must select an option to continue
 error.other-income.invalid                                      = You must select an option to continue
+
+error.rent-uk-property.empty                                    = Select yes if you rent out a UK property
+error.rent-uk-property.invalid                                  = Select yes if you rent out a UK property
 
 error.survey-feedback.maxLength                                 = You can''t enter more than 1200 characters for your feedback
 

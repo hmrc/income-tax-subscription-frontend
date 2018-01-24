@@ -21,6 +21,10 @@ POST        /paperless-error              digitalcontact.controllers.Preferences
 GET         /income                       incometax.incomesource.controllers.IncomeSourceController.show(editMode: Boolean ?= false)
 POST        /income                       incometax.incomesource.controllers.IncomeSourceController.submit(editMode: Boolean ?= false)
 
+# Rent Uk Property Routes
+GET         /rent-uk-property             incometax.incomesource.controllers.RentUkPropertyController.show(editMode: Boolean ?= false)
+POST        /rent-uk-property             incometax.incomesource.controllers.RentUkPropertyController.submit(editMode: Boolean ?= false)
+
 # Summary Routes
 GET         /check-your-answers           incometax.subscription.controllers.CheckYourAnswersController.show
 POST        /check-your-answers           incometax.subscription.controllers.CheckYourAnswersController.submit

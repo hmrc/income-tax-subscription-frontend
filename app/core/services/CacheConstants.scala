@@ -18,6 +18,7 @@ package core.services
 
 object CacheConstants {
   val IncomeSource = "IncomeSource"
+  val RentUkProperty = "RentUkProperty"
   val PropertyIncome = "PropertyIncome"
   val SoleTrader = "SoleTrader"
   val MatchTaxYear = "MatchTaxYear"
