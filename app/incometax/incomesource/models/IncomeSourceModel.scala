@@ -24,3 +24,9 @@ case class IncomeSourceModel(source: String)
 object IncomeSourceModel {
   implicit val format = Json.format[IncomeSourceModel]
 }
+
+case class IncomeSourceParentModel(rentUKPropertyModel: RentUkPropertyModel)
+
+object IncomeSourceParentModel {
+  implicit val format = Json.format[IncomeSourceParentModel]
+}
