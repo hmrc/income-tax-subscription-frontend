@@ -19,7 +19,7 @@ package incometax.incomesource.controllers
 import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
-import core.auth.SignUpController
+import core.auth.{NewIncomeSourceFlowController, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import play.api.i18n.MessagesApi
@@ -33,7 +33,7 @@ class CannotSignUpController @Inject()(val baseConfig: BaseControllerConfig,
                                            val keystoreService: KeystoreService,
                                            val logging: Logging,
                                            val authService: AuthService
-                                          ) extends SignUpController {
+                                          ) extends NewIncomeSourceFlowController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
