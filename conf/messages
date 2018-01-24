@@ -362,13 +362,13 @@ no-sa.heading                                                   = You need to re
 no-sa.line_1                                                    = Before you can sign up to use software to report your Income Tax, you need to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
 ## Other income error page ##
-other-income-error.title                                        = You can use software to report your Income Tax
-other-income-error.heading                                      = You can use software to report your Income Tax
+other-income-error.title                                        = Tell us about your other income sources in your final report
+other-income-error.heading                                      = Tell us about your other income sources in your final report
 other-income-error.para1                                        = You only need to send quarterly reports on income you earn from either:
 other-income-error.bullet1                                      = working for yourself
 other-income-error.bullet2                                      = renting out a UK property
 other-income-error.bullet3                                      = working for yourself and renting out a UK property
-other-income-error.para2                                        = Tell us about your other income sources in your final report. You need to submit this report by 31 January.
+other-income-error.para2                                        = You need to submit your final report by 31 January.
 
 ## Other sources of income page ##
 income-other.title                                              = Do you have any other sources of income?

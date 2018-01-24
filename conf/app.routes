@@ -55,8 +55,8 @@ GET         /already-enrolled             incometax.subscription.controllers.Alr
 GET         /register-for-SA              usermatching.controllers.NoSAController.show
 
 # Other Income Error Routes
-GET         /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.show
-POST        /error/other-income           incometax.incomesource.controllers.OtherIncomeErrorController.submit
+GET         /other-income-in-final-report incometax.incomesource.controllers.OtherIncomeErrorController.show
+POST        /other-income-in-final-report incometax.incomesource.controllers.OtherIncomeErrorController.submit
 
 # Affinity Group Error
 GET         /error/affinity-group         usermatching.controllers.AffinityGroupErrorController.show
