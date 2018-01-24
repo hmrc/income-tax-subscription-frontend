@@ -25,6 +25,8 @@ import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.incomesource.forms.IncomeSourceForm
+import incometax.incomesource.models.NewIncomeSourceModel
+import incometax.subscription.models.{Both, Business, Property}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.InternalServerException
@@ -40,15 +42,28 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      for {
-        cache <- keystoreService.fetchAll().map(_.get)
-        incomeSource = cache.getIncomeSource().get.source
-        matchTaxYear = cache.getMatchTaxYear().map(_.matchTaxYear == MatchTaxYearForm.option_yes)
-      } yield
-        Ok(incometax.incomesource.views.html.cannot_report_yet(
-          postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-          backUrl(incomeSource, matchTaxYear, isEditMode)
-        ))
+      if (applicationConfig.newIncomeSourceFlowEnabled) {
+        for {
+          cache <- keystoreService.fetchAll()
+          newIncomeSource = cache.getNewIncomeSource().get
+          matchTaxYear = cache.getMatchTaxYear().map(_.matchTaxYear == MatchTaxYearForm.option_yes)
+        } yield
+          Ok(incometax.incomesource.views.html.cannot_report_yet(
+            postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+            backUrl(newIncomeSource, matchTaxYear, isEditMode)
+          ))
+      }
+      else {
+        for {
+          cache <- keystoreService.fetchAll()
+          incomeSource = cache.getIncomeSource().get.source
+          matchTaxYear = cache.getMatchTaxYear().map(_.matchTaxYear == MatchTaxYearForm.option_yes)
+        } yield
+          Ok(incometax.incomesource.views.html.cannot_report_yet(
+            postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+            backUrl(incomeSource, matchTaxYear, isEditMode)
+          ))
+      }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -75,6 +90,16 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
       case (IncomeSourceForm.option_business | IncomeSourceForm.option_both, Some(true)) =>
         incometax.business.controllers.routes.MatchTaxYearController.show(editMode = isEditMode).url
       case (IncomeSourceForm.option_business | IncomeSourceForm.option_both, Some(false)) =>
+        incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = isEditMode).url
+    }
+
+  def backUrl(newIncomeSource: NewIncomeSourceModel, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =
+    (newIncomeSource.getIncomeSourceType, matchTaxYear) match {
+      case (Right(Property), _) =>
+        incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+      case (Right(Business | Both), Some(true)) =>
+        incometax.business.controllers.routes.MatchTaxYearController.show(editMode = isEditMode).url
+      case (Right(Business | Both), Some(false)) =>
         incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = isEditMode).url
     }
 }

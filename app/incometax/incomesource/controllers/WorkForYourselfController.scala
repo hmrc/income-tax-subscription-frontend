@@ -1,0 +1,111 @@
+/*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package incometax.incomesource.controllers
+
+import javax.inject.{Inject, Singleton}
+
+import core.auth.NewIncomeSourceFlowController
+import core.config.BaseControllerConfig
+import core.services.CacheUtil._
+import core.services.{AuthService, KeystoreService}
+import incometax.incomesource.forms.WorkForYourselfForm
+import incometax.incomesource.models.{NewIncomeSourceModel, WorkForYourselfModel}
+import incometax.incomesource.services.CurrentTimeService
+import incometax.subscription.models.{Both, Business, Other, Property}
+import play.api.data.Form
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.twirl.api.Html
+import uk.gov.hmrc.http.InternalServerException
+
+import scala.concurrent.Future
+
+@Singleton
+class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
+                                          val messagesApi: MessagesApi,
+                                          val keystoreService: KeystoreService,
+                                          val authService: AuthService,
+                                          val currentTimeService: CurrentTimeService
+                                         ) extends NewIncomeSourceFlowController {
+
+  def view(workForYourselfForm: Form[WorkForYourselfModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
+    incometax.incomesource.views.html.work_for_yourself(
+      workForYourselfForm = workForYourselfForm,
+      postAction = incometax.incomesource.controllers.routes.WorkForYourselfController.submit(editMode = isEditMode),
+      isEditMode = isEditMode,
+      backUrl = backUrl(isEditMode)
+    )
+
+  def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
+      for {
+        cache <- keystoreService.fetchAll()
+      } yield
+        if (!cache.getRentUkProperty().needSecondPage)
+          NotImplemented //TODO point to the first page
+        else
+          Ok(view(workForYourselfForm = WorkForYourselfForm.workForYourselfForm.fill(cache.getWorkForYourself()), isEditMode = isEditMode))
+  }
+
+  def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
+    implicit user =>
+      WorkForYourselfForm.workForYourselfForm.bindFromRequest.fold(
+        formWithErrors => Future.successful(BadRequest(view(workForYourselfForm = formWithErrors, isEditMode = isEditMode))),
+        workForYourself => {
+          // todo rewrite this when we have everything so we can sort out the edit flow
+          val incomeSource = for {
+            cache <- keystoreService.fetchAll()
+            _ <- keystoreService.saveWorkForYourself(workForYourself)
+            rentUkProperty = cache.getRentUkProperty().get
+          } yield NewIncomeSourceModel(rentUkProperty, Some(workForYourself))
+
+          lazy val linearJourney: Future[Result] =
+            incomeSource.map(_.getIncomeSourceType match {
+              case Right(Business) => business
+              case Right(Property) => property
+              case Right(Both) => both
+              case Right(Other) => doNotQualify
+              case _ => throw new InternalServerException("WorkForYourselfController.submit ")
+            })
+
+          linearJourney
+        }
+      )
+  }
+
+  def business(implicit request: Request[_]): Result =
+    Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
+
+  def property(implicit request: Request[_]): Result = {
+    if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
+      Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show())
+    else
+      Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
+  }
+
+  def both(implicit request: Request[_]): Result =
+    Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
+
+  def doNotQualify(implicit request: Request[_]): Result =
+    NotImplemented // todo
+
+  def backUrl(isEditMode: Boolean): String =
+    if (isEditMode)
+      incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+    else
+      incometax.subscription.controllers.routes.CheckYourAnswersController.show().url // TODO replace with actual route when it's created
+}

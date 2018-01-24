@@ -49,7 +49,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
   def show(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
-        cacheMap <- keystoreService.fetchAll() map (_.get)
+        cacheMap <- keystoreService.fetchAll()
         incomeSource = cacheMap.getIncomeSource().get
         backUrl = getBackUrl(editMode, incomeSource.source, cacheMap.getOtherIncome().get.choice, cacheMap.getMatchTaxYear().fold(false)(_.matchTaxYear == MatchTaxYearForm.option_yes))
       } yield

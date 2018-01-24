@@ -16,21 +16,31 @@
 
 package core.services
 
-import incometax.incomesource.forms.IncomeSourceForm
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import incometax.subscription.models.SummaryModel
-import models._
-import play.api.libs.json.Reads
-import uk.gov.hmrc.http.cache.client.CacheMap
-import CacheConstants._
+import core.services.CacheConstants._
 import incometax.business.models._
 import incometax.business.models.address.Address
+import incometax.incomesource.forms.IncomeSourceForm
+import incometax.incomesource.models._
+import incometax.subscription.models.SummaryModel
+import play.api.libs.json.Reads
+import uk.gov.hmrc.http.cache.client.CacheMap
 
 object CacheUtil {
 
   implicit class CacheMapUtil(cacheMap: CacheMap) {
 
+    //TODO remove when we switch to the new income source flow
     def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
+
+    def getRentUkProperty()(implicit read: Reads[RentUkPropertyModel]): Option[RentUkPropertyModel] = cacheMap.getEntry(RentUkProperty)
+
+    def getWorkForYourself()(implicit read: Reads[WorkForYourselfModel]): Option[WorkForYourselfModel] = cacheMap.getEntry(WorkForYourself)
+
+    def getNewIncomeSource()(implicit readR: Reads[RentUkPropertyModel], readW: Reads[WorkForYourselfModel]): Option[NewIncomeSourceModel] =
+      getRentUkProperty() match {
+        case None => None
+        case Some(r) => Some(NewIncomeSourceModel(r, getWorkForYourself()))
+      }
 
     def getOtherIncome()(implicit read: Reads[OtherIncomeModel]): Option[OtherIncomeModel] = cacheMap.getEntry(OtherIncome)
 
@@ -50,17 +60,19 @@ object CacheUtil {
 
     def getTerms()(implicit read: Reads[Boolean]): Option[Boolean] = cacheMap.getEntry(Terms)
 
-    def getSummary()(implicit
-                     isrc: Reads[IncomeSourceModel],
-                     oirc: Reads[OtherIncomeModel],
-                     matchT: Reads[MatchTaxYearModel],
-                     accD: Reads[AccountingPeriodModel],
-                     busName: Reads[BusinessNameModel],
-                     busPhone: Reads[BusinessPhoneNumberModel],
-                     busAdd: Reads[Address],
-                     busStart: Reads[BusinessStartDateModel],
-                     accM: Reads[AccountingMethodModel],
-                     ter: Reads[Boolean]): SummaryModel = {
+    //TODO update when we switch to the new income source flow
+    def getSummary(newIncomeSourceFlow: Boolean = false)(implicit
+                                                         isrc: Reads[IncomeSourceModel],
+                                                         wfyrc: Reads[WorkForYourselfModel],
+                                                         oirc: Reads[OtherIncomeModel],
+                                                         matchT: Reads[MatchTaxYearModel],
+                                                         accD: Reads[AccountingPeriodModel],
+                                                         busName: Reads[BusinessNameModel],
+                                                         busPhone: Reads[BusinessPhoneNumberModel],
+                                                         busAdd: Reads[Address],
+                                                         busStart: Reads[BusinessStartDateModel],
+                                                         accM: Reads[AccountingMethodModel],
+                                                         ter: Reads[Boolean]): SummaryModel = {
       val incomeSource = getIncomeSource()
       incomeSource match {
         case Some(src) =>

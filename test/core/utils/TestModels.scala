@@ -19,15 +19,15 @@ package core.utils
 
 import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
+import agent.services.CacheConstants.AccountingPeriodPrior
 import core.models.DateModel
 import core.services.CacheConstants
-import agent.services.CacheConstants.AccountingPeriodPrior
 import core.utils.TestConstants._
 import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.incomesource.models._
 import incometax.subscription.models.{Both, SummaryModel}
 import incometax.unauthorisedagent.models.StoredSubscription
 import play.api.libs.json.{JsValue, Json}
@@ -69,8 +69,10 @@ object TestModels extends Implicits {
 
   val emptyCacheMap = CacheMap("", Map())
 
-  val testCacheMap: CacheMap =
+  lazy val testCacheMap: CacheMap =
     testCacheMap(incomeSource = testIncomeSourceBoth,
+      rentUkProperty = testNewIncomeSourceBoth.rentUkProperty,
+      workForYourself = testNewIncomeSourceBoth.workForYourself,
       otherIncome = testOtherIncomeNo,
       matchTaxYear = testMatchTaxYearNo,
       accountingPeriodPrior = testAccountingPeriodPriorCurrent,
@@ -84,6 +86,8 @@ object TestModels extends Implicits {
 
   def testCacheMapCustom(
                           incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
+                          rentUkProperty: Option[RentUkPropertyModel] = testNewIncomeSourceBoth.rentUkProperty,
+                          workForYourself: Option[WorkForYourselfModel] = testNewIncomeSourceBoth.workForYourself,
                           otherIncome: Option[OtherIncomeModel] = testOtherIncomeNo,
                           matchTaxYear: Option[MatchTaxYearModel] = testMatchTaxYearNo,
                           accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
@@ -96,6 +100,8 @@ object TestModels extends Implicits {
                           terms: Option[Boolean] = testTerms): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
+      rentUkProperty = rentUkProperty,
+      workForYourself = workForYourself,
       otherIncome = otherIncome,
       matchTaxYear = matchTaxYear,
       accountingPeriodDate = accountingPeriodDate,
@@ -107,6 +113,8 @@ object TestModels extends Implicits {
       terms = terms)
 
   def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
+                   rentUkProperty: Option[RentUkPropertyModel] = None,
+                   workForYourself: Option[WorkForYourselfModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
@@ -120,6 +128,8 @@ object TestModels extends Implicits {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
+      rentUkProperty.fold(emptyMap)(model => Map(RentUkProperty -> RentUkPropertyModel.format.writes(model))) ++
+      workForYourself.fold(emptyMap)(model => Map(WorkForYourself -> WorkForYourselfModel.format.writes(model))) ++
       otherIncome.fold(emptyMap)(model => Map(OtherIncome -> OtherIncomeModel.format.writes(model))) ++
       accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
       matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
@@ -139,6 +149,22 @@ object TestModels extends Implicits {
 
   lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
 
+  lazy val testRentUkProperty_no_property = RentUkPropertyModel("No", None)
+  lazy val testRentUkProperty_property_only = RentUkPropertyModel("Yes", "Yes")
+  lazy val testRentUkProperty_property_and_other = RentUkPropertyModel("Yes", "No")
+
+  lazy val testWorkForYourself_yes = WorkForYourselfModel("Yes")
+  lazy val testWorkForYourself_no = WorkForYourselfModel("No")
+
+  lazy val testNewIncomeSourceBusiness = NewIncomeSourceModel(testRentUkProperty_no_property, testWorkForYourself_yes)
+  lazy val testNewIncomeSourceProperty_1page = NewIncomeSourceModel(testRentUkProperty_property_only, None)
+  lazy val testNewIncomeSourceProperty_2page = NewIncomeSourceModel(testRentUkProperty_property_and_other, testWorkForYourself_no)
+  lazy val testNewIncomeSourceBoth = NewIncomeSourceModel(testRentUkProperty_property_and_other, testWorkForYourself_yes)
+  lazy val testNewIncomeSourceNotQualified = NewIncomeSourceModel(testRentUkProperty_no_property, testWorkForYourself_no)
+
+  lazy val testNewIncomeSourceIncomplete1 = NewIncomeSourceModel(testRentUkProperty_no_property, None)
+  lazy val testNewIncomeSourceIncomplete2 = NewIncomeSourceModel(testRentUkProperty_property_and_other, None)
+
   lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
 
   lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
@@ -153,7 +179,7 @@ object TestModels extends Implicits {
 
   lazy val testMatchNoUtrModel = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, None)
 
-  val testSummaryData = SummaryModel(
+  lazy val testSummaryData = SummaryModel(
     incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),
     otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
     matchTaxYear = testMatchTaxYearNo,
@@ -162,7 +188,7 @@ object TestModels extends Implicits {
     accountingMethod = testAccountingMethod
   )
 
-  val testStoredSubscription = StoredSubscription(
+  lazy val testStoredSubscription = StoredSubscription(
     arn = testArn,
     incomeSource = Both,
     otherIncome = false,

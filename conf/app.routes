@@ -17,6 +17,10 @@ GET         /callback                     digitalcontact.controllers.Preferences
 GET         /paperless-error              digitalcontact.controllers.PreferencesController.showGoBackToPreferences
 POST        /paperless-error              digitalcontact.controllers.PreferencesController.submitGoBackToPreferences
 
+# Work for yourself Routes
+GET         /work-for-yourself            incometax.incomesource.controllers.WorkForYourselfController.show(editMode: Boolean ?= false)
+POST        /work-for-yourself            incometax.incomesource.controllers.WorkForYourselfController.submit(editMode: Boolean ?= false)
+
 # Income Source Routes
 GET         /income                       incometax.incomesource.controllers.IncomeSourceController.show(editMode: Boolean ?= false)
 POST        /income                       incometax.incomesource.controllers.IncomeSourceController.submit(editMode: Boolean ?= false)

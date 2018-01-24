@@ -52,7 +52,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
       cache =>
         Future.successful(
           Ok(incometax.subscription.views.html.check_your_answers(
-            cache.getSummary,
+            cache.getSummary(applicationConfig.newIncomeSourceFlowEnabled),
             isRegistration = request.isInState(Registration),
             incometax.subscription.controllers.routes.CheckYourAnswersController.submit(),
             backUrl = backUrl
@@ -78,22 +78,21 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                               (noCacheMapErrMessage: String) =
     Authenticated.async { implicit request =>
       implicit user =>
-        keystoreService.fetchAll().flatMap {
-          case Some(cache) => cache.getTerms match {
+        keystoreService.fetchAll().flatMap { cache =>
+          cache.getTerms match {
             case Some(true) =>
               if (cache.getIncomeSource().fold(false)(_.source == IncomeSourceForm.option_property))
                 processFunc(user)(request)(cache)
               else
-              (cache.getMatchTaxYear(), cache.getAccountingPeriodDate()) match {
-                case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) | (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(_)) =>
-                  processFunc(user)(request)(cache)
-                case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), _) =>
-                  Future.successful(Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
-              }
+                (cache.getMatchTaxYear(), cache.getAccountingPeriodDate()) match {
+                  case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) | (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(_)) =>
+                    processFunc(user)(request)(cache)
+                  case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), _) =>
+                    Future.successful(Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
+                }
             case Some(false) => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show(editMode = true)))
             case _ => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show()))
           }
-          case _ => error(noCacheMapErrMessage)
         }
     }
 

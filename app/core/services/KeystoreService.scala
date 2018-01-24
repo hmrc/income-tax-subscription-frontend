@@ -20,10 +20,11 @@ import javax.inject._
 
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, WorkForYourselfModel}
 import models._
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
+import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 import usermatching.models.UserDetailsModel
 
@@ -42,15 +43,27 @@ class KeystoreService @Inject()(val session: SessionCache) {
     case ex => Future.failed(new InternalServerException(ex.getMessage))
   }
 
-  def fetchAll()(implicit hc: HeaderCarrier): Future[Option[CacheMap]] = session.fetch()
+  def fetchAll()(implicit hc: HeaderCarrier): Future[CacheMap] = session.fetch() map {
+    case Some(cacheMap) => cacheMap
+    case None => CacheMap("", Map.empty)
+  }
 
   def deleteAll()(implicit hc: HeaderCarrier): Future[HttpResponse] = session.remove()
 
   import CacheConstants._
 
+
+  def fetchWorkForYourself()(implicit hc: HeaderCarrier, reads: Reads[WorkForYourselfModel]): FO[WorkForYourselfModel] =
+    fetch[WorkForYourselfModel](WorkForYourself)
+
+  def saveWorkForYourself(workForYourself: WorkForYourselfModel)(implicit hc: HeaderCarrier, reads: Reads[WorkForYourselfModel]): FC =
+    save[WorkForYourselfModel](WorkForYourself, workForYourself)
+
+  //TODO remove when we switch to the new income source flow
   def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FO[IncomeSourceModel] =
     fetch[IncomeSourceModel](IncomeSource)
 
+  //TODO remove when we switch to the new income source flow
   def saveIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
     save[IncomeSourceModel](IncomeSource, incomeSource)
 
