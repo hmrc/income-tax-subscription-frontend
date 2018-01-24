@@ -21,6 +21,7 @@ import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature, 
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
+import core.utils.TestModels._
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.OtherIncomeModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
@@ -35,8 +36,8 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "OtherIncomeController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showOtherIncome" -> TestOtherIncomeController.show(isEditMode = false),
-    "submitOtherIncome" -> TestOtherIncomeController.submit(isEditMode = false)
+    "show" -> TestOtherIncomeController.show(isEditMode = false),
+    "submit" -> TestOtherIncomeController.submit(isEditMode = false)
   )
 
   object TestOtherIncomeController extends OtherIncomeController(
@@ -64,20 +65,55 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
 
     s"When in isEditMode=$editMode" that {
 
-      "Calling the showOtherIncome action of the OtherIncome controller with an authorised user" should {
-        lazy val result = TestOtherIncomeController.show(isEditMode = editMode)(subscriptionRequest)
+      "Calling the show action of the OtherIncome controller with an authorised user" when {
+        def call = TestOtherIncomeController.show(isEditMode = editMode)(subscriptionRequest)
 
-        "return ok (200)" in {
-          setupMockKeystore(fetchOtherIncome = None)
+        "NewIncomeSourceFlowFeature is disabled" should {
+          "return ok (200) when there is valid income source in keystore" in {
+            setupMockKeystore(fetchAll = testCacheMap)
 
-          status(result) must be(Status.OK)
+            val result = call
+            status(result) must be(Status.OK)
+            await(result)
+            verifyKeystore(fetchAll = 1, saveOtherIncome = 0)
+          }
 
-          await(result)
-          verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 0)
+          "return redirection (303) back to income source if there isn't income source in keystore" in {
+            setupMockKeystore(fetchAll = None)
+
+            val result = call
+            status(result) must be(Status.SEE_OTHER)
+            redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
+            await(result)
+            verifyKeystore(fetchAll = 1, saveOtherIncome = 0)
+          }
+        }
+
+        "NewIncomeSourceFlowFeature is enabled" should {
+          "return ok (200) when there is valid income source in keystore" in {
+            setupMockKeystore(fetchAll = testCacheMap)
+            enable(NewIncomeSourceFlowFeature)
+
+            val result = call
+            status(result) must be(Status.OK)
+            await(result)
+            verifyKeystore(fetchAll = 1, saveOtherIncome = 0)
+          }
+
+          "return redirection (303) back to work for yourself if there isn't income source in keystore" in {
+            setupMockKeystore(fetchAll = None)
+            enable(NewIncomeSourceFlowFeature)
+
+            val result = call
+            status(result) must be(Status.SEE_OTHER)
+            redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+            await(result)
+            verifyKeystore(fetchAll = 1, saveOtherIncome = 0)
+          }
         }
       }
 
-      "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and saying yes to other income" when {
+      "Calling the submit action of the OtherIncome controller with an authorised user and saying yes to other income" when {
         def callSubmit = TestOtherIncomeController.submit(isEditMode = editMode)(subscriptionRequest
           .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_yes)))
 
@@ -87,7 +123,6 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit
 
           status(goodRequest) must be(Status.SEE_OTHER)
-
           await(goodRequest)
           verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
         }
@@ -96,9 +131,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(fetchOtherIncome = None)
 
           val goodRequest = callSubmit
-
           redirectLocation(goodRequest) mustBe Some(incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url)
-
           await(goodRequest)
           verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
         }
@@ -107,9 +140,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_yes))
 
           val goodRequest = callSubmit
-
           status(goodRequest) must be(Status.SEE_OTHER)
-
           await(goodRequest)
           verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
         }
@@ -122,9 +153,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_yes))
 
           val goodRequest = callSubmit
-
           redirectLocation(goodRequest) mustBe Some(expectedRedirectionForSameInput)
-
           await(goodRequest)
           verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
         }
@@ -133,9 +162,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no))
 
           val goodRequest = callSubmit
-
           status(goodRequest) must be(Status.SEE_OTHER)
-
           await(goodRequest)
           verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
         }
@@ -144,15 +171,13 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no))
 
           val goodRequest = callSubmit
-
           redirectLocation(goodRequest) mustBe Some(incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url)
-
           await(goodRequest)
           verifyKeystore(fetchOtherIncome = 1, saveOtherIncome = 1)
         }
       }
 
-      "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and saying no to other income" should {
+      "Calling the submit action of the OtherIncome controller with an authorised user and saying no to other income" when {
 
         def callSubmit = TestOtherIncomeController.submit(isEditMode = editMode)(subscriptionRequest
           .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
@@ -167,9 +192,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit
 
           status(goodRequest) must be(Status.SEE_OTHER)
-
           redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessNameController.show().url)
-
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
         }
@@ -184,9 +207,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit
 
           status(goodRequest) must be(Status.SEE_OTHER)
-
           redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.show().url)
-
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
         }
@@ -201,9 +222,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit
 
           status(goodRequest) must be(Status.SEE_OTHER)
-
           redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessNameController.show().url)
-
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
         }
@@ -224,9 +243,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit
 
           status(goodRequest) must be(Status.SEE_OTHER)
-
           redirectLocation(goodRequest) mustBe Some(expectedRedirectionForSameInput(incometax.business.controllers.routes.BusinessNameController.show().url))
-
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = if (editMode) 0 else 1)
         }
@@ -262,9 +279,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit
 
           status(goodRequest) must be(Status.SEE_OTHER)
-
           redirectLocation(goodRequest) mustBe Some(expectedRedirectionForSameInput(incometax.business.controllers.routes.BusinessNameController.show().url))
-
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = if (editMode) 0 else 1)
         }
@@ -279,16 +294,13 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit
 
           status(goodRequest) must be(Status.SEE_OTHER)
-
           redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessNameController.show().url)
-
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
         }
 
 
         s"the previous OtherIncome entry in keystore is the different from the new input then redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property journey" in {
-
           setupMockKeystore(
             fetchIncomeSource = TestModels.testIncomeSourceProperty,
             fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_yes)
@@ -305,7 +317,6 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         }
 
         s"the previous OtherIncome entry in keystore is the different from the new input then redirect to '${incometax.business.controllers.routes.BusinessNameController.show().url}' on the both journey" in {
-
           setupMockKeystore(
             fetchIncomeSource = TestModels.testIncomeSourceBoth,
             fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_yes)
@@ -314,30 +325,47 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit
 
           status(goodRequest) must be(Status.SEE_OTHER)
-
           redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessNameController.show().url)
-
           await(goodRequest)
           verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
         }
       }
 
-      "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and with an invalid choice" should {
+      "Calling the submit action of the OtherIncome controller with an authorised user and with an invalid choice" when {
 
         val dummy = "Invalid"
 
         def badrequest = TestOtherIncomeController.submit(isEditMode = editMode)(subscriptionRequest
           .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(dummy)))
 
-        "return a bad request status (400)" in {
-          setupMockKeystoreSaveFunctions()
+        "NewIncomeSourceFlowFeature is disabled" should {
+          "return a bad request status (400)" in {
+            setupMockKeystore(
+              fetchAll = testCacheMap
+            )
 
-          status(badrequest) must be(Status.BAD_REQUEST)
+            val result = badrequest
+            status(result) must be(Status.BAD_REQUEST)
 
-          await(badrequest)
-          verifyKeystore(fetchOtherIncome = 0, saveOtherIncome = 0)
+            await(result)
+            verifyKeystore(fetchAll = 1, saveOtherIncome = 0)
+          }
         }
 
+        "NewIncomeSourceFlowFeature is enabled" should {
+          "return a bad request status (400)" in {
+            setupMockKeystore(
+              fetchAll = testCacheMap
+            )
+            enable(NewIncomeSourceFlowFeature)
+
+            val result = badrequest
+            status(result) must be(Status.BAD_REQUEST)
+
+            await(result)
+            verifyKeystore(fetchAll = 1, saveOtherIncome = 0)
+          }
+        }
       }
     }
 
@@ -349,16 +377,26 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         s"point to ${incometax.incomesource.controllers.routes.IncomeSourceController.show().url} on other income page" in {
           disable(TaxYearDeferralFeature)
 
-          TestOtherIncomeController.backUrl(isEditMode = false) mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
+          TestOtherIncomeController.backUrl(isProperty = true, isEditMode = false) mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
         }
       }
       "the tax year deferral is enabled and " when {
-        "the current date is within the 2017 - 2018 tax year" should {
-          s"point to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url} on other income page" in {
-            enable(TaxYearDeferralFeature)
-            mockGetTaxYearEnd(2018)
+        "the current date is within the 2017 - 2018 tax year and" when {
+          "is on the property journey" should {
+            s"point to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url} on other income page" in {
+              enable(TaxYearDeferralFeature)
+              mockGetTaxYearEnd(2018)
 
-            TestOtherIncomeController.backUrl(isEditMode = false) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+              TestOtherIncomeController.backUrl(isProperty = true, isEditMode = false) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+            }
+          }
+          "is not on the property journey" should {
+            s"point to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url} on other income page" in {
+              enable(TaxYearDeferralFeature)
+              mockGetTaxYearEnd(2018)
+
+              TestOtherIncomeController.backUrl(isProperty = false, isEditMode = false) mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
+            }
           }
         }
         "the current date is after the 2017 - 2018 tax year" should {
@@ -366,7 +404,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
             enable(TaxYearDeferralFeature)
             mockGetTaxYearEnd(2019)
 
-            TestOtherIncomeController.backUrl(isEditMode = false) mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
+            TestOtherIncomeController.backUrl(isProperty = true, isEditMode = false) mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
           }
         }
       }
@@ -384,13 +422,25 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
         }
       }
       "the tax year deferral is enabled and " when {
-        "the current date is within the 2017 - 2018 tax year" should {
-          s"point to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url} on other income page" in {
-            enable(NewIncomeSourceFlowFeature)
-            enable(TaxYearDeferralFeature)
-            mockGetTaxYearEnd(2018)
+        "the current date is within the 2017 - 2018 tax year" when {
+          "the income source is property" should {
+            s"point to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url} on other income page" in {
+              enable(NewIncomeSourceFlowFeature)
+              enable(TaxYearDeferralFeature)
+              mockGetTaxYearEnd(2018)
 
-            TestOtherIncomeController.backUrl(TestModels.testNewIncomeSourceBoth, isEditMode = false) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+              TestOtherIncomeController.backUrl(TestModels.testNewIncomeSourceProperty_2page, isEditMode = false) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+            }
+          }
+
+          "the income source is not property" should {
+            s"point to ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url} on other income page" in {
+              enable(NewIncomeSourceFlowFeature)
+              enable(TaxYearDeferralFeature)
+              mockGetTaxYearEnd(2018)
+
+              TestOtherIncomeController.backUrl(TestModels.testNewIncomeSourceBoth, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+            }
           }
         }
         "the current date is after the 2017 - 2018 tax year" should {
@@ -406,14 +456,16 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "The back url for the old income source mode in edit mode" should {
+  "The back url for the old income source mode in edit mode" when {
     s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url} on other income page" in {
-      TestOtherIncomeController.backUrl(isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+      TestOtherIncomeController.backUrl(isProperty = true, isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 
   "The back url in edit mode" should {
-    s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url} on other income page" in {
+    s"point to ${
+      incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+    } on other income page" in {
       TestOtherIncomeController.backUrl(TestModels.testNewIncomeSourceBoth, isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     }
   }

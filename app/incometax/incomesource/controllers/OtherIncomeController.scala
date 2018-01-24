@@ -21,12 +21,13 @@ import javax.inject.{Inject, Singleton}
 import core.audit.Logging
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
+import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import core.utils.Implicits._
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{NewIncomeSourceModel, OtherIncomeModel}
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.{Both, Business, Property}
+import incometax.subscription.models.Property
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -54,9 +55,28 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      for {
-        choice <- keystoreService.fetchOtherIncome()
-      } yield Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl(isEditMode), isEditMode))
+      if (applicationConfig.newIncomeSourceFlowEnabled) {
+        for {
+          cache <- keystoreService.fetchAll()
+          optIncomeSource = cache.getNewIncomeSource()
+          choice = cache.getOtherIncome()
+        } yield optIncomeSource match {
+          case Some(incomeSource) => Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl(incomeSource, isEditMode), isEditMode))
+          case _ => Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
+        }
+      } else {
+        for {
+          cache <- keystoreService.fetchAll()
+          choice = cache.getOtherIncome()
+          optIncomeSource = cache.getIncomeSource()
+        } yield optIncomeSource match {
+          case Some(incomeSource) if incomeSource.source == IncomeSourceForm.option_property =>
+            Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl(isProperty = true, isEditMode), isEditMode))
+          case Some(incomeSource) =>
+            Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl(isProperty = false, isEditMode), isEditMode))
+          case _ => Redirect(incometax.incomesource.controllers.routes.IncomeSourceController.show())
+        }
+      }
   }
 
   def defaultRedirections(otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
@@ -83,7 +103,11 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl(isEditMode), isEditMode = isEditMode)),
+        formWithErrors =>
+          for {
+            cache <- keystoreService.fetchAll()
+            isProperty = cache.getIncomeSource().get.source == IncomeSourceForm.option_property
+          } yield BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl(isProperty, isEditMode), isEditMode = isEditMode)),
         choice =>
           keystoreService.fetchOtherIncome().flatMap {
             previousOtherIncome =>
@@ -97,11 +121,11 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  def backUrl(isEditMode: Boolean): String =
+  def backUrl(isProperty: Boolean, isEditMode: Boolean): String =
     if (isEditMode)
       incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     else {
-      if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
+      if (isProperty && applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
         incometax.incomesource.controllers.routes.CannotReportYetController.show().url
       else
         incometax.incomesource.controllers.routes.IncomeSourceController.show().url
@@ -111,7 +135,9 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
     if (isEditMode)
       incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     else {
-      if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
+      if (newIncomeSource.getIncomeSourceType == Right(Property)
+        && applicationConfig.taxYearDeferralEnabled
+        && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
         incometax.incomesource.controllers.routes.CannotReportYetController.show().url
       else
         incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
