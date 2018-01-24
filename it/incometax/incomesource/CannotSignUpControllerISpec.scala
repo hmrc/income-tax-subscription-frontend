@@ -16,16 +16,20 @@
 
 package incometax.incomesource
 
+import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels._
-import helpers.servicemocks.{AuthStub, KeystoreStub}
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import play.api.http.Status.{OK, SEE_OTHER}
+import helpers.servicemocks.AuthStub
+import play.api.http.Status.OK
 import play.api.i18n.Messages
 
-class CannotSignUpControllerISpec extends ComponentSpecBase {
+class CannotSignUpControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  enable(NewIncomeSourceFlowFeature)
+
+  override def afterAll(): Unit = {
+    super.afterAll()
+    disable(NewIncomeSourceFlowFeature)
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/error/cannot-sign-up" when {
 
