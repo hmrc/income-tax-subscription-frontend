@@ -65,6 +65,16 @@ property.income.title                                           = How much was y
 property.income.heading                                         = How much was your income from property this year?
 property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
 
+# Cannot Sign Up page
+cannot-sign-up.title                                            = You can''t use this service
+cannot-sign-up.heading                                          = You can''t use this service
+cannot-sign-up.para1                                            = You can only use software to report your Income Tax if you either:
+cannot-sign-up.bullet1                                          = work for yourself
+cannot-sign-up.bullet2                                          = rent out UK property
+cannot-sign-up.bullet3                                          = work for yourself and rent out UK property
+cannot-sign-up.para2                                            = You need to <a id="signOut" href="{0}">send a Self Assessment tax return</a> instead.
+
+
 # business address pages
 business.address.title                                          = Business address
 business.address.heading                                        = Your business address
