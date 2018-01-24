@@ -61,8 +61,10 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
           optIncomeSource = cache.getNewIncomeSource()
           choice = cache.getOtherIncome()
         } yield optIncomeSource match {
-          case Some(incomeSource) => Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl(incomeSource, isEditMode), isEditMode))
-          case _ => Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
+          case Some(incomeSource) if incomeSource.getIncomeSourceType.isRight =>
+            Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl(incomeSource, isEditMode), isEditMode))
+          case _ =>
+            Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
         }
       } else {
         for {
@@ -104,10 +106,18 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
     implicit user =>
       OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
         formWithErrors =>
-          for {
-            cache <- keystoreService.fetchAll()
-            isProperty = cache.getIncomeSource().get.source == IncomeSourceForm.option_property
-          } yield BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl(isProperty, isEditMode), isEditMode = isEditMode)),
+          if (applicationConfig.newIncomeSourceFlowEnabled) {
+            for {
+              cache <- keystoreService.fetchAll()
+              incomeSource = cache.getNewIncomeSource().get
+            } yield BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl(incomeSource, isEditMode), isEditMode = isEditMode))
+          }
+          else {
+            for {
+              cache <- keystoreService.fetchAll()
+              isProperty = cache.getIncomeSource().get.source == IncomeSourceForm.option_property
+            } yield BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl(isProperty, isEditMode), isEditMode = isEditMode))
+          },
         choice =>
           keystoreService.fetchOtherIncome().flatMap {
             previousOtherIncome =>
