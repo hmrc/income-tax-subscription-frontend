@@ -27,8 +27,8 @@ import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import incometax.business.forms._
 import incometax.business.models._
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm, WorkForYourselfForm}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, WorkForYourselfModel}
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
 import org.scalatest._
@@ -144,6 +144,18 @@ trait ComponentSpecBase extends UnitSpec
     def indexPage(): WSResponse = get("/index")
 
     def income(): WSResponse = get("/income")
+
+    def workForYourself(): WSResponse = get("/work-for-yourself")
+
+    def submitWorkForYourself(inEditMode: Boolean, request: Option[WorkForYourselfModel]): WSResponse = {
+      val uri = s"/work-for-yourself?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            WorkForYourselfForm.workForYourselfForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
 
     def otherIncome(): WSResponse = get("/income-other")
 
