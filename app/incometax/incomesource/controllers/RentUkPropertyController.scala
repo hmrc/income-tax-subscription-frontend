@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import cats.implicits._
 import core.auth.AuthPredicate.AuthPredicate
-import core.auth.{IncomeTaxSAUser, SignUpController}
+import core.auth.{IncomeTaxSAUser, NewIncomeSourceFlowController, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.RentUkPropertyForm
@@ -38,9 +38,7 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                                          val messagesApi: MessagesApi,
                                          val keystoreService: KeystoreService,
                                          val authService: AuthService
-                                        ) extends SignUpController {
-
-  override def defaultSignUpPredicates: AuthPredicate[IncomeTaxSAUser] = subscriptionPredicates |+| newIncomeSourceFlowFeature
+                                        ) extends NewIncomeSourceFlowController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -79,8 +77,6 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                   Future.successful(Redirect(routes.OtherIncomeController.show()))
               }
             }
-          linearJourney
-
 
           if (!isEditMode)
             linearJourney

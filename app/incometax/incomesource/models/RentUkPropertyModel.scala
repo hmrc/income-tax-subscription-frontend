@@ -29,7 +29,7 @@ case class RentUkPropertyModel(rentUkProperty: String, onlySourceOfSelfEmployedI
   }
 }
 
-object RentUkPropertyModel {
+object RentUkPropertyModel{
   implicit val format = Json.format[RentUkPropertyModel]
 
   implicit class RentUkPropertyModelUtil(rentUkPropertyModel: Option[RentUkPropertyModel]) {
@@ -37,3 +37,4 @@ object RentUkPropertyModel {
   }
 
 }
+

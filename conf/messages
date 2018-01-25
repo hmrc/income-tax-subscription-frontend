@@ -333,6 +333,8 @@ error.other-income.invalid                                      = You must selec
 
 error.rent-uk-property.empty                                    = Select yes if you rent out a UK property
 error.rent-uk-property.invalid                                  = Select yes if you rent out a UK property
+error.rent-uk-property.only-source-empty                        = Select yes if this is your only source of self-employed income
+error.rent-uk-property.only-source-invalid                      = Select yes if this is your only source of self-employed income
 
 error.survey-feedback.maxLength                                 = You can''t enter more than 1200 characters for your feedback
 

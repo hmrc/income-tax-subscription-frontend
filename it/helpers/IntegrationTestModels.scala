@@ -9,7 +9,7 @@ import helpers.IntegrationTestConstants._
 import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm, RentUkPropertyForm}
 import incometax.incomesource.models._
 import incometax.subscription.models.{Both, EnrolmentKey}
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
