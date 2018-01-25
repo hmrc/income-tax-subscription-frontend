@@ -68,8 +68,6 @@ trait AppConfig extends FeatureSwitching {
 
   def enableRegistration: Boolean
 
-  def newPreferencesApiEnabled: Boolean
-
   def emacEs6ApiEnabled: Boolean
 
   def emacEs8ApiEnabled: Boolean
@@ -90,7 +88,9 @@ trait AppConfig extends FeatureSwitching {
 
   val addressLookupFrontendURL: String
   val signUpToSaLink: String
+  val sendSAReturnLink: String
   val agentSignUpUrl: String
+
 
   val backendFeatureSwitchUrl: String
 
@@ -209,8 +209,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override def enableRegistration: Boolean = isEnabled(featureswitch.RegistrationFeature)
 
-  override def newPreferencesApiEnabled: Boolean = isEnabled(featureswitch.NewPreferencesApiFeature)
-
   override def emacEs6ApiEnabled: Boolean = isEnabled(featureswitch.EmacEs6ApiFeature)
 
   override def emacEs8ApiEnabled: Boolean = isEnabled(featureswitch.EmacEs8ApiFeature)
@@ -224,6 +222,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 
   override lazy val signUpToSaLink: String = loadConfig("sa-signup.url")
+
+  override lazy val sendSAReturnLink: String = loadConfig("sa-return.url")
 
   override lazy val backendFeatureSwitchUrl: String = s"$protectedMicroServiceUrl/income-tax-subscription/test-only/feature-switch"
 

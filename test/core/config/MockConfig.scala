@@ -74,8 +74,6 @@ trait MockConfig extends AppConfig {
 
   override lazy val addressLookupFrontendURL: String = ""
 
-  override val newPreferencesApiEnabled: Boolean = false
-
   override def newIncomeSourceFlowEnabled: Boolean = isEnabled(featureswitch.NewIncomeSourceFlowFeature)
 
   override def taxYearDeferralEnabled: Boolean = isEnabled(featureswitch.TaxYearDeferralFeature)
@@ -89,6 +87,8 @@ trait MockConfig extends AppConfig {
   override lazy val agentAuthUrl = "https://www.gov.uk/guidance/self-assessment-for-agents-online-service"
 
   override lazy val agentAccountUrl = "https://www.gov.uk/guidance/self-assessment-for-agents-online-service"
+
+  override lazy val sendSAReturnLink = "https://www.gov.uk/self-assessment-tax-returns/sending-return"
 
   override lazy val backendFeatureSwitchUrl = "income-tax-subscription/"
 

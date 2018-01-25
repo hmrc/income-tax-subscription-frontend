@@ -36,7 +36,7 @@ trait MockPreferencesService extends MockTrait {
 
   def mockCheckPaperlessActivated(token: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Activated)))
 
-  def mockCheckPaperlessUnset(token: String, url: Option[String]): Unit = mockCheckPaperless(token)(Future.successful(Right(Unset(url))))
+  def mockCheckPaperlessUnset(token: String, url: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Unset(url))))
 
   def mockCheckPaperlessException(token: String): Unit = mockCheckPaperless(token)(Future.failed(testException))
 

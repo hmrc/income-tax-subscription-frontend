@@ -46,11 +46,8 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
 
   lazy val returnUrl: String = PreferenceFrontendConnector.returnUrl(appConfig.baseUrl)
 
-  def checkPaperlessUrl(token: String): String = if (appConfig.newPreferencesApiEnabled) {
-    appConfig.preferencesFrontend + PreferenceFrontendConnector.newCheckPaperlessUri(returnUrl, token)
-  } else {
-    appConfig.preferencesFrontend + PreferenceFrontendConnector.checkPaperlessUri(returnUrl)
-  }
+  def checkPaperlessUrl(token: String): String =
+    appConfig.preferencesFrontend + PreferenceFrontendConnector.checkPaperlessUri(returnUrl, token)
 
   lazy val choosePaperlessUrl: String =
     appConfig.preferencesFrontendRedirect + PreferenceFrontendConnector.choosePaperlessUri(returnUrl)
@@ -79,10 +76,7 @@ object PreferenceFrontendConnector {
 
   private[digitalcontact] def returnLinkText(implicit messages: Messages): String = encryptAndEncode(Messages("preferences.returnLinkText"))
 
-  def checkPaperlessUri(returnUrl: String)(implicit messages: Messages): String =
-    s"""/paperless/activate?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
-
-  def newCheckPaperlessUri(returnUrl: String, token: String)(implicit messages: Messages): String =
+  def checkPaperlessUri(returnUrl: String, token: String)(implicit messages: Messages): String =
     s"""/paperless/activate-from-token/$preferencesServiceKey/$token?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
 
   def choosePaperlessUri(returnUrl: String)(implicit messages: Messages): String =
