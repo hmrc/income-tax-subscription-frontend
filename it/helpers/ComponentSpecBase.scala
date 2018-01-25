@@ -27,8 +27,8 @@ import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import incometax.business.forms._
 import incometax.business.models._
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm, RentUkPropertyForm}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, RentUkPropertyModel}
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
 import org.scalatest._
@@ -145,6 +145,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def income(): WSResponse = get("/income")
 
+    def rentUkProperty(): WSResponse = get("/rent-uk-property")
+
     def otherIncome(): WSResponse = get("/income-other")
 
     def otherIncomeError(): WSResponse = get("/other-income-in-final-report")
@@ -240,6 +242,16 @@ trait ComponentSpecBase extends UnitSpec
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             IncomeSourceForm.incomeSourceForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def submitRentUkProperty(inEditMode: Boolean, request: Option[RentUkPropertyModel]): WSResponse = {
+      val uri = s"/rent-uk-property?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model =>
+            RentUkPropertyForm.rentUkPropertyForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

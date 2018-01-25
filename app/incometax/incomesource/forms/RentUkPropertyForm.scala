@@ -49,11 +49,24 @@ object RentUkPropertyForm {
     }
   )
 
-  val crossFieldRentUkProperty: Constraint[RentUkPropertyModel] = constraint[RentUkPropertyModel](
+  val crossFieldEmptyRentUkProperty: Constraint[RentUkPropertyModel] = constraint[RentUkPropertyModel](
     rentUkPropertyModel => {
-      lazy val invalid = ErrorMessageFactory.error(TargetIds(onlySourceOfSelfEmployedIncome), "error.other-income.empty")
+      lazy val empty = ErrorMessageFactory.error(TargetIds(onlySourceOfSelfEmployedIncome), "error.rent-uk-property.only-source-empty")
       if (rentUkPropertyModel.rentUkProperty == option_yes &&
-        rentUkPropertyModel.onlySourceOfSelfEmployedIncome.isEmpty) invalid else Valid
+        rentUkPropertyModel.onlySourceOfSelfEmployedIncome.isEmpty) empty else Valid
+    }
+  )
+
+  val crossFieldInvalidRentUkProperty: Constraint[RentUkPropertyModel] = constraint[RentUkPropertyModel](
+    rentUkPropertyModel => {
+      lazy val invalid = ErrorMessageFactory.error(TargetIds(onlySourceOfSelfEmployedIncome), "error.rent-uk-property.only-source-invalid")
+
+      if (rentUkPropertyModel.rentUkProperty == option_yes) {
+        rentUkPropertyModel.onlySourceOfSelfEmployedIncome match {
+          case Some(`option_yes`) | Some(`option_no`) => Valid
+          case _ => invalid
+        }
+      } else Valid
     }
   )
 
@@ -61,6 +74,6 @@ object RentUkPropertyForm {
     mapping(
       rentUkProperty -> oText.toText.verifying(choiceEmpty andThen choiceInvalid),
       onlySourceOfSelfEmployedIncome -> oText
-    )(RentUkPropertyModel.apply)(RentUkPropertyModel.unapply).verifying(crossFieldRentUkProperty)
+    )(RentUkPropertyModel.apply)(RentUkPropertyModel.unapply).verifying(crossFieldEmptyRentUkProperty andThen crossFieldInvalidRentUkProperty)
   )
 }

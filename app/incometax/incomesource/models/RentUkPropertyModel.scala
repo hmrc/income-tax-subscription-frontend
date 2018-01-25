@@ -21,5 +21,5 @@ import play.api.libs.json.Json
 case class RentUkPropertyModel(rentUkProperty: String, onlySourceOfSelfEmployedIncome: Option[String])
 
 object RentUkPropertyModel{
-  implicit val formats = Json.format[RentUkPropertyModel]
+  implicit val format = Json.format[RentUkPropertyModel]
 }

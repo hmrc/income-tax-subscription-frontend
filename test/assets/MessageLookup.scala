@@ -80,6 +80,15 @@ object MessageLookup {
     val other = "Other"
   }
 
+  object RentUkProperty {
+    val title = "Do you rent out a UK property?"
+    val heading: String = title
+    val line_1 = "This includes if you use a letting agency."
+    val question = "Is this your only source of self-employed income?"
+    val yes = "Yes"
+    val no = "No"
+  }
+
   object Property {
 
     object Income {
@@ -501,6 +510,13 @@ object MessageLookup {
     object IncomeSource {
       val empty = "You must select an option to continue"
       val invalid = "You must select an option to continue"
+    }
+
+    object RentUkProperty {
+      val emptyRentUkProperty = "Select yes if you rent out a UK property"
+      val invalidRentUkProperty = "Select yes if you rent out a UK property"
+      val emptyOnlyIncomeSource = "Select yes if this is your only source of self-employed income"
+      val invalidOnlyIncomeSource = "Select yes if this is your only source of self-employed income"
     }
 
     object Terms {

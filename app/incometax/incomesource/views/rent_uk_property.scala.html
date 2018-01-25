@@ -26,13 +26,14 @@
 @(rentUkPropertyForm: Form[RentUkPropertyModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("rent_uk_property.title"), form = rentUkPropertyForm) {
+
     @if(isEditMode) {
-    @back_link(backUrl)
-}
+        @back_link(backUrl)
+    }
 
-@summaryErrorHelper(rentUkPropertyForm)
+    @summaryErrorHelper(rentUkPropertyForm)
 
-<h1 class="heading-large">@Messages("rent_uk_property.heading")</h1>
+    <h1 class="heading-large">@Messages("rent_uk_property.heading")</h1>
 
     @form(action = postAction) {
         <p> @Messages("rent_uk_property.line_1") </p>
@@ -47,7 +48,7 @@
             parentForm = rentUkPropertyForm
         )
 
-        <div class="panel panel-indent panel-border-">
+        <div class="panel panel-indent panel-border-wide">
 
             <legend class="heading-medium "> @Messages("rent_uk_property.question") </legend>
 
