@@ -25,6 +25,7 @@ import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
 import play.api.http.Status._
 import play.api.i18n.Messages
+import play.api.libs.openid.OpenID
 
 class OtherIncomeControllerISpec extends ComponentSpecBase {
 
@@ -57,11 +58,10 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         When("GET /income-other is called")
         val res = IncomeTaxSubscriptionFrontend.otherIncome()
 
-        Then("Should return a OK with the income source page")
+        Then("Should redirect back to the income source page")
         res should have(
-          httpStatus(OK),
-          pageTitle(Messages("income-other.title")),
-          radioButtonSet(id = "choice", selectedRadioButton = None)
+          httpStatus(SEE_OTHER),
+          redirectURI(incomeSourceURI)
         )
       }
     }
@@ -149,6 +149,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
       "not select an option on the other income page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.OtherIncome, "")
 
         When("POST /income-other is called")
@@ -166,6 +167,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.OtherIncome, "madeup")
 
         When("POST /income-other is called")

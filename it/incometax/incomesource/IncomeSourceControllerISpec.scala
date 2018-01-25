@@ -18,7 +18,7 @@ package incometax.incomesource
 
 import java.time.LocalDate
 
-import core.config.featureswitch.TaxYearDeferralFeature
+import core.config.featureswitch.{NewIncomeSourceFlowFeature, TaxYearDeferralFeature}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -35,11 +35,13 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(TaxYearDeferralFeature)
+    disable(NewIncomeSourceFlowFeature)
   }
 
   override def afterEach(): Unit = {
     super.afterEach()
     disable(TaxYearDeferralFeature)
+    disable(NewIncomeSourceFlowFeature)
   }
 
 

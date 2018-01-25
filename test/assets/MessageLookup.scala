@@ -89,6 +89,12 @@ object MessageLookup {
     val no = "No"
   }
 
+  object WorkForYourself {
+    val title = "Do you work for yourself?"
+    val heading = "Do you work for yourself?"
+    val para1 = "This does not include if your business is a limited company or partnership."
+  }
+
   object Property {
 
     object Income {
@@ -259,6 +265,9 @@ object MessageLookup {
     val heading_hidden = "before signing up"
     val h2 = "You've told us"
     val income_source = "Where does your income come from?"
+    val rentUkProperty = "Do you rent out a UK property?"
+    val onlySourceOfIncome = "Is this your only source of self-employed income?"
+    val workForYourself = "Do you work for yourself?"
 
     object IncomeSource {
       val business = "Sole trader business"
@@ -508,6 +517,11 @@ object MessageLookup {
     }
 
     object IncomeSource {
+      val empty = "You must select an option to continue"
+      val invalid = "You must select an option to continue"
+    }
+
+    object WorkForYourself {
       val empty = "You must select an option to continue"
       val invalid = "You must select an option to continue"
     }

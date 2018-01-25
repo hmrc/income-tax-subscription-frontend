@@ -21,11 +21,13 @@ import javax.inject.{Inject, Singleton}
 import core.audit.Logging
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
+import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import core.utils.Implicits._
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.OtherIncomeModel
+import incometax.incomesource.models.{NewIncomeSourceModel, OtherIncomeModel}
 import incometax.incomesource.services.CurrentTimeService
+import incometax.subscription.models.{Both, Business, Property}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -53,9 +55,30 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      for {
-        choice <- keystoreService.fetchOtherIncome()
-      } yield Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl(isEditMode), isEditMode))
+      if (applicationConfig.newIncomeSourceFlowEnabled) {
+        for {
+          cache <- keystoreService.fetchAll()
+          optIncomeSource = cache.getNewIncomeSource()
+          choice = cache.getOtherIncome()
+        } yield optIncomeSource match {
+          case Some(incomeSource) if incomeSource.getIncomeSourceType.isRight =>
+            Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl(incomeSource, isEditMode), isEditMode))
+          case _ =>
+            Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
+        }
+      } else {
+        for {
+          cache <- keystoreService.fetchAll()
+          choice = cache.getOtherIncome()
+          optIncomeSource = cache.getIncomeSource()
+        } yield optIncomeSource match {
+          case Some(incomeSource) if incomeSource.source == IncomeSourceForm.option_property =>
+            Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl(isProperty = true, isEditMode), isEditMode))
+          case Some(incomeSource) =>
+            Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), backUrl(isProperty = false, isEditMode), isEditMode))
+          case _ => Redirect(incometax.incomesource.controllers.routes.IncomeSourceController.show())
+        }
+      }
   }
 
   def defaultRedirections(otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
@@ -63,26 +86,56 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       case OtherIncomeForm.option_yes =>
         Redirect(incometax.incomesource.controllers.routes.OtherIncomeErrorController.show())
       case OtherIncomeForm.option_no =>
-        keystoreService.fetchIncomeSource() map {
-          case Some(incomeSource) => incomeSource.source match {
-            case IncomeSourceForm.option_business =>
-              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
-            case IncomeSourceForm.option_property =>
-              Redirect(incometax.subscription.controllers.routes.TermsController.show())
-            case IncomeSourceForm.option_both =>
-              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+        if (applicationConfig.newIncomeSourceFlowEnabled) {
+          for {
+            cache <- keystoreService.fetchAll()
+            optIncomeSource = cache.getNewIncomeSource()
+          }yield optIncomeSource match {
+            case Some(incomesource) => incomesource.getIncomeSourceType match {
+              case Right(Business) =>
+                Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+              case Right(Property) =>
+                Redirect(incometax.subscription.controllers.routes.TermsController.show())
+              case Right(Both) =>
+                Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+              case _ => Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
+            }
+            case _ => Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
           }
-          case _ =>
-            logging.info("Tried to submit other income when no data found in Keystore for income source")
-            throw new InternalServerException("Other Income Controller, call to submit with no income source")
+        } else {
+          keystoreService.fetchIncomeSource() map {
+            case Some(incomeSource) => incomeSource.source match {
+              case IncomeSourceForm.option_business =>
+                Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+              case IncomeSourceForm.option_property =>
+                Redirect(incometax.subscription.controllers.routes.TermsController.show())
+              case IncomeSourceForm.option_both =>
+                Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+            }
+            case _ =>
+              logging.info("Tried to submit other income when no data found in Keystore for income source")
+              throw new InternalServerException("Other Income Controller, call to submit with no income source")
 
+          }
         }
     }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl(isEditMode), isEditMode = isEditMode)),
+        formWithErrors =>
+          if (applicationConfig.newIncomeSourceFlowEnabled) {
+            for {
+              cache <- keystoreService.fetchAll()
+              incomeSource = cache.getNewIncomeSource().get
+            } yield BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl(incomeSource, isEditMode), isEditMode = isEditMode))
+          }
+          else {
+            for {
+              cache <- keystoreService.fetchAll()
+              isProperty = cache.getIncomeSource().get.source == IncomeSourceForm.option_property
+            } yield BadRequest(view(otherIncomeForm = formWithErrors, backUrl = backUrl(isProperty, isEditMode), isEditMode = isEditMode))
+          },
         choice =>
           keystoreService.fetchOtherIncome().flatMap {
             previousOtherIncome =>
@@ -96,14 +149,27 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  def backUrl(isEditMode: Boolean): String =
+  def backUrl(isProperty: Boolean, isEditMode: Boolean): String =
     if (isEditMode)
       incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     else {
-      if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
+      if (isProperty && applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
         incometax.incomesource.controllers.routes.CannotReportYetController.show().url
       else
         incometax.incomesource.controllers.routes.IncomeSourceController.show().url
+    }
+
+  def backUrl(newIncomeSource: NewIncomeSourceModel, isEditMode: Boolean): String =
+    if (isEditMode)
+      incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+    else {
+      if (newIncomeSource.getIncomeSourceType == Right(Property)
+        && applicationConfig.taxYearDeferralEnabled
+        && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
+        incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+      else
+        incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+
     }
 
 }

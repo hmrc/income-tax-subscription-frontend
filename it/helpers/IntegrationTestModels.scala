@@ -10,7 +10,7 @@ import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm, RentUkPropertyForm}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, RentUkPropertyModel}
+import incometax.incomesource.models._
 import incometax.subscription.models.{Both, EnrolmentKey}
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.{ConfirmAgentModel, StoredSubscription}
@@ -51,7 +51,8 @@ object IntegrationTestModels {
   lazy val fullKeystoreData: Map[String, JsValue] =
     keystoreData(
       incomeSource = Some(testIncomeSourceBoth),
-      rentUkProperty = Some(testRentUkProperty),
+      rentUkProperty = Some(testNewIncomeSourceBoth.rentUkProperty),
+      workForYourself = testNewIncomeSourceBoth.workForYourself,
       otherIncome = Some(testOtherIncomeNo),
       matchTaxYear = Some(testMatchTaxYearNo),
       accountingPeriodDate = Some(testAccountingPeriod),
@@ -64,6 +65,7 @@ object IntegrationTestModels {
 
   def keystoreData(incomeSource: Option[IncomeSourceModel] = None,
                    rentUkProperty: Option[RentUkPropertyModel] = None,
+                   workForYourself: Option[WorkForYourselfModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
@@ -75,6 +77,7 @@ object IntegrationTestModels {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
       rentUkProperty.map(model => RentUkProperty -> RentUkPropertyModel.format.writes(model)) ++
+      workForYourself.map(model => WorkForYourself -> WorkForYourselfModel.format.writes(model)) ++
       otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++
       matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
@@ -91,7 +94,21 @@ object IntegrationTestModels {
 
   lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
 
-  lazy val testRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no))
+  lazy val testRentUkProperty_no_property = RentUkPropertyModel("No", None)
+  lazy val testRentUkProperty_property_only = RentUkPropertyModel("Yes", Some("Yes"))
+  lazy val testRentUkProperty_property_and_other = RentUkPropertyModel("Yes", Some("No"))
+
+  lazy val testWorkForYourself_yes = WorkForYourselfModel("Yes")
+  lazy val testWorkForYourself_no = WorkForYourselfModel("No")
+
+  lazy val testNewIncomeSourceBusiness = NewIncomeSourceModel(testRentUkProperty_no_property, Some(testWorkForYourself_yes))
+  lazy val testNewIncomeSourceProperty_1page = NewIncomeSourceModel(testRentUkProperty_property_only, None)
+  lazy val testNewIncomeSourceProperty_2page = NewIncomeSourceModel(testRentUkProperty_property_and_other, Some(testWorkForYourself_no))
+  lazy val testNewIncomeSourceBoth = NewIncomeSourceModel(testRentUkProperty_property_and_other, Some(testWorkForYourself_yes))
+  lazy val testNewIncomeSourceNotQualified = NewIncomeSourceModel(testRentUkProperty_no_property, Some(testWorkForYourself_no))
+
+  lazy val testNewIncomeSourceIncomplete1 = NewIncomeSourceModel(testRentUkProperty_no_property, None)
+  lazy val testNewIncomeSourceIncomplete2 = NewIncomeSourceModel(testRentUkProperty_property_and_other, None)
 
   lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
 

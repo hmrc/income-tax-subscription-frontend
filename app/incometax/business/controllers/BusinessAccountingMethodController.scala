@@ -78,7 +78,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       Future.successful(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
     else if (applicationConfig.taxYearDeferralEnabled) {
       for {
-        cacheMap <- keystoreService.fetchAll().map(_.get)
+        cacheMap <- keystoreService.fetchAll()
         matchTaxYear = cacheMap.getMatchTaxYear()
         optEndTaxYear = cacheMap.getAccountingPeriodDate().map(_.taxEndYear)
       } yield (matchTaxYear, optEndTaxYear) match {
@@ -94,7 +94,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       }
     }
     else {
-      keystoreService.fetchAll() map (_.get.getMatchTaxYear() match {
+      keystoreService.fetchAll() map (_.getMatchTaxYear() match {
         case Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)) =>
           incometax.business.controllers.routes.MatchTaxYearController.show().url
         case Some(MatchTaxYearModel(MatchTaxYearForm.option_no)) =>

@@ -96,7 +96,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
       .post(RentUkPropertyForm.rentUkPropertyForm, RentUkPropertyModel(option._1, option._2)))
 
     "When it is not edit mode" should {
-      s"return a NOT_IMPLEMENTED (501) when answering 'NO' to rent uk property" in {
+      s"return a SEE_OTHER (303) when answering 'NO' to rent uk property" in {
 
         enable(NewIncomeSourceFlowFeature)
 
@@ -104,13 +104,14 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callSubmit((RentUkPropertyForm.option_no, None), isEditMode = false)
 
-        status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
       }
 
-      s"return a NOT_IMPLEMENTED (501) when answering 'Yes' to rent uk property and then 'No' to only income source" in {
+      s"return a SEE_OTHER (303) when answering 'Yes' to rent uk property and then 'No' to only income source" in {
 
         enable(NewIncomeSourceFlowFeature)
 
@@ -118,7 +119,8 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callSubmit((RentUkPropertyForm.option_yes, RentUkPropertyForm.option_no), isEditMode = false)
 
-        status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
@@ -151,17 +153,18 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
         redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
 
         await(goodRequest)
-        verifyKeystore(fetchRentUkProperty = 1, saveRentUkProperty = 1)
+        verifyKeystore(fetchRentUkProperty = 1, saveRentUkProperty = 0)
       }
     }
 
     "When it is in edit mode and user's selection has changed" should {
-      s"return an SEE OTHER (303) and goto ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
+      s"return an SEE OTHER (303) and goto ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url}" in {
         setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_no, None))
 
         val goodRequest = callSubmit((RentUkPropertyForm.option_yes, RentUkPropertyForm.option_no), isEditMode = true)
 
-        status(goodRequest) must be(Status.NOT_IMPLEMENTED)
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchRentUkProperty = 1, saveRentUkProperty = 1)

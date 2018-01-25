@@ -21,12 +21,13 @@ import core.config.featureswitch.NewIncomeSourceFlowFeature
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import incometax.incomesource.forms.RentUkPropertyForm
 import incometax.incomesource.models.RentUkPropertyModel
 import play.api.http.Status._
 import play.api.i18n.Messages
-import helpers.IntegrationTestModels._
+
 class RentUkPropertyControllerISpec extends ComponentSpecBase {
 
   override def beforeEach(): Unit = {
@@ -38,7 +39,6 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
     super.afterEach()
     disable(NewIncomeSourceFlowFeature)
   }
-
 
   "GET /report-quarterly/income-and-expenses/sign-up/rent-uk-property" when {
 
@@ -96,10 +96,10 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
 
 
-        /**todo**/
-        Then("Should return a NOT_IMPLEMENTED")
+        Then("Should return a SEE_OTHER with a redirect location of work for yourself")
         res should have(
-          httpStatus(NOT_IMPLEMENTED)
+          httpStatus(SEE_OTHER),
+          redirectURI(workForYourselfURI)
         )
       }
 
@@ -113,10 +113,10 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         When("POST /rent-uk-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
 
-        /**todo**/
-        Then("Should return a NOT_IMPLEMENTED")
+        Then("Should return a SEE_OTHER with a redirect location of work for yourself")
         res should have(
-          httpStatus(NOT_IMPLEMENTED)
+          httpStatus(SEE_OTHER),
+          redirectURI(workForYourselfURI)
         )
       }
 
@@ -162,7 +162,7 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
 
       "simulate not changing rent uk property from Yes and only income source from No when calling page from Check Your Answers" in {
         val keystoreRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no))
-        val userInput =RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no))
+        val userInput = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no))
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -210,15 +210,16 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         When("POST /rent-uk-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = true, Some(userInput))
 
-        Then("Should return a NOT_IMPLEMENTED")
+        Then("Should return a SEE_OTHER with a redirect location of work for yourself")
         res should have(
-          httpStatus(NOT_IMPLEMENTED)
+          httpStatus(SEE_OTHER),
+          redirectURI(workForYourselfURI)
         )
       }
 
       "simulate changing rent uk property from Yes and only income source from No when calling page from Check Your Answers" in {
         val keystoreRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no))
-        val userInput =RentUkPropertyModel(RentUkPropertyForm.option_no, None)
+        val userInput = RentUkPropertyModel(RentUkPropertyForm.option_no, None)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -228,9 +229,10 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         When("POST /rent-uk-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = true, Some(userInput))
 
-        Then("Should return a NOT_IMPLEMENTED")
+        Then("Should return a SEE_OTHER with a redirect location of work for yourself")
         res should have(
-          httpStatus(NOT_IMPLEMENTED)
+          httpStatus(SEE_OTHER),
+          redirectURI(workForYourselfURI)
         )
       }
 
@@ -246,11 +248,13 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         When("POST /rent-uk-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = true, Some(userInput))
 
-        Then("Should return a NOT_IMPLEMENTED")
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
-          httpStatus(NOT_IMPLEMENTED)
+          httpStatus(SEE_OTHER),
+          redirectURI(workForYourselfURI)
         )
       }
     }
   }
+
 }

@@ -23,10 +23,11 @@ import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.IncomeSourceForm
+import incometax.subscription.models.{Both, Business, Property}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.InternalServerException
-
+import core.services.CacheUtil._
 import scala.concurrent.Future
 
 @Singleton
@@ -39,26 +40,43 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
 
   val show = Action.async { implicit request =>
     Future.successful(Ok(incometax.incomesource.views.html.other_income_error(
-          postAction = incometax.incomesource.controllers.routes.OtherIncomeErrorController.submit(),
-          backUrl
-        )))
+      postAction = incometax.incomesource.controllers.routes.OtherIncomeErrorController.submit(),
+      backUrl
+    )))
   }
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchIncomeSource() map {
-        case Some(incomeSource) => incomeSource.source match {
-          case IncomeSourceForm.option_business =>
-            Redirect(incometax.business.controllers.routes.BusinessNameController.show())
-          case IncomeSourceForm.option_property =>
-            Redirect(incometax.subscription.controllers.routes.TermsController.show())
-          case IncomeSourceForm.option_both =>
-            Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+      if (applicationConfig.newIncomeSourceFlowEnabled) {
+        for {
+          cache <- keystoreService.fetchAll()
+          optIncomeSource = cache.getNewIncomeSource()
+        } yield optIncomeSource match {
+          case Some(incomesource) => incomesource.getIncomeSourceType match {
+            case Right(Business) =>
+              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+            case Right(Property) =>
+              Redirect(incometax.subscription.controllers.routes.TermsController.show())
+            case Right(Both) =>
+              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+            case _ => Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
+          }
+          case _ => Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
         }
-        case _ =>
-          logging.info("Tried to submit 'other income error' when no data found in Keystore for 'income source'")
-          throw new InternalServerException("Other Income Error Controller, call to submit 'other income error' when no 'income source'")
-
+      } else {
+        keystoreService.fetchIncomeSource() map {
+          case Some(incomeSource) => incomeSource.source match {
+            case IncomeSourceForm.option_business =>
+              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+            case IncomeSourceForm.option_property =>
+              Redirect(incometax.subscription.controllers.routes.TermsController.show())
+            case IncomeSourceForm.option_both =>
+              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+          }
+          case _ =>
+            logging.info("Tried to submit 'other income error' when no data found in Keystore for 'income source'")
+            throw new InternalServerException("Other Income Error Controller, call to submit 'other income error' when no 'income source'")
+        }
       }
   }
 

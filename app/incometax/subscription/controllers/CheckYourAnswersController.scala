@@ -26,7 +26,7 @@ import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
 import incometax.incomesource.forms.IncomeSourceForm
-import incometax.subscription.models.SubscriptionSuccess
+import incometax.subscription.models.{Property, SubscriptionSuccess}
 import incometax.subscription.services.SubscriptionOrchestrationService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Request, Result}
@@ -52,7 +52,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
       cache =>
         Future.successful(
           Ok(incometax.subscription.views.html.check_your_answers(
-            cache.getSummary,
+            cache.getSummary(applicationConfig.newIncomeSourceFlowEnabled),
             isRegistration = request.isInState(Registration),
             incometax.subscription.controllers.routes.CheckYourAnswersController.submit(),
             backUrl = backUrl
@@ -66,7 +66,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         val nino = user.nino.get
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
-        subscriptionService.createSubscription(nino, cache.getSummary())(headerCarrier).flatMap {
+        subscriptionService.createSubscription(nino, cache.getSummary(applicationConfig.newIncomeSourceFlowEnabled))(headerCarrier).flatMap {
           case Right(SubscriptionSuccess(id)) =>
             keystoreService.saveSubscriptionId(id).map(_ => Redirect(incometax.subscription.controllers.routes.ConfirmationController.show()))
           case _ =>
@@ -78,22 +78,25 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                               (noCacheMapErrMessage: String) =
     Authenticated.async { implicit request =>
       implicit user =>
-        keystoreService.fetchAll().flatMap {
-          case Some(cache) => cache.getTerms match {
+        keystoreService.fetchAll().flatMap { cache =>
+          cache.getTerms match {
             case Some(true) =>
-              if (cache.getIncomeSource().fold(false)(_.source == IncomeSourceForm.option_property))
+              val isProperty =
+                if (applicationConfig.newIncomeSourceFlowEnabled) cache.getNewIncomeSource().fold(false)(_.getIncomeSourceType == Right(Property))
+                else cache.getIncomeSource().fold(false)(_.source == IncomeSourceForm.option_property)
+
+              if (isProperty)
                 processFunc(user)(request)(cache)
               else
-              (cache.getMatchTaxYear(), cache.getAccountingPeriodDate()) match {
-                case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) | (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(_)) =>
-                  processFunc(user)(request)(cache)
-                case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), _) =>
-                  Future.successful(Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
-              }
+                (cache.getMatchTaxYear(), cache.getAccountingPeriodDate()) match {
+                  case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) | (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(_)) =>
+                    processFunc(user)(request)(cache)
+                  case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), _) =>
+                    Future.successful(Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
+                }
             case Some(false) => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show(editMode = true)))
             case _ => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show()))
           }
-          case _ => error(noCacheMapErrMessage)
         }
     }
 
