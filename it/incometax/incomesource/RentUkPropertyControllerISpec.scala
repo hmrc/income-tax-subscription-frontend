@@ -120,7 +120,6 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         )
       }
 
-
       "select the Yes rent uk property radio button and Yes to only income source on the rent uk property page" in {
         val userInput = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_yes))
 

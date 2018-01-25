@@ -18,18 +18,17 @@ package incometax.incomesource.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import cats.implicits._
-import core.auth.AuthPredicate.AuthPredicate
-import core.auth.{IncomeTaxSAUser, NewIncomeSourceFlowController, SignUpController}
+import core.auth.NewIncomeSourceFlowController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.RentUkPropertyForm
+import incometax.incomesource.forms.RentUkPropertyForm._
 import incometax.incomesource.models.RentUkPropertyModel
+import incometax.incomesource.services.CurrentTimeService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import incometax.incomesource.forms.RentUkPropertyForm._
 
 import scala.concurrent.Future
 
@@ -37,7 +36,8 @@ import scala.concurrent.Future
 class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                                          val messagesApi: MessagesApi,
                                          val keystoreService: KeystoreService,
-                                         val authService: AuthService
+                                         val authService: AuthService,
+                                         val currentTimeService: CurrentTimeService
                                         ) extends NewIncomeSourceFlowController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -74,7 +74,10 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                 case (RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no)) =>
                   Future.successful(Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show()))
                 case (RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_yes)) =>
-                  Future.successful(Redirect(routes.OtherIncomeController.show()))
+                  if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
+                    Future.successful(Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show()))
+                  else
+                    Future.successful(Redirect(routes.OtherIncomeController.show()))
               }
             }
 
