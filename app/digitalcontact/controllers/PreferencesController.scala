@@ -51,8 +51,6 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
     )
   }
 
-  private def skipPreferences = baseConfig.applicationConfig.userMatchingFeature && !applicationConfig.newPreferencesApiEnabled
-
   private def goToNext(implicit request: Request[AnyContent]) =
     if (request.isInState(ConfirmAgentSubscription))
       Redirect(incometax.unauthorisedagent.controllers.routes.UnauthorisedSubscriptionController.subscribeUnauthorised())
@@ -63,17 +61,12 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
     implicit user =>
       for {
         token <- paperlessPreferenceTokenService.storeNino(user.nino.get)
-        res <- if (skipPreferences) Future.successful(goToNext)
-        else {
-          preferencesService.checkPaperless(token).map {
-            case Right(Activated) => goToNext
-            case Right(Unset(Some(url))) => Redirect(url)
-            //TODO Remove after feature switch is removed as redirect url will become non-optional
-            case Right(Unset(None)) => Redirect(preferencesService.defaultChoosePaperlessUrl)
-            case _ => throw new InternalServerException("Could not get paperless preferences")
-          }
-        }
-      } yield res
+        res <- preferencesService.checkPaperless(token)
+      } yield res match {
+        case Right(Activated) => goToNext
+        case Right(Unset(url)) => Redirect(url)
+        case _ => throw new InternalServerException("Could not get paperless preferences")
+      }
   }
 
   def callback: Action[AnyContent] = Authenticated.async { implicit request =>
@@ -82,31 +75,26 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
         token =>
           preferencesService.checkPaperless(token).map {
             case Right(Activated) => goToNext
-            case Right(Unset(Some(url))) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
+            case Right(Unset(url)) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
               .addingToSession(ITSASessionKeys.PreferencesRedirectUrl -> url)
-            case Right(Unset(None)) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
             case _ => throw new InternalServerException("Could not get paperless preferences")
           }
       }
   }
 
   def showGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
-      if (skipPreferences) goToNext
-      else Ok(view())
+    implicit user => Ok(view())
   }
 
   def submitGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
-    implicit user =>
-      if (skipPreferences) goToNext
-      else gotoPreferences
+    implicit user => gotoPreferences
   }
 
-  @inline def gotoPreferences(implicit request: Request[AnyContent]): Result =
+  def gotoPreferences(implicit request: Request[AnyContent]): Result =
     request.session.get(ITSASessionKeys.PreferencesRedirectUrl) match {
       case Some(redirectUrl) => Redirect(redirectUrl)
         .removingFromSession(ITSASessionKeys.PreferencesRedirectUrl)
-      case None => Redirect(preferencesService.defaultChoosePaperlessUrl)
+      case None => throw new InternalServerException("No preferences redirect URL provided")
     }
 
 }

@@ -18,7 +18,7 @@ package digitalcontact.httpparsers
 
 import digitalcontact.models.{Activated, PaperlessState, Unset}
 import play.api.http.Status._
-import play.api.libs.json.{JsError, JsSuccess}
+import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import uk.gov.hmrc.http.HttpResponse
 import core.utils.HttpResult.{HttpConnectorError, HttpResult, HttpResultParser}
 
@@ -30,27 +30,27 @@ object PaperlessPreferenceHttpParser {
     override def read(method: String, url: String, response: HttpResponse): HttpResult[PaperlessState] = {
       response.status match {
         case OK =>
-          val parsedJson = for {
-            optedIn <- (response.json \ optedInKey).validate[Boolean]
-          //TODO Change this from option after the feature switch is removed
-            redirectUrl <- (response.json \ redirectUserTo).validateOpt[String]
-          } yield if (optedIn) Activated
-          else Unset(redirectUrl)
-
-          parsedJson match {
+          parseJson(response.json) match {
             case JsSuccess(paperlessResponse, _) => Right(paperlessResponse)
             case error: JsError => Left(HttpConnectorError(response, Some(error)))
           }
 
         case PRECONDITION_FAILED =>
           (response.json \ redirectUserTo).validate[String] match {
-            case JsSuccess(redirectUrl, _) => Right(Unset(Some(redirectUrl)))
+            case JsSuccess(redirectUrl, _) => Right(Unset(redirectUrl))
             case error: JsError => Left(HttpConnectorError(response, Some(error)))
           }
 
-        case status => Left(HttpConnectorError(response))
+        case _ => Left(HttpConnectorError(response))
       }
     }
   }
 
+  private def parseJson(json: JsValue) = for {
+    optedIn <- (json \ optedInKey).validate[Boolean]
+    redirectUrl <-
+      if (optedIn) JsSuccess("")
+      else (json \ redirectUserTo).validate[String]
+  } yield if (optedIn) Activated
+  else Unset(redirectUrl)
 }

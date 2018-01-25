@@ -68,8 +68,6 @@ trait AppConfig extends FeatureSwitching {
 
   def enableRegistration: Boolean
 
-  def newPreferencesApiEnabled: Boolean
-
   def emacEs6ApiEnabled: Boolean
 
   def emacEs8ApiEnabled: Boolean
@@ -210,8 +208,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override def userMatchingFeature: Boolean = isEnabled(featureswitch.UserMatchingFeature)
 
   override def enableRegistration: Boolean = isEnabled(featureswitch.RegistrationFeature)
-
-  override def newPreferencesApiEnabled: Boolean = isEnabled(featureswitch.NewPreferencesApiFeature)
 
   override def emacEs6ApiEnabled: Boolean = isEnabled(featureswitch.EmacEs6ApiFeature)
 

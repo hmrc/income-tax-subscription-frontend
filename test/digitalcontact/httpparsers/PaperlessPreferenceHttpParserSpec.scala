@@ -39,14 +39,6 @@ class PaperlessPreferenceHttpParserSpec extends UnitTestTrait with EitherValues 
         res.right.value mustBe Activated
       }
 
-      "parse a correctly formatted OK false response without a redirect url as Declined(None)" in {
-        val httpResponse = HttpResponse(OK, Some(Json.obj("optedIn" -> false)))
-
-        val res = PaperlessPreferenceHttpReads.read(testHttpVerb, testUrl, httpResponse)
-
-        res.right.value mustBe Unset(None)
-      }
-
       s"parse a correctly formatted OK false response with a redirect url as Declined($testUrl)" in {
         val httpResponse = HttpResponse(OK, Some(
           Json.obj(
