@@ -28,7 +28,6 @@ object FeatureSwitch {
 
   val switches = Set(
     UserMatchingFeature,
-    NewPreferencesApiFeature,
     RegistrationFeature,
     EmacEs6ApiFeature,
     EmacEs8ApiFeature,
@@ -50,11 +49,6 @@ object FeatureSwitch {
 object UserMatchingFeature extends FeatureSwitch {
   val name = s"$prefix.user-matching"
   val displayText = "User matching"
-}
-
-object NewPreferencesApiFeature extends FeatureSwitch {
-  val name = s"$prefix.new-preferences-api"
-  val displayText = "New preferences' API"
 }
 
 object RegistrationFeature extends FeatureSwitch {

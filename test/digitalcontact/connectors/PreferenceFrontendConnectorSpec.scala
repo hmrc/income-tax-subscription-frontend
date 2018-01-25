@@ -30,7 +30,10 @@ class PreferenceFrontendConnectorSpec extends UnitTestTrait
   "PreferenceFrontendConnector" should {
 
     "Provide the correct checkPaperless URL" in {
-      TestPreferenceFrontendConnector.checkPaperlessUrl(testToken) should include regex """^.*\/paperless\/activate\?returnUrl=(.*)&returnLinkText=(.*)$"""
+      val urlPattern = """^.*\/paperless\/activate-from-token\/mtdfbit\/(.*)\?returnUrl=(.*)&returnLinkText=(.*)$"""
+
+      TestPreferenceFrontendConnector.checkPaperlessUrl(testToken) should include regex urlPattern
+
     }
 
     "Provide the correct choosePaperlessUrl URL" in {
