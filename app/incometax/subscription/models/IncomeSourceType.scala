@@ -16,15 +16,25 @@
 
 package incometax.subscription.models
 
-sealed trait IncomeSourceType
+sealed trait IncomeSourceType {
+  val source: String
+}
 
-case object Business extends IncomeSourceType
+case object Business extends IncomeSourceType {
+  override val source = IncomeSourceType.business
+}
 
-case object Property extends IncomeSourceType
+case object Property extends IncomeSourceType {
+  override val source = IncomeSourceType.property
+}
 
-case object Both extends IncomeSourceType
+case object Both extends IncomeSourceType {
+  override val source = IncomeSourceType.both
+}
 
-case object Other extends IncomeSourceType
+case object Other extends IncomeSourceType {
+  override val source = IncomeSourceType.other
+}
 
 
 object IncomeSourceType {

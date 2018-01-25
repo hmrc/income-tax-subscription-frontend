@@ -28,7 +28,7 @@ import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
 
-class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
+class OtherIncomeErrorControllerNewIncomeSourceSpec extends ControllerBaseSpec
   with MockKeystoreService
   with FeatureSwitching {
 
@@ -45,7 +45,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
+    enable(NewIncomeSourceFlowFeature)
   }
 
   override def afterEach(): Unit = {
@@ -74,9 +74,13 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
     def callSubmit = TestOtherIncomeErrorController.submit(subscriptionRequest
       .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
 
+
     s"redirect to '${incometax.business.controllers.routes.BusinessNameController.show().url}' on the business journey" in {
 
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+      setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
+        rentUkProperty = TestModels.testNewIncomeSourceBusiness.rentUkProperty,
+        workForYourself = TestModels.testNewIncomeSourceBusiness.workForYourself.get
+      ))
 
       val goodRequest = callSubmit
 
@@ -84,12 +88,15 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessNameController.show().url)
 
       await(goodRequest)
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchAll = 1)
     }
 
-    s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property journey" in {
+    s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property 1 page journey" in {
 
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+      setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
+        rentUkProperty = TestModels.testNewIncomeSourceProperty_1page.rentUkProperty,
+        workForYourself = TestModels.testNewIncomeSourceProperty_1page.workForYourself
+      ))
 
       val goodRequest = callSubmit
 
@@ -97,12 +104,31 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.show().url)
 
       await(goodRequest)
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchAll = 1)
+    }
+
+    s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property 2 pages journey" in {
+
+      setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
+        rentUkProperty = TestModels.testNewIncomeSourceProperty_2page.rentUkProperty,
+        workForYourself = TestModels.testNewIncomeSourceProperty_2page.workForYourself.get
+      ))
+
+      val goodRequest = callSubmit
+
+      status(goodRequest) must be(Status.SEE_OTHER)
+      redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.show().url)
+
+      await(goodRequest)
+      verifyKeystore(fetchAll = 1)
     }
 
     s"redirect to '${incometax.business.controllers.routes.BusinessNameController.show().url}' on the both journey" in {
 
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+      setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
+        rentUkProperty = TestModels.testNewIncomeSourceBoth.rentUkProperty,
+        workForYourself = TestModels.testNewIncomeSourceBoth.workForYourself.get
+      ))
 
       val goodRequest = callSubmit
 
@@ -110,7 +136,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessNameController.show().url)
 
       await(goodRequest)
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchAll = 1)
     }
 
   }

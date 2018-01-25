@@ -256,6 +256,9 @@ object MessageLookup {
     val heading_hidden = "before signing up"
     val h2 = "You've told us"
     val income_source = "Where does your income come from?"
+    val rentUkProperty = "Do you rent out a UK property?"
+    val onlySourceOfIncome = "Is this your only source of self-employed income?"
+    val workForYourself = "Do you work for yourself?"
 
     object IncomeSource {
       val business = "Sole trader business"

@@ -27,7 +27,7 @@ import core.utils.Implicits._
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models.{NewIncomeSourceModel, OtherIncomeModel}
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.Property
+import incometax.subscription.models.{Both, Business, Property}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -86,19 +86,37 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       case OtherIncomeForm.option_yes =>
         Redirect(incometax.incomesource.controllers.routes.OtherIncomeErrorController.show())
       case OtherIncomeForm.option_no =>
-        keystoreService.fetchIncomeSource() map {
-          case Some(incomeSource) => incomeSource.source match {
-            case IncomeSourceForm.option_business =>
-              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
-            case IncomeSourceForm.option_property =>
-              Redirect(incometax.subscription.controllers.routes.TermsController.show())
-            case IncomeSourceForm.option_both =>
-              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+        if (applicationConfig.newIncomeSourceFlowEnabled) {
+          for {
+            cache <- keystoreService.fetchAll()
+            optIncomeSource = cache.getNewIncomeSource()
+          }yield optIncomeSource match {
+            case Some(incomesource) => incomesource.getIncomeSourceType match {
+              case Right(Business) =>
+                Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+              case Right(Property) =>
+                Redirect(incometax.subscription.controllers.routes.TermsController.show())
+              case Right(Both) =>
+                Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+              case _ => Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
+            }
+            case _ => Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
           }
-          case _ =>
-            logging.info("Tried to submit other income when no data found in Keystore for income source")
-            throw new InternalServerException("Other Income Controller, call to submit with no income source")
+        } else {
+          keystoreService.fetchIncomeSource() map {
+            case Some(incomeSource) => incomeSource.source match {
+              case IncomeSourceForm.option_business =>
+                Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+              case IncomeSourceForm.option_property =>
+                Redirect(incometax.subscription.controllers.routes.TermsController.show())
+              case IncomeSourceForm.option_both =>
+                Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+            }
+            case _ =>
+              logging.info("Tried to submit other income when no data found in Keystore for income source")
+              throw new InternalServerException("Other Income Controller, call to submit with no income source")
 
+          }
         }
     }
 

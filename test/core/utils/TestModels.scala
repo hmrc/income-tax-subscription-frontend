@@ -188,6 +188,16 @@ object TestModels extends Implicits {
     accountingMethod = testAccountingMethod
   )
 
+  lazy val testSummaryNewIncomeSourceData = SummaryModel(
+    rentUkProperty = testNewIncomeSourceBoth.rentUkProperty,
+    workForYourself = testNewIncomeSourceBoth.workForYourself,
+    otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
+    matchTaxYear = testMatchTaxYearNo,
+    accountingPeriod = testAccountingPeriod,
+    businessName = testBusinessName,
+    accountingMethod = testAccountingMethod
+  )
+
   lazy val testStoredSubscription = StoredSubscription(
     arn = testArn,
     incomeSource = Both,

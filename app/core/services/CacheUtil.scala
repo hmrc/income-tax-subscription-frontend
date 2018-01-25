@@ -21,7 +21,7 @@ import incometax.business.models._
 import incometax.business.models.address.Address
 import incometax.incomesource.forms.IncomeSourceForm
 import incometax.incomesource.models._
-import incometax.subscription.models.SummaryModel
+import incometax.subscription.models.{IncomeSourceType, Property, SummaryModel}
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -72,34 +72,65 @@ object CacheUtil {
                                                          busAdd: Reads[Address],
                                                          busStart: Reads[BusinessStartDateModel],
                                                          accM: Reads[AccountingMethodModel],
-                                                         ter: Reads[Boolean]): SummaryModel = {
-      val incomeSource = getIncomeSource()
-      incomeSource match {
-        case Some(src) =>
-          src.source match {
-            case IncomeSourceForm.option_property =>
-              SummaryModel(
-                incomeSource,
-                getOtherIncome(),
-                terms = getTerms()
-              )
-            case _ =>
-              SummaryModel(
-                incomeSource = incomeSource,
-                otherIncome = getOtherIncome(),
-                matchTaxYear = getMatchTaxYear(),
-                accountingPeriod = getAccountingPeriodDate(),
-                businessName = getBusinessName(),
-                businessPhoneNumber = getBusinessPhoneNumber(),
-                businessAddress = getBusinessAddress(),
-                businessStartDate = getBusinessStartDate(),
-                accountingMethod = getAccountingMethod(),
-                terms = getTerms()
-              )
-          }
-        case _ => SummaryModel()
+                                                         ter: Reads[Boolean]): SummaryModel =
+      if (newIncomeSourceFlow) {
+        val optIncomeSource = getNewIncomeSource()
+        optIncomeSource match {
+          case Some(incomeSource) =>
+            incomeSource.getIncomeSourceType match {
+              case Right(Property) =>
+                SummaryModel(
+                  rentUkProperty = getRentUkProperty(),
+                  workForYourself = getWorkForYourself(),
+                  otherIncome=getOtherIncome(),
+                  terms = getTerms()
+                )
+              case Right(incomeSourceType@_) =>
+                SummaryModel(
+                  rentUkProperty = getRentUkProperty(),
+                  workForYourself = getWorkForYourself(),
+                  otherIncome = getOtherIncome(),
+                  matchTaxYear = getMatchTaxYear(),
+                  accountingPeriod = getAccountingPeriodDate(),
+                  businessName = getBusinessName(),
+                  businessPhoneNumber = getBusinessPhoneNumber(),
+                  businessAddress = getBusinessAddress(),
+                  businessStartDate = getBusinessStartDate(),
+                  accountingMethod = getAccountingMethod(),
+                  terms = getTerms()
+                )
+            }
+          case _ => SummaryModel()
+        }
       }
-    }
+      else {
+        val incomeSource = getIncomeSource()
+        incomeSource match {
+          case Some(src) =>
+            src.source match {
+              case IncomeSourceForm.option_property =>
+                SummaryModel(
+                  incomeSource,
+                  otherIncome = getOtherIncome(),
+                  terms = getTerms()
+                )
+              case _ =>
+                SummaryModel(
+                  incomeSource = incomeSource,
+                  otherIncome = getOtherIncome(),
+                  matchTaxYear = getMatchTaxYear(),
+                  accountingPeriod = getAccountingPeriodDate(),
+                  businessName = getBusinessName(),
+                  businessPhoneNumber = getBusinessPhoneNumber(),
+                  businessAddress = getBusinessAddress(),
+                  businessStartDate = getBusinessStartDate(),
+                  accountingMethod = getAccountingMethod(),
+                  terms = getTerms()
+                )
+            }
+          case _ => SummaryModel()
+        }
+      }
 
   }
 

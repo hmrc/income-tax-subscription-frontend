@@ -29,7 +29,9 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
 
-class CheckYourAnswersControllerSpec extends ControllerBaseSpec
+import scala.reflect.macros.whitebox
+
+class CheckYourAnswersControllerNewIncomeSourceSpec extends ControllerBaseSpec
   with MockKeystoreService
   with MockSubscriptionOrchestrationService
   with FeatureSwitching {
@@ -51,7 +53,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
+    enable(NewIncomeSourceFlowFeature)
   }
 
   override def afterEach(): Unit = {
@@ -69,9 +71,22 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       status(result) must be(Status.OK)
     }
 
-    "return ok (200) for property journey" in {
+    "return ok (200) for property journey (1 page)" in {
       val testPropertyCacheMap = testCacheMap(
-        incomeSource = testIncomeSourceProperty,
+        rentUkProperty = testNewIncomeSourceProperty_1page.rentUkProperty,
+        workForYourself = testNewIncomeSourceProperty_1page.workForYourself,
+        otherIncome = testOtherIncomeNo,
+        terms = testTerms
+      )
+      setupMockKeystore(fetchAll = testPropertyCacheMap)
+
+      status(result) must be(Status.OK)
+    }
+
+    "return ok (200) for property journey (2 pages)" in {
+      val testPropertyCacheMap = testCacheMap(
+        rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
+        workForYourself = testNewIncomeSourceProperty_2page.workForYourself,
         otherIncome = testOtherIncomeNo,
         terms = testTerms
       )
@@ -92,7 +107,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockKeystore(fetchAll = testCacheMap)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(newIncomeSourceFlow = true))
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
@@ -110,7 +125,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
 
       "return a internalServer error" in {
         setupMockKeystore(fetchAll = testCacheMap)
-        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary())
+        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(newIncomeSourceFlow = true))
         intercept[InternalServerException](await(result)).message mustBe "Successful response not received from submission"
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }

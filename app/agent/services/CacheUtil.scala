@@ -60,7 +60,7 @@ object CacheUtil {
             case IncomeSourceForm.option_property =>
               SummaryModel(
                 incomeSource,
-                getOtherIncome(),
+                otherIncome = getOtherIncome(),
                 terms = getTerms()
               )
             case _ =>

@@ -65,25 +65,27 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
     implicit user =>
       WorkForYourselfForm.workForYourselfForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(workForYourselfForm = formWithErrors, isEditMode = isEditMode))),
-        workForYourself => {
-          // todo rewrite this when we have everything so we can sort out the edit flow
-          val incomeSource = for {
+        workForYourself =>
+          for {
             cache <- keystoreService.fetchAll()
             _ <- keystoreService.saveWorkForYourself(workForYourself)
             rentUkProperty = cache.getRentUkProperty().get
-          } yield NewIncomeSourceModel(rentUkProperty, Some(workForYourself))
-
-          lazy val linearJourney: Future[Result] =
-            incomeSource.map(_.getIncomeSourceType match {
-              case Right(Business) => business
-              case Right(Property) => property
-              case Right(Both) => both
-              case Right(Other) => doNotQualify
-              case _ => throw new InternalServerException("WorkForYourselfController.submit ")
-            })
-
-          linearJourney
-        }
+          } yield {
+            val incomeSource = NewIncomeSourceModel(rentUkProperty, Some(workForYourself))
+            lazy val linearJourney: Result =
+              incomeSource.getIncomeSourceType match {
+                case Right(Business) => business
+                case Right(Property) => property
+                case Right(Both) => both
+                case Right(Other) => doNotQualify
+                case _ => throw new InternalServerException("WorkForYourselfController.submit")
+              }
+            // cache.getNewIncomeSource() returns the user's previous answer
+            cache.getNewIncomeSource() match {
+              case Some(`incomeSource`) if isEditMode => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.submit())
+              case _ => linearJourney
+            }
+          }
       )
   }
 

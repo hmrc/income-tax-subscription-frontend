@@ -119,7 +119,7 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the WorkForYourself controller with an authorised user" when {
     def call(workForYourself: WorkForYourselfModel, isEditMode: Boolean) =
-      TestWorkForYourselfController.submit(isEditMode = true)(subscriptionRequest.post(WorkForYourselfForm.workForYourselfForm, workForYourself))
+      TestWorkForYourselfController.submit(isEditMode = isEditMode)(subscriptionRequest.post(WorkForYourselfForm.workForYourselfForm, workForYourself))
 
     "the new income source flow feature is disabled" should {
       "return not found (404)" in {
@@ -223,7 +223,105 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
         }
       }
     }
+
+
+    "in editMode" when {
+      def submit(workForYourself: WorkForYourselfModel = testWorkForYourself_yes) = call(workForYourself, isEditMode = true)
+
+      "the user kept their answer the same" should {
+        "return to check your answers" in {
+          setupMockKeystore(fetchAll =
+            testCacheMapCustom(
+              rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
+              workForYourself = testNewIncomeSourceProperty_2page.workForYourself.get
+            )
+          )
+          val result = submit(testNewIncomeSourceProperty_2page.workForYourself.get)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+        }
+      }
+
+      "the user changed their answer and" when {
+        "a change to property only submission and" when {
+          "TaxYearDeferralFeature is disabled" should {
+            "redirect to correctly" in {
+              setupMockKeystore(fetchAll =
+                testCacheMapCustom(
+                  rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
+                  workForYourself = testNewIncomeSourceBoth.workForYourself.get
+                )
+              )
+              val result = submit(testNewIncomeSourceProperty_2page.workForYourself.get)
+              status(result) mustBe SEE_OTHER
+              redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
+            }
+          }
+          "TaxYearDeferralFeature is enabled" when {
+            "we're in the 2017 - 2018 tax year" should {
+              "redirect to correctly" in {
+                enable(TaxYearDeferralFeature)
+                mockGetTaxYearEnd(2018)
+                setupMockKeystore(fetchAll =
+                  testCacheMapCustom(
+                    rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
+                    workForYourself = testNewIncomeSourceBoth.workForYourself.get
+                  )
+                )
+                val result = submit(testNewIncomeSourceProperty_2page.workForYourself.get)
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+              }
+            }
+            "we're after the 2017 - 2018 tax year" should {
+              "redirect to correctly" in {
+                enable(TaxYearDeferralFeature)
+                mockGetTaxYearEnd(2019)
+                setupMockKeystore(fetchAll =
+                  testCacheMapCustom(
+                    rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
+                    workForYourself = testNewIncomeSourceBoth.workForYourself.get
+                  )
+                )
+                val result = submit(testNewIncomeSourceProperty_2page.workForYourself.get)
+                status(result) mustBe SEE_OTHER
+                redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
+              }
+            }
+          }
+        }
+
+        "a change to business only submission" should {
+          "redirect to correctly" in {
+            setupMockKeystore(fetchAll =
+              testCacheMapCustom(
+                rentUkProperty = testNewIncomeSourceBusiness.rentUkProperty,
+                workForYourself = testNewIncomeSourceProperty_2page.workForYourself.get
+              )
+            )
+            val result = submit(testNewIncomeSourceBusiness.workForYourself.get)
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
+          }
+        }
+
+        "a change to business and property submission" should {
+          "redirect to correctly" in {
+            setupMockKeystore(fetchAll =
+              testCacheMapCustom(
+                rentUkProperty = testNewIncomeSourceBoth.rentUkProperty,
+                workForYourself = testNewIncomeSourceProperty_2page.workForYourself.get
+              )
+            )
+            val result = submit(testNewIncomeSourceBoth.workForYourself.get
+            )
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
+          }
+        }
+
+      }
+    }
   }
 
-  // TOOD tests for edit mode...
 }
