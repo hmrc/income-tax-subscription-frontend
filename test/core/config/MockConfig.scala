@@ -74,8 +74,6 @@ trait MockConfig extends AppConfig {
 
   override lazy val addressLookupFrontendURL: String = ""
 
-  override val newPreferencesApiEnabled: Boolean = false
-
   override def newIncomeSourceFlowEnabled: Boolean = isEnabled(featureswitch.NewIncomeSourceFlowFeature)
 
   override def taxYearDeferralEnabled: Boolean = isEnabled(featureswitch.TaxYearDeferralFeature)

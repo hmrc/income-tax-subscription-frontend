@@ -17,7 +17,8 @@
 package digitalcontact
 
 import core.ITSASessionKeys
-import core.config.AppConfig
+import core.config.featureswitch.FeatureSwitching
+import core.config.{AppConfig, featureswitch}
 import core.services.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -26,7 +27,7 @@ import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.libs.json.JsString
 
-class PreferencesControllerISpec extends ComponentSpecBase {
+class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   "GET /preferences" should {
 
@@ -35,7 +36,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessActivated()
+      PreferencesStub.newStubPaperlessActivated()
 
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
@@ -47,30 +48,12 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       )
     }
 
-    "where the user has previously accepted paperless where optedIn is set to false and no redirect location is returned" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      PreferencesTokenStub.stubStoreNinoSuccess()
-      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessInactive()
-
-      When("GET /preferences is called")
-      val res = IncomeTaxSubscriptionFrontend.preferences()
-
-      Then("Should return a SEE_OTHER with a re-direct location of choose paperless page")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(choosePaperlessURI)
-      )
-    }
-
-
     "where the user has previously accepted paperless where optedIn is set to false and a redirect location is returned" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessInactiveWithUri()
+      PreferencesStub.newStubPaperlessInactiveWithUri()
 
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
@@ -87,7 +70,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessPreconditionFail()
+      PreferencesStub.newStubPaperlessPreconditionFail()
 
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
@@ -104,7 +87,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessError()
+      PreferencesStub.newStubPaperlessError()
 
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
@@ -119,7 +102,7 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreData(Map(PaperlessPreferenceToken -> JsString(testPaperlessPreferenceToken)))
-      PreferencesStub.stubPaperlessActivated()
+      PreferencesStub.newStubPaperlessActivated()
 
       When("GET /preferences is called")
       val res = IncomeTaxSubscriptionFrontend.preferences()
@@ -134,12 +117,12 @@ class PreferencesControllerISpec extends ComponentSpecBase {
 
   "GET /callback" should {
 
-    "where the user has previously accepted paperless where optedIn is set to False" in {
+    "where the user has previously accepted paperless where optedIn is set to False and redirect location returned" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-      PreferencesStub.stubPaperlessInactive()
+      PreferencesStub.newStubPaperlessInactiveWithUri()
 
       When("GET /callback is called")
       val res = IncomeTaxSubscriptionFrontend.callback()
@@ -176,26 +159,12 @@ class PreferencesControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
 
       When("POST /paperless-error is called")
-      val res = IncomeTaxSubscriptionFrontend.submitPaperlessError()
+      val res = IncomeTaxSubscriptionFrontend.submitPaperlessError(Map(ITSASessionKeys.PreferencesRedirectUrl -> choosePaperlessURI))
 
       Then("Should return a SEE_OTHER with a re-direct location of choose paperless page")
       res should have(
         httpStatus(SEE_OTHER),
         redirectURI(choosePaperlessURI)
-      )
-    }
-
-    "where the POST /paperless-error is called and the redirect url has been stored in session" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-
-      When("POST /paperless-error is called")
-      val res = IncomeTaxSubscriptionFrontend.submitPaperlessError(Map(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
-
-      Then("Should return a SEE_OTHER with a re-direct location of choose paperless page")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(testUrl)
       )
     }
   }
