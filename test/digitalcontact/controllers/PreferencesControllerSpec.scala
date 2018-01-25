@@ -17,6 +17,7 @@
 package digitalcontact.controllers
 
 import core.ITSASessionKeys
+import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants._
@@ -28,9 +29,13 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
-class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesService with MockKeystoreService with MockPaperlessPreferenceTokenService {
+class PreferencesControllerSpec extends ControllerBaseSpec
+  with MockPreferencesService
+  with MockKeystoreService
+  with MockPaperlessPreferenceTokenService
+  with FeatureSwitching {
 
-  override val controllerName: String = "PreferencesControllerSpec"
+  override val controllerName: String = "PreferencesController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "checkPreference" -> TestPreferencesController.checkPreferences
   )
@@ -44,18 +49,41 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
     mockPaperlessPreferenceTokenService
   )
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(NewIncomeSourceFlowFeature)
+  }
 
-  "Calling the checkPreference action of the PreferencesController with an authorised user" should {
+  override def afterEach(): Unit = {
+    super.beforeEach()
+    disable(NewIncomeSourceFlowFeature)
+  }
+
+  "Calling the checkPreference action of the PreferencesController with an authorised user" when {
     implicit lazy val request = subscriptionRequest
 
     def result = TestPreferencesController.checkPreferences(request)
 
-    "Redirect to Income Source if paperless is activated and in SignUp journey" in {
-      mockStoreNinoSuccess(testNino)
-      mockCheckPaperlessActivated(testToken)
+    "NewIncomeSourceFlowFeature is disabled" should {
+      "Redirect to Income Source if paperless is activated and in SignUp journey" in {
+        mockStoreNinoSuccess(testNino)
+        mockCheckPaperlessActivated(testToken)
 
-      status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.show().url)
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.show().url)
+      }
+    }
+
+    "NewIncomeSourceFlowFeature is enabled" should {
+      "Redirect to rent uk property if paperless is activated and in SignUp journey" in {
+        enable(NewIncomeSourceFlowFeature)
+
+        mockStoreNinoSuccess(testNino)
+        mockCheckPaperlessActivated(testToken)
+
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result).get must be(incometax.incomesource.controllers.routes.RentUkPropertyController.show().url)
+      }
     }
 
     "Redirect to Create subscription controller if paperless is activated and in ConfirmAgentSubscription journey" in {
@@ -84,12 +112,27 @@ class PreferencesControllerSpec extends ControllerBaseSpec with MockPreferencesS
 
     def result = TestPreferencesController.callback(request)
 
-    "Redirect to Income Source if paperless is activated and in SignUp journey" in {
-      mockStoreNinoSuccess(testNino)
-      mockCheckPaperlessActivated(testToken)
+    "NewIncomeSourceFlowFeature is disable" should {
 
-      status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.show().url)
+      "Redirect to Income Source if paperless is activated and in SignUp journey" in {
+        mockStoreNinoSuccess(testNino)
+        mockCheckPaperlessActivated(testToken)
+
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.show().url)
+      }
+    }
+
+    "NewIncomeSourceFlowFeature is enabled" should {
+      "Redirect to rent uk property if paperless is activated and in SignUp journey" in {
+        enable(NewIncomeSourceFlowFeature)
+
+        mockStoreNinoSuccess(testNino)
+        mockCheckPaperlessActivated(testToken)
+
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result).get must be(incometax.incomesource.controllers.routes.RentUkPropertyController.show().url)
+      }
     }
 
     "Redirect to Create Subscription controller if paperless is activated and in ConfirmAgentSubscription journey" in {

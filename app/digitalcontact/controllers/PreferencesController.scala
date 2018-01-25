@@ -54,7 +54,12 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
   private def goToNext(implicit request: Request[AnyContent]) =
     if (request.isInState(ConfirmAgentSubscription))
       Redirect(incometax.unauthorisedagent.controllers.routes.UnauthorisedSubscriptionController.subscribeUnauthorised())
-    else Redirect(incometax.incomesource.controllers.routes.IncomeSourceController.show())
+    else {
+      if (applicationConfig.newIncomeSourceFlowEnabled)
+        Redirect(incometax.incomesource.controllers.routes.RentUkPropertyController.show())
+      else
+        Redirect(incometax.incomesource.controllers.routes.IncomeSourceController.show())
+    }
 
 
   def checkPreferences: Action[AnyContent] = Authenticated.async { implicit request =>
