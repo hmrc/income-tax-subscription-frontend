@@ -105,38 +105,6 @@ class HomeControllerISpec extends ComponentSpecBase {
         }
       }
 
-      "auth returns an org affinity group" should {
-        "redirect to the wrong affinity group error page" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthOrgAffinity()
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return a SEE OTHER with the error affinity group page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(wrongAffinityURI)
-          )
-        }
-      }
-
-      "auth returns an org affinity group with no nino" should {
-        "redirect to the wrong affinity group error page" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthOrgAffinityNoEnrolments()
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return a SEE OTHER with the error affinity group page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(wrongAffinityURI)
-          )
-        }
-      }
-
     }
 
     "the user only has a nino in enrolment" when {
@@ -274,38 +242,6 @@ class HomeControllerRegEnabledISpec extends ComponentSpecBase with FeatureSwitch
           Then("Should return an INTERNAL_SERVER_ERROR")
           res should have(
             httpStatus(INTERNAL_SERVER_ERROR)
-          )
-        }
-      }
-
-      "auth returns an org affinity group" should {
-        "redirect to the wrong affinity group error page" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthOrgAffinity()
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return a SEE OTHER with the error affinity group page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(wrongAffinityURI)
-          )
-        }
-      }
-
-      "auth returns an org affinity group with no nino" should {
-        "redirect to the wrong affinity group error page" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthOrgAffinityNoEnrolments()
-
-          When("GET /index is called")
-          val res = IncomeTaxSubscriptionFrontend.indexPage()
-
-          Then("Should return a SEE OTHER with the error affinity group page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(wrongAffinityURI)
           )
         }
       }

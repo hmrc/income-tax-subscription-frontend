@@ -16,7 +16,7 @@
 
 package usermatching
 
-import core.config.featureswitch.{FeatureSwitching, UserMatchingFeature}
+import core.config.featureswitch.FeatureSwitching
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, UserLockoutStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels, UserMatchingIntegrationResultSupport}
@@ -27,11 +27,6 @@ import usermatching.controllers.routes
 import usermatching.models.UserDetailsModel
 
 class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching with UserMatchingIntegrationResultSupport {
-
-  // TODO remove this when the routes are moved into prod.routes
-  override def config: Map[String, String] = super.config.+("application.router" -> "testOnlyDoNotUseInAppConf.Routes")
-
-  enable(UserMatchingFeature)
 
   "GET /user-details" when {
     def fixture(agentLocked: Boolean): WSResponse = {

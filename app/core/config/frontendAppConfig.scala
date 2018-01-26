@@ -18,7 +18,7 @@ package core.config
 
 import javax.inject.{Inject, Singleton}
 
-import core.config.featureswitch.{EmacEs6ApiFeature, FeatureSwitching}
+import core.config.featureswitch.FeatureSwitching
 import play.api.mvc.Call
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -63,8 +63,6 @@ trait AppConfig extends FeatureSwitching {
   val citizenDetailsURL: String
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
-
-  def userMatchingFeature: Boolean
 
   def enableRegistration: Boolean
 
@@ -204,8 +202,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override lazy val matchingLockOutSeconds: Int = loadConfig("lockout.lockOutSeconds").toInt
 
   override lazy val authenticatorUrl: String = baseUrl("authenticator")
-
-  override def userMatchingFeature: Boolean = isEnabled(featureswitch.UserMatchingFeature)
 
   override def enableRegistration: Boolean = isEnabled(featureswitch.RegistrationFeature)
 

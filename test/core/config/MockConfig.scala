@@ -60,8 +60,6 @@ trait MockConfig extends AppConfig {
 
   override val hasEnabledTestOnlyRoutes: Boolean = false
 
-  override val userMatchingFeature: Boolean = false
-
   override val enableRegistration: Boolean = false
 
   override val emacEs6ApiEnabled: Boolean = false

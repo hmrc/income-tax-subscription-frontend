@@ -8,9 +8,6 @@ GET         /index                        usermatching.controllers.HomeControlle
 # SignOut Controller
 GET         /logout                       core.controllers.SignOutController.signOut(origin: String)
 
-# NinoResolver Controller
-GET         /resolve-nino                 usermatching.controllers.NinoResolverController.resolveNinoAction
-
 # Preferences routes
 GET         /preferences                  digitalcontact.controllers.PreferencesController.checkPreferences
 GET         /callback                     digitalcontact.controllers.PreferencesController.callback

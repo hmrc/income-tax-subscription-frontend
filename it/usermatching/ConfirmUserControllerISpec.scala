@@ -17,7 +17,7 @@
 package usermatching
 
 import core.ITSASessionKeys
-import core.config.featureswitch.{FeatureSwitching, UserMatchingFeature}
+import core.config.featureswitch.FeatureSwitching
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
 import helpers.{ComponentSpecBase, SessionCookieCrumbler}
@@ -25,11 +25,6 @@ import play.api.http.Status._
 
 
 class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching {
-
-  // TODO remove this when the routes are moved into prod.routes
-  override def config: Map[String, String] = super.config.+("application.router" -> "testOnlyDoNotUseInAppConf.Routes")
-
-  enable(UserMatchingFeature)
 
   "POST /confirm-user" when {
 

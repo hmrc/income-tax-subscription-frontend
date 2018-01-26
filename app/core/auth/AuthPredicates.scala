@@ -30,21 +30,11 @@ import usermatching.userjourneys.ConfirmAgentSubscription
 import scala.concurrent.Future
 
 trait AuthPredicates extends Results {
+  import AuthPredicates._
+
   def applicationConfig: AppConfig
 
   val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
-
-  lazy val resolveNino: Result = Redirect(usermatching.controllers.routes.NinoResolverController.resolveNinoAction())
-
-  val ninoPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (user.nino(request).isDefined) {
-      Right(AuthPredicateSuccess)
-    }
-    else if (user.utr(request).isDefined) {
-      Left(Future.failed(new InternalServerException("AuthPredicates.ninoPredicate: unexpected user state, the user has a utr but no nino")))
-    } else {
-      Left(Future.successful(resolveNino))
-    }
 
   lazy val alreadyEnrolled: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.show())
 
@@ -69,9 +59,8 @@ trait AuthPredicates extends Results {
   lazy val wrongAffinity: Result = Redirect(usermatching.controllers.routes.AffinityGroupErrorController.show())
 
   val affinityPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    (applicationConfig.userMatchingFeature, user.affinityGroup) match {
-      case (true, Some(Individual) | Some(Organisation)) => Right(AuthPredicateSuccess)
-      case (false, Some(Individual)) => Right(AuthPredicateSuccess)
+    user.affinityGroup match {
+      case (Some(Individual) | Some(Organisation)) => Right(AuthPredicateSuccess)
       case _ => Left(Future.successful(wrongAffinity))
     }
 
@@ -146,16 +135,15 @@ trait AuthPredicates extends Results {
 object AuthPredicates extends Results {
   val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
 
-  lazy val resolveNino: Result = Redirect(usermatching.controllers.routes.NinoResolverController.resolveNinoAction())
+  lazy val userMatching: Result = Redirect(usermatching.controllers.routes.UserDetailsController.show())
 
-  val ninoPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+  val ninoPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user =>
     if (user.nino(request).isDefined) {
       Right(AuthPredicateSuccess)
-    }
-    else if (user.utr(request).isDefined) {
+    } else if (user.utr(request).isDefined) {
       Left(Future.failed(new InternalServerException("AuthPredicates.ninoPredicate: unexpected user state, the user has a utr but no nino")))
     } else {
-      Left(Future.successful(resolveNino))
+      Left(Future.successful(userMatching withJourneyState UserMatching))
     }
 
   lazy val alreadyEnrolledRoute: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.show())
@@ -177,9 +165,8 @@ object AuthPredicates extends Results {
     else Right(AuthPredicateSuccess)
 
   def affinityPredicate(implicit appConfig: AppConfig): AuthPredicate[IncomeTaxSAUser] = request => user =>
-    (appConfig.userMatchingFeature, user.affinityGroup) match {
-      case (true, Some(Individual) | Some(Organisation)) => Right(AuthPredicateSuccess)
-      case (false, Some(Individual)) => Right(AuthPredicateSuccess)
+    user.affinityGroup match {
+      case Some(Individual) | Some(Organisation) => Right(AuthPredicateSuccess)
       case _ => Left(Future.successful(wrongAffinity))
     }
 
