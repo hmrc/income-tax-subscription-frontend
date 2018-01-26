@@ -18,7 +18,6 @@ package usermatching.controllers
 
 import core.ITSASessionKeys
 import core.auth.{UserMatched, UserMatching}
-import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants._
@@ -27,7 +26,7 @@ import org.scalatest.OptionValues
 import play.api.http.Status
 import play.api.mvc._
 import play.api.test.Helpers.{await, _}
-import uk.gov.hmrc.http.{HttpResponse, InternalServerException, NotFoundException, SessionKeys}
+import uk.gov.hmrc.http.{HttpResponse, InternalServerException, SessionKeys}
 import usermatching.services.mocks.{MockUserLockoutService, MockUserMatchingService}
 
 import scala.concurrent.Future
@@ -42,17 +41,13 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
     "submit" -> TestConfirmUserController.submit()
   )
 
-  def createTestConfirmUserController(enableMatchingFeature: Boolean) = new ConfirmUserController(
-    mockBaseControllerConfig(new MockConfig {
-      override val userMatchingFeature = enableMatchingFeature
-    }),
+  object TestConfirmUserController extends ConfirmUserController(
+    MockBaseControllerConfig,
     messagesApi,
     mockAuthService,
     mockUserMatchingService,
     mockUserLockoutService
   )
-
-  lazy val TestConfirmUserController: ConfirmUserController = createTestConfirmUserController(enableMatchingFeature = true)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -63,190 +58,166 @@ class ConfirmUserControllerSpec extends ControllerBaseSpec
 
   lazy val request = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name).buildRequest(userDetails)
 
-  "When user matching is disabled" should {
-    lazy val TestConfirmUserController: ConfirmUserController = createTestConfirmUserController(enableMatchingFeature = false)
 
-    "show" should {
-      "return NOT FOUND" in {
-        val result = TestConfirmUserController.show()(request)
-        val ex = intercept[NotFoundException] {
-          await(result)
-        }
-        ex.message must startWith("This page for user matching is not yet available to the public:")
-      }
+  "Calling the show action of the ConfirmUserController with an authorised user" should {
+
+    def call(request: Request[AnyContent]) = TestConfirmUserController.show()(request)
+
+    "when there are no user details stored redirect them to user details" in {
+      setupMockNotLockedOut(testUserId.value)
+
+      val r = request.buildRequest(None)
+      val result = call(r)
+
+      status(result) must be(Status.SEE_OTHER)
+
+      redirectLocation(result) must contain(usermatching.controllers.routes.UserDetailsController.show().url)
+
+      await(result).verifyStoredUserDetailsIs(None)(r)
     }
 
-    "submit" should {
-      "return NOT FOUND" in {
-        val result = TestConfirmUserController.submit()(request)
-        val ex = intercept[NotFoundException] {
-          await(result)
-        }
-        ex.message must startWith("This page for user matching is not yet available to the public:")
-      }
+    "if there are user details return ok (200)" in {
+      setupMockNotLockedOut(testUserId.value)
+
+      val r = request.buildRequest(userDetails)
+
+      val result = call(r)
+
+      status(result) must be(Status.OK)
+
+      await(result).verifyStoredUserDetailsIs(userDetails)(r)
     }
   }
 
-  "When user matching is disabled" should {
+  "Calling the submit action of the confirmUserController with a locked out user" should {
+    def callSubmit(): Future[Result] = TestConfirmUserController.submit()(request)
 
-    "Calling the show action of the ConfirmUserController with an authorised user" should {
+    "return the user details page" in {
+      setupMockLockedOut(testUserId.value)
 
-      def call(request: Request[AnyContent]) = TestConfirmUserController.show()(request)
+      val result = callSubmit()
 
-      "when there are no user details store redirect them to user details" in {
-        setupMockNotLockedOut(testUserId.value)
+      redirectLocation(result) must contain(usermatching.controllers.routes.UserDetailsLockoutController.show().url)
+    }
+  }
 
-        val r = request.buildRequest(None)
-        val result = call(r)
+  "Calling the submit action of the confirmUserController with no keystore data" should {
+    def callSubmit(request: Request[AnyContent]): Future[Result] = TestConfirmUserController.submit()(request)
 
-        status(result) must be(Status.SEE_OTHER)
+    "return the user details page" in {
+      setupMockNotLockedOut(testUserId.value)
 
-        await(result).verifyStoredUserDetailsIs(None)(r)
-      }
+      val r = request.buildRequest(None)
 
-      "if there is are user details return ok (200)" in {
+      val result = callSubmit(r)
+
+      redirectLocation(result) must contain(usermatching.controllers.routes.UserDetailsController.show().url)
+    }
+  }
+
+  "Calling the submit action of the ConfirmUserController with an authorised user and valid submission" when {
+
+    def callSubmit(request: Request[AnyContent]): Future[Result] = TestConfirmUserController.submit()(request)
+
+    "UserMatchingService returned UnexpectedFailure" should {
+      "return a InternalServerException" in {
+        mockUserMatchException(userDetails)
         setupMockNotLockedOut(testUserId.value)
 
         val r = request.buildRequest(userDetails)
 
-        val result = call(r)
+        val result = callSubmit(r)
 
-        status(result) must be(Status.OK)
-
-        await(result).verifyStoredUserDetailsIs(userDetails)(r)
+        intercept[InternalServerException](await(result))
       }
     }
 
-    "Calling the submit action of the confirmUserController with a locked out user" should {
-      def callSubmit(): Future[Result] = TestConfirmUserController.submit()(request)
-
-      "return the user details page" in {
-        setupMockLockedOut(testUserId.value)
-
-        val result = callSubmit()
-
-        redirectLocation(result) must contain(usermatching.controllers.routes.UserDetailsLockoutController.show().url)
-      }
-    }
-
-    "Calling the submit action of the confirmUserController with no keystore data" should {
-      def callSubmit(request: Request[AnyContent]): Future[Result] = TestConfirmUserController.submit()(request)
-
-      "return the user details page" in {
+    "UserMatchingService returns user with nino and utr" should {
+      s"redirect to the home controller with nino and sautr added to session" in {
+        mockUserMatchSuccess(userDetails)
         setupMockNotLockedOut(testUserId.value)
 
-        val r = request.buildRequest(None)
+        val r = request.buildRequest(userDetails)
+
+        val fresult = callSubmit(r)
+        val result = await(fresult)
+        status(fresult) mustBe SEE_OTHER
+        redirectLocation(fresult) mustBe Some(routes.HomeController.index().url)
+
+        val session = result.session(request)
+        session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
+        session.get(ITSASessionKeys.UTR) must contain(TestConstants.testUtr)
+        session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatched.name)
+        result.verifyStoredUserDetailsIs(None)(r)
+      }
+    }
+
+    "UserMatchingService returns user with only nino" should {
+      s"redirect to the home controller with nino added to session" in {
+        mockUserMatchSuccessNoUtr(userDetails)
+        setupMockNotLockedOut(testUserId.value)
+
+        val r = request.buildRequest(userDetails)
 
         val result = callSubmit(r)
 
-        redirectLocation(result) must contain(usermatching.controllers.routes.UserDetailsController.show().url)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(routes.HomeController.index().url)
+
+        val session = await(result).session(request)
+        session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
+        session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatched.name)
       }
     }
 
-    "Calling the submit action of the ConfirmUserController with an authorised user and valid submission" when {
-
-      def callSubmit(request: Request[AnyContent]): Future[Result] = TestConfirmUserController.submit()(request)
-
-      "UserMatchingService returned UnexpectedFailure" should {
-        "return a InternalServerException" in {
-          mockUserMatchException(userDetails)
+    "UserMatchingService returns nothing" when {
+      "not locked out is returned by the service" should {
+        "redirect to the user details page and apply the new counter to session" in {
+          mockUserMatchNotFound(userDetails)
           setupMockNotLockedOut(testUserId.value)
-
-          val r = request.buildRequest(userDetails)
-
-          val result = callSubmit(r)
-
-          intercept[InternalServerException](await(result))
-        }
-      }
-
-      "UserMatchingService returns user with nino and utr" should {
-        s"redirect to the home controller with nino and sautr added to session" in {
-          mockUserMatchSuccess(userDetails)
-          setupMockNotLockedOut(testUserId.value)
-
-          val r = request.buildRequest(userDetails)
-
-          val fresult = callSubmit(r)
-          val result = await(fresult)
-          status(fresult) mustBe SEE_OTHER
-          redirectLocation(fresult) mustBe Some(routes.HomeController.index().url)
-
-          val session = result.session(request)
-          session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
-          session.get(ITSASessionKeys.UTR) must contain(TestConstants.testUtr)
-          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatched.name)
-          result.verifyStoredUserDetailsIs(None)(r)
-        }
-      }
-
-      "UserMatchingService returns user with only nino" should {
-        s"redirect to the home controller with nino added to session" in {
-          mockUserMatchSuccessNoUtr(userDetails)
-          setupMockNotLockedOut(testUserId.value)
+          setupIncrementNotLockedOut(testUserId.value, 0)
 
           val r = request.buildRequest(userDetails)
 
           val result = callSubmit(r)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.HomeController.index().url)
+          redirectLocation(result) mustBe Some(usermatching.controllers.routes.UserDetailsErrorController.show().url)
 
           val session = await(result).session(request)
-          session.get(ITSASessionKeys.NINO) must contain(TestConstants.testNino)
-          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(UserMatched.name)
+          session.get(ITSASessionKeys.FailedUserMatching) must contain("1")
         }
       }
 
-      "UserMatchingService returns nothing" when {
-        "not locked out is returned by the service" should {
-          "redirect to the user details page and apply the new counter to session" in {
-            mockUserMatchNotFound(userDetails)
-            setupMockNotLockedOut(testUserId.value)
-            setupIncrementNotLockedOut(testUserId.value, 0)
+      "locked out is returned by the service" should {
+        "remove the counter from the session, lockout the user then redirect to the locked out page" in {
+          val currentFailedMatches = 3
+          implicit val requestWithLockout = request.withSession(
+            SessionKeys.userId -> testUserId.value,
+            ITSASessionKeys.FailedUserMatching -> currentFailedMatches.toString
+          )
 
-            val r = request.buildRequest(userDetails)
+          mockUserMatchNotFound(userDetails)
+          setupMockNotLockedOut(testUserId.value)
+          setupIncrementLockedOut(testUserId.value, currentFailedMatches)
+          setupMockKeystore(deleteAll = HttpResponse(Status.OK))
 
-            val result = callSubmit(r)
+          val r = requestWithLockout.buildRequest(userDetails)
 
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(usermatching.controllers.routes.UserDetailsErrorController.show().url)
+          val result = TestConfirmUserController.submit()(r)
 
-            val session = await(result).session(request)
-            session.get(ITSASessionKeys.FailedUserMatching) must contain("1")
-          }
-        }
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(usermatching.controllers.routes.UserDetailsLockoutController.show().url)
 
-        "locked out is returned by the service" should {
-          "remove the counter from the session, lockout the user then redirect to the locked out page" in {
-            val currentFailedMatches = 3
-            implicit val requestWithLockout = request.withSession(
-              SessionKeys.userId -> testUserId.value,
-              ITSASessionKeys.FailedUserMatching -> currentFailedMatches.toString
-            )
+          val session = await(result).session
+          session.get(ITSASessionKeys.FailedUserMatching) mustBe empty
 
-            mockUserMatchNotFound(userDetails)
-            setupMockNotLockedOut(testUserId.value)
-            setupIncrementLockedOut(testUserId.value, currentFailedMatches)
-            setupMockKeystore(deleteAll = HttpResponse(Status.OK))
-
-            val r = requestWithLockout.buildRequest(userDetails)
-
-            val result = TestConfirmUserController.submit()(r)
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(usermatching.controllers.routes.UserDetailsLockoutController.show().url)
-
-            val session = await(result).session
-            session.get(ITSASessionKeys.FailedUserMatching) mustBe empty
-
-            verifyIncrementLockout(testUserId.value, 1)
-          }
+          verifyIncrementLockout(testUserId.value, 1)
         }
       }
     }
-
   }
+
 
   authorisationTests()
 

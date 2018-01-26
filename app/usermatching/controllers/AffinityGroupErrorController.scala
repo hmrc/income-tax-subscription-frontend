@@ -29,10 +29,7 @@ class AffinityGroupErrorController @Inject()(implicit val applicationConfig: App
                                             ) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action { implicit request =>
-    if (applicationConfig.userMatchingFeature) Ok(usermatching.views.html.agent_affinity_group_error())
-    else Ok(usermatching.views.html.affinity_group_error(
-      signOut = core.controllers.SignOutController.signOut(routes.AffinityGroupErrorController.show()))
-    )
+    Ok(usermatching.views.html.agent_affinity_group_error())
   }
 
 }

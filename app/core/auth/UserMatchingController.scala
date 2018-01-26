@@ -29,13 +29,7 @@ trait UserMatchingController extends BaseFrontendController {
 
     override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
 
-    private val userMatchingUnavailableMessage = "This page for user matching is not yet available to the public: "
-
-    override def async: AuthenticatedAction[IncomeTaxSAUser] =
-      if (applicationConfig.userMatchingFeature) asyncInternal(userMatchingPredicates)
-      else _ =>
-        Action.async(request => Future.failed(new NotFoundException(userMatchingUnavailableMessage + request.uri)))
-
+    override def async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(userMatchingPredicates)
   }
 
   implicit def requestUtil(request: Request[AnyContent]): UserMatchingSessionRequestUtil = UserMatchingSessionRequestUtil(request)

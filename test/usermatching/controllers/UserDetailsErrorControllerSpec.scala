@@ -38,9 +38,7 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
   )
 
   def createTestUserDetailsErrorController(enableMatchingFeature: Boolean) = new UserDetailsErrorController(
-    mockBaseControllerConfig(new MockConfig {
-      override val userMatchingFeature = enableMatchingFeature
-    }),
+    MockBaseControllerConfig,
     messagesApi,
     mockAuthService
   )
@@ -49,71 +47,46 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
 
   lazy val request = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
-  "When user matching is disabled" should {
-    lazy val TestUserDetailsErrorController: UserDetailsErrorController = createTestUserDetailsErrorController(enableMatchingFeature = false)
 
-    "show" should {
-      "return NOT FOUND" in {
-        val result = TestUserDetailsErrorController.show()(request)
-        val ex = intercept[NotFoundException] {
-          await(result)
-        }
-        ex.message must startWith("This page for user matching is not yet available to the public:")
-      }
+  "Calling the 'show' action of the UserDetailsErrorController" should {
+
+    lazy val result = TestUserDetailsErrorController.show(request)
+    lazy val document = Jsoup.parse(contentAsString(result))
+
+    "return 200" in {
+      status(result) must be(Status.OK)
     }
 
-    "submit" should {
-      "return NOT FOUND" in {
-        val result = TestUserDetailsErrorController.submit()(request)
-        val ex = intercept[NotFoundException] {
-          await(result)
-        }
-        ex.message must startWith("This page for user matching is not yet available to the public:")
-      }
+    "return HTML" in {
+      contentType(result) must be(Some("text/html"))
+      charset(result) must be(Some("utf-8"))
     }
+
+    "render the 'User Details Error page'" in {
+      document.title mustBe messages.title
+    }
+
+    s"the page must have a link to sign out" in {
+      document.select("#sign-out").attr("href") mustBe
+        core.controllers.SignOutController.signOut(request.path).url
+    }
+
   }
 
-  "When user matching is disabled" should {
+  "Calling the 'submit' action of the UserDetailsErrorController" should {
 
-    "Calling the 'show' action of the UserDetailsErrorController" should {
+    lazy val result = TestUserDetailsErrorController.submit(request)
 
-      lazy val result = TestUserDetailsErrorController.show(request)
-      lazy val document = Jsoup.parse(contentAsString(result))
-
-      "return 200" in {
-        status(result) must be(Status.OK)
-      }
-
-      "return HTML" in {
-        contentType(result) must be(Some("text/html"))
-        charset(result) must be(Some("utf-8"))
-      }
-
-      "render the 'User Details Error page'" in {
-        document.title mustBe messages.title
-      }
-
-      s"the page must have a link to sign out" in {
-        document.select("#sign-out").attr("href") mustBe
-          core.controllers.SignOutController.signOut(request.path).url
-      }
-
+    "return 303" in {
+      status(result) must be(Status.SEE_OTHER)
     }
 
-    "Calling the 'submit' action of the UserDetailsErrorController" should {
-
-      lazy val result = TestUserDetailsErrorController.submit(request)
-
-      "return 303" in {
-        status(result) must be(Status.SEE_OTHER)
-      }
-
-      "Redirect to the 'User details' page" in {
-        redirectLocation(result).get mustBe usermatching.controllers.routes.UserDetailsController.show().url
-      }
-
+    "Redirect to the 'User details' page" in {
+      redirectLocation(result).get mustBe usermatching.controllers.routes.UserDetailsController.show().url
     }
+
   }
+
 
   authorisationTests()
 

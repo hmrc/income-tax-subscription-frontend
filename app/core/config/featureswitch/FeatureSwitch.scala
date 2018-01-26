@@ -27,7 +27,6 @@ object FeatureSwitch {
   val prefix = "feature-switch"
 
   val switches = Set(
-    UserMatchingFeature,
     RegistrationFeature,
     EmacEs6ApiFeature,
     EmacEs8ApiFeature,
@@ -44,11 +43,6 @@ object FeatureSwitch {
 
   def get(str: String): Option[FeatureSwitch] = switches find (_.name == str)
 
-}
-
-object UserMatchingFeature extends FeatureSwitch {
-  val name = s"$prefix.user-matching"
-  val displayText = "User matching"
 }
 
 object RegistrationFeature extends FeatureSwitch {

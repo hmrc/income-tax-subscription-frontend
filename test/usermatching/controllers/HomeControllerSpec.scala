@@ -19,8 +19,8 @@ package usermatching.controllers
 import assets.MessageLookup.FrontPage
 import core.ITSASessionKeys
 import core.audit.Logging
-import core.auth.{Registration, SignUp}
-import core.config.{BaseControllerConfig, MockConfig}
+import core.auth.Registration
+import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants
@@ -29,12 +29,10 @@ import incometax.subscription.services.mocks.MockSubscriptionService
 import incometax.unauthorisedagent.services.mocks.MockSubscriptionStoreRetrievalService
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, contentAsString, _}
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.mocks.MockCitizenDetailsService
-
-import scala.concurrent.Future
 
 
 class HomeControllerSpec extends ControllerBaseSpec
@@ -46,7 +44,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   override val controllerName: String = "HomeControllerSpec"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "index" -> TestHomeController(showGuidance = false).index()
+    "index" -> TestHomeController(showStartPage = false).index()
   )
 
   override def beforeEach(): Unit = {
@@ -57,17 +55,11 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockNinoRetrieval()
   }
 
-  def mockBaseControllerConfig(showStartPage: Boolean, userMatching: Boolean, registrationFeature: Boolean): BaseControllerConfig = {
-    val mockConfig = new MockConfig {
+  def TestHomeController(showStartPage: Boolean = true, registrationFeature: Boolean = false) = new HomeController(
+    mockBaseControllerConfig(new MockConfig {
       override val showGuidance: Boolean = showStartPage
-      override val userMatchingFeature: Boolean = userMatching
       override val enableRegistration: Boolean = registrationFeature
-    }
-    mockBaseControllerConfig(mockConfig)
-  }
-
-  def TestHomeController(showGuidance: Boolean = true, userMatchingFeature: Boolean = false, registrationFeature: Boolean = false) = new HomeController(
-    mockBaseControllerConfig(showGuidance, userMatchingFeature, registrationFeature),
+    }),
     messagesApi,
     mockSubscriptionService,
     MockKeystoreService,
@@ -82,9 +74,9 @@ class HomeControllerSpec extends ControllerBaseSpec
 
   "Calling the home action of the Home controller with an authorised user" when {
 
-    "the start page (showGuidance) is enabled" should {
+    "the start page (showStartPage) is enabled" should {
 
-      lazy val result = TestHomeController(showGuidance = true).home()(subscriptionRequest)
+      lazy val result = TestHomeController(showStartPage = true).home()(subscriptionRequest)
 
       "Return status OK (200)" in {
         status(result) must be(Status.OK)
@@ -95,8 +87,8 @@ class HomeControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "the start page (showGuidance) is disabled" should {
-      lazy val result = TestHomeController(showGuidance = false).home()(subscriptionRequest)
+    "the start page (showStartPage) is disabled" should {
+      lazy val result = TestHomeController(showStartPage = false).home()(subscriptionRequest)
 
       "Return status SEE_OTHER (303) redirect" in {
         status(result) must be(Status.SEE_OTHER)
@@ -216,7 +208,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         val result = TestHomeController().index(fakeRequest)
 
         status(result) mustBe Status.SEE_OTHER
-        redirectLocation(result).get mustBe usermatching.controllers.routes.NinoResolverController.resolveNinoAction().url
+        redirectLocation(result).get mustBe usermatching.controllers.routes.UserDetailsController.show().url
       }
     }
   }
