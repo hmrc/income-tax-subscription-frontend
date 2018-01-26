@@ -165,7 +165,7 @@
         @summaryModel.incomeSource.map(incomeSource)
         @summaryModel.rentUkProperty.map(rentUkProperty)
         @summaryModel.rentUkProperty.map(onlySourceOfIncome)
-        @if(summaryModel.rentUkProperty.fold(false)(_.needSecondPage)) {
+        @if(summaryModel.rentUkProperty.exists(_.needSecondPage)) {
             @summaryModel.workForYourself.map(WorkForYourself)
         }
         @summaryModel.incomeSource.map(incomeSource)
@@ -175,7 +175,7 @@
         @summaryModel.businessAddress.map(businessAddress)
         @summaryModel.businessStartDate.map(businessStartDate)
         @summaryModel.matchTaxYear.map(matchTaxYear)
-        @if(summaryModel.matchTaxYear.fold(false)(_.matchTaxYear == MatchTaxYearForm.option_no)) {
+        @if(summaryModel.matchTaxYear.exists(_.matchTaxYear == MatchTaxYearForm.option_no)) {
             @summaryModel.accountingPeriod.map(accountingPeriodDate)
         }
         @summaryModel.accountingMethod.map(accountingMethod)
