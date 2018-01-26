@@ -25,7 +25,13 @@
 
 @(rentUkPropertyForm: Form[RentUkPropertyModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("rent_uk_property.title"), form = rentUkPropertyForm) {
+
+
+@scripts = {
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/show-hide-content.js")"></script>
+}
+
+@main_template(title = Messages("rent_uk_property.title"), form = rentUkPropertyForm, scriptElem = scripts) {
 
     @if(isEditMode) {
         @back_link(backUrl)
@@ -45,10 +51,12 @@
             options = Seq(
             RadioOption(RentUkPropertyForm.option_yes, Messages("base.yes")),
             RadioOption(RentUkPropertyForm.option_no, Messages("base.no"))),
-            parentForm = rentUkPropertyForm
+            parentForm = rentUkPropertyForm,
+            targetHostId = RentUkPropertyForm.option_yes,
+            target = RentUkPropertyForm.onlySourceOfSelfEmployedIncome
         )
 
-        <div class="panel panel-indent panel-border-wide">
+        <div id="@RentUkPropertyForm.onlySourceOfSelfEmployedIncome" class="panel panel-indent panel-border-wide js-hidden">
 
             <legend class="heading-medium "> @Messages("rent_uk_property.question") </legend>
 
@@ -64,7 +72,11 @@
 
         </div>
 
-        @continueButton()
+         @if(isEditMode) {
+            @continueButton(Messages("base.update"))
+         } else {
+            @continueButton()
+         }
     }
 
 }
