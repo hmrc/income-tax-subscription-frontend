@@ -57,8 +57,10 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
       } yield
         if (!cache.getRentUkProperty().needSecondPage)
           Redirect(incometax.incomesource.controllers.routes.RentUkPropertyController.show().url)
-        else
-          Ok(view(workForYourselfForm = WorkForYourselfForm.workForYourselfForm.fill(cache.getWorkForYourself()), isEditMode = isEditMode))
+        else {
+          val cachedModel = cache.getWorkForYourself()
+          Ok(view(workForYourselfForm = WorkForYourselfForm.workForYourselfForm.fill(cachedModel), isEditMode = isEditMode))
+        }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
