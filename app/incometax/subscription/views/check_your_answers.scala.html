@@ -15,22 +15,17 @@
  *@
 
 @import core.config.AppConfig
-@import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+@import core.views.html.helpers._
+@import core.views.html.templates.main_template
+@import incometax.business.forms.MatchTaxYearForm
 @import incometax.business.models.address.Address
+@import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
 @import incometax.incomesource.models._
 @import incometax.subscription.models.SummaryModel
 @import uk.gov.hmrc.play.views.html.helpers.form
-
-@import incometax.business.models.AccountingMethodModel
-@import incometax.business.models.AccountingPeriodModel
-@import core.views.html.templates.main_template
-@import core.views.html.helpers._
-
-@import incometax.business.models.MatchTaxYearModel
-@import incometax.business.forms.MatchTaxYearForm
 @(summaryModel: SummaryModel, isRegistration: Boolean, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-    @import core.views.html.helpers.SummaryHelper._
-    @import core.views.html.helpers.SummaryIdConstants._
+@import core.views.html.helpers.SummaryHelper._
+@import core.views.html.helpers.SummaryIdConstants._
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
     <div class="tabular-data__entry divider--top--thick" id="@field-row">
@@ -59,6 +54,33 @@
     val rowQuestion = Messages("summary.income_source")
     val rowAnswer = incomeSourceText(source)
     val rowUrl = incometax.incomesource.controllers.routes.IncomeSourceController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@rentUkProperty(rentUkProperty: RentUkPropertyModel) = @{
+    val rowName = RentUkPropertyId
+    val rowQuestion = Messages("summary.rent_uk_property_1")
+    val rowAnswer = rentUkProperty.rentUkProperty
+    val rowUrl = incometax.incomesource.controllers.routes.RentUkPropertyController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@onlySourceOfIncome(rentUkProperty: RentUkPropertyModel) = @{
+    rentUkProperty.onlySourceOfSelfEmployedIncome match {
+        case Some(rowAnswer) =>
+            val rowName = OnlySourceOfIncomeId
+            val rowQuestion = Messages("summary.rent_uk_property_2")
+            val rowUrl = incometax.incomesource.controllers.routes.RentUkPropertyController.show(editMode = true).url
+            summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+        case _ => Html("")
+    }
+}
+
+@WorkForYourself(workForYourself: WorkForYourselfModel) = @{
+    val rowName = WorkForYourselfId
+    val rowQuestion = Messages("summary.work_for_your_self")
+    val rowAnswer = workForYourself.doYouWorkForYourself
+    val rowUrl = incometax.incomesource.controllers.routes.WorkForYourselfController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -141,13 +163,19 @@
 
     <div class="form-group" data-metrics="itsa:incomeSource:@summaryModel.incomeSource.map(_.source)">
         @summaryModel.incomeSource.map(incomeSource)
+        @summaryModel.rentUkProperty.map(rentUkProperty)
+        @summaryModel.rentUkProperty.map(onlySourceOfIncome)
+        @if(summaryModel.rentUkProperty.exists(_.needSecondPage)) {
+            @summaryModel.workForYourself.map(WorkForYourself)
+        }
+        @summaryModel.incomeSource.map(incomeSource)
         @summaryModel.otherIncome.map(otherIncome)
         @summaryModel.businessName.map(businessName)
         @summaryModel.businessPhoneNumber.map(businessPhoneNumber)
         @summaryModel.businessAddress.map(businessAddress)
         @summaryModel.businessStartDate.map(businessStartDate)
         @summaryModel.matchTaxYear.map(matchTaxYear)
-        @if(summaryModel.matchTaxYear.fold(false)(_.matchTaxYear == MatchTaxYearForm.option_no)) {
+        @if(summaryModel.matchTaxYear.exists(_.matchTaxYear == MatchTaxYearForm.option_no)) {
             @summaryModel.accountingPeriod.map(accountingPeriodDate)
         }
         @summaryModel.accountingMethod.map(accountingMethod)

@@ -23,7 +23,7 @@ import core.utils.{TestModels, UnitTestTrait}
 import core.views.html.helpers.SummaryIdConstants._
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
 import incometax.subscription.models.SummaryModel
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
@@ -41,12 +41,17 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testBusinessAddress: Address = TestModels.testAddress
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
+  val testRentUkProperty: RentUkPropertyModel = TestModels.testNewIncomeSourceBoth.rentUkProperty
+  val testWorkForYourself: WorkForYourselfModel = TestModels.testNewIncomeSourceBoth.workForYourself.get
   val testOtherIncome: OtherIncomeModel = TestModels.testOtherIncomeNo
-  val testSummary = customTestSummary(matchTaxYear = TestModels.testMatchTaxYearNo, testAccountingPeriod)
+  val testSummary = customTestSummary()
 
-  def customTestSummary(matchTaxYear: Option[MatchTaxYearModel],
-                        accountingPeriod: Option[AccountingPeriodModel]) = SummaryModel(
+  def customTestSummary(rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty,
+                        matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
+                        accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod) = SummaryModel(
     incomeSource = testIncomeSource,
+    rentUkProperty = rentUkProperty,
+    workForYourself = testWorkForYourself,
     otherIncome = testOtherIncome,
     matchTaxYear = matchTaxYear,
     accountingPeriod = accountingPeriod,
@@ -165,10 +170,10 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     "display the correct info for the accounting period date" when {
       "do not display if the user is on the sign up journey and chose yes to match tax year" in {
         val sectionId = AccountingPeriodDateId
-        val doc = document(testSummaryModel = customTestSummary(Some(TestModels.testMatchTaxYearYes), accountingPeriod = None))
+        val doc = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod = None))
         doc.getElementById(sectionId) mustBe null
 
-        val doc2 = document(testSummaryModel = customTestSummary(Some(TestModels.testMatchTaxYearYes), accountingPeriod = Some(testAccountingPeriod)))
+        val doc2 = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod = Some(testAccountingPeriod)))
         doc2.getElementById(sectionId) mustBe null
       }
 
@@ -217,6 +222,68 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedEditLink = expectedEditLink
       )
     }
+
+    "display the correct info for the rent uk property" in {
+      val sectionId = RentUkPropertyId
+      val expectedQuestion = messages.rentUkProperty
+      val expectedAnswer = testRentUkProperty.rentUkProperty
+      val expectedEditLink = incometax.incomesource.controllers.routes.RentUkPropertyController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )
+    }
+
+    "display the correct info for the only source of income" in {
+      val sectionId = OnlySourceOfIncomeId
+      val expectedQuestion = messages.onlySourceOfIncome
+      val expectedAnswer = testRentUkProperty.onlySourceOfSelfEmployedIncome.get
+      val expectedEditLink = incometax.incomesource.controllers.routes.RentUkPropertyController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )
+    }
+
+    "do not display if the only source of income is not answered" in {
+      val sectionId = OnlySourceOfIncomeId
+      val expectedQuestion = messages.onlySourceOfIncome
+      val expectedAnswer = testRentUkProperty.onlySourceOfSelfEmployedIncome.get
+      val expectedEditLink = incometax.incomesource.controllers.routes.RentUkPropertyController.show(editMode = true).url
+
+      val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_no_property))
+
+      doc.getElementById(sectionId) mustBe null
+    }
+
+    "display the correct info for the work for yourself" in {
+      val sectionId = WorkForYourselfId
+      val expectedQuestion = messages.workForYourself
+      val expectedAnswer = testWorkForYourself.doYouWorkForYourself
+      val expectedEditLink = incometax.incomesource.controllers.routes.WorkForYourselfController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )
+    }
+
+    "do not display work for yourself if rent uk property is answered with YES YES" in {
+      val sectionId = WorkForYourselfId
+
+      val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_property_only))
+
+      doc.getElementById(sectionId) mustBe null
+    }
+
 
     "display the correct info for other income" in {
       val sectionId = OtherIncomeId

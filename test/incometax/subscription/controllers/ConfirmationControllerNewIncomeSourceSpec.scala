@@ -23,20 +23,20 @@ import core.audit.Logging
 import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
+import core.utils.TestConstants._
 import core.utils.TestModels
+import org.jsoup.Jsoup
 import org.scalatest.Matchers._
+import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.NotFoundException
-import core.utils.TestConstants._
-import org.jsoup.Jsoup
-import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
 
 import scala.concurrent.Future
 
-class ConfirmationControllerSpec extends ControllerBaseSpec
+class ConfirmationControllerNewIncomeSourceSpec extends ControllerBaseSpec
   with MockKeystoreService
   with FeatureSwitching {
 
@@ -50,7 +50,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
+    enable(NewIncomeSourceFlowFeature)
   }
 
   override def afterEach(): Unit = {
@@ -74,7 +74,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "the user is not in the unauthorised agent journey state" should {
       "get the ID from keystore if the user is enrolled" in {
         mockAuthEnrolled()
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+        setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(incomeSource = None))
         val result: Future[Result] = TestConfirmationController.show(
           subscriptionRequest.addStartTime(startTime)
         )

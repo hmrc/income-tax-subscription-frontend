@@ -22,6 +22,10 @@ POST        /income                       incometax.incomesource.controllers.Inc
 GET         /rent-uk-property             incometax.incomesource.controllers.RentUkPropertyController.show(editMode: Boolean ?= false)
 POST        /rent-uk-property             incometax.incomesource.controllers.RentUkPropertyController.submit(editMode: Boolean ?= false)
 
+# Work for yourself Routes
+GET         /work-for-yourself            incometax.incomesource.controllers.WorkForYourselfController.show(editMode: Boolean ?= false)
+POST        /work-for-yourself            incometax.incomesource.controllers.WorkForYourselfController.submit(editMode: Boolean ?= false)
+
 # Summary Routes
 GET         /check-your-answers           incometax.subscription.controllers.CheckYourAnswersController.show
 POST        /check-your-answers           incometax.subscription.controllers.CheckYourAnswersController.submit

@@ -23,7 +23,9 @@
     parentForm: Option[Form[_]] = None,
     inline: Boolean = false,
     fieldSetClass: Option[String] = None,
-    useTextForValue: Boolean = false
+    useTextForValue: Boolean = false,
+    targetHostId: Option[String] = None,
+    target: Option[String] = None
 )(implicit messages: Messages)
 
 @import core.forms.validation.ErrorMessageHelper._
@@ -58,12 +60,26 @@
     }
 }
 
+@hasTarget = {
+    @target match {
+        case Some(t) => {data-target=@t}
+        case _ => {}
+    }
+}
+
+@hasTargetHostId(id: String) = @{
+    targetHostId match {
+        case Some(hostId) => {if(id==hostId) hasTarget}
+        case _ => {}
+    }
+}
+
 <div class="form-group @if(hasError) { form-field--error}">
     <fieldset @fieldSetClassValue>
         <legend class="visuallyhidden" id="@field.name">@legend</legend>
         @fieldErrorHelper(field, parentForm)
         @for(option <- options) {
-            <div class="multiple-choice">
+            <div class="multiple-choice" @hasTargetHostId(option.optionName)>
                 <input id="@{field.name}-@option.optionName" type="radio" name="@field.name" value="@valueAttr(option)" @isSelected(option.optionName)>
                 <label @option.classes.fold("")(x => s"""class="$x"""") for="@{field.name}-@option.optionName">@Html(option.message)</label>
             </div>

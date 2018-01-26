@@ -60,6 +60,11 @@ income_source.property                                          = Renting out a 
 income_source.both                                              = Your sole trader business and renting out a UK property
 income_source.other                                             = Other
 
+# work for yourself page
+work_for_yourself.title                                         = Do you work for yourself?
+work_for_yourself.heading                                       = Do you work for yourself?
+work_for_yourself.para1                                         = This does not include if your business is a limited company or partnership.
+
 ## Rent Uk Property page
 rent_uk_property.title                                          = Do you rent out a UK property?
 rent_uk_property.heading                                        = Do you rent out a UK property?
@@ -222,6 +227,9 @@ summary.confirm_and_sign_up                                     = Confirm and si
 summary.line_1                                                  = You can edit your answers if you need to.<br>When you''re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
 summary.h2                                                      = You''ve told us
 summary.income_source                                           = Where does your income come from?
+summary.rent_uk_property_1                                      = Do you rent out a UK property?
+summary.rent_uk_property_2                                      = Is this your only source of self-employed income?
+summary.work_for_your_self                                      = Do you work for yourself?
 summary.income_source.business                                  = Sole trader business
 summary.income_source.property                                  = Property
 summary.income_source.both                                      = Sole trader business and property
@@ -254,6 +262,9 @@ error.back_to_preferences.empty                                 = You must selec
 
 error.income_source.empty                                       = You must select an option to continue
 error.income_source.invalid                                     = You must select an option to continue
+
+error.work_for_yourself.empty                                   = You must select an option to continue
+error.work_for_yourself.invalid                                 = You must select an option to continue
 
 error.business.sole_trader.empty                                = You must select an option to continue
 error.business.sole_trader.invalid                              = You must select an option to continue
@@ -322,6 +333,8 @@ error.other-income.invalid                                      = You must selec
 
 error.rent-uk-property.empty                                    = Select yes if you rent out a UK property
 error.rent-uk-property.invalid                                  = Select yes if you rent out a UK property
+error.rent-uk-property.only-source-empty                        = Select yes if this is your only source of self-employed income
+error.rent-uk-property.only-source-invalid                      = Select yes if this is your only source of self-employed income
 
 error.survey-feedback.maxLength                                 = You can''t enter more than 1200 characters for your feedback
 

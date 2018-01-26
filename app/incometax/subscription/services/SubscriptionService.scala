@@ -19,9 +19,11 @@ package incometax.subscription.services
 import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
+import core.config.AppConfig
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.forms.MatchTaxYearForm.option_yes
 import incometax.business.models.MatchTaxYearModel
+import incometax.incomesource.models.NewIncomeSourceModel
 import incometax.subscription.connectors.SubscriptionConnector
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
@@ -33,11 +35,16 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
 @Singleton
-class SubscriptionService @Inject()(logging: Logging,
+class SubscriptionService @Inject()(applicationConfig: AppConfig,
+                                    logging: Logging,
                                     subscriptionConnector: SubscriptionConnector) {
 
   private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
-    val incomeSource = IncomeSourceType(summaryData.incomeSource.get.source)
+    val incomeSource =
+      if (applicationConfig.newIncomeSourceFlowEnabled && arn.isEmpty)
+        NewIncomeSourceModel(summaryData.rentUkProperty.get, summaryData.workForYourself).getIncomeSourceType.right.get
+      else
+        IncomeSourceType(summaryData.incomeSource.get.source)
     val (accountingPeriodStart, accountingPeriodEnd) =
       if (summaryData.matchTaxYear exists (_.matchTaxYear == option_yes)) {
         (Some(getCurrentTaxYearStartDate), Some(getCurrentTaxYearEndDate))

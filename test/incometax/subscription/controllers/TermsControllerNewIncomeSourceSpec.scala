@@ -30,7 +30,7 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class TermsControllerSpec extends ControllerBaseSpec
+class TermsControllerNewIncomeSourceSpec extends ControllerBaseSpec
   with MockKeystoreService
   with FeatureSwitching {
 
@@ -49,7 +49,7 @@ class TermsControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
+    enable(NewIncomeSourceFlowFeature)
   }
 
   override def afterEach(): Unit = {
@@ -67,7 +67,8 @@ class TermsControllerSpec extends ControllerBaseSpec
       "return OK with the tax year from the accounting period date" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            incomeSource = testIncomeSourceBusiness,
+            rentUkProperty = testNewIncomeSourceBusiness.rentUkProperty,
+            workForYourself = testNewIncomeSourceBusiness.workForYourself.get,
             matchTaxYear = testMatchTaxYearNo,
             accountingPeriodDate = testAccountingPeriod(),
             otherIncome = testOtherIncomeNo
@@ -89,7 +90,8 @@ class TermsControllerSpec extends ControllerBaseSpec
       "return OK with the current tax year" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            incomeSource = testIncomeSourceBusiness,
+            rentUkProperty = testNewIncomeSourceBusiness.rentUkProperty,
+            workForYourself = testNewIncomeSourceBusiness.workForYourself.get,
             matchTaxYear = testMatchTaxYearYes,
             accountingPeriodDate = testAccountingPeriod(),
             otherIncome = testOtherIncomeNo
@@ -108,11 +110,34 @@ class TermsControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "The user selected property" should {
+    "The user selected property with 1 page" should {
       "return OK with the current tax year" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            incomeSource = testIncomeSourceProperty,
+            rentUkProperty = testNewIncomeSourceProperty_1page.rentUkProperty,
+            workForYourself = testNewIncomeSourceProperty_1page.workForYourself,
+            otherIncome = testOtherIncomeNo
+          )
+        )
+
+        status(result) must be(Status.OK)
+
+        val expectedPage = incometax.subscription.views.html.terms.apply(
+          incometax.subscription.controllers.routes.TermsController.submit(),
+          AccountingPeriodUtil.getCurrentTaxEndYear,
+          incometax.incomesource.controllers.routes.OtherIncomeController.show().url
+        )
+
+        contentAsString(result) mustBe expectedPage.body
+      }
+    }
+
+    "The user selected property with 2 pages" should {
+      "return OK with the current tax year" in {
+        setupMockKeystore(
+          fetchAll = testCacheMap(
+            rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
+            workForYourself = testNewIncomeSourceProperty_2page.workForYourself.get,
             otherIncome = testOtherIncomeNo
           )
         )
@@ -133,7 +158,8 @@ class TermsControllerSpec extends ControllerBaseSpec
       "return OK with the current tax year" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            incomeSource = testIncomeSourceBusiness,
+            rentUkProperty = testNewIncomeSourceBusiness.rentUkProperty,
+            workForYourself = testNewIncomeSourceBusiness.workForYourself.get,
             matchTaxYear = testMatchTaxYearNo,
             otherIncome = testOtherIncomeNo
           )

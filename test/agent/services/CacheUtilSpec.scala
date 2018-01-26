@@ -49,6 +49,8 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceBoth,
+          None, // rent uk property individual only
+          None, // work for yourself individual only
           testOtherIncomeNo,
           None, // match tax year
           testAccountingPeriodPriorCurrent,
@@ -76,7 +78,7 @@ class CacheUtilSpec extends UnitTestTrait {
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceProperty,
-          testOtherIncomeNo,
+          otherIncome = testOtherIncomeNo,
           terms = testTerms
         )
 

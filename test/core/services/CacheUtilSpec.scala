@@ -29,6 +29,9 @@ class CacheUtilSpec extends UnitTestTrait {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
       emptyCacheMap.getIncomeSource() shouldBe None
+      emptyCacheMap.getRentUkProperty() shouldBe None
+      emptyCacheMap.getWorkForYourself() shouldBe None
+      emptyCacheMap.getNewIncomeSource() shouldBe None
       emptyCacheMap.getOtherIncome() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
       emptyCacheMap.getBusinessPhoneNumber() shouldBe None
@@ -42,6 +45,9 @@ class CacheUtilSpec extends UnitTestTrait {
 
     "In the respective get calls, return the models if they are in the cachemap" in {
       testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
+      testCacheMap.getRentUkProperty() shouldBe Some(testNewIncomeSourceBoth.rentUkProperty)
+      testCacheMap.getWorkForYourself() shouldBe testNewIncomeSourceBoth.workForYourself
+      testCacheMap.getNewIncomeSource() shouldBe Some(testNewIncomeSourceBoth)
       testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
       testCacheMap.getBusinessPhoneNumber() shouldBe Some(testBusinessPhoneNumber)
@@ -53,7 +59,7 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getTerms() shouldBe Some(testTerms)
     }
 
-    "The getSummary should populate the Summary model correctly" in {
+    "The getSummary(newIncomeSourceFlow = false) should populate the Summary model correctly" in {
       testCacheMap.getSummary() shouldBe
         SummaryModel(
           incomeSource = testIncomeSourceBoth,
@@ -87,13 +93,57 @@ class CacheUtilSpec extends UnitTestTrait {
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         SummaryModel(
           testIncomeSourceProperty,
-          testOtherIncomeNo,
+          otherIncome = testOtherIncomeNo,
           terms = testTerms
         )
 
       emptyCacheMap.getSummary() shouldBe SummaryModel()
     }
-
   }
+
+  "The getSummary(newIncomeSourceFlow = true) should populate the Summary model correctly" in {
+    testCacheMap.getSummary(newIncomeSourceFlow = true) shouldBe
+      SummaryModel(
+        rentUkProperty = testNewIncomeSourceBoth.rentUkProperty,
+        workForYourself= testNewIncomeSourceBoth.workForYourself,
+        otherIncome = testOtherIncomeNo,
+        matchTaxYear = testMatchTaxYearNo,
+        accountingPeriod = testAccountingPeriod,
+        businessName = testBusinessName,
+        businessPhoneNumber = testBusinessPhoneNumber,
+        businessAddress = testAddress,
+        businessStartDate = testBusinessStartDate,
+        accountingMethod = testAccountingMethod,
+        terms = testTerms
+      )
+
+    // for the property only journey, this should only populate the subset of views
+    // relevant to the journey
+    val overPopulatedPropertyCacheMap =
+    testCacheMap(
+      rentUkProperty = testNewIncomeSourceProperty_1page.rentUkProperty,
+      workForYourself= testNewIncomeSourceProperty_1page.workForYourself,
+      otherIncome = testOtherIncomeNo,
+      matchTaxYear = testMatchTaxYearNo,
+      accountingPeriodDate = testAccountingPeriod,
+      businessName = testBusinessName,
+      businessPhoneNumber = testBusinessPhoneNumber,
+      businessAddress = testAddress,
+      businessStartDate = testBusinessStartDate,
+      accountingMethod = testAccountingMethod,
+      terms = testTerms,
+      accountingPeriodPrior = None // no longer used in individual journey
+    )
+    overPopulatedPropertyCacheMap.getSummary(newIncomeSourceFlow = true) shouldBe
+      SummaryModel(
+        rentUkProperty = testNewIncomeSourceProperty_1page.rentUkProperty,
+        workForYourself = testNewIncomeSourceProperty_1page.workForYourself,
+        otherIncome = testOtherIncomeNo,
+        terms = testTerms
+      )
+
+    emptyCacheMap.getSummary() shouldBe SummaryModel()
+  }
+
 }
 

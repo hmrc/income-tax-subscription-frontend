@@ -45,19 +45,18 @@ class UnauthorisedSubscriptionController @Inject()(val baseConfig: BaseControlle
 
   def subscribeUnauthorised: Action[AnyContent] = Authenticated.async { implicit req =>
     implicit user =>
-      keystoreService.fetchAll flatMap {
-        case Some(cache) =>
-          val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> req.uri)
+      keystoreService.fetchAll flatMap { cache =>
+        val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> req.uri)
 
-          subscriptionOrchestrationService.createSubscription(user.nino.get, cache.getSummary())(headerCarrier) flatMap {
-            case Right(SubscriptionSuccess(id)) =>
-              for {
-                _ <- keystoreService.saveSubscriptionId(id)
-                _ <- subscriptionStoreRetrievalService.deleteSubscriptionData(user.nino.get)
-              } yield Redirect(incometax.subscription.controllers.routes.ConfirmationController.show())
-            case Left(failure) =>
-              Future.failed(new InternalServerException(failure.toString))
-          }
+        subscriptionOrchestrationService.createSubscription(user.nino.get, cache.getSummary())(headerCarrier) flatMap {
+          case Right(SubscriptionSuccess(id)) =>
+            for {
+              _ <- keystoreService.saveSubscriptionId(id)
+              _ <- subscriptionStoreRetrievalService.deleteSubscriptionData(user.nino.get)
+            } yield Redirect(incometax.subscription.controllers.routes.ConfirmationController.show())
+          case Left(failure) =>
+            Future.failed(new InternalServerException(failure.toString))
+        }
       }
   }
 

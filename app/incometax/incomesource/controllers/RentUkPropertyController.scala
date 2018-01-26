@@ -18,29 +18,27 @@ package incometax.incomesource.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import cats.implicits._
-import core.auth.AuthPredicate.AuthPredicate
-import core.auth.{IncomeTaxSAUser, SignUpController}
+import core.auth.NewIncomeSourceFlowController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.RentUkPropertyForm
+import incometax.incomesource.forms.RentUkPropertyForm._
 import incometax.incomesource.models.RentUkPropertyModel
+import incometax.incomesource.services.CurrentTimeService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import incometax.incomesource.forms.RentUkPropertyForm._
 
 import scala.concurrent.Future
 
 @Singleton
 class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
-                                       val messagesApi: MessagesApi,
-                                       val keystoreService: KeystoreService,
-                                       val authService: AuthService
-                                      ) extends SignUpController {
-
-  override def defaultSignUpPredicates: AuthPredicate[IncomeTaxSAUser] = subscriptionPredicates |+| newIncomeSourceFlowFeature
+                                         val messagesApi: MessagesApi,
+                                         val keystoreService: KeystoreService,
+                                         val authService: AuthService,
+                                         val currentTimeService: CurrentTimeService
+                                        ) extends NewIncomeSourceFlowController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -64,20 +62,24 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
       rentUkPropertyForm.bindFromRequest.fold(
         formWithErrors =>
           Future.successful(BadRequest(view(
-          rentUkPropertyForm = formWithErrors,
-          isEditMode = isEditMode
-        ))),
+            rentUkPropertyForm = formWithErrors,
+            isEditMode = isEditMode
+          ))),
         data => {
           lazy val linearJourney: Future[Result] =
             keystoreService.saveRentUkProperty(data) flatMap { _ =>
               (data.rentUkProperty, data.onlySourceOfSelfEmployedIncome) match {
-                case (RentUkPropertyForm.option_no, _) => Future.successful(NotImplemented)
-                case (RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no)) => Future.successful(NotImplemented)
-                case (RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_yes)) => Future.successful(Redirect(routes.OtherIncomeController.show()))
+                case (RentUkPropertyForm.option_no, _) =>
+                  Future.successful(Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show()))
+                case (RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no)) =>
+                  Future.successful(Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show()))
+                case (RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_yes)) =>
+                  if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
+                    Future.successful(Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show()))
+                  else
+                    Future.successful(Redirect(routes.OtherIncomeController.show()))
               }
             }
-          linearJourney
-
 
           if (!isEditMode)
             linearJourney

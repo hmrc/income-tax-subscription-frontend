@@ -19,7 +19,7 @@ package incometax.incomesource.controllers
 import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
-import core.auth.{NewIncomeSourceFlowController, SignUpController}
+import core.auth.NewIncomeSourceFlowController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import play.api.i18n.MessagesApi
@@ -29,19 +29,19 @@ import scala.concurrent.Future
 
 @Singleton
 class CannotSignUpController @Inject()(val baseConfig: BaseControllerConfig,
-                                           val messagesApi: MessagesApi,
-                                           val keystoreService: KeystoreService,
-                                           val logging: Logging,
-                                           val authService: AuthService
-                                          ) extends NewIncomeSourceFlowController {
+                                       val messagesApi: MessagesApi,
+                                       val keystoreService: KeystoreService,
+                                       val logging: Logging,
+                                       val authService: AuthService
+                                      ) extends NewIncomeSourceFlowController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-    Future.successful(Ok(incometax.incomesource.views.html.cannot_sign_up(
-      postAction = incometax.incomesource.controllers.routes.CannotSignUpController.show(),
-      backUrl
-    )))
+      Future.successful(Ok(incometax.incomesource.views.html.cannot_sign_up(
+        postAction = incometax.incomesource.controllers.routes.CannotSignUpController.show(),
+        backUrl
+      )))
   }
 
-  lazy val backUrl: String = "" //TODO:incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+  lazy val backUrl: String = incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
 }

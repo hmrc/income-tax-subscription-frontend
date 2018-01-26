@@ -18,23 +18,9 @@ package incometax.incomesource.models
 
 import play.api.libs.json.Json
 
-case class RentUkPropertyModel(rentUkProperty: String, onlySourceOfSelfEmployedIncome: Option[String]) {
+case class WorkForYourselfModel(doYouWorkForYourself: String)
 
-  import NewIncomeSourceModel._
-
-  def needSecondPage: Boolean = this match {
-    case RentUkPropertyModel(YES, Some(YES)) => false
-    case RentUkPropertyModel(YES, Some(NO)) => true
-    case RentUkPropertyModel(NO, _) => true
-  }
-}
-
-object RentUkPropertyModel{
-  implicit val format = Json.format[RentUkPropertyModel]
-
-  implicit class RentUkPropertyModelUtil(rentUkPropertyModel: Option[RentUkPropertyModel]) {
-    def needSecondPage: Boolean = rentUkPropertyModel.fold(false)(_.needSecondPage)
-  }
-
+object WorkForYourselfModel {
+  implicit val format = Json.format[WorkForYourselfModel]
 }
 
