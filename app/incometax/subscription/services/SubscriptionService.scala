@@ -41,7 +41,7 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
 
   private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
     val incomeSource =
-      if (applicationConfig.newIncomeSourceFlowEnabled)
+      if (applicationConfig.newIncomeSourceFlowEnabled && arn.isEmpty)
         NewIncomeSourceModel(summaryData.rentUkProperty.get, summaryData.workForYourself).getIncomeSourceType.right.get
       else
         IncomeSourceType(summaryData.incomeSource.get.source)
