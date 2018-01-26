@@ -79,7 +79,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
             case Some(SubscriptionSuccess(mtditId)) =>
               claimSubscription(mtditId)
           }
-        case None => goToResolveNino
+        case None => Future.successful(goToUserMatching withJourneyState UserMatching)
       }
   }
 
@@ -91,7 +91,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
   lazy val goToPreferences = Redirect(digitalcontact.controllers.routes.PreferencesController.checkPreferences())
 
-  lazy val goToResolveNino = Future.successful(Redirect(usermatching.controllers.routes.NinoResolverController.resolveNinoAction()))
+  lazy val goToUserMatching = Redirect(usermatching.controllers.routes.UserDetailsController.show())
 
   private def resolveUtr(user: IncomeTaxSAUser, nino: String)(implicit request: Request[AnyContent]): Future[Option[String]] =
     user.utr.fold(citizenDetailsService.lookupUtr(nino))(Future.successful(_))

@@ -66,7 +66,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
         Future.successful(
           request.fetchUserDetails match {
             case Some(userDetails) => Ok(view(userDetails))
-            case _ => Redirect(usermatching.controllers.routes.UserDetailsLockoutController.show())
+            case _ => Redirect(usermatching.controllers.routes.UserDetailsController.show())
           }
         )
       }

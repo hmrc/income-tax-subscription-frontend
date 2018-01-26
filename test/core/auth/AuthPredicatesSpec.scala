@@ -28,6 +28,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolment, Enrolments}
 import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import JourneyState._
 
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
 
@@ -53,6 +54,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   val blankUser = testUser(None, confidenceLevel = ConfidenceLevel.L0)
 
   val userWithIndividualAffinity = testUser(Some(AffinityGroup.Individual))
+  val userWithAgentAffinity = testUser(Some(AffinityGroup.Agent))
   val userWithOrganisationAffinity = testUser(Some(AffinityGroup.Organisation))
 
   val defaultPredicateUser = testUser(Some(AffinityGroup.Individual), ninoEnrolment)
@@ -74,15 +76,17 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   "ninoPredicate" should {
     "return an AuthPredicateSuccess where a nino enrolment exists" in {
-      ninoPredicate(FakeRequest())(userWithNinoEnrolment).right.value mustBe AuthPredicateSuccess
+      AuthPredicates.ninoPredicate(FakeRequest())(userWithNinoEnrolment).right.value mustBe AuthPredicateSuccess
     }
 
-    "redirect to resolve nino if nino enrolment does not exist" in {
-      await(ninoPredicate(FakeRequest())(blankUser).left.value) mustBe resolveNino
+    "redirect to user matching if nino enrolment does not exist" in {
+      implicit val request = FakeRequest()
+      val res = await(AuthPredicates.ninoPredicate(request)(blankUser).left.value)
+      res mustBe (AuthPredicates.userMatching withJourneyState UserMatching)
     }
 
     "return an InternalServerException where a nino enrolment does not exists but a utr enrolment does" in {
-      intercept[InternalServerException](await(ninoPredicate(FakeRequest())(userWithUtrButNoNino).left.value))
+      intercept[InternalServerException](await(AuthPredicates.ninoPredicate(FakeRequest())(userWithUtrButNoNino).left.value))
     }
   }
 
@@ -126,21 +130,15 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     "return an AuthPredicateSuccess where the affinity group is individual" in {
       affinityPredicate(FakeRequest())(userWithIndividualAffinity).right.value mustBe AuthPredicateSuccess
     }
-    "return the wrong-affinity page where the affinity group is organisation" in {
-      await(affinityPredicate(FakeRequest())(userWithOrganisationAffinity).left.value) mustBe wrongAffinity
+    "return the wrong-affinity page where the affinity group is agent" in {
+      await(affinityPredicate(FakeRequest())(userWithAgentAffinity).left.value) mustBe wrongAffinity
     }
     "return the wrong-affinity page where there is no affinity group" in {
       await(affinityPredicate(FakeRequest())(blankUser).left.value) mustBe wrongAffinity
     }
 
-    "return an AuthPredicateSuccess where the affinity group is organisation and the user matching feature is enabled" in {
-      val predicates = new AuthPredicates {
-        override val applicationConfig: AppConfig = new MockConfig {
-          override val userMatchingFeature = true
-        }
-      }
-
-      predicates.affinityPredicate(FakeRequest())(userWithOrganisationAffinity).right.value mustBe AuthPredicateSuccess
+    "return an AuthPredicateSuccess where the affinity group is organisation" in {
+     affinityPredicate(FakeRequest())(userWithOrganisationAffinity).right.value mustBe AuthPredicateSuccess
     }
   }
 
