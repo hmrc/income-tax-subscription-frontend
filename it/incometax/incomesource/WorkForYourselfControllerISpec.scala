@@ -22,8 +22,7 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import incometax.incomesource.forms.WorkForYourselfForm
-import incometax.incomesource.models.{RentUkPropertyModel, WorkForYourselfModel}
+import incometax.incomesource.models.RentUkPropertyModel
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -107,7 +106,7 @@ class WorkForYourselfControllerISpec extends ComponentSpecBase {
     "not in edit mode" when {
       "the user answered Yes and No on the rent uk property page" when {
         "select the Yes radio button on the work for yourself page" in {
-          val userInput = WorkForYourselfModel(WorkForYourselfForm.option_yes)
+          val userInput = testWorkForYourself_yes
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -124,7 +123,7 @@ class WorkForYourselfControllerISpec extends ComponentSpecBase {
         }
 
         "select the No radio button on the work for yourself page" in {
-          val userInput = WorkForYourselfModel(WorkForYourselfForm.option_no)
+          val userInput = testWorkForYourself_no
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -140,11 +139,13 @@ class WorkForYourselfControllerISpec extends ComponentSpecBase {
             redirectURI(otherIncomeURI)
           )
         }
+
       }
 
       "the user answered No on the rent uk property page" when {
+
         "select the Yes radio button on the work for yourself page" in {
-          val userInput = WorkForYourselfModel(WorkForYourselfForm.option_yes)
+          val userInput = testWorkForYourself_yes
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -161,7 +162,7 @@ class WorkForYourselfControllerISpec extends ComponentSpecBase {
         }
 
         "select the No radio button on the work for yourself page" in {
-          val userInput = WorkForYourselfModel(WorkForYourselfForm.option_no)
+          val userInput = testWorkForYourself_no
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -177,12 +178,14 @@ class WorkForYourselfControllerISpec extends ComponentSpecBase {
             redirectURI(cannotSignUpURI)
           )
         }
+
       }
+
     }
 
     "when in edit mode" when {
       "user does not change their answer be redirected back to check your answers page" in {
-        val userInput = WorkForYourselfModel(WorkForYourselfForm.option_yes)
+        val userInput = testWorkForYourself_yes
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -204,6 +207,100 @@ class WorkForYourselfControllerISpec extends ComponentSpecBase {
         )
       }
 
+      "user with Yes No on the uk property page now change their answer from yes to no will be redirected to other income" in {
+        val userInput = testWorkForYourself_yes
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            rentUkProperty = Some(testRentUkProperty_property_and_other),
+            workForYourself = Some(userInput)
+          )
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.WorkForYourself, userInput)
+
+        When("POST /work-for-yourself is called")
+        val res = IncomeTaxSubscriptionFrontend.submitWorkForYourself(inEditMode = true, Some(testWorkForYourself_no))
+
+        Then("Should return a SEE_OTHER with a redirect location of other income")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(otherIncomeURI)
+        )
+      }
+
+      "user with Yes No on the uk property page now change their answer from no to yes will be redirected to other income" in {
+        val userInput = testWorkForYourself_no
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            rentUkProperty = Some(testRentUkProperty_property_and_other),
+            workForYourself = Some(userInput)
+          )
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.WorkForYourself, userInput)
+
+        When("POST /work-for-yourself is called")
+        val res = IncomeTaxSubscriptionFrontend.submitWorkForYourself(inEditMode = true, Some(testWorkForYourself_yes))
+
+        Then("Should return a SEE_OTHER with a redirect location of other income")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(otherIncomeURI)
+        )
+      }
+
+      "user with No on the uk property page now change their answer from yes to no will be redirected to other income" in {
+        val userInput = testWorkForYourself_yes
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            rentUkProperty = Some(testRentUkProperty_no_property),
+            workForYourself = Some(userInput)
+          )
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.WorkForYourself, userInput)
+
+        When("POST /work-for-yourself is called")
+        val res = IncomeTaxSubscriptionFrontend.submitWorkForYourself(inEditMode = true, Some(testWorkForYourself_no))
+
+        Then("Should return a SEE_OTHER with a redirect location of cannot sign up")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(cannotSignUpURI)
+        )
+      }
+
+      "user with No on the uk property page now change their answer from no to yes will be redirected to other income" in {
+        val userInput = testWorkForYourself_no
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            rentUkProperty = Some(testRentUkProperty_no_property),
+            workForYourself = Some(userInput)
+          )
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.WorkForYourself, userInput)
+
+        When("POST /work-for-yourself is called")
+        val res = IncomeTaxSubscriptionFrontend.submitWorkForYourself(inEditMode = true, Some(testWorkForYourself_yes))
+
+        Then("Should return a SEE_OTHER with a redirect location of other income")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(otherIncomeURI)
+        )
+      }
+
     }
+
   }
+
 }

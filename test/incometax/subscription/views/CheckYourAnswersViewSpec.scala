@@ -257,8 +257,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val expectedAnswer = testRentUkProperty.onlySourceOfSelfEmployedIncome.get
       val expectedEditLink = incometax.incomesource.controllers.routes.RentUkPropertyController.show(editMode = true).url
 
-      val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_no_property)
-      )
+      val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_no_property))
+
       doc.getElementById(sectionId) mustBe null
     }
 
@@ -275,6 +275,15 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedEditLink = expectedEditLink
       )
     }
+
+    "do not display work for yourself if rent uk property is answered with YES YES" in {
+      val sectionId = WorkForYourselfId
+
+      val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_property_only))
+
+      doc.getElementById(sectionId) mustBe null
+    }
+
 
     "display the correct info for other income" in {
       val sectionId = OtherIncomeId
