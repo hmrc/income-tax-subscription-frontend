@@ -21,6 +21,7 @@ import javax.inject.Inject
 import core.audit.Logging
 import core.auth.TaxYearDeferralController
 import core.config.BaseControllerConfig
+import core.models.DateModel
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
@@ -50,7 +51,9 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
         } yield
           Ok(incometax.incomesource.views.html.cannot_report_yet(
             postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-            backUrl(newIncomeSource, matchTaxYear, isEditMode)
+            backUrl(newIncomeSource, matchTaxYear, isEditMode),
+            //TODO update date model
+            dateModel = DateModel("6","4","2018")
           ))
       }
       else {
@@ -61,7 +64,9 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
         } yield
           Ok(incometax.incomesource.views.html.cannot_report_yet(
             postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-            backUrl(incomeSource, matchTaxYear, isEditMode)
+            backUrl(incomeSource, matchTaxYear, isEditMode),
+            //TODO update date model
+            dateModel = DateModel("6","4","2018")
           ))
       }
   }
