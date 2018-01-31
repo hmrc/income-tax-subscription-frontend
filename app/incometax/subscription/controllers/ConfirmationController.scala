@@ -57,8 +57,8 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
               throw new InternalServerException("Confirmation Controller, unauthorised agent flow call to show confirmation with no income source")
           }
         } else {
-          keystoreService.fetchAll() map (_.getNewIncomeSource().map(_.getIncomeSourceType)) map {
-            case Some(Right(incomeSource)) if incomeSource != Other =>
+          keystoreService.fetchAll() map (_.getIncomeSourceType()) map {
+            case Some(incomeSource) if incomeSource != Other =>
               Ok(confirmation(journeyDuration, incomeSource.source))
             case _ =>
               throw new InternalServerException("Confirmation Controller, individual flow call to show confirmation with invalid income source")

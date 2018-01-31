@@ -34,7 +34,7 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import usermatching.models.{UserDetailsModel, UserMatchSuccessResponseModel}
-
+import core.models.YesNoModel._
 
 object TestModels extends Implicits {
 
@@ -71,8 +71,8 @@ object TestModels extends Implicits {
 
   lazy val testCacheMap: CacheMap =
     testCacheMap(incomeSource = testIncomeSourceBoth,
-      rentUkProperty = testNewIncomeSourceBoth.rentUkProperty,
-      workForYourself = testNewIncomeSourceBoth.workForYourself,
+      rentUkProperty = testRentUkProperty_property_and_other,
+      workForYourself = testWorkForYourself_yes,
       otherIncome = testOtherIncomeNo,
       matchTaxYear = testMatchTaxYearNo,
       accountingPeriodPrior = testAccountingPeriodPriorCurrent,
@@ -86,8 +86,8 @@ object TestModels extends Implicits {
 
   def testCacheMapCustom(
                           incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
-                          rentUkProperty: Option[RentUkPropertyModel] = testNewIncomeSourceBoth.rentUkProperty,
-                          workForYourself: Option[WorkForYourselfModel] = testNewIncomeSourceBoth.workForYourself,
+                          rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty_property_and_other,
+                          workForYourself: Option[WorkForYourselfModel] = testWorkForYourself_yes,
                           otherIncome: Option[OtherIncomeModel] = testOtherIncomeNo,
                           matchTaxYear: Option[MatchTaxYearModel] = testMatchTaxYearNo,
                           accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
@@ -149,21 +149,12 @@ object TestModels extends Implicits {
 
   lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
 
-  lazy val testRentUkProperty_no_property = RentUkPropertyModel("No", None)
-  lazy val testRentUkProperty_property_only = RentUkPropertyModel("Yes", "Yes")
-  lazy val testRentUkProperty_property_and_other = RentUkPropertyModel("Yes", "No")
+  lazy val testRentUkProperty_no_property = RentUkPropertyModel(NO, None)
+  lazy val testRentUkProperty_property_only = RentUkPropertyModel(YES, YES)
+  lazy val testRentUkProperty_property_and_other = RentUkPropertyModel(YES, NO)
 
-  lazy val testWorkForYourself_yes = WorkForYourselfModel("Yes")
-  lazy val testWorkForYourself_no = WorkForYourselfModel("No")
-
-  lazy val testNewIncomeSourceBusiness = NewIncomeSourceModel(testRentUkProperty_no_property, testWorkForYourself_yes)
-  lazy val testNewIncomeSourceProperty_1page = NewIncomeSourceModel(testRentUkProperty_property_only, None)
-  lazy val testNewIncomeSourceProperty_2page = NewIncomeSourceModel(testRentUkProperty_property_and_other, testWorkForYourself_no)
-  lazy val testNewIncomeSourceBoth = NewIncomeSourceModel(testRentUkProperty_property_and_other, testWorkForYourself_yes)
-  lazy val testNewIncomeSourceNotQualified = NewIncomeSourceModel(testRentUkProperty_no_property, testWorkForYourself_no)
-
-  lazy val testNewIncomeSourceIncomplete1 = NewIncomeSourceModel(testRentUkProperty_no_property, None)
-  lazy val testNewIncomeSourceIncomplete2 = NewIncomeSourceModel(testRentUkProperty_property_and_other, None)
+  lazy val testWorkForYourself_yes = WorkForYourselfModel(YES)
+  lazy val testWorkForYourself_no = WorkForYourselfModel(NO)
 
   lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
 
@@ -189,8 +180,8 @@ object TestModels extends Implicits {
   )
 
   lazy val testSummaryNewIncomeSourceData = SummaryModel(
-    rentUkProperty = testNewIncomeSourceBoth.rentUkProperty,
-    workForYourself = testNewIncomeSourceBoth.workForYourself,
+    rentUkProperty = testRentUkProperty_property_and_other,
+    workForYourself = testWorkForYourself_yes,
     otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
     matchTaxYear = testMatchTaxYearNo,
     accountingPeriod = testAccountingPeriod,

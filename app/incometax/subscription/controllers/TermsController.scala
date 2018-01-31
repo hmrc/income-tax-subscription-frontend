@@ -25,7 +25,7 @@ import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
 import incometax.incomesource.forms.IncomeSourceForm.option_property
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.IncomeSourceModel
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import incometax.util.AccountingPeriodUtil._
@@ -52,7 +52,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       if (applicationConfig.newIncomeSourceFlowEnabled) {
         for {
           cacheMap <- keystoreService.fetchAll()
-          incomeSource = cacheMap.getNewIncomeSource().get.getIncomeSourceType.right.get
+          incomeSource = cacheMap.getIncomeSourceType().get
           backUrl = getBackUrl(editMode, incomeSource, cacheMap.getOtherIncome().get.choice, cacheMap.getMatchTaxYear().fold(false)(_.matchTaxYear == MatchTaxYearForm.option_yes))
         } yield
           (incomeSource, cacheMap.getMatchTaxYear(), cacheMap.getAccountingPeriodDate()) match {

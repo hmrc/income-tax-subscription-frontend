@@ -20,8 +20,8 @@ import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.{TestConstants, TestModels}
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.{IncomeSourceModel, NewIncomeSourceModel, OtherIncomeModel}
+import incometax.incomesource.forms.OtherIncomeForm
+import incometax.incomesource.models.OtherIncomeModel
 import incometax.subscription.models._
 import incometax.subscription.services.mocks.TestSubscriptionService
 import incometax.util.AccountingPeriodUtil
@@ -55,7 +55,7 @@ class SubscriptionServiceNewIncomeSourceSpec extends TestSubscriptionService
       request.accountingPeriodStart.get mustBe testSummaryNewIncomeSourceData.accountingPeriod.get.startDate
       request.accountingPeriodEnd.get mustBe testSummaryNewIncomeSourceData.accountingPeriod.get.endDate
       request.cashOrAccruals.get mustBe testSummaryNewIncomeSourceData.accountingMethod.get.accountingMethod
-      request.incomeSource mustBe NewIncomeSourceModel(testSummaryNewIncomeSourceData.rentUkProperty.get, testSummaryNewIncomeSourceData.workForYourself).getIncomeSourceType.right.get
+      request.incomeSource mustBe Both
       request.isAgent mustBe false
       request.tradingName.get mustBe testSummaryNewIncomeSourceData.businessName.get.businessName
     }
@@ -69,7 +69,7 @@ class SubscriptionServiceNewIncomeSourceSpec extends TestSubscriptionService
       request.accountingPeriodEnd.get must not be testSummaryNewIncomeSourceData.accountingPeriod.get.endDate
       request.accountingPeriodEnd.get mustBe AccountingPeriodUtil.getCurrentTaxYearEndDate
       request.cashOrAccruals.get mustBe testSummaryNewIncomeSourceData.accountingMethod.get.accountingMethod
-      request.incomeSource mustBe NewIncomeSourceModel(testSummaryNewIncomeSourceData.rentUkProperty.get, testSummaryNewIncomeSourceData.workForYourself).getIncomeSourceType.right.get
+      request.incomeSource mustBe Both
       request.isAgent mustBe false
       request.tradingName.get mustBe testSummaryNewIncomeSourceData.businessName.get.businessName
     }
@@ -77,8 +77,8 @@ class SubscriptionServiceNewIncomeSourceSpec extends TestSubscriptionService
     "property requests should copy None into start and end dates" in {
       val nino = TestModels.newNino
       val testSummaryNewIncomeSourceData = SummaryModel(
-        rentUkProperty = testNewIncomeSourceProperty_1page.rentUkProperty,
-        workForYourself = testNewIncomeSourceProperty_1page.workForYourself,
+        rentUkProperty = testRentUkProperty_property_only,
+        workForYourself = None,
         otherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
       )
       val request = TestSubscriptionService.buildRequest(nino, testSummaryNewIncomeSourceData, None)
@@ -86,7 +86,7 @@ class SubscriptionServiceNewIncomeSourceSpec extends TestSubscriptionService
       request.accountingPeriodStart mustBe None
       request.accountingPeriodEnd mustBe None
       request.cashOrAccruals mustBe None
-      request.incomeSource mustBe NewIncomeSourceModel(testSummaryNewIncomeSourceData.rentUkProperty.get, testSummaryNewIncomeSourceData.workForYourself).getIncomeSourceType.right.get
+      request.incomeSource mustBe Property
       request.isAgent mustBe false
       request.tradingName mustBe None
     }

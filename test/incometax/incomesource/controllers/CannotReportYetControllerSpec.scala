@@ -23,7 +23,7 @@ import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
 import core.utils.TestModels._
 import incometax.incomesource.forms.IncomeSourceForm
-import incometax.incomesource.models.NewIncomeSourceModel
+import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -196,12 +196,12 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
   }
 
   "backUrl" when {
-    def evalBackUrl(incomeSource: NewIncomeSourceModel, matchTaxYear: Option[Boolean], isEditMode: Boolean) =
-      TestCannotReportYetController.backUrl(incomeSource, matchTaxYear, isEditMode)
+    def evalBackUrl(incomeSourceType: IncomeSourceType, matchTaxYear: Option[Boolean], isEditMode: Boolean) =
+      TestCannotReportYetController.backUrl(incomeSourceType, matchTaxYear, isEditMode)
 
     "income source is property" when {
       "return work for yourself" in {
-        val result = evalBackUrl(testNewIncomeSourceProperty_1page, None, isEditMode = false)
+        val result = evalBackUrl(Property, None, isEditMode = false)
         result mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
       }
     }
@@ -209,21 +209,21 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
     "income source is business" when {
       "not in edit mode and " when {
         "match tax year is answered no, return other income" in {
-          val result = evalBackUrl(testNewIncomeSourceBusiness, Some(false), isEditMode = false)
+          val result = evalBackUrl(Business, Some(false), isEditMode = false)
           result mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
         }
         "match tax year is answered yes, return other income error" in {
-          val result = evalBackUrl(testNewIncomeSourceBusiness, Some(true), isEditMode = false)
+          val result = evalBackUrl(Business, Some(true), isEditMode = false)
           result mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
         }
       }
       "in edit mode and " when {
         "match tax year is answered no, return other income" in {
-          val result = evalBackUrl(testNewIncomeSourceBusiness, Some(false), isEditMode = true)
+          val result = evalBackUrl(Business, Some(false), isEditMode = true)
           result mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
         }
         "match tax year is answered yes, return other income error" in {
-          val result = evalBackUrl(testNewIncomeSourceBusiness, Some(true), isEditMode = true)
+          val result = evalBackUrl(Business, Some(true), isEditMode = true)
           result mustBe incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
         }
       }
@@ -232,21 +232,21 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
     "income source is both" when {
       "not in edit mode and " when {
         "match tax year is answered no, return other income" in {
-          val result = evalBackUrl(testNewIncomeSourceBoth, Some(false), isEditMode = false)
+          val result = evalBackUrl(Both, Some(false), isEditMode = false)
           result mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
         }
         "match tax year is answered yes, return other income error" in {
-          val result = evalBackUrl(testNewIncomeSourceBoth, Some(true), isEditMode = false)
+          val result = evalBackUrl(Both, Some(true), isEditMode = false)
           result mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
         }
       }
       "in edit mode and " when {
         "match tax year is answered no, return other income" in {
-          val result = evalBackUrl(testNewIncomeSourceBoth, Some(false), isEditMode = true)
+          val result = evalBackUrl(Both, Some(false), isEditMode = true)
           result mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
         }
         "match tax year is answered yes, return other income error" in {
-          val result = evalBackUrl(testNewIncomeSourceBoth, Some(true), isEditMode = true)
+          val result = evalBackUrl(Both, Some(true), isEditMode = true)
           result mustBe incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
         }
       }

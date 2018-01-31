@@ -63,12 +63,12 @@ class TermsControllerNewIncomeSourceSpec extends ControllerBaseSpec
 
     def result = await(TestTermsController.show(editMode = false)(subscriptionRequest))
 
-    "The user selected business, and did not match the tax year" should {
+    "The user selected no property income but has sole trader income, and did not match the tax year" should {
       "return OK with the tax year from the accounting period date" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            rentUkProperty = testNewIncomeSourceBusiness.rentUkProperty,
-            workForYourself = testNewIncomeSourceBusiness.workForYourself.get,
+            rentUkProperty = testRentUkProperty_no_property,
+            workForYourself = testWorkForYourself_yes,
             matchTaxYear = testMatchTaxYearNo,
             accountingPeriodDate = testAccountingPeriod(),
             otherIncome = testOtherIncomeNo
@@ -86,12 +86,12 @@ class TermsControllerNewIncomeSourceSpec extends ControllerBaseSpec
         contentAsString(result) mustBe expectedPage.body
       }
     }
-    "The user selected business, and matched the tax year" should {
+    "The user selected  no property income but has sole trader income, and matched the tax year" should {
       "return OK with the current tax year" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            rentUkProperty = testNewIncomeSourceBusiness.rentUkProperty,
-            workForYourself = testNewIncomeSourceBusiness.workForYourself.get,
+            rentUkProperty = testRentUkProperty_no_property,
+            workForYourself = testWorkForYourself_yes,
             matchTaxYear = testMatchTaxYearYes,
             accountingPeriodDate = testAccountingPeriod(),
             otherIncome = testOtherIncomeNo
@@ -110,12 +110,12 @@ class TermsControllerNewIncomeSourceSpec extends ControllerBaseSpec
       }
     }
 
-    "The user selected property with 1 page" should {
+    "The user selected only property income" should {
       "return OK with the current tax year" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            rentUkProperty = testNewIncomeSourceProperty_1page.rentUkProperty,
-            workForYourself = testNewIncomeSourceProperty_1page.workForYourself,
+            rentUkProperty = testRentUkProperty_property_only,
+            workForYourself = None,
             otherIncome = testOtherIncomeNo
           )
         )
@@ -132,12 +132,12 @@ class TermsControllerNewIncomeSourceSpec extends ControllerBaseSpec
       }
     }
 
-    "The user selected property with 2 pages" should {
+    "The user selected property and other income, but no sole trader income" should {
       "return OK with the current tax year" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
-            workForYourself = testNewIncomeSourceProperty_2page.workForYourself.get,
+            rentUkProperty = testRentUkProperty_property_and_other,
+            workForYourself = testWorkForYourself_no,
             otherIncome = testOtherIncomeNo
           )
         )
@@ -155,11 +155,11 @@ class TermsControllerNewIncomeSourceSpec extends ControllerBaseSpec
     }
 
     "The user selected business, and did not match the tax year but did not provide an accounting period" should {
-      "return OK with the current tax year" in {
+      "return See other to accounting period dates" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            rentUkProperty = testNewIncomeSourceBusiness.rentUkProperty,
-            workForYourself = testNewIncomeSourceBusiness.workForYourself.get,
+            rentUkProperty = testRentUkProperty_no_property,
+            workForYourself = testWorkForYourself_yes,
             matchTaxYear = testMatchTaxYearNo,
             otherIncome = testOtherIncomeNo
           )

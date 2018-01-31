@@ -67,12 +67,12 @@ class WorkForYourselfControllerISpec extends ComponentSpecBase {
       "show the income source page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        setRentUkPropertyInKeystore(Some(testNewIncomeSourceProperty_2page.rentUkProperty))
+        setRentUkPropertyInKeystore(Some(testRentUkProperty_property_and_other))
 
         When("GET /income is called")
         val res = IncomeTaxSubscriptionFrontend.workForYourself()
 
-        Then("Should return a OK with the income source page")
+        Then("Should return a OK with the work for yourself page")
         res should have(
           httpStatus(OK),
           pageTitle(Messages("work_for_yourself.title")),

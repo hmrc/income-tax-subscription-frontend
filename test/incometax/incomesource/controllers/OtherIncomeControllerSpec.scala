@@ -25,6 +25,7 @@ import core.utils.TestModels._
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.OtherIncomeModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
+import incometax.subscription.models.Both
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -379,7 +380,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
     s"point to ${
       incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     } on other income page" in {
-      TestOtherIncomeController.backUrl(TestModels.testNewIncomeSourceBoth, isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+      TestOtherIncomeController.backUrl(Both, isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

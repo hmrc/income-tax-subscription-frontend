@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 
 case class RentUkPropertyModel(rentUkProperty: String, onlySourceOfSelfEmployedIncome: Option[String]) {
 
-  import NewIncomeSourceModel._
+  import core.models.YesNoModel._
 
   def needSecondPage: Boolean = this match {
     case RentUkPropertyModel(YES, Some(YES)) => false

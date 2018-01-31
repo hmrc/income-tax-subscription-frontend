@@ -78,8 +78,8 @@ class OtherIncomeErrorControllerNewIncomeSourceSpec extends ControllerBaseSpec
     s"redirect to '${incometax.business.controllers.routes.BusinessNameController.show().url}' on the business journey" in {
 
       setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
-        rentUkProperty = TestModels.testNewIncomeSourceBusiness.rentUkProperty,
-        workForYourself = TestModels.testNewIncomeSourceBusiness.workForYourself.get
+        rentUkProperty = TestModels.testRentUkProperty_no_property,
+        workForYourself = TestModels.testWorkForYourself_yes
       ))
 
       val goodRequest = callSubmit
@@ -94,8 +94,8 @@ class OtherIncomeErrorControllerNewIncomeSourceSpec extends ControllerBaseSpec
     s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property 1 page journey" in {
 
       setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
-        rentUkProperty = TestModels.testNewIncomeSourceProperty_1page.rentUkProperty,
-        workForYourself = TestModels.testNewIncomeSourceProperty_1page.workForYourself
+        rentUkProperty = TestModels.testRentUkProperty_property_only,
+        workForYourself = None
       ))
 
       val goodRequest = callSubmit
@@ -110,8 +110,8 @@ class OtherIncomeErrorControllerNewIncomeSourceSpec extends ControllerBaseSpec
     s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property 2 pages journey" in {
 
       setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
-        rentUkProperty = TestModels.testNewIncomeSourceProperty_2page.rentUkProperty,
-        workForYourself = TestModels.testNewIncomeSourceProperty_2page.workForYourself.get
+        rentUkProperty = TestModels.testRentUkProperty_property_and_other,
+        workForYourself = TestModels.testWorkForYourself_no
       ))
 
       val goodRequest = callSubmit
@@ -126,8 +126,8 @@ class OtherIncomeErrorControllerNewIncomeSourceSpec extends ControllerBaseSpec
     s"redirect to '${incometax.business.controllers.routes.BusinessNameController.show().url}' on the both journey" in {
 
       setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
-        rentUkProperty = TestModels.testNewIncomeSourceBoth.rentUkProperty,
-        workForYourself = TestModels.testNewIncomeSourceBoth.workForYourself.get
+        rentUkProperty = TestModels.testRentUkProperty_property_and_other,
+        workForYourself = TestModels.testWorkForYourself_yes
       ))
 
       val goodRequest = callSubmit

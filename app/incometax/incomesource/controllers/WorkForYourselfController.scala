@@ -23,14 +23,13 @@ import core.config.BaseControllerConfig
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.WorkForYourselfForm
-import incometax.incomesource.models.{NewIncomeSourceModel, WorkForYourselfModel}
+import incometax.incomesource.models.WorkForYourselfModel
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.{Both, Business, Other, Property}
+import incometax.subscription.models._
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -73,18 +72,16 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
             _ <- keystoreService.saveWorkForYourself(workForYourself)
             rentUkProperty = cache.getRentUkProperty().get
           } yield {
-            val incomeSource = NewIncomeSourceModel(rentUkProperty, Some(workForYourself))
+            val incomeSourceType = IncomeSourceType(rentUkProperty, Some(workForYourself))
             lazy val linearJourney: Result =
-              incomeSource.getIncomeSourceType match {
-                case Right(Business) => business
-                case Right(Property) => property
-                case Right(Both) => both
-                case Right(Other) => doNotQualify
-                case _ => throw new InternalServerException("WorkForYourselfController.submit")
+              incomeSourceType match {
+                case Business => business
+                case Property => property
+                case Both => both
+                case Other => doNotQualify
               }
-            // cache.getNewIncomeSource() returns the user's previous answer
-            cache.getNewIncomeSource() match {
-              case Some(`incomeSource`) if isEditMode => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.submit())
+            cache.getIncomeSourceType() match {
+              case Some(`incomeSourceType`) if isEditMode => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.submit())
               case _ => linearJourney
             }
           }

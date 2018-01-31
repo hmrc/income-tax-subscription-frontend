@@ -50,17 +50,14 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
       if (applicationConfig.newIncomeSourceFlowEnabled) {
         for {
           cache <- keystoreService.fetchAll()
-          optIncomeSource = cache.getNewIncomeSource()
+          optIncomeSource = cache.getIncomeSourceType()
         } yield optIncomeSource match {
-          case Some(incomesource) => incomesource.getIncomeSourceType match {
-            case Right(Business) =>
-              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
-            case Right(Property) =>
-              Redirect(incometax.subscription.controllers.routes.TermsController.show())
-            case Right(Both) =>
-              Redirect(incometax.business.controllers.routes.BusinessNameController.show())
-            case _ => Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
-          }
+          case Some(Business) =>
+            Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+          case Some(Property) =>
+            Redirect(incometax.subscription.controllers.routes.TermsController.show())
+          case Some(Both) =>
+            Redirect(incometax.business.controllers.routes.BusinessNameController.show())
           case _ => Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
         }
       } else {
@@ -81,6 +78,5 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   lazy val backUrl: String = incometax.incomesource.controllers.routes.OtherIncomeController.show().url
-
 
 }

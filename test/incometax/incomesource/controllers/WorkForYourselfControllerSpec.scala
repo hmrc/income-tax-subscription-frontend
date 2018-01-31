@@ -86,8 +86,8 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
           enable(NewIncomeSourceFlowFeature)
           setupMockKeystore(fetchAll =
             testCacheMapCustom(
-              rentUkProperty = testNewIncomeSourceProperty_1page.rentUkProperty,
-              workForYourself = testNewIncomeSourceProperty_1page.workForYourself)
+              rentUkProperty = testRentUkProperty_property_only,
+              workForYourself = None)
           )
 
           val result = call
@@ -103,8 +103,8 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
           enable(NewIncomeSourceFlowFeature)
           setupMockKeystore(fetchAll =
             testCacheMapCustom(
-              rentUkProperty = testNewIncomeSourceBoth.rentUkProperty,
-              workForYourself = testNewIncomeSourceBoth.workForYourself)
+              rentUkProperty = testRentUkProperty_property_and_other,
+              workForYourself = testWorkForYourself_yes)
           )
 
           val result = call
@@ -143,10 +143,10 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
           "redirect to correctly" in {
             setupMockKeystore(fetchAll =
               testCacheMapCustom(
-                rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty
+                rentUkProperty = testRentUkProperty_property_and_other
               )
             )
-            val result = submit(testNewIncomeSourceProperty_2page.workForYourself.get)
+            val result = submit(testWorkForYourself_no)
             status(result) mustBe SEE_OTHER
             redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
           }
@@ -158,10 +158,10 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
               mockGetTaxYearEnd(2018)
               setupMockKeystore(fetchAll =
                 testCacheMapCustom(
-                  rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty
+                  rentUkProperty = testRentUkProperty_property_and_other
                 )
               )
-              val result = submit(testNewIncomeSourceProperty_2page.workForYourself.get)
+              val result = submit(testWorkForYourself_no)
               status(result) mustBe SEE_OTHER
               redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
             }
@@ -172,10 +172,10 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
               mockGetTaxYearEnd(2019)
               setupMockKeystore(fetchAll =
                 testCacheMapCustom(
-                  rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty
+                  rentUkProperty = testRentUkProperty_property_and_other
                 )
               )
-              val result = submit(testNewIncomeSourceProperty_2page.workForYourself.get)
+              val result = submit(testWorkForYourself_no)
               status(result) mustBe SEE_OTHER
               redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
             }
@@ -187,10 +187,10 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
         "redirect to correctly" in {
           setupMockKeystore(fetchAll =
             testCacheMapCustom(
-              rentUkProperty = testNewIncomeSourceBusiness.rentUkProperty
+              rentUkProperty = testRentUkProperty_no_property
             )
           )
-          val result = submit(testNewIncomeSourceBusiness.workForYourself.get)
+          val result = submit(testWorkForYourself_yes)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
         }
@@ -200,11 +200,10 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
         "redirect to correctly" in {
           setupMockKeystore(fetchAll =
             testCacheMapCustom(
-              rentUkProperty = testNewIncomeSourceBoth.rentUkProperty
+              rentUkProperty = testRentUkProperty_property_and_other
             )
           )
-          val result = submit(testNewIncomeSourceBoth.workForYourself.get
-          )
+          val result = submit(testWorkForYourself_yes)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
         }
@@ -214,10 +213,10 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
         "redirect to correctly" in {
           setupMockKeystore(fetchAll =
             testCacheMapCustom(
-              rentUkProperty = testNewIncomeSourceNotQualified.rentUkProperty
+              rentUkProperty = testRentUkProperty_no_property
             )
           )
-          val result = submit(testNewIncomeSourceNotQualified.workForYourself.get)
+          val result = submit(testWorkForYourself_no)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.CannotSignUpController.show().url
         }
@@ -232,11 +231,11 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
         "return to check your answers" in {
           setupMockKeystore(fetchAll =
             testCacheMapCustom(
-              rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
-              workForYourself = testNewIncomeSourceProperty_2page.workForYourself.get
+              rentUkProperty = testRentUkProperty_property_and_other,
+              workForYourself = testWorkForYourself_no
             )
           )
-          val result = submit(testNewIncomeSourceProperty_2page.workForYourself.get)
+          val result = submit(testWorkForYourself_no)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
         }
@@ -248,11 +247,11 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
             "redirect to correctly" in {
               setupMockKeystore(fetchAll =
                 testCacheMapCustom(
-                  rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
-                  workForYourself = testNewIncomeSourceBoth.workForYourself.get
+                  rentUkProperty = testRentUkProperty_property_and_other,
+                  workForYourself = testWorkForYourself_yes
                 )
               )
-              val result = submit(testNewIncomeSourceProperty_2page.workForYourself.get)
+              val result = submit(testWorkForYourself_no)
               status(result) mustBe SEE_OTHER
               redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
             }
@@ -264,11 +263,11 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
                 mockGetTaxYearEnd(2018)
                 setupMockKeystore(fetchAll =
                   testCacheMapCustom(
-                    rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
-                    workForYourself = testNewIncomeSourceBoth.workForYourself.get
+                    rentUkProperty = testRentUkProperty_property_and_other,
+                    workForYourself = testWorkForYourself_yes
                   )
                 )
-                val result = submit(testNewIncomeSourceProperty_2page.workForYourself.get)
+                val result = submit(testWorkForYourself_no)
                 status(result) mustBe SEE_OTHER
                 redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
               }
@@ -279,11 +278,11 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
                 mockGetTaxYearEnd(2019)
                 setupMockKeystore(fetchAll =
                   testCacheMapCustom(
-                    rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
-                    workForYourself = testNewIncomeSourceBoth.workForYourself.get
+                    rentUkProperty = testRentUkProperty_property_and_other,
+                    workForYourself = testWorkForYourself_yes
                   )
                 )
-                val result = submit(testNewIncomeSourceProperty_2page.workForYourself.get)
+                val result = submit(testWorkForYourself_no)
                 status(result) mustBe SEE_OTHER
                 redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
               }
@@ -295,11 +294,11 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
           "redirect to correctly" in {
             setupMockKeystore(fetchAll =
               testCacheMapCustom(
-                rentUkProperty = testNewIncomeSourceBusiness.rentUkProperty,
-                workForYourself = testNewIncomeSourceProperty_2page.workForYourself.get
+                rentUkProperty = testRentUkProperty_property_and_other,
+                workForYourself = testWorkForYourself_no
               )
             )
-            val result = submit(testNewIncomeSourceBusiness.workForYourself.get)
+            val result = submit(testWorkForYourself_yes)
             status(result) mustBe SEE_OTHER
             redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
           }
@@ -309,12 +308,11 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
           "redirect to correctly" in {
             setupMockKeystore(fetchAll =
               testCacheMapCustom(
-                rentUkProperty = testNewIncomeSourceBoth.rentUkProperty,
-                workForYourself = testNewIncomeSourceProperty_2page.workForYourself.get
+                rentUkProperty = testRentUkProperty_property_and_other,
+                workForYourself = testWorkForYourself_no
               )
             )
-            val result = submit(testNewIncomeSourceBoth.workForYourself.get
-            )
+            val result = submit(testWorkForYourself_yes)
             status(result) mustBe SEE_OTHER
             redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
           }

@@ -25,6 +25,7 @@ import core.utils.TestModels._
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.OtherIncomeModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
+import incometax.subscription.models.{Both, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -162,8 +163,8 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchOtherIncome = None,
             fetchAll = TestModels.testCacheMapCustom(
-              rentUkProperty = TestModels.testNewIncomeSourceBusiness.rentUkProperty,
-              workForYourself = TestModels.testNewIncomeSourceBusiness.workForYourself.get
+              rentUkProperty = TestModels.testRentUkProperty_no_property,
+              workForYourself = TestModels.testWorkForYourself_yes
             )
           )
 
@@ -179,8 +180,8 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchOtherIncome = None,
             fetchAll = TestModels.testCacheMapCustom(
-              rentUkProperty = TestModels.testNewIncomeSourceProperty_1page.rentUkProperty,
-              workForYourself = TestModels.testNewIncomeSourceProperty_1page.workForYourself
+              rentUkProperty = TestModels.testRentUkProperty_property_only,
+              workForYourself = None
             )
           )
 
@@ -196,8 +197,8 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchOtherIncome = None,
             fetchAll = TestModels.testCacheMapCustom(
-              rentUkProperty = TestModels.testNewIncomeSourceProperty_2page.rentUkProperty,
-              workForYourself = TestModels.testNewIncomeSourceProperty_2page.workForYourself.get
+              rentUkProperty = TestModels.testRentUkProperty_property_and_other,
+              workForYourself = TestModels.testWorkForYourself_no
             )
           )
 
@@ -214,8 +215,8 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchOtherIncome = None,
             fetchAll = TestModels.testCacheMapCustom(
-              rentUkProperty = TestModels.testNewIncomeSourceBoth.rentUkProperty,
-              workForYourself = TestModels.testNewIncomeSourceBoth.workForYourself.get
+              rentUkProperty = TestModels.testRentUkProperty_property_and_other,
+              workForYourself = TestModels.testWorkForYourself_yes
             )
           )
 
@@ -238,8 +239,8 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
             fetchAll = TestModels.testCacheMapCustom(
-              rentUkProperty = TestModels.testNewIncomeSourceBusiness.rentUkProperty,
-              workForYourself = TestModels.testNewIncomeSourceBusiness.workForYourself.get
+              rentUkProperty = TestModels.testRentUkProperty_no_property,
+              workForYourself = TestModels.testWorkForYourself_yes
             )
           )
 
@@ -258,8 +259,8 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
             fetchAll = TestModels.testCacheMapCustom(
-              rentUkProperty = TestModels.testNewIncomeSourceProperty_2page.rentUkProperty,
-              workForYourself = TestModels.testNewIncomeSourceProperty_2page.workForYourself.get
+              rentUkProperty = TestModels.testRentUkProperty_property_and_other,
+              workForYourself = TestModels.testWorkForYourself_no
             )
           )
 
@@ -280,8 +281,8 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
             fetchAll = TestModels.testCacheMapCustom(
-              rentUkProperty = TestModels.testNewIncomeSourceBoth.rentUkProperty,
-              workForYourself = TestModels.testNewIncomeSourceBoth.workForYourself.get
+              rentUkProperty = TestModels.testRentUkProperty_property_and_other,
+              workForYourself = TestModels.testWorkForYourself_yes
             )
           )
 
@@ -298,8 +299,8 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_yes),
             fetchAll = TestModels.testCacheMapCustom(
-              rentUkProperty = TestModels.testNewIncomeSourceBusiness.rentUkProperty,
-              workForYourself = TestModels.testNewIncomeSourceBusiness.workForYourself.get
+              rentUkProperty = TestModels.testRentUkProperty_no_property,
+              workForYourself = TestModels.testWorkForYourself_yes
             )
           )
 
@@ -316,8 +317,8 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_yes),
             fetchAll = TestModels.testCacheMapCustom(
-              rentUkProperty = TestModels.testNewIncomeSourceProperty_1page.rentUkProperty,
-              workForYourself = TestModels.testNewIncomeSourceProperty_1page.workForYourself
+              rentUkProperty = TestModels.testRentUkProperty_property_only,
+              workForYourself = None
             )
           )
 
@@ -335,8 +336,8 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchOtherIncome = OtherIncomeModel(OtherIncomeForm.option_yes),
             fetchAll = TestModels.testCacheMapCustom(
-              rentUkProperty = TestModels.testNewIncomeSourceBoth.rentUkProperty,
-              workForYourself = TestModels.testNewIncomeSourceBoth.workForYourself.get
+              rentUkProperty = TestModels.testRentUkProperty_property_and_other,
+              workForYourself = TestModels.testWorkForYourself_yes
             )
           )
 
@@ -376,7 +377,7 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
       s"point to ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url} on other income page" in {
         disable(TaxYearDeferralFeature)
 
-        TestOtherIncomeController.backUrl(TestModels.testNewIncomeSourceBoth, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+        TestOtherIncomeController.backUrl(Both, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
       }
     }
     "the tax year deferral is enabled and " when {
@@ -386,7 +387,7 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
             enable(TaxYearDeferralFeature)
             mockGetTaxYearEnd(2018)
 
-            TestOtherIncomeController.backUrl(TestModels.testNewIncomeSourceProperty_2page, isEditMode = false) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+            TestOtherIncomeController.backUrl(Property, isEditMode = false) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
           }
         }
 
@@ -395,7 +396,7 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
             enable(TaxYearDeferralFeature)
             mockGetTaxYearEnd(2018)
 
-            TestOtherIncomeController.backUrl(TestModels.testNewIncomeSourceBoth, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+            TestOtherIncomeController.backUrl(Both, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
           }
         }
       }
@@ -404,7 +405,7 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
           enable(TaxYearDeferralFeature)
           mockGetTaxYearEnd(2019)
 
-          TestOtherIncomeController.backUrl(TestModels.testNewIncomeSourceBoth, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+          TestOtherIncomeController.backUrl(Both, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
         }
       }
     }
@@ -420,7 +421,7 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
     s"point to ${
       incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     } on other income page" in {
-      TestOtherIncomeController.backUrl(TestModels.testNewIncomeSourceBoth, isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+      TestOtherIncomeController.backUrl(Both, isEditMode = true) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     }
   }
 

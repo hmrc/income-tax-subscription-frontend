@@ -25,8 +25,7 @@ import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.incomesource.forms.IncomeSourceForm
-import incometax.incomesource.models.NewIncomeSourceModel
-import incometax.subscription.models.{Both, Business, Property}
+import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.InternalServerException
@@ -45,7 +44,7 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
       if (applicationConfig.newIncomeSourceFlowEnabled) {
         for {
           cache <- keystoreService.fetchAll()
-          newIncomeSource = cache.getNewIncomeSource().get
+          newIncomeSource = cache.getIncomeSourceType().get
           matchTaxYear = cache.getMatchTaxYear().map(_.matchTaxYear == MatchTaxYearForm.option_yes)
         } yield
           Ok(incometax.incomesource.views.html.cannot_report_yet(
@@ -72,11 +71,11 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
       else if (applicationConfig.newIncomeSourceFlowEnabled) {
         for {
           cache <- keystoreService.fetchAll()
-          newIncomeSource = cache.getNewIncomeSource().get.getIncomeSourceType
+          newIncomeSource = cache.getIncomeSourceType().get
         } yield newIncomeSource match {
-          case Right(Business | Both) =>
+          case Business | Both =>
             Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-          case Right(Property) =>
+          case Property =>
             Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
         }
       } else {
@@ -104,13 +103,13 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
         incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = isEditMode).url
     }
 
-  def backUrl(newIncomeSource: NewIncomeSourceModel, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =
-    (newIncomeSource.getIncomeSourceType, matchTaxYear) match {
-      case (Right(Property), _) =>
+  def backUrl(incomeSourceType: IncomeSourceType, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =
+    (incomeSourceType, matchTaxYear) match {
+      case (Property, _) =>
         incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
-      case (Right(Business | Both), Some(true)) =>
+      case (Business | Both, Some(true)) =>
         incometax.business.controllers.routes.MatchTaxYearController.show(editMode = isEditMode).url
-      case (Right(Business | Both), Some(false)) =>
+      case (Business | Both, Some(false)) =>
         incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = isEditMode).url
     }
 }
