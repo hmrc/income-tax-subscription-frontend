@@ -318,14 +318,16 @@ trait ViewSpecTrait extends UnitTestTrait {
       }
 
     def mustHaveSignOutLink(text: String, origin: Option[String] = None): Unit = {
-      val id ="sign-out"
+      val id = "sign-out"
       if (origin.isDefined) {
         mustHaveALink(id, text, SignOutController.signOut(origin.get).url)
       } else {
-        val link = element.getElementById(id)
-        if (link == null) fail(s"Unable to locate $id")
-        if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
-        link.text() mustBe text
+        s"$name have a link with text '$text' pointed to 'Sign Out'" in {
+          val link = element.getElementById(id)
+          if (link == null) fail(s"Unable to locate $id")
+          if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
+          link.text() mustBe text
+        }
       }
     }
 
