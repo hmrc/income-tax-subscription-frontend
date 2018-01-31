@@ -17,6 +17,7 @@
 package incometax.incomesource.views
 
 import assets.MessageLookup.{Base => common, CannotReportYet => messages}
+import core.models.DateModel
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
@@ -27,9 +28,12 @@ class CannotReportYetViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
+  val testDateModel = DateModel("6","4","2018")
+
   lazy val page = incometax.incomesource.views.html.cannot_report_yet(
     postAction = action,
-    backUrl = backUrl)(
+    backUrl = backUrl,
+    dateModel = testDateModel)(
     FakeRequest(),
     applicationMessages,
     appConfig
