@@ -16,6 +16,8 @@
 
 package assets
 
+import core.models.DateModel
+
 object MessageLookup {
 
   object Base {
@@ -179,6 +181,14 @@ object MessageLookup {
     val linkText = "Self Assessment tax return"
     val para1 = "You can sign up and use software to record your income and expenses, but you can't send any reports until 6 April 2018."
     val para2 = s"You need to send a $linkText instead."
+  }
+
+  object CannotReportPropertyYet {
+    val title = "You can't use software to report your property income yet"
+    val heading: String = title
+    val linkText = "send a Self Assessment tax return"
+    val para1 = "You can use software to report the work you do for yourself and to record your property income and expenses."
+    def para2(dateModel: DateModel) = s"You can't submit a report for your property income until ${dateModel.toOutputDateFormat}. Instead, you'll still need to $linkText."
   }
 
   object BusinessName {
