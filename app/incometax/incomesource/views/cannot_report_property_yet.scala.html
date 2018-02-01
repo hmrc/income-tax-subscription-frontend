@@ -22,18 +22,19 @@
 
 @(postAction: Call, backUrl: String, dateModel: DateModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("cannot-report-yet.title")) {
+@main_template(title = Messages("cannot-report-property-yet.title")) {
     @back_link(backUrl)
 
-    <h1 class="heading-large">@Messages("cannot-report-yet.heading")</h1>
+    <h1 class="heading-large">@Messages("cannot-report-property-yet.heading")</h1>
 
-    <p>@Messages("cannot-report-yet.para1", dateModel.toOutputDateFormat)</p>
-    <p>@Html(Messages("cannot-report-yet.para2", appConfig.signUpToSaLink))</p>
+    <p>@Messages("cannot-report-property-yet.para1")</p>
+    <p>@Html(Messages("cannot-report-property-yet.para2", dateModel.toOutputDateFormat, appConfig.signUpToSaLink))</p>
 
     <div class="form-group">
-    @form(action = postAction) {
-        @continueButton()
-    }
+        @form(action = postAction) {
+            @continueButton(alternativeText = Some(Messages("base.continue-sign-up")))
+        }
     </div>
+
     @signOutLink()
 }

@@ -16,13 +16,13 @@
 
 package incometax.incomesource.views
 
-import assets.MessageLookup.{Base => common, CannotReportYet => messages}
+import assets.MessageLookup.{Base => common, CannotReportPropertyYet => messages}
 import core.models.DateModel
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
-class CannotReportYetViewSpec extends ViewSpecTrait {
+class CannotReportPropertyYetViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
 
@@ -30,7 +30,7 @@ class CannotReportYetViewSpec extends ViewSpecTrait {
 
   val testDateModel = DateModel("6","4","2018")
 
-  lazy val page = incometax.incomesource.views.html.cannot_report_yet(
+  lazy val page = incometax.incomesource.views.html.cannot_report_property_yet(
     postAction = action,
     backUrl = backUrl,
     dateModel = testDateModel)(
@@ -39,10 +39,10 @@ class CannotReportYetViewSpec extends ViewSpecTrait {
     appConfig
   )
 
-  "The Cannot report yet view" should {
+  "The Cannot report property yet view" should {
 
     val testPage = TestView(
-      name = "Cannot report yet View",
+      name = "Cannot report property yet View",
       title = messages.title,
       heading = messages.heading,
       page = page
@@ -52,12 +52,14 @@ class CannotReportYetViewSpec extends ViewSpecTrait {
 
     testPage.mustHaveParaSeq(
       messages.para1,
-      messages.para2
+      messages.para2(testDateModel)
     )
+    testPage.mustHaveALink("sa", messages.linkText, appConfig.signUpToSaLink)
+
+    testPage.mustHaveContinueToSignUpButton()
 
     testPage.mustHaveSignOutLink(common.signOut)
 
-    testPage.mustHaveALink("sa", messages.linkText, appConfig.signUpToSaLink)
   }
 
 }
