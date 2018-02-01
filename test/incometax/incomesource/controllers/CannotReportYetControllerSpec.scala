@@ -22,7 +22,6 @@ import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
 import core.utils.TestModels._
-import incometax.incomesource.forms.IncomeSourceForm
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -59,148 +58,176 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
     disable(NewIncomeSourceFlowFeature)
   }
 
-  "Calling the show action of the CannotReportYetController" should {
+  "Calling the show action of the CannotReportYetController" when {
+    def call = TestCannotReportYetController.show(isEditMode = false)(subscriptionRequest)
 
-    lazy val result = TestCannotReportYetController.show(isEditMode = false)(subscriptionRequest)
-    lazy val document = Jsoup.parse(contentAsString(result))
+    "NewIncomeSourceFlowFeature is disabled" should {
+      "return OK and display the page" in {
+        setupMockKeystore(fetchAll = testCacheMap)
 
-    "return OK and display the page" in {
-      setupMockKeystore(fetchAll = testCacheMap)
+        val result = call
+        status(result) must be(Status.OK)
+        lazy val document = Jsoup.parse(contentAsString(result))
 
-      status(result) must be(Status.OK)
+        contentType(result) must be(Some("text/html"))
+        charset(result) must be(Some("utf-8"))
 
-      contentType(result) must be(Some("text/html"))
-      charset(result) must be(Some("utf-8"))
-
-      verifyKeystore(fetchIncomeSource = 0, fetchAll = 1)
+        verifyKeystore(fetchAll = 1)
+      }
     }
 
+    "NewIncomeSourceFlowFeature is enable" should {
+      "return OK and display the page" in {
+        enable(NewIncomeSourceFlowFeature)
+        setupMockKeystore(fetchAll = testCacheMap)
+
+        val result = call
+        status(result) must be(Status.OK)
+        lazy val document = Jsoup.parse(contentAsString(result))
+
+        contentType(result) must be(Some("text/html"))
+        charset(result) must be(Some("utf-8"))
+
+        verifyKeystore(fetchAll = 1)
+      }
+    }
   }
 
   "Calling the submit action of the CannotReportYetController with an authorised user" when {
 
     def callSubmit(isEditMode: Boolean = false) = TestCannotReportYetController.submit(isEditMode = isEditMode)(subscriptionRequest)
 
-    "not in edit mode" should {
+    "NewIncomeSourceFlowFeature is disabled" should {
+      "not in edit mode" should {
+        s"redirect to '${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}' on the business journey" in {
+          setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceBusiness))
 
-      s"redirect to '${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}' on the business journey" in {
+          val goodRequest = callSubmit()
 
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
 
-        val goodRequest = callSubmit()
+          await(goodRequest)
+          verifyKeystore(fetchAll = 1)
+        }
 
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
+        s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property journey" in {
+          setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceProperty))
 
-        await(goodRequest)
-        verifyKeystore(fetchIncomeSource = 1, fetchAll = 0)
+          val goodRequest = callSubmit()
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(incometax.incomesource.controllers.routes.OtherIncomeController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchAll = 1)
+        }
+
+        s"redirect to '${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}' on the both journey" in {
+          setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceBoth))
+
+          val goodRequest = callSubmit()
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchAll = 1)
+        }
       }
 
-      s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property journey" in {
+      "in edit mode" should {
+        s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
+          val goodRequest = callSubmit(isEditMode = true)
 
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
 
-        val goodRequest = callSubmit()
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(incometax.incomesource.controllers.routes.OtherIncomeController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchIncomeSource = 1, fetchAll = 0)
-      }
-
-      s"redirect to '${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}' on the both journey" in {
-
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
-
-        val goodRequest = callSubmit()
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchIncomeSource = 1, fetchAll = 0)
-      }
-    }
-
-    "in edit mode" should {
-      s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
-        val goodRequest = callSubmit(isEditMode = true)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchIncomeSource = 0, fetchAll = 0)
+          await(goodRequest)
+          verifyKeystore(fetchAll = 0)
+        }
       }
     }
 
+    "NewIncomeSourceFlowFeature is enabled" should {
+      "not in edit mode" should {
+        s"redirect to '${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}' on the business journey" in {
+          enable(NewIncomeSourceFlowFeature)
+          setupMockKeystore(fetchAll = testCacheMapCustom(
+            rentUkProperty = testRentUkProperty_no_property,
+            workForYourself = testWorkForYourself_yes
+          ))
+
+          val goodRequest = callSubmit()
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchAll = 1)
+        }
+
+        s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property journey" in {
+          enable(NewIncomeSourceFlowFeature)
+          setupMockKeystore(fetchAll = testCacheMapCustom(
+            rentUkProperty = testRentUkProperty_property_and_other,
+            workForYourself = testWorkForYourself_no
+          ))
+
+          val goodRequest = callSubmit()
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(incometax.incomesource.controllers.routes.OtherIncomeController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchAll = 1)
+        }
+
+        s"redirect to '${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}' on the both journey" in {
+          enable(NewIncomeSourceFlowFeature)
+          setupMockKeystore(fetchAll = testCacheMapCustom(
+            rentUkProperty = testRentUkProperty_property_and_other,
+            workForYourself = testWorkForYourself_yes
+          ))
+
+          val goodRequest = callSubmit()
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchAll = 1)
+        }
+      }
+
+      "in edit mode" should {
+        s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
+          enable(NewIncomeSourceFlowFeature)
+          val goodRequest = callSubmit(isEditMode = true)
+
+          status(goodRequest) must be(Status.SEE_OTHER)
+          redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
+
+          await(goodRequest)
+          verifyKeystore(fetchAll = 0)
+        }
+      }
+    }
   }
 
-  "backUrl for the old income source model" when {
-    def evalBackUrl(incomeSource: String, matchTaxYear: Option[Boolean], isEditMode: Boolean) =
-      TestCannotReportYetController.backUrl(incomeSource, matchTaxYear, isEditMode)
-
-    "income source is property" when {
-      "return income source" in {
-        val result = evalBackUrl(IncomeSourceForm.option_property, None, isEditMode = false)
-        result mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
-      }
-    }
-
-    "income source is business" when {
-      "not in edit mode and " when {
-        "match tax year is answered no, return other income" in {
-          val result = evalBackUrl(IncomeSourceForm.option_business, Some(false), isEditMode = false)
-          result mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
-        }
-        "match tax year is answered yes, return other income error" in {
-          val result = evalBackUrl(IncomeSourceForm.option_business, Some(true), isEditMode = false)
-          result mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
-        }
-      }
-      "in edit mode and " when {
-        "match tax year is answered no, return other income" in {
-          val result = evalBackUrl(IncomeSourceForm.option_business, Some(false), isEditMode = true)
-          result mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
-        }
-        "match tax year is answered yes, return other income error" in {
-          val result = evalBackUrl(IncomeSourceForm.option_business, Some(true), isEditMode = true)
-          result mustBe incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
-        }
-      }
-    }
-
-    "income source is both" when {
-      "not in edit mode and " when {
-        "match tax year is answered no, return other income" in {
-          val result = evalBackUrl(IncomeSourceForm.option_both, Some(false), isEditMode = false)
-          result mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
-        }
-        "match tax year is answered yes, return other income error" in {
-          val result = evalBackUrl(IncomeSourceForm.option_both, Some(true), isEditMode = false)
-          result mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
-        }
-      }
-      "in edit mode and " when {
-        "match tax year is answered no, return other income" in {
-          val result = evalBackUrl(IncomeSourceForm.option_both, Some(false), isEditMode = true)
-          result mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
-        }
-        "match tax year is answered yes, return other income error" in {
-          val result = evalBackUrl(IncomeSourceForm.option_both, Some(true), isEditMode = true)
-          result mustBe incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
-        }
-      }
-    }
-  }
 
   "backUrl" when {
     def evalBackUrl(incomeSourceType: IncomeSourceType, matchTaxYear: Option[Boolean], isEditMode: Boolean) =
       TestCannotReportYetController.backUrl(incomeSourceType, matchTaxYear, isEditMode)
 
     "income source is property" when {
-      "return work for yourself" in {
+      "when new income source is disabled, return income source" in {
+        val result = evalBackUrl(Property, None, isEditMode = false)
+        result mustBe incometax.incomesource.controllers.routes.IncomeSourceController.show().url
+      }
+
+      "when new income source is enabled, return work for yourself" in {
+        enable(NewIncomeSourceFlowFeature)
         val result = evalBackUrl(Property, None, isEditMode = false)
         result mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
       }

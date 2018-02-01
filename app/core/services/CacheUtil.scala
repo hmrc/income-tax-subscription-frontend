@@ -42,7 +42,7 @@ object CacheUtil {
     def getIncomeSourceType()(implicit read: Reads[IncomeSourceModel], readR: Reads[RentUkPropertyModel],
                               readW: Reads[WorkForYourselfModel]): Option[IncomeSourceType] =
       if (appConfig.newIncomeSourceFlowEnabled)
-        Try(Some(IncomeSourceType(getRentUkProperty().get, getWorkForYourself()))).getOrElse(None)
+        getRentUkProperty().flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, getWorkForYourself()))
       else
         getIncomeSource().map(incSrc => IncomeSourceType(incSrc.source))
 

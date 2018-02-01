@@ -39,6 +39,8 @@ case object Other extends IncomeSourceType {
   override val source = IncomeSourceType.other
 }
 
+case object Incomplete
+
 
 object IncomeSourceType {
 
@@ -75,12 +77,16 @@ object IncomeSourceType {
   }
 
   def apply(rentUkPropertyModel: RentUkPropertyModel, workForYourselfModel: Option[WorkForYourselfModel]): IncomeSourceType =
+    from(rentUkPropertyModel, workForYourselfModel).get
+
+  def from(rentUkPropertyModel: RentUkPropertyModel, workForYourselfModel: Option[WorkForYourselfModel]): Option[IncomeSourceType] =
     (rentUkPropertyModel, workForYourselfModel) match {
-      case (RentUkPropertyModel(YES, Some(YES)), _) => Property
-      case (RentUkPropertyModel(YES, Some(NO)), Some(WorkForYourselfModel(YES))) => Both
-      case (RentUkPropertyModel(YES, Some(NO)), Some(WorkForYourselfModel(NO))) => Property
-      case (RentUkPropertyModel(NO, _), Some(WorkForYourselfModel(YES))) => Business
-      case (RentUkPropertyModel(NO, _), Some(WorkForYourselfModel(NO))) => Other
+      case (RentUkPropertyModel(YES, Some(YES)), _) => Some(Property)
+      case (RentUkPropertyModel(YES, Some(NO)), Some(WorkForYourselfModel(YES))) => Some(Both)
+      case (RentUkPropertyModel(YES, Some(NO)), Some(WorkForYourselfModel(NO))) => Some(Property)
+      case (RentUkPropertyModel(NO, _), Some(WorkForYourselfModel(YES))) => Some(Business)
+      case (RentUkPropertyModel(NO, _), Some(WorkForYourselfModel(NO))) => Some(Other)
+      case _ => None
     }
 
   def unapply(incomeSourceType: IncomeSourceType): Option[String] = incomeSourceType match {

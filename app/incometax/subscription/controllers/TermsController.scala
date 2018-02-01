@@ -24,9 +24,7 @@ import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
-import incometax.incomesource.forms.IncomeSourceForm.option_property
 import incometax.incomesource.forms.OtherIncomeForm
-import incometax.incomesource.models.IncomeSourceModel
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import incometax.util.AccountingPeriodUtil._
 import play.api.i18n.MessagesApi
@@ -49,40 +47,21 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
 
   def show(editMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (applicationConfig.newIncomeSourceFlowEnabled) {
-        for {
-          cacheMap <- keystoreService.fetchAll()
-          incomeSource = cacheMap.getIncomeSourceType().get
-          backUrl = getBackUrl(editMode, incomeSource, cacheMap.getOtherIncome().get.choice, cacheMap.getMatchTaxYear().fold(false)(_.matchTaxYear == MatchTaxYearForm.option_yes))
-        } yield
-          (incomeSource, cacheMap.getMatchTaxYear(), cacheMap.getAccountingPeriodDate()) match {
-            case (Property, _, _) =>
-              Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
-            case (_, Some(MatchTaxYearModel(matchTaxYear)), _) if matchTaxYear == MatchTaxYearForm.option_yes =>
-              Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
-            case (_, _, Some(date)) =>
-              Ok(view(backUrl = backUrl, taxEndYear = date.taxEndYear))
-            case _ =>
-              Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = editMode, editMatch = editMode))
-          }
-      }
-      else {
-        for {
-          cacheMap <- keystoreService.fetchAll()
-          incomeSource = cacheMap.getIncomeSource().get
-          backUrl = getBackUrl(editMode, IncomeSourceType(incomeSource.source), cacheMap.getOtherIncome().get.choice, cacheMap.getMatchTaxYear().fold(false)(_.matchTaxYear == MatchTaxYearForm.option_yes))
-        } yield
-          (incomeSource, cacheMap.getMatchTaxYear(), cacheMap.getAccountingPeriodDate()) match {
-            case (IncomeSourceModel(source), _, _) if source == option_property =>
-              Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
-            case (_, Some(MatchTaxYearModel(matchTaxYear)), _) if matchTaxYear == MatchTaxYearForm.option_yes =>
-              Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
-            case (_, _, Some(date)) =>
-              Ok(view(backUrl = backUrl, taxEndYear = date.taxEndYear))
-            case _ =>
-              Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = editMode, editMatch = editMode))
-          }
-      }
+      for {
+        cacheMap <- keystoreService.fetchAll()
+        incomeSource = cacheMap.getIncomeSourceType().get
+        backUrl = getBackUrl(editMode, incomeSource, cacheMap.getOtherIncome().get.choice, cacheMap.getMatchTaxYear().exists(_.matchTaxYear == MatchTaxYearForm.option_yes))
+      } yield
+        (incomeSource, cacheMap.getMatchTaxYear(), cacheMap.getAccountingPeriodDate()) match {
+          case (Property, _, _) =>
+            Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
+          case (_, Some(MatchTaxYearModel(matchTaxYear)), _) if matchTaxYear == MatchTaxYearForm.option_yes =>
+            Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
+          case (_, _, Some(date)) =>
+            Ok(view(backUrl = backUrl, taxEndYear = date.taxEndYear))
+          case _ =>
+            Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = editMode, editMatch = editMode))
+        }
   }
 
   def submit(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>
