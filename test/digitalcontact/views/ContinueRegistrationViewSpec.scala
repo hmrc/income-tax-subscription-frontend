@@ -42,7 +42,7 @@ class ContinueRegistrationViewSpec extends ViewSpecTrait {
 
     form.mustHaveGoBackButton()
 
-    testPage.mustHaveSignOutLink(text = messages.signOut, origin = request.path)
+    testPage.mustHaveSignOutLink(text = messages.signOut, optOrigin = request.path)
 
   }
 }

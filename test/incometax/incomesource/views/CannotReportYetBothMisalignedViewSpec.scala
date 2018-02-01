@@ -20,21 +20,19 @@ import assets.MessageLookup.{Base => common, CannotReportYetBothMisaligned => me
 import core.models.DateModel
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
-import play.api.test.FakeRequest
 
 class CannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
-
   val action = ViewSpecTrait.testCall
-
   val testDateModel = DateModel("01", "02", "2019")
+  val request = ViewSpecTrait.viewTestRequest
 
   lazy val page = incometax.incomesource.views.html.cannot_report_yet_both_misaligned(
     postAction = action,
     backUrl = backUrl,
     businessStartDate = testDateModel)(
-    FakeRequest(),
+    request,
     applicationMessages,
     appConfig
   )
@@ -59,7 +57,7 @@ class CannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
       messages.bullet2
     )
 
-    testPage.mustHaveSignOutLink(common.signOut)
+    testPage.mustHaveSignOutLink(common.signOut, optOrigin = request.path)
 
     testPage.mustHaveALink("sa", messages.linkText, appConfig.signUpToSaLink)
   }
