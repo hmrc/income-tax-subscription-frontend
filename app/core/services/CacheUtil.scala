@@ -20,13 +20,10 @@ import core.config.AppConfig
 import core.services.CacheConstants._
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.forms.IncomeSourceForm
 import incometax.incomesource.models._
 import incometax.subscription.models._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
-
-import scala.util.Try
 
 object CacheUtil {
 
@@ -65,28 +62,25 @@ object CacheUtil {
     def getTerms()(implicit read: Reads[Boolean]): Option[Boolean] = cacheMap.getEntry(Terms)
 
     //TODO update when we switch to the new income source flow
-    def getSummary()(implicit appConfig: AppConfig,
-                     isrc: Reads[IncomeSourceModel],
-                     wfyrc: Reads[WorkForYourselfModel],
-                     oirc: Reads[OtherIncomeModel],
-                     matchT: Reads[MatchTaxYearModel],
-                     accD: Reads[AccountingPeriodModel],
-                     busName: Reads[BusinessNameModel],
-                     busPhone: Reads[BusinessPhoneNumberModel],
-                     busAdd: Reads[Address],
-                     busStart: Reads[BusinessStartDateModel],
-                     accM: Reads[AccountingMethodModel],
-                     ter: Reads[Boolean]): SummaryModel =
-      if (appConfig.newIncomeSourceFlowEnabled) {
-        getIncomeSourceType() match {
-          case Some(Property) =>
+    def getSummary()(implicit appConfig: AppConfig): SummaryModel =
+      getIncomeSourceType() match {
+        case Some(Property) =>
+          if (appConfig.newIncomeSourceFlowEnabled) {
             SummaryModel(
               rentUkProperty = getRentUkProperty(),
               workForYourself = getWorkForYourself(),
               otherIncome = getOtherIncome(),
               terms = getTerms()
             )
-          case Some(incomeSourceType@_) =>
+          } else {
+            SummaryModel(
+              incomeSource = getIncomeSource(),
+              otherIncome = getOtherIncome(),
+              terms = getTerms()
+            )
+          }
+        case Some(_) =>
+          if (appConfig.newIncomeSourceFlowEnabled) {
             SummaryModel(
               rentUkProperty = getRentUkProperty(),
               workForYourself = getWorkForYourself(),
@@ -100,38 +94,22 @@ object CacheUtil {
               accountingMethod = getAccountingMethod(),
               terms = getTerms()
             )
-          case _ => SummaryModel()
-        }
+          } else {
+            SummaryModel(
+              incomeSource = getIncomeSource(),
+              otherIncome = getOtherIncome(),
+              matchTaxYear = getMatchTaxYear(),
+              accountingPeriod = getAccountingPeriodDate(),
+              businessName = getBusinessName(),
+              businessPhoneNumber = getBusinessPhoneNumber(),
+              businessAddress = getBusinessAddress(),
+              businessStartDate = getBusinessStartDate(),
+              accountingMethod = getAccountingMethod(),
+              terms = getTerms()
+            )
+          }
+        case _ => SummaryModel()
       }
-      else {
-        val incomeSource = getIncomeSource()
-        incomeSource match {
-          case Some(src) =>
-            src.source match {
-              case IncomeSourceForm.option_property =>
-                SummaryModel(
-                  incomeSource,
-                  otherIncome = getOtherIncome(),
-                  terms = getTerms()
-                )
-              case _ =>
-                SummaryModel(
-                  incomeSource = incomeSource,
-                  otherIncome = getOtherIncome(),
-                  matchTaxYear = getMatchTaxYear(),
-                  accountingPeriod = getAccountingPeriodDate(),
-                  businessName = getBusinessName(),
-                  businessPhoneNumber = getBusinessPhoneNumber(),
-                  businessAddress = getBusinessAddress(),
-                  businessStartDate = getBusinessStartDate(),
-                  accountingMethod = getAccountingMethod(),
-                  terms = getTerms()
-                )
-            }
-          case _ => SummaryModel()
-        }
-      }
-
   }
 
 }
