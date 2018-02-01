@@ -27,7 +27,8 @@ import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc._
+import play.twirl.api.HtmlFormat
 
 import scala.concurrent.Future
 
@@ -46,13 +47,51 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
         matchTaxYear = cache.getMatchTaxYear().map(_.matchTaxYear == MatchTaxYearForm.option_yes)
         dateModel = DateModel("6","4","2018")
       } yield
-        Ok(incometax.incomesource.views.html.cannot_report_yet(
-          postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-          backUrl(newIncomeSource, matchTaxYear, isEditMode),
-          //TODO update date model
-          dateModel = DateModel("6","4","2018")
-        ))
+        Ok(generateTemplate(newIncomeSource, matchTaxYear, None, false))
   }
+
+  def generateTemplate(incomeSourceType: IncomeSourceType,
+                       matchToTaxYear: Option[Boolean] = None,
+                       endBeforeNextTaxYear: Option[Boolean] = None,
+                       isEditMode: Boolean)(implicit request: Request[_]): HtmlFormat.Appendable = {
+
+
+
+    def generateCannotReportView = {
+      incometax.incomesource.views.html.cannot_report_yet(
+        postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+        backUrl(incomeSourceType, matchToTaxYear, isEditMode),
+        //TODO update date model
+        dateModel = DateModel("6","4","2018")
+      )
+    }
+
+    def generateCannotReportPropertyView = {
+      incometax.incomesource.views.html.cannot_report_property_yet(
+        postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+        backUrl(incomeSourceType, matchToTaxYear, isEditMode),
+        //TODO update date model
+        dateModel = DateModel("6","4","2018")
+      )
+    }
+
+    def generateCannotReportMisalignedView = {
+      incometax.incomesource.views.html.cannot_report_yet_both_misaligned(
+        postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+        backUrl(incomeSourceType, matchToTaxYear, isEditMode),
+        //TODO update date model
+        businessStartDate = DateModel("6","4","2018")
+      )
+    }
+
+    (incomeSourceType, matchToTaxYear, endBeforeNextTaxYear) match {
+      case (Property, _, _) => generateCannotReportView
+      case (Business, Some(true), _) => generateCannotReportView
+      case (Both, Some(false), _) => generateCannotReportView
+      case (Both, _, Some(accountingPeriodCondition)) => if (accountingPeriodCondition) generateCannotReportView else generateCannotReportView
+    }
+  }
+
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
