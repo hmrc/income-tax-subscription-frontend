@@ -4,12 +4,13 @@ package helpers
 import core.Constants
 import core.Constants.GovernmentGateway._
 import core.models.DateModel
+import core.models.YesNoModel._
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
 import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm, RentUkPropertyForm}
+import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
 import incometax.incomesource.models._
 import incometax.subscription.models.{Both, EnrolmentKey}
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
@@ -51,8 +52,8 @@ object IntegrationTestModels {
   lazy val fullKeystoreData: Map[String, JsValue] =
     keystoreData(
       incomeSource = Some(testIncomeSourceBoth),
-      rentUkProperty = Some(testNewIncomeSourceBoth.rentUkProperty),
-      workForYourself = testNewIncomeSourceBoth.workForYourself,
+      rentUkProperty = Some(testRentUkProperty_property_and_other),
+      workForYourself = Some(testWorkForYourself_yes),
       otherIncome = Some(testOtherIncomeNo),
       matchTaxYear = Some(testMatchTaxYearNo),
       accountingPeriodDate = Some(testAccountingPeriod),
@@ -94,21 +95,12 @@ object IntegrationTestModels {
 
   lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
 
-  lazy val testRentUkProperty_no_property = RentUkPropertyModel("No", None)
-  lazy val testRentUkProperty_property_only = RentUkPropertyModel("Yes", Some("Yes"))
-  lazy val testRentUkProperty_property_and_other = RentUkPropertyModel("Yes", Some("No"))
+  lazy val testRentUkProperty_no_property = RentUkPropertyModel(NO, None)
+  lazy val testRentUkProperty_property_only = RentUkPropertyModel(YES, Some(YES))
+  lazy val testRentUkProperty_property_and_other = RentUkPropertyModel(YES, Some(NO))
 
-  lazy val testWorkForYourself_yes = WorkForYourselfModel("Yes")
-  lazy val testWorkForYourself_no = WorkForYourselfModel("No")
-
-  lazy val testNewIncomeSourceBusiness = NewIncomeSourceModel(testRentUkProperty_no_property, Some(testWorkForYourself_yes))
-  lazy val testNewIncomeSourceProperty_1page = NewIncomeSourceModel(testRentUkProperty_property_only, None)
-  lazy val testNewIncomeSourceProperty_2page = NewIncomeSourceModel(testRentUkProperty_property_and_other, Some(testWorkForYourself_no))
-  lazy val testNewIncomeSourceBoth = NewIncomeSourceModel(testRentUkProperty_property_and_other, Some(testWorkForYourself_yes))
-  lazy val testNewIncomeSourceNotQualified = NewIncomeSourceModel(testRentUkProperty_no_property, Some(testWorkForYourself_no))
-
-  lazy val testNewIncomeSourceIncomplete1 = NewIncomeSourceModel(testRentUkProperty_no_property, None)
-  lazy val testNewIncomeSourceIncomplete2 = NewIncomeSourceModel(testRentUkProperty_property_and_other, None)
+  lazy val testWorkForYourself_yes = WorkForYourselfModel(YES)
+  lazy val testWorkForYourself_no = WorkForYourselfModel(NO)
 
   lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
 

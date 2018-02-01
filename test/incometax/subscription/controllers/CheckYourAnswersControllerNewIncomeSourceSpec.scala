@@ -29,8 +29,6 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.InternalServerException
 
-import scala.reflect.macros.whitebox
-
 class CheckYourAnswersControllerNewIncomeSourceSpec extends ControllerBaseSpec
   with MockKeystoreService
   with MockSubscriptionOrchestrationService
@@ -66,31 +64,43 @@ class CheckYourAnswersControllerNewIncomeSourceSpec extends ControllerBaseSpec
     def result = TestCheckYourAnswersController.show(subscriptionRequest)
 
     "return ok (200) for business journey" in {
+      val testBusinessCacheMap = testCacheMapCustom(
+        rentUkProperty = testRentUkProperty_no_property,
+        workForYourself = testWorkForYourself_yes,
+        otherIncome = testOtherIncomeNo,
+        terms = testTerms
+      )
+      setupMockKeystore(fetchAll = testBusinessCacheMap)
+
+      status(result) must be(Status.OK)
+    }
+
+    "return ok (200) for property only journey)" in {
+      val testPropertyCacheMap = testCacheMap(
+        rentUkProperty = testRentUkProperty_property_only,
+        workForYourself = None,
+        otherIncome = testOtherIncomeNo,
+        terms = testTerms
+      )
+      setupMockKeystore(fetchAll = testPropertyCacheMap)
+
+      status(result) must be(Status.OK)
+    }
+
+    "return ok (200) for property and other income but no sole trader journey" in {
+      val testPropertyCacheMap = testCacheMap(
+        rentUkProperty = testRentUkProperty_property_and_other,
+        workForYourself = testWorkForYourself_no,
+        otherIncome = testOtherIncomeNo,
+        terms = testTerms
+      )
+      setupMockKeystore(fetchAll = testPropertyCacheMap)
+
+      status(result) must be(Status.OK)
+    }
+
+    "return ok (200) for both journey" in {
       setupMockKeystore(fetchAll = testCacheMap)
-
-      status(result) must be(Status.OK)
-    }
-
-    "return ok (200) for property journey (1 page)" in {
-      val testPropertyCacheMap = testCacheMap(
-        rentUkProperty = testNewIncomeSourceProperty_1page.rentUkProperty,
-        workForYourself = testNewIncomeSourceProperty_1page.workForYourself,
-        otherIncome = testOtherIncomeNo,
-        terms = testTerms
-      )
-      setupMockKeystore(fetchAll = testPropertyCacheMap)
-
-      status(result) must be(Status.OK)
-    }
-
-    "return ok (200) for property journey (2 pages)" in {
-      val testPropertyCacheMap = testCacheMap(
-        rentUkProperty = testNewIncomeSourceProperty_2page.rentUkProperty,
-        workForYourself = testNewIncomeSourceProperty_2page.workForYourself,
-        otherIncome = testOtherIncomeNo,
-        terms = testTerms
-      )
-      setupMockKeystore(fetchAll = testPropertyCacheMap)
 
       status(result) must be(Status.OK)
     }
@@ -107,7 +117,7 @@ class CheckYourAnswersControllerNewIncomeSourceSpec extends ControllerBaseSpec
 
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockKeystore(fetchAll = testCacheMap)
-        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary(newIncomeSourceFlow = true))
+        mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
         status(result) must be(Status.SEE_OTHER)
         await(result)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
@@ -125,7 +135,7 @@ class CheckYourAnswersControllerNewIncomeSourceSpec extends ControllerBaseSpec
 
       "return a internalServer error" in {
         setupMockKeystore(fetchAll = testCacheMap)
-        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary(newIncomeSourceFlow = true))
+        mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary())
         intercept[InternalServerException](await(result)).message mustBe "Successful response not received from submission"
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }

@@ -16,14 +16,28 @@
 
 package core.services
 
+import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import core.utils.UnitTestTrait
-import incometax.subscription.models.SummaryModel
+import incometax.subscription.models.{Both, SummaryModel}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
 
-class CacheUtilSpec extends UnitTestTrait {
+class CacheUtilSpec extends UnitTestTrait
+  with FeatureSwitching
+  with BeforeAndAfterEach {
 
   import core.services.CacheUtil._
   import core.utils.TestModels._
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(NewIncomeSourceFlowFeature)
+  }
+
+  override def afterEach(): Unit = {
+    super.afterEach()
+    disable(NewIncomeSourceFlowFeature)
+  }
 
   "CacheUtil" should {
 
@@ -31,7 +45,7 @@ class CacheUtilSpec extends UnitTestTrait {
       emptyCacheMap.getIncomeSource() shouldBe None
       emptyCacheMap.getRentUkProperty() shouldBe None
       emptyCacheMap.getWorkForYourself() shouldBe None
-      emptyCacheMap.getNewIncomeSource() shouldBe None
+      emptyCacheMap.getIncomeSourceType() shouldBe None
       emptyCacheMap.getOtherIncome() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
       emptyCacheMap.getBusinessPhoneNumber() shouldBe None
@@ -45,9 +59,9 @@ class CacheUtilSpec extends UnitTestTrait {
 
     "In the respective get calls, return the models if they are in the cachemap" in {
       testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
-      testCacheMap.getRentUkProperty() shouldBe Some(testNewIncomeSourceBoth.rentUkProperty)
-      testCacheMap.getWorkForYourself() shouldBe testNewIncomeSourceBoth.workForYourself
-      testCacheMap.getNewIncomeSource() shouldBe Some(testNewIncomeSourceBoth)
+      testCacheMap.getRentUkProperty() shouldBe Some(testRentUkProperty_property_and_other)
+      testCacheMap.getWorkForYourself() shouldBe Some(testWorkForYourself_yes)
+      testCacheMap.getIncomeSourceType() shouldBe Some(Both)
       testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
       testCacheMap.getBusinessPhoneNumber() shouldBe Some(testBusinessPhoneNumber)
@@ -102,10 +116,12 @@ class CacheUtilSpec extends UnitTestTrait {
   }
 
   "The getSummary(newIncomeSourceFlow = true) should populate the Summary model correctly" in {
-    testCacheMap.getSummary(newIncomeSourceFlow = true) shouldBe
+    enable(NewIncomeSourceFlowFeature)
+
+    testCacheMap.getSummary() shouldBe
       SummaryModel(
-        rentUkProperty = testNewIncomeSourceBoth.rentUkProperty,
-        workForYourself= testNewIncomeSourceBoth.workForYourself,
+        rentUkProperty = testRentUkProperty_property_and_other,
+        workForYourself = testWorkForYourself_yes,
         otherIncome = testOtherIncomeNo,
         matchTaxYear = testMatchTaxYearNo,
         accountingPeriod = testAccountingPeriod,
@@ -121,8 +137,8 @@ class CacheUtilSpec extends UnitTestTrait {
     // relevant to the journey
     val overPopulatedPropertyCacheMap =
     testCacheMap(
-      rentUkProperty = testNewIncomeSourceProperty_1page.rentUkProperty,
-      workForYourself= testNewIncomeSourceProperty_1page.workForYourself,
+      rentUkProperty = testRentUkProperty_property_only,
+      workForYourself = None,
       otherIncome = testOtherIncomeNo,
       matchTaxYear = testMatchTaxYearNo,
       accountingPeriodDate = testAccountingPeriod,
@@ -134,10 +150,10 @@ class CacheUtilSpec extends UnitTestTrait {
       terms = testTerms,
       accountingPeriodPrior = None // no longer used in individual journey
     )
-    overPopulatedPropertyCacheMap.getSummary(newIncomeSourceFlow = true) shouldBe
+    overPopulatedPropertyCacheMap.getSummary() shouldBe
       SummaryModel(
-        rentUkProperty = testNewIncomeSourceProperty_1page.rentUkProperty,
-        workForYourself = testNewIncomeSourceProperty_1page.workForYourself,
+        rentUkProperty = testRentUkProperty_property_only,
+        workForYourself = None,
         otherIncome = testOtherIncomeNo,
         terms = testTerms
       )

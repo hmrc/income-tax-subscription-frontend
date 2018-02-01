@@ -52,7 +52,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
       cache =>
         Future.successful(
           Ok(incometax.subscription.views.html.check_your_answers(
-            cache.getSummary(applicationConfig.newIncomeSourceFlowEnabled),
+            cache.getSummary(),
             isRegistration = request.isInState(Registration),
             incometax.subscription.controllers.routes.CheckYourAnswersController.submit(),
             backUrl = backUrl
@@ -66,7 +66,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         val nino = user.nino.get
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> request.uri)
 
-        subscriptionService.createSubscription(nino, cache.getSummary(applicationConfig.newIncomeSourceFlowEnabled))(headerCarrier).flatMap {
+        subscriptionService.createSubscription(nino, cache.getSummary())(headerCarrier).flatMap {
           case Right(SubscriptionSuccess(id)) =>
             keystoreService.saveSubscriptionId(id).map(_ => Redirect(incometax.subscription.controllers.routes.ConfirmationController.show()))
           case _ =>
@@ -81,10 +81,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         keystoreService.fetchAll().flatMap { cache =>
           cache.getTerms match {
             case Some(true) =>
-              val isProperty =
-                if (applicationConfig.newIncomeSourceFlowEnabled) cache.getNewIncomeSource().fold(false)(_.getIncomeSourceType == Right(Property))
-                else cache.getIncomeSource().fold(false)(_.source == IncomeSourceForm.option_property)
-
+              val isProperty = cache.getIncomeSourceType().contains(Property)
               if (isProperty)
                 processFunc(user)(request)(cache)
               else

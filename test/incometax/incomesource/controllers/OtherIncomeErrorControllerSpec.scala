@@ -21,6 +21,7 @@ import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
+import core.utils.TestModels.testCacheMapCustom
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models.OtherIncomeModel
 import org.jsoup.Jsoup
@@ -75,8 +76,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
       .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
 
     s"redirect to '${incometax.business.controllers.routes.BusinessNameController.show().url}' on the business journey" in {
-
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
+      setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceBusiness))
 
       val goodRequest = callSubmit
 
@@ -84,12 +84,11 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessNameController.show().url)
 
       await(goodRequest)
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchAll = 1)
     }
 
     s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property journey" in {
-
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+      setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceProperty))
 
       val goodRequest = callSubmit
 
@@ -97,12 +96,11 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.TermsController.show().url)
 
       await(goodRequest)
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchAll = 1)
     }
 
     s"redirect to '${incometax.business.controllers.routes.BusinessNameController.show().url}' on the both journey" in {
-
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+      setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceBoth))
 
       val goodRequest = callSubmit
 
@@ -110,7 +108,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
       redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessNameController.show().url)
 
       await(goodRequest)
-      verifyKeystore(fetchIncomeSource = 1)
+      verifyKeystore(fetchAll = 1)
     }
 
   }

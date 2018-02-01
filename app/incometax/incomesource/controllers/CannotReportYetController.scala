@@ -25,12 +25,9 @@ import core.models.DateModel
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
-import incometax.incomesource.forms.IncomeSourceForm
-import incometax.incomesource.models.NewIncomeSourceModel
-import incometax.subscription.models.{Both, Business, Property}
+import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -43,79 +40,45 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (applicationConfig.newIncomeSourceFlowEnabled) {
-        for {
-          cache <- keystoreService.fetchAll()
-          newIncomeSource = cache.getNewIncomeSource().get
-          matchTaxYear = cache.getMatchTaxYear().map(_.matchTaxYear == MatchTaxYearForm.option_yes)
-        } yield
-          Ok(incometax.incomesource.views.html.cannot_report_yet(
-            postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-            backUrl(newIncomeSource, matchTaxYear, isEditMode),
-            //TODO update date model
-            dateModel = DateModel("6","4","2018")
-          ))
-      }
-      else {
-        for {
-          cache <- keystoreService.fetchAll()
-          incomeSource = cache.getIncomeSource().get.source
-          matchTaxYear = cache.getMatchTaxYear().map(_.matchTaxYear == MatchTaxYearForm.option_yes)
-        } yield
-          Ok(incometax.incomesource.views.html.cannot_report_yet(
-            postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-            backUrl(incomeSource, matchTaxYear, isEditMode),
-            //TODO update date model
-            dateModel = DateModel("6","4","2018")
-          ))
-      }
+      for {
+        cache <- keystoreService.fetchAll()
+        newIncomeSource = cache.getIncomeSourceType().get
+        matchTaxYear = cache.getMatchTaxYear().map(_.matchTaxYear == MatchTaxYearForm.option_yes)
+        dateModel = DateModel("6","4","2018")
+      } yield
+        Ok(incometax.incomesource.views.html.cannot_report_yet(
+          postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+          backUrl(newIncomeSource, matchTaxYear, isEditMode),
+          //TODO update date model
+          dateModel = DateModel("6","4","2018")
+        ))
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       if (isEditMode) Future.successful(Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
-      else if (applicationConfig.newIncomeSourceFlowEnabled) {
+      else
         for {
           cache <- keystoreService.fetchAll()
-          newIncomeSource = cache.getNewIncomeSource().get.getIncomeSourceType
+          newIncomeSource = cache.getIncomeSourceType().get
         } yield newIncomeSource match {
-          case Right(Business | Both) =>
+          case Business | Both =>
             Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-          case Right(Property) =>
+          case Property =>
             Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
         }
-      } else {
-        keystoreService.fetchIncomeSource() map {
-          case Some(incomeSource) => incomeSource.source match {
-            case IncomeSourceForm.option_business | IncomeSourceForm.option_both =>
-              Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-            case IncomeSourceForm.option_property =>
-              Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
-          }
-          case _ =>
-            logging.info("Tried to submit 'other income error' when no data found in Keystore for 'income source'")
-            throw new InternalServerException("Other Income Error Controller, call to submit 'other income error' when no 'income source'")
-        }
-      }
   }
 
-  def backUrl(incomeSource: String, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =
-    (incomeSource, matchTaxYear) match {
-      case (IncomeSourceForm.option_property, _) =>
+  def backUrl(incomeSourceType: IncomeSourceType, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =
+    (incomeSourceType, matchTaxYear) match {
+      case (Property, _) if applicationConfig.newIncomeSourceFlowEnabled =>
+        incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+      case (Property, _) =>
         incometax.incomesource.controllers.routes.IncomeSourceController.show().url
-      case (IncomeSourceForm.option_business | IncomeSourceForm.option_both, Some(true)) =>
+      case (Business | Both, Some(true)) =>
         incometax.business.controllers.routes.MatchTaxYearController.show(editMode = isEditMode).url
-      case (IncomeSourceForm.option_business | IncomeSourceForm.option_both, Some(false)) =>
+      case (Business | Both, Some(false)) =>
         incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = isEditMode).url
     }
 
-  def backUrl(newIncomeSource: NewIncomeSourceModel, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =
-    (newIncomeSource.getIncomeSourceType, matchTaxYear) match {
-      case (Right(Property), _) =>
-        incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
-      case (Right(Business | Both), Some(true)) =>
-        incometax.business.controllers.routes.MatchTaxYearController.show(editMode = isEditMode).url
-      case (Right(Business | Both), Some(false)) =>
-        incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = isEditMode).url
-    }
 }

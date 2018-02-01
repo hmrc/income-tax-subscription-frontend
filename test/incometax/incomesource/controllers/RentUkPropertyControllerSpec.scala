@@ -19,7 +19,6 @@ package incometax.incomesource.controllers
 import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature, TaxYearDeferralFeature}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
-import core.utils.TestModels
 import incometax.incomesource.forms.RentUkPropertyForm
 import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
