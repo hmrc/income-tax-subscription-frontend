@@ -312,8 +312,8 @@ trait ViewSpecTrait extends UnitTestTrait {
         val signOutButton = element.getElementById("sign-out-button")
         signOutButton.attr("role") mustBe "button"
         signOutButton.text() mustBe text
-        if (optOrigin.isDefined) {
-          signOutButton.attr("href") mustBe SignOutController.signOut(optOrigin.get).url
+        optOrigin match {
+          case Some(origin) => signOutButton.attr("href") mustBe SignOutController.signOut(optOrigin.get).url
         }
       }
 

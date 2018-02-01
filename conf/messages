@@ -417,7 +417,7 @@ cannot-report-yet-both-misaligned.heading                      = You can''t use 
 cannot-report-yet-both-misaligned.para1                        = You can sign up and use software to record your income and expenses, but you won''t be able to submit a report for:
 cannot-report-yet-both-misaligned.bullet1                      = property income until 6 April 2018
 cannot-report-yet-both-misaligned.bullet2                      = sole trader income until {0}
-cannot-report-yet-both-misaligned.para2                        = You need to send a <a id="sa" href="{0}">Self Assessment tax return</a> instead.
+cannot-report-yet-both-misaligned.para2                        = You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead.
 
 ## Exit survey
 exit-survey.title                                               = Give feedback

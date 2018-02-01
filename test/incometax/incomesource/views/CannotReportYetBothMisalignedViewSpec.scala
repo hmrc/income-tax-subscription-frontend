@@ -60,6 +60,8 @@ class CannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
     testPage.mustHaveSignOutLink(common.signOut, optOrigin = request.path)
 
     testPage.mustHaveALink("sa", messages.linkText, appConfig.signUpToSaLink)
+
+    testPage.mustHaveContinueToSignUpButton()
   }
 
 }
