@@ -307,25 +307,27 @@ trait ViewSpecTrait extends UnitTestTrait {
         submitButtons.head.text() mustBe text
       }
 
-    def mustHaveSignOutButton(text: String, origin: Option[String] = None): Unit =
+    def mustHaveSignOutButton(text: String, optOrigin: Option[String] = None): Unit =
       s"$name must have the a sign out button (a) '$text'" in {
         val signOutButton = element.getElementById("sign-out-button")
         signOutButton.attr("role") mustBe "button"
         signOutButton.text() mustBe text
-        if (origin.isDefined) {
-          signOutButton.attr("href") mustBe SignOutController.signOut(origin.get).url
+        optOrigin match {
+          case Some(origin) => signOutButton.attr("href") mustBe SignOutController.signOut(optOrigin.get).url
         }
       }
 
-    def mustHaveSignOutLink(text: String, origin: Option[String] = None): Unit = {
-      val id ="sign-out"
-      if (origin.isDefined) {
-        mustHaveALink(id, text, SignOutController.signOut(origin.get).url)
-      } else {
-        val link = element.getElementById(id)
-        if (link == null) fail(s"Unable to locate $id")
-        if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
-        link.text() mustBe text
+    def mustHaveSignOutLink(text: String, optOrigin: Option[String] = None): Unit = {
+      val id = "sign-out"
+      optOrigin match {
+        case Some(origin) => mustHaveALink(id, text, SignOutController.signOut(origin).url)
+        case _ =>
+          s"$name have a link with text '$text' pointed to 'Sign Out'" in {
+            val link = element.getElementById(id)
+            if (link == null) fail(s"Unable to locate $id")
+            if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
+            link.text() mustBe text
+          }
       }
     }
 
