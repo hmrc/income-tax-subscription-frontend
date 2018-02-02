@@ -21,14 +21,14 @@ import core.models.DateModel
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 
-class AgentCannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
+class ClientCannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
   val testDateModel = DateModel("01", "02", "2019")
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = agent.views.html.agent_cannot_report_yet_both_misaligned(
+  lazy val page = agent.views.html.client_cannot_report_yet_both_misaligned(
     postAction = action,
     backUrl = backUrl,
     businessStartDate = testDateModel)(
