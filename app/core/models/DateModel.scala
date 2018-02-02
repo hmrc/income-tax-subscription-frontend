@@ -27,7 +27,7 @@ case class DateModel(day: String, month: String, year: String) {
 
   def toLocalDate: LocalDate = LocalDate.of(year.toInt, month.toInt, day.toInt)
 
-  def plusDays(days: Int): DateModel = DateModel.dateConvert(this.toLocalDate.plusDays(1))
+  def plusDays(days: Int): DateModel = DateModel.dateConvert(this.toLocalDate.plusDays(days))
 
   def toOutputDateFormat: String = toLocalDate.format(outputFormat)
 
