@@ -39,6 +39,10 @@ case class DateModel(day: String, month: String, year: String) {
     import java.time.temporal.ChronoUnit
     ChronoUnit.MONTHS.between(dateConvert(this), dateConvert(that)).toInt
   }
+
+  def matches(dateModel: DateModel): Boolean = {
+    this.toLocalDate == dateModel.toLocalDate
+  }
 }
 
 object DateModel {

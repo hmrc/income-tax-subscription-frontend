@@ -55,6 +55,8 @@ object TestModels extends Implicits {
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
+  val testAccountingPeriodMatched = AccountingPeriodModel(testStartDate, DateModel("05", "04", "2018"))
+
   def testAccountingPeriod(startDate: DateModel = testStartDate,
                            endDate: DateModel = testEndDate): AccountingPeriodModel =
     AccountingPeriodModel(startDate, endDate)

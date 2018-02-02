@@ -31,6 +31,9 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.twirl.api.HtmlFormat
 import core.Constants.crystallisationTaxYearStart
+import incometax.util.AccountingPeriodUtil
+import incometax.util.AccountingPeriodUtil._
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -56,39 +59,53 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
                        matchToTaxYear: Option[Boolean],
                        accountingPeriod: Option[AccountingPeriodModel],
                        isEditMode: Boolean)(implicit request: Request[_]): HtmlFormat.Appendable = {
+    val businessAccountingPeriod = (incomeSourceType, matchToTaxYear) match {
+      case (Business | Both, Some(true)) => Some(getCurrentTaxYear)
+      case (Business | Both, Some(false)) => accountingPeriod
+      case (Property, _) => None
+      case _ => throw new InternalServerException("The business accounting period data was in an invalid state")
+    }
 
-    lazy val businessCannotCrystallise = accountingPeriod.map(_.taxEndYear <= 2018)
-    lazy val optNewStartDate = accountingPeriod.map(_.endDate.plusDays(1))
+    lazy val backUrl = getBackUrl(incomeSourceType, matchToTaxYear, isEditMode)
 
-    def generateCannotReportView(dateModel: DateModel) =
-      incometax.incomesource.views.html.cannot_report_yet(
-        postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-        backUrl(incomeSourceType, matchToTaxYear, isEditMode),
-        dateModel = dateModel
-      )
-
-    def generateCanReportBusinessButNotPropertyView =
-      incometax.incomesource.views.html.can_report_business_but_not_property_yet(
-        postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-        backUrl(incomeSourceType, matchToTaxYear, isEditMode)
-      )
-
-    def generateCannotReportMisalignedView(businessStartDate: DateModel) =
-      incometax.incomesource.views.html.cannot_report_yet_both_misaligned(
-        postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-        backUrl(incomeSourceType, matchToTaxYear, isEditMode),
-        businessStartDate = businessStartDate
-      )
-
-    (incomeSourceType, matchToTaxYear) match {
-      case (Property, _) => generateCannotReportView(crystallisationTaxYearStart)
-      case (Business, Some(true)) => generateCannotReportView(crystallisationTaxYearStart)
-      case (Business, Some(false)) if businessCannotCrystallise.get => generateCannotReportView(optNewStartDate.get)
-      case (Both, Some(true)) => generateCannotReportView(crystallisationTaxYearStart)
-      case (Both, Some(false)) if businessCannotCrystallise.get => generateCannotReportMisalignedView(optNewStartDate.get)
-      case (Both, Some(false)) => generateCanReportBusinessButNotPropertyView
+    (incomeSourceType, businessAccountingPeriod) match {
+      case (Property, None) =>
+        generateCannotReportView(crystallisationTaxYearStart, backUrl, isEditMode)
+      case (Business, Some(businessDate)) =>
+        generateCannotReportView(businessDate.endDate plusDays 1, backUrl, isEditMode)
+      case (Both, Some(businessDate)) =>
+        if (businessDate.endDate matches getCurrentTaxYearEndDate) {
+          generateCannotReportView(crystallisationTaxYearStart, backUrl, isEditMode)
+        } else if (businessDate.taxEndYear <= 2018) {
+          generateCannotReportMisalignedView(businessDate.endDate plusDays 1, backUrl, isEditMode)
+        } else {
+          generateCanReportBusinessButNotPropertyView(backUrl, isEditMode)
+        }
+      case _ => throw new InternalServerException("The accounting period data was in an invalid state")
     }
   }
+
+  private def generateCannotReportView(dateModel: DateModel, backUrl: String, isEditMode: Boolean)(implicit request: Request[_]) =
+    incometax.incomesource.views.html.cannot_report_yet(
+      postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+      backUrl,
+      dateModel = dateModel
+    )
+
+  private def generateCanReportBusinessButNotPropertyView(backUrl: String, isEditMode: Boolean)(implicit request: Request[_]) =
+    incometax.incomesource.views.html.can_report_business_but_not_property_yet(
+      postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+      backUrl
+    )
+
+
+  private def generateCannotReportMisalignedView(businessStartDate: DateModel, backUrl: String, isEditMode: Boolean)(implicit request: Request[_]) =
+    incometax.incomesource.views.html.cannot_report_yet_both_misaligned(
+      postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+      backUrl,
+      businessStartDate = businessStartDate
+    )
+
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -105,7 +122,7 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
         }
   }
 
-  def backUrl(incomeSourceType: IncomeSourceType, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =
+  def getBackUrl(incomeSourceType: IncomeSourceType, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =
     (incomeSourceType, matchTaxYear) match {
       case (Property, _) if applicationConfig.newIncomeSourceFlowEnabled =>
         incometax.incomesource.controllers.routes.WorkForYourselfController.show().url

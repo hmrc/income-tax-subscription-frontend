@@ -30,6 +30,7 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.InternalServerException
 
 class CannotReportYetControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
@@ -61,7 +62,7 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
     disable(NewIncomeSourceFlowFeature)
   }
 
-  val testCannotCrystalliseDate = DateModel("5", "4", "2018")
+  val testCannotCrystalliseDate = DateModel("4", "4", "2018")
   val testCanCrystalliseDate = DateModel("6", "4", "2018")
 
   "Calling the show action of the CannotReportYetController" when {
@@ -151,6 +152,26 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
             verifyKeystore(fetchAll = 1)
           }
         }
+        "the entered accounting period matches the tax year" should {
+          "return OK and display the CannotReport page with until 6 April 2018" in {
+            setupMockKeystore(fetchAll = testCacheMapCustom(
+              incomeSource = TestModels.testIncomeSourceBoth,
+              accountingPeriodDate = TestModels.testAccountingPeriodMatched
+            ))
+
+            val result = call
+            status(result) must be(Status.OK)
+            lazy val document = Jsoup.parse(contentAsString(result))
+
+            contentType(result) must be(Some("text/html"))
+            charset(result) must be(Some("utf-8"))
+
+            document.title mustBe messages.CannotReportYet.title
+            document.getElementsByTag("p") text() must include(messages.CannotReportYet.para1(crystallisationTaxYearStart))
+
+            verifyKeystore(fetchAll = 1)
+          }
+        }
         "doesn't match the tax year" when {
           "their end date is before the 6th April 2018" should {
             "return Ok with cannot report yet both misaligned page" in {
@@ -194,6 +215,16 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
               verifyKeystore(fetchAll = 1)
             }
           }
+        }
+      }
+      "the accounting period data is in an invalid state" should {
+        "throw an InternalServerException" in {
+          setupMockKeystore(fetchAll = testCacheMapCustom(
+            incomeSource = TestModels.testIncomeSourceBoth,
+            matchTaxYear = None
+          ))
+
+          intercept[InternalServerException](await(call))
         }
       }
     }
@@ -293,6 +324,28 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
             verifyKeystore(fetchAll = 1)
           }
         }
+        "the entered accounting period matches the tax year" should {
+          "return OK and display the CannotReport page with until 6 April 2018" in {
+            enable(NewIncomeSourceFlowFeature)
+            setupMockKeystore(fetchAll = testCacheMapCustom(
+              rentUkProperty = testRentUkProperty_property_and_other,
+              workForYourself = testWorkForYourself_yes,
+              accountingPeriodDate = TestModels.testAccountingPeriodMatched
+            ))
+
+            val result = call
+            status(result) must be(Status.OK)
+            lazy val document = Jsoup.parse(contentAsString(result))
+
+            contentType(result) must be(Some("text/html"))
+            charset(result) must be(Some("utf-8"))
+
+            document.title mustBe messages.CannotReportYet.title
+            document.getElementsByTag("p") text() must include(messages.CannotReportYet.para1(crystallisationTaxYearStart))
+
+            verifyKeystore(fetchAll = 1)
+          }
+        }
 
         "doesn't match the tax year" when {
           "their end date is before the 6th April 2018" should {
@@ -343,6 +396,16 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
               verifyKeystore(fetchAll = 1)
             }
           }
+        }
+      }
+      "the accounting period data is in an invalid state" should {
+        "throw an InternalServerException" in {
+          setupMockKeystore(fetchAll = testCacheMapCustom(
+            incomeSource = TestModels.testIncomeSourceBoth,
+            matchTaxYear = None
+          ))
+
+          intercept[InternalServerException](await(call))
         }
       }
     }
@@ -490,7 +553,7 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
 
   "backUrl" when {
     def evalBackUrl(incomeSourceType: IncomeSourceType, matchTaxYear: Option[Boolean], isEditMode: Boolean) =
-      TestCannotReportYetController.backUrl(incomeSourceType, matchTaxYear, isEditMode)
+      TestCannotReportYetController.getBackUrl(incomeSourceType, matchTaxYear, isEditMode)
 
     "income source is property" when {
       "when new income source is disabled, return income source" in {
