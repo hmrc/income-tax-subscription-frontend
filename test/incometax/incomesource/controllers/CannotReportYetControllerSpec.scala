@@ -210,7 +210,7 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
               charset(result) must be(Some("utf-8"))
 
               document.title mustBe messages.CanReportBusinessButNotPropertyYet.title
-              document.getElementsByTag("p") text() must include(messages.CanReportBusinessButNotPropertyYet.para2)
+              document.getElementsByTag("p") text() must include(messages.CanReportBusinessButNotPropertyYet.para1)
 
               verifyKeystore(fetchAll = 1)
             }
@@ -391,7 +391,7 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
               charset(result) must be(Some("utf-8"))
 
               document.title mustBe messages.CanReportBusinessButNotPropertyYet.title
-              document.getElementsByTag("p") text() must include(messages.CanReportBusinessButNotPropertyYet.para2)
+              document.getElementsByTag("p") text() must include(messages.CanReportBusinessButNotPropertyYet.para1)
 
               verifyKeystore(fetchAll = 1)
             }
