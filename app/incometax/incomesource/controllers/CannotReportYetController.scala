@@ -25,10 +25,12 @@ import core.models.DateModel
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
+import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.twirl.api.HtmlFormat
+import core.Constants.crystallisationTaxYearStart
 
 import scala.concurrent.Future
 
@@ -45,53 +47,48 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
         cache <- keystoreService.fetchAll()
         newIncomeSource = cache.getIncomeSourceType().get
         matchTaxYear = cache.getMatchTaxYear().map(_.matchTaxYear == MatchTaxYearForm.option_yes)
-        dateModel = DateModel("6","4","2018")
+        accountingPeriod = cache.getAccountingPeriodDate()
       } yield
-        Ok(generateTemplate(newIncomeSource, matchTaxYear, None, false))
+        Ok(generateTemplate(newIncomeSource, matchTaxYear, accountingPeriod, isEditMode = isEditMode))
   }
 
   def generateTemplate(incomeSourceType: IncomeSourceType,
-                       matchToTaxYear: Option[Boolean] = None,
-                       endBeforeNextTaxYear: Option[Boolean] = None,
+                       matchToTaxYear: Option[Boolean],
+                       accountingPeriod: Option[AccountingPeriodModel],
                        isEditMode: Boolean)(implicit request: Request[_]): HtmlFormat.Appendable = {
 
+    lazy val businessCannotCrystallise = accountingPeriod.map(_.taxEndYear <= 2018)
+    lazy val optNewStartDate = accountingPeriod.map(_.endDate.plusDays(1))
 
-
-    def generateCannotReportView = {
+    def generateCannotReportView(dateModel: DateModel) =
       incometax.incomesource.views.html.cannot_report_yet(
         postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
         backUrl(incomeSourceType, matchToTaxYear, isEditMode),
-        //TODO update date model
-        dateModel = DateModel("6","4","2018")
+        dateModel = dateModel
       )
-    }
 
-    def generateCannotReportPropertyView = {
-      incometax.incomesource.views.html.cannot_report_property_yet(
+    def generateCanReportBusinessButNotPropertyView =
+      incometax.incomesource.views.html.can_report_business_but_not_property_yet(
         postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-        backUrl(incomeSourceType, matchToTaxYear, isEditMode),
-        //TODO update date model
-        dateModel = DateModel("6","4","2018")
+        backUrl(incomeSourceType, matchToTaxYear, isEditMode)
       )
-    }
 
-    def generateCannotReportMisalignedView = {
+    def generateCannotReportMisalignedView(businessStartDate: DateModel) =
       incometax.incomesource.views.html.cannot_report_yet_both_misaligned(
         postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
         backUrl(incomeSourceType, matchToTaxYear, isEditMode),
-        //TODO update date model
-        businessStartDate = DateModel("6","4","2018")
+        businessStartDate = businessStartDate
       )
-    }
 
-    (incomeSourceType, matchToTaxYear, endBeforeNextTaxYear) match {
-      case (Property, _, _) => generateCannotReportView
-      case (Business, Some(true), _) => generateCannotReportView
-      case (Both, Some(false), _) => generateCannotReportView
-      case (Both, _, Some(accountingPeriodCondition)) => if (accountingPeriodCondition) generateCannotReportView else generateCannotReportView
+    (incomeSourceType, matchToTaxYear) match {
+      case (Property, _) => generateCannotReportView(crystallisationTaxYearStart)
+      case (Business, Some(true)) => generateCannotReportView(crystallisationTaxYearStart)
+      case (Business, Some(false)) if businessCannotCrystallise.get => generateCannotReportView(optNewStartDate.get)
+      case (Both, Some(true)) => generateCannotReportView(crystallisationTaxYearStart)
+      case (Both, Some(false)) if businessCannotCrystallise.get => generateCannotReportMisalignedView(optNewStartDate.get)
+      case (Both, Some(false)) => generateCanReportBusinessButNotPropertyView
     }
   }
-
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

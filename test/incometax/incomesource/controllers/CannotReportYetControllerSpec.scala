@@ -16,9 +16,12 @@
 
 package incometax.incomesource.controllers
 
+import assets.{MessageLookup => messages}
+import core.Constants.crystallisationTaxYearStart
 import core.audit.Logging
 import core.config.featureswitch._
 import core.controllers.ControllerBaseSpec
+import core.models.DateModel
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
 import core.utils.TestModels._
@@ -58,39 +61,292 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
     disable(NewIncomeSourceFlowFeature)
   }
 
+  val testCannotCrystalliseDate = DateModel("5", "4", "2018")
+  val testCanCrystalliseDate = DateModel("6", "4", "2018")
+
   "Calling the show action of the CannotReportYetController" when {
     def call = TestCannotReportYetController.show(isEditMode = false)(subscriptionRequest)
 
     "NewIncomeSourceFlowFeature is disabled" should {
-      "return OK and display the page" in {
-        setupMockKeystore(fetchAll = testCacheMap)
+      "Property only" should {
+        "return OK and display the CannotReport page with until 6 April 2018" in {
+          setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceProperty))
 
-        val result = call
-        status(result) must be(Status.OK)
-        lazy val document = Jsoup.parse(contentAsString(result))
+          val result = call
+          status(result) must be(Status.OK)
+          lazy val document = Jsoup.parse(contentAsString(result))
 
-        contentType(result) must be(Some("text/html"))
-        charset(result) must be(Some("utf-8"))
+          contentType(result) must be(Some("text/html"))
+          charset(result) must be(Some("utf-8"))
 
-        verifyKeystore(fetchAll = 1)
+          document.title mustBe messages.CannotReportYet.title
+          document.getElementsByTag("p") text() must include(messages.CannotReportYet.para1(crystallisationTaxYearStart))
+
+          verifyKeystore(fetchAll = 1)
+        }
+      }
+
+      "Business only and" when {
+        "matches the tax year" should {
+          "return OK and display the CannotReport page with until 6 April 2018" in {
+            setupMockKeystore(fetchAll = testCacheMapCustom(
+              incomeSource = TestModels.testIncomeSourceBusiness,
+              matchTaxYear = TestModels.testMatchTaxYearYes
+            ))
+
+            val result = call
+            status(result) must be(Status.OK)
+            lazy val document = Jsoup.parse(contentAsString(result))
+
+            contentType(result) must be(Some("text/html"))
+            charset(result) must be(Some("utf-8"))
+
+            document.title mustBe messages.CannotReportYet.title
+            document.getElementsByTag("p") text() must include(messages.CannotReportYet.para1(crystallisationTaxYearStart))
+
+            verifyKeystore(fetchAll = 1)
+          }
+        }
+        "does not matches the tax year and accounting period end year is after 2018" should {
+          "return OK and display the CannotReport page with until a the next tax year" in {
+            setupMockKeystore(fetchAll = testCacheMapCustom(
+              incomeSource = TestModels.testIncomeSourceBusiness,
+              matchTaxYear = TestModels.testMatchTaxYearNo,
+              accountingPeriodDate = TestModels.testAccountingPeriod.copy(endDate = testCannotCrystalliseDate)
+            ))
+
+            val result = call
+            status(result) must be(Status.OK)
+            lazy val document = Jsoup.parse(contentAsString(result))
+
+            contentType(result) must be(Some("text/html"))
+            charset(result) must be(Some("utf-8"))
+
+            document.title mustBe messages.CannotReportYet.title
+            document.getElementsByTag("p") text() must include(messages.CannotReportYet.para1(testCannotCrystalliseDate.plusDays(1)))
+
+            verifyKeystore(fetchAll = 1)
+          }
+        }
+      }
+
+      "Both business and property income" when {
+        "matches the tax year" should {
+          "return OK and display the CannotReport page with until 6 April 2018" in {
+            setupMockKeystore(fetchAll = testCacheMapCustom(
+              incomeSource = TestModels.testIncomeSourceBoth,
+              matchTaxYear = TestModels.testMatchTaxYearYes
+            ))
+
+            val result = call
+            status(result) must be(Status.OK)
+            lazy val document = Jsoup.parse(contentAsString(result))
+
+            contentType(result) must be(Some("text/html"))
+            charset(result) must be(Some("utf-8"))
+
+            document.title mustBe messages.CannotReportYet.title
+            document.getElementsByTag("p") text() must include(messages.CannotReportYet.para1(crystallisationTaxYearStart))
+
+            verifyKeystore(fetchAll = 1)
+          }
+        }
+        "doesn't match the tax year" when {
+          "their end date is before the 6th April 2018" should {
+            "return Ok with cannot report yet both misaligned page" in {
+              setupMockKeystore(fetchAll = testCacheMapCustom(
+                incomeSource = TestModels.testIncomeSourceBoth,
+                matchTaxYear = TestModels.testMatchTaxYearNo,
+                accountingPeriodDate = TestModels.testAccountingPeriod.copy(endDate = testCannotCrystalliseDate)
+              ))
+
+              val result = call
+              status(result) must be(Status.OK)
+              lazy val document = Jsoup.parse(contentAsString(result))
+
+              contentType(result) must be(Some("text/html"))
+              charset(result) must be(Some("utf-8"))
+
+              document.title mustBe messages.CannotReportYetBothMisaligned.title
+              document.getElementsByTag("li") text() must include(messages.CannotReportYetBothMisaligned.bullet2(testCannotCrystalliseDate.plusDays(1)))
+
+              verifyKeystore(fetchAll = 1)
+            }
+          }
+          "their end date is after the 6th April 2018" should {
+            "return Ok with can report business but not property yet page" in {
+              setupMockKeystore(fetchAll = testCacheMapCustom(
+                incomeSource = TestModels.testIncomeSourceBoth,
+                matchTaxYear = TestModels.testMatchTaxYearNo,
+                accountingPeriodDate = TestModels.testAccountingPeriod.copy(endDate = testCanCrystalliseDate)
+              ))
+
+              val result = call
+              status(result) must be(Status.OK)
+              lazy val document = Jsoup.parse(contentAsString(result))
+
+              contentType(result) must be(Some("text/html"))
+              charset(result) must be(Some("utf-8"))
+
+              document.title mustBe messages.CanReportBusinessButNotPropertyYet.title
+              document.getElementsByTag("p") text() must include(messages.CanReportBusinessButNotPropertyYet.para2)
+
+              verifyKeystore(fetchAll = 1)
+            }
+          }
+        }
       }
     }
 
-    "NewIncomeSourceFlowFeature is enable" should {
-      "return OK and display the page" in {
-        enable(NewIncomeSourceFlowFeature)
-        setupMockKeystore(fetchAll = testCacheMap)
+    "NewIncomeSourceFlowFeature is enable" when {
+      "Property only" should {
+        "return OK and display the CannotReport page with until 6 April 2018" in {
+          enable(NewIncomeSourceFlowFeature)
+          setupMockKeystore(fetchAll = testCacheMapCustom(
+            rentUkProperty = testRentUkProperty_property_and_other,
+            workForYourself = testWorkForYourself_no
+          ))
 
-        val result = call
-        status(result) must be(Status.OK)
-        lazy val document = Jsoup.parse(contentAsString(result))
+          val result = call
+          status(result) must be(Status.OK)
+          lazy val document = Jsoup.parse(contentAsString(result))
 
-        contentType(result) must be(Some("text/html"))
-        charset(result) must be(Some("utf-8"))
+          contentType(result) must be(Some("text/html"))
+          charset(result) must be(Some("utf-8"))
 
-        verifyKeystore(fetchAll = 1)
+          document.title mustBe messages.CannotReportYet.title
+          document.getElementsByTag("p") text() must include(messages.CannotReportYet.para1(crystallisationTaxYearStart))
+
+          verifyKeystore(fetchAll = 1)
+        }
+      }
+
+      "Business only and" when {
+        "matches the tax year" should {
+          "return OK and display the CannotReport page with until 6 April 2018" in {
+            enable(NewIncomeSourceFlowFeature)
+            setupMockKeystore(fetchAll = testCacheMapCustom(
+              rentUkProperty = testRentUkProperty_no_property,
+              workForYourself = testWorkForYourself_yes,
+              matchTaxYear = TestModels.testMatchTaxYearYes
+            ))
+
+            val result = call
+            status(result) must be(Status.OK)
+            lazy val document = Jsoup.parse(contentAsString(result))
+
+            contentType(result) must be(Some("text/html"))
+            charset(result) must be(Some("utf-8"))
+
+            document.title mustBe messages.CannotReportYet.title
+            document.getElementsByTag("p") text() must include(messages.CannotReportYet.para1(crystallisationTaxYearStart))
+
+            verifyKeystore(fetchAll = 1)
+          }
+        }
+        "does not matches the tax year and accounting period end year is after 2018" should {
+          "return OK and display the CannotReport page with until a the next tax year" in {
+            enable(NewIncomeSourceFlowFeature)
+            setupMockKeystore(fetchAll = testCacheMapCustom(
+              rentUkProperty = testRentUkProperty_no_property,
+              workForYourself = testWorkForYourself_yes,
+              matchTaxYear = TestModels.testMatchTaxYearNo,
+              accountingPeriodDate = TestModels.testAccountingPeriod.copy(endDate = testCannotCrystalliseDate)
+            ))
+
+            val result = call
+            status(result) must be(Status.OK)
+            lazy val document = Jsoup.parse(contentAsString(result))
+
+            contentType(result) must be(Some("text/html"))
+            charset(result) must be(Some("utf-8"))
+
+            document.title mustBe messages.CannotReportYet.title
+            document.getElementsByTag("p") text() must include(messages.CannotReportYet.para1(testCannotCrystalliseDate.plusDays(1)))
+
+            verifyKeystore(fetchAll = 1)
+          }
+        }
+      }
+
+      "Both business and property income" when {
+        "matches the tax year" should {
+          "return OK and display the CannotReport page with until 6 April 2018" in {
+            enable(NewIncomeSourceFlowFeature)
+
+            setupMockKeystore(fetchAll = testCacheMapCustom(
+              rentUkProperty = testRentUkProperty_property_and_other,
+              workForYourself = testWorkForYourself_yes,
+              matchTaxYear = TestModels.testMatchTaxYearYes
+            ))
+
+            val result = call
+            status(result) must be(Status.OK)
+            lazy val document = Jsoup.parse(contentAsString(result))
+
+            contentType(result) must be(Some("text/html"))
+            charset(result) must be(Some("utf-8"))
+
+            document.title mustBe messages.CannotReportYet.title
+            document.getElementsByTag("p") text() must include(messages.CannotReportYet.para1(crystallisationTaxYearStart))
+
+            verifyKeystore(fetchAll = 1)
+          }
+        }
+
+        "doesn't match the tax year" when {
+          "their end date is before the 6th April 2018" should {
+            "return Ok with cannot report yet both misaligned page" in {
+              enable(NewIncomeSourceFlowFeature)
+
+              setupMockKeystore(fetchAll = testCacheMapCustom(
+                rentUkProperty = testRentUkProperty_property_and_other,
+                workForYourself = testWorkForYourself_yes,
+                matchTaxYear = TestModels.testMatchTaxYearNo,
+                accountingPeriodDate = TestModels.testAccountingPeriod.copy(endDate = testCannotCrystalliseDate)
+              ))
+
+              val result = call
+              status(result) must be(Status.OK)
+              lazy val document = Jsoup.parse(contentAsString(result))
+
+              contentType(result) must be(Some("text/html"))
+              charset(result) must be(Some("utf-8"))
+
+              document.title mustBe messages.CannotReportYetBothMisaligned.title
+              document.getElementsByTag("li") text() must include(messages.CannotReportYetBothMisaligned.bullet2(testCannotCrystalliseDate.plusDays(1)))
+
+              verifyKeystore(fetchAll = 1)
+            }
+          }
+          "their end date is after the 6th April 2018" should {
+            "return Ok with can report business but not property yet page" in {
+              enable(NewIncomeSourceFlowFeature)
+
+              setupMockKeystore(fetchAll = testCacheMapCustom(
+                rentUkProperty = testRentUkProperty_property_and_other,
+                workForYourself = testWorkForYourself_yes,
+                matchTaxYear = TestModels.testMatchTaxYearNo,
+                accountingPeriodDate = TestModels.testAccountingPeriod.copy(endDate = testCanCrystalliseDate)
+              ))
+
+              val result = call
+              status(result) must be(Status.OK)
+              lazy val document = Jsoup.parse(contentAsString(result))
+
+              contentType(result) must be(Some("text/html"))
+              charset(result) must be(Some("utf-8"))
+
+              document.title mustBe messages.CanReportBusinessButNotPropertyYet.title
+              document.getElementsByTag("p") text() must include(messages.CanReportBusinessButNotPropertyYet.para2)
+
+              verifyKeystore(fetchAll = 1)
+            }
+          }
+        }
       }
     }
+
   }
 
   "Calling the submit action of the CannotReportYetController with an authorised user" when {
@@ -99,7 +355,9 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
 
     "NewIncomeSourceFlowFeature is disabled" should {
       "not in edit mode" should {
-        s"redirect to '${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}' on the business journey" in {
+        s"redirect to '${
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+        }' on the business journey" in {
           setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceBusiness))
 
           val goodRequest = callSubmit()
@@ -111,7 +369,9 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchAll = 1)
         }
 
-        s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property journey" in {
+        s"redirect to '${
+          incometax.subscription.controllers.routes.TermsController.show().url
+        }' on the property journey" in {
           setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceProperty))
 
           val goodRequest = callSubmit()
@@ -123,7 +383,9 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchAll = 1)
         }
 
-        s"redirect to '${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}' on the both journey" in {
+        s"redirect to '${
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+        }' on the both journey" in {
           setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceBoth))
 
           val goodRequest = callSubmit()
@@ -137,7 +399,9 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
       }
 
       "in edit mode" should {
-        s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
+        s"redirect to '${
+          incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+        }'" in {
           val goodRequest = callSubmit(isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
@@ -151,7 +415,9 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
 
     "NewIncomeSourceFlowFeature is enabled" should {
       "not in edit mode" should {
-        s"redirect to '${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}' on the business journey" in {
+        s"redirect to '${
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+        }' on the business journey" in {
           enable(NewIncomeSourceFlowFeature)
           setupMockKeystore(fetchAll = testCacheMapCustom(
             rentUkProperty = testRentUkProperty_no_property,
@@ -167,7 +433,9 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchAll = 1)
         }
 
-        s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' on the property journey" in {
+        s"redirect to '${
+          incometax.subscription.controllers.routes.TermsController.show().url
+        }' on the property journey" in {
           enable(NewIncomeSourceFlowFeature)
           setupMockKeystore(fetchAll = testCacheMapCustom(
             rentUkProperty = testRentUkProperty_property_and_other,
@@ -183,7 +451,9 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchAll = 1)
         }
 
-        s"redirect to '${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url}' on the both journey" in {
+        s"redirect to '${
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+        }' on the both journey" in {
           enable(NewIncomeSourceFlowFeature)
           setupMockKeystore(fetchAll = testCacheMapCustom(
             rentUkProperty = testRentUkProperty_property_and_other,
@@ -201,7 +471,9 @@ class CannotReportYetControllerSpec extends ControllerBaseSpec
       }
 
       "in edit mode" should {
-        s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
+        s"redirect to '${
+          incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+        }'" in {
           enable(NewIncomeSourceFlowFeature)
           val goodRequest = callSubmit(isEditMode = true)
 

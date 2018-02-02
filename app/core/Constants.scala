@@ -16,6 +16,8 @@
 
 package core
 
+import core.models.DateModel
+
 object Constants {
 
   val mtdItsaEnrolmentName = "HMRC-MTD-IT"
@@ -35,4 +37,7 @@ object Constants {
   }
 
   val preferencesServiceKey = "mtdfbit"
+
+  val crystallisationTaxYearStart = DateModel("6", "4", "2018")
+
 }

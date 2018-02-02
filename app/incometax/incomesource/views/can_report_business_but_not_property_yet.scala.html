@@ -20,7 +20,7 @@
 @import core.views.html.templates.main_template
 @import core.models.DateModel
 
-@(postAction: Call, backUrl: String, dateModel: DateModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("cannot-report-property-yet.title")) {
     @back_link(backUrl)
@@ -28,7 +28,7 @@
     <h1 class="heading-large">@Messages("cannot-report-property-yet.heading")</h1>
 
     <p>@Messages("cannot-report-property-yet.para1")</p>
-    <p>@Html(Messages("cannot-report-property-yet.para2", dateModel.toOutputDateFormat, appConfig.signUpToSaLink))</p>
+    <p>@Html(Messages("cannot-report-property-yet.para2", appConfig.signUpToSaLink))</p>
 
     <div class="form-group">
         @form(action = postAction) {

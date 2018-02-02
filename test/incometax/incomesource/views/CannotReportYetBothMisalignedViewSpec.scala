@@ -54,7 +54,7 @@ class CannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
 
     testPage.mustHaveBulletSeq(
       messages.bullet1,
-      messages.bullet2
+      messages.bullet2(testDateModel)
     )
 
     testPage.mustHaveSignOutLink(common.signOut, optOrigin = request.path)
