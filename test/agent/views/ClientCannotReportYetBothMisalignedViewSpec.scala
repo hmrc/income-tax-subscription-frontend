@@ -16,19 +16,19 @@
 
 package incometax.incomesource.views
 
-import assets.MessageLookup.{Base => common, CannotReportYetBothMisaligned => messages}
+import assets.MessageLookup.{Base => common, AgentCannotReportYetBothMisaligned => messages}
 import core.models.DateModel
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 
-class CannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
+class ClientCannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
   val testDateModel = DateModel("01", "02", "2019")
   val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = incometax.incomesource.views.html.cannot_report_yet_both_misaligned(
+  lazy val page = agent.views.html.client_cannot_report_yet_both_misaligned(
     postAction = action,
     backUrl = backUrl,
     businessStartDate = testDateModel)(
@@ -37,9 +37,9 @@ class CannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
     appConfig
   )
 
-  "The Cannot report yet both misaligned view" should {
+  "The Agent Cannot report yet both misaligned view" should {
     val testPage = TestView(
-      name = "Cannot report yet both misaligned View",
+      name = "Agent Cannot report yet both misaligned View",
       title = messages.title,
       heading = messages.heading,
       page = page

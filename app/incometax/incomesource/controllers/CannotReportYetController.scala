@@ -25,9 +25,15 @@ import core.models.DateModel
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
+import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc._
+import play.twirl.api.HtmlFormat
+import core.Constants.crystallisationTaxYearStart
+import incometax.util.AccountingPeriodUtil
+import incometax.util.AccountingPeriodUtil._
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -44,15 +50,62 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
         cache <- keystoreService.fetchAll()
         newIncomeSource = cache.getIncomeSourceType().get
         matchTaxYear = cache.getMatchTaxYear().map(_.matchTaxYear == MatchTaxYearForm.option_yes)
-        dateModel = DateModel("6","4","2018")
+        accountingPeriod = cache.getAccountingPeriodDate()
       } yield
-        Ok(incometax.incomesource.views.html.cannot_report_yet(
-          postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-          backUrl(newIncomeSource, matchTaxYear, isEditMode),
-          //TODO update date model
-          dateModel = DateModel("6","4","2018")
-        ))
+        Ok(generateTemplate(newIncomeSource, matchTaxYear, accountingPeriod, isEditMode = isEditMode))
   }
+
+  def generateTemplate(incomeSourceType: IncomeSourceType,
+                       matchToTaxYear: Option[Boolean],
+                       accountingPeriod: Option[AccountingPeriodModel],
+                       isEditMode: Boolean)(implicit request: Request[_]): HtmlFormat.Appendable = {
+    val businessAccountingPeriod = (incomeSourceType, matchToTaxYear) match {
+      case (Business | Both, Some(true)) => Some(getCurrentTaxYear)
+      case (Business | Both, Some(false)) => accountingPeriod
+      case (Property, _) => None
+      case _ => throw new InternalServerException("The business accounting period data was in an invalid state")
+    }
+
+    lazy val backUrl = getBackUrl(incomeSourceType, matchToTaxYear, isEditMode)
+
+    (incomeSourceType, businessAccountingPeriod) match {
+      case (Property, None) =>
+        generateCannotReportView(crystallisationTaxYearStart, backUrl, isEditMode)
+      case (Business, Some(businessDate)) =>
+        generateCannotReportView(businessDate.endDate plusDays 1, backUrl, isEditMode)
+      case (Both, Some(businessDate)) =>
+        if (businessDate.endDate matches getCurrentTaxYearEndDate) {
+          generateCannotReportView(crystallisationTaxYearStart, backUrl, isEditMode)
+        } else if (businessDate.taxEndYear <= 2018) {
+          generateCannotReportMisalignedView(businessDate.endDate plusDays 1, backUrl, isEditMode)
+        } else {
+          generateCanReportBusinessButNotPropertyView(backUrl, isEditMode)
+        }
+      case _ => throw new InternalServerException("The accounting period data was in an invalid state")
+    }
+  }
+
+  private def generateCannotReportView(dateModel: DateModel, backUrl: String, isEditMode: Boolean)(implicit request: Request[_]) =
+    incometax.incomesource.views.html.cannot_report_yet(
+      postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+      backUrl,
+      dateModel = dateModel
+    )
+
+  private def generateCanReportBusinessButNotPropertyView(backUrl: String, isEditMode: Boolean)(implicit request: Request[_]) =
+    incometax.incomesource.views.html.can_report_business_but_not_property_yet(
+      postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+      backUrl
+    )
+
+
+  private def generateCannotReportMisalignedView(businessStartDate: DateModel, backUrl: String, isEditMode: Boolean)(implicit request: Request[_]) =
+    incometax.incomesource.views.html.cannot_report_yet_both_misaligned(
+      postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
+      backUrl,
+      businessStartDate = businessStartDate
+    )
+
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -69,7 +122,7 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
         }
   }
 
-  def backUrl(incomeSourceType: IncomeSourceType, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =
+  def getBackUrl(incomeSourceType: IncomeSourceType, matchTaxYear: Option[Boolean], isEditMode: Boolean): String =
     (incomeSourceType, matchTaxYear) match {
       case (Property, _) if applicationConfig.newIncomeSourceFlowEnabled =>
         incometax.incomesource.controllers.routes.WorkForYourselfController.show().url

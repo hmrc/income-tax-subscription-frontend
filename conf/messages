@@ -413,11 +413,10 @@ cannot-report-yet.heading                                      = You can''t use 
 cannot-report-yet.para1                                        = You can sign up and use software to record your income and expenses, but you can''t send any reports until {0}.
 cannot-report-yet.para2                                        = You need to send a <a id="sa" href="{0}">Self Assessment tax return</a> instead.
 
-## cannot report property page ##
-cannot-report-property-yet.title                               = You can''t use software to report your property income yet
-cannot-report-property-yet.heading                             = You can''t use software to report your property income yet
-cannot-report-property-yet.para1                               = You can use software to report the work you do for yourself and to record your property income and expenses.
-cannot-report-property-yet.para2                               = You can''t submit a report for your property income until {0}. Instead, you''ll still need to <a id="sa" href="{1}">send a Self Assessment tax return</a>.
+## can report business but not property yet page ##
+cannot-report-property-yet.title                               = You can use software to report the work you do for yourself
+cannot-report-property-yet.heading                             = You can use software to report the work you do for yourself
+cannot-report-property-yet.para1                               = You can''t use software to submit a report for your property income until 6 April 2018. You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead
 
 ## cannot report yet both misaligned page ##
 cannot-report-yet-both-misaligned.title                        = You can''t use software to report your Income Tax yet
@@ -426,6 +425,14 @@ cannot-report-yet-both-misaligned.para1                        = You can sign up
 cannot-report-yet-both-misaligned.bullet1                      = property income until 6 April 2018
 cannot-report-yet-both-misaligned.bullet2                      = sole trader income until {0}
 cannot-report-yet-both-misaligned.para2                        = You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead.
+
+## agent cannot report yet both misaligned page ##
+agent-cannot-report-yet-both-misaligned.title                  = Your client can''t use software to report their Income Tax yet
+agent-cannot-report-yet-both-misaligned.heading                = Your client can''t use software to report their Income Tax yet
+agent-cannot-report-yet-both-misaligned.para1                  = You can still sign this client up and use software to record their income and expenses, but they won''t be able to submit a report for their:
+agent-cannot-report-yet-both-misaligned.bullet1                = property income until 6 April 2018
+agent-cannot-report-yet-both-misaligned.bullet2                = sole trader income until {0}
+agent-cannot-report-yet-both-misaligned.para2                  = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Exit survey
 exit-survey.title                                               = Give feedback
@@ -627,6 +634,17 @@ agent.not-authorised-error.title                                      = You''re 
 agent.not-authorised-error.heading                                    = You''re not authorised for this client
 agent.not-authorised-error.para1                                      = You can still sign up your client, but we''ll hold their information until they''ve authorised you as their agent.
 
+## Client cannot report property page ##
+agent.cannot-report-property-yet.title                                = You can''t use software to report your client''s property income yet
+agent.cannot-report-property-yet.heading                              = You can''t use software to report your client''s property income yet
+agent.cannot-report-property-yet.para1                                = You can use software to report your client''s sole trader income and to record their other income and expenses.
+agent.cannot-report-property-yet.para2                                = They won''t be able to submit a report for their property income until {0}. Your client still needs to <a id="sa" href="{1}">send a Self Assessment tax return</a>.
+
+## Client cannot report before 6 April 2018 page ##
+agent.cannot-report-yet.title                                         = Your client can''t use software to report their Income Tax yet
+agent.cannot-report-yet.heading                                       = Your client can''t use software to report their Income Tax yet
+agent.cannot-report-yet.para1                                         = You can still sign this client up and use software to record their income and expenses, but they won''t be able to submit a report until 6 April 2018.
+agent.cannot-report-yet.para2                                         = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Summary page ##
 agent.summary.title                                                   = Check your answers

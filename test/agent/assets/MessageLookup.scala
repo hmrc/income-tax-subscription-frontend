@@ -16,6 +16,8 @@
 
 package agent.assets
 
+import core.models.DateModel
+
 object MessageLookup {
 
   object Base {
@@ -406,6 +408,22 @@ object MessageLookup {
     val bullet5 = "capital gains"
     val yes = "Yes"
     val no = "No"
+  }
+
+  object ClientCannotReportYet {
+    val title = "Your client can't use software to report their Income Tax yet"
+    val heading: String = title
+    val linkText = "send a Self Assessment tax return"
+    val para1 = "You can still sign this client up and use software to record their income and expenses, but they won't be able to submit a report until 6 April 2018."
+    val para2 = s"Your client still needs to $linkText."
+  }
+
+  object ClientCannotReportPropertyYet {
+    val title = "You can't use software to report your client's property income yet"
+    val heading: String = title
+    val linkText = "send a Self Assessment tax return"
+    val para1 = "You can use software to report your client's sole trader income and to record their other income and expenses."
+    def para2(dateModel: DateModel) = s"They won't be able to submit a report for their property income until ${dateModel.toOutputDateFormat}. Your client still needs to $linkText."
   }
 
 

@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-package incometax.incomesource.views
+package agent.views
 
-import assets.MessageLookup.{Base => common, CannotReportYetBothMisaligned => messages}
+import agent.assets.MessageLookup.{Base => common, ClientCannotReportPropertyYet => messages}
 import core.models.DateModel
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 
-class CannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
+class ClientCannotReportPropertyYetViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
-  val testDateModel = DateModel("01", "02", "2019")
   val request = ViewSpecTrait.viewTestRequest
+  val testDateModel = DateModel("6","4","2018")
 
-  lazy val page = incometax.incomesource.views.html.cannot_report_yet_both_misaligned(
+  lazy val page = agent.views.html.client_cannot_report_property_yet(
     postAction = action,
     backUrl = backUrl,
-    businessStartDate = testDateModel)(
+    dateModel = testDateModel)(
     request,
     applicationMessages,
     appConfig
   )
 
-  "The Cannot report yet both misaligned view" should {
+  "The Client Cannot report property yet view" should {
+
     val testPage = TestView(
-      name = "Cannot report yet both misaligned View",
+      name = "Client Cannot report property yet View",
       title = messages.title,
       heading = messages.heading,
       page = page
@@ -49,19 +50,14 @@ class CannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
 
     testPage.mustHaveParaSeq(
       messages.para1,
-      messages.para2
+      messages.para2(testDateModel)
     )
-
-    testPage.mustHaveBulletSeq(
-      messages.bullet1,
-      messages.bullet2(testDateModel)
-    )
-
-    testPage.mustHaveSignOutLink(common.signOut, optOrigin = request.path)
-
     testPage.mustHaveALink("sa", messages.linkText, appConfig.signUpToSaLink)
 
     testPage.mustHaveContinueToSignUpButton()
+
+    testPage.mustHaveSignOutLink(common.signOut, request.path)
+
   }
 
 }

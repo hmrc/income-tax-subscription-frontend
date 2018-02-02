@@ -16,30 +16,30 @@
 
 package incometax.incomesource.views
 
-import assets.MessageLookup.{Base => common, CannotReportYetBothMisaligned => messages}
+import assets.MessageLookup.{Base => common, CanReportBusinessButNotPropertyYet => messages}
 import core.models.DateModel
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
+import play.api.test.FakeRequest
 
-class CannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
+class CanReportBusinessButNotPropertyYetViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
-  val action = ViewSpecTrait.testCall
-  val testDateModel = DateModel("01", "02", "2019")
-  val request = ViewSpecTrait.viewTestRequest
 
-  lazy val page = incometax.incomesource.views.html.cannot_report_yet_both_misaligned(
+  val action = ViewSpecTrait.testCall
+
+  lazy val page = incometax.incomesource.views.html.can_report_business_but_not_property_yet(
     postAction = action,
-    backUrl = backUrl,
-    businessStartDate = testDateModel)(
-    request,
+    backUrl = backUrl)(
+    FakeRequest(),
     applicationMessages,
     appConfig
   )
 
-  "The Cannot report yet both misaligned view" should {
+  "The Cannot report property yet view" should {
+
     val testPage = TestView(
-      name = "Cannot report yet both misaligned View",
+      name = "Cannot report property yet View",
       title = messages.title,
       heading = messages.heading,
       page = page
@@ -48,20 +48,15 @@ class CannotReportYetBothMisalignedViewSpec extends ViewSpecTrait {
     testPage.mustHaveBackLinkTo(backUrl)
 
     testPage.mustHaveParaSeq(
-      messages.para1,
-      messages.para2
+      messages.para1
     )
-
-    testPage.mustHaveBulletSeq(
-      messages.bullet1,
-      messages.bullet2(testDateModel)
-    )
-
-    testPage.mustHaveSignOutLink(common.signOut, optOrigin = request.path)
 
     testPage.mustHaveALink("sa", messages.linkText, appConfig.signUpToSaLink)
 
     testPage.mustHaveContinueToSignUpButton()
+
+    testPage.mustHaveSignOutLink(common.signOut)
+
   }
 
 }

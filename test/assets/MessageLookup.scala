@@ -179,16 +179,15 @@ object MessageLookup {
     val title = "You can't use software to report your Income Tax yet"
     val heading: String = title
     val linkText = "Self Assessment tax return"
-    val para1 = "You can sign up and use software to record your income and expenses, but you can't send any reports until 6 April 2018."
+    def para1(startDate: DateModel) = s"You can sign up and use software to record your income and expenses, but you can't send any reports until ${startDate.toOutputDateFormat}."
     val para2 = s"You need to send a $linkText instead."
   }
 
-  object CannotReportPropertyYet {
-    val title = "You can't use software to report your property income yet"
+  object CanReportBusinessButNotPropertyYet {
+    val title = "You can use software to report the work you do for yourself"
     val heading: String = title
     val linkText = "send a Self Assessment tax return"
-    val para1 = "You can use software to report the work you do for yourself and to record your property income and expenses."
-    def para2(dateModel: DateModel) = s"You can't submit a report for your property income until ${dateModel.toOutputDateFormat}. Instead, you'll still need to $linkText."
+    val para1 = s"You can't use software to submit a report for your property income until 6 April 2018. You need to $linkText instead"
   }
 
   object CannotReportYetBothMisaligned {
@@ -197,11 +196,21 @@ object MessageLookup {
     val linkText = "send a Self Assessment tax return"
     val para1 = "You can sign up and use software to record your income and expenses, but you won't be able to submit a report for:"
     val bullet1 = "property income until 6 April 2018"
-    val bullet2 = "sole trader income until 1 February 2019"
+    def bullet2(startDate: DateModel) = s"sole trader income until ${startDate.toOutputDateFormat}"
     val para2 = s"You need to $linkText instead."
   }
 
-   object BusinessName {
+  object AgentCannotReportYetBothMisaligned {
+    val title = "Your client can't use software to report their Income Tax yet"
+    val heading: String = title
+    val linkText = "send a Self Assessment tax return"
+    val para1 = "You can still sign this client up and use software to record their income and expenses, but they won't be able to submit a report for their:"
+    val bullet1 = "property income until 6 April 2018"
+    def bullet2(businessStartDate: DateModel) = s"sole trader income until ${businessStartDate.toOutputDateFormat}"
+    val para2 = s"Your client still needs to $linkText."
+  }
+
+  object BusinessName {
     val title = "Business name"
     val heading: String = "What's the name of your business?"
 
@@ -324,7 +333,7 @@ object MessageLookup {
   object AlreadyEnrolled {
     val title = "You've already signed up"
     val heading = "You've already signed up"
-    val line1 ="Your sign in details are already in use."
+    val line1 = "Your sign in details are already in use."
   }
 
   object ClaimSubscription {
@@ -402,6 +411,7 @@ object MessageLookup {
         val bul2 = "business tax account"
         val para4 = "It may take a few hours for them all to appear."
       }
+
     }
 
   }
@@ -563,11 +573,14 @@ object MessageLookup {
     }
 
     object UnauthroisedAgent {
+
       object ConfirmAgent {
         val empty = "You must select an option to continue"
         val invalid = "You must select an option to continue"
       }
+
     }
+
   }
 
   object Eligible {
@@ -666,36 +679,43 @@ object MessageLookup {
 
     object AgentNotAuthorised {
       def title(agencyName: String) = s"You have not authorised $agencyName"
+
       def heading(agencyName: String) = title(agencyName)
+
       val line_1 = "We've deleted any information they've asked to submit for you."
     }
 
     object ConfirmAgent {
-      def title(agentName:String) = s"Is $agentName your agent?"
-      def heading(agentName:String) = s"Is $agentName your agent?"
+      def title(agentName: String) = s"Is $agentName your agent?"
+
+      def heading(agentName: String) = s"Is $agentName your agent?"
+
       val para1 = "HMRC will sometimes contact you and your agent, or you instead of your agent."
       val yes = "Yes"
       val no = "No"
     }
 
     object AuthoriseAgent {
-      def title(agentName:String) = s"Do you authorise $agentName to use software to report your Income Tax?"
-      def heading(agentName:String) = s"Do you authorise $agentName to use software to report your Income Tax?"
+      def title(agentName: String) = s"Do you authorise $agentName to use software to report your Income Tax?"
+
+      def heading(agentName: String) = s"Do you authorise $agentName to use software to report your Income Tax?"
+
       val yes = "Yes"
       val no = "No"
     }
+
   }
 
-    object CannotSignUp {
-      val title = "You can't use this service"
-      val heading: String = title
-      val linktext = "send a Self Assessment tax return"
-      val line1 = "You can only use software to report your Income Tax if you either:"
-      val bullet1 = "work for yourself"
-      val bullet2 = "rent out UK property"
-      val bullet3 = "work for yourself and rent out UK property"
-      val line2 = s"You need to $linktext instead."
-    }
+  object CannotSignUp {
+    val title = "You can't use this service"
+    val heading: String = title
+    val linktext = "send a Self Assessment tax return"
+    val line1 = "You can only use software to report your Income Tax if you either:"
+    val bullet1 = "work for yourself"
+    val bullet2 = "rent out UK property"
+    val bullet3 = "work for yourself and rent out UK property"
+    val line2 = s"You need to $linktext instead."
+  }
 
 
 }
