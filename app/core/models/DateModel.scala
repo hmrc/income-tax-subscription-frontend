@@ -27,6 +27,8 @@ case class DateModel(day: String, month: String, year: String) {
 
   def toLocalDate: LocalDate = LocalDate.of(year.toInt, month.toInt, day.toInt)
 
+  def plusDays(days: Int): DateModel = DateModel.dateConvert(this.toLocalDate.plusDays(days))
+
   def toOutputDateFormat: String = toLocalDate.format(outputFormat)
 
   def toCheckYourAnswersDateFormat: String = toLocalDate.format(outputFormat)
@@ -36,6 +38,10 @@ case class DateModel(day: String, month: String, year: String) {
   def diffInMonth(that: DateModel): Int = {
     import java.time.temporal.ChronoUnit
     ChronoUnit.MONTHS.between(dateConvert(this), dateConvert(that)).toInt
+  }
+
+  def matches(dateModel: DateModel): Boolean = {
+    this.toLocalDate == dateModel.toLocalDate
   }
 }
 
