@@ -201,6 +201,16 @@ object MessageLookup {
     val para2 = s"You need to $linkText instead."
   }
 
+  object AgentCannotReportYetBothMisaligned {
+    val title = "Your client can't use software to report their Income Tax yet"
+    val heading: String = title
+    val linkText = "send a Self Assessment tax return"
+    val para1 = "You can still sign this client up and use software to record their income and expenses, but they won't be able to submit a report for their:"
+    val bullet1 = "property income until 6 April 2018"
+    def bullet2(businessStartDate: DateModel) = s"sole trader income until ${businessStartDate.toOutputDateFormat}"
+    val para2 = s"Your client still needs to $linkText."
+  }
+
    object BusinessName {
     val title = "Business name"
     val heading: String = "What's the name of your business?"
