@@ -425,6 +425,14 @@ cannot-report-yet-both-misaligned.bullet1                      = property income
 cannot-report-yet-both-misaligned.bullet2                      = sole trader income until {0}
 cannot-report-yet-both-misaligned.para2                        = You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead.
 
+## agent cannot report yet both misaligned page ##
+agent-cannot-report-yet-both-misaligned.title                  = Your client can''t use software to report their Income Tax yet
+agent-cannot-report-yet-both-misaligned.heading                = Your client can''t use software to report their Income Tax yet
+agent-cannot-report-yet-both-misaligned.para1                  = You can still sign this client up and use software to record their income and expenses, but they won''t be able to submit a report for their:
+agent-cannot-report-yet-both-misaligned.bullet1                = property income until 6 April 2018
+agent-cannot-report-yet-both-misaligned.bullet2                = sole trader income until {0}
+agent-cannot-report-yet-both-misaligned.para2                  = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
+
 ## Exit survey
 exit-survey.title                                               = Give feedback
 exit-survey.heading                                             = Give feedback
