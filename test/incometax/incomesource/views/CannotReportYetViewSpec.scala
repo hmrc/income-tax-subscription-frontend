@@ -51,7 +51,7 @@ class CannotReportYetViewSpec extends ViewSpecTrait {
     testPage.mustHaveBackLinkTo(backUrl)
 
     testPage.mustHaveParaSeq(
-      messages.para1,
+      messages.para1(testDateModel),
       messages.para2
     )
 
