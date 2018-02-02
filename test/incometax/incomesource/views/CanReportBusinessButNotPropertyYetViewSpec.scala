@@ -16,24 +16,21 @@
 
 package incometax.incomesource.views
 
-import assets.MessageLookup.{Base => common, CannotReportPropertyYet => messages}
+import assets.MessageLookup.{Base => common, CanReportBusinessButNotPropertyYet => messages}
 import core.models.DateModel
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
-class CannotReportPropertyYetViewSpec extends ViewSpecTrait {
+class CanReportBusinessButNotPropertyYetViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
 
   val action = ViewSpecTrait.testCall
 
-  val testDateModel = DateModel("6","4","2018")
-
-  lazy val page = incometax.incomesource.views.html.cannot_report_property_yet(
+  lazy val page = incometax.incomesource.views.html.can_report_business_but_not_property_yet(
     postAction = action,
-    backUrl = backUrl,
-    dateModel = testDateModel)(
+    backUrl = backUrl)(
     FakeRequest(),
     applicationMessages,
     appConfig
@@ -52,7 +49,7 @@ class CannotReportPropertyYetViewSpec extends ViewSpecTrait {
 
     testPage.mustHaveParaSeq(
       messages.para1,
-      messages.para2(testDateModel)
+      messages.para2
     )
     testPage.mustHaveALink("sa", messages.linkText, appConfig.signUpToSaLink)
 

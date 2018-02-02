@@ -39,5 +39,12 @@ class DateModelSpec extends PlaySpec with OneAppPerTest {
     "correctly format a date for check your answers into dd/MM/uuuu" in {
       date.toOutputDateFormat shouldBe "1 February 2017"
     }
+
+    "plusDays should return the correct date" in {
+      val testDate = DateModel("28", "02", "2018")
+      val increment = 1
+      val expectedDate = DateModel("1", "3", "2018")
+      testDate.plusDays(increment) shouldBe expectedDate
+    }
   }
 }
