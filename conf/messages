@@ -633,11 +633,17 @@ agent.not-authorised-error.title                                      = You''re 
 agent.not-authorised-error.heading                                    = You''re not authorised for this client
 agent.not-authorised-error.para1                                      = You can still sign up your client, but we''ll hold their information until they''ve authorised you as their agent.
 
-## Agent cannot report property page ##
+## Client cannot report property page ##
 agent.cannot-report-property-yet.title                                = You can''t use software to report your client''s property income yet
 agent.cannot-report-property-yet.heading                              = You can''t use software to report your client''s property income yet
 agent.cannot-report-property-yet.para1                                = You can use software to report your client''s sole trader income and to record their other income and expenses.
 agent.cannot-report-property-yet.para2                                = They won''t be able to submit a report for their property income until {0}. Your client still needs to <a id="sa" href="{1}">send a Self Assessment tax return</a>.
+
+## Client cannot report before 6 April 2018 page ##
+agent.cannot-report-yet.title                                         = Your client can''t use software to report their Income Tax yet
+agent.cannot-report-yet.heading                                       = Your client can''t use software to report their Income Tax yet
+agent.cannot-report-yet.para1                                         = You can still sign this client up and use software to record their income and expenses, but they won''t be able to submit a report until 6 April 2018.
+agent.cannot-report-yet.para2                                         = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Summary page ##
 agent.summary.title                                                   = Check your answers
