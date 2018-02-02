@@ -16,6 +16,8 @@
 
 package incometax.business.forms
 
+import java.time.LocalDate
+
 import assets.MessageLookup
 import core.forms.submapping.DateMapping
 import core.forms.validation.ErrorMessageFactory
@@ -140,10 +142,26 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           violation fieldErrorIs MessageLookup.Error.EndDate.end_violation
           violation summaryErrorIs MessageLookup.Error.EndDate.end_violation
 
-          val endDateViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("28", "6", "2017")
+          val testStartDateModel = DateModel.dateConvert(LocalDate.now().plusDays(1))
+          val testEndDateModel = DateModel.dateConvert(LocalDate.now())
+
+          val endDateViolationInput = DataMap.date(startDate)(testStartDateModel.day, testStartDateModel.month, testStartDateModel.year)++
+            DataMap.date(endDate)(testEndDateModel.day, testEndDateModel.month, testEndDateModel.year)
+
           val violationTest = accountingPeriodDateForm.bind(endDateViolationInput)
           violationTest assert endDate hasExpectedErrors violation
         }
+
+        "it is in the past" in {
+          val violation = ErrorMessageFactory.error("error.end_date_past")
+          violation fieldErrorIs MessageLookup.Error.EndDate.end_past
+          violation summaryErrorIs MessageLookup.Error.EndDate.end_past
+
+          val endDateViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("29", "6", "2017")
+          val violationTest = accountingPeriodDateForm.bind(endDateViolationInput)
+          violationTest assert endDate hasExpectedErrors violation
+        }
+
 
         "it is more than 24 months after the start date" in {
           val violation = ErrorMessageFactory.error("error.business_accounting_period.maxEndDate")
@@ -162,7 +180,12 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "accept a valid date" in {
-      val testData = DataMap.date(startDate)("28", "5", "2017") ++ DataMap.date(endDate)("28", "5", "2018")
+
+      val testStartDate = DateModel.dateConvert(LocalDate.now())
+      val testEndDate = DateModel.dateConvert(LocalDate.now().plusDays(1))
+
+      val testData = DataMap.date(startDate)(testStartDate.day, testStartDate.month, testStartDate.year) ++
+        DataMap.date(endDate)(testEndDate.day, testEndDate.month, testEndDate.year)
       accountingPeriodDateForm isValidFor testData
     }
   }
