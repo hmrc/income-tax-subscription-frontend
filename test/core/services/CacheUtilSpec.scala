@@ -19,6 +19,7 @@ package core.services
 import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import core.utils.UnitTestTrait
 import incometax.subscription.models.{Both, SummaryModel}
+import incometax.util.AccountingPeriodUtil.getCurrentTaxYear
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
 
@@ -52,6 +53,7 @@ class CacheUtilSpec extends UnitTestTrait
       emptyCacheMap.getBusinessAddress() shouldBe None
       emptyCacheMap.getBusinessStartDate() shouldBe None
       emptyCacheMap.getMatchTaxYear() shouldBe None
+      emptyCacheMap.getEnteredAccountingPeriodDate() shouldBe None
       emptyCacheMap.getAccountingPeriodDate() shouldBe None
       emptyCacheMap.getAccountingMethod() shouldBe None
       emptyCacheMap.getTerms() shouldBe None
@@ -68,9 +70,34 @@ class CacheUtilSpec extends UnitTestTrait
       testCacheMap.getBusinessAddress() shouldBe Some(testAddress)
       testCacheMap.getBusinessStartDate() shouldBe Some(testBusinessStartDate)
       testCacheMap.getMatchTaxYear() shouldBe Some(testMatchTaxYearNo)
+      testCacheMap.getEnteredAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingMethod() shouldBe Some(testAccountingMethod)
       testCacheMap.getTerms() shouldBe Some(testTerms)
+    }
+
+    "getAccountingPeriodDate" when {
+      "the income source is property" should {
+        "return none even if accounting period is filled in" in {
+          testCacheMapCustom(incomeSource = testIncomeSourceProperty, matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe None
+        }
+      }
+
+      "the income source is business or both" when {
+        "match tax year is yes" should {
+          "return the accounting period of the current tax year" in {
+            testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe Some(getCurrentTaxYear)
+            testCacheMapCustom(incomeSource = testIncomeSourceBoth, matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe Some(getCurrentTaxYear)
+          }
+        }
+
+        "match tax year is no" should {
+          "return the entered accounting period" in {
+            testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearNo).getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
+            testCacheMapCustom(incomeSource = testIncomeSourceBoth, matchTaxYear = testMatchTaxYearNo).getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
+          }
+        }
+      }
     }
 
     "The getSummary(newIncomeSourceFlow = false) should populate the Summary model correctly" in {

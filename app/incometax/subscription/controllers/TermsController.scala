@@ -52,7 +52,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         incomeSource = cacheMap.getIncomeSourceType().get
         backUrl = getBackUrl(editMode, incomeSource, cacheMap.getOtherIncome().get.choice, cacheMap.getMatchTaxYear().exists(_.matchTaxYear == MatchTaxYearForm.option_yes))
       } yield
-        (incomeSource, cacheMap.getMatchTaxYear(), cacheMap.getAccountingPeriodDate()) match {
+        (incomeSource, cacheMap.getMatchTaxYear(), cacheMap.getEnteredAccountingPeriodDate()) match {
           case (Property, _, _) =>
             Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
           case (_, Some(MatchTaxYearModel(matchTaxYear)), _) if matchTaxYear == MatchTaxYearForm.option_yes =>

@@ -23,6 +23,7 @@ import play.api.libs.json.Json
 
 case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel) {
   lazy val taxEndYear = AccountingPeriodUtil.getTaxEndYear(this)
+  //todo get adjusted tax year
 }
 
 object AccountingPeriodModel {

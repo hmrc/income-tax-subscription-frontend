@@ -59,16 +59,10 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
                        matchToTaxYear: Option[Boolean],
                        accountingPeriod: Option[AccountingPeriodModel],
                        isEditMode: Boolean)(implicit request: Request[_]): HtmlFormat.Appendable = {
-    val businessAccountingPeriod = (incomeSourceType, matchToTaxYear) match {
-      case (Business | Both, Some(true)) => Some(getCurrentTaxYear)
-      case (Business | Both, Some(false)) => accountingPeriod
-      case (Property, _) => None
-      case _ => throw new InternalServerException("The business accounting period data was in an invalid state")
-    }
 
     lazy val backUrl = getBackUrl(incomeSourceType, matchToTaxYear, isEditMode)
 
-    (incomeSourceType, businessAccountingPeriod) match {
+    (incomeSourceType, accountingPeriod) match {
       case (Property, None) =>
         generateCannotReportView(crystallisationTaxYearStart, backUrl, isEditMode)
       case (Business, Some(businessDate)) =>
