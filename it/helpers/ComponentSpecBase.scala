@@ -405,6 +405,7 @@ trait ComponentSpecBase extends UnitSpec
     def subscribeUnauthorised: WSResponse = get(
       "/subscribe-unauthorised",
       Map(
+        AgentReferenceNumber -> testArn,
         JourneyStateKey -> ConfirmAgentSubscription.name,
         AgencyName -> IntegrationTestConstants.testAgencyName,
         ConfirmedAgent -> true.toString
