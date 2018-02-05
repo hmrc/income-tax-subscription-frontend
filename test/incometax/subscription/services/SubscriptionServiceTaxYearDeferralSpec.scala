@@ -31,20 +31,20 @@ import org.scalatest.Matchers._
 import play.api.test.Helpers._
 
 
-class SubscriptionServiceSpec extends TestSubscriptionService
+class SubscriptionServiceTaxYearDeferralSpec extends TestSubscriptionService
   with EitherValues
   with FeatureSwitching {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    enable(TaxYearDeferralFeature)
     disable(NewIncomeSourceFlowFeature)
-    disable(TaxYearDeferralFeature)
   }
 
   override def afterEach(): Unit = {
     super.afterEach()
-    disable(NewIncomeSourceFlowFeature)
     disable(TaxYearDeferralFeature)
+    disable(NewIncomeSourceFlowFeature)
   }
 
   val testNino: String = TestConstants.testNino
@@ -117,121 +117,123 @@ class SubscriptionServiceSpec extends TestSubscriptionService
   }
 
   "SubscriptionService.buildRequest" when {
-    "NewIncomeSourceFlowFeature is disabled" should {
-      "convert the user's data into the correct FERequest format" in {
-        // a freshly generated nino is used to ensure it is not simply pulling the test nino from somewhere else
+    "the tax year is before 2018 - 2019" when {
+      "NewIncomeSourceFlowFeature is disabled" should {
+        "convert the user's data into the correct FERequest format" in {
+          // a freshly generated nino is used to ensure it is not simply pulling the test nino from somewhere else
+          val nino = TestModels.newNino
+          val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
+          request.nino mustBe nino
+          request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.map(_.adjustedTaxYear.startDate).get
+          request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.map(_.adjustedTaxYear.endDate).get
+          request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
+          IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
+          request.isAgent mustBe false
+          request.tradingName.get mustBe testSummaryData.businessName.get.businessName
+        }
+
+        "property requests should copy None into start and end dates" in {
+          val nino = TestModels.newNino
+          val testSummaryData = SummaryModel(
+            incomeSource = IncomeSourceModel(IncomeSourceForm.option_property),
+            otherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
+          )
+          val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
+          request.nino mustBe nino
+          request.accountingPeriodStart mustBe None
+          request.accountingPeriodEnd mustBe None
+          request.cashOrAccruals mustBe None
+          IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
+          request.isAgent mustBe false
+          request.tradingName mustBe None
+        }
+      }
+
+      "NewIncomeSourceFlowFeature is enabled" should {
+        "convert the user's data into the correct FERequest format" in {
+          enable(NewIncomeSourceFlowFeature)
+
+          // a freshly generated nino is used to ensure it is not simply pulling the test nino from somewhere else
+          val nino = TestModels.newNino
+          val request = TestSubscriptionService.buildRequest(nino, testSummaryNewIncomeSourceData, None)
+          request.nino mustBe nino
+          request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.map(_.adjustedTaxYear.startDate).get
+          request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.map(_.adjustedTaxYear.endDate).get
+          request.cashOrAccruals.get mustBe testSummaryNewIncomeSourceData.accountingMethod.get.accountingMethod
+          request.incomeSource mustBe Both
+          request.isAgent mustBe false
+          request.tradingName.get mustBe testSummaryNewIncomeSourceData.businessName.get.businessName
+        }
+
+        "convert the agent''s data into the correct FERequest format" in {
+          enable(NewIncomeSourceFlowFeature)
+
+          // a freshly generated nino is used to ensure it is not simply pulling the test nino from somewhere else
+          val nino = TestModels.newNino
+          // testSummaryData is used here because the agent's submission will be using the original models
+          val request = TestSubscriptionService.buildRequest(nino, testSummaryData, Some("test arn value"))
+          request.nino mustBe nino
+          request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.get.startDate
+          request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.get.endDate
+          request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
+          IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
+          request.isAgent mustBe false
+          request.tradingName.get mustBe testSummaryData.businessName.get.businessName
+        }
+
+        "property requests should copy None into start and end dates" in {
+          enable(NewIncomeSourceFlowFeature)
+
+          val nino = TestModels.newNino
+          val testSummaryData = SummaryModel(
+            rentUkProperty = testRentUkProperty_property_and_other,
+            workForYourself = testWorkForYourself_no,
+            otherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
+          )
+          val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
+          request.nino mustBe nino
+          request.accountingPeriodStart mustBe None
+          request.accountingPeriodEnd mustBe None
+          request.cashOrAccruals mustBe None
+          request.incomeSource mustBe Property
+          request.isAgent mustBe false
+          request.tradingName mustBe None
+        }
+
+        "agent's property requests should be converted correctly" in {
+          enable(NewIncomeSourceFlowFeature)
+
+          val nino = TestModels.newNino
+          val testSummaryData = SummaryModel(
+            incomeSource = IncomeSourceModel(IncomeSourceForm.option_property),
+            otherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
+          )
+          val request = TestSubscriptionService.buildRequest(nino, testSummaryData, Some("test arn value"))
+          request.nino mustBe nino
+          request.accountingPeriodStart mustBe None
+          request.accountingPeriodEnd mustBe None
+          request.cashOrAccruals mustBe None
+          IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
+          request.isAgent mustBe false
+          request.tradingName mustBe None
+        }
+      }
+
+      "use the current tax year and ignore the accounting period dates if match tax year is answered yes" in {
         val nino = TestModels.newNino
-        val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
+        val request = TestSubscriptionService.buildRequest(nino, testSummaryData.copy(matchTaxYear = testMatchTaxYearYes), None)
         request.nino mustBe nino
-        request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.get.startDate
-        request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.get.endDate
+        request.accountingPeriodStart.get must not be testSummaryData.accountingPeriod.get.startDate
+        request.accountingPeriodStart.get mustBe AccountingPeriodUtil.getCurrentTaxYear.adjustedTaxYear.startDate
+        request.accountingPeriodEnd.get must not be testSummaryData.accountingPeriod.get.endDate
+        request.accountingPeriodEnd.get mustBe AccountingPeriodUtil.getCurrentTaxYear.adjustedTaxYear.endDate
         request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
         IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
         request.isAgent mustBe false
         request.tradingName.get mustBe testSummaryData.businessName.get.businessName
       }
 
-      "property requests should copy None into start and end dates" in {
-        val nino = TestModels.newNino
-        val testSummaryData = SummaryModel(
-          incomeSource = IncomeSourceModel(IncomeSourceForm.option_property),
-          otherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
-        )
-        val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
-        request.nino mustBe nino
-        request.accountingPeriodStart mustBe None
-        request.accountingPeriodEnd mustBe None
-        request.cashOrAccruals mustBe None
-        IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
-        request.isAgent mustBe false
-        request.tradingName mustBe None
-      }
     }
-
-    "NewIncomeSourceFlowFeature is enabled" should {
-      "convert the user's data into the correct FERequest format" in {
-        enable(NewIncomeSourceFlowFeature)
-
-        // a freshly generated nino is used to ensure it is not simply pulling the test nino from somewhere else
-        val nino = TestModels.newNino
-        val request = TestSubscriptionService.buildRequest(nino, testSummaryNewIncomeSourceData, None)
-        request.nino mustBe nino
-        request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.get.startDate
-        request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.get.endDate
-        request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
-        request.incomeSource mustBe Both
-        request.isAgent mustBe false
-        request.tradingName.get mustBe testSummaryData.businessName.get.businessName
-      }
-
-      "convert the agent''s data into the correct FERequest format" in {
-        enable(NewIncomeSourceFlowFeature)
-
-        // a freshly generated nino is used to ensure it is not simply pulling the test nino from somewhere else
-        val nino = TestModels.newNino
-        // testSummaryData is used here because the agent's submission will be using the original models
-        val request = TestSubscriptionService.buildRequest(nino, testSummaryData, Some("test arn value"))
-        request.nino mustBe nino
-        request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.get.startDate
-        request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.get.endDate
-        request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
-        IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
-        request.isAgent mustBe false
-        request.tradingName.get mustBe testSummaryData.businessName.get.businessName
-      }
-
-      "property requests should copy None into start and end dates" in {
-        enable(NewIncomeSourceFlowFeature)
-
-        val nino = TestModels.newNino
-        val testSummaryData = SummaryModel(
-          rentUkProperty = testRentUkProperty_property_and_other,
-          workForYourself = testWorkForYourself_no,
-          otherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
-        )
-        val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
-        request.nino mustBe nino
-        request.accountingPeriodStart mustBe None
-        request.accountingPeriodEnd mustBe None
-        request.cashOrAccruals mustBe None
-        request.incomeSource mustBe Property
-        request.isAgent mustBe false
-        request.tradingName mustBe None
-      }
-
-      "agent's property requests should be converted correctly" in {
-        enable(NewIncomeSourceFlowFeature)
-
-        val nino = TestModels.newNino
-        val testSummaryData = SummaryModel(
-          incomeSource = IncomeSourceModel(IncomeSourceForm.option_property),
-          otherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
-        )
-        val request = TestSubscriptionService.buildRequest(nino, testSummaryData, Some("test arn value"))
-        request.nino mustBe nino
-        request.accountingPeriodStart mustBe None
-        request.accountingPeriodEnd mustBe None
-        request.cashOrAccruals mustBe None
-        IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
-        request.isAgent mustBe false
-        request.tradingName mustBe None
-      }
-    }
-
-    "use the current tax year and ignore the accounting period dates if match tax year is answered yes" in {
-      val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequest(nino, testSummaryData.copy(matchTaxYear = testMatchTaxYearYes), None)
-      request.nino mustBe nino
-      request.accountingPeriodStart.get must not be testSummaryData.accountingPeriod.get.startDate
-      request.accountingPeriodStart.get mustBe AccountingPeriodUtil.getCurrentTaxYearStartDate
-      request.accountingPeriodEnd.get must not be testSummaryData.accountingPeriod.get.endDate
-      request.accountingPeriodEnd.get mustBe AccountingPeriodUtil.getCurrentTaxYearEndDate
-      request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
-      IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
-      request.isAgent mustBe false
-      request.tradingName.get mustBe testSummaryData.businessName.get.businessName
-    }
-
 
   }
 
@@ -239,22 +241,22 @@ class SubscriptionServiceSpec extends TestSubscriptionService
     def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData, arn = None))
 
     "return the safeId when the subscription is successful" in {
-      setupMockSubscribeSuccess(testSubmissionRequest)
+      setupMockSubscribeSuccess(testAdjustedSubmissionRequest)
       call.right.value shouldBe SubscriptionSuccess(testMTDID)
     }
 
     "return the error if subscription fails on bad request" in {
-      setupMockSubscribeFailure(testSubmissionRequest)
+      setupMockSubscribeFailure(testAdjustedSubmissionRequest)
       call.left.value shouldBe SubscriptionFailureResponse(BAD_REQUEST)
     }
 
     "return the error if subscription fails on bad formatting" in {
-      setupMockSubscribeBadFormatting(testSubmissionRequest)
+      setupMockSubscribeBadFormatting(testAdjustedSubmissionRequest)
       call.left.value shouldBe BadlyFormattedSubscriptionResponse
     }
 
     "return the error if subscription throws an exception" in {
-      setupMockSubscribeException(testSubmissionRequest)
+      setupMockSubscribeException(testAdjustedSubmissionRequest)
       intercept[Exception](call) shouldBe testException
     }
   }

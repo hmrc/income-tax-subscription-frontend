@@ -85,7 +85,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
               if (isProperty)
                 processFunc(user)(request)(cache)
               else
-                (cache.getMatchTaxYear(), cache.getAccountingPeriodDate()) match {
+                (cache.getMatchTaxYear(), cache.getEnteredAccountingPeriodDate()) match {
                   case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) | (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(_)) =>
                     processFunc(user)(request)(cache)
                   case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), _) =>

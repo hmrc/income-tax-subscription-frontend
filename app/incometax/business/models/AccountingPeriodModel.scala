@@ -23,6 +23,13 @@ import play.api.libs.json.Json
 
 case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel) {
   lazy val taxEndYear = AccountingPeriodUtil.getTaxEndYear(this)
+  lazy val adjustedTaxYear =
+    if (taxEndYear <= 2018) {
+      val nextStartDate = this.endDate.toLocalDate.plusDays(1)
+      val nextEndDate = nextStartDate.plusYears(1).minusDays(1)
+      AccountingPeriodModel(DateModel.dateConvert(nextStartDate), DateModel.dateConvert(nextEndDate))
+    }
+    else this
 }
 
 object AccountingPeriodModel {

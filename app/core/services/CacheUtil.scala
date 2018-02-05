@@ -22,8 +22,10 @@ import incometax.business.models._
 import incometax.business.models.address.Address
 import incometax.incomesource.models._
 import incometax.subscription.models._
+import incometax.util.AccountingPeriodUtil.getCurrentTaxYear
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
+import core.models.YesNoModel._
 
 object CacheUtil {
 
@@ -47,7 +49,14 @@ object CacheUtil {
 
     def getMatchTaxYear()(implicit read: Reads[MatchTaxYearModel]): Option[MatchTaxYearModel] = cacheMap.getEntry(MatchTaxYear)
 
-    def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriodDate)
+    def getEnteredAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriodDate)
+
+    def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] =
+      (getIncomeSourceType(), getMatchTaxYear()) match {
+        case (Some(Business | Both), Some(MatchTaxYearModel(YES))) => Some(getCurrentTaxYear)
+        case (Some(Business | Both), Some(MatchTaxYearModel(NO))) => getEnteredAccountingPeriodDate()
+        case _ => None
+      }
 
     def getBusinessName()(implicit read: Reads[BusinessNameModel]): Option[BusinessNameModel] = cacheMap.getEntry(BusinessName)
 
@@ -86,7 +95,7 @@ object CacheUtil {
               workForYourself = getWorkForYourself(),
               otherIncome = getOtherIncome(),
               matchTaxYear = getMatchTaxYear(),
-              accountingPeriod = getAccountingPeriodDate(),
+              accountingPeriod = getEnteredAccountingPeriodDate(),
               businessName = getBusinessName(),
               businessPhoneNumber = getBusinessPhoneNumber(),
               businessAddress = getBusinessAddress(),
@@ -99,7 +108,7 @@ object CacheUtil {
               incomeSource = getIncomeSource(),
               otherIncome = getOtherIncome(),
               matchTaxYear = getMatchTaxYear(),
-              accountingPeriod = getAccountingPeriodDate(),
+              accountingPeriod = getEnteredAccountingPeriodDate(),
               businessName = getBusinessName(),
               businessPhoneNumber = getBusinessPhoneNumber(),
               businessAddress = getBusinessAddress(),

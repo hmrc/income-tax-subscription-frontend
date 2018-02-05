@@ -80,7 +80,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       for {
         cacheMap <- keystoreService.fetchAll()
         matchTaxYear = cacheMap.getMatchTaxYear()
-        optEndTaxYear = cacheMap.getAccountingPeriodDate().map(_.taxEndYear)
+        optEndTaxYear = cacheMap.getEnteredAccountingPeriodDate().map(_.taxEndYear)
       } yield (matchTaxYear, optEndTaxYear) match {
         case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) =>
           if (currentTimeService.getTaxYearEndForCurrentDate <= 2018)

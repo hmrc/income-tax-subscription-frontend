@@ -20,9 +20,9 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import org.scalatest.Matchers._
-import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
+import org.scalatestplus.play.PlaySpec
 
-class DateModelSpec extends PlaySpec with OneAppPerTest {
+class DateModelSpec extends PlaySpec {
 
   "the DateModel" should {
 
