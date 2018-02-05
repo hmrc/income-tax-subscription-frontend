@@ -106,8 +106,10 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(
-            keystoreData(matchTaxYear = Some(keystoreMatchTaxYear))
-          )
+            keystoreData(
+              incomeSource = Some(testIncomeSourceBusiness),
+              matchTaxYear = Some(keystoreMatchTaxYear)))
+
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
           When("POST /business/accounting-period-dates is called")
@@ -130,7 +132,9 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(
-            keystoreData(matchTaxYear = Some(keystoreMatchTaxYear))
+            keystoreData(
+              incomeSource = Some(testIncomeSourceBusiness),
+              matchTaxYear = Some(keystoreMatchTaxYear))
           )
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
@@ -152,7 +156,9 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(
-            keystoreData(matchTaxYear = Some(keystoreMatchTaxYear))
+            keystoreData(
+              incomeSource = Some(testIncomeSourceBusiness),
+              matchTaxYear = Some(keystoreMatchTaxYear))
           )
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
@@ -270,7 +276,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         }
 
         "The new accounting period ends in a different tax year" in {
-          val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+          val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
           val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
           val keystoreMatchTaxYear = testMatchTaxYearNo
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2020"))
@@ -296,6 +302,36 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           res should have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
+          )
+        }
+
+        "The new accounting period ends in a different tax year and the income type is both Property and Sole Trader" in {
+          val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+          val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
+          val keystoreMatchTaxYear = testMatchTaxYearNo
+          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2020"))
+          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2019"))
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(
+            keystoreData(
+              incomeSource = Some(keystoreIncomeSource),
+              otherIncome = Some(keystoreIncomeOther),
+              matchTaxYear = Some(keystoreMatchTaxYear),
+              accountingPeriodDate = Some(keystoreAccountingPeriodDates)
+            )
+          )
+          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+          KeystoreStub.stubKeystoreSave(CacheConstants.Terms, false)
+
+          When("POST /business/accounting-period-dates is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of cannot report yet")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(cannotReportYetURI)
           )
         }
       }
