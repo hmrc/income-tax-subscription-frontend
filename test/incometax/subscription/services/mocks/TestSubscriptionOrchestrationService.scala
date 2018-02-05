@@ -17,14 +17,14 @@
 package incometax.subscription.services.mocks
 
 import core.connectors.models.ConnectorError
+import core.utils.MockTrait
+import core.utils.TestConstants._
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import incometax.subscription.models.SummaryModel
 import incometax.subscription.services.SubscriptionOrchestrationService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
-import core.utils.MockTrait
-import core.utils.TestConstants._
 
 import scala.concurrent.Future
 
@@ -61,6 +61,26 @@ trait MockSubscriptionOrchestrationService extends MockTrait {
 
   def mockCreateSubscriptionException(nino: String, summaryModel: SummaryModel): Unit =
     mockCreateSubscription(nino, summaryModel)(Future.failed(testException))
+
+
+  private def mockCreateSubscription(arn: String,
+                                     nino: String,
+                                     summaryModel: SummaryModel
+                                    )(result: Future[SubscriptionResponse]): Unit =
+    when(mockSubscriptionOrchestrationService
+      .createSubscription(ArgumentMatchers.eq(arn), ArgumentMatchers.eq(nino), ArgumentMatchers.eq(summaryModel)
+      )(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(result)
+
+  def mockCreateSubscriptionSuccess(arn: String, nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscription(arn, nino, summaryModel)(Future.successful(testSubscriptionSuccess))
+
+  def mockCreateSubscriptionFailure(arn: String, nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscription(arn, nino, summaryModel)(Future.successful(testSubscriptionFailure))
+
+  def mockCreateSubscriptionException(arn: String, nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscription(arn, nino, summaryModel)(Future.failed(testException))
+
 
   private def mockEnrolAndRefresh(mtditId: String, nino: String)(result: Future[Either[ConnectorError, String]]): Unit =
     when(

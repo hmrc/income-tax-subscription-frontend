@@ -21,7 +21,8 @@ import javax.inject.{Inject, Singleton}
 import core.ITSASessionKeys
 import core.auth.UnauthorisedAgentSubscriptionController
 import core.config.BaseControllerConfig
-import core.services.CacheUtil._
+import agent.services.CacheUtil._
+import core.ITSASessionKeys.AgentReferenceNumber
 import core.services.{AuthService, KeystoreService}
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionOrchestrationService
@@ -48,7 +49,7 @@ class UnauthorisedSubscriptionController @Inject()(val baseConfig: BaseControlle
       keystoreService.fetchAll flatMap { cache =>
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> req.uri)
 
-        subscriptionOrchestrationService.createSubscription(user.nino.get, cache.getSummary())(headerCarrier) flatMap {
+        subscriptionOrchestrationService.createSubscription(req.session(AgentReferenceNumber), user.nino.get, cache.getSummary())(headerCarrier) flatMap {
           case Right(SubscriptionSuccess(id)) =>
             for {
               _ <- keystoreService.saveSubscriptionId(id)

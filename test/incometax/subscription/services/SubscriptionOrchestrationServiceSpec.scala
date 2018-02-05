@@ -29,7 +29,7 @@ import scala.concurrent.Future
 class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutures
   with TestSubscriptionOrchestrationService {
 
-  "createSubscription" should {
+  "createSubscription for an individual" should {
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
       TestSubscriptionOrchestrationService.createSubscription(testNino, testSummaryData)
 
@@ -64,6 +64,49 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
 
       "add known facts returns an exception" in {
         mockCreateSubscriptionSuccess(testNino, testSummaryData, None)
+        mockAddKnownFactsException(testMTDID, testNino)
+
+        whenReady(res.failed)(_ mustBe testException)
+      }
+    }
+  }
+
+  "createSubscription for individual confirming an unauthorised agent's submission" should {
+
+    def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
+      TestSubscriptionOrchestrationService.createSubscription(testArn, testNino, testSummaryData)
+
+    "return a success when all incometax.business.services succeed" in {
+      mockCreateSubscriptionSuccess(testNino, testSummaryData, Some(testArn))
+      mockAddKnownFactsSuccess(testMTDID, testNino)
+      mockEnrolSuccess(testMTDID, testNino)
+      mockRefreshProfileSuccess()
+
+      whenReady(res)(_ mustBe testSubscriptionSuccess)
+    }
+
+    "return a failure" when {
+      "create subscription returns an error" in {
+        mockCreateSubscriptionFailure(testNino, testSummaryData, Some(testArn))
+
+        whenReady(res)(_ mustBe testSubscriptionFailure)
+      }
+
+      "create subscription returns an exception" in {
+        mockCreateSubscriptionException(testNino, testSummaryData, Some(testArn))
+
+        whenReady(res.failed)(_ mustBe testException)
+      }
+
+      "add known facts returns an error" in {
+        mockCreateSubscriptionSuccess(testNino, testSummaryData, Some(testArn))
+        mockAddKnownFactsFailure(testMTDID, testNino)
+
+        whenReady(res)(_ mustBe testKnownFactsFailure)
+      }
+
+      "add known facts returns an exception" in {
+        mockCreateSubscriptionSuccess(testNino, testSummaryData, Some(testArn))
         mockAddKnownFactsException(testMTDID, testNino)
 
         whenReady(res.failed)(_ mustBe testException)
