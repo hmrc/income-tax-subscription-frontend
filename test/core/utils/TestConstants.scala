@@ -80,6 +80,17 @@ object TestConstants {
     arn = None
   )
 
+  val testAdjustedSubmissionRequest = SubscriptionRequest(
+    nino = TestConstants.testNino,
+    incomeSource = Both,
+    accountingPeriodStart = Some(testAccountingPeriod.adjustedTaxYear.startDate),
+    accountingPeriodEnd = Some(testAccountingPeriod.adjustedTaxYear.endDate),
+    cashOrAccruals = Some("Cash"),
+    tradingName = testBusinessName.businessName,
+    arn = None
+  )
+
+
   val testErrorMessage = "This is an error"
   val testException = new Exception
 

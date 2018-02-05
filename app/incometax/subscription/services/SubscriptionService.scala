@@ -20,11 +20,12 @@ import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
 import core.config.AppConfig
-import incometax.business.forms.MatchTaxYearForm.option_yes
+import core.models.YesNoModel.{NO, YES}
+import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.connectors.SubscriptionConnector
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import incometax.subscription.models.{IncomeSourceType, SubscriptionRequest, SummaryModel}
+import incometax.subscription.models._
 import incometax.util.AccountingPeriodUtil._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -35,18 +36,35 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
                                     logging: Logging,
                                     subscriptionConnector: SubscriptionConnector) {
 
-  private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
-    val incomeSource =
-      if (applicationConfig.newIncomeSourceFlowEnabled && arn.isEmpty)
-        IncomeSourceType(summaryData.rentUkProperty.get, summaryData.workForYourself)
-      else
-        IncomeSourceType(summaryData.incomeSource.get.source)
-    val (accountingPeriodStart, accountingPeriodEnd) =
-      if (summaryData.matchTaxYear exists (_.matchTaxYear == option_yes)) {
-        (Some(getCurrentTaxYearStartDate), Some(getCurrentTaxYearEndDate))
-      } else {
-        (summaryData.accountingPeriod map (_.startDate), summaryData.accountingPeriod map (_.endDate))
+  private[services] def getIncomeSourceType(summaryData: SummaryModel, arn: Option[String]): IncomeSourceType =
+    if (arn.isEmpty && applicationConfig.newIncomeSourceFlowEnabled)
+      IncomeSourceType(summaryData.rentUkProperty.get, summaryData.workForYourself)
+    else
+      IncomeSourceType(summaryData.incomeSource.get.source)
+
+  private[services] def getAccountingPeriod(incomeSourceType: IncomeSourceType,
+                                            summaryData: SummaryModel,
+                                            arn: Option[String]): Option[AccountingPeriodModel] =
+    if (arn.isEmpty) {
+      (incomeSourceType, summaryData.matchTaxYear) match {
+        case (Business | Both, Some(MatchTaxYearModel(YES))) => Some(getCurrentTaxYear)
+        case (Business | Both, Some(MatchTaxYearModel(NO))) => summaryData.accountingPeriod
+        case _ => None
       }
+    } else {
+      incomeSourceType match {
+        case Property => None
+        case _ => summaryData.accountingPeriod
+      }
+    }
+
+  private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
+    val incomeSource = getIncomeSourceType(summaryData, arn)
+    val accountingPeriod = getAccountingPeriod(incomeSource, summaryData, arn).map { ap =>
+      if (arn.isEmpty && applicationConfig.taxYearDeferralEnabled) ap.adjustedTaxYear
+      else ap
+    }
+    val (accountingPeriodStart, accountingPeriodEnd) = (accountingPeriod.map(_.startDate), accountingPeriod.map(_.endDate))
     val cashOrAccruals = summaryData.accountingMethod map (_.accountingMethod)
     val tradingName = summaryData.businessName map (_.businessName)
 
