@@ -25,6 +25,7 @@ import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models.{AccountingMethodModel, MatchTaxYearModel}
 import incometax.incomesource.services.CurrentTimeService
+import incometax.subscription.models.Both
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -79,18 +80,20 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
     else if (applicationConfig.taxYearDeferralEnabled) {
       for {
         cacheMap <- keystoreService.fetchAll()
+        incomeSourcetype = cacheMap.getIncomeSourceType().get
         matchTaxYear = cacheMap.getMatchTaxYear()
-        optEndTaxYear = cacheMap.getEnteredAccountingPeriodDate().map(_.taxEndYear)
-      } yield (matchTaxYear, optEndTaxYear) match {
-        case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) =>
+        optTaxEndYear = cacheMap.getEnteredAccountingPeriodDate().map(_.taxEndYear)
+      } yield matchTaxYear match {
+        case Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)) =>
           if (currentTimeService.getTaxYearEndForCurrentDate <= 2018)
             incometax.incomesource.controllers.routes.CannotReportYetController.show().url
           else
             incometax.business.controllers.routes.MatchTaxYearController.show().url
-        case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(taxEndYear)) if taxEndYear <= 2018 =>
-          incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-        case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(_)) =>
-          incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
+        case Some(MatchTaxYearModel(MatchTaxYearForm.option_no)) =>
+          if (currentTimeService.getTaxYearEndForCurrentDate <= 2018 && (incomeSourcetype == Both || optTaxEndYear.get <= 2018))
+            incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+          else
+            incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
       }
     }
     else {
