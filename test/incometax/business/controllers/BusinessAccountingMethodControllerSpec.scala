@@ -24,6 +24,7 @@ import core.utils.TestModels._
 import incometax.business.forms.AccountingMethodForm
 import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, MatchTaxYearModel}
 import incometax.incomesource.services.mocks.MockCurrentTimeService
+import incometax.subscription.models.{Both, Business, IncomeSourceType}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -57,8 +58,19 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     mockCurrentTimeService
   )
 
-  private def fetchAllCacheMap(matchTaxYear: Option[MatchTaxYearModel] = None, accountingPeriod: Option[AccountingPeriodModel] = None) =
+  private def fetchAllCacheMap(matchTaxYear: Option[MatchTaxYearModel] = None,
+                               accountingPeriod: Option[AccountingPeriodModel] = None,
+                               incomeSourceType: IncomeSourceType = Business) =
     testCacheMap(
+      incomeSource = incomeSourceType match {
+        case Business => testIncomeSourceBusiness
+        case Both => testIncomeSourceBoth
+      },
+      rentUkProperty = incomeSourceType match {
+        case Business => testRentUkProperty_no_property
+        case Both => testRentUkProperty_property_and_other
+      },
+      workForYourself = testWorkForYourself_yes,
       matchTaxYear = matchTaxYear,
       accountingPeriodDate = accountingPeriod
     )
@@ -188,7 +200,6 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
             enable(TaxYearDeferralFeature)
 
             setupMockKeystore(
-              fetchAccountingMethod = None,
               fetchAll = matchTaxYearCacheMap
             )
             mockGetTaxYearEnd(2018)
@@ -201,7 +212,6 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
             enable(TaxYearDeferralFeature)
 
             setupMockKeystore(
-              fetchAccountingMethod = None,
               fetchAll = matchTaxYearCacheMap
             )
             mockGetTaxYearEnd(2019)
@@ -216,8 +226,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
             enable(TaxYearDeferralFeature)
 
             setupMockKeystore(
-              fetchAccountingMethod = None,
-              fetchAll = taxYear2018CacheMap // for the back url
+              fetchAll = taxYear2018CacheMap
             )
             await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
           }
@@ -227,8 +236,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
             enable(TaxYearDeferralFeature)
 
             setupMockKeystore(
-              fetchAccountingMethod = None,
-              fetchAll = taxYear2019CacheMap // for the back url
+              fetchAll = taxYear2019CacheMap
             )
             await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
           }
