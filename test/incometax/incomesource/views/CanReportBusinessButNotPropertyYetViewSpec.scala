@@ -48,7 +48,8 @@ class CanReportBusinessButNotPropertyYetViewSpec extends ViewSpecTrait {
     testPage.mustHaveBackLinkTo(backUrl)
 
     testPage.mustHaveParaSeq(
-      messages.para1
+      messages.para1,
+      messages.para2
     )
 
     testPage.mustHaveALink("sa", messages.linkText, appConfig.signUpToSaLink)
