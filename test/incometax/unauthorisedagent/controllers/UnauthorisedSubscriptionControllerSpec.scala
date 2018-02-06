@@ -20,7 +20,7 @@ import core.ITSASessionKeys
 import core.config.MockConfig
 import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import core.controllers.ControllerBaseSpec
-import core.services.CacheUtil._
+import agent.services.CacheUtil._
 import core.services.mocks.{MockAuthService, MockKeystoreService}
 import core.utils.TestConstants._
 import core.utils.TestModels._
@@ -43,9 +43,9 @@ class UnauthorisedSubscriptionControllerSpec extends ControllerBaseSpec
   override val authorisedRoutes: Map[String, Action[AnyContent]] =
     Map("createSubscription" -> TestUnauthorisedSubscriptionController(true).subscribeUnauthorised())
 
-  private def TestUnauthorisedSubscriptionController(enableMatchingFeature: Boolean) = new UnauthorisedSubscriptionController(
+  private def TestUnauthorisedSubscriptionController(enableUnauthorisedAgent: Boolean) = new UnauthorisedSubscriptionController(
     mockBaseControllerConfig(new MockConfig {
-      override val unauthorisedAgentEnabled = enableMatchingFeature
+      override val unauthorisedAgentEnabled = enableUnauthorisedAgent
     }),
     messagesApi,
     mockAuthService,
@@ -54,8 +54,10 @@ class UnauthorisedSubscriptionControllerSpec extends ControllerBaseSpec
     mockSubscriptionOrchestrationService
   )
 
-  lazy val request = confirmAgentSubscriptionRequest.withSession(ITSASessionKeys.AgencyName -> testAgencyName,
-    ITSASessionKeys.ConfirmedAgent -> true.toString)
+  lazy val request = confirmAgentSubscriptionRequest.withSession(
+    ITSASessionKeys.AgencyName -> testAgencyName,
+    ITSASessionKeys.ConfirmedAgent -> true.toString
+  )
 
   "createSubscription" when {
     "the unauthorised agent flow is enabled" when {
@@ -64,10 +66,11 @@ class UnauthorisedSubscriptionControllerSpec extends ControllerBaseSpec
         "submit to ETMP, store the MTDITID in keystore and redirect to the confirmation page" in {
           enable(UnauthorisedAgentFeature)
           setupMockKeystore(fetchAll = testCacheMap)
-          mockCreateSubscriptionSuccess(testNino, testCacheMap.getSummary())
+          mockCreateSubscriptionFromUnauthorisedAgentSuccess(testArn, testNino, testCacheMap.getSummary())
           mockDeleteSubscriptionData(testNino)
+          mockEnrolAndRefreshSuccess(testMTDID, testNino)
 
-          val result = await(TestUnauthorisedSubscriptionController(true).subscribeUnauthorised().apply(request))
+          val result = await(TestUnauthorisedSubscriptionController(enableUnauthorisedAgent = true).subscribeUnauthorised().apply(request))
 
           verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
 
@@ -81,7 +84,7 @@ class UnauthorisedSubscriptionControllerSpec extends ControllerBaseSpec
       "throw a NotFoundException" in {
         disable(UnauthorisedAgentFeature)
 
-        intercept[NotFoundException](await(TestUnauthorisedSubscriptionController(false).subscribeUnauthorised().apply(request)))
+        intercept[NotFoundException](await(TestUnauthorisedSubscriptionController(enableUnauthorisedAgent = false).subscribeUnauthorised().apply(request)))
       }
     }
   }

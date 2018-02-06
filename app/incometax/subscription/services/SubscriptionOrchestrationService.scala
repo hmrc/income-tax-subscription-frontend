@@ -33,9 +33,15 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                                  refreshProfileService: RefreshProfileService
                                                 )(implicit ec: ExecutionContext) {
 
-  def createSubscription(nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+  def createSubscription(nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
+    createSubscriptionCore(nino, summaryModel, None)
+
+  def createSubscriptionFromUnauthorisedAgent(unauthorisedAgentArn: String, nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
+    createSubscriptionCore(nino, summaryModel, Some(unauthorisedAgentArn))
+
+  private[services] def createSubscriptionCore(nino: String, summaryModel: SummaryModel, unauthorisedAgentArn: Option[String])(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
     val res = for {
-      subscriptionResponse <- EitherT(subscriptionService.submitSubscription(nino, summaryModel, None))
+      subscriptionResponse <- EitherT(subscriptionService.submitSubscription(nino, summaryModel, unauthorisedAgentArn))
       mtditId = subscriptionResponse.mtditId
       _ <- EitherT(knownFactsService.addKnownFacts(mtditId, nino))
       _ <- EitherT(enrolAndRefresh(mtditId, nino))
