@@ -33,20 +33,15 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                                  refreshProfileService: RefreshProfileService
                                                 )(implicit ec: ExecutionContext) {
 
-  def createSubscription(nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
-    val res = for {
-      subscriptionResponse <- EitherT(subscriptionService.submitSubscription(nino, summaryModel, None))
-      mtditId = subscriptionResponse.mtditId
-      _ <- EitherT(knownFactsService.addKnownFacts(mtditId, nino))
-      _ <- EitherT(enrolAndRefresh(mtditId, nino))
-    } yield subscriptionResponse
+  def createSubscription(nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
+    createSubscriptionCore(nino, summaryModel, None)
 
-    res.value
-  }
+  def createSubscriptionFromUnauthorisedAgent(unauthorisedAgentArn: String, nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
+    createSubscriptionCore(nino, summaryModel, Some(unauthorisedAgentArn))
 
-  def createSubscription(unauthorisedAgentArn: String, nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+  private[services] def createSubscriptionCore(nino: String, summaryModel: SummaryModel, unauthorisedAgentArn: Option[String])(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
     val res = for {
-      subscriptionResponse <- EitherT(subscriptionService.submitSubscription(nino, summaryModel, Some(unauthorisedAgentArn)))
+      subscriptionResponse <- EitherT(subscriptionService.submitSubscription(nino, summaryModel, unauthorisedAgentArn))
       mtditId = subscriptionResponse.mtditId
       _ <- EitherT(knownFactsService.addKnownFacts(mtditId, nino))
       _ <- EitherT(enrolAndRefresh(mtditId, nino))

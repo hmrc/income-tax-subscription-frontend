@@ -66,7 +66,7 @@ class UnauthorisedSubscriptionControllerSpec extends ControllerBaseSpec
         "submit to ETMP, store the MTDITID in keystore and redirect to the confirmation page" in {
           enable(UnauthorisedAgentFeature)
           setupMockKeystore(fetchAll = testCacheMap)
-          mockCreateSubscriptionSuccess(testArn, testNino, testCacheMap.getSummary())
+          mockCreateSubscriptionFromUnauthorisedAgentSuccess(testArn, testNino, testCacheMap.getSummary())
           mockDeleteSubscriptionData(testNino)
           mockEnrolAndRefreshSuccess(testMTDID, testNino)
 

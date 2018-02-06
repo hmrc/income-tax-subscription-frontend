@@ -63,23 +63,23 @@ trait MockSubscriptionOrchestrationService extends MockTrait {
     mockCreateSubscription(nino, summaryModel)(Future.failed(testException))
 
 
-  private def mockCreateSubscription(arn: String,
-                                     nino: String,
-                                     summaryModel: SummaryModel
-                                    )(result: Future[SubscriptionResponse]): Unit =
+  private def mockCreateSubscriptionFromUnauthorisedAgent(arn: String,
+                                                          nino: String,
+                                                          summaryModel: SummaryModel
+                                                         )(result: Future[SubscriptionResponse]): Unit =
     when(mockSubscriptionOrchestrationService
-      .createSubscription(ArgumentMatchers.eq(arn), ArgumentMatchers.eq(nino), ArgumentMatchers.eq(summaryModel)
+      .createSubscriptionFromUnauthorisedAgent(ArgumentMatchers.eq(arn), ArgumentMatchers.eq(nino), ArgumentMatchers.eq(summaryModel)
       )(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  def mockCreateSubscriptionSuccess(arn: String, nino: String, summaryModel: SummaryModel): Unit =
-    mockCreateSubscription(arn, nino, summaryModel)(Future.successful(testSubscriptionSuccess))
+  def mockCreateSubscriptionFromUnauthorisedAgentSuccess(arn: String, nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscriptionFromUnauthorisedAgent(arn, nino, summaryModel)(Future.successful(testSubscriptionSuccess))
 
-  def mockCreateSubscriptionFailure(arn: String, nino: String, summaryModel: SummaryModel): Unit =
-    mockCreateSubscription(arn, nino, summaryModel)(Future.successful(testSubscriptionFailure))
+  def mockCreateSubscriptionFromUnauthorisedAgentFailure(arn: String, nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscriptionFromUnauthorisedAgent(arn, nino, summaryModel)(Future.successful(testSubscriptionFailure))
 
-  def mockCreateSubscriptionException(arn: String, nino: String, summaryModel: SummaryModel): Unit =
-    mockCreateSubscription(arn, nino, summaryModel)(Future.failed(testException))
+  def mockCreateSubscriptionFromUnauthorisedAgentException(arn: String, nino: String, summaryModel: SummaryModel): Unit =
+    mockCreateSubscriptionFromUnauthorisedAgent(arn, nino, summaryModel)(Future.failed(testException))
 
 
   private def mockEnrolAndRefresh(mtditId: String, nino: String)(result: Future[Either[ConnectorError, String]]): Unit =

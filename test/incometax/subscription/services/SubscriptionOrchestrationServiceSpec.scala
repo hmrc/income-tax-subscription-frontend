@@ -74,7 +74,7 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
   "createSubscription for individual confirming an unauthorised agent's submission" should {
 
     def res: Future[Either[ConnectorError, SubscriptionSuccess]] =
-      TestSubscriptionOrchestrationService.createSubscription(testArn, testNino, testSummaryData)
+      TestSubscriptionOrchestrationService.createSubscriptionFromUnauthorisedAgent(testArn, testNino, testSummaryData)
 
     "return a success when all incometax.business.services succeed" in {
       mockCreateSubscriptionSuccess(testNino, testSummaryData, Some(testArn))
