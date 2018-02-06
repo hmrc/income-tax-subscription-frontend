@@ -79,6 +79,13 @@ object AccountingPeriodDateForm {
     }
   )
 
+  val presentOrFutureDate: Constraint[DateModel] = constraint[DateModel](
+    date => {
+      lazy val invalid = ErrorMessageFactory.error(TargetIds(endDate), "error.end_date_past")
+      if (DateModel.dateConvert(date).isBefore(LocalDate.now())) invalid else Valid
+    }
+  )
+
   val endDate24MonthRule: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
     accountingPeriod => {
       lazy val maxEndDate = DateModel.dateConvert(accountingPeriod.startDate).plusMonths(maxMonths).minusDays(1)
@@ -97,7 +104,7 @@ object AccountingPeriodDateForm {
 
   val endDateConstraints = {
     val name = "end_date"
-    dateEmpty(name) andThen dateIsNumeric(name) andThen dateValidation(name)
+    dateEmpty(name) andThen dateIsNumeric(name) andThen dateValidation(name) andThen presentOrFutureDate
   }
 
   val accountingPeriodDateForm = Form(

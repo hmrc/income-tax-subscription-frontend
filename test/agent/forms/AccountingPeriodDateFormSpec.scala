@@ -16,6 +16,8 @@
 
 package agent.forms
 
+import java.time.LocalDate
+
 import agent.assets.MessageLookup
 import core.forms.submapping.DateMapping
 import core.models.DateModel
@@ -30,6 +32,8 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
 
   import AccountingPeriodDateForm._
   import DateMapping._
+
+  val today = DateModel.dateConvert(LocalDate.now())
 
   "The AccountingPeriodDateForm" should {
     "transform a valid request to the date form case class" in {
@@ -137,12 +141,28 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           invalidTest assert endDate hasExpectedErrors invalid
         }
 
-        "it is before the start date" in {
+        "it is not after the start date" in {
           val violation = ErrorMessageFactory.error("agent.error.end_date_violation")
           violation fieldErrorIs MessageLookup.Error.EndDate.end_violation
           violation summaryErrorIs MessageLookup.Error.EndDate.end_violation
+          
 
-          val endDateViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("28", "6", "2017")
+          val endDateViolationInput = DataMap.date(startDate)(today.day, today.month, today.year)++
+            DataMap.date(endDate)(today.day, today.month, today.year)
+
+          val violationTest = accountingPeriodDateForm.bind(endDateViolationInput)
+          violationTest assert endDate hasExpectedErrors violation
+        }
+
+        "it is in the past" in {
+          val violation = ErrorMessageFactory.error("agent.error.end_date_past")
+          violation fieldErrorIs MessageLookup.Error.EndDate.end_past
+          violation summaryErrorIs MessageLookup.Error.EndDate.end_past
+
+          val testDay = LocalDate.now().minusDays(1).getDayOfMonth.toString
+
+          val endDateViolationInput = DataMap.date(startDate)(testDay, today.month, today.year) ++
+            DataMap.date(endDate)(testDay, today.month,  today.year)
           val violationTest = accountingPeriodDateForm.bind(endDateViolationInput)
           violationTest assert endDate hasExpectedErrors violation
         }
@@ -164,7 +184,12 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "accept a valid date" in {
-      val testData = DataMap.date(startDate)("28", "5", "2017") ++ DataMap.date(endDate)("28", "5", "2018")
+
+      val testStartDate = DateModel.dateConvert(LocalDate.now())
+      val testEndDate = DateModel.dateConvert(LocalDate.now().plusDays(1))
+
+      val testData = DataMap.date(startDate)(testStartDate.day, testStartDate.month, testStartDate.year) ++
+        DataMap.date(endDate)(testEndDate.day, testEndDate.month, testEndDate.year)
       accountingPeriodDateForm isValidFor testData
     }
   }
