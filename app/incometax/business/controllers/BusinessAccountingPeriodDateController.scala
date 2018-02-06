@@ -28,6 +28,9 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import core.services.CacheUtil._
+import incometax.incomesource.services.CurrentTimeService
+import incometax.subscription.models.{Both, IncomeSourceType}
 
 import scala.concurrent.Future
 
@@ -35,7 +38,8 @@ import scala.concurrent.Future
 class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseControllerConfig,
                                                        val messagesApi: MessagesApi,
                                                        val keystoreService: KeystoreService,
-                                                       val authService: AuthService
+                                                       val authService: AuthService,
+                                                       val currentTimeService: CurrentTimeService
                                                       ) extends SignUpController {
 
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, editMatch: Boolean)(implicit request: Request[_]): Html =
@@ -71,7 +75,9 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
         ))),
         accountingPeriod =>
           for {
-            optOldAccountingPeriodDates <- keystoreService.fetchAccountingPeriodDate()
+            cache <- keystoreService.fetchAll()
+            newIncomeSource = cache.getIncomeSourceType().get
+            optOldAccountingPeriodDates = cache.getAccountingPeriodDate()
             _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
             enteredTaxEndYear = accountingPeriod.taxEndYear
             _ <- optOldAccountingPeriodDates match {
@@ -80,15 +86,19 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
               case _ => Future.successful(Unit)
             }
           } yield
-            if (applicationConfig.taxYearDeferralEnabled) {
+            if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018) {
               if (isEditMode) {
                 val acceptedTaxYearChanged = optOldAccountingPeriodDates.fold(true)(_.taxEndYear != enteredTaxEndYear)
                 if (acceptedTaxYearChanged && enteredTaxEndYear <= 2018)
+                  Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show(editMode = isEditMode))
+                else if(acceptedTaxYearChanged && hasBothIncomeSources(newIncomeSource) && enteredTaxEndYear > 2018)
                   Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show(editMode = isEditMode))
                 else
                   Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
               } else {
                 if (enteredTaxEndYear <= 2018) Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show())
+                else if(hasBothIncomeSources(newIncomeSource) && enteredTaxEndYear > 2018)
+                  Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show(editMode = isEditMode))
                 else Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
               }
             }
@@ -98,6 +108,13 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
             }
       )
   }
+
+  private def hasBothIncomeSources(incomeSourceType: IncomeSourceType): Boolean =
+    incomeSourceType match {
+      case Both => true
+      case _ => false
+    }
+
 
   def whichView(implicit request: Request[_]): AccountingPeriodViewType =
     if (request.isInState(Registration)) RegistrationAccountingPeriodView
