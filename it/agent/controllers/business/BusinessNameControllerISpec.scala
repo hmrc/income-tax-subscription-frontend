@@ -48,11 +48,11 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       }
     }
 
-    "keystore returns no data" should {
+    "keystore returns only income source" should {
       "show the business name page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(testIncomeSourceBoth)))
 
         When("GET /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.businessName()
@@ -77,6 +77,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(testIncomeSourceBusiness)))
         KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
 
         When("POST /business/name is called")
@@ -92,6 +93,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       "do not enter business name" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(testIncomeSourceBusiness)))
         KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, "")
 
         When("POST /business/name is called")
@@ -109,6 +111,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(testIncomeSourceBusiness)))
         KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
 
         When("POST /business/name is called")

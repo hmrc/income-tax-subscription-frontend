@@ -19,44 +19,62 @@ package agent.controllers.business
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.AuthenticatedController
-import core.config.BaseControllerConfig
 import agent.forms.BusinessNameForm
 import agent.models.BusinessNameModel
+import agent.services.KeystoreService
+import core.config.BaseControllerConfig
+import core.services.AuthService
+import incometax.business.models.AccountingPeriodModel
+import incometax.incomesource.services.CurrentTimeService
+import incometax.subscription.models.{Both, Business, IncomeSourceType}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import agent.services.KeystoreService
-import core.services.AuthService
-
-import scala.concurrent.Future
 
 @Singleton
 class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService,
-                                       val authService: AuthService
+                                       val authService: AuthService,
+                                       currentTimeService: CurrentTimeService
                                       ) extends AuthenticatedController {
 
-  def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
+  def view(businessNameForm: Form[BusinessNameModel],
+           isEditMode: Boolean,
+           accountingPeriod: Option[AccountingPeriodModel],
+           incomeSource: IncomeSourceType
+          )(implicit request: Request[_]): Html =
     agent.views.html.business.business_name(
       businessNameForm = businessNameForm,
       postAction = agent.controllers.business.routes.BusinessNameController.submit(editMode = isEditMode),
       isEditMode,
-      backUrl = backUrl(isEditMode)
+      backUrl = backUrl(isEditMode, accountingPeriod, incomeSource)
     )
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchBusinessName() map {
-        businessName => Ok(view(BusinessNameForm.businessNameForm.form.fill(businessName), isEditMode = isEditMode))
-      }
+      for {
+        businessName <- keystoreService.fetchBusinessName()
+        accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
+        incomeSourceType <- keystoreService.fetchIncomeSource() map (source => IncomeSourceType(source.get.source))
+      } yield Ok(view(
+        BusinessNameForm.businessNameForm.form.fill(businessName),
+        isEditMode = isEditMode,
+        accountingPeriod,
+        incomeSourceType
+      ))
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
+
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
+        formWithErrors =>
+          for{
+            accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
+            incomeSourceType <- keystoreService.fetchIncomeSource() map (source => IncomeSourceType(source.get.source))
+          } yield BadRequest(view(formWithErrors, isEditMode = isEditMode, accountingPeriod, incomeSourceType)),
         businessName => {
           keystoreService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
@@ -68,10 +86,19 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  def backUrl(isEditMode: Boolean): String =
-    if (isEditMode)
-      agent.controllers.routes.CheckYourAnswersController.show().url
-    else
-      agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+  def backUrl(isEditMode: Boolean, accountingPeriodModel: Option[AccountingPeriodModel], incomeSource: IncomeSourceType): String = {
+    import applicationConfig.taxYearDeferralEnabled
+    import currentTimeService.getTaxYearEndForCurrentDate
 
+    (incomeSource, accountingPeriodModel) match {
+      case _ if isEditMode =>
+        agent.controllers.routes.CheckYourAnswersController.show().url
+      case (Business, Some(accountingPeriod)) if taxYearDeferralEnabled && accountingPeriod.taxEndYear <= 2018 =>
+        agent.controllers.routes.CannotReportYetController.show().url
+      case (Both, _) if taxYearDeferralEnabled && getTaxYearEndForCurrentDate <= 2018 =>
+        agent.controllers.routes.CannotReportYetController.show().url
+      case _ =>
+        agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+    }
+  }
 }

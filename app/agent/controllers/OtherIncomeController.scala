@@ -31,6 +31,8 @@ import agent.services.KeystoreService
 import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
 import core.utils.Implicits._
+import incometax.incomesource.services.CurrentTimeService
+import incometax.subscription.models.{IncomeSourceType, Property}
 
 import scala.concurrent.Future
 
@@ -39,10 +41,15 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val keystoreService: KeystoreService,
                                       val authService: AuthService,
-                                      val logging: Logging
+                                      val logging: Logging,
+                                      currentTimeService: CurrentTimeService
                                      ) extends AuthenticatedController {
 
-  def view(otherIncomeForm: Form[OtherIncomeModel], incomeSource: String, isEditMode: Boolean, backUrl: String)(implicit request: Request[_]): Html =
+  def view(otherIncomeForm: Form[OtherIncomeModel],
+           incomeSource: String,
+           isEditMode: Boolean,
+           backUrl: String
+          )(implicit request: Request[_]): Html =
     agent.views.html.other_income(
       otherIncomeForm = otherIncomeForm,
       incomeSource = incomeSource,
@@ -58,7 +65,15 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
         choice <- if (optIncomeSource.isDefined) keystoreService.fetchOtherIncome() else Future.successful(None)
       } yield (optIncomeSource, choice) match {
         case (Some(IncomeSourceModel(incomeSource)), _) =>
-          Ok(view(OtherIncomeForm.otherIncomeForm.fill(choice), incomeSource, isEditMode, backUrl(isEditMode)))
+          Ok(view(
+            OtherIncomeForm.otherIncomeForm.fill(choice),
+            incomeSource,
+            isEditMode,
+            backUrl(
+              isEditMode,
+              IncomeSourceType(incomeSource)
+            )
+          ))
         case _ =>
           Redirect(agent.controllers.routes.IncomeSourceController.show())
       }
@@ -90,7 +105,19 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
         case optIncomeSource@Some(IncomeSourceModel(incomeSource)) =>
           OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(otherIncomeForm = formWithErrors, incomeSource = incomeSource, isEditMode = isEditMode, backUrl = backUrl(isEditMode)))),
+              Future.successful(
+                BadRequest(
+                  view(
+                    otherIncomeForm = formWithErrors,
+                    incomeSource = incomeSource,
+                    isEditMode = isEditMode,
+                    backUrl = backUrl(
+                      isEditMode,
+                      IncomeSourceType(incomeSource)
+                    )
+                  )
+                )
+              ),
             choice =>
               keystoreService.fetchOtherIncome().flatMap {
                 previousOtherIncome =>
@@ -107,10 +134,15 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  def backUrl(isEditMode: Boolean): String =
-    if (isEditMode)
+  def backUrl(isEditMode: Boolean, incomeSource: IncomeSourceType): String =
+    if (isEditMode) {
       agent.controllers.routes.CheckYourAnswersController.show().url
-    else
+    } else if (applicationConfig.taxYearDeferralEnabled
+      && incomeSource == Property
+      && currentTimeService.getTaxYearEndForCurrentDate <= 2018) {
+      agent.controllers.routes.CannotReportYetController.show().url
+    } else {
       agent.controllers.routes.IncomeSourceController.show().url
+    }
 
 }

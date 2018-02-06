@@ -212,14 +212,14 @@ class CannotReportYetControllerSpec extends AgentControllerBaseSpec
 
     "not in edit mode" should {
       s"redirect to '${
-        agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+        agent.controllers.business.routes.BusinessNameController.show().url
       }' on the business journey" in {
         setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceBusiness))
 
         val goodRequest = callSubmit()
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingMethodController.show().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchAll = 1)
@@ -240,14 +240,14 @@ class CannotReportYetControllerSpec extends AgentControllerBaseSpec
       }
 
       s"redirect to '${
-        agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+        agent.controllers.business.routes.BusinessNameController.show().url
       }' on the both journey" in {
         setupMockKeystore(fetchAll = testCacheMapCustom(incomeSource = TestModels.testIncomeSourceBoth))
 
         val goodRequest = callSubmit()
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingMethodController.show().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchAll = 1)

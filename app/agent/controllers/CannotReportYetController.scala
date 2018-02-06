@@ -105,7 +105,7 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
           incomeSource = (cache.getIncomeSource() map (source => IncomeSourceType(source.source))).get
         } yield incomeSource match {
           case Business | Both =>
-            Redirect(agent.controllers.business.routes.BusinessAccountingMethodController.show())
+            Redirect(agent.controllers.business.routes.BusinessNameController.show())
           case Property =>
             Redirect(agent.controllers.routes.OtherIncomeController.show())
         }
