@@ -185,8 +185,7 @@ class CannotReportYetControllerSpec extends AgentControllerBaseSpec
 
           val expectedView = agent.views.html.client_cannot_report_property_yet(
             postAction = routes.CannotReportYetController.submit(),
-            backUrl = agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url,
-            dateModel = crystallisationTaxYearStart
+            backUrl = agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
           ).body
 
           contentAsString(result) mustBe expectedView

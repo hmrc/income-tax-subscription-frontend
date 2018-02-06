@@ -637,8 +637,8 @@ agent.not-authorised-error.para1                                      = You can 
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                                = You can''t use software to report your client''s property income yet
 agent.cannot-report-property-yet.heading                              = You can''t use software to report your client''s property income yet
-agent.cannot-report-property-yet.para1                                = You can use software to report your client''s sole trader income and to record their other income and expenses.
-agent.cannot-report-property-yet.para2                                = They won''t be able to submit a report for their property income until {0}. Your client still needs to <a id="sa" href="{1}">send a Self Assessment tax return</a>.
+agent.cannot-report-property-yet.para1                                = You can use software to report your client''s sole trader income.
+agent.cannot-report-property-yet.para2                                = They won''t be able to submit a report for their property income until 6 April 2018. Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Client cannot report before 6 April 2018 page ##
 agent.cannot-report-yet.title                                         = Your client can''t use software to report their Income Tax yet

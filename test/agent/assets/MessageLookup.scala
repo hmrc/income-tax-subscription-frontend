@@ -422,8 +422,8 @@ object MessageLookup {
     val title = "You can't use software to report your client's property income yet"
     val heading: String = title
     val linkText = "send a Self Assessment tax return"
-    val para1 = "You can use software to report your client's sole trader income and to record their other income and expenses."
-    def para2(dateModel: DateModel) = s"They won't be able to submit a report for their property income until ${dateModel.toOutputDateFormat}. Your client still needs to $linkText."
+    val para1 = "You can use software to report your client's sole trader income."
+    val para2 = s"They won't be able to submit a report for their property income until 6 April 2018. Your client still needs to $linkText."
   }
 
 
