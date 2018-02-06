@@ -84,8 +84,7 @@ class CannotReportYetController @Inject()(val baseConfig: BaseControllerConfig,
   private def generateCanReportBusinessButNotPropertyView(backUrl: String, isEditMode: Boolean)(implicit request: Request[_]) =
     agent.views.html.client_cannot_report_property_yet(
       postAction = routes.CannotReportYetController.submit(editMode = isEditMode),
-      backUrl,
-      dateModel = crystallisationTaxYearStart //TODO - remove when page content is refactored
+      backUrl
     )
 
 

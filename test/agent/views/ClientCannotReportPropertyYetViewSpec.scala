@@ -26,12 +26,10 @@ class ClientCannotReportPropertyYetViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
   val request = ViewSpecTrait.viewTestRequest
-  val testDateModel = DateModel("6","4","2018")
 
   lazy val page = agent.views.html.client_cannot_report_property_yet(
     postAction = action,
-    backUrl = backUrl,
-    dateModel = testDateModel)(
+    backUrl = backUrl)(
     request,
     applicationMessages,
     appConfig
@@ -50,7 +48,7 @@ class ClientCannotReportPropertyYetViewSpec extends ViewSpecTrait {
 
     testPage.mustHaveParaSeq(
       messages.para1,
-      messages.para2(testDateModel)
+      messages.para2
     )
     testPage.mustHaveALink("sa", messages.linkText, appConfig.signUpToSaLink)
 
