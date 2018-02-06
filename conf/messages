@@ -643,7 +643,7 @@ agent.cannot-report-property-yet.para2                                = They won
 ## Client cannot report before 6 April 2018 page ##
 agent.cannot-report-yet.title                                         = Your client can''t use software to report their Income Tax yet
 agent.cannot-report-yet.heading                                       = Your client can''t use software to report their Income Tax yet
-agent.cannot-report-yet.para1                                         = You can still sign this client up and use software to record their income and expenses, but they won''t be able to submit a report until 6 April 2018.
+agent.cannot-report-yet.para1                                         = You can still sign this client up and use software to record their income and expenses, but they won''t be able to submit a report until {0}.
 agent.cannot-report-yet.para2                                         = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Summary page ##

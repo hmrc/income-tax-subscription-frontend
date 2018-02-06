@@ -332,6 +332,11 @@ trait ComponentSpecBase extends UnitSpec
 
     def noSA(): WSResponse = get("/register-for-SA")
 
+    def cannotReportYet(): WSResponse = get("/error/cannot-report-yet")
+
+    def submitCannotReportYet(editMode: Boolean): WSResponse =
+      post(s"/error/cannot-report-yet${if (editMode) "?editMode=true" else ""}")(Map.empty)
+
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =
