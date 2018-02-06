@@ -285,6 +285,7 @@ object MessageLookup {
       val invalid_chars = "Enter an end date using numbers 0 to 9"
       val invalid = "Enter a real end date"
       val end_violation = "Enter an end date that's after the start date"
+      val end_past = "Enter an end date that's the present date or a future date"
     }
 
     object DOBDate {

@@ -58,6 +58,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     mockCurrentTimeService
   )
 
+
   private def fetchAllCacheMap(matchTaxYear: Option[MatchTaxYearModel] = None,
                                accountingPeriod: Option[AccountingPeriodModel] = None,
                                incomeSourceType: IncomeSourceType = Business) =
@@ -74,6 +75,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
       matchTaxYear = matchTaxYear,
       accountingPeriodDate = accountingPeriod
     )
+
 
   val taxYear2018AccountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2017"), DateModel("5", "4", "2018"))
   val taxYear2019AccountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2017"), DateModel("5", "4", "2019"))
