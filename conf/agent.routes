@@ -80,3 +80,7 @@ POST        /error/not-authorised                   agent.controllers.AgentNotAu
 
 # Agent not authorised Confirmation
 GET         /send-client-link                       agent.controllers.UnauthorisedAgentConfirmationController.show
+
+#Cannot report yet
+GET         /error/cannot-report-yet                agent.controllers.CannotReportYetController.show(editMode: Boolean ?= false)
+POST        /error/cannot-report-yet                agent.controllers.CannotReportYetController.submit(editMode: Boolean ?= false)
