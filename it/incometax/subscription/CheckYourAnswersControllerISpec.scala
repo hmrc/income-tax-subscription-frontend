@@ -218,8 +218,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        EnrolmentStoreStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-        EnrolmentStoreStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
         KeystoreStub.stubPutMtditId()
 

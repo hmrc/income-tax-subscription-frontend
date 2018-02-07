@@ -19,12 +19,12 @@ package helpers.servicemocks
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.Json
 
-object EnrolmentStoreStub extends WireMockMethods {
+object TaxEnrolmentsStub extends WireMockMethods {
   def stubUpsertEnrolmentResult(enrolmentKey: String, status: Int): StubMapping =
-    when(method = PUT, uri = s"/enrolment-store-proxy/enrolment-store/enrolments/$enrolmentKey")
+    when(method = PUT, uri = s"/tax-enrolments/enrolments/$enrolmentKey")
       .thenReturn(status = status, body = Json.obj())
 
   def stubAllocateEnrolmentResult(groupId: String, enrolmentKey: String, status: Int): StubMapping =
-    when(method = POST, uri = s"/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments/$enrolmentKey")
+    when(method = POST, uri = s"/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey")
       .thenReturn(status = status, body = Json.obj())
 }

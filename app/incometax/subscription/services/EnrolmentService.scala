@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import core.Constants
 import core.Constants.GovernmentGateway._
 import core.config.AppConfig
-import incometax.subscription.connectors.{EnrolmentStoreConnector, GGConnector}
+import incometax.subscription.connectors.{GGConnector, TaxEnrolmentsConnector}
 import incometax.subscription.httpparsers.AllocateEnrolmentResponseHttpParser.AllocateEnrolmentResponse
 import incometax.subscription.models._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EnrolmentService @Inject()(config: AppConfig,
                                  ggConnector: GGConnector,
-                                 enrolmentStoreConnector: EnrolmentStoreConnector,
+                                 enrolmentStoreConnector: TaxEnrolmentsConnector,
                                  authConnector: AuthConnector)(implicit ec: ExecutionContext) {
   def enrol(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[EnrolFailure, EnrolSuccess.type]] = {
     if (config.emacEs8ApiEnabled) esEnrol(mtditId, nino)

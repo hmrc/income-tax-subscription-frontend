@@ -136,7 +136,7 @@ class CheckYourAnswersControllerNewIncomeSourceSpec extends ControllerBaseSpec
       "return a internalServer error" in {
         setupMockKeystore(fetchAll = testCacheMap)
         mockCreateSubscriptionFailure(testNino, testCacheMap.getSummary())
-        intercept[InternalServerException](await(result)).message mustBe "Successful response not received from submission"
+        intercept[InternalServerException](await(result)).message must include("Successful response not received from submission")
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
     }

@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import core.Constants
 import core.Constants.GovernmentGateway._
 import core.config.AppConfig
-import incometax.subscription.connectors.{EnrolmentStoreConnector, GGAdminConnector}
+import incometax.subscription.connectors.{GGAdminConnector, TaxEnrolmentsConnector}
 import incometax.subscription.models._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -29,7 +29,7 @@ import scala.concurrent.Future
 
 @Singleton
 class KnownFactsService @Inject()(gGAdminConnector: GGAdminConnector,
-                                  enrolmentStoreConnector: EnrolmentStoreConnector,
+                                  taxEnrolmentsConnector: TaxEnrolmentsConnector,
                                   appConfig: AppConfig) {
   def addKnownFacts(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
     if(appConfig.emacEs6ApiEnabled) esAddKnownFacts(mtditId, nino)
@@ -41,7 +41,7 @@ class KnownFactsService @Inject()(gGAdminConnector: GGAdminConnector,
     val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> mtditId)
     val enrolmentVerifiers = EnrolmentVerifiers(NINO -> nino)
 
-    enrolmentStoreConnector.upsertEnrolment(enrolmentKey, enrolmentVerifiers)
+    taxEnrolmentsConnector.upsertEnrolment(enrolmentKey, enrolmentVerifiers)
   }
 
   private def ggAddKnownFacts(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
