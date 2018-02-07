@@ -165,7 +165,7 @@ class SubscriptionServiceTaxYearDeferralSpec extends TestSubscriptionService
           request.tradingName.get mustBe testSummaryNewIncomeSourceData.businessName.get.businessName
         }
 
-        "convert the agent''s data into the correct FERequest format" in {
+        "convert the agent's data into the correct FERequest format" in {
           enable(NewIncomeSourceFlowFeature)
 
           // a freshly generated nino is used to ensure it is not simply pulling the test nino from somewhere else
@@ -173,8 +173,8 @@ class SubscriptionServiceTaxYearDeferralSpec extends TestSubscriptionService
           // testSummaryData is used here because the agent's submission will be using the original models
           val request = TestSubscriptionService.buildRequest(nino, testSummaryData, Some("test arn value"))
           request.nino mustBe nino
-          request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.get.startDate
-          request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.get.endDate
+          request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.get.adjustedTaxYear.startDate
+          request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.get.adjustedTaxYear.endDate
           request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
           IncomeSourceType.unapply(request.incomeSource).get mustBe testSummaryData.incomeSource.get.source
           request.isAgent mustBe false

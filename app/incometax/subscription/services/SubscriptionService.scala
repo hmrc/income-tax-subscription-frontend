@@ -61,7 +61,7 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
   private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
     val incomeSource = getIncomeSourceType(summaryData, arn)
     val accountingPeriod = getAccountingPeriod(incomeSource, summaryData, arn).map { ap =>
-      if (arn.isEmpty && applicationConfig.taxYearDeferralEnabled) ap.adjustedTaxYear
+      if (applicationConfig.taxYearDeferralEnabled) ap.adjustedTaxYear
       else ap
     }
     val (accountingPeriodStart, accountingPeriodEnd) = (accountingPeriod.map(_.startDate), accountingPeriod.map(_.endDate))

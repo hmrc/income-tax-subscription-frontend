@@ -21,12 +21,15 @@ import agent.forms.OtherIncomeForm
 import agent.models.OtherIncomeModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
+import incometax.incomesource.services.mocks.MockCurrentTimeService
+import incometax.subscription.models._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, _}
 
 class OtherIncomeControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService {
+  with MockKeystoreService with MockCurrentTimeService with FeatureSwitching {
 
   override val controllerName: String = "OtherIncomeController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -39,7 +42,8 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     mockAuthService,
-    app.injector.instanceOf[Logging]
+    app.injector.instanceOf[Logging],
+    mockCurrentTimeService
   )
 
   "Calling the showOtherIncome action of the OtherIncome controller with an authorised user" when {
@@ -226,15 +230,43 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "The back url not in edit mode" should {
-    s"point to ${agent.controllers.routes.IncomeSourceController.show().url} on other income page" in {
-      TestOtherIncomeController.backUrl(isEditMode = false) mustBe agent.controllers.routes.IncomeSourceController.show().url
+  "backUrl" when {
+    "edit mode is on" should {
+      s"return ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
+        TestOtherIncomeController.backUrl(isEditMode = true, Property) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
+      }
     }
-  }
-
-  "The back url in edit mode" should {
-    s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url} on other income page" in {
-      TestOtherIncomeController.backUrl(isEditMode = true) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
+    "edit mode is off" when {
+      "the tax deferral feature switch is on" when {
+        "income source is property" when {
+          "the current date is before 6 April 2018" should {
+            s"return ${agent.controllers.routes.CannotReportYetController.show().url}" in {
+              mockGetTaxYearEnd(2018)
+              enable(TaxYearDeferralFeature)
+              TestOtherIncomeController.backUrl(isEditMode = false, Property) mustBe agent.controllers.routes.CannotReportYetController.show().url
+            }
+          }
+          "the current date is 6 April 2018 or after" should {
+            s"return ${agent.controllers.routes.IncomeSourceController.show().url}" in {
+              mockGetTaxYearEnd(2019)
+              enable(TaxYearDeferralFeature)
+              TestOtherIncomeController.backUrl(isEditMode = false, Property) mustBe agent.controllers.routes.IncomeSourceController.show().url
+            }
+          }
+        }
+        "income source is not property" should {
+          s"return ${agent.controllers.routes.IncomeSourceController.show().url}" in {
+            enable(TaxYearDeferralFeature)
+            TestOtherIncomeController.backUrl(isEditMode = false, Business) mustBe agent.controllers.routes.IncomeSourceController.show().url
+          }
+        }
+      }
+      "the tax deferral feature switch is off" should {
+        s"return ${agent.controllers.routes.IncomeSourceController.show().url}" in {
+          disable(TaxYearDeferralFeature)
+          TestOtherIncomeController.backUrl(isEditMode = false, Property) mustBe agent.controllers.routes.IncomeSourceController.show().url
+        }
+      }
     }
   }
 

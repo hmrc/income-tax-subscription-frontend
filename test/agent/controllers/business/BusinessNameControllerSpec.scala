@@ -20,12 +20,17 @@ import agent.controllers.AgentControllerBaseSpec
 import agent.forms.BusinessNameForm
 import agent.models.BusinessNameModel
 import agent.services.mocks.MockKeystoreService
+import agent.utils.TestModels._
+import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
+import core.models.DateModel
+import incometax.incomesource.services.mocks.MockCurrentTimeService
+import incometax.subscription.models._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
 class BusinessNameControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService {
+  with MockKeystoreService with MockCurrentTimeService with FeatureSwitching {
 
   override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -37,7 +42,8 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService
+    mockAuthService,
+    mockCurrentTimeService
   )
 
   "Calling the showBusinessName action of the BusinessNameController with an authorised user" should {
@@ -45,7 +51,11 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
     lazy val result = TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
-      setupMockKeystore(fetchBusinessName = None)
+      setupMockKeystore(
+        fetchBusinessName = None,
+        fetchAccountingPeriodDate = Some(testAccountingPeriod),
+        fetchIncomeSource = Some(testIncomeSourceBusiness)
+      )
 
       status(result) must be(Status.OK)
 
@@ -115,22 +125,94 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
     lazy val badRequest = TestBusinessNameController.submit(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
+      setupMockKeystore(
+        fetchAccountingPeriodDate = Some(testAccountingPeriod),
+        fetchIncomeSource = Some(testIncomeSourceBusiness)
+      )
+
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-      verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 0)
     }
   }
 
-  "The back url when not in edit mode" should {
-    s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-      TestBusinessNameController.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
-    }
-  }
+  "back url" when {
+    "not in edit mode" when {
+      "the tax deferral feature switch is on" when {
+        "the income source is Business" when {
+          "the accounting period ends before 6 April 2018" should {
+            s"point to ${agent.controllers.routes.CannotReportYetController.show().url}" in {
+              enable(TaxYearDeferralFeature)
 
-  "The back url when in edit mode" should {
-    s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
-      TestBusinessNameController.backUrl(isEditMode = true) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
+              TestBusinessNameController.backUrl(
+                isEditMode = false,
+                Some(testAccountingPeriod),
+                Business
+              ) mustBe agent.controllers.routes.CannotReportYetController.show().url
+            }
+          }
+          "the accounting period ends on 6 April 2018" should {
+            s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
+              enable(TaxYearDeferralFeature)
+
+              TestBusinessNameController.backUrl(
+                isEditMode = false,
+                Some(testAccountingPeriod copy (endDate = DateModel("06", "04", "2018"))),
+                Business
+              ) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+            }
+          }
+        }
+        "the income source is Both" when {
+          "the current date is before 6 April 2018" should {
+            s"point to ${agent.controllers.routes.CannotReportYetController.show().url}" in {
+              enable(TaxYearDeferralFeature)
+              mockGetTaxYearEnd(2018)
+
+              TestBusinessNameController.backUrl(
+                isEditMode = false,
+                Some(testAccountingPeriod),
+                Both
+              ) mustBe agent.controllers.routes.CannotReportYetController.show().url
+            }
+          }
+
+          "the current date is 6 April 2018 or after" should {
+            s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
+              enable(TaxYearDeferralFeature)
+              mockGetTaxYearEnd(2019)
+
+              TestBusinessNameController.backUrl(
+                isEditMode = false,
+                Some(testAccountingPeriod),
+                Both
+              ) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+            }
+          }
+        }
+      }
+      "the tax deferral feature switch is off" should {
+        s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
+          disable(TaxYearDeferralFeature)
+
+          TestBusinessNameController.backUrl(
+            isEditMode = false,
+            Some(testAccountingPeriod),
+            Business
+          ) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+        }
+      }
+
+    }
+
+    "in edit mode" should {
+      s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
+        TestBusinessNameController.backUrl(
+          isEditMode = true,
+          testAccountingPeriod,
+          Business
+        ) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
+      }
     }
   }
 

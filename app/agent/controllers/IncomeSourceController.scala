@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import agent.services.KeystoreService
 import core.services.AuthService
+import incometax.incomesource.services.CurrentTimeService
 
 import scala.concurrent.Future
 
@@ -35,7 +36,8 @@ import scala.concurrent.Future
 class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService,
-                                       val authService: AuthService
+                                       val authService: AuthService,
+                                       val currentTimeService: CurrentTimeService
                                       ) extends AuthenticatedController {
 
   def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
@@ -59,7 +61,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
         formWithErrors => Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
         incomeSource => {
           lazy val linearJourney: Future[Result] =
-            keystoreService.saveIncomeSource(incomeSource) flatMap { _ =>
+            keystoreService.saveIncomeSource(incomeSource) map { _ =>
               incomeSource.source match {
                 case IncomeSourceForm.option_business => business
                 case IncomeSourceForm.option_property => property
@@ -84,13 +86,21 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  def business(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.OtherIncomeController.show()))
+  def business(implicit request: Request[_]): Result =
+    Redirect(agent.controllers.routes.OtherIncomeController.show())
 
-  def property(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.OtherIncomeController.show()))
+  def property(implicit request: Request[_]): Result =
+    if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018) {
+      Redirect(agent.controllers.routes.CannotReportYetController.show())
+    } else {
+      Redirect(agent.controllers.routes.OtherIncomeController.show())
+    }
 
-  def both(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.OtherIncomeController.show()))
+  def both(implicit request: Request[_]): Result =
+    Redirect(agent.controllers.routes.OtherIncomeController.show())
 
-  def other(implicit request: Request[_]): Future[Result] = Future.successful(Redirect(agent.controllers.routes.MainIncomeErrorController.show()))
+  def other(implicit request: Request[_]): Result =
+    Redirect(agent.controllers.routes.MainIncomeErrorController.show())
 
   lazy val backUrl: String =
     agent.controllers.routes.CheckYourAnswersController.show().url

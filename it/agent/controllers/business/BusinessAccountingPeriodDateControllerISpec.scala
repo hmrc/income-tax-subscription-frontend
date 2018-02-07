@@ -23,12 +23,13 @@ import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
 import _root_.agent.services.CacheConstants
 import agent.forms._
 import agent.models._
+import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
 import core.models.DateModel
 import incometax.business.models.AccountingPeriodModel
 import play.api.http.Status._
 import play.api.i18n.Messages
 
-class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
+class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   "GET /business/accounting-period-dates" when {
 
@@ -153,13 +154,12 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase {
     "not in edit mode" should {
 
       "enter accounting period start and end dates on the accounting period page" in {
+        disable(TaxYearDeferralFeature)
         val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(accountingPeriodPrior = Some(keystoreAccountingPeriodPrior))
-        )
+        KeystoreStub.stubKeystoreData(fullKeystoreData)
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")
