@@ -90,9 +90,9 @@ trait MockConfig extends AppConfig {
 
   override lazy val backendFeatureSwitchUrl = "income-tax-subscription/"
 
-  override def upsertEnrolmentUrl(enrolmentKey: String): String = "enrolment-store/"
+  override def upsertEnrolmentUrl(enrolmentKey: String): String = "tax-enrolments/"
 
-  override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = "enrolment-store/"
+  override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = "tax-enrolments/"
 
   override def storeSubscriptionUrl(nino: String): String = ""
 

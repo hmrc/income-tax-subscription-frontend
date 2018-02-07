@@ -223,13 +223,13 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override lazy val backendFeatureSwitchUrl: String = s"$protectedMicroServiceUrl/income-tax-subscription/test-only/feature-switch"
 
-  lazy val enrolmentStore = baseUrl("enrolment-store-proxy")
+  lazy val taxEnrolments = baseUrl("tax-enrolments")
 
   override def upsertEnrolmentUrl(enrolmentKey: String): String =
-    s"$enrolmentStore/enrolment-store-proxy/enrolment-store/enrolments/$enrolmentKey"
+    s"$taxEnrolments/tax-enrolments/enrolments/$enrolmentKey"
 
   override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String =
-    s"$enrolmentStore/enrolment-store-proxy/enrolment-store/groups/$groupId/enrolments/$enrolmentKey"
+    s"$taxEnrolments/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey"
 
   lazy val subscriptionStore = baseUrl("income-tax-subscription-store")
 

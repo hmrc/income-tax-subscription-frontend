@@ -28,7 +28,7 @@ import play.api.i18n.Messages
 
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwitching {
-  "GET /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/check-yowur-answers" when {
     "keystore returns all data" should {
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
@@ -218,8 +218,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        EnrolmentStoreStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-        EnrolmentStoreStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
         KeystoreStub.stubPutMtditId()
 

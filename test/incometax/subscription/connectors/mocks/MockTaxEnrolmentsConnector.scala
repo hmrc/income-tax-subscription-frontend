@@ -18,7 +18,7 @@ package incometax.subscription.connectors.mocks
 
 import core.utils.MockTrait
 import core.utils.TestConstants._
-import incometax.subscription.connectors.EnrolmentStoreConnector
+import incometax.subscription.connectors.TaxEnrolmentsConnector
 import incometax.subscription.httpparsers.AllocateEnrolmentResponseHttpParser._
 import incometax.subscription.httpparsers.UpsertEnrolmentResponseHttpParser._
 import incometax.subscription.models._
@@ -28,13 +28,13 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-trait MockEnrolmentStoreConnector extends MockTrait {
-  val mockEnrolmentStoreConnector = mock[EnrolmentStoreConnector]
+trait MockTaxEnrolmentsConnector extends MockTrait {
+  val mockTaxEnrolmentsConnector = mock[TaxEnrolmentsConnector]
 
   private def mockUpsertEnrolment(enrolmentKey: EnrolmentKey,
                                   enrolmentVerifiers: EnrolmentVerifiers
                                  )(response: Future[UpsertEnrolmentResponse]): Unit =
-    when(mockEnrolmentStoreConnector.upsertEnrolment(
+    when(mockTaxEnrolmentsConnector.upsertEnrolment(
       ArgumentMatchers.eq(enrolmentKey),
       ArgumentMatchers.eq(enrolmentVerifiers)
     )(ArgumentMatchers.any[HeaderCarrier]))
@@ -56,7 +56,7 @@ trait MockEnrolmentStoreConnector extends MockTrait {
                                     enrolmentKey: EnrolmentKey,
                                     enrolmentRequest: EmacEnrolmentRequest
                                    )(response: Future[AllocateEnrolmentResponse]): Unit =
-    when(mockEnrolmentStoreConnector.allocateEnrolment(
+    when(mockTaxEnrolmentsConnector.allocateEnrolment(
       ArgumentMatchers.eq(groupId),
       ArgumentMatchers.eq(enrolmentKey),
       ArgumentMatchers.eq(enrolmentRequest)

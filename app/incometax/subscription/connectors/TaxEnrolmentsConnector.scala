@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnrolmentStoreConnector @Inject()(appConfig: AppConfig,
+class TaxEnrolmentsConnector @Inject()(appConfig: AppConfig,
                                         httpClient: HttpClient)(implicit ec: ExecutionContext) {
   def upsertEnrolment(enrolmentKey: EnrolmentKey,
                       verifiers: EnrolmentVerifiers
