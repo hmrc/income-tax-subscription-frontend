@@ -416,8 +416,8 @@ cannot-report-yet.para2                                        = You need to sen
 ## can report business but not property yet page ##
 cannot-report-property-yet.title                               = You can''t use software to report your property income yet
 cannot-report-property-yet.heading                             = You can''t use software to report your property income yet
-cannot-report-property-yet.para1                               = You can use software to report the work you do for yourself
-cannot-report-property-yet.para2                               = You can''t use software to submit a report for your property income until 6 April 2018. You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead
+cannot-report-property-yet.para1                               = You can use software to report the work you do for yourself.
+cannot-report-property-yet.para2                               = You can''t use software to submit a report for your property income until 6 April 2018. You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead.
 
 ## cannot report yet both misaligned page ##
 cannot-report-yet-both-misaligned.title                        = You can''t use software to report your Income Tax yet
