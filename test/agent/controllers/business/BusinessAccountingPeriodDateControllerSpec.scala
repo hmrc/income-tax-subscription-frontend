@@ -242,22 +242,49 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      "tax year changes" should {
-        "return a redirect status (SEE_OTHER - 303)" in {
-          setupMockKeystore(
-            fetchAll = testCacheMap(
-              accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
-            ),
-            fetchAccountingPeriodPrior = testIsNextPeriod
-          )
+      "tax year changes" when {
+        "the client cannot report yet" should {
+          "return a redirect status (SEE_OTHER - 303)" in {
+            enable(TaxYearDeferralFeature)
 
-          val goodRequest = callShow(isEditMode = true)
+            setupMockKeystore(
+              fetchAll = testCacheMap(
+                accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
+              ),
+              fetchAccountingPeriodPrior = testIsNextPeriod
+            )
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.show(editMode = true).url)
+            val goodRequest = callShow(
+              isEditMode = true,
+              testAccountingPeriodDates copy (endDate = DateModel("05", "04", "2018"))
+            )
 
-          await(goodRequest)
-          verifyKeystore(saveAccountingPeriodDate = 1)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CannotReportYetController.show(editMode = true).url)
+
+            await(goodRequest)
+            verifyKeystore(saveAccountingPeriodDate = 1)
+
+            disable(TaxYearDeferralFeature)
+          }
+        }
+        "the client can report" should {
+          "return a redirect status (SEE_OTHER - 303)" in {
+            setupMockKeystore(
+              fetchAll = testCacheMap(
+                accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
+              ),
+              fetchAccountingPeriodPrior = testIsNextPeriod
+            )
+
+            val goodRequest = callShow(isEditMode = true)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.show(editMode = true).url)
+
+            await(goodRequest)
+            verifyKeystore(saveAccountingPeriodDate = 1)
+          }
         }
       }
     }
