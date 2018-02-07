@@ -69,8 +69,8 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         subscriptionService.createSubscription(nino, cache.getSummary())(headerCarrier).flatMap {
           case Right(SubscriptionSuccess(id)) =>
             keystoreService.saveSubscriptionId(id).map(_ => Redirect(incometax.subscription.controllers.routes.ConfirmationController.show()))
-          case _ =>
-            error("Successful response not received from submission")
+          case Left(failure) =>
+            error("Successful response not received from submission: \n" + failure.toString)
         }
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any keystore cached data")
 
