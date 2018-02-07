@@ -28,7 +28,7 @@ import play.api.i18n.Messages
 
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwitching {
-  "GET /report-quarterly/income-and-expenses/sign-up/check-yowur-answers" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
     "keystore returns all data" should {
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
