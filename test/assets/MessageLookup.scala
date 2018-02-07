@@ -186,9 +186,9 @@ object MessageLookup {
   object CanReportBusinessButNotPropertyYet {
     val title = "You can't use software to report your property income yet"
     val heading: String = title
-    val para1 = "You can use software to report the work you do for yourself"
+    val para1 = "You can use software to report the work you do for yourself."
     val linkText = "send a Self Assessment tax return"
-    val para2 = s"You can't use software to submit a report for your property income until 6 April 2018. You need to $linkText instead"
+    val para2 = s"You can't use software to submit a report for your property income until 6 April 2018. You need to $linkText instead."
   }
 
   object CannotReportYetBothMisaligned {
