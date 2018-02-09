@@ -381,8 +381,7 @@ trait ComponentSpecBase extends UnitSpec
       "/authorise-agent",
       Map(
         JourneyStateKey -> ConfirmAgentSubscription.name,
-        AgentReferenceNumber -> IntegrationTestConstants.testArn,
-        AgencyName -> IntegrationTestConstants.testAgencyName
+        AgentReferenceNumber -> IntegrationTestConstants.testArn
       )
     )
 
@@ -390,8 +389,7 @@ trait ComponentSpecBase extends UnitSpec
       "/authorise-agent",
       Map(
         JourneyStateKey -> ConfirmAgentSubscription.name,
-        AgentReferenceNumber -> IntegrationTestConstants.testArn,
-        AgencyName -> IntegrationTestConstants.testAgencyName
+        AgentReferenceNumber -> IntegrationTestConstants.testArn
       ))(ConfirmAgentForm.confirmAgentForm.fill(model).data.map { case (k, v) => (k, Seq(v)) })
 
     def agentNotAuthorised(): WSResponse = get(

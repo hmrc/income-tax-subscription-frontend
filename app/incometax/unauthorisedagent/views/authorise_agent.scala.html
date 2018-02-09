@@ -21,13 +21,13 @@
 @import incometax.unauthorisedagent.models.ConfirmAgentModel
 @import incometax.unauthorisedagent.forms.ConfirmAgentForm
 
-@(authoriseAgentForm: Form[ConfirmAgentModel], agentName: String, postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(authoriseAgentForm: Form[ConfirmAgentModel], postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
-    Messages("authorise-agent.heading", agentName)
+    Messages("authorise-agent.heading")
 }
 
-@main_template(title = Messages("authorise-agent.title", agentName), form = authoriseAgentForm) {
+@main_template(title = Messages("authorise-agent.title"), form = authoriseAgentForm) {
     @summaryErrorHelper(authoriseAgentForm)
     <h1 class="heading-large">@question</h1>
     @form(action = postAction) {

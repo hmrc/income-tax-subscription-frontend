@@ -19,10 +19,8 @@ package incometax.unauthorisedagent.controllers
 import core.ITSASessionKeys
 import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import core.controllers.ControllerBaseSpec
-import core.services.CacheUtil._
 import core.services.mocks.{MockAuthService, MockKeystoreService}
 import core.utils.TestConstants._
-import core.utils.TestModels._
 import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
@@ -52,13 +50,10 @@ class AuthoriseAgentControllerSpec extends ControllerBaseSpec
   object TestAuthoriseAgentController extends AuthoriseAgentController(
     MockBaseControllerConfig,
     messagesApi,
-    mockAuthService,
-    MockKeystoreService,
-    mockSubscriptionStoreRetrievalService,
-    mockSubscriptionOrchestrationService
+    mockAuthService
   )
 
-  lazy val request = confirmAgentSubscriptionRequest.withSession(ITSASessionKeys.AgencyName -> testAgencyName)
+  lazy val request = confirmAgentSubscriptionRequest
 
   "show" when {
     "the unauthorised agent flow is enabled" when {

@@ -697,9 +697,9 @@ object MessageLookup {
     }
 
     object AuthoriseAgent {
-      def title(agentName: String) = s"Do you authorise $agentName to use software to report your Income Tax?"
+      def title = s"Do you authorise your agent to use software to report your Income Tax?"
 
-      def heading(agentName: String) = s"Do you authorise $agentName to use software to report your Income Tax?"
+      def heading = s"Do you authorise your agent to use software to report your Income Tax?"
 
       val yes = "Yes"
       val no = "No"
