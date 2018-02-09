@@ -38,33 +38,26 @@ import scala.concurrent.Future
 @Singleton
 class AuthoriseAgentController @Inject()(val baseConfig: BaseControllerConfig,
                                          val messagesApi: MessagesApi,
-                                         val authService: AuthService,
-                                         keystoreService: KeystoreService,
-                                         subscriptionStoreRetrievalService: SubscriptionStoreRetrievalService,
-                                         subscriptionOrchestrationService: SubscriptionOrchestrationService
+                                         val authService: AuthService
                                         ) extends AuthenticatedController[ConfirmAgentSubscription.type] {
 
   lazy val goToPreferences = Redirect(digitalcontact.controllers.routes.PreferencesController.checkPreferences())
 
-  private[controllers] def getAgentName(implicit request: Request[AnyContent]): String =
-    request.session(AgencyName)
-
-  def view(form: Form[ConfirmAgentModel], agentName: String)(implicit request: Request[_]): Html =
+  def view(form: Form[ConfirmAgentModel])(implicit request: Request[_]): Html =
     incometax.unauthorisedagent.views.html.authorise_agent(
       authoriseAgentForm = form,
-      agentName = agentName,
       postAction = routes.AuthoriseAgentController.submit()
     )
 
   def show(): Action[AnyContent] = Authenticated { implicit req =>
     implicit user =>
-      Ok(view(ConfirmAgentForm.confirmAgentForm, getAgentName))
+      Ok(view(ConfirmAgentForm.confirmAgentForm))
   }
 
   def submit(): Action[AnyContent] = Authenticated.async { implicit req =>
     implicit user =>
       ConfirmAgentForm.confirmAgentForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, agentName = getAgentName))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         authoriseAgent => authoriseAgent.choice match {
           case ConfirmAgentForm.option_yes =>
             Future.successful(goToPreferences.confirmAgent)

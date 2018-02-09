@@ -40,7 +40,7 @@ class AuthoriseAgentControllerISpec extends ComponentSpecBase {
         Then("Should return an OK with the authorise agent page")
         res should have(
           httpStatus(OK),
-          pageTitle(Messages("authorise-agent.title", testAgencyName))
+          pageTitle(Messages("authorise-agent.title"))
         )
       }
     }

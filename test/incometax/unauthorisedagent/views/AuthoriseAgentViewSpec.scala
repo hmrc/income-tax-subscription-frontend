@@ -26,11 +26,8 @@ class AuthoriseAgentViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  val testAgentName = "testAgent"
-
   def page(addFormErrors: Boolean) = incometax.unauthorisedagent.views.html.authorise_agent(
     authoriseAgentForm = ConfirmAgentForm.confirmAgentForm.addError(addFormErrors),
-    agentName = testAgentName,
     postAction = action
   )(FakeRequest(), applicationMessages, appConfig)
 
@@ -38,14 +35,14 @@ class AuthoriseAgentViewSpec extends ViewSpecTrait {
 
     val testPage = TestView(
       name = "Authorise Agent View",
-      title = messages.title(testAgentName),
-      heading = messages.heading(testAgentName),
+      title = messages.title,
+      heading = messages.heading,
       page = page(addFormErrors = false))
 
     val form = testPage.getForm("Authorise Agent form")(actionCall = action)
 
     form.mustHaveRadioSet(
-      legend = messages.heading(testAgentName),
+      legend = messages.heading,
       radioName = ConfirmAgentForm.choice
     )(
       ConfirmAgentForm.option_yes -> messages.yes,
@@ -58,8 +55,8 @@ class AuthoriseAgentViewSpec extends ViewSpecTrait {
   "Append Error to the page title if the form has error" should {
     def documentCore() = TestView(
       name = "Authorise Agent View",
-      title = titleErrPrefix + messages.title(testAgentName),
-      heading = messages.heading(testAgentName),
+      title = titleErrPrefix + messages.title,
+      heading = messages.heading,
       page = page(addFormErrors = true)
     )
 
