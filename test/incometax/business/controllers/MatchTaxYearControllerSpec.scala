@@ -128,14 +128,56 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
     "Is in edit mode and " when {
       def callShow(answer: String): Future[Result] = callShowCore(answer, isEditMode = true)
 
-      "Option 'Yes' is selected" in {
-        setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
+      "Option 'Yes' is selected and the answer has not changed" should {
+        "Redirect to Check Your Answers page" in {
+          setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearYes)
 
-        val goodRequest = callShow(MatchTaxYearForm.option_yes)
-        status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
-        verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 1)
+          val goodRequest = callShow(MatchTaxYearForm.option_yes)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+          verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
+        }
       }
+
+      "Option 'Yes' is selected and the answer has changed" should {
+        "Redirect to Cannot Report Yet page" when {
+          "the tax year deferral flag is enabled and the current end tax year is <= 2018" in {
+            enable(TaxYearDeferralFeature)
+            mockGetTaxYearEnd(2018)
+
+            setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
+
+            val goodRequest = callShow(MatchTaxYearForm.option_yes)
+            status(goodRequest) mustBe Status.SEE_OTHER
+            redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
+            verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 1)
+          }
+        }
+        "Redirect to Check Your Answers Page page" when {
+          "the tax year deferral flag is enabled and the current end tax year is > 2018" in {
+            enable(TaxYearDeferralFeature)
+            mockGetTaxYearEnd(2019)
+
+            setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
+
+            val goodRequest = callShow(MatchTaxYearForm.option_yes)
+            status(goodRequest) mustBe Status.SEE_OTHER
+            redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+            verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 1)
+          }
+          "the tax year deferral is disabled" in {
+            disable(TaxYearDeferralFeature)
+
+            setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
+
+            val goodRequest = callShow(MatchTaxYearForm.option_yes)
+            status(goodRequest) mustBe Status.SEE_OTHER
+            redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+            verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 1)
+          }
+        }
+      }
+
 
       "Option 'No' is selected " in {
         setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearYes)
