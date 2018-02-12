@@ -21,7 +21,7 @@
 @import core.views.html.templates.main_template
 @import core.views.html.helpers._
 
-@(journeyDuration: Int, incomeSource: String, agencyName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(journeyDuration: Int, incomeSource: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>

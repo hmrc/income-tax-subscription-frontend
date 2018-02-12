@@ -49,10 +49,9 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
       if (applicationConfig.newIncomeSourceFlowEnabled) {
         if (request.isInState(ConfirmAgentSubscription)) {
-          val agencyName = request.session(ITSASessionKeys.AgencyName)
           keystoreService.fetchIncomeSource.map {
             case Some(incomeSource) =>
-              Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource.source, agencyName))
+              Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource.source))
             case _ =>
               throw new InternalServerException("Confirmation Controller, unauthorised agent flow call to show confirmation with no income source")
           }
@@ -69,8 +68,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
         keystoreService.fetchIncomeSource.map {
           case Some(incomeSource) =>
             if (request.isInState(ConfirmAgentSubscription)) {
-              val agencyName = request.session(ITSASessionKeys.AgencyName)
-              Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource.source, agencyName))
+              Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource.source))
             } else {
               Ok(confirmation(journeyDuration, incomeSource.source))
             }

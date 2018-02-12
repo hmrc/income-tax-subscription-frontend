@@ -36,12 +36,10 @@ class AgentNotAuthorisedController @Inject()(val baseConfig: BaseControllerConfi
   val show = Authenticated.async {
     implicit request =>
       user =>
-        val agencyName = request.session(ITSASessionKeys.AgencyName)
-
         for {
           _ <- keystoreService.deleteAll()
           _ <- subscriptionStoreService.deleteSubscriptionData(user.nino.get)
-        } yield Ok(incometax.unauthorisedagent.views.html.agent_not_authorised(agencyName))
+        } yield Ok(incometax.unauthorisedagent.views.html.agent_not_authorised())
           .removingFromSession(ITSASessionKeys.JourneyStateKey)
   }
 }

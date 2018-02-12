@@ -679,21 +679,11 @@ object MessageLookup {
   object UnauthorisedAgent {
 
     object AgentNotAuthorised {
-      def title(agencyName: String) = s"You have not authorised $agencyName"
+      def title = s"You have not authorised your agent"
 
-      def heading(agencyName: String) = title(agencyName)
+      def heading = title
 
       val line_1 = "We've deleted any information they've asked to submit for you."
-    }
-
-    object ConfirmAgent {
-      def title(agentName: String) = s"Is $agentName your agent?"
-
-      def heading(agentName: String) = s"Is $agentName your agent?"
-
-      val para1 = "HMRC will sometimes contact you and your agent, or you instead of your agent."
-      val yes = "Yes"
-      val no = "No"
     }
 
     object AuthoriseAgent {

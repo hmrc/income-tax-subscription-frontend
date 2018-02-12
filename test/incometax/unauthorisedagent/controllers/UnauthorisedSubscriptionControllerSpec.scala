@@ -55,7 +55,6 @@ class UnauthorisedSubscriptionControllerSpec extends ControllerBaseSpec
   )
 
   lazy val request = confirmAgentSubscriptionRequest.withSession(
-    ITSASessionKeys.AgencyName -> testAgencyName,
     ITSASessionKeys.ConfirmedAgent -> true.toString
   )
 

@@ -98,7 +98,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         val result: Future[Result] = TestConfirmationController.show(
           confirmAgentSubscriptionRequest
             .addStartTime(startTime)
-            .withSession(ITSASessionKeys.AgencyName -> testAgencyName)
         )
 
         status(result) shouldBe OK

@@ -854,15 +854,11 @@ agent.no-sa.title                                                     = Your cli
 agent.no-sa.heading                                                   = Your client is not registered for Self Assessment
 agent.no-sa.line_1                                                    = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
-confirm-agent.title                                                   = Is {0} your agent?
-confirm-agent.heading                                                 = Is {0} your agent?
-confirm-agent.line_1                                                  = HMRC will sometimes contact you and your agent, or you instead of your agent.
-
 authorise-agent.title                                                 = Do you authorise your agent to use software to report your Income Tax?
 authorise-agent.heading                                               = Do you authorise your agent to use software to report your Income Tax?
 
-agent-not-authorised.title                                            = You have not authorised {0}
-agent-not-authorised.heading                                          = You have not authorised {0}
+agent-not-authorised.title                                            = You have not authorised your agent
+agent-not-authorised.heading                                          = You have not authorised your agent
 agent-not-authorised.line_1                                           = We''ve deleted any information they''ve asked to submit for you.
 
 ## Unauthorised Agent Confirmation page ##

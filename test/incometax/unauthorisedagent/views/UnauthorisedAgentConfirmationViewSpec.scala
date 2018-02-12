@@ -36,8 +36,7 @@ class UnauthorisedAgentConfirmationViewSpec extends ViewSpecTrait {
 
   def page(incomeSource: String): Html = incometax.unauthorisedagent.views.html.unauthorised_agent_confirmation(
     journeyDuration = duration,
-    incomeSource = incomeSource,
-    agencyName = testAgencyName
+    incomeSource = incomeSource
   )(request, applicationMessages, appConfig)
 
   def document = Jsoup.parse(page(incomeSource).body)
