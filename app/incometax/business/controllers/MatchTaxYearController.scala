@@ -26,7 +26,7 @@ import incometax.business.models.MatchTaxYearModel
 import incometax.incomesource.services.CurrentTimeService
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc._
 import play.twirl.api.Html
 
 import scala.concurrent.Future
@@ -62,25 +62,33 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
         matchTaxYear => {
           for {
             oldAnswer <- keystoreService.fetchMatchTaxYear()
-            _ <- if (oldAnswer.fold(false)(_ != matchTaxYear)) keystoreService.saveTerms(terms = false) else Future.successful(Unit)
+            changedAnswer = oldAnswer.fold(false)(_ != matchTaxYear)
+            _ <- if (changedAnswer) keystoreService.saveTerms(terms = false) else Future.successful(Unit)
             _ <- keystoreService.saveMatchTaxYear(matchTaxYear)
           } yield (isEditMode, matchTaxYear.matchTaxYear) match {
             case (false, MatchTaxYearForm.option_yes) =>
-              if (applicationConfig.taxYearDeferralEnabled) {
-                if (currentTimeService.getTaxYearEndForCurrentDate <= 2018)
-                  Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show())
-                else
-                  Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-              }
-              else {
-                Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-              }
+              matchesTaxYear(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
             case (false, MatchTaxYearForm.option_no) => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show())
-            case (true, MatchTaxYearForm.option_yes) => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-            case (true, MatchTaxYearForm.option_no) => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true))
+            case (true, MatchTaxYearForm.option_yes) => {
+              if(changedAnswer)
+                matchesTaxYear(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+              else Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+            }
+            case (true, MatchTaxYearForm.option_no) =>
+              Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true))
           }
         }
       )
+  }
+
+  private def matchesTaxYear(redirectCall: Call) = {
+    if (applicationConfig.taxYearDeferralEnabled)
+      if (currentTimeService.getTaxYearEndForCurrentDate <= 2018)
+        Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show())
+      else
+        Redirect(redirectCall)
+    else
+      Redirect(redirectCall)
   }
 
   def backUrl(isEditMode: Boolean)(implicit request: Request[AnyContent]): String =
