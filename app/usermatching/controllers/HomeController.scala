@@ -66,7 +66,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
             case None =>
               subscriptionStoreService.retrieveSubscriptionData(nino) flatMap {
                 case Some(storedSubscription) =>
-                  Future.successful(goToConfirmAgentSubscription(timestamp, storedSubscription.arn))
+                  Future.successful(goToAuthoriseAgent(timestamp, storedSubscription.arn))
                 case None =>
                   resolveUtr(user, nino) map {
                     case Some(utr) =>
@@ -83,8 +83,8 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       }
   }
 
-  private def goToConfirmAgentSubscription(timestamp: String, arn: String)(implicit request: Request[AnyContent]): Result =
-    Redirect(incometax.unauthorisedagent.controllers.routes.ConfirmAgentController.show())
+  private def goToAuthoriseAgent(timestamp: String, arn: String)(implicit request: Request[AnyContent]): Result =
+    Redirect(incometax.unauthorisedagent.controllers.routes.AuthoriseAgentController.show())
       .addingToSession(AgentReferenceNumber -> arn)
       .addingToSession(StartTime -> timestamp)
       .withJourneyState(ConfirmAgentSubscription)

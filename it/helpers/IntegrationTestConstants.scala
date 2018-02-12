@@ -84,7 +84,6 @@ object IntegrationTestConstants {
   val ivURI = s"$baseURI/iv"
   val userLockedOutURI = s"$baseURI/error/lockout"
   val userDetailsErrorURI = s"$baseURI/error/user-details"
-  val confirmAgentUri = s"$baseURI/confirm-agent"
   val authoriseAgentUri = s"$baseURI/authorise-agent"
   val agentNotAuthorisedUri = s"$baseURI/agent-not-authorised"
   val subscribeUnauthorisedUri = s"$baseURI/subscribe-unauthorised"

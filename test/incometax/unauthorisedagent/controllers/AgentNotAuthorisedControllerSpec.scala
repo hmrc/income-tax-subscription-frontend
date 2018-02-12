@@ -59,9 +59,7 @@ class AgentNotAuthorisedControllerSpec extends ControllerBaseSpec
           setupMockKeystore(deleteAll = HttpResponse(OK))
           mockDeleteSubscriptionData(testNino)
 
-          implicit val request: FakeRequest[AnyContentAsEmpty.type] = confirmAgentSubscriptionRequest.withSession(
-            ITSASessionKeys.AgencyName -> testAgencyName
-          )
+          implicit val request: FakeRequest[AnyContentAsEmpty.type] = confirmAgentSubscriptionRequest
 
           val res = await(TestAgentNotAuthorisedController.show(request))
 

@@ -96,10 +96,6 @@ POST        /confirm-user                 usermatching.controllers.ConfirmUserCo
 GET         /error/user-details           usermatching.controllers.UserDetailsErrorController.show()
 POST        /error/user-details           usermatching.controllers.UserDetailsErrorController.submit()
 
-# Confirm agent
-GET         /confirm-agent                incometax.unauthorisedagent.controllers.ConfirmAgentController.show()
-POST        /confirm-agent                incometax.unauthorisedagent.controllers.ConfirmAgentController.submit()
-
 # Authorise agent
 GET         /authorise-agent              incometax.unauthorisedagent.controllers.AuthoriseAgentController.show()
 POST        /authorise-agent              incometax.unauthorisedagent.controllers.AuthoriseAgentController.submit()
