@@ -38,7 +38,7 @@
         <p>@Messages("confirmation.whatHappensNext.para1")</p>
         <p>@Messages("confirmation.whatHappensNext.para2")</p>
         <ul class="bullets">
-            <li>@Messages("confirmation.whatHappensNext.bullet1")</li>
+            <li>@Html(Messages("confirmation.whatHappensNext.bullet1", appConfig.softwareUrl))</li>
             <li>@Html(Messages("confirmation.whatHappensNext.bullet2", appConfig.btaUrl))</li>
         </ul>
     </section>

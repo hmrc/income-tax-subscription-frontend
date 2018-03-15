@@ -97,8 +97,9 @@ class UnauthorisedAgentConfirmationViewSpec extends ViewSpecTrait {
       s"has the correct bullet points" in {
         val bullets = document.select("#bullets li")
         bullets.get(0).text mustBe MessageLookup.Confirmation.Unauthorised.whatHappensNext.bul1
-        bullets.get(1).text mustBe MessageLookup.Confirmation.Unauthorised.whatHappensNext.bul2
+        bullets.get(0).select("a").attr("href") mustBe appConfig.softwareUrl
 
+        bullets.get(1).text mustBe MessageLookup.Confirmation.Unauthorised.whatHappensNext.bul2
         bullets.get(1).select("a").attr("href") mustBe appConfig.btaUrl
       }
 

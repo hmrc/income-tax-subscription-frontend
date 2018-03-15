@@ -45,6 +45,7 @@ trait AppConfig extends FeatureSwitching {
   def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String
 
   val btaUrl: String
+  val softwareUrl: String
   val agentAuthUrl: String
   val agentAccountUrl: String
   val showGuidance: Boolean
@@ -122,6 +123,9 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   // BTA link
   override lazy val btaUrl = loadConfig(s"bta.url")
+
+  // Software choices link
+  override lazy val softwareUrl: String = "https://www.gov.uk/guidance/software-for-sending-income-tax-updates"
 
   // Agent Auth link
   override lazy val agentAuthUrl = loadConfig(s"agent-auth.url")

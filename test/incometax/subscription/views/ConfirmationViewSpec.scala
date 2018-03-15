@@ -81,7 +81,9 @@ class ConfirmationViewSpec extends ViewSpecTrait {
       }
 
       s"has a bullet point '${MessageLookup.Confirmation.whatHappensNext.bul1}'" in {
-        document.select("#whatHappensNext li").first().text() mustBe MessageLookup.Confirmation.whatHappensNext.bul1
+        val softwareBullet = document.select("#whatHappensNext li").first()
+        softwareBullet.text() mustBe MessageLookup.Confirmation.whatHappensNext.bul1
+        softwareBullet select "a" attr "href" mustBe appConfig.softwareUrl
       }
 
       s"has a bullet point to BTA '${MessageLookup.Confirmation.whatHappensNext.bul2}'" in {

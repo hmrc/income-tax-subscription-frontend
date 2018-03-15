@@ -75,13 +75,15 @@ class ClaimSubscriptionViewSpec extends ViewSpecTrait {
       }
 
       s"has a bullet point '${MessageLookup.Confirmation.whatHappensNext.bul1}'" in {
-        document.select("#whatHappensNext li").first().text() mustBe MessageLookup.Confirmation.whatHappensNext.bul1
+        val softwareBullet = document.select("#whatHappensNext li").first()
+        softwareBullet.text() mustBe MessageLookup.Confirmation.whatHappensNext.bul1
+        softwareBullet select "a" attr "href" mustBe appConfig.softwareUrl
       }
 
       s"has a bullet point to BTAk '${MessageLookup.Confirmation.whatHappensNext.bul2}'" in {
-        val bul2 = document.select("#whatHappensNext li").get(1)
-        bul2.text() mustBe MessageLookup.Confirmation.whatHappensNext.bul2
-        bul2.select("a").attr("href") mustBe appConfig.btaUrl
+        val btaBullet = document.select("#whatHappensNext li").get(1)
+        btaBullet.text() mustBe MessageLookup.Confirmation.whatHappensNext.bul2
+        btaBullet select "a" attr "href" mustBe appConfig.btaUrl
       }
 
       s"does not have a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para4}'" in {
