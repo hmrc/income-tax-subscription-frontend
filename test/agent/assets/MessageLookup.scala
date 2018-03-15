@@ -243,8 +243,8 @@ object MessageLookup {
     object whatHappensNext {
       val heading = "What happens next"
       val para1 = "You must send your client this link for them to authorise you as their agent. They must do this within 10 days. You still need to:"
-      val bullet1 = "choose accounting software if you haven't already"
-      val bullet2 = "sign in to the software with your Government Gateway details and authorise it to interact with HMRC."
+      val bullet1 = "Choose accounting software if you haven't already."
+      val bullet2 = "Sign in to the software with your Government Gateway details and authorise it to interact with HMRC."
       val para2 = "If your client doesn't authorise you within 10 days, you'll need to invite them again."
     }
 

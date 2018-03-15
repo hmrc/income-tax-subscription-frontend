@@ -34,7 +34,7 @@
             <p>@Html(Messages("agent.confirmation.unauthorised.whatHappensNext.para1"))</p>
 
             <ul class="list list-bullet">
-                <li>@Messages("agent.confirmation.unauthorised.whatHappensNext.bullet1")</li>
+                <li>@Html(Messages("agent.confirmation.unauthorised.whatHappensNext.bullet1", appConfig.softwareUrl))</li>
                 <li>@Messages("agent.confirmation.unauthorised.whatHappensNext.bullet2")</li>
             </ul>
 

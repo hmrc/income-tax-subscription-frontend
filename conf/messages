@@ -253,7 +253,7 @@ confirmation.heading                                            = Sign up comple
 confirmation.whatHappensNext.heading                            = What happens next
 confirmation.whatHappensNext.para1                              = You must use accounting software to record your income and expenses and send a report to HM Revenue and Customs at least every quarter.
 confirmation.whatHappensNext.para2                              = After you send a report you''ll get an Income Tax estimate. You can view your estimate and report deadlines in your:
-confirmation.whatHappensNext.bullet1                            = accounting software
+confirmation.whatHappensNext.bullet1                            = <a id="accountingSoftware" href="{0}">accounting software</a>
 confirmation.whatHappensNext.bullet2                            = <a id="bta" href="{0}">business tax account</a>
 confirmation.whatHappensNext.para4                              = It may take a few hours for them all to appear.
 
@@ -683,8 +683,8 @@ agent.confirmation.unauthorised.url                                   = www.tax.
 
 agent.confirmation.unauthorised.whatHappensNext.heading               = What happens next
 agent.confirmation.unauthorised.whatHappensNext.para1                 = You must send your client this link for them to authorise you as their agent. They must do this within 10 days. You still need to:
-agent.confirmation.unauthorised.whatHappensNext.bullet1               = choose accounting software if you haven''t already
-agent.confirmation.unauthorised.whatHappensNext.bullet2               = sign in to the software with your Government Gateway details and authorise it to interact with HMRC.
+agent.confirmation.unauthorised.whatHappensNext.bullet1               = <a id="accountingSoftware" href="{0}">Choose accounting software</a> if you haven''t already.
+agent.confirmation.unauthorised.whatHappensNext.bullet2               = Sign in to the software with your Government Gateway details and authorise it to interact with HMRC.
 agent.confirmation.unauthorised.whatHappensNext.para2                 = If your client doesn''t authorise you within 10 days, you''ll need to invite them again.
 
 

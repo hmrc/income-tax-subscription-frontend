@@ -47,7 +47,7 @@
         </ol>
         <p>@Messages("confirmation.unauthorised.whatHappensNext.para3")</p>
         <ul class="bullets" id="bullets">
-            <li>@Messages("confirmation.whatHappensNext.bullet1")</li>
+            <li>@Html(Messages("confirmation.whatHappensNext.bullet1", appConfig.softwareUrl))</li>
             <li>@Html(Messages("confirmation.whatHappensNext.bullet2", appConfig.btaUrl))</li>
         </ul>
         @if(incomeSource == option_both) {
