@@ -595,15 +595,14 @@ agent.business.name.line_1                                            = This is 
 ## Terms and Conditions Messages
 agent.terms.title                                                     = Terms of participation
 agent.terms.heading                                                   = Terms of participation
-agent.terms.line_1                                                    = By signing your client up to take part in this trial, you agree that either you or your client will:
-agent.terms.line_2                                                    = These terms aren''t contractual and your client can stop taking part in the trial at any time.
-agent.terms.point_1                                                   = use accounting software to record your client''s income and expenses
-agent.terms.point_2                                                   = submit a report once every 3 months from the start of your client''s accounting period
-agent.terms.point_3                                                   = allow HMRC to calculate your client''s Income Tax estimate using the information from their reports
-agent.terms.point_4                                                   = send HMRC your client''s summary report for the {0} to {1} tax year by 31 January {2}
-agent.terms.point_5                                                   = declare any of your client''s other income sources and reliefs
-agent.terms.point_6                                                   = let HMRC know if your client starts a new business or their current business stops trading
-agent.terms.point_7                                                   = contact HMRC if your client can''t continue to take part in this trial or you stop representing this client
+agent.terms.line_1                                                    = By taking part in this trial, you agree that either you or your client will:
+agent.terms.point_1                                                   = use relevant software to record your client''s income and expenses
+agent.terms.point_2                                                   = submit a report at least once every 3 months from the start of your client''s accounting period
+agent.terms.point_3                                                   = send their final report for the {0} to {1} tax year by 31 January {2}
+agent.terms.point_4                                                   = declare any other income sources and reliefs
+agent.terms.point_5                                                   = tell HMRC if your client stops trading or starts a new business
+agent.terms.point_6                                                   = tell HMRC if you want to leave this trial
+agent.terms.line_2                                                    = These terms are not contractual and your client can stop taking part in this trial at any time.
 agent.terms.button                                                    = Accept and continue
 
 ## Contact Email Address page ##

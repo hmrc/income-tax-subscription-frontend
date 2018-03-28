@@ -29,12 +29,11 @@
     <ul class="bullets">
         <li>@Messages("agent.terms.point_1")</li>
         <li>@Messages("agent.terms.point_2")</li>
-        <li>@Messages("agent.terms.point_3")</li>
         @*if we don't call toString then it adds , into the year... e.g. 2,017*@
-        <li>@Messages("agent.terms.point_4", (taxEndYear - 1).toString, taxEndYear.toString, (taxEndYear + 1).toString)</li>
+        <li>@Messages("agent.terms.point_3", (taxEndYear - 1).toString, taxEndYear.toString, (taxEndYear + 1).toString)</li>
+        <li>@Messages("agent.terms.point_4")</li>
         <li>@Messages("agent.terms.point_5")</li>
         <li>@Messages("agent.terms.point_6")</li>
-        <li>@Messages("agent.terms.point_7")</li>
     </ul>
     <p>@Messages("agent.terms.line_2")</p>
 
