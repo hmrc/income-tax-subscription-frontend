@@ -185,15 +185,14 @@ business.phone_number.heading                                   = What''s your b
 terms.title                                                     = Terms of participation
 terms.heading                                                   = Terms of participation
 terms.line_1                                                    = By taking part in this trial, you agree to:
-terms.line_2                                                    = These terms aren''t contractual and you can stop taking part in the trial at any time.
-terms.bullet_1                                                  = use accounting software to record your income and expenses, then submit a report once every 3 months from the start of your accounting period
-terms.bullet_2                                                  = allow HMRC to calculate your Income Tax estimate using the information from your reports
-terms.bullet_3                                                  = send HMRC your summary report for the {0} to {1} tax year by 31 January {2}
+terms.bullet_1                                                  = use relevant software to record your income and expenses
+terms.bullet_2                                                  = submit a report at least once every 3 months from the start of your accounting period
+terms.bullet_3                                                  = send your final report for the {0} to {1} tax year by 31 January {2}
 terms.bullet_4                                                  = declare any other income sources and reliefs
-terms.bullet_5                                                  = authorise any third party you use to act on your behalf, such as your accountant
-terms.bullet_6                                                  = have responsibility for any information a third party gives to HMRC on your behalf
-terms.bullet_7                                                  = let HMRC know if you start a new business or your current business stops trading
-terms.bullet_8                                                  = contact HMRC if you can''t continue to take part in this trial
+terms.bullet_5                                                  = authorise any third party you use (such as your accountant) and have responsibility for any information they give to HMRC on your behalf
+terms.bullet_6                                                  = tell HMRC if you want to stop trading or start a new business
+terms.bullet_7                                                  = tell HMRC if you want to leave this trial
+terms.line_2                                                    = These terms aren''t contractual and you can stop taking part in the trial at any time.
 terms.button                                                    = Accept and continue
 
 ## Contact Email Address page ##

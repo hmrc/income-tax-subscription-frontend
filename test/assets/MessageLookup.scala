@@ -275,17 +275,14 @@ object MessageLookup {
     val title = "Terms of participation"
     val heading: String = title
     val line_1 = "By taking part in this trial, you agree to:"
-    val line_2 = "These terms aren't contractual and you can stop taking part in the trial at any time."
-    val bullet_1 = "use accounting software to record your income and expenses, then submit a report once every 3 months from the start of your accounting period"
-    val bullet_2 = "allow HMRC to calculate your Income Tax estimate using the information from your reports"
-
-    def bullet_3(taxStartYear: Int, taxEndYear: Int, taxDueYear: Int) = s"send HMRC your summary report for the $taxStartYear to $taxEndYear tax year by 31 January $taxDueYear"
-
+    val bullet_1 = "use relevant software to record your income and expenses"
+    val bullet_2 = "submit a report at least once every 3 months from the start of your accounting period"
+    def bullet_3(taxStartYear: Int, taxEndYear: Int, taxDueYear: Int) = s"send your final report for the $taxStartYear to $taxEndYear tax year by 31 January $taxDueYear"
     val bullet_4 = "declare any other income sources and reliefs"
-    val bullet_5 = "authorise any third party you use to act on your behalf, such as your accountant"
-    val bullet_6 = "have responsibility for any information a third party gives to HMRC on your behalf"
-    val bullet_7 = "let HMRC know if you start a new business or your current business stops trading"
-    val bullet_8 = "contact HMRC if you can't continue to take part in this trial"
+    val bullet_5 = "authorise any third party you use (such as your accountant) and have responsibility for any information they give to HMRC on your behalf"
+    val bullet_6 = "tell HMRC if you want to stop trading or start a new business"
+    val bullet_7 = "tell HMRC if you want to leave this trial"
+    val line_2 = "These terms aren't contractual and you can stop taking part in the trial at any time."
     val button = "Accept and continue"
   }
 
