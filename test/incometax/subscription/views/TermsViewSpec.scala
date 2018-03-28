@@ -45,18 +45,18 @@ class TermsViewSpec extends ViewSpecTrait {
     testPage.mustHaveBackLinkTo(backUrl)
 
     testPage.mustHavePara(messages.line_1)
-    testPage.mustHavePara(messages.line_2)
 
     testPage.mustHaveBulletSeq(
-      messages.bullet_1,
-      messages.bullet_2,
-      messages.bullet_3(testTaxEndYear - 1, testTaxEndYear, testTaxEndYear + 1),
-      messages.bullet_4,
-      messages.bullet_5,
-      messages.bullet_6,
-      messages.bullet_7,
-      messages.bullet_8
+        messages.bullet_1,
+        messages.bullet_2,
+        messages.bullet_3(testTaxEndYear - 1, testTaxEndYear, testTaxEndYear + 1),
+        messages.bullet_4,
+        messages.bullet_5,
+        messages.bullet_6,
+        messages.bullet_7
     )
+
+    testPage.mustHavePara(messages.line_2)
 
     val form = testPage.getForm("terms form")(actionCall = action)
 
