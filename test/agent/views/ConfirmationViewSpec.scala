@@ -69,36 +69,49 @@ class ConfirmationViewSpec extends UnitTestTrait {
         document.select("#whatHappensNext h2").text() mustBe MessageLookup.Confirmation.whatHappensNext.heading
       }
 
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para1)
+      s"has a paragraph stating complete steps '${MessageLookup.Confirmation.whatHappensNext.para1}'" in {
+        document.select("#whatHappensNext p").get(0).text() mustBe MessageLookup.Confirmation.whatHappensNext.para1
       }
 
-      s"has a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
-        document.select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para2)
+      s"has a paragraph stating software package '${MessageLookup.Confirmation.whatHappensNext.para2}'" in {
+        document.select("#whatHappensNext p").get(1)text() mustBe MessageLookup.Confirmation.whatHappensNext.para2
       }
 
-    }
-
-    "have a 'Give us feedback' section" which {
-
-      s"has the section heading '${MessageLookup.Confirmation.giveUsFeedback.heading}'" in {
-        document.select("#giveUsFeedback h2").text() mustBe MessageLookup.Confirmation.giveUsFeedback.heading
+      s"has an initial numeric point '${MessageLookup.Confirmation.whatHappensNext.number1}'" in {
+        document.select("#whatHappensNext li").get(0).text() mustBe MessageLookup.Confirmation.whatHappensNext.number1
       }
 
-      s"has a paragraph stating feedback details '${MessageLookup.Confirmation.giveUsFeedback.para1}'" in {
-        document.select("#giveUsFeedback p").text() must include(MessageLookup.Confirmation.giveUsFeedback.para1)
+      s"has a 2nd numeric point '${MessageLookup.Confirmation.whatHappensNext.number2}'" in {
+        document.select("#whatHappensNext li").get(1).text() mustBe MessageLookup.Confirmation.whatHappensNext.number2
       }
 
-      s"has a link stating feedback question" which {
-
-        s"has the link text '${MessageLookup.Confirmation.giveUsFeedback.link}'" in {
-          document.select("#confirmation-feedback").text() must include(MessageLookup.Confirmation.giveUsFeedback.link)
-        }
-
-        s"has a link to ${action.url}" in {
-          document.select("#confirmation-feedback").attr("href") mustBe action.url
-        }
+      s"has a 3rd numeric point '${MessageLookup.Confirmation.whatHappensNext.number3}'" in {
+        document.select("#whatHappensNext li").get(2).text() mustBe MessageLookup.Confirmation.whatHappensNext.number3
       }
+
+      s"has a 4th numeric point '${MessageLookup.Confirmation.whatHappensNext.number4}'" in {
+        document.select("#whatHappensNext li").get(3).text() mustBe MessageLookup.Confirmation.whatHappensNext.number4
+      }
+
+      s"has a 5th numeric point '${MessageLookup.Confirmation.whatHappensNext.number5}'" in {
+        document.select("#whatHappensNext li").get(4).text() mustBe MessageLookup.Confirmation.whatHappensNext.number5
+      }
+
+      s"has a paragraph stating Income Tax Estimate '${MessageLookup.Confirmation.whatHappensNext.para3}'" in {
+        document.select("#whatHappensNext p").get(2).text() mustBe MessageLookup.Confirmation.whatHappensNext.para3
+      }
+
+      s"has an initial bullet point" in {
+        val bullets = document.select("#whatHappensNext li")
+        bullets.get(5).text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet1
+      }
+
+      s"has a bullet point to BTA '${MessageLookup.Confirmation.whatHappensNext.bullet2}'" in {
+        val bullet2 = document.select("#whatHappensNext li").get(6)
+        bullet2.text() mustBe MessageLookup.Confirmation.whatHappensNext.bullet2
+        bullet2.select("a").attr("href") mustBe appConfig.btaUrl
+      }
+
 
     }
 

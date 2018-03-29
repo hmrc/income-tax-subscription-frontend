@@ -217,13 +217,22 @@ object MessageLookup {
   }
 
   object Confirmation {
-    val title = "Confirmation page"
-    val heading = "Sign up complete"
+    val title = "Sign up complete"
+    val heading: String = title
 
   object whatHappensNext {
       val heading = "What happens next"
-      val para1 = "You must use accounting software to keep your client's accounts, and send a report to HMRC at least every quarter."
-      val para2 = "You'll get an estimate of your client's Income Tax in your software when you send a report. From August 2017 your client can view these Income Tax calculations and their report deadlines in their business tax account."
+      val para1 = "Either you or your client need to complete the steps below."
+      val para2 = "It's important for your client to choose a software package that can interact with yours."
+      val linkText = "Choose accounting software"
+      val number1 = s"$linkText if you haven't already."
+      val number2 = "Sign in to the software with your Government Gateway details and authorise it to interact with HMRC."
+      val number3 = "Add any income and expenses that your client has already received or paid out."
+      val number4 = "Record your client's future income and expenses using the software, then send HMRC a report at least every quarter."
+      val number5 = "Add any other income sources in their final report, your client needs to send this report by 31 January."
+      val para3 = "After you've sent a report your client will get an Income Tax estimate. They can view their estimate and report deadlines in their:"
+      val bullet1 = "accounting software"
+      val bullet2 = "business tax account"
   }
 
   object giveUsFeedback {
