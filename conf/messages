@@ -677,7 +677,7 @@ agent.confirmation.whatHappensNext.number5                            = Add any 
 agent.confirmation.whatHappensNext.para3                              = After you''ve sent a report your client will get an Income Tax estimate. They can view their estimate and report deadlines in their:
 agent.confirmation.whatHappensNext.bullet1                            = accounting software
 agent.confirmation.whatHappensNext.bullet2                            = <a id="bta" href="{0}">business tax account</a>
-
+agent.confirmation.add_another                                        = Sign up another client
 
 ## Unauthorised Agent Confirmation page ##
 agent.confirmation.unauthorised.title                                 = Send client link
