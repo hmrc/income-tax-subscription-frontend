@@ -33,12 +33,24 @@
             <h2>@Messages("agent.confirmation.whatHappensNext.heading")</h2>
             <p>@Messages("agent.confirmation.whatHappensNext.para1")</p>
             <p>@Messages("agent.confirmation.whatHappensNext.para2")</p>
+
+            <ol class="list list-number">
+                <li>@Messages("agent.confirmation.whatHappensNext.number1")</li>
+                <li>@Messages("agent.confirmation.whatHappensNext.number2")</li>
+                <li>@Messages("agent.confirmation.whatHappensNext.number3")</li>
+                <li>@Messages("agent.confirmation.whatHappensNext.number4")</li>
+                <li>@Messages("agent.confirmation.whatHappensNext.number5")</li>
+            </ol>
+
+            <p>@Messages("agent.confirmation.whatHappensNext.para3")</p>
+
+            <ul class="list list-bullet">
+                <li>@Messages("agent.confirmation.whatHappensNext.bullet1")</li>
+                <li>@Html(Messages("agent.confirmation.whatHappensNext.bullet2", appConfig.btaUrl))</li>
+            </ul>
+
         </section>
 
-        <section class="form-group" id="giveUsFeedback">
-            <h2>@Messages("agent.confirmation.giveUsFeedback.heading")</h2>
-            <p><a id="confirmation-feedback" href="@signOutAction">@Messages("agent.confirmation.giveUsFeedback.link")</a> @Messages("agent.confirmation.giveUsFeedback.para1")</p>
-        </section>
 
         <div class = "form-group">
         @form(action = postAction) {
