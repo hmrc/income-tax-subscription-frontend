@@ -128,7 +128,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         "enter accounting period after the 2017 - 2018 tax year on the accounting period page" in {
           enable(TaxYearDeferralFeature)
 
-          val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod(testStartDate, testEndDate2019)
+          val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod(testStartDate, testEndDateNext)
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
