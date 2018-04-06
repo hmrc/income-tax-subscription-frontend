@@ -24,6 +24,7 @@ import agent.utils.TestModels._
 import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
 import core.models.DateModel
 import incometax.business.models.AccountingPeriodModel
+import incometax.util.AccountingPeriodUtil
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -85,8 +86,8 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
   }
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
-    val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2018"))
-    val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2019"))
+    val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, AccountingPeriodUtil.getCurrentTaxYearEndDate)
+    val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1))
 
     def callShow(isEditMode: Boolean, accountingPeriod: AccountingPeriodModel = testAccountingPeriodDates) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(subscriptionRequest
       .post(AccountingPeriodDateForm.accountingPeriodDateForm, accountingPeriod))
@@ -131,28 +132,6 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
         }
       }
       "the tax year deferral feature switch is on" when {
-        "the accounting period end date is before 6 April 2018" should {
-          "return a redirect to cannot report yet" in {
-            enable(TaxYearDeferralFeature)
-
-            setupMockKeystore(
-              fetchAll = testCacheMap(
-                accountingPeriodDate = Some(testAccountingPeriodDates)
-              ),
-              fetchAccountingPeriodPrior = testIsNextPeriod
-            )
-
-            val goodRequest = callShow(
-              isEditMode = false,
-              testAccountingPeriodDates copy (endDate = DateModel("05", "04", "2018"))
-            )
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CannotReportYetController.show().url)
-
-            await(goodRequest)
-          }
-        }
         "the income source is Both" should {
           "return a redirect to cannot report yet" in {
             enable(TaxYearDeferralFeature)
@@ -198,28 +177,6 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
           }
         }
       }
-      "the tax year deferral feature is off" should {
-        "return a redirect to business name" in {
-          disable(TaxYearDeferralFeature)
-
-          setupMockKeystore(
-            fetchAll = testCacheMap(
-              incomeSource = Some(testIncomeSourceBoth)
-            ),
-            fetchAccountingPeriodPrior = testIsNextPeriod
-          )
-
-          val goodRequest = callShow(
-            isEditMode = false,
-            testAccountingPeriodDates copy (endDate = DateModel("05", "04", "2018"))
-          )
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.show().url)
-
-          await(goodRequest)
-        }
-      }
     }
 
     "When it is in edit mode" should {
@@ -243,31 +200,6 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
       }
 
       "tax year changes" when {
-        "the client cannot report yet" should {
-          "return a redirect status (SEE_OTHER - 303)" in {
-            enable(TaxYearDeferralFeature)
-
-            setupMockKeystore(
-              fetchAll = testCacheMap(
-                accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
-              ),
-              fetchAccountingPeriodPrior = testIsNextPeriod
-            )
-
-            val goodRequest = callShow(
-              isEditMode = true,
-              testAccountingPeriodDates copy (endDate = DateModel("05", "04", "2018"))
-            )
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CannotReportYetController.show(editMode = true).url)
-
-            await(goodRequest)
-            verifyKeystore(saveAccountingPeriodDate = 1)
-
-            disable(TaxYearDeferralFeature)
-          }
-        }
         "the client can report" should {
           "return a redirect status (SEE_OTHER - 303)" in {
             setupMockKeystore(

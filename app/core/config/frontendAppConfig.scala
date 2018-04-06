@@ -19,6 +19,7 @@ package core.config
 import javax.inject.{Inject, Singleton}
 
 import core.config.featureswitch.FeatureSwitching
+import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -94,6 +95,14 @@ trait AppConfig extends FeatureSwitching {
   val backendFeatureSwitchUrl: String
 
   def getAgencyNameUrl(arn: String): String
+
+  def languageMap: Map[String, Lang] = Map(
+    "english" -> Lang("en"),
+    "cymraeg" -> Lang("cy"))
+
+  def routeToSwitchLanguage = (lang: String) => core.controllers.language.routes.LanguageSwitchController.switchToLanguage(lang)
+
+  val languageTranslationEnabled: Boolean
 }
 
 @Singleton
@@ -243,5 +252,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   lazy val agentServicesAccount = baseUrl("agent-services-account")
 
   override def getAgencyNameUrl(arn: String): String = s"$agentServicesAccount/agent-services-account/client/agency-name/$arn"
+
+  override lazy val languageTranslationEnabled =
+    configuration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
 }
 

@@ -28,8 +28,8 @@ object IntegrationTestModels {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate = DateModel("06", "04", "2017")
-  val testEndDate2018 = DateModel("05", "04", "2018")
+  val testStartDate = DateModel("06", "04", "2018")
+  val testEndDate2018 = DateModel("05", "04", "2019")
   val testEndDate2019 = DateModel("05", "04", "2019")
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_yes)
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_no)

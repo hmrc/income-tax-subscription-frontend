@@ -27,3 +27,6 @@ POST        /address                                incometax.business.controlle
 GET         /address/init                           incometax.business.controllers.BusinessAddressController.init(editMode: Boolean ?= false)
 GET         /address/callback                       incometax.business.controllers.BusinessAddressController.callBack(editMode: Boolean = false, id: String)
 GET         /address/callback/edit                  incometax.business.controllers.BusinessAddressController.callBack(editMode: Boolean = true, id: String)
+
+#Language
+GET         /language/:lang                         core.controllers.language.LanguageSwitchController.switchToLanguage(lang: String)

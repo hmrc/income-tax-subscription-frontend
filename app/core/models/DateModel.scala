@@ -29,6 +29,8 @@ case class DateModel(day: String, month: String, year: String) {
 
   def plusDays(days: Int): DateModel = DateModel.dateConvert(this.toLocalDate.plusDays(days))
 
+  def plusYears(years: Int): DateModel = DateModel.dateConvert(this.toLocalDate.plusYears(years))
+
   def toOutputDateFormat: String = toLocalDate.format(outputFormat)
 
   def toCheckYourAnswersDateFormat: String = toLocalDate.format(outputFormat)

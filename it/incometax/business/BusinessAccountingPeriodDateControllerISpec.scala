@@ -124,29 +124,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
       }
 
       "when tax year deferral is enabled" should {
-        "enter accounting period inside the 2018 tax year on the accounting period page" in {
-          enable(TaxYearDeferralFeature)
-
-          val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(
-            keystoreData(
-              incomeSource = Some(testIncomeSourceBusiness),
-              matchTaxYear = Some(keystoreMatchTaxYear))
-          )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
-
-          When("POST /business/accounting-period-dates is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of accounting method")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(cannotReportYetURI)
-          )
-        }
 
         "enter accounting period after the 2017 - 2018 tax year on the accounting period page" in {
           enable(TaxYearDeferralFeature)
@@ -216,35 +193,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
     "in edit mode" should {
 
-      "simulate not changing accounting period dates when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
-        val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
-        val keystoreMatchTaxYear = testMatchTaxYearNo
-        val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "04", "2017"), DateModel("05", "04", "2018"))
-        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
-            otherIncome = Some(keystoreIncomeOther),
-            matchTaxYear = Some(keystoreMatchTaxYear),
-            accountingPeriodDate = Some(keystoreAccountingPeriodDates)
-          )
-        )
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
-
-        When("POST /business/accounting-period-dates is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
-      }
-
       "simulate changing accounting period dates when calling page from Check Your Answers" when {
         "the new accounting period ends in the same tax year" in {
           val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
@@ -302,36 +250,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           res should have(
             httpStatus(SEE_OTHER),
             redirectURI(checkYourAnswersURI)
-          )
-        }
-
-        "The new accounting period ends in a different tax year and the income type is both Property and Sole Trader" in {
-          val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
-          val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
-          val keystoreMatchTaxYear = testMatchTaxYearNo
-          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2020"))
-          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2019"))
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(
-            keystoreData(
-              incomeSource = Some(keystoreIncomeSource),
-              otherIncome = Some(keystoreIncomeOther),
-              matchTaxYear = Some(keystoreMatchTaxYear),
-              accountingPeriodDate = Some(keystoreAccountingPeriodDates)
-            )
-          )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
-          KeystoreStub.stubKeystoreSave(CacheConstants.Terms, false)
-
-          When("POST /business/accounting-period-dates is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of cannot report yet")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(cannotReportYetURI)
           )
         }
       }

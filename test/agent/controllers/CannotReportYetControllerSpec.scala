@@ -129,27 +129,6 @@ class CannotReportYetControllerSpec extends AgentControllerBaseSpec
     }
 
     "Both business and property income" when {
-      "the entered accounting period matches the tax year" should {
-        "return OK and display the CannotReport page with until 6 April 2018" in {
-          setupMockKeystore(fetchAll = testCacheMapCustom(
-            incomeSource = TestModels.testIncomeSourceBoth,
-            accountingPeriodDate = TestModels.testAccountingPeriodMatched
-          ))
-
-          val result = call
-          status(result) must be(Status.OK)
-
-          val expectedView = agent.views.html.client_cannot_report_yet(
-            postAction = routes.CannotReportYetController.submit(),
-            backUrl = agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url,
-            dateModel = crystallisationTaxYearStart
-          ).body
-
-          contentAsString(result) mustBe expectedView
-
-          verifyKeystore(fetchAll = 1)
-        }
-      }
       "their end date is before the 6th April 2018" should {
         "return Ok with cannot report yet both misaligned page" in {
           val testAccountingPeriod = TestModels.testAccountingPeriod.copy(endDate = testCannotCrystalliseDate)
