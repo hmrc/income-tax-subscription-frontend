@@ -24,12 +24,13 @@ import core.config.AppConfig
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core.ConfidenceLevel
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import uk.gov.hmrc.http.NotFoundException
 import usermatching.userjourneys.ConfirmAgentSubscription
 
 import scala.concurrent.Future
 
 trait AuthPredicates extends Results {
+
   import AuthPredicates._
 
   def applicationConfig: AppConfig
@@ -95,11 +96,11 @@ trait AuthPredicates extends Results {
     else Right(AuthPredicateSuccess)
 
   val newIncomeSourceFlowFeature: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if(applicationConfig.newIncomeSourceFlowEnabled) Right(AuthPredicateSuccess)
+    if (applicationConfig.newIncomeSourceFlowEnabled) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.newIncomeSourceFlowFeature")))
 
   val oldIncomeSourceFlowFeature: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if(!applicationConfig.newIncomeSourceFlowEnabled) Right(AuthPredicateSuccess)
+    if (!applicationConfig.newIncomeSourceFlowEnabled) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.oldIncomeSourceFlowFeature")))
 
   val confirmedAgentPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
@@ -107,7 +108,7 @@ trait AuthPredicates extends Results {
     else Left(Future.successful(homeRoute))
 
   val taxYearDeferralFeature: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if(applicationConfig.taxYearDeferralEnabled) Right(AuthPredicateSuccess)
+    if (applicationConfig.taxYearDeferralEnabled) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.taxYearDeferralFeature")))
 
 
@@ -140,8 +141,6 @@ object AuthPredicates extends Results {
   val ninoPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user =>
     if (user.nino(request).isDefined) {
       Right(AuthPredicateSuccess)
-    } else if (user.utr(request).isDefined) {
-      Left(Future.failed(new InternalServerException("AuthPredicates.ninoPredicate: unexpected user state, the user has a utr but no nino")))
     } else {
       Left(Future.successful(userMatching withJourneyState UserMatching))
     }
