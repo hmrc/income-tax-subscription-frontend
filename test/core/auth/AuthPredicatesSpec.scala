@@ -75,18 +75,21 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
 
   "ninoPredicate" should {
+    implicit val request = FakeRequest()
+
     "return an AuthPredicateSuccess where a nino enrolment exists" in {
       AuthPredicates.ninoPredicate(FakeRequest())(userWithNinoEnrolment).right.value mustBe AuthPredicateSuccess
     }
 
     "redirect to user matching if nino enrolment does not exist" in {
-      implicit val request = FakeRequest()
       val res = await(AuthPredicates.ninoPredicate(request)(blankUser).left.value)
       res mustBe (AuthPredicates.userMatching withJourneyState UserMatching)
     }
 
-    "return an InternalServerException where a nino enrolment does not exists but a utr enrolment does" in {
-      intercept[InternalServerException](await(AuthPredicates.ninoPredicate(FakeRequest())(userWithUtrButNoNino).left.value))
+    "redirect to user matching if a nino enrolment does not exists but a utr enrolment does" in {
+      val res = await(AuthPredicates.ninoPredicate(FakeRequest())(userWithUtrButNoNino).left.value)
+      res mustBe (AuthPredicates.userMatching withJourneyState UserMatching)
+
     }
   }
 
