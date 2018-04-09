@@ -131,52 +131,6 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
           verifyKeystore(saveAccountingPeriodDate = 1, saveTerms = 1)
         }
       }
-      "the tax year deferral feature switch is on" when {
-        "the income source is Both" should {
-          "return a redirect to cannot report yet" in {
-            enable(TaxYearDeferralFeature)
-
-            setupMockKeystore(
-              fetchAll = testCacheMap(
-                incomeSource = Some(testIncomeSourceBoth)
-              ),
-              fetchAccountingPeriodPrior = testIsNextPeriod
-            )
-
-            val goodRequest = callShow(
-              isEditMode = false,
-              testAccountingPeriodDates copy (endDate = DateModel("06", "04", "2018"))
-            )
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CannotReportYetController.show().url)
-
-            await(goodRequest)
-          }
-        }
-        "the income source is Business only and the date is after 5 April 2018" should {
-          "return a redirect to business name" in {
-            enable(TaxYearDeferralFeature)
-
-            setupMockKeystore(
-              fetchAll = testCacheMap(
-                incomeSource = Some(testIncomeSourceBusiness)
-              ),
-              fetchAccountingPeriodPrior = testIsNextPeriod
-            )
-
-            val goodRequest = callShow(
-              isEditMode = false,
-              testAccountingPeriodDates copy (endDate = DateModel("06", "04", "2018"))
-            )
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.show().url)
-
-            await(goodRequest)
-          }
-        }
-      }
     }
 
     "When it is in edit mode" should {
