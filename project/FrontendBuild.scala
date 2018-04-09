@@ -28,6 +28,7 @@ private object AppDependencies {
   private val wiremockVersion = "2.5.1"
   private val domainVersion = "5.1.0"
   private val catsVersion = "0.9.0"
+  private val playLanguageVersion = "3.4.0"
 
   val compile = Seq(
     ws,
@@ -38,7 +39,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingCleintVersion,
     "uk.gov.hmrc" %% "play-whitelist-filter" % playWhitelistFilterVersion,
     "uk.gov.hmrc" %% "domain" % domainVersion,
-    "org.typelevel" %% "cats" % catsVersion
+    "org.typelevel" %% "cats" % catsVersion,
+    "uk.gov.hmrc" %% "play-language" % playLanguageVersion
   )
 
   trait TestDependencies {

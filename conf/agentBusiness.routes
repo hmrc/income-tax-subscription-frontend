@@ -17,3 +17,6 @@ POST        /accounting-period-prior                agent.controllers.business.B
 #Register Next Accounting Period Routes
 GET         /register-next-accounting-period        agent.controllers.business.RegisterNextAccountingPeriodController.show
 POST        /register-next-accounting-period        agent.controllers.business.RegisterNextAccountingPeriodController.submit
+
+#Language
+GET         /language/:lang                         core.controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
