@@ -10,9 +10,9 @@ import helpers.IntegrationTestConstants._
 import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models._
-import incometax.subscription.models.{Both, EnrolmentKey}
+import incometax.subscription.models._
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.{ConfirmAgentModel, StoredSubscription}
 import incometax.util.AccountingPeriodUtil
@@ -52,7 +52,7 @@ object IntegrationTestModels {
 
   lazy val fullKeystoreData: Map[String, JsValue] =
     keystoreData(
-      incomeSource = Some(testIncomeSourceBoth),
+      incomeSource = Some(Both),
       rentUkProperty = Some(testRentUkProperty_property_and_other),
       workForYourself = Some(testWorkForYourself_yes),
       otherIncome = Some(testOtherIncomeNo),
@@ -65,7 +65,7 @@ object IntegrationTestModels {
       terms = Some(testTerms)
     )
 
-  def keystoreData(incomeSource: Option[IncomeSourceModel] = None,
+  def keystoreData(incomeSource: Option[IncomeSourceType] = None,
                    rentUkProperty: Option[RentUkPropertyModel] = None,
                    workForYourself: Option[WorkForYourselfModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
@@ -77,7 +77,7 @@ object IntegrationTestModels {
                    accountingMethod: Option[AccountingMethodModel] = None,
                    terms: Option[Boolean] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
-      incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
+      incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
       rentUkProperty.map(model => RentUkProperty -> RentUkPropertyModel.format.writes(model)) ++
       workForYourself.map(model => WorkForYourself -> WorkForYourselfModel.format.writes(model)) ++
       otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++
@@ -90,11 +90,11 @@ object IntegrationTestModels {
       terms.map(model => Terms -> Json.toJson(model))
   }
 
-  lazy val testIncomeSourceBusiness = IncomeSourceModel(IncomeSourceForm.option_business)
+  lazy val testIncomeSourceBusiness = Business
 
-  lazy val testIncomeSourceProperty = IncomeSourceModel(IncomeSourceForm.option_property)
+  lazy val testIncomeSourceProperty = Property
 
-  lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
+  lazy val testIncomeSourceBoth = Both
 
   lazy val testRentUkProperty_no_property = RentUkPropertyModel(NO, None)
   lazy val testRentUkProperty_property_only = RentUkPropertyModel(YES, Some(YES))

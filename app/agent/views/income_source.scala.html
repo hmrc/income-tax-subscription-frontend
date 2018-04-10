@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
-@import agent.models.IncomeSourceModel
 @import play.api.data.Form
 @import agent.forms.IncomeSourceForm
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 @import core.config.AppConfig
+@import incometax.subscription.models.IncomeSourceType
 
-@(incomeSourceForm: Form[IncomeSourceModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(incomeSourceForm: Form[IncomeSourceType], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     Messages("agent.income_source.heading")

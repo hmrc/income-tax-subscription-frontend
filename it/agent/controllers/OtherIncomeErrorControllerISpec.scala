@@ -16,12 +16,13 @@
 
 package agent.controllers
 
-import _root_.agent.forms.{IncomeSourceForm, OtherIncomeForm}
+import _root_.agent.forms.OtherIncomeForm
 import _root_.agent.helpers.ComponentSpecBase
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
-import _root_.agent.models.{IncomeSourceModel, OtherIncomeModel}
+import _root_.agent.models.OtherIncomeModel
+import incometax.subscription.models.{Both, Business, Property}
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 
@@ -49,7 +50,7 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
     "not in edit mode" should {
 
       "select the Continue button on the error other income page whilst on Business journey" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
+        val keystoreIncomeSource = Business
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_yes)
 
         Given("I setup the Wiremock stubs")
@@ -72,7 +73,7 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
       }
 
       "select the Continue button on the error other income page whilst on Both journey" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeSource = Both
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_yes)
 
         Given("I setup the Wiremock stubs")
@@ -95,7 +96,7 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
       }
 
       "select the Continue button on the error other income page whilst on Property journey" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_property)
+        val keystoreIncomeSource = Property
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_yes)
 
         Given("I setup the Wiremock stubs")

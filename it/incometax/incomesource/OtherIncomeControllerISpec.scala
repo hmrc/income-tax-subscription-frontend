@@ -21,11 +21,11 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.incomesource.forms.OtherIncomeForm
+import incometax.incomesource.models.OtherIncomeModel
+import incometax.subscription.models.{Both, Business, Property}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import play.api.libs.openid.OpenID
 
 class OtherIncomeControllerISpec extends ComponentSpecBase {
 
@@ -90,7 +90,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
       }
 
       "select the No other income radio button on the other income page while on Business journey" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
+        val keystoreIncomeSource = Business
         val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
 
         Given("I setup the Wiremock stubs")
@@ -109,7 +109,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
       }
 
       "select the No other income radio button on the other income page while on Both journey" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeSource = Both
         val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
 
         Given("I setup the Wiremock stubs")
@@ -128,7 +128,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
       }
 
       "select the No other income radio button on the other income page while on Property journey" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_property)
+        val keystoreIncomeSource = Property
         val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
 
         Given("I setup the Wiremock stubs")
@@ -185,7 +185,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
     "in edit mode" should {
 
       "changing to the Yes other income radio button on the other income page" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
+        val keystoreIncomeSource = Business
         val keystoreOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
         val userInput = OtherIncomeModel(OtherIncomeForm.option_yes)
 
@@ -205,7 +205,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
       }
 
       "simulate not changing other income when already selected no on the other income page" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
+        val keystoreIncomeSource = Business
         val keystoreOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
         val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
 

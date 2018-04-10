@@ -28,7 +28,8 @@ import helpers.servicemocks.{AuditStub, WireMockMethods}
 import incometax.business.forms._
 import incometax.business.models._
 import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm, RentUkPropertyForm, WorkForYourselfForm}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
+import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
+import incometax.subscription.models.IncomeSourceType
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
 import org.scalatest._
@@ -250,7 +251,7 @@ trait ComponentSpecBase extends UnitSpec
       get(uri)
     }
 
-    def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
+    def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceType]): WSResponse = {
       val uri = s"/income?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(

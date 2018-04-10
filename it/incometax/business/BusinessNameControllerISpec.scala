@@ -17,13 +17,12 @@
 package incometax.business
 
 import core.services.CacheConstants
-import helpers.IntegrationTestConstants.{matchTaxYearURI, checkYourAnswersURI}
+import helpers.IntegrationTestConstants.{checkYourAnswersURI, matchTaxYearURI}
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import incometax.business.models.BusinessNameModel
-import incometax.incomesource.forms.IncomeSourceForm
-import incometax.incomesource.models.IncomeSourceModel
+import incometax.subscription.models.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -143,7 +142,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing business name when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeSource = Both
         val keystoreBusinessName = BusinessNameModel("testBusiness")
         val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
 

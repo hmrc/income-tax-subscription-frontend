@@ -19,7 +19,7 @@ package incometax.incomesource.forms
 import assets.MessageLookup
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
-import incometax.incomesource.models.IncomeSourceModel
+import incometax.subscription.models.{Business, Property, Both}
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
@@ -32,14 +32,14 @@ class IncomeSourceFormSpec extends PlaySpec with OneAppPerTest {
     "transform the request to the form case class" in {
       val testIncomeSource = option_business
       val testInput = Map(incomeSource -> testIncomeSource)
-      val expected = IncomeSourceModel(testIncomeSource)
+      val expected = Business
       val actual = incomeSourceForm.bind(testInput).value
 
       actual shouldBe Some(expected)
     }
 
     "validate income type correctly" in {
-      val empty = ErrorMessageFactory.error("error.income_source.empty")
+      val empty = ErrorMessageFactory.error("error.income_source.invalid")
       val invalid = ErrorMessageFactory.error("error.income_source.invalid")
 
       empty fieldErrorIs MessageLookup.Error.IncomeSource.empty

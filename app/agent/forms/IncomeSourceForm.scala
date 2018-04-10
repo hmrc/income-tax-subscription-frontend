@@ -16,14 +16,11 @@
 
 package agent.forms
 
-import agent.models.IncomeSourceModel
 import core.forms.validation.ErrorMessageFactory
-import core.forms.validation.utils.ConstraintUtil._
-import core.forms.validation.utils.MappingUtil._
-import incometax.subscription.models.IncomeSourceType
-import play.api.data.Form
+import incometax.subscription.models._
 import play.api.data.Forms._
-import play.api.data.validation.{Constraint, Valid}
+import play.api.data.format.Formatter
+import play.api.data.{Form, FormError}
 
 object IncomeSourceForm {
 
@@ -33,27 +30,38 @@ object IncomeSourceForm {
   val option_both = IncomeSourceType.both
   val option_other = IncomeSourceType.other
 
-  val sourceEmpty: Constraint[String] = constraint[String](
-    source => {
-      lazy val emptySource = ErrorMessageFactory.error("agent.error.income_source.empty")
-      if (source.isEmpty) emptySource else Valid
-    }
-  )
+  val incomeSourceError: Seq[FormError] = ErrorMessageFactory.formError(incomeSource, "agent.error.income_source.invalid")
 
-  val sourceInvalid: Constraint[String] = constraint[String](
-    source => {
-      lazy val invalidSource = ErrorMessageFactory.error("agent.error.income_source.invalid")
-      source match {
-        case `option_business` | `option_property` | `option_both` | `option_other` => Valid
-        case _ => invalidSource
+  private val formatter: Formatter[IncomeSourceType] = new Formatter[IncomeSourceType] {
+
+    import IncomeSourceType._
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], IncomeSourceType] = {
+      data.get(key) match {
+        case Some(`business`) => Right(Business)
+        case Some(`property`) => Right(Property)
+        case Some(`both`) => Right(Both)
+        case Some(`other`) => Right(Other)
+        case _ => Left(incomeSourceError)
       }
     }
-  )
 
-  val incomeSourceForm = Form(
-    mapping(
-      incomeSource -> oText.toText.verifying(sourceEmpty andThen sourceInvalid)
-    )(IncomeSourceModel.apply)(IncomeSourceModel.unapply)
+    override def unbind(key: String, value: IncomeSourceType): Map[String, String] = {
+      val stringValue = value match {
+        case Business => business
+        case Property => property
+        case Both => both
+        case Other => other
+      }
+
+      Map(key -> stringValue)
+    }
+  }
+
+  val incomeSourceForm: Form[IncomeSourceType] = Form(
+    single(
+      incomeSource -> of(formatter)
+    )
   )
 
 }

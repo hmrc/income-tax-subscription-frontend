@@ -32,18 +32,18 @@ object CacheUtil {
   implicit class CacheMapUtil(cacheMap: CacheMap)(implicit appConfig: AppConfig) {
 
     //TODO remove when we switch to the new income source flow
-    def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
+    def getIncomeSource()(implicit read: Reads[IncomeSourceType]): Option[IncomeSourceType] = cacheMap.getEntry(IncomeSource)
 
     def getRentUkProperty()(implicit read: Reads[RentUkPropertyModel]): Option[RentUkPropertyModel] = cacheMap.getEntry(RentUkProperty)
 
     def getWorkForYourself()(implicit read: Reads[WorkForYourselfModel]): Option[WorkForYourselfModel] = cacheMap.getEntry(WorkForYourself)
 
-    def getIncomeSourceType()(implicit read: Reads[IncomeSourceModel], readR: Reads[RentUkPropertyModel],
+    def getIncomeSourceType()(implicit read: Reads[IncomeSourceType], readR: Reads[RentUkPropertyModel],
                               readW: Reads[WorkForYourselfModel]): Option[IncomeSourceType] =
       if (appConfig.newIncomeSourceFlowEnabled)
         getRentUkProperty().flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, getWorkForYourself()))
       else
-        getIncomeSource().map(incSrc => IncomeSourceType(incSrc.source))
+        getIncomeSource()
 
     def getOtherIncome()(implicit read: Reads[OtherIncomeModel]): Option[OtherIncomeModel] = cacheMap.getEntry(OtherIncome)
 
