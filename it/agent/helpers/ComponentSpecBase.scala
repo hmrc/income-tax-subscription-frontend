@@ -18,7 +18,7 @@ package agent.helpers
 
 import java.util.UUID
 
-import _root_.agent.auth.{AgentJourneyState, AgentSignUp, AgentUserMatched, AgentUserMatching}
+import _root_.agent.auth.{AgentJourneyState, AgentSignUp, AgentUserMatching}
 import _root_.agent.controllers.ITSASessionKeys
 import _root_.agent.forms._
 import _root_.agent.helpers.IntegrationTestConstants._
@@ -32,6 +32,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import helpers.UserMatchingIntegrationRequestSupport
 import helpers.servicemocks.AuditStub
 import incometax.business.models.AccountingPeriodModel
+import incometax.subscription.models.IncomeSourceType
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -278,7 +279,7 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
-    def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceModel]): WSResponse = {
+    def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceType]): WSResponse = {
       val uri = s"/income?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(

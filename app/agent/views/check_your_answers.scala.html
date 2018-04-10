@@ -15,6 +15,7 @@
  *@
 
 @import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
+@import incometax.subscription.models.IncomeSourceType
 @import incometax.business.models.address.Address
 @import incometax.incomesource.models._
 @import incometax.subscription.models.SummaryModel
@@ -49,7 +50,7 @@
     </div>
 }
 
-@incomeSource(source: IncomeSourceModel) = @{
+@incomeSource(source: IncomeSourceType) = @{
     val rowName = IncomeSourceId
     val rowQuestion = Messages("agent.summary.income_source")
     val rowAnswer = incomeSourceText(source)

@@ -21,8 +21,8 @@ import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
 import incometax.incomesource.forms.IncomeSourceForm
-import incometax.incomesource.models.IncomeSourceModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
+import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
@@ -36,8 +36,8 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
   override val controllerName: String = "IncomeSourceController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showIncomeSource" -> TestIncomeSourceController.show(isEditMode = true),
-    "submitIncomeSource" -> TestIncomeSourceController.submit(isEditMode = true)
+    "show" -> TestIncomeSourceController.show(isEditMode = true),
+    "submit" -> TestIncomeSourceController.submit(isEditMode = true)
   )
 
   object TestIncomeSourceController extends IncomeSourceController(
@@ -93,14 +93,14 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
 
   "Calling the submitIncomeSource action of the IncomeSource controller with an authorised user and valid submission" should {
 
-    def callShow(option: String, isEditMode: Boolean) = TestIncomeSourceController.submit(isEditMode = isEditMode)(subscriptionRequest
-      .post(IncomeSourceForm.incomeSourceForm, IncomeSourceModel(option)))
+    def callShow(option: IncomeSourceType, isEditMode: Boolean) = TestIncomeSourceController.submit(isEditMode = isEditMode)(subscriptionRequest
+      .post(IncomeSourceForm.incomeSourceForm, option))
 
     "When it is not edit mode" should {
       s"return an SEE OTHER (303) for business and goto ${incometax.incomesource.controllers.routes.OtherIncomeController.show().url}" in {
         setupMockKeystoreSaveFunctions()
 
-        val goodRequest = callShow(IncomeSourceForm.option_business, isEditMode = false)
+        val goodRequest = callShow(Business, isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
@@ -117,7 +117,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             setupMockKeystoreSaveFunctions()
             mockGetTaxYearEnd(2018)
 
-            val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = false)
+            val goodRequest = callShow(Property, isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
@@ -134,7 +134,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             setupMockKeystoreSaveFunctions()
             mockGetTaxYearEnd(2018)
 
-            val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = false)
+            val goodRequest = callShow(Property, isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
@@ -153,7 +153,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             setupMockKeystoreSaveFunctions()
             mockGetTaxYearEnd(2019)
 
-            val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = false)
+            val goodRequest = callShow(Property, isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
@@ -170,7 +170,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
             setupMockKeystoreSaveFunctions()
             mockGetTaxYearEnd(2019)
 
-            val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = false)
+            val goodRequest = callShow(Property, isEditMode = false)
 
             status(goodRequest) must be(Status.SEE_OTHER)
             redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
@@ -184,7 +184,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       s"return a SEE OTHER (303) for both and goto ${incometax.incomesource.controllers.routes.OtherIncomeController.show().url}" in {
         setupMockKeystoreSaveFunctions()
 
-        val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = false)
+        val goodRequest = callShow(Both, isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
@@ -198,7 +198,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       s"return an SEE OTHER (303) for business and goto ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
-        val goodRequest = callShow(IncomeSourceForm.option_business, isEditMode = true)
+        val goodRequest = callShow(Business, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
@@ -210,7 +210,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       s"return a SEE OTHER (303) for property and goto ${incometax.subscription.controllers.routes.CheckYourAnswersController.show()}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
 
-        val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = true)
+        val goodRequest = callShow(Property, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
@@ -222,7 +222,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       s"return a SEE OTHER (303) for both and goto ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
-        val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = true)
+        val goodRequest = callShow(Both, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
@@ -236,7 +236,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       s"return an SEE OTHER (303) for business and goto ${incometax.incomesource.controllers.routes.OtherIncomeController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
-        val goodRequest = callShow(IncomeSourceForm.option_business, isEditMode = true)
+        val goodRequest = callShow(Business, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
@@ -248,7 +248,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       s"return a SEE OTHER (303) for property and goto ${incometax.incomesource.controllers.routes.OtherIncomeController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
-        val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = true)
+        val goodRequest = callShow(Property, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
@@ -260,7 +260,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
       s"return a SEE OTHER (303) for both and goto ${incometax.incomesource.controllers.routes.OtherIncomeController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
-        val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = true)
+        val goodRequest = callShow(Both, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url

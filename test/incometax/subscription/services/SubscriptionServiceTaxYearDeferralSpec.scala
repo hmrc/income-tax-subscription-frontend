@@ -20,8 +20,8 @@ import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature, 
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.{TestConstants, TestModels}
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.incomesource.forms.OtherIncomeForm
+import incometax.incomesource.models.OtherIncomeModel
 import incometax.subscription.models._
 import incometax.subscription.services.mocks.TestSubscriptionService
 import incometax.util.AccountingPeriodUtil
@@ -135,7 +135,7 @@ class SubscriptionServiceTaxYearDeferralSpec extends TestSubscriptionService
         "property requests should copy None into start and end dates" in {
           val nino = TestModels.newNino
           val testSummaryData = SummaryModel(
-            incomeSource = IncomeSourceModel(IncomeSourceForm.option_property),
+            incomeSource = Property,
             otherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
           )
           val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
@@ -205,7 +205,7 @@ class SubscriptionServiceTaxYearDeferralSpec extends TestSubscriptionService
 
           val nino = TestModels.newNino
           val testSummaryData = SummaryModel(
-            incomeSource = IncomeSourceModel(IncomeSourceForm.option_property),
+            incomeSource = Property,
             otherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
           )
           val request = TestSubscriptionService.buildRequest(nino, testSummaryData, Some("test arn value"))

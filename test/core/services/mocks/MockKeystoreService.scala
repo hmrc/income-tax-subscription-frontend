@@ -20,7 +20,8 @@ import core.services.KeystoreService
 import core.utils.MockTrait
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
+import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
+import incometax.subscription.models.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HttpResponse
@@ -56,7 +57,7 @@ trait MockKeystoreService extends MockTrait {
     when(MockKeystoreService.session.cache(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(Future.successful(returnedCacheMap))
 
   protected final def setupMockKeystore(
-                                         fetchIncomeSource: MFO[IncomeSourceModel] = DoNotConfigure,
+                                         fetchIncomeSource: MFO[IncomeSourceType] = DoNotConfigure,
                                          fetchRentUkProperty: MFO[RentUkPropertyModel] = DoNotConfigure,
                                          fetchWorkForYourself: MFO[WorkForYourselfModel] = DoNotConfigure,
                                          fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
@@ -73,7 +74,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
-    mockFetchFromKeyStore[IncomeSourceModel](IncomeSource, fetchIncomeSource)
+    mockFetchFromKeyStore[IncomeSourceType](IncomeSource, fetchIncomeSource)
     mockFetchFromKeyStore[RentUkPropertyModel](RentUkProperty, fetchRentUkProperty)
     mockFetchFromKeyStore[WorkForYourselfModel](WorkForYourself, fetchWorkForYourself)
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)

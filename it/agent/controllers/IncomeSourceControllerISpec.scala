@@ -16,15 +16,14 @@
 
 package agent.controllers
 
-import _root_.agent.forms.IncomeSourceForm
 import _root_.agent.helpers.ComponentSpecBase
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
-import _root_.agent.models.IncomeSourceModel
+import _root_.agent.services.CacheConstants
+import incometax.subscription.models.{Both, Business, Other, Property}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import _root_.agent.services.CacheConstants
 
 class IncomeSourceControllerISpec extends ComponentSpecBase {
 
@@ -72,7 +71,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
 
     "not in edit mode" should {
       "select the Both income source radio button on the income source page" in {
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
+        val userInput = Both
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -89,7 +88,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       }
 
       "select the Business income source radio button on the income source page" in {
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_business)
+        val userInput = Business
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -106,7 +105,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       }
 
       "select the Property income source radio button on the income source page" in {
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
+        val userInput = Property
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -123,7 +122,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       }
 
       "select the Other income source radio button on the income source page" in {
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_other)
+        val userInput = Other
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -153,31 +152,14 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
           errorDisplayed()
         )
       }
-
-      "select invalid income source option on the income source page as if the user it trying to manipulate the html" in {
-        val userInput = IncomeSourceModel("madeup")
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, "madeup")
-
-        When("POST /income is called")
-        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
-
-        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-        res should have(
-          httpStatus(BAD_REQUEST),
-          errorDisplayed()
-        )
-      }
-
+      
     }
 
-    "when in edit mode" should {
+    "in edit mode" should {
 
       "simulate not changing income source from business when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_business)
+        val keystoreIncomeSource = Business
+        val userInput = Business
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -195,8 +177,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       }
 
       "simulate not changing income source from property when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_property)
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
+        val keystoreIncomeSource = Property
+        val userInput = Property
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -214,8 +196,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       }
 
       "simulate not changing income source from business and property to both when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeSource = Both
+        val userInput = Both
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
@@ -232,8 +214,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing income source from business to property when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_property)
+        val keystoreIncomeSource = Business
+        val userInput = Property
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -251,8 +233,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing income source from property to both when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_property)
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeSource = Property
+        val userInput = Both
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -270,8 +252,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing income source from business and property to business when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_business)
+        val keystoreIncomeSource = Both
+        val userInput = Business
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -289,8 +271,8 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing income source from business to other when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
-        val userInput = IncomeSourceModel(IncomeSourceForm.option_other)
+        val keystoreIncomeSource = Business
+        val userInput = Other
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

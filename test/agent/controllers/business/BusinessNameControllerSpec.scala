@@ -34,8 +34,8 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
 
   override val controllerName: String = "BusinessNameController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showBusinessName" -> TestBusinessNameController.show(isEditMode = false),
-    "submitBusinessName" -> TestBusinessNameController.submit(isEditMode = false)
+    "show" -> TestBusinessNameController.show(isEditMode = false),
+    "submit" -> TestBusinessNameController.submit(isEditMode = false)
   )
 
   object TestBusinessNameController extends BusinessNameController(
