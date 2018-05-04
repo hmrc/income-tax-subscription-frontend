@@ -705,5 +705,11 @@ object MessageLookup {
     val line2 = s"You need to $linktext instead."
   }
 
+  object CannotUseService {
+    val title = "You cannot use this service"
+    val heading: String = title
+    val line1 = "You can only sign up if you are an administrator."
+  }
+
 
 }
