@@ -20,7 +20,7 @@ import core.utils.TestConstants.{testNino, testUtr}
 import core.{Constants, ITSASessionKeys}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
-import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier, Enrolments}
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
@@ -44,6 +44,7 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
             )
           )
         ),
+        None,
         None,
         confidenceLevel
       )
@@ -72,6 +73,7 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
       lazy val user = IncomeTaxSAUser(
         Enrolments(Set.empty),
         None,
+        None,
         confidenceLevel
       )
 
@@ -85,6 +87,39 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
       "have the default confidence level of 0" in {
         user.confidenceLevel shouldBe ConfidenceLevel.L0
+      }
+    }
+
+
+    def user(credentialRole: Option[CredentialRole]) =
+      IncomeTaxSAUser(
+        Enrolments(Set.empty),
+        None,
+        credentialRole,
+        L50
+      )
+
+    "role is Admin" should {
+      "return false for isAssistant" in {
+        user(Some(Admin)).isAssistant shouldBe false
+      }
+    }
+
+    "role is User" should {
+      "return false for isAssistant" in {
+        user(Some(User)).isAssistant shouldBe false
+      }
+    }
+    "role is Assistant" should {
+      "return true for isAssistant" in {
+        user(Some(Assistant)).isAssistant shouldBe true
+      }
+    }
+    "role is None" should {
+      "throws IllegalArgumentException for isAssistant" in {
+        intercept[IllegalArgumentException] {
+          user(None).isAssistant
+        }
       }
     }
   }

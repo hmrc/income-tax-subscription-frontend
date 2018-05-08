@@ -27,7 +27,11 @@ trait IncomeTaxUser {
   val affinityGroup: Option[AffinityGroup]
 }
 
-case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[AffinityGroup], confidenceLevel: ConfidenceLevel) extends IncomeTaxUser {
+case class IncomeTaxSAUser(enrolments: Enrolments,
+                           affinityGroup: Option[AffinityGroup],
+                           credentialRole: Option[CredentialRole],
+                           confidenceLevel: ConfidenceLevel) extends IncomeTaxUser {
+
   def nino(implicit request: Request[AnyContent]): Option[String] =
     getEnrolment(Constants.ninoEnrolmentName) match {
       case None => request.session.get(ITSASessionKeys.NINO)
@@ -41,6 +45,12 @@ case class IncomeTaxSAUser(enrolments: Enrolments, affinityGroup: Option[Affinit
     }
 
   lazy val mtdItsaRef: Option[String] = getEnrolment(Constants.mtdItsaEnrolmentName)
+
+  lazy val isAssistant: Boolean = credentialRole match {
+    case Some(Assistant) => true
+    case None => throw new IllegalArgumentException("Non GGW credential found")
+    case _ => false
+  }
 
   private def getEnrolment(key: String) = enrolments.enrolments.collectFirst {
     case Enrolment(`key`, EnrolmentIdentifier(_, value) :: _, _, _) => value

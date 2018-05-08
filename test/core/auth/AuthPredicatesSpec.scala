@@ -19,6 +19,7 @@ package core.auth
 import _root_.uk.gov.hmrc.http.SessionKeys._
 import core.ITSASessionKeys
 import core.auth.AuthPredicate.AuthPredicateSuccess
+import core.auth.JourneyState._
 import core.config.{AppConfig, MockConfig}
 import core.services.mocks.MockAuthService
 import core.utils.UnitTestTrait
@@ -26,9 +27,8 @@ import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolment, Enrolments}
-import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
-import JourneyState._
+import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.http.NotFoundException
 
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
 
@@ -38,20 +38,21 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
   import authPredicates._
 
-  private def testUser(affinityGroup: Option[AffinityGroup], confidenceLevel: ConfidenceLevel, enrolments: Enrolment*): IncomeTaxSAUser = IncomeTaxSAUser(
+  private def testUser(affinityGroup: Option[AffinityGroup], credentialRole: Option[CredentialRole], confidenceLevel: ConfidenceLevel, enrolments: Enrolment*): IncomeTaxSAUser = IncomeTaxSAUser(
     enrolments = Enrolments(enrolments.toSet),
     affinityGroup = affinityGroup,
+    credentialRole = credentialRole,
     confidenceLevel
   )
 
   private def testUser(affinityGroup: Option[AffinityGroup], enrolments: Enrolment*): IncomeTaxSAUser =
-    testUser(affinityGroup, testConfidenceLevel, enrolments: _*)
+    testUser(affinityGroup, Some(User), testConfidenceLevel, enrolments: _*)
 
   val userWithNinoEnrolment = testUser(None, ninoEnrolment)
   val userWithMtditIdEnrolment = testUser(None, mtdidEnrolment)
   val userWithMtditIdEnrolmentAndNino = testUser(None, ninoEnrolment, mtdidEnrolment)
   val userWithUtrButNoNino = testUser(None, utrEnrolment)
-  val blankUser = testUser(None, confidenceLevel = ConfidenceLevel.L0)
+  val blankUser = testUser(None, None, confidenceLevel = ConfidenceLevel.L0)
 
   val userWithIndividualAffinity = testUser(Some(AffinityGroup.Individual))
   val userWithAgentAffinity = testUser(Some(AffinityGroup.Agent))
@@ -141,7 +142,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
     }
 
     "return an AuthPredicateSuccess where the affinity group is organisation" in {
-     affinityPredicate(FakeRequest())(userWithOrganisationAffinity).right.value mustBe AuthPredicateSuccess
+      affinityPredicate(FakeRequest())(userWithOrganisationAffinity).right.value mustBe AuthPredicateSuccess
     }
   }
 
@@ -268,7 +269,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
         predicates(enabled = true).newIncomeSourceFlowFeature(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
       }
       "throw NotFoundException if newIncomeSourceFlowEnabled is set to false" in {
-        intercept[NotFoundException](await( predicates(enabled = false).newIncomeSourceFlowFeature(FakeRequest())(blankUser).left.value))
+        intercept[NotFoundException](await(predicates(enabled = false).newIncomeSourceFlowFeature(FakeRequest())(blankUser).left.value))
       }
     }
 
@@ -277,7 +278,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
         predicates(enabled = false).oldIncomeSourceFlowFeature(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
       }
       "throw NotFoundException if newIncomeSourceFlowEnabled is set to true" in {
-        intercept[NotFoundException](await( predicates(enabled = true).oldIncomeSourceFlowFeature(FakeRequest())(blankUser).left.value))
+        intercept[NotFoundException](await(predicates(enabled = true).oldIncomeSourceFlowFeature(FakeRequest())(blankUser).left.value))
       }
     }
   }
@@ -294,7 +295,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
         predicates(enabled = true).taxYearDeferralFeature(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
       }
       "throw NotFoundException if taxYearDeferralEnabled is set to false" in {
-        intercept[NotFoundException](await( predicates(enabled = false).taxYearDeferralFeature(FakeRequest())(blankUser).left.value))
+        intercept[NotFoundException](await(predicates(enabled = false).taxYearDeferralFeature(FakeRequest())(blankUser).left.value))
       }
     }
 

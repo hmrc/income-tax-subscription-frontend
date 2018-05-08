@@ -102,6 +102,7 @@ object AuthStub extends WireMockMethods {
         "providerId" -> testCredId,
         "providerType" -> Constants.GovernmentGateway.GGProviderId
       ),
-      "groupIdentifier" -> testGroupId
+      "groupIdentifier" -> testGroupId,
+      "credentialRole" -> "User"
     )
 }

@@ -17,7 +17,7 @@
 package core.auth
 
 import play.api.mvc.Action
-import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
 import uk.gov.hmrc.http.NotFoundException
 
 import scala.concurrent.Future
@@ -26,7 +26,7 @@ trait UnauthorisedAgentSubscriptionController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
 
-    override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
+    override def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
 
     private val unauthorisedAgentUnavailableMessage = "This page for unauthorised agents is not yet available to the public: "
 
