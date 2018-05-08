@@ -109,5 +109,8 @@ GET         /subscribe-unauthorised       incometax.unauthorisedagent.controller
 # Cannot Sign Up Routes
 GET         /error/cannot-sign-up         incometax.incomesource.controllers.CannotSignUpController.show()
 
+# Cannot Use Service
+GET         /error/cannot-use-service     incometax.incomesource.controllers.CannotUseServiceController.show()
+
 #Language
 GET         /language/:lang                         core.controllers.language.LanguageSwitchController.switchToLanguage(lang: String)

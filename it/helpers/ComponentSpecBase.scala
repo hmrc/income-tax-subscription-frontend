@@ -166,6 +166,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def cannotSignUp(): WSResponse = get("/error/cannot-sign-up")
 
+    def cannotUseService(): WSResponse = get("/error/cannot-use-service")
+
     def cannotReportYet(): WSResponse = get("/error/cannot-report-yet")
 
     def submitCannotReportYet(editMode: Boolean): WSResponse =
