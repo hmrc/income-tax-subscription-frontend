@@ -36,7 +36,6 @@ class CannotUseServiceController @Inject()(val baseConfig: BaseControllerConfig,
     implicit user =>
       Future.successful(Ok(incometax.incomesource.views.html.cannot_use_service(
         postAction = incometax.incomesource.controllers.routes.CannotUseServiceController.show()
-
       )))
   }
 
