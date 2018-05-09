@@ -49,6 +49,8 @@ trait AuthPredicates extends Results {
 
   lazy val homeRoute = Redirect(usermatching.controllers.routes.HomeController.index())
 
+  lazy val cannotUseServiceRoute = Redirect(incometax.incomesource.controllers.routes.CannotUseServiceController.show())
+
   lazy val timeoutRoute = Redirect(core.controllers.routes.SessionTimeoutController.show())
 
   val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
@@ -89,6 +91,10 @@ trait AuthPredicates extends Results {
     if (request.session.isInState(UserMatching)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
+  val administratorRolePredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if (!user.isAssistant) Right(AuthPredicateSuccess)
+    else Left(Future.successful(cannotUseServiceRoute))
+
   lazy val goToIv = Redirect(identityverification.controllers.routes.IdentityVerificationController.gotoIV())
 
   val ivPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
@@ -114,22 +120,22 @@ trait AuthPredicates extends Results {
 
   val defaultPredicates = timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 
-  val homePredicates = defaultPredicates |+| mtdidPredicate
+  val homePredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate
 
-  val userMatchingPredicates = timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| userMatchingJourneyPredicate
+  val userMatchingPredicates = administratorRolePredicate |+| timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| userMatchingJourneyPredicate
 
-  val subscriptionPredicates = defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate |+| ivPredicate
+  val subscriptionPredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+| signUpJourneyPredicate |+| ivPredicate
 
-  val registrationPredicates = defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
+  val registrationPredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
 
-  val enrolledPredicates = timeoutPredicate |+| enrolledPredicate
+  val enrolledPredicates = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate
 
-  val unauthorisedAgentPredicates = defaultPredicates |+| mtdidPredicate |+|
+  val unauthorisedAgentPredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+|
     unauthorisedAgentSignUpJourneyPredicate |+| ivPredicate
 
   val unauthorisedAgentSubscriptionPredicates = unauthorisedAgentPredicates |+| confirmedAgentPredicate
 
-  val preferencesPredicate = defaultPredicates |+| mtdidPredicate |+| preferencesJourneyPredicate |+| ivPredicate
+  val preferencesPredicate = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+| preferencesJourneyPredicate |+| ivPredicate
 
 }
 

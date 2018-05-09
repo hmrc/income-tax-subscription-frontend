@@ -32,7 +32,7 @@ class CannotUseServiceController @Inject()(val baseConfig: BaseControllerConfig,
                                            val authService: AuthService
                                           ) extends StatelessController {
 
-  val show: Action[AnyContent] = Authenticated.async { implicit request =>
+  val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     implicit user =>
       Future.successful(Ok(incometax.incomesource.views.html.cannot_use_service(
         postAction = incometax.incomesource.controllers.routes.CannotUseServiceController.show()

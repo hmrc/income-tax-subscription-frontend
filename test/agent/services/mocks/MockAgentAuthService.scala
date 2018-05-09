@@ -58,9 +58,9 @@ trait MockAgentAuthService extends BeforeAndAfterEach with MockitoSugar {
         })
   }
 
-  def mockAgent(): Unit = mockRetrievalSuccess(new ~(new ~(Enrolments(Set(arnEnrolment)), Some(AffinityGroup.Agent)), testConfidenceLevel))
+  def mockAgent(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(arnEnrolment)), Some(AffinityGroup.Agent)), Some(User)), testConfidenceLevel))
 
-  def mockNotAgent(): Unit = mockRetrievalSuccess(new ~(new ~(Enrolments(Set()), Some(AffinityGroup.Agent)), testConfidenceLevel))
+  def mockNotAgent(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set()), Some(AffinityGroup.Agent)), Some(User)), testConfidenceLevel))
 
   def mockAuthUnauthorised(exception: AuthorisationException = new InvalidBearerToken): Unit =
     when(mockAuthService.authorised())
@@ -71,7 +71,6 @@ trait MockAgentAuthService extends BeforeAndAfterEach with MockitoSugar {
           override def apply[B](body: A => Future[B])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[B] = Future.failed(exception)
         }
       })
-
 
   val arnEnrolment = Enrolment(
     Constants.agentServiceEnrolmentName,
