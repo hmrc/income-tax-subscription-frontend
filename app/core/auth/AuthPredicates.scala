@@ -107,11 +107,6 @@ trait AuthPredicates extends Results {
     if (request.session.hasConfirmedAgent) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val taxYearDeferralFeature: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (applicationConfig.taxYearDeferralEnabled) Right(AuthPredicateSuccess)
-    else Left(Future.failed(new NotFoundException("AuthPredicates.taxYearDeferralFeature")))
-
-
   val defaultPredicates = timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 
   val homePredicates = defaultPredicates |+| mtdidPredicate

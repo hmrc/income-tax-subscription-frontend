@@ -16,7 +16,7 @@
 
 package incometax.incomesource.controllers
 
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature, TaxYearDeferralFeature}
+import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
@@ -47,13 +47,11 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     enable(NewIncomeSourceFlowFeature)
-    disable(TaxYearDeferralFeature)
   }
 
   override def afterEach(): Unit = {
     super.afterEach()
     disable(NewIncomeSourceFlowFeature)
-    disable(TaxYearDeferralFeature)
   }
 
   "Calling the show action of the WorkForYourself controller with an authorised user" when {
@@ -139,47 +137,15 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
 
 
       "a property only submission" when {
-        "TaxYearDeferralFeature is disabled" should {
-          "redirect to correctly" in {
-            setupMockKeystore(fetchAll =
-              testCacheMapCustom(
-                rentUkProperty = testRentUkProperty_property_and_other
-              )
+        "redirect to correctly" in {
+          setupMockKeystore(fetchAll =
+            testCacheMapCustom(
+              rentUkProperty = testRentUkProperty_property_and_other
             )
-            val result = submit(testWorkForYourself_no)
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
-          }
-        }
-        "TaxYearDeferralFeature is enabled" when {
-          "we're in the 2017 - 2018 tax year" should {
-            "redirect to correctly" in {
-              enable(TaxYearDeferralFeature)
-              mockGetTaxYearEnd(2018)
-              setupMockKeystore(fetchAll =
-                testCacheMapCustom(
-                  rentUkProperty = testRentUkProperty_property_and_other
-                )
-              )
-              val result = submit(testWorkForYourself_no)
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-            }
-          }
-          "we're after the 2017 - 2018 tax year" should {
-            "redirect to correctly" in {
-              enable(TaxYearDeferralFeature)
-              mockGetTaxYearEnd(2019)
-              setupMockKeystore(fetchAll =
-                testCacheMapCustom(
-                  rentUkProperty = testRentUkProperty_property_and_other
-                )
-              )
-              val result = submit(testWorkForYourself_no)
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
-            }
-          }
+          )
+          val result = submit(testWorkForYourself_no)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
         }
       }
 
@@ -243,50 +209,16 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
 
       "the user changed their answer and" when {
         "a change to property only submission and" when {
-          "TaxYearDeferralFeature is disabled" should {
-            "redirect to correctly" in {
-              setupMockKeystore(fetchAll =
-                testCacheMapCustom(
-                  rentUkProperty = testRentUkProperty_property_and_other,
-                  workForYourself = testWorkForYourself_yes
-                )
+          "redirect to correctly" in {
+            setupMockKeystore(fetchAll =
+              testCacheMapCustom(
+                rentUkProperty = testRentUkProperty_property_and_other,
+                workForYourself = testWorkForYourself_yes
               )
-              val result = submit(testWorkForYourself_no)
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
-            }
-          }
-          "TaxYearDeferralFeature is enabled" when {
-            "we're in the 2017 - 2018 tax year" should {
-              "redirect to correctly" in {
-                enable(TaxYearDeferralFeature)
-                mockGetTaxYearEnd(2018)
-                setupMockKeystore(fetchAll =
-                  testCacheMapCustom(
-                    rentUkProperty = testRentUkProperty_property_and_other,
-                    workForYourself = testWorkForYourself_yes
-                  )
-                )
-                val result = submit(testWorkForYourself_no)
-                status(result) mustBe SEE_OTHER
-                redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-              }
-            }
-            "we're after the 2017 - 2018 tax year" should {
-              "redirect to correctly" in {
-                enable(TaxYearDeferralFeature)
-                mockGetTaxYearEnd(2019)
-                setupMockKeystore(fetchAll =
-                  testCacheMapCustom(
-                    rentUkProperty = testRentUkProperty_property_and_other,
-                    workForYourself = testWorkForYourself_yes
-                  )
-                )
-                val result = submit(testWorkForYourself_no)
-                status(result) mustBe SEE_OTHER
-                redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
-              }
-            }
+            )
+            val result = submit(testWorkForYourself_no)
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
           }
         }
 

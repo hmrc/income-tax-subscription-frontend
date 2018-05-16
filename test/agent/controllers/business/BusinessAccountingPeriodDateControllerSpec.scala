@@ -21,7 +21,7 @@ import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingPeriodDateForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels._
-import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
+import core.config.featureswitch.{FeatureSwitching}
 import core.models.DateModel
 import incometax.business.models.AccountingPeriodModel
 import incometax.util.AccountingPeriodUtil

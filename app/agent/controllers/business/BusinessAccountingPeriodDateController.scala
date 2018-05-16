@@ -90,21 +90,12 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
               _ <- if (taxYearChanged) keystoreService.saveTerms(terms = false)
               else Future.successful(Unit)
             } yield {
-              val cannotReportYet = applicationConfig.taxYearDeferralEnabled &&
-                ((accountingPeriod.taxEndYear <= 2018) || (incomeSource contains Both))
-
               if (isEditMode) {
                 if (taxYearChanged) {
-                  if(cannotReportYet) {
-                    Redirect(agent.controllers.routes.CannotReportYetController.show(editMode = true))
-                  } else {
-                    Redirect(agent.controllers.routes.TermsController.show(editMode = true))
-                  }
+                  Redirect(agent.controllers.routes.TermsController.show(editMode = true))
                 } else {
                   Redirect(agent.controllers.routes.CheckYourAnswersController.show())
                 }
-              } else if (cannotReportYet) {
-                Redirect(agent.controllers.routes.CannotReportYetController.show())
               } else {
                 Redirect(agent.controllers.business.routes.BusinessNameController.show())
               }

@@ -21,7 +21,7 @@ import agent.forms.BusinessNameForm
 import agent.models.BusinessNameModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels._
-import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
+import core.config.featureswitch.FeatureSwitching
 import core.models.DateModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models._
@@ -133,76 +133,6 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
-    }
-  }
-
-  "back url" when {
-    "not in edit mode" when {
-      "the tax deferral feature switch is on" when {
-        "the income source is Business" when {
-          "the accounting period ends before 6 April 2018" should {
-            s"point to ${agent.controllers.routes.CannotReportYetController.show().url}" in {
-              enable(TaxYearDeferralFeature)
-
-              TestBusinessNameController.backUrl(
-                isEditMode = false,
-                Some(testAccountingPeriod),
-                Business
-              ) mustBe agent.controllers.routes.CannotReportYetController.show().url
-            }
-          }
-          "the accounting period ends on 6 April 2018" should {
-            s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-              enable(TaxYearDeferralFeature)
-
-              TestBusinessNameController.backUrl(
-                isEditMode = false,
-                Some(testAccountingPeriod copy (endDate = DateModel("06", "04", "2018"))),
-                Business
-              ) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
-            }
-          }
-        }
-        "the income source is Both" when {
-          "the current date is before 6 April 2018" should {
-            s"point to ${agent.controllers.routes.CannotReportYetController.show().url}" in {
-              enable(TaxYearDeferralFeature)
-              mockGetTaxYearEnd(2018)
-
-              TestBusinessNameController.backUrl(
-                isEditMode = false,
-                Some(testAccountingPeriod),
-                Both
-              ) mustBe agent.controllers.routes.CannotReportYetController.show().url
-            }
-          }
-
-          "the current date is 6 April 2018 or after" should {
-            s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-              enable(TaxYearDeferralFeature)
-              mockGetTaxYearEnd(2019)
-
-              TestBusinessNameController.backUrl(
-                isEditMode = false,
-                Some(testAccountingPeriod),
-                Both
-              ) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
-            }
-          }
-        }
-      }
-      "the tax deferral feature switch is off" should {
-        s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-          disable(TaxYearDeferralFeature)
-
-          TestBusinessNameController.backUrl(
-            isEditMode = false,
-            Some(testAccountingPeriod),
-            Business
-          ) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
-        }
-      }
-
     }
 
     "in edit mode" should {

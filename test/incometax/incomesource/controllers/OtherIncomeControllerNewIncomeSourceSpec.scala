@@ -17,7 +17,7 @@
 package incometax.incomesource.controllers
 
 import core.audit.Logging
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature, TaxYearDeferralFeature}
+import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
@@ -52,13 +52,11 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(TaxYearDeferralFeature)
     enable(NewIncomeSourceFlowFeature)
   }
 
   override def afterEach(): Unit = {
     super.beforeEach()
-    disable(TaxYearDeferralFeature)
     disable(NewIncomeSourceFlowFeature)
   }
 
@@ -369,42 +367,9 @@ class OtherIncomeControllerNewIncomeSourceSpec extends ControllerBaseSpec
     }
   }
 
-  "The back url not in edit mode" when {
-    "the tax year deferral is disabled" should {
-      s"point to ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url} on other income page" in {
-        disable(TaxYearDeferralFeature)
-
-        TestOtherIncomeController.backUrl(Both, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
-      }
-    }
-    "the tax year deferral is enabled and " when {
-      "the current date is within the 2017 - 2018 tax year" when {
-        "the income source is property" should {
-          s"point to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url} on other income page" in {
-            enable(TaxYearDeferralFeature)
-            mockGetTaxYearEnd(2018)
-
-            TestOtherIncomeController.backUrl(Property, isEditMode = false) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-          }
-        }
-
-        "the income source is not property" should {
-          s"point to ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url} on other income page" in {
-            enable(TaxYearDeferralFeature)
-            mockGetTaxYearEnd(2018)
-
-            TestOtherIncomeController.backUrl(Both, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
-          }
-        }
-      }
-      "the current date is after the 2017 - 2018 tax year" should {
-        s"point to ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url} on other income page" in {
-          enable(TaxYearDeferralFeature)
-          mockGetTaxYearEnd(2019)
-
-          TestOtherIncomeController.backUrl(Both, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
-        }
-      }
+  "The back url not in edit mode" should {
+    s"point to ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url} on other income page" in {
+      TestOtherIncomeController.backUrl(Both, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
     }
   }
 

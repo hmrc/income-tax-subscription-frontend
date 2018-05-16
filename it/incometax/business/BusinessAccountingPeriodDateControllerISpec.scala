@@ -16,7 +16,7 @@
 
 package incometax.business
 
-import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
+import core.config.featureswitch.{FeatureSwitching}
 import core.models.DateModel
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
@@ -30,12 +30,6 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
-
-  override def afterAll(): Unit = {
-    super.afterAll()
-    disable(TaxYearDeferralFeature)
-  }
-
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-period-dates" when {
 
@@ -97,9 +91,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
     "not in edit mode" when {
 
-      "when tax year deferral is not enabled" should {
         "enter accounting period start and end dates on the accounting period page" in {
-          disable(TaxYearDeferralFeature)
 
           val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
@@ -121,12 +113,11 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
             redirectURI(businessAccountingMethodURI)
           )
         }
-      }
 
-      "when tax year deferral is enabled" should {
+
+
 
         "enter accounting period after the 2017 - 2018 tax year on the accounting period page" in {
-          enable(TaxYearDeferralFeature)
 
           val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod(testStartDate, testEndDateNext)
 
@@ -148,7 +139,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
             redirectURI(businessAccountingMethodURI)
           )
         }
-      }
+
 
       "disregard tax year deferral" should {
         "enter no accounting period dates on the accounting period page" in {

@@ -76,8 +76,6 @@ trait AppConfig extends FeatureSwitching {
 
   def newIncomeSourceFlowEnabled: Boolean
 
-  def taxYearDeferralEnabled: Boolean
-
   def storeNinoUrl(token: String): String
 
   def upsertEnrolmentUrl(enrolmentKey: String): String
@@ -225,8 +223,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override def unauthorisedAgentEnabled: Boolean = isEnabled(featureswitch.UnauthorisedAgentFeature)
 
   override def newIncomeSourceFlowEnabled: Boolean = isEnabled(featureswitch.NewIncomeSourceFlowFeature)
-
-  override def taxYearDeferralEnabled: Boolean = isEnabled(featureswitch.TaxYearDeferralFeature)
 
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 

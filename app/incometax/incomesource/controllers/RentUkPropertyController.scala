@@ -74,9 +74,6 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                 case (RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no)) =>
                   Future.successful(Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show()))
                 case (RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_yes)) =>
-                  if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
-                    Future.successful(Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show()))
-                  else
                     Future.successful(Redirect(routes.OtherIncomeController.show()))
               }
             }

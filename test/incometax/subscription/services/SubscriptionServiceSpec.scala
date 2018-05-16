@@ -16,7 +16,7 @@
 
 package incometax.subscription.services
 
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature, TaxYearDeferralFeature}
+import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.{TestConstants, TestModels}
@@ -38,13 +38,11 @@ class SubscriptionServiceSpec extends TestSubscriptionService
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(NewIncomeSourceFlowFeature)
-    disable(TaxYearDeferralFeature)
   }
 
   override def afterEach(): Unit = {
     super.afterEach()
     disable(NewIncomeSourceFlowFeature)
-    disable(TaxYearDeferralFeature)
   }
 
   val testNino: String = TestConstants.testNino

@@ -40,16 +40,6 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     "submit" -> TestBusinessAccountingMethodController.submit(isEditMode = false)
   )
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(TaxYearDeferralFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.afterEach()
-    disable(TaxYearDeferralFeature)
-  }
-
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
     MockBaseControllerConfig,
     messagesApi,
@@ -57,7 +47,6 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     mockAuthService,
     mockCurrentTimeService
   )
-
 
   private def fetchAllCacheMap(matchTaxYear: Option[MatchTaxYearModel] = None,
                                accountingPeriod: Option[AccountingPeriodModel] = None,
@@ -191,103 +180,6 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         await(TestBusinessAccountingMethodController.backUrl(isEditMode = true)) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
       }
     }
-  }
-
-  "if tax year deferral is enabled" should {
-
-    "The back url not in edit mode" when {
-      "match tax year is answered with yes" when {
-        "current date is in the 2017 - 2018 tax year" should {
-          s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show().url}" in {
-            enable(TaxYearDeferralFeature)
-
-            setupMockKeystore(
-              fetchAll = matchTaxYearCacheMap()
-            )
-            mockGetTaxYearEnd(2018)
-            await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-          }
-        }
-
-        "current date is after the 2017 - 2018 tax year" should {
-          s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show().url}" in {
-            enable(TaxYearDeferralFeature)
-
-            setupMockKeystore(
-              fetchAll = matchTaxYearCacheMap()
-            )
-            mockGetTaxYearEnd(2019)
-            await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
-          }
-        }
-      }
-
-      "match tax year is answered with no" when {
-        "income source is business" when {
-          "tax year is 2017 - 2018" should {
-            s"point to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url}" in {
-              enable(TaxYearDeferralFeature)
-
-              setupMockKeystore(
-                fetchAll = taxYear2018CacheMap()
-              )
-              await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-            }
-          }
-          "tax year after 2017 - 2018" should {
-            s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url}" in {
-              enable(TaxYearDeferralFeature)
-
-              setupMockKeystore(
-                fetchAll = taxYear2019CacheMap()
-              )
-              await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
-            }
-          }
-        }
-        "income source is both" when {
-          "tax year is 2017 - 2018" should {
-            s"point to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url}" in {
-              enable(TaxYearDeferralFeature)
-
-              setupMockKeystore(
-                fetchAll = taxYear2018CacheMap(incomeSourceType = Both)
-              )
-              await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-            }
-          }
-          "current date is within 2017 - 2018 but tax year entered is after 2017 - 2018" should {
-            s"point to ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url}" in {
-              enable(TaxYearDeferralFeature)
-              mockGetTaxYearEnd(2018)
-
-              setupMockKeystore(
-                fetchAll = taxYear2019CacheMap(incomeSourceType = Both)
-              )
-              await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-            }
-          }
-          "current date is within 2017 - 2018 but tax year entered is after 2017 - 2018" should {
-            s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url}" in {
-              enable(TaxYearDeferralFeature)
-              mockGetTaxYearEnd(2019)
-
-              setupMockKeystore(
-                fetchAll = taxYear2019CacheMap(incomeSourceType = Both)
-              )
-              await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
-            }
-          }
-        }
-      }
-    }
-
-    "The back url in edit mode" should {
-      s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
-        await(TestBusinessAccountingMethodController.backUrl(isEditMode = true)) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
-      }
-    }
-
   }
 
   authorisationTests()

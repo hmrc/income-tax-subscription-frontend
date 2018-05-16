@@ -18,7 +18,7 @@ package incometax.business.controllers
 
 import assets.MessageLookup
 import core.config.MockConfig
-import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
+import core.config.featureswitch.{FeatureSwitching}
 import core.controllers.ControllerBaseSpec
 import core.models.DateModel
 import core.services.mocks.MockKeystoreService
@@ -46,12 +46,10 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(TaxYearDeferralFeature)
   }
 
   override def afterEach(): Unit = {
     super.afterEach()
-    disable(TaxYearDeferralFeature)
   }
 
   def createTestBusinessAccountingPeriodController(setEnableRegistration: Boolean): BusinessAccountingPeriodDateController =
@@ -96,273 +94,92 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" when {
+    "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
 
-      "tax year deferral is disabled" should {
-        val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, AccountingPeriodUtil.getCurrentTaxYearEndDate)
-        val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1))
+      val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, AccountingPeriodUtil.getCurrentTaxYearEndDate)
+      val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1))
 
-        def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode, editMatch = false)(request
-          .post(AccountingPeriodDateForm.accountingPeriodDateForm, testAccountingPeriodDates))
+      def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode, editMatch = false)(request
+        .post(AccountingPeriodDateForm.accountingPeriodDateForm, testAccountingPeriodDates))
 
-        "When it is not in edit mode" when {
-          "the tax year remained the same" should {
-            s"return a redirect status (SEE_OTHER - 303) and do not update terms" in {
-              setupMockKeystore(
-                fetchAll = testCacheMapCustom(
-                  incomeSource = TestModels.testIncomeSourceBusiness,
-                  matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
-                  accountingPeriodDate = testAccountingPeriodDates)
-              )
+      "When it is not in edit mode" when {
+        "the tax year remained the same" should {
+          s"return a redirect status (SEE_OTHER - 303) and do not update terms" in {
+            setupMockKeystore(
+              fetchAll = testCacheMapCustom(
+                incomeSource = TestModels.testIncomeSourceBusiness,
+                matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
+                accountingPeriodDate = testAccountingPeriodDates)
+            )
 
-              val goodRequest = callShow(isEditMode = false)
+            val goodRequest = callShow(isEditMode = false)
 
-              status(goodRequest) must be(Status.SEE_OTHER)
-              redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
 
-              await(goodRequest)
-              verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
-            }
-          }
-
-          "the tax year changed" should {
-            s"return a redirect status (SEE_OTHER - 303) and update terms" in {
-              setupMockKeystore(
-                fetchAll = testCacheMapCustom(
-                  incomeSource = TestModels.testIncomeSourceBusiness,
-                  matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
-                  accountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear)
-              )
-
-              val goodRequest = callShow(isEditMode = false)
-
-              status(goodRequest) must be(Status.SEE_OTHER)
-              redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
-
-              await(goodRequest)
-              verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 1)
-            }
+            await(goodRequest)
+            verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
           }
         }
 
-        "When it is in edit mode" when {
-          "the tax year remained the same" should {
-            s"return a redirect status (SEE_OTHER - 303) and redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
-              setupMockKeystore(
-                fetchAll = testCacheMapCustom(
-                  incomeSource = TestModels.testIncomeSourceBusiness,
-                  matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
-                  accountingPeriodDate = testAccountingPeriodDates)
-              )
+        "the tax year changed" should {
+          s"return a redirect status (SEE_OTHER - 303) and update terms" in {
+            setupMockKeystore(
+              fetchAll = testCacheMapCustom(
+                incomeSource = TestModels.testIncomeSourceBusiness,
+                matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
+                accountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear)
+            )
 
-              val goodRequest = callShow(isEditMode = true)
+            val goodRequest = callShow(isEditMode = false)
 
-              status(goodRequest) must be(Status.SEE_OTHER)
-              await(goodRequest)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
 
-              redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
-              verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
-            }
-          }
-
-          "the tax year changed" should {
-            s"return a redirect status (SEE_OTHER - 303) and redirect to '${
-              incometax.subscription.controllers.routes.TermsController.show(editMode = true).url
-            }" in {
-              setupMockKeystore(
-                fetchAll = testCacheMapCustom(
-                  incomeSource = TestModels.testIncomeSourceBusiness,
-                  matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
-                  accountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear)
-              )
-
-              val goodRequest = callShow(isEditMode = true)
-
-              status(goodRequest) must be(Status.SEE_OTHER)
-              await(goodRequest)
-
-              redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
-              verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 1)
-            }
-          }
-
-        }
-      }
-
-      "tax year deferral is enabled but current tax year end is 2019 OR later" should {
-        "When it is not in edit mode" when {
-            s"return a redirect status (SEE_OTHER - 303)" in {
-              enable(TaxYearDeferralFeature)
-
-              setupMockKeystore(
-                fetchAll = testCacheMapCustom(
-                  incomeSource = TestModels.testIncomeSourceBusiness,
-                  matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
-                  accountingPeriodDate =  AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel("5", "4", "2020")))
-              )
-
-              mockGetTaxYearEnd(2020)
-
-              val goodRequest =  TestBusinessAccountingPeriodController.submit(isEditMode = false, editMatch = false)(request
-                .post(AccountingPeriodDateForm.accountingPeriodDateForm, testAccountingPeriodDates2019))
-
-              status(goodRequest) must be(Status.SEE_OTHER)
-              redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
+            await(goodRequest)
+            verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 1)
           }
         }
       }
 
-      "tax year deferral is enabled and the current tax end year is 2018" should {
+      "When it is in edit mode" when {
+        "the tax year remained the same" should {
+          s"return a redirect status (SEE_OTHER - 303) and redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
+            setupMockKeystore(
+              fetchAll = testCacheMapCustom(
+                incomeSource = TestModels.testIncomeSourceBusiness,
+                matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
+                accountingPeriodDate = testAccountingPeriodDates)
+            )
 
-        def callShow(isEditMode: Boolean)(submission: AccountingPeriodModel = testAccountingPeriodDates2019) =
-          TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode, editMatch = false)(
-            request.post(AccountingPeriodDateForm.accountingPeriodDateForm, submission))
+            val goodRequest = callShow(isEditMode = true)
 
-        "When it is not in edit mode" when {
-          "the tax year remained the same" when {
-            "the tax year is 2018 - 2019 and the Income type is both Property and Sole Trader" should {
-              s"return a redirect status (SEE_OTHER - 303) but do not update terms" in {
-                enable(TaxYearDeferralFeature)
+            status(goodRequest) must be(Status.SEE_OTHER)
+            await(goodRequest)
 
-                setupMockKeystore(
-                  fetchAll = testCacheMapCustom(
-                    incomeSource = TestModels.testIncomeSourceBoth,
-                    accountingPeriodDate = None)
-                )
-
-                mockGetTaxYearEnd(2018)
-
-                val goodRequest = callShow(isEditMode = false)(testAccountingPeriodDates2019)
-
-                status(goodRequest) must be(Status.SEE_OTHER)
-                redirectLocation(goodRequest) mustBe Some(incometax.incomesource.controllers.routes.CannotReportYetController.show().url)
-
-                await(goodRequest)
-                verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
-              }
-            }
-
-            "end tax year is after 2017 - 2018" should {
-              s"return a redirect status (SEE_OTHER - 303) and do not update terms" in {
-                enable(TaxYearDeferralFeature)
-
-                setupMockKeystore(
-                  fetchAll = testCacheMapCustom(
-                    incomeSource = TestModels.testIncomeSourceBusiness,
-                    matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
-                    accountingPeriodDate = testAccountingPeriodDates2019)
-                )
-
-                mockGetTaxYearEnd(2018)
-
-                val goodRequest = callShow(isEditMode = false)(testAccountingPeriodDates2019)
-
-                status(goodRequest) must be(Status.SEE_OTHER)
-                redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
-
-                await(goodRequest)
-                verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
-              }
-            }
-          }
-
-          "the tax year changed" when {
-            "the new tax year is after 2017 - 2018" should {
-              s"return a redirect status (SEE_OTHER - 303) and update terms" in {
-                enable(TaxYearDeferralFeature)
-
-                setupMockKeystore(
-                  fetchAll = testCacheMapCustom(
-                    incomeSource = TestModels.testIncomeSourceBusiness,
-                    matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
-                    accountingPeriodDate = testAccountingPeriodDates2018)
-                )
-
-                mockGetTaxYearEnd(2018)
-
-                val goodRequest = callShow(isEditMode = false)(testAccountingPeriodDates2019)
-
-                status(goodRequest) must be(Status.SEE_OTHER)
-                redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.BusinessAccountingMethodController.show().url)
-
-                await(goodRequest)
-                verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 1)
-              }
-            }
+            redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
+            verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
           }
         }
 
+        "the tax year changed" should {
+          s"return a redirect status (SEE_OTHER - 303) and redirect to '${
+            incometax.subscription.controllers.routes.TermsController.show(editMode = true).url
+          }" in {
+            setupMockKeystore(
+              fetchAll = testCacheMapCustom(
+                incomeSource = TestModels.testIncomeSourceBusiness,
+                matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
+                accountingPeriodDate = testAccountingPeriodDatesDifferentTaxYear)
+            )
 
-        "the newly entered tax year is after 2017 - 2018 and" when {
-          "the tax year remained the same" should {
-            s"return a redirect status (SEE_OTHER - 303) and redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
-              enable(TaxYearDeferralFeature)
+            val goodRequest = callShow(isEditMode = true)
 
-              setupMockKeystore(
-                fetchAll = testCacheMapCustom(
-                  incomeSource = TestModels.testIncomeSourceBusiness,
-                  matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
-                  accountingPeriodDate = testAccountingPeriodDates2019)
-              )
+            status(goodRequest) must be(Status.SEE_OTHER)
+            await(goodRequest)
 
-              mockGetTaxYearEnd(2018)
-
-              val goodRequest = callShow(isEditMode = true)(testAccountingPeriodDates2019)
-
-              status(goodRequest) must be(Status.SEE_OTHER)
-              await(goodRequest)
-
-              redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
-              verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
-            }
-          }
-
-          "the tax year changed" should {
-            s"return a redirect status (SEE_OTHER - 303) and redirect to '${
-              incometax.subscription.controllers.routes.TermsController.show(editMode = true).url
-            }" in {
-              enable(TaxYearDeferralFeature)
-
-              setupMockKeystore(
-                fetchAll = testCacheMapCustom(
-                  incomeSource = TestModels.testIncomeSourceBusiness,
-                  matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
-                  accountingPeriodDate = testAccountingPeriodDates2018)
-              )
-
-              mockGetTaxYearEnd(2018)
-
-              val goodRequest = callShow(isEditMode = true)(testAccountingPeriodDates2019)
-
-              status(goodRequest) must be(Status.SEE_OTHER)
-              await(goodRequest)
-
-              redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
-              verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 1)
-            }
-
-            s"return a redirect status (SEE_OTHER - 303) and redirect to '${
-              incometax.incomesource.controllers.routes.CannotReportYetController.show(editMode = true).url
-            } when the Income Type is BOTH" in {
-              enable(TaxYearDeferralFeature)
-
-              setupMockKeystore(
-                fetchAll = testCacheMapCustom(
-                  incomeSource = TestModels.testIncomeSourceBoth,
-                  matchTaxYear = TestModels.testMatchTaxYearNo, // required for backurl
-                  accountingPeriodDate = testAccountingPeriodDates2018)
-              )
-
-              mockGetTaxYearEnd(2018)
-
-              val goodRequest = callShow(isEditMode = true)(testAccountingPeriodDates2019)
-
-              status(goodRequest) must be(Status.SEE_OTHER)
-              await(goodRequest)
-
-              redirectLocation(goodRequest) mustBe Some(incometax.incomesource.controllers.routes.CannotReportYetController.show(editMode = true).url)
-              verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 1)
-            }
+            redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
+            verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 1)
           }
         }
       }

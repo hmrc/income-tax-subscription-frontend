@@ -107,11 +107,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
     if (isEditMode)
       incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
     else {
-      if (incomeSourceType == Property
-        && applicationConfig.taxYearDeferralEnabled
-        && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
-        incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-      else defaultInvalidIncomeSourceAction
+      defaultInvalidIncomeSourceAction
     }
 
   private def defaultInvalidIncomeSourceAction: String =

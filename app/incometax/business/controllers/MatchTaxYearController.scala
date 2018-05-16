@@ -67,11 +67,11 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
             _ <- keystoreService.saveMatchTaxYear(matchTaxYear)
           } yield (isEditMode, matchTaxYear.matchTaxYear) match {
             case (false, MatchTaxYearForm.option_yes) =>
-              matchesTaxYear(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
+              Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
             case (false, MatchTaxYearForm.option_no) => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show())
             case (true, MatchTaxYearForm.option_yes) => {
               if(changedAnswer)
-                matchesTaxYear(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+                Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
               else Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
             }
             case (true, MatchTaxYearForm.option_no) =>
@@ -79,16 +79,6 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
           }
         }
       )
-  }
-
-  private def matchesTaxYear(redirectCall: Call) = {
-    if (applicationConfig.taxYearDeferralEnabled)
-      if (currentTimeService.getTaxYearEndForCurrentDate <= 2018)
-        Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show())
-      else
-        Redirect(redirectCall)
-    else
-      Redirect(redirectCall)
   }
 
   def backUrl(isEditMode: Boolean)(implicit request: Request[AnyContent]): String =
