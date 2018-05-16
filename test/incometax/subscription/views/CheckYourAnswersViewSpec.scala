@@ -23,8 +23,8 @@ import core.utils.{TestModels, UnitTestTrait}
 import core.views.html.helpers.SummaryIdConstants._
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
-import incometax.subscription.models.SummaryModel
+import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
+import incometax.subscription.models.{IncomeSourceType, SummaryModel}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
@@ -40,7 +40,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testBusinessStartDate: BusinessStartDateModel = TestModels.testBusinessStartDate
   val testBusinessAddress: Address = TestModels.testAddress
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
-  val testIncomeSource: IncomeSourceModel = TestModels.testIncomeSourceBoth
+  val testIncomeSource: IncomeSourceType = TestModels.testIncomeSourceBoth
   val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
   val testWorkForYourself: WorkForYourselfModel = TestModels.testWorkForYourself_yes
   val testOtherIncome: OtherIncomeModel = TestModels.testOtherIncomeNo

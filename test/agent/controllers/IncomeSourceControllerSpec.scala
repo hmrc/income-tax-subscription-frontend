@@ -17,11 +17,11 @@
 package agent.controllers
 
 import agent.forms.IncomeSourceForm
-import agent.models.IncomeSourceModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
 import core.config.featureswitch.FeatureSwitching
 import incometax.incomesource.services.mocks.MockCurrentTimeService
+import incometax.subscription.models._
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -31,8 +31,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
   override val controllerName: String = "IncomeSourceController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showIncomeSource" -> TestIncomeSourceController.show(isEditMode = true),
-    "submitIncomeSource" -> TestIncomeSourceController.submit(isEditMode = true)
+    "show" -> TestIncomeSourceController.show(isEditMode = true),
+    "submit" -> TestIncomeSourceController.submit(isEditMode = true)
   )
 
   object TestIncomeSourceController extends IncomeSourceController(
@@ -59,8 +59,8 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
   "Calling the submitIncomeSource action of the IncomeSource controller with an authorised user and valid submission" should {
 
-    def callShow(option: String, isEditMode: Boolean) = TestIncomeSourceController.submit(isEditMode = isEditMode)(
-      subscriptionRequest.post(IncomeSourceForm.incomeSourceForm, IncomeSourceModel(option))
+    def callShow(option: IncomeSourceType, isEditMode: Boolean) = TestIncomeSourceController.submit(isEditMode = isEditMode)(
+      subscriptionRequest.post(IncomeSourceForm.incomeSourceForm, option)
     )
 
     "When it is not edit mode" when {
@@ -68,7 +68,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         s"return a SEE_OTHER with a redirect location of ${agent.controllers.routes.OtherIncomeController.show().url}" in {
           setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callShow(IncomeSourceForm.option_business, isEditMode = false)
+          val goodRequest = callShow(Both, isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe agent.controllers.routes.OtherIncomeController.show().url
@@ -78,11 +78,63 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
       }
 
+<<<<<<< HEAD
+=======
+      "the income source is property" when {
+        "the tax deferral feature switch is on" when {
+          "the current date is before 6 April 2018" should {
+            s"return a SEE_OTHER with a redirect location of ${agent.controllers.routes.CannotReportYetController.show().url}" in {
+              enable(TaxYearDeferralFeature)
+              mockGetTaxYearEnd(2018)
+              setupMockKeystoreSaveFunctions()
+
+              val goodRequest = callShow(Property, isEditMode = false)
+
+              status(goodRequest) must be(Status.SEE_OTHER)
+              redirectLocation(goodRequest) must contain(agent.controllers.routes.CannotReportYetController.show().url)
+
+              await(goodRequest)
+              verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+            }
+          }
+          "the current date is after 6 April 2018" should {
+            s"return a SEE OTHER with a redirect location of ${agent.controllers.routes.OtherIncomeController.show().url}" in {
+              enable(TaxYearDeferralFeature)
+              mockGetTaxYearEnd(2019)
+              setupMockKeystoreSaveFunctions()
+
+              val goodRequest = callShow(Property, isEditMode = false)
+
+              status(goodRequest) must be(Status.SEE_OTHER)
+              redirectLocation(goodRequest).get mustBe agent.controllers.routes.OtherIncomeController.show().url
+
+              await(goodRequest)
+              verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+            }
+          }
+        }
+        "the tax deferral feature switch is off" should {
+          s"return a SEE OTHER with a redirect location of ${agent.controllers.routes.OtherIncomeController.show().url}" in {
+            disable(TaxYearDeferralFeature)
+            setupMockKeystoreSaveFunctions()
+
+            val goodRequest = callShow(Property, isEditMode = false)
+
+            status(goodRequest) must be(Status.SEE_OTHER)
+            redirectLocation(goodRequest).get mustBe agent.controllers.routes.OtherIncomeController.show().url
+
+            await(goodRequest)
+            verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
+          }
+        }
+      }
+
+>>>>>>> 73b292ff4ddbc83ea9af7014a16b956f4a549aca
 
       s"return a SEE OTHER (303) for both and goto ${agent.controllers.routes.OtherIncomeController.show().url}" in {
         setupMockKeystoreSaveFunctions()
 
-        val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = false)
+        val goodRequest = callShow(Both, isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.OtherIncomeController.show().url
@@ -94,7 +146,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       s"return a SEE OTHER (303) for 'Other' and goto ${agent.controllers.routes.MainIncomeErrorController.show().url}" in {
         setupMockKeystoreSaveFunctions()
 
-        val goodRequest = callShow(IncomeSourceForm.option_other, isEditMode = false)
+        val goodRequest = callShow(Other, isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.MainIncomeErrorController.show().url
@@ -108,7 +160,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       s"return an SEE OTHER (303) for business and goto ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
-        val goodRequest = callShow(IncomeSourceForm.option_business, isEditMode = true)
+        val goodRequest = callShow(Business, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.CheckYourAnswersController.show().url
@@ -120,7 +172,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       s"return a SEE OTHER (303) for property and goto ${agent.controllers.routes.CheckYourAnswersController.show()}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
 
-        val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = true)
+        val goodRequest = callShow(Property, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.CheckYourAnswersController.show().url
@@ -132,7 +184,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       s"return a SEE OTHER (303) for both and goto ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
-        val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = true)
+        val goodRequest = callShow(Both, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.CheckYourAnswersController.show().url
@@ -144,7 +196,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       s"return a SEE OTHER (303) for 'Other' and goto ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceOther)
 
-        val goodRequest = callShow(IncomeSourceForm.option_other, isEditMode = true)
+        val goodRequest = callShow(Other, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.CheckYourAnswersController.show().url
@@ -158,7 +210,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       s"return an SEE OTHER (303) for business and goto ${agent.controllers.routes.OtherIncomeController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
-        val goodRequest = callShow(IncomeSourceForm.option_business, isEditMode = true)
+        val goodRequest = callShow(Business, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.OtherIncomeController.show().url
@@ -170,7 +222,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       s"return a SEE OTHER (303) for property and goto ${agent.controllers.routes.OtherIncomeController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
-        val goodRequest = callShow(IncomeSourceForm.option_property, isEditMode = true)
+        val goodRequest = callShow(Property, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.OtherIncomeController.show().url
@@ -182,7 +234,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       s"return a SEE OTHER (303) for both and goto ${agent.controllers.routes.OtherIncomeController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
-        val goodRequest = callShow(IncomeSourceForm.option_both, isEditMode = true)
+        val goodRequest = callShow(Both, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.OtherIncomeController.show().url
@@ -194,7 +246,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       s"return a SEE OTHER (303) for 'Other' and goto ${agent.controllers.routes.MainIncomeErrorController.show().url}" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
-        val goodRequest = callShow(IncomeSourceForm.option_other, isEditMode = true)
+        val goodRequest = callShow(Other, isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.MainIncomeErrorController.show().url

@@ -19,8 +19,7 @@ package agent.views.html.helpers
 
 import incometax.business.forms.AccountingMethodForm
 import incometax.business.models.AccountingMethodModel
-import incometax.incomesource.forms.IncomeSourceForm
-import incometax.incomesource.models.IncomeSourceModel
+import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.i18n.Messages
 
 object SummaryHelper {
@@ -30,10 +29,10 @@ object SummaryHelper {
     case AccountingMethodForm.option_accruals => Messages("agent.summary.income_type.accruals")
   }
 
-  def incomeSourceText(src: IncomeSourceModel)(implicit messages: Messages): String = src.source match {
-    case IncomeSourceForm.option_business => Messages("agent.summary.income_source.business")
-    case IncomeSourceForm.option_property => Messages("agent.summary.income_source.property")
-    case IncomeSourceForm.option_both => Messages("agent.summary.income_source.both")
+  def incomeSourceText(src: IncomeSourceType)(implicit messages: Messages): String = src match {
+    case Business => Messages("agent.summary.income_source.business")
+    case Property => Messages("agent.summary.income_source.property")
+    case Both => Messages("agent.summary.income_source.both")
   }
 
 }

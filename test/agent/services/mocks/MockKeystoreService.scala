@@ -20,6 +20,7 @@ import _root_.agent.services.KeystoreService
 import _root_.core.utils.MockTrait
 import agent.models._
 import incometax.business.models.AccountingPeriodModel
+import incometax.subscription.models.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HttpResponse
@@ -55,7 +56,7 @@ trait MockKeystoreService extends MockTrait {
     when(MockKeystoreService.session.cache(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext])).thenReturn(Future.successful(returnedCacheMap))
 
   protected final def setupMockKeystore(
-                                         fetchIncomeSource: MFO[IncomeSourceModel] = DoNotConfigure,
+                                         fetchIncomeSource: MFO[IncomeSourceType] = DoNotConfigure,
                                          fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
                                          fetchAccountingPeriodDate: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchAccountingMethod: MFO[AccountingMethodModel] = DoNotConfigure,
@@ -67,7 +68,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
-    mockFetchFromKeyStore[IncomeSourceModel](IncomeSource, fetchIncomeSource)
+    mockFetchFromKeyStore[IncomeSourceType](IncomeSource, fetchIncomeSource)
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
     mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)

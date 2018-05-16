@@ -23,6 +23,7 @@ import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
 import _root_.agent.models._
 import _root_.agent.services.CacheConstants
+import incometax.subscription.models.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -145,7 +146,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing business name when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeSource = Both
         val keystoreBusinessName = BusinessNameModel("testBusiness")
         val userInput: BusinessNameModel = IntegrationTestModels.testBusinessName
 

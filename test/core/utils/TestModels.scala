@@ -21,20 +21,20 @@ import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
 import agent.services.CacheConstants.AccountingPeriodPrior
 import core.models.DateModel
+import core.models.YesNoModel._
 import core.services.CacheConstants
 import core.utils.TestConstants._
 import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
+import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models._
-import incometax.subscription.models.{Both, SummaryModel}
+import incometax.subscription.models._
 import incometax.unauthorisedagent.models.StoredSubscription
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import usermatching.models.{UserDetailsModel, UserMatchSuccessResponseModel}
-import core.models.YesNoModel._
 
 object TestModels extends Implicits {
 
@@ -87,7 +87,7 @@ object TestModels extends Implicits {
       terms = testTerms)
 
   def testCacheMapCustom(
-                          incomeSource: Option[IncomeSourceModel] = testIncomeSourceBoth,
+                          incomeSource: Option[IncomeSourceType] = testIncomeSourceBoth,
                           rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty_property_and_other,
                           workForYourself: Option[WorkForYourselfModel] = testWorkForYourself_yes,
                           otherIncome: Option[OtherIncomeModel] = testOtherIncomeNo,
@@ -114,7 +114,7 @@ object TestModels extends Implicits {
       accountingMethod = accountingMethod,
       terms = terms)
 
-  def testCacheMap(incomeSource: Option[IncomeSourceModel] = None,
+  def testCacheMap(incomeSource: Option[IncomeSourceType] = None,
                    rentUkProperty: Option[RentUkPropertyModel] = None,
                    workForYourself: Option[WorkForYourselfModel] = None,
                    otherIncome: Option[OtherIncomeModel] = None,
@@ -129,7 +129,7 @@ object TestModels extends Implicits {
                    terms: Option[Boolean] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
-      incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceModel.format.writes(model))) ++
+      incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceType.format.writes(model))) ++
       rentUkProperty.fold(emptyMap)(model => Map(RentUkProperty -> RentUkPropertyModel.format.writes(model))) ++
       workForYourself.fold(emptyMap)(model => Map(WorkForYourself -> WorkForYourselfModel.format.writes(model))) ++
       otherIncome.fold(emptyMap)(model => Map(OtherIncome -> OtherIncomeModel.format.writes(model))) ++
@@ -145,11 +145,11 @@ object TestModels extends Implicits {
     CacheMap("", map)
   }
 
-  lazy val testIncomeSourceBusiness = IncomeSourceModel(IncomeSourceForm.option_business)
+  lazy val testIncomeSourceBusiness = Business
 
-  lazy val testIncomeSourceProperty = IncomeSourceModel(IncomeSourceForm.option_property)
+  lazy val testIncomeSourceProperty = Property
 
-  lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
+  lazy val testIncomeSourceBoth = Both
 
   lazy val testRentUkProperty_no_property = RentUkPropertyModel(NO, None)
   lazy val testRentUkProperty_property_only = RentUkPropertyModel(YES, YES)
@@ -173,7 +173,7 @@ object TestModels extends Implicits {
   lazy val testMatchNoUtrModel = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, None)
 
   lazy val testSummaryData = SummaryModel(
-    incomeSource = IncomeSourceModel(IncomeSourceForm.option_both),
+    incomeSource = Both,
     otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
     matchTaxYear = testMatchTaxYearNo,
     accountingPeriod = testAccountingPeriod,

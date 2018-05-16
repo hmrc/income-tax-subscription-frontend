@@ -19,16 +19,16 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.AuthenticatedController
-import core.config.BaseControllerConfig
 import agent.forms.IncomeSourceForm
-import agent.models.IncomeSourceModel
+import agent.services.KeystoreService
+import core.config.BaseControllerConfig
+import core.services.AuthService
+import incometax.incomesource.services.CurrentTimeService
+import incometax.subscription.models.IncomeSourceType
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import agent.services.KeystoreService
-import core.services.AuthService
-import incometax.incomesource.services.CurrentTimeService
 
 import scala.concurrent.Future
 
@@ -40,7 +40,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val currentTimeService: CurrentTimeService
                                       ) extends AuthenticatedController {
 
-  def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
+  def view(incomeSourceForm: Form[IncomeSourceType], isEditMode: Boolean)(implicit request: Request[_]): Html =
     agent.views.html.income_source(
       incomeSourceForm = incomeSourceForm,
       postAction = agent.controllers.routes.IncomeSourceController.submit(editMode = isEditMode),

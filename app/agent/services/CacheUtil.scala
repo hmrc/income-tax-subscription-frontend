@@ -19,9 +19,8 @@ package agent.services
 
 import agent.models.AccountingPeriodPriorModel
 import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel}
-import incometax.incomesource.forms.IncomeSourceForm
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import incometax.subscription.models.SummaryModel
+import incometax.incomesource.models.OtherIncomeModel
+import incometax.subscription.models.{IncomeSourceType, Property, SummaryModel}
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -31,7 +30,7 @@ object CacheUtil {
 
     import CacheConstants._
 
-    def getIncomeSource()(implicit read: Reads[IncomeSourceModel]): Option[IncomeSourceModel] = cacheMap.getEntry(IncomeSource)
+    def getIncomeSource()(implicit read: Reads[IncomeSourceType]): Option[IncomeSourceType] = cacheMap.getEntry(IncomeSource)
 
     def getOtherIncome()(implicit read: Reads[OtherIncomeModel]): Option[OtherIncomeModel] = cacheMap.getEntry(OtherIncome)
 
@@ -46,7 +45,7 @@ object CacheUtil {
     def getTerms()(implicit read: Reads[Boolean]): Option[Boolean] = cacheMap.getEntry(Terms)
 
     def getSummary()(implicit
-                     isrc: Reads[IncomeSourceModel],
+                     isrc: Reads[IncomeSourceType],
                      oirc: Reads[OtherIncomeModel],
                      accP: Reads[AccountingPeriodPriorModel],
                      accD: Reads[AccountingPeriodModel],
@@ -56,8 +55,8 @@ object CacheUtil {
       val incomeSource = getIncomeSource()
       incomeSource match {
         case Some(src) =>
-          src.source match {
-            case IncomeSourceForm.option_property =>
+          src match {
+            case Property =>
               SummaryModel(
                 incomeSource,
                 otherIncome = getOtherIncome(),

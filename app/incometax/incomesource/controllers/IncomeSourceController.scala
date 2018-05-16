@@ -24,8 +24,8 @@ import core.auth.{IncomeTaxSAUser, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.IncomeSourceForm
-import incometax.incomesource.models.IncomeSourceModel
 import incometax.incomesource.services.CurrentTimeService
+import incometax.subscription.models.IncomeSourceType
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -50,7 +50,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  def view(incomeSourceForm: Form[IncomeSourceModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
+  def view(incomeSourceForm: Form[IncomeSourceType], isEditMode: Boolean)(implicit request: Request[_]): Html =
     incometax.incomesource.views.html.income_source(
       incomeSourceForm = incomeSourceForm,
       postAction = incometax.incomesource.controllers.routes.IncomeSourceController.submit(editMode = isEditMode),

@@ -24,8 +24,9 @@ import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import incometax.business.models.AccountingPeriodModel
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
+import incometax.incomesource.forms.OtherIncomeForm
+import incometax.incomesource.models.OtherIncomeModel
+import incometax.subscription.models.{Both, Business}
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -55,7 +56,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
     "keystore returns no data" should {
       "show the accounting period dates page without date values entered" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeSource = Both
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
         val keystoreMatchTaxYear = testMatchTaxYearNo
 
@@ -99,7 +100,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(
             keystoreData(
-              incomeSource = Some(testIncomeSourceBusiness),
+              incomeSource = Some(Business),
               matchTaxYear = Some(keystoreMatchTaxYear)))
 
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
@@ -125,7 +126,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(
             keystoreData(
-              incomeSource = Some(testIncomeSourceBusiness),
+              incomeSource = Some(Business),
               matchTaxYear = Some(keystoreMatchTaxYear))
           )
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
@@ -186,7 +187,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
       "simulate changing accounting period dates when calling page from Check Your Answers" when {
         "the new accounting period ends in the same tax year" in {
-          val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+          val keystoreIncomeSource = Both
           val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
           val keystoreMatchTaxYear = testMatchTaxYearNo
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("04", "05", "2019"))
@@ -215,7 +216,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         }
 
         "The new accounting period ends in a different tax year" in {
-          val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_business)
+          val keystoreIncomeSource = Business
           val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
           val keystoreMatchTaxYear = testMatchTaxYearNo
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2020"))

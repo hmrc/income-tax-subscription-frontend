@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package agent.models
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import core.views.html.helpers._
+@import core.config.AppConfig
+@import core.views.html.templates.main_template
 
-import play.api.libs.json.Json
+@(postAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@main_template(title = Messages("cannot-use-service.title")) {
 
-case class IncomeSourceModel(source: String)
+    <h1 class="heading-large">@Messages("cannot-use-service.heading")</h1>
 
-object IncomeSourceModel {
-  implicit val format = Json.format[IncomeSourceModel]
+    <div class="form-group">
+        <p>@Messages("cannot-use-service.line1")</p>
+    </div>
+
+    @signOutLink()
 }

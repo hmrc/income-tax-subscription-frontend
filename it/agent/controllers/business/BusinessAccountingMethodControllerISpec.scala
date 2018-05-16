@@ -24,6 +24,7 @@ import _root_.agent.services.CacheConstants
 import agent.forms._
 import agent.models._
 import incometax.business.models.AccountingPeriodModel
+import incometax.subscription.models.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -145,7 +146,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
     "in edit mode" should {
 
       "changing to the Accruals radio button on the accounting method page" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeSource = Both
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
         val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
         val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
@@ -176,7 +177,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       }
 
       "simulate not changing accounting method when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeSource = Both
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
         val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
         val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod

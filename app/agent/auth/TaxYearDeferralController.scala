@@ -17,16 +17,26 @@
 package agent.auth
 
 import core.auth.BaseFrontendController
+import play.api.mvc.Action
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
+import uk.gov.hmrc.http.NotFoundException
 
-trait PostSubmissionController extends BaseFrontendController {
+import scala.concurrent.Future
+
+trait TaxYearDeferralController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions[IncomeTaxAgentUser] {
-
     override def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel) => IncomeTaxAgentUser =
       (enrolments, affinity, _, confidence) => IncomeTaxAgentUser.apply(enrolments, affinity, confidence)
 
-    override val async: AuthenticatedAction[IncomeTaxAgentUser] = asyncInternal(agent.auth.AuthPredicates.confirmationPredicates)
+    private val taxDeferralUnavailableMessage = "This page for tax deferral is not yet available to the public: "
+
+    override def async: AuthenticatedAction[IncomeTaxAgentUser] =
+      if (applicationConfig.taxYearDeferralEnabled) {
+        asyncInternal(agent.auth.AuthPredicates.subscriptionPredicates)
+      } else _ => {
+        Action.async(request => Future.failed(new NotFoundException(taxDeferralUnavailableMessage + request.uri)))
+      }
   }
 
 }

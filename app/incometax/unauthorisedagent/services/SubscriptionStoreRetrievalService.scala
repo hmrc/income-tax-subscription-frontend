@@ -22,8 +22,7 @@ import core.config.AppConfig
 import core.services.KeystoreService
 import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel}
 import incometax.incomesource.forms.OtherIncomeForm
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel}
-import incometax.subscription.models.IncomeSourceType
+import incometax.incomesource.models.OtherIncomeModel
 import incometax.unauthorisedagent.connectors.SubscriptionStoreConnector
 import incometax.unauthorisedagent.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess, StoredSubscription}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
@@ -46,9 +45,7 @@ class SubscriptionStoreRetrievalService @Inject()(subscriptionStoreConnector: Su
   }
 
   private def storeSubscriptionData(storedSubscription: StoredSubscription)(implicit hc: HeaderCarrier): Future[Option[StoredSubscription]] = {
-    val incomeSource = storedSubscription.incomeSource match {
-      case IncomeSourceType(asString) => IncomeSourceModel(asString)
-    }
+    val incomeSource = storedSubscription.incomeSource
 
     val otherIncome = storedSubscription.otherIncome match {
       case true => OtherIncomeModel(OtherIncomeForm.option_yes)

@@ -46,10 +46,10 @@ trait AuthenticatedController[T <: UserJourney[IncomeTaxSAUser]] extends Fronten
 
     def async(action: ActionBody)(implicit state: T): Action[AnyContent] =
       Action.async { implicit request =>
-        if(state.isEnabled) {
-          authService.authorised().retrieve(allEnrolments and affinityGroup and confidenceLevel) {
-            case enrolments ~ affinity ~ confidence =>
-              implicit val user = IncomeTaxSAUser(enrolments, affinity, confidence)
+        if (state.isEnabled) {
+          authService.authorised().retrieve(allEnrolments and affinityGroup and credentialRole and confidenceLevel) {
+            case enrolments ~ affinity ~ role ~ confidence =>
+              implicit val user = IncomeTaxSAUser(enrolments, affinity, role, confidence)
 
               state.authPredicates.apply(request)(user) match {
                 case Right(AuthPredicateSuccess) => action(request)(user)

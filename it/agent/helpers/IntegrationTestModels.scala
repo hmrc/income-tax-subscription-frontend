@@ -22,10 +22,9 @@ import _root_.agent.models._
 import _root_.agent.services.CacheConstants
 import core.models.DateModel
 import incometax.business.models.AccountingPeriodModel
-import incometax.subscription.models.Both
+import incometax.subscription.models._
 import incometax.unauthorisedagent.models.StoredSubscription
 import play.api.libs.json.{JsValue, Json}
-import usermatching.models.UserDetailsModel
 
 object IntegrationTestModels {
 
@@ -71,7 +70,7 @@ object IntegrationTestModels {
     )
 
   def keystoreData(
-                    incomeSource: Option[IncomeSourceModel] = None,
+                    incomeSource: Option[IncomeSourceType] = None,
                     otherIncome: Option[OtherIncomeModel] = None,
                     accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                     accountingPeriodDate: Option[AccountingPeriodModel] = None,
@@ -79,7 +78,7 @@ object IntegrationTestModels {
                     accountingMethod: Option[AccountingMethodModel] = None,
                     terms: Option[Boolean] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
-      incomeSource.map(model => IncomeSource -> IncomeSourceModel.format.writes(model)) ++
+      incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
       otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++
       accountingPeriodPrior.map(model => AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
@@ -88,13 +87,13 @@ object IntegrationTestModels {
       terms.map(model => Terms -> Json.toJson(model))
   }
 
-  lazy val testIncomeSourceBusiness = IncomeSourceModel(IncomeSourceForm.option_business)
+  lazy val testIncomeSourceBusiness = Business
 
-  lazy val testIncomeSourceOther = IncomeSourceModel(IncomeSourceForm.option_other)
+  lazy val testIncomeSourceOther = Other
 
-  lazy val testIncomeSourceProperty = IncomeSourceModel(IncomeSourceForm.option_property)
+  lazy val testIncomeSourceProperty = Property
 
-  lazy val testIncomeSourceBoth = IncomeSourceModel(IncomeSourceForm.option_both)
+  lazy val testIncomeSourceBoth = Both
 
   lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
 

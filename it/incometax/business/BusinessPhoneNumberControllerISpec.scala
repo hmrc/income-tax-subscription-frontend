@@ -24,8 +24,7 @@ import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import incometax.business.models.BusinessPhoneNumberModel
-import incometax.incomesource.forms.IncomeSourceForm
-import incometax.incomesource.models.IncomeSourceModel
+import incometax.subscription.models.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -148,7 +147,7 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureS
       }
 
       "simulate changing business phone number when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = IncomeSourceModel(IncomeSourceForm.option_both)
+        val keystoreIncomeSource = Both
         val keystoreBusinessPhoneNumber = BusinessPhoneNumberModel("07890123456")
         val userInput: BusinessPhoneNumberModel = IntegrationTestModels.testBusinessPhoneNumber
 

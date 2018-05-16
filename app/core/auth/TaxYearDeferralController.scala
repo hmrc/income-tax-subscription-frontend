@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package incometax.incomesource.models
+package core.auth
 
-import play.api.libs.json.Json
+import cats.implicits._
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
 
+trait TaxYearDeferralController extends BaseFrontendController {
 
-case class IncomeSourceModel(source: String)
+  object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
+    override def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
 
-object IncomeSourceModel {
-  implicit val format = Json.format[IncomeSourceModel]
+    override def async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(subscriptionPredicates |+| taxYearDeferralFeature)
+  }
+
 }

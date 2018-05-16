@@ -17,7 +17,7 @@
 package core.auth
 
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, Enrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
 import uk.gov.hmrc.http.NotFoundException
 import usermatching.utils.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
 
@@ -27,7 +27,7 @@ trait UserMatchingController extends BaseFrontendController {
 
   object Authenticated extends AuthenticatedActions[IncomeTaxSAUser] {
 
-    override def userApply: (Enrolments, Option[AffinityGroup], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
+    override def userApply: (Enrolments, Option[AffinityGroup], Option[CredentialRole], ConfidenceLevel) => IncomeTaxSAUser = IncomeTaxSAUser.apply
 
     override def async: AuthenticatedAction[IncomeTaxSAUser] = asyncInternal(userMatchingPredicates)
   }

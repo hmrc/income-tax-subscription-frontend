@@ -20,10 +20,10 @@ import javax.inject._
 
 import agent.models._
 import incometax.business.models.AccountingPeriodModel
+import incometax.subscription.models.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import usermatching.models.UserDetailsModel
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,11 +43,11 @@ class KeystoreService @Inject()(val session: SessionCache)(implicit ec: Executio
 
   import CacheConstants._
 
-  def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FO[IncomeSourceModel] =
-    fetch[IncomeSourceModel](IncomeSource)
+  def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FO[IncomeSourceType] =
+    fetch[IncomeSourceType](IncomeSource)
 
-  def saveIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
-    save[IncomeSourceModel](IncomeSource, incomeSource)
+  def saveIncomeSource(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FC =
+    save[IncomeSourceType](IncomeSource, incomeSource)
 
   def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =
     fetch[BusinessNameModel](BusinessName)

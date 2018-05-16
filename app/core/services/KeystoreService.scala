@@ -20,14 +20,11 @@ import javax.inject._
 
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, WorkForYourselfModel}
-import incometax.incomesource.models.{IncomeSourceModel, OtherIncomeModel, RentUkPropertyModel}
-import models._
+import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
+import incometax.subscription.models.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
-import usermatching.models.UserDetailsModel
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -61,17 +58,17 @@ class KeystoreService @Inject()(val session: SessionCache) {
     save[WorkForYourselfModel](WorkForYourself, workForYourself)
 
   //TODO remove when we switch to the new income source flow
-  def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FO[IncomeSourceModel] =
-    fetch[IncomeSourceModel](IncomeSource)
+  def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FO[IncomeSourceType] =
+    fetch[IncomeSourceType](IncomeSource)
 
   //TODO remove when we switch to the new income source flow
-  def saveIncomeSource(incomeSource: IncomeSourceModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
-    save[IncomeSourceModel](IncomeSource, incomeSource)
+  def saveIncomeSource(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FC =
+    save[IncomeSourceType](IncomeSource, incomeSource)
 
   def fetchRentUkProperty()(implicit hc: HeaderCarrier, reads: Reads[RentUkPropertyModel]): FO[RentUkPropertyModel] =
     fetch[RentUkPropertyModel](RentUkProperty)
 
-  def saveRentUkProperty(rentUkPropertyModel: RentUkPropertyModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceModel]): FC =
+  def saveRentUkProperty(rentUkPropertyModel: RentUkPropertyModel)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FC =
     save[RentUkPropertyModel](RentUkProperty, rentUkPropertyModel)
 
   def fetchBusinessName()(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FO[BusinessNameModel] =

@@ -17,6 +17,7 @@
 package core.forms.validation
 
 import core.forms.validation.models.{FieldError, SummaryError, TargetIds}
+import play.api.data.FormError
 import play.api.data.validation.Invalid
 
 object ErrorMessageFactory {
@@ -29,6 +30,12 @@ object ErrorMessageFactory {
     val fieldError = FieldError(errKey, errArgs)
     val summaryError = SummaryError(errKey, errArgs)
     error(fieldError, summaryError)
+  }
+
+  def formError(fieldKey: String, errKey: String, errArgs: String*): Seq[FormError] = {
+    val fieldError = FieldError(errKey, errArgs)
+    val summaryError = SummaryError(errKey, errArgs)
+    Seq[FormError](FormError(fieldKey, errKey, Seq(fieldError, summaryError)))
   }
 
   /**

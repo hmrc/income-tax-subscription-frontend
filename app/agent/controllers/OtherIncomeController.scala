@@ -20,19 +20,19 @@ import javax.inject.{Inject, Singleton}
 
 import agent.audit.Logging
 import agent.auth.AuthenticatedController
-import core.config.BaseControllerConfig
 import agent.forms.{IncomeSourceForm, OtherIncomeForm}
-import agent.models.{IncomeSourceModel, OtherIncomeModel}
+import agent.models.OtherIncomeModel
+import agent.services.KeystoreService
+import core.config.BaseControllerConfig
+import core.services.AuthService
+import core.utils.Implicits._
+import incometax.incomesource.services.CurrentTimeService
+import incometax.subscription.models.{IncomeSourceType, Property}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
-import agent.services.KeystoreService
-import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
-import core.utils.Implicits._
-import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.{IncomeSourceType, Property}
 
 import scala.concurrent.Future
 
@@ -64,14 +64,14 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
         optIncomeSource <- keystoreService.fetchIncomeSource()
         choice <- if (optIncomeSource.isDefined) keystoreService.fetchOtherIncome() else Future.successful(None)
       } yield (optIncomeSource, choice) match {
-        case (Some(IncomeSourceModel(incomeSource)), _) =>
+        case (Some(incomeSource), _) =>
           Ok(view(
             OtherIncomeForm.otherIncomeForm.fill(choice),
-            incomeSource,
+            incomeSource.source,
             isEditMode,
             backUrl(
               isEditMode,
-              IncomeSourceType(incomeSource)
+              incomeSource
             )
           ))
         case _ =>
@@ -79,7 +79,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  def defaultRedirections(optIncomeSource: Option[IncomeSourceModel], otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
+  def defaultRedirections(optIncomeSource: Option[IncomeSourceType], otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
     otherIncomeModel.choice match {
       case OtherIncomeForm.option_yes =>
         Redirect(agent.controllers.routes.OtherIncomeErrorController.show())
@@ -102,18 +102,18 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.fetchIncomeSource().flatMap {
-        case optIncomeSource@Some(IncomeSourceModel(incomeSource)) =>
+        case optIncomeSource@Some(incomeSource) =>
           OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
             formWithErrors =>
               Future.successful(
                 BadRequest(
                   view(
                     otherIncomeForm = formWithErrors,
-                    incomeSource = incomeSource,
+                    incomeSource = incomeSource.source,
                     isEditMode = isEditMode,
                     backUrl = backUrl(
                       isEditMode,
-                      IncomeSourceType(incomeSource)
+                      incomeSource
                     )
                   )
                 )
