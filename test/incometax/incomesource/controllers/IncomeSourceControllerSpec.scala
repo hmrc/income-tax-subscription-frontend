@@ -100,65 +100,7 @@ class IncomeSourceControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
       }
 
-<<<<<<< HEAD
       "when the current date is after the 2017 - 2018 tax year" should {
-=======
-      "when the current date is within the 2017 - 2018 tax year" when {
-        "tax year deferral is disabled" should {
-          s"return a SEE OTHER (303) for property and goto ${incometax.incomesource.controllers.routes.OtherIncomeController.show().url}" in {
-            disable(TaxYearDeferralFeature)
-
-            setupMockKeystoreSaveFunctions()
-            mockGetTaxYearEnd(2018)
-
-            val goodRequest = callShow(Property, isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
-
-            await(goodRequest)
-            verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
-          }
-        }
-
-        "tax year deferral is enabled" should {
-          s"return a SEE OTHER (303) for property and goto ${incometax.incomesource.controllers.routes.CannotReportYetController.show().url}" in {
-            enable(TaxYearDeferralFeature)
-
-            setupMockKeystoreSaveFunctions()
-            mockGetTaxYearEnd(2018)
-
-            val goodRequest = callShow(Property, isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-
-            await(goodRequest)
-            verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
-          }
-        }
-      }
-
-      "when the current date is after the 2017 - 2018 tax year" should {
-        "tax year deferral is disable" should {
-          s"return a SEE OTHER (303) for property and goto ${incometax.incomesource.controllers.routes.OtherIncomeController.show().url}" in {
-            disable(TaxYearDeferralFeature)
-
-            setupMockKeystoreSaveFunctions()
-            mockGetTaxYearEnd(2019)
-
-            val goodRequest = callShow(Property, isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
-
-            await(goodRequest)
-            verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
-          }
-        }
-
-        "tax year deferral is enable" should {
->>>>>>> 73b292ff4ddbc83ea9af7014a16b956f4a549aca
           s"return a SEE OTHER (303) for property and goto ${incometax.incomesource.controllers.routes.OtherIncomeController.show().url}" in {
 
             setupMockKeystoreSaveFunctions()
