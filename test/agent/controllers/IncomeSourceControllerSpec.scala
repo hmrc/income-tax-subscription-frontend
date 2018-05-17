@@ -19,7 +19,7 @@ package agent.controllers
 import agent.forms.IncomeSourceForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
-import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
+import core.config.featureswitch.FeatureSwitching
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models._
 import play.api.http.Status
@@ -34,11 +34,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
     "show" -> TestIncomeSourceController.show(isEditMode = true),
     "submit" -> TestIncomeSourceController.submit(isEditMode = true)
   )
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(TaxYearDeferralFeature)
-  }
 
   object TestIncomeSourceController extends IncomeSourceController(
     MockBaseControllerConfig,
@@ -82,56 +77,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
         }
       }
-
-      "the income source is property" when {
-        "the tax deferral feature switch is on" when {
-          "the current date is before 6 April 2018" should {
-            s"return a SEE_OTHER with a redirect location of ${agent.controllers.routes.CannotReportYetController.show().url}" in {
-              enable(TaxYearDeferralFeature)
-              mockGetTaxYearEnd(2018)
-              setupMockKeystoreSaveFunctions()
-
-              val goodRequest = callShow(Property, isEditMode = false)
-
-              status(goodRequest) must be(Status.SEE_OTHER)
-              redirectLocation(goodRequest) must contain(agent.controllers.routes.CannotReportYetController.show().url)
-
-              await(goodRequest)
-              verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
-            }
-          }
-          "the current date is after 6 April 2018" should {
-            s"return a SEE OTHER with a redirect location of ${agent.controllers.routes.OtherIncomeController.show().url}" in {
-              enable(TaxYearDeferralFeature)
-              mockGetTaxYearEnd(2019)
-              setupMockKeystoreSaveFunctions()
-
-              val goodRequest = callShow(Property, isEditMode = false)
-
-              status(goodRequest) must be(Status.SEE_OTHER)
-              redirectLocation(goodRequest).get mustBe agent.controllers.routes.OtherIncomeController.show().url
-
-              await(goodRequest)
-              verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
-            }
-          }
-        }
-        "the tax deferral feature switch is off" should {
-          s"return a SEE OTHER with a redirect location of ${agent.controllers.routes.OtherIncomeController.show().url}" in {
-            disable(TaxYearDeferralFeature)
-            setupMockKeystoreSaveFunctions()
-
-            val goodRequest = callShow(Property, isEditMode = false)
-
-            status(goodRequest) must be(Status.SEE_OTHER)
-            redirectLocation(goodRequest).get mustBe agent.controllers.routes.OtherIncomeController.show().url
-
-            await(goodRequest)
-            verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
-          }
-        }
-      }
-
 
       s"return a SEE OTHER (303) for both and goto ${agent.controllers.routes.OtherIncomeController.show().url}" in {
         setupMockKeystoreSaveFunctions()

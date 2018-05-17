@@ -91,12 +91,8 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
   def business(implicit request: Request[_]): Future[Result] =
     Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show()))
 
-  def property(implicit request: Request[_]): Future[Result] = {
-    if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
-      Future.successful(Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show()))
-    else
-      Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show()))
-  }
+  def property(implicit request: Request[_]): Future[Result] =
+    Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show()))
 
   def both(implicit request: Request[_]): Future[Result] =
     Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show()))

@@ -86,26 +86,8 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
               case _ => Future.successful(Unit)
             }
           } yield
-            if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018) {
-              if (isEditMode) {
-                val acceptedTaxYearChanged = optOldAccountingPeriodDates.fold(true)(_.taxEndYear != enteredTaxEndYear)
-                if (acceptedTaxYearChanged && enteredTaxEndYear <= 2018)
-                  Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show(editMode = isEditMode))
-                else if(acceptedTaxYearChanged && hasBothIncomeSources(newIncomeSource) && enteredTaxEndYear > 2018)
-                  Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show(editMode = isEditMode))
-                else
-                  Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-              } else {
-                if (enteredTaxEndYear <= 2018) Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show())
-                else if(hasBothIncomeSources(newIncomeSource) && enteredTaxEndYear > 2018)
-                  Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show(editMode = isEditMode))
-                else Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-              }
-            }
-            else {
-              if (isEditMode) Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-              else Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-            }
+            if (isEditMode) Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+            else Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
       )
   }
 

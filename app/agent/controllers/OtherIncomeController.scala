@@ -137,10 +137,6 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
   def backUrl(isEditMode: Boolean, incomeSource: IncomeSourceType): String =
     if (isEditMode) {
       agent.controllers.routes.CheckYourAnswersController.show().url
-    } else if (applicationConfig.taxYearDeferralEnabled
-      && incomeSource == Property
-      && currentTimeService.getTaxYearEndForCurrentDate <= 2018) {
-      agent.controllers.routes.CannotReportYetController.show().url
     } else {
       agent.controllers.routes.IncomeSourceController.show().url
     }

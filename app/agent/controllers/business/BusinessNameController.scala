@@ -87,16 +87,9 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   def backUrl(isEditMode: Boolean, accountingPeriodModel: Option[AccountingPeriodModel], incomeSource: IncomeSourceType): String = {
-    import applicationConfig.taxYearDeferralEnabled
-    import currentTimeService.getTaxYearEndForCurrentDate
-
     (incomeSource, accountingPeriodModel) match {
       case _ if isEditMode =>
         agent.controllers.routes.CheckYourAnswersController.show().url
-      case (Business, Some(accountingPeriod)) if taxYearDeferralEnabled && accountingPeriod.taxEndYear <= 2018 =>
-        agent.controllers.routes.CannotReportYetController.show().url
-      case (Both, _) if taxYearDeferralEnabled && getTaxYearEndForCurrentDate <= 2018 =>
-        agent.controllers.routes.CannotReportYetController.show().url
       case _ =>
         agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
     }

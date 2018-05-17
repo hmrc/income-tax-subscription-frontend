@@ -282,24 +282,4 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       }
     }
   }
-
-  "predicates for the 17 18 tax deferral feature" should {
-    def predicates(enabled: Boolean) = new AuthPredicates {
-      override val applicationConfig: AppConfig = new MockConfig {
-        override val taxYearDeferralEnabled = enabled
-      }
-    }
-
-    "taxYearDeferralFeature" should {
-      "return AuthPredicateSuccess if taxYearDeferralEnabled is set to true" in {
-        predicates(enabled = true).taxYearDeferralFeature(FakeRequest())(blankUser).right.value mustBe AuthPredicateSuccess
-      }
-      "throw NotFoundException if taxYearDeferralEnabled is set to false" in {
-        intercept[NotFoundException](await(predicates(enabled = false).taxYearDeferralFeature(FakeRequest())(blankUser).left.value))
-      }
-    }
-
-  }
-
-
 }

@@ -89,12 +89,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
   def business(implicit request: Request[_]): Result =
     Redirect(agent.controllers.routes.OtherIncomeController.show())
 
-  def property(implicit request: Request[_]): Result =
-    if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018) {
-      Redirect(agent.controllers.routes.CannotReportYetController.show())
-    } else {
-      Redirect(agent.controllers.routes.OtherIncomeController.show())
-    }
+  def property(implicit request: Request[_]): Result = Redirect(agent.controllers.routes.OtherIncomeController.show())
 
   def both(implicit request: Request[_]): Result =
     Redirect(agent.controllers.routes.OtherIncomeController.show())

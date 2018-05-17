@@ -77,25 +77,6 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
   def backUrl(isEditMode: Boolean)(implicit hc: HeaderCarrier): Future[String] =
     if (isEditMode)
       Future.successful(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
-    else if (applicationConfig.taxYearDeferralEnabled) {
-      for {
-        cacheMap <- keystoreService.fetchAll()
-        incomeSourcetype = cacheMap.getIncomeSourceType().get
-        matchTaxYear = cacheMap.getMatchTaxYear()
-        optTaxEndYear = cacheMap.getEnteredAccountingPeriodDate().map(_.taxEndYear)
-      } yield matchTaxYear match {
-        case Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)) =>
-          if (currentTimeService.getTaxYearEndForCurrentDate <= 2018)
-            incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-          else
-            incometax.business.controllers.routes.MatchTaxYearController.show().url
-        case Some(MatchTaxYearModel(MatchTaxYearForm.option_no)) =>
-          if (currentTimeService.getTaxYearEndForCurrentDate <= 2018 && (incomeSourcetype == Both || optTaxEndYear.get <= 2018))
-            incometax.incomesource.controllers.routes.CannotReportYetController.show().url
-          else
-            incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
-      }
-    }
     else {
       keystoreService.fetchAll() map (_.getMatchTaxYear() match {
         case Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)) =>

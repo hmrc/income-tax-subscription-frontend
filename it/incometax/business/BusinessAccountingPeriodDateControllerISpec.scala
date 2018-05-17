@@ -16,7 +16,7 @@
 
 package incometax.business
 
-import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
+import core.config.featureswitch.{FeatureSwitching}
 import core.models.DateModel
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
@@ -31,12 +31,6 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
-
-  override def afterAll(): Unit = {
-    super.afterAll()
-    disable(TaxYearDeferralFeature)
-  }
-
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-period-dates" when {
 
@@ -98,97 +92,90 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
     "not in edit mode" when {
 
-      "when tax year deferral is not enabled" should {
-        "enter accounting period start and end dates on the accounting period page" in {
-          disable(TaxYearDeferralFeature)
+      "enter accounting period start and end dates on the accounting period page" in {
 
-          val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
+        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(
-            keystoreData(
-              incomeSource = Some(Business),
-              matchTaxYear = Some(keystoreMatchTaxYear)))
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            incomeSource = Some(Business),
+            matchTaxYear = Some(keystoreMatchTaxYear)))
 
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
-          When("POST /business/accounting-period-dates is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of accounting method")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(businessAccountingMethodURI)
-          )
-        }
+        Then("Should return a SEE_OTHER with a redirect location of accounting method")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(businessAccountingMethodURI)
+        )
       }
 
-      "when tax year deferral is enabled" should {
 
-        "enter accounting period after the 2017 - 2018 tax year on the accounting period page" in {
-          enable(TaxYearDeferralFeature)
+      "enter accounting period after the 2017 - 2018 tax year on the accounting period page" in {
 
-          val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod(testStartDate, testEndDateNext)
+        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod(testStartDate, testEndDateNext)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(
-            keystoreData(
-              incomeSource = Some(Business),
-              matchTaxYear = Some(keystoreMatchTaxYear))
-          )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            incomeSource = Some(Business),
+            matchTaxYear = Some(keystoreMatchTaxYear))
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
-          When("POST /business/accounting-period-dates is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of accounting method")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(businessAccountingMethodURI)
-          )
-        }
+        Then("Should return a SEE_OTHER with a redirect location of accounting method")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(businessAccountingMethodURI)
+        )
       }
 
-      "disregard tax year deferral" should {
-        "enter no accounting period dates on the accounting period page" in {
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(
-            keystoreData(matchTaxYear = Some(testMatchTaxYearNo))
-          )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, "")
 
-          When("POST /business/accounting-period-dates is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, None)
+      "enter no accounting period dates on the accounting period page" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(matchTaxYear = Some(testMatchTaxYearNo))
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, "")
 
-          Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-          res should have(
-            httpStatus(BAD_REQUEST),
-            errorDisplayed()
-          )
-        }
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, None)
 
-        "select invalid income source option on the income source page as if the user it trying to manipulate the html" in {
-          val userInput = AccountingPeriodModel(DateModel("dd", "mm", "yyyy"), DateModel("dd", "mm", "yyyy"))
+        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        res should have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
+      }
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(
-            keystoreData(matchTaxYear = Some(testMatchTaxYearNo))
-          )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+      "select invalid income source option on the income source page as if the user it trying to manipulate the html" in {
+        val userInput = AccountingPeriodModel(DateModel("dd", "mm", "yyyy"), DateModel("dd", "mm", "yyyy"))
 
-          When("POST /business/accounting-period-dates is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(matchTaxYear = Some(testMatchTaxYearNo))
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
-          Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-          res should have(
-            httpStatus(BAD_REQUEST),
-            errorDisplayed()
-          )
-        }
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+
+        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        res should have(
+          httpStatus(BAD_REQUEST),
+          errorDisplayed()
+        )
       }
     }
 

@@ -23,7 +23,7 @@ import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
 import _root_.agent.services.CacheConstants
 import agent.forms._
 import agent.models._
-import core.config.featureswitch.{FeatureSwitching, TaxYearDeferralFeature}
+import core.config.featureswitch.FeatureSwitching
 import core.models.DateModel
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.Both
@@ -155,7 +155,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
     "not in edit mode" should {
 
       "enter accounting period start and end dates on the accounting period page" in {
-        disable(TaxYearDeferralFeature)
         val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
         Given("I setup the Wiremock stubs")

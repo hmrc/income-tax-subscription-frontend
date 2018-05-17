@@ -92,9 +92,6 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
     Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
 
   def property(implicit request: Request[_]): Result = {
-    if (applicationConfig.taxYearDeferralEnabled && currentTimeService.getTaxYearEndForCurrentDate <= 2018)
-      Redirect(incometax.incomesource.controllers.routes.CannotReportYetController.show())
-    else
       Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
   }
 

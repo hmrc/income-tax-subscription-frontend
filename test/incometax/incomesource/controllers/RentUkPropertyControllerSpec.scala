@@ -16,7 +16,7 @@
 
 package incometax.incomesource.controllers
 
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature, TaxYearDeferralFeature}
+import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import incometax.incomesource.forms.RentUkPropertyForm
@@ -50,13 +50,11 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(TaxYearDeferralFeature)
     enable(NewIncomeSourceFlowFeature)
   }
 
   override def afterEach(): Unit = {
     super.beforeEach()
-    disable(TaxYearDeferralFeature)
     disable(NewIncomeSourceFlowFeature)
   }
 
@@ -124,48 +122,16 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
       }
 
 
-      s"return a SEE_OTHER (303) when answering 'Yes' to rent uk property and then 'Yes' to only income source" when {
-        "TaxYearDeferralFeature is disabled" in {
-          setupMockKeystoreSaveFunctions()
+      s"return a SEE_OTHER (303) when answering 'Yes' to rent uk property and then 'Yes' to only income source" in {
+        setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callSubmit((RentUkPropertyForm.option_yes, RentUkPropertyForm.option_yes), isEditMode = false)
+        val goodRequest = callSubmit((RentUkPropertyForm.option_yes, RentUkPropertyForm.option_yes), isEditMode = false)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get must be(incometax.incomesource.controllers.routes.OtherIncomeController.show().url)
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get must be(incometax.incomesource.controllers.routes.OtherIncomeController.show().url)
 
-          await(goodRequest)
-          verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
-        }
-
-        "TaxYearDeferralFeature is enabled and current time is within the 2017 - 2018 tax year" in {
-          enable(TaxYearDeferralFeature)
-
-          mockGetTaxYearEnd(2018)
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callSubmit((RentUkPropertyForm.option_yes, RentUkPropertyForm.option_yes), isEditMode = false)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get must be(incometax.incomesource.controllers.routes.CannotReportYetController.show().url)
-
-          await(goodRequest)
-          verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
-        }
-
-        "TaxYearDeferralFeature is enabled and current time is after the 2017 - 2018 tax year" in {
-          enable(TaxYearDeferralFeature)
-
-          mockGetTaxYearEnd(2019)
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callSubmit((RentUkPropertyForm.option_yes, RentUkPropertyForm.option_yes), isEditMode = false)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get must be(incometax.incomesource.controllers.routes.OtherIncomeController.show().url)
-
-          await(goodRequest)
-          verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
-        }
+        await(goodRequest)
+        verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
       }
     }
 
