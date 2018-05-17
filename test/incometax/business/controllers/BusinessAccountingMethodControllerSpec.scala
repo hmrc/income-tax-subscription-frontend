@@ -69,9 +69,11 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   val taxYear2018AccountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2017"), DateModel("5", "4", "2018"))
   val taxYear2019AccountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2017"), DateModel("5", "4", "2019"))
 
-  def matchTaxYearCacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearYes,incomeSourceType=incomeSourceType)
-  def taxYear2018CacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2018AccountingPeriod,incomeSourceType=incomeSourceType)
-  def taxYear2019CacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2019AccountingPeriod,incomeSourceType=incomeSourceType)
+  def matchTaxYearCacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
+
+  def taxYear2018CacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2018AccountingPeriod, incomeSourceType = incomeSourceType)
+
+  def taxYear2019CacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2019AccountingPeriod, incomeSourceType = incomeSourceType)
 
   "Calling the show action of the BusinessAccountingMethod with an authorised user" should {
 
@@ -158,20 +160,18 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "if tax year deferral is disabled" should {
-    "The back url not in edit mode" when {
-      "match tax year is answered with yes" should {
-        s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show().url}" in {
-          setupMockKeystore(fetchAll = matchTaxYearCacheMap())
-          await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
-        }
+  "The back url not in edit mode" when {
+    "match tax year is answered with yes" should {
+      s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show().url}" in {
+        setupMockKeystore(fetchAll = matchTaxYearCacheMap())
+        await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
       }
+    }
 
-      "match tax year is answered with no" should {
-        s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url}" in {
-          setupMockKeystore(fetchAll = taxYear2019CacheMap())
-          await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
-        }
+    "match tax year is answered with no" should {
+      s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url}" in {
+        setupMockKeystore(fetchAll = taxYear2019CacheMap())
+        await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
       }
     }
 
