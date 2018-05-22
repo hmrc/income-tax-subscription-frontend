@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.language.LanguageUtils
 @Singleton
 class LanguageSwitchController @Inject()(val appConfig: FrontendAppConfig,
                                          override implicit val messagesApi: MessagesApi)
-  extends Controller with I18nSupport with FeatureSwitching {
+  extends Controller with I18nSupport {
 
   def langToCall(lang: String) : String => Call = appConfig.routeToSwitchLanguage
 
@@ -45,5 +45,5 @@ class LanguageSwitchController @Inject()(val appConfig: FrontendAppConfig,
     Redirect(redirectURL).withLang(Lang.apply(lang.code))
   }
 
-  private def isWelshEnabled = isEnabled(WelshLanguageFeature)
+  private def isWelshEnabled = appConfig.languageTranslationEnabled
 }

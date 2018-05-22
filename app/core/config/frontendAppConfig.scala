@@ -249,6 +249,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override def getAgencyNameUrl(arn: String): String = s"$agentServicesAccount/agent-services-account/client/agency-name/$arn"
 
-  override def languageTranslationEnabled = isEnabled(featureswitch.WelshLanguageFeature)
+  override def languageTranslationEnabled: Boolean = isEnabled(featureswitch.WelshLanguageFeature)
 }
 
