@@ -100,7 +100,7 @@ trait AppConfig extends FeatureSwitching {
 
   def routeToSwitchLanguage = (lang: String) => core.controllers.language.routes.LanguageSwitchController.switchToLanguage(lang)
 
-  val languageTranslationEnabled: Boolean
+  def languageTranslationEnabled: Boolean
 }
 
 @Singleton
@@ -249,6 +249,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override def getAgencyNameUrl(arn: String): String = s"$agentServicesAccount/agent-services-account/client/agency-name/$arn"
 
-  override lazy val languageTranslationEnabled = isEnabled(featureswitch.WelshLanguageFeature)
+  override def languageTranslationEnabled = isEnabled(featureswitch.WelshLanguageFeature)
 }
 
