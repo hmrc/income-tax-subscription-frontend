@@ -249,7 +249,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override def getAgencyNameUrl(arn: String): String = s"$agentServicesAccount/agent-services-account/client/agency-name/$arn"
 
-  override lazy val languageTranslationEnabled =
-    configuration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
+  override lazy val languageTranslationEnabled = isEnabled(featureswitch.WelshLanguageFeature)
 }
 
