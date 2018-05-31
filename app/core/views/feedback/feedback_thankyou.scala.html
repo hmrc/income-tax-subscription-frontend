@@ -14,16 +14,16 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.partials.CachedStaticHtmlPartialRetriever
+@import uk.gov.hmrc.play.partials.FormPartialRetriever
 @import core.config.AppConfig
 @import core.views.html.templates.main_template
 
 @import scala.concurrent.ExecutionContext
 
-@(partialUrl: String, redirectUrl: String)(implicit request: Request[_], cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever
+@(partialUrl: String, redirectUrl: String)(implicit request: Request[_], formPartialRetriever: FormPartialRetriever
 , messages: Messages, appConfig: AppConfig, ec: ExecutionContext)
 
 @main_template(Messages("feedback.thankyou.title")) {
-    @cachedStaticHtmlPartialRetriever.getPartialContent(partialUrl)
+    @formPartialRetriever.getPartialContent(partialUrl)
     <a id="feedback-back" href='@redirectUrl' role="button" tabindex="0" class="button">@Messages("base.back")</a>
 }
