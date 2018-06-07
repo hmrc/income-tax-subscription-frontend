@@ -37,22 +37,17 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
 
   "The AccountingPeriodDateForm" should {
     "transform a valid request to the date form case class" in {
-      val testDateDay = "31"
-      val testDateMonth = "05"
-      val testDateYear = "2017"
-
-      val testDateDay2 = "01"
-      val testDateMonth2 = "06"
-      val testDateYear2 = "2018"
+      val today = DateModel.dateConvert(LocalDate.now())
+      val tomorrow = today.plusDays(1)
 
       val testInput = Map(
-        startDate * dateDay -> testDateDay, startDate * dateMonth -> testDateMonth, startDate * dateYear -> testDateYear,
-        endDate * dateDay -> testDateDay2, endDate * dateMonth -> testDateMonth2, endDate * dateYear -> testDateYear2
+        startDate * dateDay -> today.day, startDate * dateMonth -> today.month, startDate * dateYear -> today.year,
+        endDate * dateDay -> tomorrow.day, endDate * dateMonth -> tomorrow.month, endDate * dateYear -> tomorrow.year
       )
 
       val expected = AccountingPeriodModel(
-        DateModel(testDateDay, testDateMonth, testDateYear),
-        DateModel(testDateDay2, testDateMonth2, testDateYear2))
+        DateModel(today.day, today.month, today.year),
+        DateModel(tomorrow.day, tomorrow.month, tomorrow.year))
 
       val actual = accountingPeriodDateForm.bind(testInput).value
 
