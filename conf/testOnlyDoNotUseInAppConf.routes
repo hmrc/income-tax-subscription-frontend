@@ -52,3 +52,6 @@ POST        /report-quarterly/income-and-expenses/sign-up/client/test-only/clien
 
 # Add all the application routes to the prod.routes file
 ->          /                                                                                              prod.Routes
+
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/update-enrolments               testonly.controllers.UpdateEnrolmentsController.show
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/update-enrolments               testonly.controllers.UpdateEnrolmentsController.submit

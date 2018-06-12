@@ -39,6 +39,8 @@ class TestOnlyAppConfig @Inject()(configuration: Configuration,
 
   lazy val matchingStubsURL: String = baseUrl("matching-stubs")
 
+  lazy val enrolmentStoreStubUrl: String = baseUrl("enrolment-store-stub")
+
 }
 
 // $COVERAGE-ON$
