@@ -27,6 +27,7 @@ import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 class PreferencesControllerSpec extends ControllerBaseSpec
@@ -202,6 +203,13 @@ class PreferencesControllerSpec extends ControllerBaseSpec
       session(goodRequest).get(ITSASessionKeys.PreferencesRedirectUrl) mustBe empty
       await(goodRequest)
     }
+  }
+
+  "Calling submitGoBackToPreferences with a fresh session should redirect to home" in {
+    val res = TestPreferencesController.submitGoBackToPreferences(FakeRequest())
+
+    status(res) mustBe SEE_OTHER
+    redirectLocation(res) must contain(usermatching.controllers.routes.HomeController.index().url)
   }
 
   authorisationTests()
