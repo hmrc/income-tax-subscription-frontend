@@ -18,6 +18,8 @@ package core.auth
 
 import _root_.uk.gov.hmrc.http.SessionKeys._
 import cats.implicits._
+import core.ITSASessionKeys
+import core.ITSASessionKeys.JourneyStateKey
 import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import core.auth.JourneyState._
 import core.config.AppConfig
@@ -26,6 +28,7 @@ import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.NotFoundException
 import usermatching.userjourneys.ConfirmAgentSubscription
+import core.auth.JourneyState._
 
 import scala.concurrent.Future
 
@@ -123,7 +126,7 @@ trait AuthPredicates extends Results {
 
   val registrationPredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
 
-  val enrolledPredicates = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate
+  val enrolledPredicates = administratorRolePredicate |+| journeyStatePredicate |+| timeoutPredicate |+| enrolledPredicate
 
   val unauthorisedAgentPredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+|
     unauthorisedAgentSignUpJourneyPredicate |+| ivPredicate
@@ -172,4 +175,9 @@ object AuthPredicates extends Results {
 
   def defaultPredicates(implicit appConfig: AppConfig): AuthPredicate[IncomeTaxSAUser] =
     timeoutPredicate |+| affinityPredicate |+| ninoPredicate
+
+  val journeyStatePredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
+    if((request.session get JourneyStateKey).isDefined) Right(AuthPredicateSuccess)
+    else Left(Future.successful(homeRoute))
+
 }
