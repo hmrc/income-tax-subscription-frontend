@@ -17,6 +17,7 @@
 package core.services
 
 import core.config.AppConfig
+import core.models.YesNoModel._
 import core.services.CacheConstants._
 import incometax.business.models._
 import incometax.business.models.address.Address
@@ -25,14 +26,10 @@ import incometax.subscription.models._
 import incometax.util.AccountingPeriodUtil.getCurrentTaxYear
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
-import core.models.YesNoModel._
 
 object CacheUtil {
 
   implicit class CacheMapUtil(cacheMap: CacheMap)(implicit appConfig: AppConfig) {
-
-    //TODO remove when we switch to the new income source flow
-    def getIncomeSource()(implicit read: Reads[IncomeSourceType]): Option[IncomeSourceType] = cacheMap.getEntry(IncomeSource)
 
     def getRentUkProperty()(implicit read: Reads[RentUkPropertyModel]): Option[RentUkPropertyModel] = cacheMap.getEntry(RentUkProperty)
 
@@ -40,10 +37,7 @@ object CacheUtil {
 
     def getIncomeSourceType()(implicit read: Reads[IncomeSourceType], readR: Reads[RentUkPropertyModel],
                               readW: Reads[WorkForYourselfModel]): Option[IncomeSourceType] =
-      if (appConfig.newIncomeSourceFlowEnabled)
-        getRentUkProperty().flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, getWorkForYourself()))
-      else
-        getIncomeSource()
+      getRentUkProperty().flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, getWorkForYourself()))
 
     def getOtherIncome()(implicit read: Reads[OtherIncomeModel]): Option[OtherIncomeModel] = cacheMap.getEntry(OtherIncome)
 
@@ -70,54 +64,30 @@ object CacheUtil {
 
     def getTerms()(implicit read: Reads[Boolean]): Option[Boolean] = cacheMap.getEntry(Terms)
 
-    //TODO update when we switch to the new income source flow
-    def getSummary()(implicit appConfig: AppConfig): SummaryModel =
+    def getSummary()(implicit appConfig: AppConfig): IndividualSummary =
       getIncomeSourceType() match {
         case Some(Property) =>
-          if (appConfig.newIncomeSourceFlowEnabled) {
-            SummaryModel(
-              rentUkProperty = getRentUkProperty(),
-              workForYourself = getWorkForYourself(),
-              otherIncome = getOtherIncome(),
-              terms = getTerms()
-            )
-          } else {
-            SummaryModel(
-              incomeSource = getIncomeSource(),
-              otherIncome = getOtherIncome(),
-              terms = getTerms()
-            )
-          }
+          IndividualSummary(
+            rentUkProperty = getRentUkProperty(),
+            workForYourself = getWorkForYourself(),
+            otherIncome = getOtherIncome(),
+            terms = getTerms()
+          )
         case Some(_) =>
-          if (appConfig.newIncomeSourceFlowEnabled) {
-            SummaryModel(
-              rentUkProperty = getRentUkProperty(),
-              workForYourself = getWorkForYourself(),
-              otherIncome = getOtherIncome(),
-              matchTaxYear = getMatchTaxYear(),
-              accountingPeriod = getEnteredAccountingPeriodDate(),
-              businessName = getBusinessName(),
-              businessPhoneNumber = getBusinessPhoneNumber(),
-              businessAddress = getBusinessAddress(),
-              businessStartDate = getBusinessStartDate(),
-              accountingMethod = getAccountingMethod(),
-              terms = getTerms()
-            )
-          } else {
-            SummaryModel(
-              incomeSource = getIncomeSource(),
-              otherIncome = getOtherIncome(),
-              matchTaxYear = getMatchTaxYear(),
-              accountingPeriod = getEnteredAccountingPeriodDate(),
-              businessName = getBusinessName(),
-              businessPhoneNumber = getBusinessPhoneNumber(),
-              businessAddress = getBusinessAddress(),
-              businessStartDate = getBusinessStartDate(),
-              accountingMethod = getAccountingMethod(),
-              terms = getTerms()
-            )
-          }
-        case _ => SummaryModel()
+          IndividualSummary(
+            rentUkProperty = getRentUkProperty(),
+            workForYourself = getWorkForYourself(),
+            otherIncome = getOtherIncome(),
+            matchTaxYear = getMatchTaxYear(),
+            accountingPeriod = getEnteredAccountingPeriodDate(),
+            businessName = getBusinessName(),
+            businessPhoneNumber = getBusinessPhoneNumber(),
+            businessAddress = getBusinessAddress(),
+            businessStartDate = getBusinessStartDate(),
+            accountingMethod = getAccountingMethod(),
+            terms = getTerms()
+          )
+        case _ => IndividualSummary()
       }
   }
 

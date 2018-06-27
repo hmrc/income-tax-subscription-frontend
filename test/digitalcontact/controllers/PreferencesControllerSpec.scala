@@ -17,7 +17,7 @@
 package digitalcontact.controllers
 
 import core.ITSASessionKeys
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
+import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants._
@@ -50,41 +50,17 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     mockPaperlessPreferenceTokenService
   )
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
   "Calling the checkPreference action of the PreferencesController with an authorised user" when {
     implicit lazy val request = subscriptionRequest
 
     def result = TestPreferencesController.checkPreferences(request)
 
-    "NewIncomeSourceFlowFeature is disabled" should {
-      "Redirect to Income Source if paperless is activated and in SignUp journey" in {
-        mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessActivated(testToken)
+    "Redirect to rent uk property if paperless is activated and in SignUp journey" in {
+      mockStoreNinoSuccess(testNino)
+      mockCheckPaperlessActivated(testToken)
 
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.show().url)
-      }
-    }
-
-    "NewIncomeSourceFlowFeature is enabled" should {
-      "Redirect to rent uk property if paperless is activated and in SignUp journey" in {
-        enable(NewIncomeSourceFlowFeature)
-
-        mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessActivated(testToken)
-
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get must be(incometax.incomesource.controllers.routes.RentUkPropertyController.show().url)
-      }
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result).get must be(incometax.incomesource.controllers.routes.RentUkPropertyController.show().url)
     }
 
     "Redirect to Create subscription controller if paperless is activated and in ConfirmAgentSubscription journey" in {
@@ -113,27 +89,12 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
     def result = TestPreferencesController.callback(request)
 
-    "NewIncomeSourceFlowFeature is disable" should {
+    "Redirect to rent uk property if paperless is activated and in SignUp journey" in {
+      mockStoreNinoSuccess(testNino)
+      mockCheckPaperlessActivated(testToken)
 
-      "Redirect to Income Source if paperless is activated and in SignUp journey" in {
-        mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessActivated(testToken)
-
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get must be(incometax.incomesource.controllers.routes.IncomeSourceController.show().url)
-      }
-    }
-
-    "NewIncomeSourceFlowFeature is enabled" should {
-      "Redirect to rent uk property if paperless is activated and in SignUp journey" in {
-        enable(NewIncomeSourceFlowFeature)
-
-        mockStoreNinoSuccess(testNino)
-        mockCheckPaperlessActivated(testToken)
-
-        status(result) must be(Status.SEE_OTHER)
-        redirectLocation(result).get must be(incometax.incomesource.controllers.routes.RentUkPropertyController.show().url)
-      }
+      status(result) must be(Status.SEE_OTHER)
+      redirectLocation(result).get must be(incometax.incomesource.controllers.routes.RentUkPropertyController.show().url)
     }
 
     "Redirect to Create Subscription controller if paperless is activated and in ConfirmAgentSubscription journey" in {

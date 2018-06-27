@@ -15,13 +15,11 @@
  *@
 
 @import core.config.AppConfig
-@import core.models.DateModel
-@import uk.gov.hmrc.play.views.html.helpers.form
-@import incometax.incomesource.forms.IncomeSourceForm.option_both
 @import core.views.html.templates.main_template
 @import core.views.html.helpers._
+@import incometax.subscription.models.{IncomeSourceType, Both}
 
-@(journeyDuration: Int, incomeSource: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(journeyDuration: Int, incomeSource: IncomeSourceType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
@@ -42,7 +40,7 @@
             <li>@Html(Messages("confirmation.whatHappensNext.bullet1", appConfig.softwareUrl))</li>
             <li>@Html(Messages("confirmation.whatHappensNext.bullet2", appConfig.btaUrl))</li>
         </ul>
-        @if(incomeSource == option_both) {
+        @if(incomeSource == Both) {
             <p>@Messages("confirmation.whatHappensNext.para4")</p>
         }
     </section>

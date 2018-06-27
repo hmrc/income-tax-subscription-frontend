@@ -18,7 +18,7 @@ package incometax.incomesource.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import core.auth.NewIncomeSourceFlowController
+import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.RentUkPropertyForm
@@ -38,7 +38,7 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                                          val keystoreService: KeystoreService,
                                          val authService: AuthService,
                                          val currentTimeService: CurrentTimeService
-                                        ) extends NewIncomeSourceFlowController {
+                                        ) extends SignUpController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

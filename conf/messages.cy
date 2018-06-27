@@ -52,14 +52,6 @@ preferences_callback.heading                                    = Rhaid i chi gy
 preferences_callback.line_1                                     = I gofrestru ar gyfer y gwasanaeth hwn, rhaid i chi ganiatáu i Gyllid a Thollau EM anfon gohebiaeth electronig atoch.
 preferences_callback.button                                     = Ewch yn ôl
 
-## Income source page
-income_source.title                                             = O ble mae'ch incwm yn dod?
-income_source.heading                                           = O ble mae'ch incwm yn dod?
-income_source.business                                          = Eich busnes fel unig fasnachwr
-income_source.property                                          = Gosod eiddo yn y DU
-income_source.both                                              = Eich busnes fel unig fasnachwr a gosod eiddo yn y DU
-income_source.other                                             = Arall
-
 # work for yourself page
 work_for_yourself.title                                         = Ydych chi'n gweithio i chi'ch hun?
 work_for_yourself.heading                                       = Ydych chi'n gweithio i chi'ch hun?

@@ -52,14 +52,6 @@ preferences_callback.heading                                    = You need to ag
 preferences_callback.line_1                                     = To sign up for this service, you need to allow HM Revenue and Customs to send you electronic communications.
 preferences_callback.button                                     = Go back
 
-## Income source page
-income_source.title                                             = Where does your income come from?
-income_source.heading                                           = Where does your income come from?
-income_source.business                                          = Your sole trader business
-income_source.property                                          = Renting out a UK property
-income_source.both                                              = Your sole trader business and renting out a UK property
-income_source.other                                             = Other
-
 # work for yourself page
 work_for_yourself.title                                         = Do you work for yourself?
 work_for_yourself.heading                                       = Do you work for yourself?

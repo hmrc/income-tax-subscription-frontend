@@ -16,7 +16,6 @@
 
 package incometax.incomesource
 
-import core.config.featureswitch.NewIncomeSourceFlowFeature
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -27,16 +26,6 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 class WorkForYourselfControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    enable(NewIncomeSourceFlowFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.afterEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
 
   def setRentUkPropertyInKeystore(rentUkProperty: Option[RentUkPropertyModel]): Unit =
     KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = rentUkProperty))

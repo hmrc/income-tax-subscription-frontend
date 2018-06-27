@@ -20,19 +20,20 @@ import core.services.CacheConstants._
 import core.utils.JsonUtils._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.testMTDID
-import helpers.IntegrationTestModels.testIncomeSourceBoth
+import helpers.IntegrationTestModels.testRentUkProperty_property_only
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status._
 import play.api.i18n.Messages
 import play.api.libs.json.JsString
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
+
   "GET /confirmation" should {
     "return the confirmation page when the user is enrolled" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubEnrolled()
       KeystoreStub.stubKeystoreData(Map(
-        IncomeSource -> testIncomeSourceBoth,
+        RentUkProperty -> testRentUkProperty_property_only,
         MtditId -> JsString(testMTDID)
       ))
 
@@ -58,4 +59,5 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
         httpStatus(NOT_FOUND))
     }
   }
+
 }

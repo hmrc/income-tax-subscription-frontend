@@ -33,8 +33,8 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
   override val controllerName: String = "OtherIncomeController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "showOtherIncome" -> TestOtherIncomeController.show(isEditMode = true),
-    "submitOtherIncome" -> TestOtherIncomeController.submit(isEditMode = true)
+    "show" -> TestOtherIncomeController.show(isEditMode = true),
+    "submit" -> TestOtherIncomeController.submit(isEditMode = true)
   )
 
   object TestOtherIncomeController extends OtherIncomeController(

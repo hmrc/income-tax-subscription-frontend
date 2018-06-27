@@ -21,9 +21,52 @@ import incometax.business.models._
 import incometax.business.models.address.Address
 import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
 
-case class SummaryModel(incomeSource: Option[IncomeSourceType] = None,
-                        rentUkProperty: Option[RentUkPropertyModel] = None,
-                        workForYourself: Option[WorkForYourselfModel] = None,
+
+sealed trait SummaryModel {
+  def incomeSource: Option[IncomeSourceType]
+
+  def otherIncome: Option[OtherIncomeModel]
+
+  def matchTaxYear: Option[MatchTaxYearModel]
+
+  def accountingPeriodPrior: Option[AccountingPeriodPriorModel]
+
+  def accountingPeriod: Option[AccountingPeriodModel]
+
+  def businessName: Option[BusinessNameModel]
+
+  def businessPhoneNumber: Option[BusinessPhoneNumberModel]
+
+  def businessAddress: Option[Address]
+
+  def businessStartDate: Option[BusinessStartDateModel]
+
+  def accountingMethod: Option[AccountingMethodModel]
+
+  def terms: Option[Boolean]
+}
+
+
+case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
+                             workForYourself: Option[WorkForYourselfModel] = None,
+                             otherIncome: Option[OtherIncomeModel] = None,
+                             matchTaxYear: Option[MatchTaxYearModel] = None,
+                             accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
+                             accountingPeriod: Option[AccountingPeriodModel] = None,
+                             businessName: Option[BusinessNameModel] = None,
+                             businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
+                             businessAddress: Option[Address] = None,
+                             businessStartDate: Option[BusinessStartDateModel] = None,
+                             accountingMethod: Option[AccountingMethodModel] = None,
+                             terms: Option[Boolean] = None) extends SummaryModel {
+
+  def incomeSource: Option[IncomeSourceType] =
+    rentUkProperty.flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, workForYourself))
+
+}
+
+
+case class AgentSummary(incomeSource: Option[IncomeSourceType] = None,
                         otherIncome: Option[OtherIncomeModel] = None,
                         matchTaxYear: Option[MatchTaxYearModel] = None,
                         accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
@@ -33,4 +76,4 @@ case class SummaryModel(incomeSource: Option[IncomeSourceType] = None,
                         businessAddress: Option[Address] = None,
                         businessStartDate: Option[BusinessStartDateModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
-                        terms: Option[Boolean] = None)
+                        terms: Option[Boolean] = None) extends SummaryModel

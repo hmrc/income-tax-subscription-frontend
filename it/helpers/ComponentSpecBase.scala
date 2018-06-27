@@ -27,7 +27,7 @@ import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import incometax.business.forms._
 import incometax.business.models._
-import incometax.incomesource.forms.{IncomeSourceForm, OtherIncomeForm, RentUkPropertyForm, WorkForYourselfForm}
+import incometax.incomesource.forms.{OtherIncomeForm, RentUkPropertyForm, WorkForYourselfForm}
 import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
 import incometax.subscription.models.IncomeSourceType
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
@@ -251,16 +251,6 @@ trait ComponentSpecBase extends UnitSpec
     def claimSubscription(): WSResponse = {
       val uri = s"/claim-subscription"
       get(uri)
-    }
-
-    def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceType]): WSResponse = {
-      val uri = s"/income?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            IncomeSourceForm.incomeSourceForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
     }
 
     def submitRentUkProperty(inEditMode: Boolean, request: Option[RentUkPropertyModel]): WSResponse = {

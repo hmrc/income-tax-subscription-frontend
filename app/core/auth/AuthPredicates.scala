@@ -18,7 +18,6 @@ package core.auth
 
 import _root_.uk.gov.hmrc.http.SessionKeys._
 import cats.implicits._
-import core.ITSASessionKeys
 import core.ITSASessionKeys.JourneyStateKey
 import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import core.auth.JourneyState._
@@ -28,7 +27,6 @@ import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.NotFoundException
 import usermatching.userjourneys.ConfirmAgentSubscription
-import core.auth.JourneyState._
 
 import scala.concurrent.Future
 
@@ -104,14 +102,6 @@ trait AuthPredicates extends Results {
     if (request.session.isInState(Registration) && user.confidenceLevel < ConfidenceLevel.L200) Left(Future.successful(goToIv))
     else Right(AuthPredicateSuccess)
 
-  val newIncomeSourceFlowFeature: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (applicationConfig.newIncomeSourceFlowEnabled) Right(AuthPredicateSuccess)
-    else Left(Future.failed(new NotFoundException("AuthPredicates.newIncomeSourceFlowFeature")))
-
-  val oldIncomeSourceFlowFeature: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (!applicationConfig.newIncomeSourceFlowEnabled) Right(AuthPredicateSuccess)
-    else Left(Future.failed(new NotFoundException("AuthPredicates.oldIncomeSourceFlowFeature")))
-
   val confirmedAgentPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.hasConfirmedAgent) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
@@ -177,7 +167,7 @@ object AuthPredicates extends Results {
     timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 
   val journeyStatePredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if((request.session get JourneyStateKey).isDefined) Right(AuthPredicateSuccess)
+    if ((request.session get JourneyStateKey).isDefined) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
 }

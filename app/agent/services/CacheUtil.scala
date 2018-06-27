@@ -20,7 +20,7 @@ package agent.services
 import agent.models.AccountingPeriodPriorModel
 import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel}
 import incometax.incomesource.models.OtherIncomeModel
-import incometax.subscription.models.{IncomeSourceType, Property, SummaryModel}
+import incometax.subscription.models.{AgentSummary, IncomeSourceType, Property}
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -51,19 +51,19 @@ object CacheUtil {
                      accD: Reads[AccountingPeriodModel],
                      bus: Reads[BusinessNameModel],
                      accM: Reads[AccountingMethodModel],
-                     ter: Reads[Boolean]): SummaryModel = {
+                     ter: Reads[Boolean]): AgentSummary = {
       val incomeSource = getIncomeSource()
       incomeSource match {
         case Some(src) =>
           src match {
             case Property =>
-              SummaryModel(
+              AgentSummary(
                 incomeSource,
                 otherIncome = getOtherIncome(),
                 terms = getTerms()
               )
             case _ =>
-              SummaryModel(
+              AgentSummary(
                 incomeSource = incomeSource,
                 otherIncome = getOtherIncome(),
                 accountingPeriodPrior = getAccountingPeriodPrior(),
@@ -76,7 +76,7 @@ object CacheUtil {
                 terms = getTerms()
               )
           }
-        case _ => SummaryModel()
+        case _ => AgentSummary()
       }
 
     }

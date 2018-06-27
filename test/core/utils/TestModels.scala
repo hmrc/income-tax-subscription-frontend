@@ -172,16 +172,7 @@ object TestModels extends Implicits {
 
   lazy val testMatchNoUtrModel = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, None)
 
-  lazy val testSummaryData = SummaryModel(
-    incomeSource = Both,
-    otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
-    matchTaxYear = testMatchTaxYearNo,
-    accountingPeriod = testAccountingPeriod,
-    businessName = testBusinessName,
-    accountingMethod = testAccountingMethod
-  )
-
-  lazy val testSummaryNewIncomeSourceData = SummaryModel(
+  lazy val testSummaryData = IndividualSummary(
     rentUkProperty = testRentUkProperty_property_and_other,
     workForYourself = testWorkForYourself_yes,
     otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),

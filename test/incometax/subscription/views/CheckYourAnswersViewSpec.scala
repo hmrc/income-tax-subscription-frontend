@@ -24,7 +24,7 @@ import core.views.html.helpers.SummaryIdConstants._
 import incometax.business.models._
 import incometax.business.models.address.Address
 import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
-import incometax.subscription.models.{IncomeSourceType, SummaryModel}
+import incometax.subscription.models.{IncomeSourceType, IndividualSummary, SummaryModel}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
@@ -48,8 +48,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
   def customTestSummary(rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty,
                         matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
-                        accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod) = SummaryModel(
-    incomeSource = testIncomeSource,
+                        accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod) = IndividualSummary(
     rentUkProperty = rentUkProperty,
     workForYourself = testWorkForYourself,
     otherIncome = testOtherIncome,
@@ -65,7 +64,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   lazy val postAction: Call = incometax.subscription.controllers.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = incometax.subscription.controllers.routes.TermsController.show().url
 
-  def page(isRegistration: Boolean, testSummaryModel: SummaryModel): Html =
+  def page(isRegistration: Boolean, testSummaryModel: IndividualSummary): Html =
     incometax.subscription.views.html.check_your_answers(
       summaryModel = testSummaryModel,
       isRegistration = isRegistration,
@@ -73,7 +72,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       backUrl = backUrl
     )(FakeRequest(), applicationMessages, appConfig)
 
-  def document(isRegistration: Boolean = false, testSummaryModel: SummaryModel = testSummary): Document =
+  def document(isRegistration: Boolean = false, testSummaryModel: IndividualSummary = testSummary): Document =
     page(isRegistration = isRegistration, testSummaryModel).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
@@ -132,7 +131,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     }
 
     def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String],
-                    isRegistration: Boolean = false, testSummaryModel: SummaryModel = testSummary): Unit = {
+                    isRegistration: Boolean = false, testSummaryModel: IndividualSummary = testSummary): Unit = {
       val doc = document(isRegistration, testSummaryModel)
       val section = doc.getElementById(sectionId)
       val question = doc.getElementById(questionId(sectionId))
@@ -207,20 +206,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
           isRegistration = true
         )
       }
-    }
-
-    "display the correct info for the income source" in {
-      val sectionId = IncomeSourceId
-      val expectedQuestion = messages.income_source
-      val expectedAnswer = MessageLookup.Summary.IncomeSource.both
-      val expectedEditLink = incometax.incomesource.controllers.routes.IncomeSourceController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )
     }
 
     "display the correct info for the rent uk property" in {

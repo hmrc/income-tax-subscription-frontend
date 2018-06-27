@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 
 import core.ITSASessionKeys
 import core.audit.Logging
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
+import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
@@ -47,16 +47,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     mockAuthService
   )
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.afterEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
   override val controllerName: String = "ConfirmationControllerSpec"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestConfirmationController.show
@@ -73,7 +63,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "the user is not in the unauthorised agent journey state" should {
       "get the ID from keystore if the user is enrolled" in {
         mockAuthEnrolled()
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+        setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(incomeSource = None))
         val result: Future[Result] = TestConfirmationController.show(
           subscriptionRequest.addStartTime(startTime)
         )
@@ -104,17 +94,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         Jsoup.parse(contentAsString(result)).title shouldBe Messages("confirmation.unauthorised.title")
 
         await(result)
-      }
-    }
-    "the user has accessed the confirmation controller with a fresh session" should {
-      "redirect to the home controller" in {
-        mockAuthEnrolled()
-        val result: Future[Result] = TestConfirmationController.show(FakeRequest())
-
-        status(result) shouldBe SEE_OTHER
-
-        redirectLocation(result) should contain(usermatching.controllers.routes.HomeController.index().url)
-
       }
     }
   }

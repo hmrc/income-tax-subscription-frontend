@@ -36,11 +36,6 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
                                     logging: Logging,
                                     subscriptionConnector: SubscriptionConnector) {
 
-  private[services] def getIncomeSourceType(summaryData: SummaryModel, arn: Option[String]): IncomeSourceType =
-    if (arn.isEmpty && applicationConfig.newIncomeSourceFlowEnabled)
-      IncomeSourceType(summaryData.rentUkProperty.get, summaryData.workForYourself)
-    else
-      IncomeSourceType(summaryData.incomeSource.get.source)
 
   private[services] def getAccountingPeriod(incomeSourceType: IncomeSourceType,
                                             summaryData: SummaryModel,
@@ -59,7 +54,7 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
     }
 
   private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
-    val incomeSource = getIncomeSourceType(summaryData, arn)
+    val incomeSource = summaryData.incomeSource.get
     val accountingPeriod = getAccountingPeriod(incomeSource, summaryData, arn)
     val (accountingPeriodStart, accountingPeriodEnd) = (accountingPeriod.map(_.startDate), accountingPeriod.map(_.endDate))
     val cashOrAccruals = summaryData.accountingMethod map (_.accountingMethod)

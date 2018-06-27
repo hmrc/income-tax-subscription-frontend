@@ -17,7 +17,7 @@
 package incometax.subscription.controllers
 
 import core.audit.Logging
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
+import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.CacheUtil._
 import core.services.mocks.MockKeystoreService
@@ -49,33 +49,48 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     app.injector.instanceOf[Logging]
   )
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.afterEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
   "Calling the show action of the CheckYourAnswersController with an authorised user" when {
 
     def result = TestCheckYourAnswersController.show(subscriptionRequest)
 
     "return ok (200) for business journey" in {
-      setupMockKeystore(fetchAll = testCacheMap)
+      val testBusinessCacheMap = testCacheMapCustom(
+        rentUkProperty = testRentUkProperty_no_property,
+        workForYourself = testWorkForYourself_yes,
+        otherIncome = testOtherIncomeNo,
+        terms = testTerms
+      )
+      setupMockKeystore(fetchAll = testBusinessCacheMap)
 
       status(result) must be(Status.OK)
     }
 
-    "return ok (200) for property journey" in {
+    "return ok (200) for property only journey)" in {
       val testPropertyCacheMap = testCacheMap(
-        incomeSource = testIncomeSourceProperty,
+        rentUkProperty = testRentUkProperty_property_only,
+        workForYourself = None,
         otherIncome = testOtherIncomeNo,
         terms = testTerms
       )
       setupMockKeystore(fetchAll = testPropertyCacheMap)
+
+      status(result) must be(Status.OK)
+    }
+
+    "return ok (200) for property and other income but no sole trader journey" in {
+      val testPropertyCacheMap = testCacheMap(
+        rentUkProperty = testRentUkProperty_property_and_other,
+        workForYourself = testWorkForYourself_no,
+        otherIncome = testOtherIncomeNo,
+        terms = testTerms
+      )
+      setupMockKeystore(fetchAll = testPropertyCacheMap)
+
+      status(result) must be(Status.OK)
+    }
+
+    "return ok (200) for both journey" in {
+      setupMockKeystore(fetchAll = testCacheMap)
 
       status(result) must be(Status.OK)
     }

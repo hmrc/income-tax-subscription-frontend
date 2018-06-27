@@ -18,10 +18,10 @@ package incometax.incomesource.forms
 
 import assets.MessageLookup
 import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.testutils.{DataMap, _}
 import incometax.incomesource.models.RentUkPropertyModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
-import core.forms.validation.testutils.{DataMap, _}
 import play.api.i18n.Messages.Implicits._
 
 class RentUkPropertyFormSpec extends PlaySpec with OneAppPerTest {
@@ -57,7 +57,7 @@ class RentUkPropertyFormSpec extends PlaySpec with OneAppPerTest {
 
     "validate income type correctly" in {
       val emptyRentUkProperty = ErrorMessageFactory.error("error.rent-uk-property.empty")
-      val invalidRentUkProperty  = ErrorMessageFactory.error("error.rent-uk-property.invalid")
+      val invalidRentUkProperty = ErrorMessageFactory.error("error.rent-uk-property.invalid")
       val emptyOnlyIncomeSource = ErrorMessageFactory.error("error.rent-uk-property.only-source-empty")
       val invalidOnlyIncomeSource = ErrorMessageFactory.error("error.rent-uk-property.only-source-invalid")
 

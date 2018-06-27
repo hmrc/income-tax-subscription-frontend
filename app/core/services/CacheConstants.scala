@@ -17,7 +17,7 @@
 package core.services
 
 object CacheConstants {
-  //TODO remove when we switch to the new income source flow
+  // n.b. IncomeSource is still used on the agent flow
   val IncomeSource = "IncomeSource"
   val RentUkProperty = "RentUkProperty"
   val WorkForYourself = "WorkForYourself"

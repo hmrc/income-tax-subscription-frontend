@@ -14,10 +14,6 @@ GET         /callback                     digitalcontact.controllers.Preferences
 GET         /paperless-error              digitalcontact.controllers.PreferencesController.showGoBackToPreferences
 POST        /paperless-error              digitalcontact.controllers.PreferencesController.submitGoBackToPreferences
 
-# Income Source Routes
-GET         /income                       incometax.incomesource.controllers.IncomeSourceController.show(editMode: Boolean ?= false)
-POST        /income                       incometax.incomesource.controllers.IncomeSourceController.submit(editMode: Boolean ?= false)
-
 # Rent Uk Property Routes
 GET         /rent-uk-property             incometax.incomesource.controllers.RentUkPropertyController.show(editMode: Boolean ?= false)
 POST        /rent-uk-property             incometax.incomesource.controllers.RentUkPropertyController.submit(editMode: Boolean ?= false)

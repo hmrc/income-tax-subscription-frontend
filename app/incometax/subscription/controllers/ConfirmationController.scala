@@ -47,33 +47,19 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
       val endTime = java.time.LocalDateTime.now()
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
-      if (applicationConfig.newIncomeSourceFlowEnabled) {
-        if (request.isInState(ConfirmAgentSubscription)) {
-          keystoreService.fetchIncomeSource.map {
-            case Some(incomeSource) =>
-              Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource.source))
-            case _ =>
-              throw new InternalServerException("Confirmation Controller, unauthorised agent flow call to show confirmation with no income source")
-          }
-        } else {
-          keystoreService.fetchAll() map (_.getIncomeSourceType()) map {
-            case Some(incomeSource) if incomeSource != Other =>
-              Ok(confirmation(journeyDuration, incomeSource.source))
-            case _ =>
-              throw new InternalServerException("Confirmation Controller, individual flow call to show confirmation with invalid income source")
-          }
-        }
-
-      } else {
+      if (request.isInState(ConfirmAgentSubscription)) {
         keystoreService.fetchIncomeSource.map {
           case Some(incomeSource) =>
-            if (request.isInState(ConfirmAgentSubscription)) {
-              Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource.source))
-            } else {
-              Ok(confirmation(journeyDuration, incomeSource.source))
-            }
+            Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource))
           case _ =>
-            throw new InternalServerException("Confirmation Controller, call to show confirmation with no income source")
+            throw new InternalServerException("Confirmation Controller, unauthorised agent flow call to show confirmation with no income source")
+        }
+      } else {
+        keystoreService.fetchAll() map (_.getIncomeSourceType()) map {
+          case Some(incomeSource) if incomeSource != Other =>
+            Ok(confirmation(journeyDuration, incomeSource))
+          case _ =>
+            throw new InternalServerException("Confirmation Controller, individual flow call to show confirmation with invalid income source")
         }
       }
   }

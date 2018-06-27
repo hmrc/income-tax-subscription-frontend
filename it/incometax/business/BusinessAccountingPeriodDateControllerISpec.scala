@@ -56,7 +56,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
     "keystore returns no data" should {
       "show the accounting period dates page without date values entered" in {
-        val keystoreIncomeSource = Both
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
         val keystoreMatchTaxYear = testMatchTaxYearNo
 
@@ -64,7 +63,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(
           keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
+            rentUkProperty = Some(testRentUkProperty_property_and_other),
+            workForYourself = Some(testWorkForYourself_yes),
             otherIncome = Some(keystoreIncomeOther),
             matchTaxYear = Some(keystoreMatchTaxYear)
           )
@@ -100,7 +100,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(
           keystoreData(
-            incomeSource = Some(Business),
+            rentUkProperty = Some(testRentUkProperty_no_property),
+            workForYourself = Some(testWorkForYourself_yes),
             matchTaxYear = Some(keystoreMatchTaxYear)))
 
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
@@ -124,7 +125,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(
           keystoreData(
-            incomeSource = Some(Business),
+            rentUkProperty = Some(testRentUkProperty_no_property),
+            workForYourself = Some(testWorkForYourself_yes),
             matchTaxYear = Some(keystoreMatchTaxYear))
         )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
@@ -183,7 +185,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
       "simulate changing accounting period dates when calling page from Check Your Answers" when {
         "the new accounting period ends in the same tax year" in {
-          val keystoreIncomeSource = Both
           val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
           val keystoreMatchTaxYear = testMatchTaxYearNo
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("04", "05", "2019"))
@@ -193,7 +194,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(
             keystoreData(
-              incomeSource = Some(keystoreIncomeSource),
+              rentUkProperty = Some(testRentUkProperty_property_and_other),
+              workForYourself = Some(testWorkForYourself_yes),
               otherIncome = Some(keystoreIncomeOther),
               matchTaxYear = Some(keystoreMatchTaxYear),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates)
@@ -212,7 +214,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         }
 
         "The new accounting period ends in a different tax year" in {
-          val keystoreIncomeSource = Business
           val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
           val keystoreMatchTaxYear = testMatchTaxYearNo
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2020"))
@@ -222,7 +223,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(
             keystoreData(
-              incomeSource = Some(keystoreIncomeSource),
+              rentUkProperty = Some(testRentUkProperty_no_property),
+              workForYourself = Some(testWorkForYourself_yes),
               otherIncome = Some(keystoreIncomeOther),
               matchTaxYear = Some(keystoreMatchTaxYear),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates)

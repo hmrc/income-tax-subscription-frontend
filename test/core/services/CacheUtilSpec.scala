@@ -16,9 +16,9 @@
 
 package core.services
 
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
+import core.config.featureswitch.FeatureSwitching
 import core.utils.UnitTestTrait
-import incometax.subscription.models.{Both, SummaryModel}
+import incometax.subscription.models.{Both, IndividualSummary}
 import incometax.util.AccountingPeriodUtil.getCurrentTaxYear
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
@@ -30,20 +30,9 @@ class CacheUtilSpec extends UnitTestTrait
   import core.services.CacheUtil._
   import core.utils.TestModels._
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.afterEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
   "CacheUtil" should {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
-      emptyCacheMap.getIncomeSource() shouldBe None
       emptyCacheMap.getRentUkProperty() shouldBe None
       emptyCacheMap.getWorkForYourself() shouldBe None
       emptyCacheMap.getIncomeSourceType() shouldBe None
@@ -60,7 +49,6 @@ class CacheUtilSpec extends UnitTestTrait
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
-      testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
       testCacheMap.getRentUkProperty() shouldBe Some(testRentUkProperty_property_and_other)
       testCacheMap.getWorkForYourself() shouldBe Some(testWorkForYourself_yes)
       testCacheMap.getIncomeSourceType() shouldBe Some(Both)
@@ -79,7 +67,10 @@ class CacheUtilSpec extends UnitTestTrait
     "getAccountingPeriodDate" when {
       "the income source is property" should {
         "return none even if accounting period is filled in" in {
-          testCacheMapCustom(incomeSource = testIncomeSourceProperty, matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe None
+          testCacheMapCustom(
+            rentUkProperty = testRentUkProperty_property_only,
+            workForYourself = None,
+            matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe None
         }
       }
 
@@ -87,23 +78,30 @@ class CacheUtilSpec extends UnitTestTrait
         "match tax year is yes" should {
           "return the accounting period of the current tax year" in {
             testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe Some(getCurrentTaxYear)
-            testCacheMapCustom(incomeSource = testIncomeSourceBoth, matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe Some(getCurrentTaxYear)
+            testCacheMapCustom(
+              rentUkProperty = testRentUkProperty_property_and_other,
+              workForYourself = testWorkForYourself_yes,
+              matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe Some(getCurrentTaxYear)
           }
         }
 
         "match tax year is no" should {
           "return the entered accounting period" in {
             testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearNo).getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
-            testCacheMapCustom(incomeSource = testIncomeSourceBoth, matchTaxYear = testMatchTaxYearNo).getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
+            testCacheMapCustom(
+              rentUkProperty = testRentUkProperty_property_and_other,
+              workForYourself = testWorkForYourself_yes,
+              matchTaxYear = testMatchTaxYearNo).getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
           }
         }
       }
     }
 
-    "The getSummary(newIncomeSourceFlow = false) should populate the Summary model correctly" in {
+    "The getSummary should populate the Summary model correctly" in {
       testCacheMap.getSummary() shouldBe
-        SummaryModel(
-          incomeSource = testIncomeSourceBoth,
+        IndividualSummary(
+          rentUkProperty = testRentUkProperty_property_and_other,
+          workForYourself = testWorkForYourself_yes,
           otherIncome = testOtherIncomeNo,
           matchTaxYear = testMatchTaxYearNo,
           accountingPeriod = testAccountingPeriod,
@@ -119,7 +117,8 @@ class CacheUtilSpec extends UnitTestTrait
       // relevant to the journey
       val overPopulatedPropertyCacheMap =
       testCacheMap(
-        incomeSource = testIncomeSourceProperty,
+        rentUkProperty = testRentUkProperty_property_only,
+        workForYourself = None,
         otherIncome = testOtherIncomeNo,
         matchTaxYear = testMatchTaxYearNo,
         accountingPeriodDate = testAccountingPeriod,
@@ -132,60 +131,15 @@ class CacheUtilSpec extends UnitTestTrait
         accountingPeriodPrior = None // no longer used in individual journey
       )
       overPopulatedPropertyCacheMap.getSummary() shouldBe
-        SummaryModel(
-          testIncomeSourceProperty,
+        IndividualSummary(
+          rentUkProperty = testRentUkProperty_property_only,
+          workForYourself = None,
           otherIncome = testOtherIncomeNo,
           terms = testTerms
         )
 
-      emptyCacheMap.getSummary() shouldBe SummaryModel()
+      emptyCacheMap.getSummary() shouldBe IndividualSummary()
     }
-  }
-
-  "The getSummary(newIncomeSourceFlow = true) should populate the Summary model correctly" in {
-    enable(NewIncomeSourceFlowFeature)
-
-    testCacheMap.getSummary() shouldBe
-      SummaryModel(
-        rentUkProperty = testRentUkProperty_property_and_other,
-        workForYourself = testWorkForYourself_yes,
-        otherIncome = testOtherIncomeNo,
-        matchTaxYear = testMatchTaxYearNo,
-        accountingPeriod = testAccountingPeriod,
-        businessName = testBusinessName,
-        businessPhoneNumber = testBusinessPhoneNumber,
-        businessAddress = testAddress,
-        businessStartDate = testBusinessStartDate,
-        accountingMethod = testAccountingMethod,
-        terms = testTerms
-      )
-
-    // for the property only journey, this should only populate the subset of views
-    // relevant to the journey
-    val overPopulatedPropertyCacheMap =
-    testCacheMap(
-      rentUkProperty = testRentUkProperty_property_only,
-      workForYourself = None,
-      otherIncome = testOtherIncomeNo,
-      matchTaxYear = testMatchTaxYearNo,
-      accountingPeriodDate = testAccountingPeriod,
-      businessName = testBusinessName,
-      businessPhoneNumber = testBusinessPhoneNumber,
-      businessAddress = testAddress,
-      businessStartDate = testBusinessStartDate,
-      accountingMethod = testAccountingMethod,
-      terms = testTerms,
-      accountingPeriodPrior = None // no longer used in individual journey
-    )
-    overPopulatedPropertyCacheMap.getSummary() shouldBe
-      SummaryModel(
-        rentUkProperty = testRentUkProperty_property_only,
-        workForYourself = None,
-        otherIncome = testOtherIncomeNo,
-        terms = testTerms
-      )
-
-    emptyCacheMap.getSummary() shouldBe SummaryModel()
   }
 
 }
