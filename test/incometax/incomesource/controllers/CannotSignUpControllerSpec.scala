@@ -18,29 +18,18 @@ package incometax.incomesource.controllers
 
 import assets.MessageLookup.{CannotSignUp => messages}
 import core.audit.Logging
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
+import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.NotFoundException
 
 class CannotSignUpControllerSpec extends ControllerBaseSpec with MockKeystoreService with FeatureSwitching {
 
   override val controllerName: String = "CannotSignUpController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    enable(NewIncomeSourceFlowFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.afterEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
 
   object TestCannotSignUpController extends CannotSignUpController(
     MockBaseControllerConfig,
@@ -53,22 +42,13 @@ class CannotSignUpControllerSpec extends ControllerBaseSpec with MockKeystoreSer
   "Calling the show action of the CannotSignUpController" when {
     def call = TestCannotSignUpController.show(subscriptionRequest)
 
-    "the new income source flow feature is disabled" should {
-      "return not found (404)" in {
-        disable(NewIncomeSourceFlowFeature)
-        intercept[NotFoundException](await(call))
-      }
-    }
-
-    "the new income source flow feature is enabled" should {
-      "return ok (200)" in {
-        val result = call
-        val document = Jsoup.parse(contentAsString(result))
-        status(result) must be(Status.OK)
-        contentType(result) must be(Some("text/html"))
-        charset(result) must be(Some("utf-8"))
-        document.title mustBe messages.title
-      }
+    "return ok (200)" in {
+      val result = call
+      val document = Jsoup.parse(contentAsString(result))
+      status(result) must be(Status.OK)
+      contentType(result) must be(Some("text/html"))
+      charset(result) must be(Some("utf-8"))
+      document.title mustBe messages.title
     }
   }
 

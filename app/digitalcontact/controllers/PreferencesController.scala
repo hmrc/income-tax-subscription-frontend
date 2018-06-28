@@ -18,7 +18,6 @@ package digitalcontact.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import cats.implicits._
 import core.ITSASessionKeys
 import core.auth.StatelessController
 import core.config.BaseControllerConfig
@@ -32,7 +31,6 @@ import uk.gov.hmrc.http.InternalServerException
 import usermatching.userjourneys.ConfirmAgentSubscription
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 @Singleton
 class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
@@ -55,10 +53,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
     if (request.isInState(ConfirmAgentSubscription))
       Redirect(incometax.unauthorisedagent.controllers.routes.UnauthorisedSubscriptionController.subscribeUnauthorised())
     else {
-      if (applicationConfig.newIncomeSourceFlowEnabled)
-        Redirect(incometax.incomesource.controllers.routes.RentUkPropertyController.show())
-      else
-        Redirect(incometax.incomesource.controllers.routes.IncomeSourceController.show())
+      Redirect(incometax.incomesource.controllers.routes.RentUkPropertyController.show())
     }
 
 

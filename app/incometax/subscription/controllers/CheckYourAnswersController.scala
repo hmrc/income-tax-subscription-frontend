@@ -25,7 +25,6 @@ import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
-import incometax.incomesource.forms.IncomeSourceForm
 import incometax.subscription.models.{Property, SubscriptionSuccess}
 import incometax.subscription.services.SubscriptionOrchestrationService
 import play.api.i18n.MessagesApi

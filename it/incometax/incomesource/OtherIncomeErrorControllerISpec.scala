@@ -53,14 +53,14 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
     "not in edit mode" should {
 
       "select the Continue button on the error other income page whilst on Business journey" in {
-        val keystoreIncomeSource = Business
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_yes)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(
           keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
+            rentUkProperty = Some(testRentUkProperty_no_property),
+            workForYourself = Some(testWorkForYourself_yes),
             otherIncome = Some(keystoreIncomeOther)
           )
         )
@@ -76,14 +76,14 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
       }
 
       "select the Continue button on the error other income page whilst on Both journey" in {
-        val keystoreIncomeSource = Both
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_yes)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(
           keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
+            rentUkProperty = Some(testRentUkProperty_property_and_other),
+            workForYourself = Some(testWorkForYourself_yes),
             otherIncome = Some(keystoreIncomeOther)
           )
         )
@@ -99,14 +99,14 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
       }
 
       "select the Continue button on the error other income page whilst on Property journey" in {
-        val keystoreIncomeSource = Property
         val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_yes)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(
           keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
+            rentUkProperty = Some(testRentUkProperty_property_only),
+            workForYourself = None,
             otherIncome = Some(keystoreIncomeOther)
           )
         )
@@ -122,4 +122,5 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
       }
     }
   }
+
 }

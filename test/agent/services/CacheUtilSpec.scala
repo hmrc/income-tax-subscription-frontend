@@ -17,7 +17,7 @@
 package agent.services
 
 import _root_.core.utils.{TestConstants, UnitTestTrait}
-import incometax.subscription.models.SummaryModel
+import incometax.subscription.models.{AgentSummary, SummaryModel}
 import org.scalatest.Matchers._
 
 class CacheUtilSpec extends UnitTestTrait {
@@ -47,10 +47,8 @@ class CacheUtilSpec extends UnitTestTrait {
 
     "The getSummary should populate the Summary model correctly" in {
       testCacheMap.getSummary() shouldBe
-        SummaryModel(
+        AgentSummary(
           testIncomeSourceBoth,
-          None, // rent uk property individual only
-          None, // work for yourself individual only
           testOtherIncomeNo,
           None, // match tax year
           testAccountingPeriodPriorCurrent,
@@ -76,13 +74,13 @@ class CacheUtilSpec extends UnitTestTrait {
         Some(agent.utils.TestModels.testTerms)
       )
       overPopulatedPropertyCacheMap.getSummary() shouldBe
-        SummaryModel(
+        AgentSummary(
           testIncomeSourceProperty,
           otherIncome = testOtherIncomeNo,
           terms = testTerms
         )
 
-      emptyCacheMap.getSummary() shouldBe SummaryModel()
+      emptyCacheMap.getSummary() shouldBe AgentSummary()
     }
 
   }

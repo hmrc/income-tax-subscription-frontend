@@ -16,7 +16,7 @@
 
 package incometax.subscription.controllers
 
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
+import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
@@ -47,27 +47,18 @@ class TermsControllerSpec extends ControllerBaseSpec
     mockAuthService
   )
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.afterEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
   "Calling the showTerms action of the TermsController with an authorised user" when {
 
     implicit lazy val request = subscriptionRequest
 
     def result = await(TestTermsController.show(editMode = false)(subscriptionRequest))
 
-    "The user selected business, and did not match the tax year" should {
+    "The user selected no property income but has sole trader income, and did not match the tax year" should {
       "return OK with the tax year from the accounting period date" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            incomeSource = testIncomeSourceBusiness,
+            rentUkProperty = testRentUkProperty_no_property,
+            workForYourself = testWorkForYourself_yes,
             matchTaxYear = testMatchTaxYearNo,
             accountingPeriodDate = testAccountingPeriod(),
             otherIncome = testOtherIncomeNo
@@ -85,11 +76,12 @@ class TermsControllerSpec extends ControllerBaseSpec
         contentAsString(result) mustBe expectedPage.body
       }
     }
-    "The user selected business, and matched the tax year" should {
+    "The user selected  no property income but has sole trader income, and matched the tax year" should {
       "return OK with the current tax year" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            incomeSource = testIncomeSourceBusiness,
+            rentUkProperty = testRentUkProperty_no_property,
+            workForYourself = testWorkForYourself_yes,
             matchTaxYear = testMatchTaxYearYes,
             accountingPeriodDate = testAccountingPeriod(),
             otherIncome = testOtherIncomeNo
@@ -108,11 +100,34 @@ class TermsControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "The user selected property" should {
+    "The user selected only property income" should {
       "return OK with the current tax year" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            incomeSource = testIncomeSourceProperty,
+            rentUkProperty = testRentUkProperty_property_only,
+            workForYourself = None,
+            otherIncome = testOtherIncomeNo
+          )
+        )
+
+        status(result) must be(Status.OK)
+
+        val expectedPage = incometax.subscription.views.html.terms.apply(
+          incometax.subscription.controllers.routes.TermsController.submit(),
+          AccountingPeriodUtil.getCurrentTaxEndYear,
+          incometax.incomesource.controllers.routes.OtherIncomeController.show().url
+        )
+
+        contentAsString(result) mustBe expectedPage.body
+      }
+    }
+
+    "The user selected property and other income, but no sole trader income" should {
+      "return OK with the current tax year" in {
+        setupMockKeystore(
+          fetchAll = testCacheMap(
+            rentUkProperty = testRentUkProperty_property_and_other,
+            workForYourself = testWorkForYourself_no,
             otherIncome = testOtherIncomeNo
           )
         )
@@ -130,10 +145,11 @@ class TermsControllerSpec extends ControllerBaseSpec
     }
 
     "The user selected business, and did not match the tax year but did not provide an accounting period" should {
-      "return OK with the current tax year" in {
+      "return See other to accounting period dates" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
-            incomeSource = testIncomeSourceBusiness,
+            rentUkProperty = testRentUkProperty_no_property,
+            workForYourself = testWorkForYourself_yes,
             matchTaxYear = testMatchTaxYearNo,
             otherIncome = testOtherIncomeNo
           )

@@ -17,7 +17,6 @@
 package incometax.incomesource
 
 
-import core.config.featureswitch.NewIncomeSourceFlowFeature
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -29,16 +28,6 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 class RentUkPropertyControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    enable(NewIncomeSourceFlowFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.afterEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/rent-uk-property" when {
 

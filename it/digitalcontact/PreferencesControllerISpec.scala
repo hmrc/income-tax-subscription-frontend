@@ -17,7 +17,7 @@
 package digitalcontact
 
 import core.ITSASessionKeys
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
+import core.config.featureswitch.FeatureSwitching
 import core.services.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -28,56 +28,23 @@ import play.api.libs.json.JsString
 
 class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.afterEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
   "GET /preferences" when {
+    "where the user has previously accepted paperless where optedIn is set to True" in {
 
-    "NewIncomeSourceFlowFeature is disabled" when {
-      "where the user has previously accepted paperless where optedIn is set to True" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        PreferencesTokenStub.stubStoreNinoSuccess()
-        KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-        PreferencesStub.newStubPaperlessActivated()
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
+      PreferencesStub.newStubPaperlessActivated()
 
-        When("GET /preferences is called")
-        val res = IncomeTaxSubscriptionFrontend.preferences()
+      When("GET /preferences is called")
+      val res = IncomeTaxSubscriptionFrontend.preferences()
 
-        Then("Should return a SEE_OTHER with a re-direct location of the next page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(incomeSourceURI)
-        )
-      }
-    }
-
-    "NewIncomeSourceFlowFeature is enabled" when {
-      "where the user has previously accepted paperless where optedIn is set to True" in {
-        enable(NewIncomeSourceFlowFeature)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        PreferencesTokenStub.stubStoreNinoSuccess()
-        KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
-        PreferencesStub.newStubPaperlessActivated()
-
-        When("GET /preferences is called")
-        val res = IncomeTaxSubscriptionFrontend.preferences()
-
-        Then("Should return a SEE_OTHER with a re-direct location of the next page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(rentUkPropertyURI)
-        )
-      }
+      Then("Should return a SEE_OTHER with a re-direct location of the next page")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(rentUkPropertyURI)
+      )
     }
 
     "where the user has previously accepted paperless where optedIn is set to false and a redirect location is returned" in {
@@ -130,42 +97,21 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       )
     }
 
-    "NewIncomeSourceFlowFeature is disabled" when {
-      "Where the user has already stored their NINO against a token" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(Map(PaperlessPreferenceToken -> JsString(testPaperlessPreferenceToken)))
-        PreferencesStub.newStubPaperlessActivated()
+    "Where the user has already stored their NINO against a token when " in {
 
-        When("GET /preferences is called")
-        val res = IncomeTaxSubscriptionFrontend.preferences()
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      KeystoreStub.stubKeystoreData(Map(PaperlessPreferenceToken -> JsString(testPaperlessPreferenceToken)))
+      PreferencesStub.newStubPaperlessActivated()
 
-        Then("Should return a SEE_OTHER with a re-direct location of the next page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(incomeSourceURI)
-        )
-      }
-    }
+      When("GET /preferences is called")
+      val res = IncomeTaxSubscriptionFrontend.preferences()
 
-    "NewIncomeSourceFlowFeature is enabled" when {
-      "Where the user has already stored their NINO against a token when " in {
-        enable(NewIncomeSourceFlowFeature)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(Map(PaperlessPreferenceToken -> JsString(testPaperlessPreferenceToken)))
-        PreferencesStub.newStubPaperlessActivated()
-
-        When("GET /preferences is called")
-        val res = IncomeTaxSubscriptionFrontend.preferences()
-
-        Then("Should return a SEE_OTHER with a re-direct location of the next page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(rentUkPropertyURI)
-        )
-      }
+      Then("Should return a SEE_OTHER with a re-direct location of the next page")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(rentUkPropertyURI)
+      )
     }
 
   }

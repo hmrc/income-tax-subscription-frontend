@@ -20,7 +20,7 @@ import assets.MessageLookup
 import core.controllers.SignOutController
 import core.models.DateModel
 import core.views.ViewSpecTrait
-import incometax.incomesource.forms.IncomeSourceForm
+import incometax.subscription.models.{Both, Business, IncomeSourceType}
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.twirl.api.Html
@@ -30,10 +30,10 @@ class ConfirmationViewSpec extends ViewSpecTrait {
   val submissionDateValue = DateModel("1", "1", "2016")
   val duration: Int = 0
   val action = ViewSpecTrait.testCall
-  val incomeSource = "Not both"
+  val incomeSource = Business
   val request = ViewSpecTrait.viewTestRequest
 
-  def page(incomeSource: String): Html = incometax.subscription.views.html.confirmation(
+  def page(incomeSource: IncomeSourceType): Html = incometax.subscription.views.html.confirmation(
     journeyDuration = duration,
     incomeSource = incomeSource
   )(request, applicationMessages, appConfig)
@@ -109,7 +109,7 @@ class ConfirmationViewSpec extends ViewSpecTrait {
 
   "The Confirmation view for both income source" should {
     s"have a paragraph stating HMRC process '${MessageLookup.Confirmation.whatHappensNext.para4}'" in {
-      Jsoup.parse(page(IncomeSourceForm.option_both).body).select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para4)
+      Jsoup.parse(page(Both).body).select("#whatHappensNext p").text() must include(MessageLookup.Confirmation.whatHappensNext.para4)
     }
   }
 }

@@ -16,7 +16,7 @@
 
 package incometax.incomesource.controllers
 
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
+import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
@@ -26,7 +26,6 @@ import incometax.incomesource.services.mocks.MockCurrentTimeService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, status, _}
-import uk.gov.hmrc.http.NotFoundException
 
 class WorkForYourselfControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
@@ -44,44 +43,24 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
     mockCurrentTimeService
   )
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    enable(NewIncomeSourceFlowFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.afterEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
   "Calling the show action of the WorkForYourself controller with an authorised user" when {
 
     def call = TestWorkForYourselfController.show(isEditMode = true)(subscriptionRequest)
 
-    "the new income source flow feature is disabled" should {
-      "return not found (404)" in {
-        disable(NewIncomeSourceFlowFeature)
-        intercept[NotFoundException](await(call))
+    "There are no rentUkProperty data" should {
+      "return ok (200)" in {
+        setupMockKeystore(fetchAll = None)
+
+        val result = call
+        status(result) must be(Status.SEE_OTHER)
+        redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.RentUkPropertyController.show().url
+
+        await(result)
+        verifyKeystore(fetchAll = 1, saveWorkForYourself = 0)
       }
-    }
 
-    "the new income source flow feature is enabled" when {
-      "There are no rentUkProperty data" should {
-        "return ok (200)" in {
-          enable(NewIncomeSourceFlowFeature)
-          setupMockKeystore(fetchAll = None)
-
-          val result = call
-          status(result) must be(Status.SEE_OTHER)
-          redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.RentUkPropertyController.show().url
-
-          await(result)
-          verifyKeystore(fetchAll = 1, saveWorkForYourself = 0)
-        }
-      }
       "There are no rentUkProperty in keystore and but it doesn't needs work for yourself to be answered" should {
         "return ok (200)" in {
-          enable(NewIncomeSourceFlowFeature)
           setupMockKeystore(fetchAll =
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_only,
@@ -98,7 +77,6 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
       }
       "There is rentUkProperty in keystore and it needs work for yourself answered" should {
         "return ok (200)" in {
-          enable(NewIncomeSourceFlowFeature)
           setupMockKeystore(fetchAll =
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_and_other,
@@ -118,13 +96,6 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
   "Calling the submit action of the WorkForYourself controller with an authorised user" when {
     def call(workForYourself: WorkForYourselfModel, isEditMode: Boolean) =
       TestWorkForYourselfController.submit(isEditMode = isEditMode)(subscriptionRequest.post(WorkForYourselfForm.workForYourselfForm, workForYourself))
-
-    "the new income source flow feature is disabled" should {
-      "return not found (404)" in {
-        disable(NewIncomeSourceFlowFeature)
-        intercept[NotFoundException](await(call(testWorkForYourself_yes, isEditMode = false)))
-      }
-    }
 
     "invalid submission" should {
       "return bad request (400)" in {

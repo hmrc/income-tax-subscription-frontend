@@ -18,7 +18,7 @@ package incometax.incomesource.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import core.auth.NewIncomeSourceFlowController
+import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
@@ -39,7 +39,7 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
                                           val keystoreService: KeystoreService,
                                           val authService: AuthService,
                                           val currentTimeService: CurrentTimeService
-                                         ) extends NewIncomeSourceFlowController {
+                                         ) extends SignUpController {
 
   def view(workForYourselfForm: Form[WorkForYourselfModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     incometax.incomesource.views.html.work_for_yourself(

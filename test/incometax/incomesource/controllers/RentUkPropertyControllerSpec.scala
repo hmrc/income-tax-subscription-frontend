@@ -16,7 +16,7 @@
 
 package incometax.incomesource.controllers
 
-import core.config.featureswitch.{FeatureSwitching, NewIncomeSourceFlowFeature}
+import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import incometax.incomesource.forms.RentUkPropertyForm
@@ -48,16 +48,6 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
     mockCurrentTimeService
   )
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    enable(NewIncomeSourceFlowFeature)
-  }
-
-  override def afterEach(): Unit = {
-    super.beforeEach()
-    disable(NewIncomeSourceFlowFeature)
-  }
-
   "test" should {
     "en" in {
       val m: Messages = messagesApi.preferred(subscriptionRequest)
@@ -82,12 +72,6 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
       }
     }
 
-    "the new income source flow feature is disabled" should {
-      "return not_found (404)" in {
-        disable(NewIncomeSourceFlowFeature)
-        intercept[NotFoundException](await(call))
-      }
-    }
   }
 
   "Calling the submit action of the RentUkProperty controller with an authorised user and valid submission" should {

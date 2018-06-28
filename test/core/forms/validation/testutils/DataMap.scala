@@ -16,8 +16,8 @@
 
 package core.forms.validation.testutils
 
-import agent.forms.AccountingPeriodPriorForm
-import incometax.incomesource.forms.{IncomeSourceForm, WorkForYourselfForm, RentUkPropertyForm}
+import agent.forms.{AccountingPeriodPriorForm, IncomeSourceForm}
+import incometax.incomesource.forms.{RentUkPropertyForm, WorkForYourselfForm}
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil.constraint
 import incometax.business.forms.MatchTaxYearForm
