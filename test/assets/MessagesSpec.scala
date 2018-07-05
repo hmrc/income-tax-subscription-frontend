@@ -46,7 +46,18 @@ class MessagesSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
     "sign-up-complete.whatHappensNext.para1",
     "sign-up-complete.whatHappensNext.bullet1",
     "sign-up-complete.whatHappensNext.bullet2",
-    "sign-up-complete.whatHappensNext.para2"
+    "sign-up-complete.whatHappensNext.para2",
+    "agent.sign-up-complete.title",
+    "agent.sign-up-complete.heading",
+    "agent.sign-up-complete.whatHappensNext.heading",
+    "agent.sign-up-complete.whatHappensNext.para1",
+    "agent.sign-up-complete.whatHappensNext.number1",
+    "agent.sign-up-complete.whatHappensNext.number2",
+    "agent.sign-up-complete.whatHappensNext.number3",
+    "agent.sign-up-complete.whatHappensNext.number4",
+    "agent.sign-up-complete.whatHappensNext.number5",
+    "agent.sign-up-complete.whatHappensNext.para2",
+    "agent.sign-up-complete.add_another"
   )
 
   "the messages file must have welsh translations" should {

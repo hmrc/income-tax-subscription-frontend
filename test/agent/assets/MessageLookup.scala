@@ -159,7 +159,9 @@ object MessageLookup {
     val line_1 = "By taking part in this trial, you agree that either you or your client will:"
     val point_1 = "use relevant software to record your client's income and expenses"
     val point_2 = "submit a report at least once every 3 months from the start of your client's accounting period"
+
     def point_3(taxStartYear: Int, taxEndYear: Int, taxDueYear: Int) = s"send their final report for the $taxStartYear to $taxEndYear tax year by 31 January $taxDueYear"
+
     val point_4 = "declare any other income sources and reliefs"
     val point_5 = "tell HMRC if your client stops trading or starts a new business"
     val point_6 = "tell HMRC if you want to leave this trial"
@@ -220,7 +222,7 @@ object MessageLookup {
     val title = "Sign up complete"
     val heading: String = title
 
-  object whatHappensNext {
+    object whatHappensNext {
       val heading = "What happens next"
       val para1 = "Either you or your client need to complete the steps below."
       val para2 = "It's important for your client to choose a software package that can interact with yours."
@@ -233,13 +235,31 @@ object MessageLookup {
       val para3 = "After you've sent a report your client will get an Income Tax estimate. They can view their estimate and report deadlines in their:"
       val bullet1 = "accounting software"
       val bullet2 = "business tax account"
-  }
+    }
 
-  object giveUsFeedback {
+    object giveUsFeedback {
       val heading = "Give us feedback"
       val para1 = "Your feedback helps us improve."
       val link = "What did you think of this service?"
+    }
+
   }
+
+  object SignUpComplete {
+    val title = "Sign up complete"
+    val heading: String = title
+
+    object whatHappensNext {
+      val heading = "What happens next"
+      val para1 = "Either you or your client need to complete the steps below. If you will both use software, it is important to choose packages that can interact with each other."
+      val linkText = "Choose relevant software (opens in a new window)"
+      val number1 = s"$linkText if you haven't already."
+      val number2 = "Allow your software to interact with HMRC."
+      val number3 = "Add any income and expenses that your client has already received or paid out."
+      val number4 = "Continue to record your client's income and expenses using software, then send a report to HMRC at least every 3 months."
+      val number5 = "Send your client's final report by 31 January. You can add any other income sources, allowances or reliefs in this report."
+      val para2 = "After your client has sent a report they will get an Income Tax estimate. They can see what they owe for the tax year after they’ve sent their final report."
+    }
 
   }
 
@@ -264,6 +284,7 @@ object MessageLookup {
       val number2 = "Record their future income and expenses using the software, then send HMRC a report at least every quarter"
       val number3 = "Add any other income sources in your client's final report, they need to send this report by 31 January"
     }
+
   }
 
   object Error {
@@ -399,7 +420,7 @@ object MessageLookup {
     val heading: String = title
     val para1 = "You only need to send quarterly reports on your client’s income from either:"
     val para2 = "You can tell us about your client’s other income sources in their final summary report. Your client needs to submit this report by 31 January."
-    val bullet1 ="their sole trader business"
+    val bullet1 = "their sole trader business"
     val bullet2 = "renting out a UK property"
     val bullet3 = "their sole trader business and renting out a UK property"
   }

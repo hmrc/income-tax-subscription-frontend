@@ -690,6 +690,19 @@ agent.confirmation.whatHappensNext.bullet1                            = accounti
 agent.confirmation.whatHappensNext.bullet2                            = <a id="bta" href="{0}">business tax account</a>
 agent.confirmation.add_another                                        = Sign up another client
 
+## Sign Up Complete page ##
+agent.sign-up-complete.title                                          = Sign up complete
+agent.sign-up-complete.heading                                        = Sign up complete
+agent.sign-up-complete.whatHappensNext.heading                        = What happens next
+agent.sign-up-complete.whatHappensNext.para1                          = Either you or your client need to complete the steps below. If you will both use software, it is important to choose packages that can interact with each other.
+agent.sign-up-complete.whatHappensNext.number1                        = <a id="accountingSoftware" href="{0}">Choose relevant software (opens in a new window)</a> if you haven''t already.
+agent.sign-up-complete.whatHappensNext.number2                        = Allow your software to interact with HMRC.
+agent.sign-up-complete.whatHappensNext.number3                        = Add any income and expenses that your client has already received or paid out.
+agent.sign-up-complete.whatHappensNext.number4                        = Continue to record your client''s income and expenses using software, then send a report to HMRC at least every 3 months.
+agent.sign-up-complete.whatHappensNext.number5                        = Send your client''s final report by 31 January. You can add any other income sources, allowances or reliefs in this report.
+agent.sign-up-complete.whatHappensNext.para2                          = After your client has sent a report they will get an Income Tax estimate. They can see what they owe for the tax year after they’ve sent their final report.
+agent.sign-up-complete.add_another                                    = Sign up another client
+
 ## Unauthorised Agent Confirmation page ##
 agent.confirmation.unauthorised.title                                 = Send client link
 agent.confirmation.unauthorised.heading                               = Send your client this link
