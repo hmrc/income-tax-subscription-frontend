@@ -252,6 +252,21 @@ confirmation.whatHappensNext.bullet1                            = <a id="account
 confirmation.whatHappensNext.bullet2                            = <a id="bta" href="{0}">business tax account</a>
 confirmation.whatHappensNext.para4                              = It may take a few hours for them all to appear.
 
+## Sign Up Complete page ##
+sign-up-complete.title                                          = Sign up complete
+sign-up-complete.heading                                        = Sign up complete
+sign-up-complete.whatHappensNext.heading                        = What happens next
+sign-up-complete.whatHappensNext.number1                        = <a id="accountingSoftware" href="{0}">Choose accounting software</a> if you have not already.
+sign-up-complete.whatHappensNext.number2                        = Sign in to the software with your Government Gateway details and authorise it to interact with HMRC.
+sign-up-complete.whatHappensNext.number3                        = Add any income and expenses that you have already received or paid out.
+sign-up-complete.whatHappensNext.number4                        = Record your future income and expenses using software, then send HMRC a report at least every quarter.
+sign-up-complete.whatHappensNext.number5                        = Add any other income sources in your final report, you need to send this report by 31 January.
+sign-up-complete.whatHappensNext.para1                          = After you have sent a report you will get an Income Tax estimate. You can view your estimate and report deadlines in your:
+sign-up-complete.whatHappensNext.bullet1                        = accounting software
+sign-up-complete.whatHappensNext.bullet2                        = <a id="bta" href="{0}">business tax account</a>
+sign-up-complete.whatHappensNext.para2                          = It may take a few hours for your information to appear.
+
+
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue
 
