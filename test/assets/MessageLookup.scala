@@ -661,6 +661,7 @@ object MessageLookup {
     val title = "Give feedback"
     val heading = "Give feedback"
     val line_1 = "Please don't include any personal or financial information, for example your National Insurance or credit card numbers."
+    val line_2 = "We use your feedback to make our services better."
     val submit = "Send feedback"
 
     object Q1 {

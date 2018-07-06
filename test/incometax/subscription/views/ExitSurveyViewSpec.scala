@@ -63,9 +63,8 @@ class ExitSurveyViewSpec extends ViewSpecTrait {
       maxLength = 1200
     )
 
-    testPage.mustHavePara(
-      messages.line_1
-    )
+    testPage.mustHavePara(messages.line_1)
+    testPage.mustHavePara(messages.line_2)
 
     form.mustHaveSubmitButton(messages.submit)
 
