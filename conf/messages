@@ -460,6 +460,7 @@ exit-survey.q1.option.5                                         = Very dissatisf
 exit-survey.q2                                                  = How could we improve this service?
 
 exit-survey.line_1                                              = Please don''t include any personal or financial information, for example your National Insurance or credit card numbers.
+exit-survey.line_2                                              = We use your feedback to make our services better.
 exit-survey.submit                                              = Send feedback
 
 thank-you.title                                                 = Thank you
@@ -869,6 +870,7 @@ agent.exit-survey.q1.option.5                                         = Very dis
 agent.exit-survey.q2                                                  = How could we improve this service?
 
 agent.exit-survey.line_1                                              = Please don''t include any personal or financial information, for example your National Insurance or credit card numbers.
+agent.exit-survey.line_2                                              = We use your feedback to make our services better.
 agent.exit-survey.submit                                              = Send feedback
 
 ## Thank You page ##

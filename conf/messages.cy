@@ -445,6 +445,7 @@ exit-survey.q1.option.5                                         = Anfodlon iawn
 exit-survey.q2                                                  = Sut allwn wella'r gwasanaeth hwn?
 
 exit-survey.line_1                                              = Peidiwch â chynnwys gwybodaeth bersonol nac ariannol, er enghraifft eich rhif Yswiriant Gwladol neu rifau'ch cardiau credyd.
+exit-survey.line_2                                              = Rydym yn defnyddio''ch adborth i wella ein gwasanaethau.
 exit-survey.submit                                              = Anfon adborth
 
 thank-you.title                                                 = Diolch
@@ -841,6 +842,7 @@ agent.exit-survey.q1.option.5                                         = Anfodlon
 agent.exit-survey.q2                                                  = Sut allwn wella'r gwasanaeth hwn?
 
 agent.exit-survey.line_1                                              = Peidiwch â chynnwys gwybodaeth bersonol nac ariannol, er enghraifft eich rhif Yswiriant Gwladol neu rifau'ch cardiau credyd.
+agent.exit-survey.line_2                                              = Rydym yn defnyddio''ch adborth i wella ein gwasanaethau.
 agent.exit-survey.submit                                              = Anfon adborth
 
 ## Thank You page ##
