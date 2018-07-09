@@ -16,9 +16,12 @@
 
 package core.models
 
-import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, ResolverStyle}
+import java.time.{LocalDate, ZoneId}
+import java.util.Date
 
+import com.ibm.icu.text.SimpleDateFormat
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 
 case class DateModel(day: String, month: String, year: String) {
@@ -33,7 +36,13 @@ case class DateModel(day: String, month: String, year: String) {
 
   def toOutputDateFormat: String = toLocalDate.format(outputFormat)
 
-  def toCheckYourAnswersDateFormat: String = toLocalDate.format(outputFormat)
+  def toCheckYourAnswersDateFormat(implicit messages: Messages): String = {
+    val sdf = new SimpleDateFormat("d MMMM yyyy", messages.lang.locale)
+
+    val date = Date.from(toLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant)
+
+    sdf.format(date)
+  }
 
   def toDesDateFormat: String = toLocalDate.format(desFormat)
 
@@ -50,8 +59,6 @@ case class DateModel(day: String, month: String, year: String) {
 object DateModel {
 
   val outputFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM uuuu").withResolverStyle(ResolverStyle.STRICT)
-
-  val checkYourAnswersFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/uuuu").withResolverStyle(ResolverStyle.STRICT)
 
   val desFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("uuuu-MM-dd").withResolverStyle(ResolverStyle.STRICT)
 

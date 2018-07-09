@@ -70,7 +70,7 @@
     val rowName = AccountingPeriodDateId
     val rowQuestion = Messages("agent.summary.accounting_period")
     val periodInMonth = period.startDate.diffInMonth(period.endDate)
-    val rowAnswer = s"${period.startDate.toCheckYourAnswersDateFormat} to ${period.endDate.toCheckYourAnswersDateFormat}"
+    val rowAnswer = Messages("base.date-to-date", period.startDate.toCheckYourAnswersDateFormat, period.endDate.toCheckYourAnswersDateFormat)
     val rowUrl = agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }

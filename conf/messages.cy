@@ -24,6 +24,7 @@ base.title.error                                                = Gwall: {0}
 ## base.userResearch.text                                         = Mae'r cysylltiad hwn yn agor tab newydd. Sylwer - nid yw'r gwasanaeth hwn ar gael yn Gymraeg.
 base.dismissBanner                                              = Dim diolch
 base.dismissBanner.screenReader                                 = Dydw i ddim eisiau ateb cwestiynau ynglŷn ag ymuno â'r panel ymchwil
+base.date-to-date                                               = {0} i {1}
 
 ## Front page
 frontpage.title                                                 = Cofrestru i roi gwybod am eich incwm a'ch treuliau bob chwarter
