@@ -25,6 +25,7 @@ import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
+import core.services.CacheUtil._
 import incometax.subscription.models.Other
 import incometax.subscription.views.html.{confirmation, sign_up_complete}
 import incometax.unauthorisedagent.views.html.unauthorised_agent_confirmation
@@ -48,7 +49,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
       val endTime = java.time.LocalDateTime.now()
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
-      keystoreService.fetchIncomeSource.map {
+      keystoreService.fetchAll() map (_.getIncomeSourceType()) map {
         case Some(incomeSource) if incomeSource != Other =>
           if (request.isInState(ConfirmAgentSubscription))
             Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource))
@@ -59,6 +60,5 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
         case _ =>
           throw new InternalServerException("Confirmation Controller, call to show confirmation with invalid income source")
       }
-
   }
 }

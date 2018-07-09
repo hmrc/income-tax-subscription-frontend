@@ -21,12 +21,13 @@ import agent.services.mocks.MockKeystoreService
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
 import play.api.Play
-import play.api.i18n.Messages
+import play.api.i18n.{Lang, Messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Cookie}
 import play.api.test.Helpers._
+import play.i18n.MessagesApi
 import uk.gov.hmrc.http.NotFoundException
-import uk.gov.hmrc.play.language.LanguageUtils.WelshLangCode
+import uk.gov.hmrc.play.language.LanguageUtils._
 
 class ConfirmationControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
@@ -81,6 +82,8 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
             .withCookies(Cookie(Play.langCookieName(applicationMessagesApi), WelshLangCode))
         )
         status(result) shouldBe OK
+
+        Jsoup.parse(contentAsString(result)).title shouldBe Messages("agent.confirmation.title")(applicationMessages(Welsh, app))
       }
     }
 
@@ -93,8 +96,6 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
         status(result) shouldBe OK
 
         Jsoup.parse(contentAsString(result)).title shouldBe Messages("agent.sign-up-complete.title")
-
-        await(result)
       }
     }
 
