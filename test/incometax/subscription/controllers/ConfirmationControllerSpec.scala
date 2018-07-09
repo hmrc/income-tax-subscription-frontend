@@ -24,14 +24,17 @@ import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
+import incometax.subscription.models.{IncomeSourceType, Other}
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
+import play.api.Play
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, Cookie, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.NotFoundException
+import uk.gov.hmrc.http.{InternalServerException, NotFoundException}
+import uk.gov.hmrc.play.language.LanguageUtils.{Welsh, WelshLangCode}
 
 import scala.concurrent.Future
 
@@ -63,14 +66,39 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "the user is not in the unauthorised agent journey state" should {
       "get the ID from keystore if the user is enrolled" in {
         mockAuthEnrolled()
-        setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(incomeSource = None))
+        setupMockKeystore(fetchAll = TestModels.testCacheMap)
         val result: Future[Result] = TestConfirmationController.show(
           subscriptionRequest.addStartTime(startTime)
         )
 
         status(result) shouldBe OK
 
-        await(result)
+        Jsoup.parse(contentAsString(result)).title shouldBe Messages("sign-up-complete.title")
+
+      }
+
+      "fail if no income source is stored" in {
+        mockAuthEnrolled()
+        setupMockKeystore(fetchAll = TestModels.emptyCacheMap)
+        val result: Future[Result] = TestConfirmationController.show(
+          subscriptionRequest.addStartTime(startTime)
+        )
+
+        intercept[InternalServerException](await(result))
+      }
+
+      "fail if \"Other\" income source is stored" in {
+        mockAuthEnrolled()
+        setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
+          incomeSource = Some(Other),
+          workForYourself = None,
+          rentUkProperty = None
+        ))
+        val result: Future[Result] = TestConfirmationController.show(
+          subscriptionRequest.addStartTime(startTime)
+        )
+
+        intercept[InternalServerException](await(result))
       }
 
       "return not found if the user is not enrolled" in {
@@ -80,10 +108,11 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         intercept[NotFoundException](await(result)).message shouldBe "AuthPredicates.enrolledPredicate"
       }
     }
+
     "the user is in the unauthorised agent journey state" should {
       "return OK with the confirm subscription request view" in {
         mockAuthEnrolled()
-        setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
+        setupMockKeystore(fetchAll = TestModels.testCacheMap)
         val result: Future[Result] = TestConfirmationController.show(
           confirmAgentSubscriptionRequest
             .addStartTime(startTime)
@@ -92,10 +121,25 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         status(result) shouldBe OK
 
         Jsoup.parse(contentAsString(result)).title shouldBe Messages("confirmation.unauthorised.title")
-
-        await(result)
       }
     }
+
+    "the user is in confirmation journey state and welsh content applies" should {
+      "return OK" in {
+        mockAuthEnrolled()
+        setupMockKeystore(fetchAll = TestModels.testCacheMap)
+
+        val result = TestConfirmationController.show(
+          subscriptionRequest
+            .addStartTime(startTime)
+            .withCookies(Cookie(Play.langCookieName(applicationMessagesApi), WelshLangCode))
+        )
+        status(result) shouldBe OK
+
+        Jsoup.parse(contentAsString(result)).title shouldBe Messages("confirmation.title")(applicationMessages(Welsh, app))
+      }
+    }
+
   }
 
   authorisationTests()

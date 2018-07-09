@@ -23,10 +23,12 @@ import agent.audit.Logging
 import agent.auth.PostSubmissionController
 import core.models.DateModel.dateConvert
 import agent.services.KeystoreService
+import agent.views.html.{confirmation, sign_up_complete}
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.language.LanguageUtils._
 
 @Singleton
 class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
@@ -38,11 +40,15 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
 
   val show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user =>
-      Ok(agent.views.html.confirmation(
-        submissionDate = dateConvert(LocalDate.now()),
-        postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
-        signOutAction = core.controllers.SignOutController.signOut(origin = routes.ConfirmationController.show())
-      ))
+      val submissionDate = dateConvert(LocalDate.now())
+      val postAction = agent.controllers.routes.AddAnotherClientController.addAnother()
+      val signOutAction = core.controllers.SignOutController.signOut(origin = routes.ConfirmationController.show())
+
+      if (getCurrentLang == Welsh)
+        Ok(confirmation(submissionDate, postAction, signOutAction))
+      else
+        Ok(sign_up_complete(submissionDate, postAction, signOutAction))
+
   }
 
 }
