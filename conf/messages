@@ -24,6 +24,7 @@ base.title.error                                                = Error: {0}
 ## base.userResearch.text                                          = This link opens in a new tab. Please note that this service is not available in Welsh.
 base.dismissBanner                                              = No thanks
 base.dismissBanner.screenReader                                 = I don''t want to answer any questions about joining the research panel
+base.date-to-date                                               = {0} to {1}
 
 ## Front page
 frontpage.title                                                 = Sign up to report your income and expenses quarterly
