@@ -17,14 +17,32 @@
 @import core.config.AppConfig
 @import core.views.html.templates.main_template
 @import core.views.html.helpers._
-@import incometax.subscription.models.{IncomeSourceType, Both}
+@import incometax.subscription.models.Both
+@import incometax.subscription.models.IndividualSummary
 
-@(journeyDuration: Int, incomeSource: IncomeSourceType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(journeyDuration: Int, summary: IndividualSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@incomeSource = @{
+    summary.incomeSource.get
+}
+
+@dataHelper(metricId:String, optFieldValue:Option[String]) = {
+    @optFieldValue match {
+        case Some(value) => {
+            <div data-metrics="itsa:@metricId:value"></div>
+        }
+        case _ => {}
+    }
+}
 
 @scripts = {
     <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
 }
 @main_template(title = Messages("sign-up-complete.title"), scriptElem = scripts) {
+
+    @dataHelper("rent-uk-property", summary.rentUkProperty.map(_.rentUkProperty))
+    @dataHelper("only-source-of-self-employed-income", summary.rentUkProperty.flatMap(_.onlySourceOfSelfEmployedIncome))
+    @dataHelper("work-for-yourself", summary.workForYourself.map(_.doYouWorkForYourself))
 
     <div class="form-group" data-metrics="itsa:journey duration:@incomeSource:@journeyDuration">
         <section id="confirmation-heading" class="transaction-banner--complete">
