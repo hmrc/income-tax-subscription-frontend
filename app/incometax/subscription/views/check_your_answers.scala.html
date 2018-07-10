@@ -23,6 +23,7 @@
 @import incometax.incomesource.models._
 @import incometax.subscription.models.IndividualSummary
 @import uk.gov.hmrc.play.views.html.helpers.form
+@import core.models.YesNoModel._
 
 @(summaryModel: IndividualSummary, isRegistration: Boolean, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @import core.views.html.helpers.SummaryHelper._
@@ -52,17 +53,24 @@
 @rentUkProperty(rentUkProperty: RentUkPropertyModel) = @{
     val rowName = RentUkPropertyId
     val rowQuestion = Messages("summary.rent_uk_property_1")
-    val rowAnswer = rentUkProperty.rentUkProperty
+    val rowAnswer = rentUkProperty.rentUkProperty match {
+        case YES => Messages("base.yes")
+        case NO => Messages("base.no")
+    }
     val rowUrl = incometax.incomesource.controllers.routes.RentUkPropertyController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
 @onlySourceOfIncome(rentUkProperty: RentUkPropertyModel) = @{
     rentUkProperty.onlySourceOfSelfEmployedIncome match {
-        case Some(rowAnswer) =>
+        case Some(rowAnswerStr) =>
             val rowName = OnlySourceOfIncomeId
             val rowQuestion = Messages("summary.rent_uk_property_2")
             val rowUrl = incometax.incomesource.controllers.routes.RentUkPropertyController.show(editMode = true).url
+            val rowAnswer = rowAnswerStr match {
+                case "Yes" => Messages("base.yes")
+                case "No" => Messages("base.no")
+            }
             summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
         case _ => Html("")
     }
@@ -71,7 +79,10 @@
 @WorkForYourself(workForYourself: WorkForYourselfModel) = @{
     val rowName = WorkForYourselfId
     val rowQuestion = Messages("summary.work_for_your_self")
-    val rowAnswer = workForYourself.doYouWorkForYourself
+    val rowAnswer = workForYourself.doYouWorkForYourself match {
+        case "Yes" => Messages("base.yes")
+        case "No" => Messages("base.no")
+    }
     val rowUrl = incometax.incomesource.controllers.routes.WorkForYourselfController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
@@ -79,7 +90,10 @@
 @otherIncome(source: OtherIncomeModel) = @{
     val rowName = OtherIncomeId
     val rowQuestion = Messages("summary.other_income")
-    val rowAnswer = source.choice
+    val rowAnswer = source.choice match {
+        case "Yes" => Messages("base.yes")
+        case "No" => Messages("base.no")
+    }
     val rowUrl = incometax.incomesource.controllers.routes.OtherIncomeController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
@@ -121,7 +135,10 @@
 @matchTaxYear(matchTaxYear: MatchTaxYearModel) = @{
     val rowName = MatchTaxYearId
     val rowQuestion = Messages("summary.match_tax_year")
-    val rowAnswer = matchTaxYear.matchTaxYear
+    val rowAnswer = matchTaxYear.matchTaxYear match {
+        case "Yes" => Messages("base.yes")
+        case "No" => Messages("base.no")
+    }
     val rowUrl = incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }

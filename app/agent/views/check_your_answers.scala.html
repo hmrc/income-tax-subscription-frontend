@@ -61,7 +61,10 @@
 @otherIncome(source: OtherIncomeModel) = @{
     val rowName = OtherIncomeId
     val rowQuestion = Messages("agent.summary.other_income")
-    val rowAnswer = source.choice
+    val rowAnswer = source.choice match {
+        case "Yes" => Messages("base.yes")
+        case "No" => Messages("base.no")
+    }
     val rowUrl = agent.controllers.routes.OtherIncomeController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
