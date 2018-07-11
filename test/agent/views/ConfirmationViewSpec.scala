@@ -23,6 +23,7 @@ import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import core.utils.UnitTestTrait
 import core.views.ViewSpecTrait
+import core.utils.TestModels._
 
 class ConfirmationViewSpec extends UnitTestTrait {
 
@@ -30,7 +31,7 @@ class ConfirmationViewSpec extends UnitTestTrait {
   val action = ViewSpecTrait.testCall
 
   lazy val page = agent.views.html.confirmation(
-    submissionDate = submissionDateValue,
+    summary = testAgentSummaryData,
     postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
     signOutAction = action
   )(FakeRequest(), applicationMessages, appConfig)

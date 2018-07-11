@@ -24,6 +24,7 @@ import incometax.subscription.models.{Both, Business, IncomeSourceType}
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.twirl.api.Html
+import core.utils.TestModels._
 
 class ConfirmationViewSpec extends ViewSpecTrait {
 
@@ -35,7 +36,10 @@ class ConfirmationViewSpec extends ViewSpecTrait {
 
   def page(incomeSource: IncomeSourceType): Html = incometax.subscription.views.html.confirmation(
     journeyDuration = duration,
-    incomeSource = incomeSource
+    summary = incomeSource match {
+      case Both => testSummaryData
+      case _ => testSummaryData.copy(workForYourself = Some(testWorkForYourself_no))
+    }
   )(request, applicationMessages, appConfig)
 
   def document = Jsoup.parse(page(incomeSource).body)

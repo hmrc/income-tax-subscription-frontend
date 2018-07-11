@@ -27,11 +27,8 @@
 }
 
 @dataHelper(metricId:String, optFieldValue:Option[String]) = {
-    @optFieldValue match {
-        case Some(value) => {
-            <div data-metrics="itsa:@metricId:value"></div>
-        }
-        case _ => {}
+    @for(value <- optFieldValue) {
+            <div data-metrics="itsa:@metricId:@value"></div>
     }
 }
 
@@ -43,6 +40,9 @@
     @dataHelper("rent-uk-property", summary.rentUkProperty.map(_.rentUkProperty))
     @dataHelper("only-source-of-self-employed-income", summary.rentUkProperty.flatMap(_.onlySourceOfSelfEmployedIncome))
     @dataHelper("work-for-yourself", summary.workForYourself.map(_.doYouWorkForYourself))
+    @dataHelper("other-income", summary.otherIncome.map(_.choice))
+    @dataHelper("accounting-period-prior", summary.accountingPeriodPrior.map(_.currentPeriodIsPrior))
+    @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod))
 
     <div class="form-group" data-metrics="itsa:journey duration:@journeyDuration;itsa:income-source:@incomeSource">
         <section id="confirmation-heading" class="transaction-banner--complete">
