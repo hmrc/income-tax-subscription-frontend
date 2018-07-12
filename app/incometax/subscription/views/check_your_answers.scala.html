@@ -170,7 +170,7 @@
 
     <h2 class="heading-medium">@Html(Messages("summary.h2"))</h2>
 
-    <div class="form-group" data-metrics="itsa:incomeSource:@summaryModel.incomeSource.map(_.source)">
+    <div class="form-group">
         @summaryModel.rentUkProperty.map(rentUkProperty)
         @summaryModel.rentUkProperty.map(onlySourceOfIncome)
         @if(summaryModel.rentUkProperty.exists(_.needSecondPage)) {

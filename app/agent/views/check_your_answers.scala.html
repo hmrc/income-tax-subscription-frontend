@@ -102,7 +102,7 @@
 
     <h2 class="heading-medium">@Html(Messages("agent.summary.h2"))</h2>
 
-    <div class="form-group" data-metrics="itsa:incomeSource:@summaryModel.incomeSource.map(_.source)">
+    <div class="form-group">
         @summaryModel.incomeSource.map(incomeSource)
         @summaryModel.otherIncome.map(otherIncome)
         @summaryModel.accountingPeriod.map(accountingPeriodDate)

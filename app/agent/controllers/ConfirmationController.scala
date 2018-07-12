@@ -23,6 +23,7 @@ import agent.audit.Logging
 import agent.auth.PostSubmissionController
 import core.models.DateModel.dateConvert
 import agent.services.KeystoreService
+import agent.services.CacheUtil._
 import agent.views.html.{confirmation, sign_up_complete}
 import core.config.BaseControllerConfig
 import core.services.AuthService
@@ -38,16 +39,18 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
                                        val logging: Logging
                                       ) extends PostSubmissionController {
 
-  val show: Action[AnyContent] = Authenticated { implicit request =>
+  val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      val submissionDate = dateConvert(LocalDate.now())
       val postAction = agent.controllers.routes.AddAnotherClientController.addAnother()
       val signOutAction = core.controllers.SignOutController.signOut(origin = routes.ConfirmationController.show())
+      keystoreService.fetchAll() map(_.get.getSummary()) map {
+        agentSummary =>
+          if (getCurrentLang == Welsh)
+            Ok(confirmation(agentSummary, postAction, signOutAction))
+          else
+            Ok(sign_up_complete(agentSummary, postAction, signOutAction))
+      }
 
-      if (getCurrentLang == Welsh)
-        Ok(confirmation(submissionDate, postAction, signOutAction))
-      else
-        Ok(sign_up_complete(submissionDate, postAction, signOutAction))
 
   }
 

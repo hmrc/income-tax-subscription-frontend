@@ -29,7 +29,7 @@ import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models._
-import incometax.subscription.models._
+import incometax.subscription.models.{SummaryModel, _}
 import incometax.unauthorisedagent.models.StoredSubscription
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
@@ -180,6 +180,20 @@ object TestModels extends Implicits {
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
     accountingMethod = testAccountingMethod
+  )
+
+  lazy val testAgentSummaryData = AgentSummary(
+    incomeSource = Some(testIncomeSourceBusiness),
+    otherIncome = Some(testOtherIncomeNo),
+    matchTaxYear = Some(testMatchTaxYearYes),
+    accountingPeriodPrior = None,
+    accountingPeriod = None,
+    businessName = Some(testBusinessName),
+    businessPhoneNumber = Some(testBusinessPhoneNumber),
+    businessAddress = Some(testAddress),
+    businessStartDate = Some(testBusinessStartDate),
+    accountingMethod = Some(testAccountingMethod),
+    terms = Some(true)
   )
 
   lazy val testStoredSubscription = StoredSubscription(

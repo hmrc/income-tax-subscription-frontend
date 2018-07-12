@@ -49,16 +49,18 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
       val endTime = java.time.LocalDateTime.now()
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
-      keystoreService.fetchAll() map (_.getIncomeSourceType()) map {
-        case Some(incomeSource) if incomeSource != Other =>
-          if (request.isInState(ConfirmAgentSubscription))
-            Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource))
-          else if (getCurrentLang == Welsh)
-            Ok(confirmation(journeyDuration, incomeSource))
-          else
-            Ok(sign_up_complete(journeyDuration, incomeSource))
-        case _ =>
-          throw new InternalServerException("Confirmation Controller, call to show confirmation with invalid income source")
+      keystoreService.fetchAll() map (_.getSummary()) map { summary =>
+        summary.incomeSource match {
+          case Some(incomeSource) if incomeSource != Other =>
+            if (request.isInState(ConfirmAgentSubscription))
+              Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource))
+            else if (getCurrentLang == Welsh)
+              Ok(confirmation(journeyDuration, summary))
+            else
+              Ok(sign_up_complete(journeyDuration, summary))
+          case _ =>
+            throw new InternalServerException("Confirmation Controller, call to show confirmation with invalid income source")
+        }
       }
   }
 }

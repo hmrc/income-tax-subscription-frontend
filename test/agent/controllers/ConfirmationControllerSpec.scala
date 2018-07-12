@@ -28,6 +28,7 @@ import play.api.test.Helpers._
 import play.i18n.MessagesApi
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.language.LanguageUtils._
+import agent.utils.TestModels._
 
 class ConfirmationControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService {
@@ -57,6 +58,8 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
     "submitted is not in session but user is also marked as unauthorised" should {
       "return SEE OTHER" in {
+        setupMockKeystore(fetchAll = testCacheMap)
+
         val result = TestConfirmationController.show(
           subscriptionRequest
             .addingToSession(ITSASessionKeys.MTDITID -> "any",
@@ -69,6 +72,8 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session" should {
       "return OK" in {
+        setupMockKeystore(fetchAll = testCacheMap)
+
         val result = TestConfirmationController.show(subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "any"))
         status(result) shouldBe OK
       }
@@ -76,6 +81,8 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session and welsh content applies" should {
       "return OK" in {
+        setupMockKeystore(fetchAll = testCacheMap)
+
         val result = TestConfirmationController.show(
           subscriptionRequest
             .addingToSession(ITSASessionKeys.MTDITID -> "any")
@@ -89,6 +96,8 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
 
     "submitted is in session and new Confirmation content applies" should {
       "return OK" in {
+        setupMockKeystore(fetchAll = testCacheMap)
+
         val result = TestConfirmationController.show(
           subscriptionRequest
             .addingToSession(ITSASessionKeys.MTDITID -> "any")

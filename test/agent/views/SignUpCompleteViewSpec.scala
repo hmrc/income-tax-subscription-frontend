@@ -18,6 +18,7 @@ package agent.views
 
 import agent.assets.MessageLookup
 import core.models.DateModel
+import core.utils.TestModels.testAgentSummaryData
 import core.utils.UnitTestTrait
 import core.views.ViewSpecTrait
 import org.jsoup.Jsoup
@@ -30,7 +31,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
   val action = ViewSpecTrait.testCall
 
   lazy val page = agent.views.html.sign_up_complete(
-    submissionDate = submissionDateValue,
+    summary = testAgentSummaryData,
     postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
     signOutAction = action
   )(FakeRequest(), applicationMessages, appConfig)
