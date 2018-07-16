@@ -29,7 +29,7 @@ base.date-to-date                                               = {0} i {1}
 ## Front page
 frontpage.title                                                 = Cofrestru i roi gwybod am eich incwm a''ch treuliau bob chwarter
 frontpage.heading                                               = Cofrestru i roi gwybod am eich incwm a''ch treuliau bob chwarter
-frontpage.line_1                                                = Drwy gofrestru ar gyfer gwasanaeth diogel Cyllid a Thollau EM, rydych yn helpu i brofi ffordd newydd o gyfrifo''ch treth. Byddwch yn gwneud hyn drwy''r canlynol::
+frontpage.line_1                                                = Drwy gofrestru ar gyfer gwasanaeth diogel Cyllid a Thollau EM, rydych yn helpu i brofi ffordd newydd o gyfrifo''ch treth. Byddwch yn gwneud hyn drwy''r canlynol:
 frontpage.bullet_1                                              = defnyddio''ch meddalwedd cyfrifyddu i gofnodi''ch incwm a''ch treuliau
 frontpage.bullet_2                                              = anfon manylion atom yn rheolaidd o fis Mai 2017 ymlaen
 frontpage.bullet_3                                              = cytuno i fynd yn ''ddi-bapur''
@@ -165,7 +165,7 @@ business.accounting_method.accordion.line_1                     = Rhoesoch anfon
 business.accounting_method.accordion.bullet_1                   = mis Mai 2017, buasech yn defnyddio cyfrifyddu ar ''sail arian parod''
 business.accounting_method.accordion.bullet_2                   = mis Mawrth 2017, buasech yn defnyddio''r ''sail croniadau''
 business.accounting_method.cash                                 = <span class="heading-small">Sail arian parod</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn cael arian neu''n talu bil. Mae llawer o unig fasnachwyr a busnesau bach yn defnyddio''r dull hwn.
-business.accounting_method.accruals                             = <span class="heading-small">Sail croniadau</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon neu''n cael anfoneb, hyd yn oed os nad ydych yn cael neu''n talu unrhyw arian. Mae''r dull hwn hefyd yn cael ei alw''n
+business.accounting_method.accruals                             = <span class="heading-small">Sail croniadau</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon neu''n cael anfoneb, hyd yn oed os nad ydych yn cael neu''n talu unrhyw arian. Mae''r dull hwn hefyd yn cael ei alw''n cyfrifyddu traddodiadol.
 
 
 ## Business Name
@@ -471,8 +471,8 @@ affinity-group-error.agent.line1                                = I gofrestru ar
 iv-error.title                                                  = Ni allwn gadarnhau pwy ydych chi
 iv-error.heading                                                = Ni allwn gadarnhau pwy ydych chi
 iv-error.line1                                                  = Er mwyn helpu i ddiogelu''ch data, gallwch ond cofrestru i roi gwybod am eich incwm a''ch treuliau bob chwarter ar ôl i ni gadarnhau pwy ydych chi.
-iv-error.line2                                                  = Os na allwch brofi pwy ydych chi, ac mae gennych gwestiwn, gallwch gysylltu â <a id="contact-hmrc" href="{0}" target="_blank">Chyllid a Thollau EM (yn agor ffenestr newydd)</a> i gael help.
-iv-error.try_again                                              = <a id="try-again" href="{0}"> Ceisiwch brofi pwy ydych chi eto.</a>
+iv-error.line2                                                  = Os na allwch gadarnhau pwy ydych chi, ac mae gennych gwestiwn, gallwch gysylltu â <a id="contact-hmrc" href="{0}" target="_blank">Chyllid a Thollau EM (yn agor ffenestr newydd)</a> i gael help.
+iv-error.try_again                                              = <a id="try-again" href="{0}"> Ceisiwch gadarnhau pwy ydych chi eto.</a>
 
 ## Base ##
 agent.base.service_name                                         = Cofrestru''ch cleient ar gyfer hysbysu chwarterol
@@ -861,7 +861,7 @@ authorise-agent.heading                                               = Ydych ch
 
 agent-not-authorised.title                                            = Nid ydych wedi awdurdodi''ch asiant
 agent-not-authorised.heading                                          = Nid ydych wedi awdurdodi''ch asiant
-agent-not-authorised.line_1                                           = Rydym wedi dileu unrhyw wybodaeth y mae wedi gofyn i gyflwyno ar eich cyfer.
+agent-not-authorised.line_1                                           = Rydym wedi dileu unrhyw wybodaeth y mae wedi gofyn i i''w chyflwyno ar eich cyfer.
 
 ## Unauthorised Agent Confirmation page ##
 confirmation.unauthorised.title                                       = Rydych wedi gorffen cofrestru
