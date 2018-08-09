@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-package core
+package incometax.subscription
 
 import helpers.ComponentSpecBase
 import helpers.servicemocks.AuthStub
 import play.api.http.Status.OK
 import play.api.i18n.Messages
 
-class FeedbackControllerISpec extends ComponentSpecBase {
+class ExitSurveyThankYouControllerISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up/feedback-submitted" when {
+  "GET /report-quarterly/income-and-expenses/sign-up/feedback-submitted" should {
+    "show the feedback submitted page" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
 
-    "keystore not applicable" should {
-      "show the feeedback submitted page" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
+      When("GET /feedback-submitted is called")
+      val res = IncomeTaxSubscriptionFrontend.exitSurveyThankYou()
 
-        When("GET /feeedback-submitted is called")
-        val res = IncomeTaxSubscriptionFrontend.feedback()
-
-        Then("Should return a OK with the feedback submitted page")
-        res should have(
-          httpStatus(OK),
-          pageTitle(Messages("thank-you.title"))
-        )
-      }
+      Then("Should return a OK with the feedback submitted page")
+      res should have(
+        httpStatus(OK),
+        pageTitle(Messages("thank-you.title"))
+      )
     }
   }
+
 }
