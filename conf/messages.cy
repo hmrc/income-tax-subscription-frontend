@@ -25,6 +25,12 @@ base.title.error                                                = Gwall: {0}
 base.dismissBanner                                              = Dim diolch
 base.dismissBanner.screenReader                                 = Dydw i ddim eisiau ateb cwestiynau ynglŷn ag ymuno â''r panel ymchwil
 base.date-to-date                                               = {0} i {1}
+base.hour                                                       = awr
+base.hours                                                      = oriau
+base.minute                                                     = munud
+base.minutes                                                    = munudau
+base.second                                                     = eiliad
+base.seconds                                                    = eiliadau
 
 ## Front page
 frontpage.title                                                 = Cofrestru i roi gwybod am eich incwm a''ch treuliau bob chwarter
@@ -364,7 +370,7 @@ user-details-error.line_1                                       = Nid yw''r many
 # User Details Lockout
 user-details-lockout.title                                      = Rydych wedi cael eich cloi allan
 user-details-lockout.heading                                    = Rydych wedi cael eich cloi allan
-user-details-lockout.line_1                                     = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi roi cynnig arall arni ymhen 1 funud.
+user-details-lockout.line_1                                     = I gofrestru ar gyfer hysbysu chwarterol, rhaid i chi roi cynnig arall arni ymhen {0}.
 
 # Check your details page
 user-details.summary.title                                      = Cadarnhau''ch manylion

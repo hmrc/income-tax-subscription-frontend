@@ -25,6 +25,12 @@ base.title.error                                                = Error: {0}
 base.dismissBanner                                              = No thanks
 base.dismissBanner.screenReader                                 = I don''t want to answer any questions about joining the research panel
 base.date-to-date                                               = {0} to {1}
+base.hour                                                       = hour
+base.hours                                                      = hours
+base.minute                                                     = minute
+base.minutes                                                    = minutes
+base.second                                                     = second
+base.seconds                                                    = seconds
 
 ## Front page
 frontpage.title                                                 = Sign up to report your income and expenses quarterly
