@@ -99,6 +99,10 @@ trait AppConfig extends FeatureSwitching {
   def routeToSwitchLanguage = (lang: String) => core.controllers.language.routes.LanguageSwitchController.switchToLanguage(lang)
 
   def languageTranslationEnabled: Boolean
+
+  def betaFeedbackUrl: String
+
+  def betaFeedbackUnauthenticatedUrl: String
 }
 
 @Singleton
@@ -246,5 +250,10 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override def getAgencyNameUrl(arn: String): String = s"$agentServicesAccount/agent-services-account/client/agency-name/$arn"
 
   override def languageTranslationEnabled: Boolean = isEnabled(featureswitch.WelshLanguageFeature)
+
+  override lazy val betaFeedbackUrl: String = s"$contactFrontendService/contact/beta-feedback?service=$contactFormServiceIdentifier"
+
+  override lazy val betaFeedbackUnauthenticatedUrl: String = s"$contactFrontendService/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+
 }
 

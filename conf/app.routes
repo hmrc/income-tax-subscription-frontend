@@ -32,10 +32,6 @@ GET         /confirmation                 incometax.subscription.controllers.Con
 # Session Timeout Route
 GET         /session-timeout              core.controllers.SessionTimeoutController.show
 
-# Feedback Routes
-GET         /feedback                     core.controllers.FeedbackController.show
-POST        /feedback                     core.controllers.FeedbackController.submit
-GET         /thankyou                     core.controllers.FeedbackController.thankyou
 
 # Terms Routes
 GET         /terms                        incometax.subscription.controllers.TermsController.show(editMode: Boolean ?= false)

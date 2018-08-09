@@ -179,9 +179,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def notAuthorised(): WSResponse = get("/not-authorised")
 
-    def thankYou(): WSResponse = get("/thankyou")
-
-    def feedback(): WSResponse = get("/feedback-submitted")
+    def exitSurveyThankYou(): WSResponse = get("/feedback-submitted")
 
     def signIn(): WSResponse = get("/sign-in")
 

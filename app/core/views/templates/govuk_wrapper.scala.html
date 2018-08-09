@@ -33,7 +33,6 @@
     @import layouts.{govuk_template => hmrcGovUkTemplate}
     @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
     @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
-    @import core.views.html.helpers.phaseBanner
     @import core.views.html.helpers.full_width_banner
     @import core.views.html.helpers.full_width_banner_content_ur
 
@@ -90,7 +89,7 @@
 
     @serviceInfo = {
     @uiLayouts.serviceInfo(
-        betaBanner = phaseBanner("BETA"),
+        betaBanner = uiLayouts.betaBanner(userLoggedIn = false, appConfig.betaFeedbackUrl, appConfig.betaFeedbackUnauthenticatedUrl),
         includeGridWrapper = false,
         serviceInfoContent = Some(serviceInfoContent),
         includeHMRCBranding = true,
