@@ -171,7 +171,7 @@ business.accounting_method.accordion.line_1                     = Rhoesoch anfon
 business.accounting_method.accordion.bullet_1                   = mis Mai 2017, buasech yn defnyddio cyfrifyddu ar ''sail arian parod''
 business.accounting_method.accordion.bullet_2                   = mis Mawrth 2017, buasech yn defnyddio''r ''sail croniadau''
 business.accounting_method.cash                                 = <span class="heading-small">Sail arian parod</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn cael arian neu''n talu bil. Mae llawer o unig fasnachwyr a busnesau bach yn defnyddio''r dull hwn.
-business.accounting_method.accruals                             = <span class="heading-small">Sail croniadau</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon neu''n cael anfoneb, hyd yn oed os nad ydych yn cael neu''n talu unrhyw arian. Mae''r dull hwn hefyd yn cael ei alw''n cyfrifyddu traddodiadol.
+business.accounting_method.accruals                             = <span class="heading-small">Sail croniadau</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon neu''n cael anfoneb, hyd yn oed os nad ydych yn cael neu''n talu unrhyw arian. Mae''r dull hwn hefyd yn cael ei alw''n ''cyfrifyddu traddodiadol''.
 
 
 ## Business Name
@@ -403,7 +403,7 @@ income-other.heading                                            = Oes gennych ch
 income-other.para1                                              = Gallai hyn gynnwys:
 income-other.bullet1                                            = cyflogaeth, nad eich busnes fel unig fasnachwr mohoni
 income-other.bullet2                                            = pensiynau neu flwydd-daliadau''r DU
-income-other.bullet3                                            = budd-daliadau trethadwy''r wladwriaeth
+income-other.bullet3                                            = budd-daliadau trethadwy''r Wladwriaeth
 income-other.bullet4                                            = cyflogaeth neu fuddsoddiadau y tu allan i''r DU
 income-other.bullet5                                            = enillion cyfalaf
 income-other.yes                                                = Iawn
@@ -812,7 +812,7 @@ agent.income-other.para1                                              = Gallai h
 agent.income-other.bullet1Property                                    = cyflogaeth
 agent.income-other.bullet1Default                                     = cyflogaeth nad yw''n fusnes fel unig fasnachwr
 agent.income-other.bullet2                                            = pensiynau neu flwydd-daliadau''r DU
-agent.income-other.bullet3                                            = budd-daliadau trethadwy''r wladwriaeth
+agent.income-other.bullet3                                            = budd-daliadau trethadwy''r Wladwriaeth
 agent.income-other.bullet4                                            = cyflogaeth neu fuddsoddiadau y tu allan i''r DU
 agent.income-other.bullet5                                            = enillion cyfalaf
 agent.income-other.yes                                                = Iawn
