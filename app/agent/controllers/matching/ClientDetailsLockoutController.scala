@@ -23,7 +23,7 @@ import agent.auth.{IncomeTaxAgentUser, UserMatchingController}
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import core.utils.Implicits._
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.models.{LockedOut, NotLockedOut}
@@ -47,10 +47,13 @@ class ClientDetailsLockoutController @Inject()(val baseConfig: BaseControllerCon
     }
   }
 
-  private[controllers] def durationText(duration: Duration): String = {
+  private[controllers] def durationText(duration: Duration)(implicit request: Request[_]): String = {
     val dur = LocalTime.MIDNIGHT.plus(duration)
 
-    def unitFormat(value: Int, text: String) = s"$value $text${if (value > 1) "s" else ""} "
+    def unitFormat(value: Int, text: String) = {
+      val messageKey = s"base.$text${if (value > 1) "s" else ""}"
+      s"$value ${Messages(messageKey)} "
+    }
 
     val h = dur.getHour
     lazy val hs = unitFormat(h, "hour")

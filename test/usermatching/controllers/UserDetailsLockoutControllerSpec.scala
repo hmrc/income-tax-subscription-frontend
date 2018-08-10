@@ -26,10 +26,14 @@ import core.controllers.ControllerBaseSpec
 import core.utils.TestConstants._
 import core.views.ViewSpecTrait
 import org.jsoup.Jsoup
+import play.api.Play
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.i18n.Messages.Implicits.applicationMessagesApi
+import play.api.mvc.{Action, AnyContent, Cookie, Request}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import uk.gov.hmrc.http.{NotFoundException, SessionKeys}
+import uk.gov.hmrc.play.language.LanguageUtils.WelshLangCode
 import usermatching.services.mocks.MockUserLockoutService
 
 class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
@@ -83,24 +87,49 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
 
   }
 
-  "durationText" should {
-    "convert time using correct singular units" in {
-      val testDuration = List(Duration.ofHours(1), Duration.ofMinutes(1), Duration.ofSeconds(1)).reduce(_.plus(_))
-      TestUserDetailsLockoutController.durationText(testDuration) mustBe "1 hour 1 minute 1 second"
-    }
+  "durationText" when {
+    "the language is English" should {
+      implicit lazy val r: Request[_] = request
 
-    "convert time using correct plural units" in {
-      val testDuration = List(Duration.ofHours(2), Duration.ofMinutes(2), Duration.ofSeconds(2)).reduce(_.plus(_))
-      TestUserDetailsLockoutController.durationText(testDuration) mustBe "2 hours 2 minutes 2 seconds"
-    }
+      "convert time using correct singular units" in {
+        val testDuration = List(Duration.ofHours(1), Duration.ofMinutes(1), Duration.ofSeconds(1)).reduce(_.plus(_))
+        TestUserDetailsLockoutController.durationText(testDuration) mustBe "1 hour 1 minute 1 second"
+      }
 
-    "convert different combinations of hour minute seconds correctly" in {
-      val testDuration1 = List(Duration.ofHours(2), Duration.ofSeconds(2)).reduce(_.plus(_))
-      TestUserDetailsLockoutController.durationText(testDuration1) mustBe "2 hours 2 seconds"
-      val testDuration2 = List(Duration.ofMinutes(2), Duration.ofSeconds(2)).reduce(_.plus(_))
-      TestUserDetailsLockoutController.durationText(testDuration2) mustBe "2 minutes 2 seconds"
-      val testDuration3 = List(Duration.ofMinutes(2)).reduce(_.plus(_))
-      TestUserDetailsLockoutController.durationText(testDuration3) mustBe "2 minutes"
+      "convert time using correct plural units" in {
+        val testDuration = List(Duration.ofHours(2), Duration.ofMinutes(2), Duration.ofSeconds(2)).reduce(_.plus(_))
+        TestUserDetailsLockoutController.durationText(testDuration) mustBe "2 hours 2 minutes 2 seconds"
+      }
+
+      "convert different combinations of hour minute seconds correctly" in {
+        val testDuration1 = List(Duration.ofHours(2), Duration.ofSeconds(2)).reduce(_.plus(_))
+        TestUserDetailsLockoutController.durationText(testDuration1) mustBe "2 hours 2 seconds"
+        val testDuration2 = List(Duration.ofMinutes(2), Duration.ofSeconds(2)).reduce(_.plus(_))
+        TestUserDetailsLockoutController.durationText(testDuration2) mustBe "2 minutes 2 seconds"
+        val testDuration3 = List(Duration.ofMinutes(2)).reduce(_.plus(_))
+        TestUserDetailsLockoutController.durationText(testDuration3) mustBe "2 minutes"
+      }
+    }
+    "the language is Welsh" should {
+      implicit lazy val r: Request[_] = request.withCookies(Cookie(Play.langCookieName(applicationMessagesApi), WelshLangCode))
+      "convert time using correct singular units" in {
+        val testDuration = List(Duration.ofHours(1), Duration.ofMinutes(1), Duration.ofSeconds(1)).reduce(_.plus(_))
+        TestUserDetailsLockoutController.durationText(testDuration) mustBe "1 awr 1 munud 1 eiliad"
+      }
+
+      "convert time using correct plural units" in {
+        val testDuration = List(Duration.ofHours(2), Duration.ofMinutes(2), Duration.ofSeconds(2)).reduce(_.plus(_))
+        TestUserDetailsLockoutController.durationText(testDuration) mustBe "2 oriau 2 munudau 2 eiliadau"
+      }
+
+      "convert different combinations of hour minute seconds correctly" in {
+        val testDuration1 = List(Duration.ofHours(2), Duration.ofSeconds(2)).reduce(_.plus(_))
+        TestUserDetailsLockoutController.durationText(testDuration1) mustBe "2 oriau 2 eiliadau"
+        val testDuration2 = List(Duration.ofMinutes(2), Duration.ofSeconds(2)).reduce(_.plus(_))
+        TestUserDetailsLockoutController.durationText(testDuration2) mustBe "2 munudau 2 eiliadau"
+        val testDuration3 = List(Duration.ofMinutes(2)).reduce(_.plus(_))
+        TestUserDetailsLockoutController.durationText(testDuration3) mustBe "2 munudau"
+      }
     }
   }
 
