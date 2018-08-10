@@ -25,12 +25,21 @@
 )(implicit messages: Messages)
 
 @import core.forms.validation.ErrorMessageHelper._
+@import uk.gov.hmrc.play.language.LanguageUtils.Welsh
 
 @hasError = @{
     val fieldError = getFieldError(field, parentForm)
     fieldError match {
         case Some(_) => true
         case _ => false
+    }
+}
+
+@* SAR-2367 a hacky fix until a formal decision is made. This changes the spacing for day & month fields in the Welsh language to match the year *@
+@ifNotWelsh(ifNotWelshClass: String) = @{
+    messages.lang match {
+        case Welsh => "form-group-year"
+        case _ => ifNotWelshClass
     }
 }
 
@@ -45,14 +54,14 @@
                 @inputHelper(
                     field(dateDay),
                     label = Messages("base.day"),
-                    divClass = "form-group-day",
+                    divClass = ifNotWelsh("form-group-day"),
                     maxLength = 2,
                     isNumeric = true
                 )
                 @inputHelper(
                     field(dateMonth),
                     label = Messages("base.month"),
-                    divClass = "form-group-month",
+                    divClass = ifNotWelsh("form-group-month"),
                     maxLength = 2,
                     isNumeric = true
                 )
