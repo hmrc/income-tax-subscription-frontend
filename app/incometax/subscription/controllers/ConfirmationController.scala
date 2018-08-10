@@ -24,15 +24,14 @@ import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
-import core.services.{AuthService, KeystoreService}
 import core.services.CacheUtil._
+import core.services.{AuthService, KeystoreService}
 import incometax.subscription.models.Other
-import incometax.subscription.views.html.{confirmation, sign_up_complete}
+import incometax.subscription.views.html.sign_up_complete
 import incometax.unauthorisedagent.views.html.unauthorised_agent_confirmation
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.InternalServerException
-import uk.gov.hmrc.play.language.LanguageUtils._
 import usermatching.userjourneys.ConfirmAgentSubscription
 
 
@@ -54,8 +53,6 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
           case Some(incomeSource) if incomeSource != Other =>
             if (request.isInState(ConfirmAgentSubscription))
               Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource))
-            else if (getCurrentLang == Welsh)
-              Ok(confirmation(journeyDuration, summary))
             else
               Ok(sign_up_complete(journeyDuration, summary))
           case _ =>

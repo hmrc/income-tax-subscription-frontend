@@ -136,7 +136,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         )
         status(result) shouldBe OK
 
-        Jsoup.parse(contentAsString(result)).title shouldBe Messages("confirmation.title")(applicationMessages(Welsh, app))
+        Jsoup.parse(contentAsString(result)).title shouldBe Messages("sign-up-complete.title")(applicationMessages(Welsh, app))
       }
     }
 
