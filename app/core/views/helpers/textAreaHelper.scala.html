@@ -15,16 +15,14 @@
  *@
 
 @(field: Field,
+        label: String,
+        showLabel: Boolean,
         parentForm: Option[Form[_]] = None,
         maxLength: Option[Int] = None,
         cols: Option[Int] = Some(45),
-        rows: Option[Int] = Some(100)
+        rows: Option[Int] = Some(5)
 )(implicit messages: Messages)
 @import core.forms.validation.ErrorMessageHelper._
-
-@textArea() = {
-    <textarea @maxLength.fold("")(x => s"maxlength=$x data-char-field ") name="@field.name" id="@field.name" cols="@cols" rows="@rows"></textarea>
-}
 
 @hasError = @{
     val fieldError = getFieldError(field, parentForm)
@@ -34,16 +32,10 @@
     }
 }
 
-<div class="form-group form-field@if(hasError) { form-field--error}">
+<div class="form-group@if(hasError) { form-field--error}">
     @fieldErrorHelper(field, parentForm)
-    @maxLength match {
-        case Some(mLen) => {
-            <div class="char-counter" data-char-counter>
-                @textArea()
-            </div>
-        }
-        case _ => {
-            @textArea()
-        }
-    }
+    <label class="form-label@if(!showLabel){ hidden}" for="@field.name">
+        @label
+    </label>
+    <textarea class="form-control form-control-3-4"@maxLength.fold("")(x => s" maxlength=$x") name="@field.name" id="@field.name" cols="@cols" rows="@rows"></textarea>
 </div>

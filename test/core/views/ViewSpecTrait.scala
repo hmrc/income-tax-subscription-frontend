@@ -218,6 +218,8 @@ trait ViewSpecTrait extends UnitTestTrait {
     }
 
     def mustHaveTextArea(name: String,
+                         label: String,
+                         showLabel: Boolean,
                          maxLength: Option[Int] = None
                         ): Unit = {
       s"${this.name} must have a textarea field '$name'" which {
@@ -230,14 +232,12 @@ trait ViewSpecTrait extends UnitTestTrait {
           maxLength match {
             case Some(l) =>
               ele.attr("maxLength") mustBe l.toString
-              ele.hasAttr("data-char-field") mustBe true
-              val parent = ele.parent()
-              parent.hasClass("char-counter") mustBe true
-              parent.hasAttr("data-char-counter") mustBe true
             case _ =>
-              ele.hasAttr("data-char-field") mustBe false
               ele.hasAttr("maxLength") mustBe false
           }
+          val labelTag = element.select(s"label[for=$name]")
+          labelTag.text() mustBe label
+          labelTag.hasClass("hidden") mustBe !showLabel
         }
       }
 
