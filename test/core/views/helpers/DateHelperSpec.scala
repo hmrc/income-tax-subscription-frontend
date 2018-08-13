@@ -20,16 +20,18 @@ import assets.MessageLookup
 import core.forms.submapping.DateMapping._
 import core.forms.validation.testutils.DataMap
 import core.models.DateModel
+import core.utils.UnitTestTrait
+import core.views.html.helpers
 import org.scalatest.Matchers._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
-import core.utils.UnitTestTrait
-import core.views.html.helpers
+import play.api.i18n.{Lang, Messages}
+import uk.gov.hmrc.play.language.LanguageUtils.Welsh
 
 class DateHelperSpec extends UnitTestTrait {
 
-  private def dateHelper(field: Field, label: Option[String])
-  = helpers.dateHelper(field, label)(applicationMessages)
+  private def dateHelper(field: Field, label: Option[String])(implicit messages: Messages = applicationMessages)
+  = helpers.dateHelper(field, label)(messages)
 
   val dateName = "testDate"
   val testForm = Form(
@@ -52,15 +54,30 @@ class DateHelperSpec extends UnitTestTrait {
       inputs.size() shouldBe 3
       inputs.get(0).attr("type") shouldBe "text"
       inputs.get(0).attr("maxlength") shouldBe "2"
+      inputs.get(0).parent().classNames() should contain("form-group-day")
       inputs.get(1).attr("type") shouldBe "text"
       inputs.get(1).attr("maxlength") shouldBe "2"
+      inputs.get(1).parent().classNames() should contain("form-group-month")
       inputs.get(2).attr("type") shouldBe "text"
       inputs.get(2).attr("maxlength") shouldBe "4"
+      inputs.get(2).parent().classNames() should contain("form-group-year")
 
       val labels = doc.getElementsByTag("label")
       labels.get(0).text shouldBe MessageLookup.Base.day
       labels.get(1).text shouldBe MessageLookup.Base.month
       labels.get(2).text shouldBe MessageLookup.Base.year
+    }
+
+    "the day & month class changes for the Welsh language" in {
+      val testField = testForm(dateName)
+
+      val doc = dateHelper(testField, testLabel)(applicationMessages(Welsh, app)).doc
+
+      val inputs = doc.getElementsByTag("input")
+
+      inputs.get(0).parent().classNames() should contain("form-group-year")
+      inputs.get(1).parent().classNames() should contain("form-group-year")
+      inputs.get(2).parent().classNames() should contain("form-group-year")
     }
 
     "if the form is populated with true, then the checkbox is marked as checked" in {
