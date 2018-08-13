@@ -60,6 +60,8 @@ class ExitSurveyViewSpec extends ViewSpecTrait {
     form.mustHaveH3(messages.Q2.question)
     form.mustHaveTextArea(
       ExitSurveyForm.improvements,
+      label = messages.Q2.question,
+      showLabel = false,
       maxLength = 1200
     )
 

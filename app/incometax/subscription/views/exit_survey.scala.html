@@ -70,7 +70,9 @@
             <p>@Messages("exit-survey.line_1")</p>
             @textAreaHelper(
                 field = exitSurveyForm(ExitSurveyForm.improvements),
-                maxLength = ExitSurveyForm.improvementsMaxLength
+                maxLength = ExitSurveyForm.improvementsMaxLength,
+                label = Messages("exit-survey.q2"),
+                showLabel = false
             )
         </div>
 

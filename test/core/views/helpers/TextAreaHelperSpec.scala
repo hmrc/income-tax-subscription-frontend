@@ -18,22 +18,28 @@ package core.views.helpers
 
 import core.forms.validation.testutils.DataMap
 import core.forms.validation.utils.MappingUtil._
+import core.utils.UnitTestTrait
+import core.views.html.helpers
 import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
-import core.utils.UnitTestTrait
-import core.views.html.helpers
 
 class TextAreaHelperSpec extends UnitTestTrait {
 
-  private def textAreaHelper(
-                              field: Field,
-                              maxLength: Option[Int] = None,
-                              cols: Option[Int] = None,
-                              rows: Option[Int] = None
-                            )
-  = helpers.textAreaHelper(field = field, maxLength = maxLength, cols = cols, rows = rows)(applicationMessages)
+  private def textAreaHelper(field: Field,
+                             label: String,
+                             showLabel: Boolean,
+                             maxLength: Option[Int] = None,
+                             cols: Option[Int] = None,
+                             rows: Option[Int] = None) =
+    helpers.textAreaHelper(
+      field = field,
+      label = label,
+      showLabel = showLabel,
+      maxLength = maxLength,
+      cols = cols,
+      rows = rows)(applicationMessages)
 
   case class TestData(input: String)
 
@@ -43,36 +49,38 @@ class TextAreaHelperSpec extends UnitTestTrait {
       inputName -> oText.toText.verifying(DataMap.alwaysFail)
     )(TestData.apply)(TestData.unapply)
   )
+  val testLabel = "testLabel"
   val testMaxLength = 120
   val testCols = 10
   val testRows = 20
 
   "TextAreaHelper" should {
 
-    "use the character counter template when max length is specified" in {
+    "output correctly when showLabel=true and max length specified" in {
       val testField = testForm(inputName)
-      val doc = textAreaHelper(testField, maxLength = testMaxLength, cols = testCols, rows = testRows).doc
-      val div = doc.select("div[class=char-counter]")
-      div.hasClass("char-counter") mustBe true
-      div.hasAttr("data-char-counter") mustBe true
+      val doc = textAreaHelper(testField, testLabel, showLabel = true, maxLength = testMaxLength, cols = testCols, rows = testRows).doc
+
+      val label = doc.select("label")
+      label.hasClass("hidden") mustBe false
+      label.attr("for") mustBe testField.name
 
       val textArea = doc.select("textarea")
       textArea.attr("maxLength") mustBe testMaxLength.toString
-      textArea.hasAttr("data-char-field") mustBe true
 
       textArea.attr("cols") mustBe testCols.toString
       textArea.attr("rows") mustBe testRows.toString
     }
 
-    "do not include the character counter when max length is not specified" in {
+    "output correctly when showLabel=false and max length not specified" in {
       val testField = testForm(inputName)
-      val doc = textAreaHelper(testField, maxLength = None, cols = testCols, rows = testRows).doc
-      val div = doc.select("div[class=char-counter]")
-      div.isEmpty mustBe true
+      val doc = textAreaHelper(testField, testLabel, showLabel = false, maxLength = None, cols = testCols, rows = testRows).doc
+
+      val label = doc.select("label")
+      label.hasClass("hidden") mustBe true
+      label.attr("for") mustBe testField.name
 
       val textArea = doc.select("textarea")
       textArea.hasAttr("maxLength") mustBe false
-      textArea.hasAttr("data-char-field") mustBe false
 
       textArea.attr("cols") mustBe testCols.toString
       textArea.attr("rows") mustBe testRows.toString
