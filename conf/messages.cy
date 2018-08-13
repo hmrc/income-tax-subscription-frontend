@@ -259,6 +259,21 @@ confirmation.whatHappensNext.bullet1                            = <a id="account
 confirmation.whatHappensNext.bullet2                            = <a id="bta" href="{0}">cyfrif treth busnes</a>
 confirmation.whatHappensNext.para4                              = Gall gymryd rhai oriau cyn eu bod i gyd i''w gweld.
 
+## Sign Up Complete page ##
+sign-up-complete.title                                          = Rydych wedi gorffen cofrestru
+sign-up-complete.heading                                        = Rydych wedi gorffen cofrestru
+sign-up-complete.whatHappensNext.heading                        = Yr hyn sy''n digwydd nesaf
+sign-up-complete.whatHappensNext.number1                        = <a id="accountingSoftware" href="{0}">Dewiswch feddalwedd cyfrifyddu</a> os nad ydych wedi gwneud hynny eisoes.
+sign-up-complete.whatHappensNext.number2                        = Mewngofnodwch i''r meddalwedd gyda''ch manylion Porth y Llywodraeth a''i awdurdodi i ryngweithio â CThEM.
+sign-up-complete.whatHappensNext.number3                        = Ychwanegwch unrhyw incwm yr ydych eisoes wedi''i gael a threuliau yr ydych eisoes wedi''u talu.
+sign-up-complete.whatHappensNext.number4                        = Cofnodwch eich incwm a''ch treuliau yn y dyfodol gan ddefnyddio meddalwedd, yna anfonwch adroddiad at CThEM bob chwarter, o leiaf.
+sign-up-complete.whatHappensNext.number5                        = Ychwanegwch unrhyw ffynonellau eraill o incwm fel rhan o''ch adroddiad terfynol - rhaid i chi anfon yr adroddiad hwn erbyn 31 Ionawr.
+sign-up-complete.whatHappensNext.para1                          = Ar ôl i chi anfon adroddiad, cewch amcangyfrif o''ch Treth Incwm. Gallwch weld eich amcangyfrif a dyddiadau cau''ch adroddiadau yn eich:
+sign-up-complete.whatHappensNext.bullet1                        = meddalwedd cyfrifyddu
+sign-up-complete.whatHappensNext.bullet2                        = <a id="bta" href="{0}">cyfrif treth busnes</a>
+sign-up-complete.whatHappensNext.para2                          = Gall gymryd rhai oriau cyn i chi allu gweld eich gwybodaeth.
+
+
 ## Errors ##
 error.back_to_preferences.empty                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
