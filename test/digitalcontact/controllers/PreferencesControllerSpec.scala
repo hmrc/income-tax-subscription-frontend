@@ -111,15 +111,15 @@ class PreferencesControllerSpec extends ControllerBaseSpec
       mockCheckPaperlessUnset(testToken, testUrl)
 
       status(result) must be(Status.SEE_OTHER)
-      redirectLocation(result).get must be(routes.PreferencesController.showGoBackToPreferences().url)
+      redirectLocation(result).get must be(routes.PreferencesController.show().url)
       session(result).get(ITSASessionKeys.PreferencesRedirectUrl) must contain(testUrl)
     }
 
   }
 
-  "Calling the showGoBackToPreferences action of the PreferencesController with an authorised user" should {
+  "Calling the show action of the PreferencesController with an authorised user" should {
 
-    lazy val result = TestPreferencesController.showGoBackToPreferences()(subscriptionRequest)
+    lazy val result = TestPreferencesController.show()(subscriptionRequest)
     lazy val document = Jsoup.parse(contentAsString(result))
 
 
@@ -132,10 +132,10 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitGoBackToPreferences action of the PreferencesController with an authorised user with yes" should {
+  "Calling the submit action of the PreferencesController with an authorised user with yes" should {
     implicit lazy val request = subscriptionRequest
 
-    def callShow() = TestPreferencesController.submitGoBackToPreferences()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
+    def callShow() = TestPreferencesController.submit()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
 
     "return a redirect status (SEE_OTHER - 303)" in {
       val goodRequest = callShow()
@@ -151,10 +151,10 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling the submitGoBackToPreferences action of the PreferencesController with an authorised user with the redirect url in the session" should {
+  "Calling the submit action of the PreferencesController with an authorised user with the redirect url in the session" should {
     implicit lazy val request = subscriptionRequest
 
-    def callShow() = TestPreferencesController.submitGoBackToPreferences()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
+    def callShow() = TestPreferencesController.submit()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
 
     "use the redirect location from the session" in {
       val goodRequest = callShow()
@@ -166,8 +166,8 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     }
   }
 
-  "Calling submitGoBackToPreferences with a fresh session should redirect to home" in {
-    val res = TestPreferencesController.submitGoBackToPreferences(FakeRequest())
+  "Calling submit with a fresh session should redirect to home" in {
+    val res = TestPreferencesController.submit(FakeRequest())
 
     status(res) mustBe SEE_OTHER
     redirectLocation(res) must contain(usermatching.controllers.routes.HomeController.index().url)

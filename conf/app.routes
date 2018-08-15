@@ -11,8 +11,8 @@ GET         /logout                       core.controllers.SignOutController.sig
 # Preferences routes
 GET         /preferences                  digitalcontact.controllers.PreferencesController.checkPreferences
 GET         /callback                     digitalcontact.controllers.PreferencesController.callback
-GET         /paperless-error              digitalcontact.controllers.PreferencesController.showGoBackToPreferences
-POST        /paperless-error              digitalcontact.controllers.PreferencesController.submitGoBackToPreferences
+GET         /paperless-error              digitalcontact.controllers.PreferencesController.show
+POST        /paperless-error              digitalcontact.controllers.PreferencesController.submit
 
 # Rent Uk Property Routes
 GET         /rent-uk-property             incometax.incomesource.controllers.RentUkPropertyController.show(editMode: Boolean ?= false)
@@ -101,4 +101,4 @@ GET         /error/cannot-sign-up         incometax.incomesource.controllers.Can
 GET         /error/cannot-use-service     incometax.incomesource.controllers.CannotUseServiceController.show()
 
 #Language
-GET         /language/:lang                         core.controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang               core.controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
