@@ -45,7 +45,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
 
   def view()(implicit request: Request[AnyContent]): Html = {
     digitalcontact.views.html.continue_registration(
-      postAction = digitalcontact.controllers.routes.PreferencesController.submitGoBackToPreferences()
+      postAction = digitalcontact.controllers.routes.PreferencesController.submit()
     )
   }
 
@@ -75,18 +75,18 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
         token =>
           preferencesService.checkPaperless(token).map {
             case Right(Activated) => goToNext
-            case Right(Unset(url)) => Redirect(digitalcontact.controllers.routes.PreferencesController.showGoBackToPreferences())
+            case Right(Unset(url)) => Redirect(digitalcontact.controllers.routes.PreferencesController.show())
               .addingToSession(ITSASessionKeys.PreferencesRedirectUrl -> url)
             case _ => throw new InternalServerException("Could not get paperless preferences")
           }
       }
   }
 
-  def showGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
+  def show: Action[AnyContent] = Authenticated { implicit request =>
     implicit user => Ok(view())
   }
 
-  def submitGoBackToPreferences: Action[AnyContent] = Authenticated { implicit request =>
+  def submit: Action[AnyContent] = Authenticated { implicit request =>
     implicit user => gotoPreferences
   }
 
