@@ -35,6 +35,8 @@ class CitizenDetailsConnector @Inject()(appConfig: AppConfig,
 
   def lookupUtrUrl(nino: String): String = appConfig.citizenDetailsURL + CitizenDetailsConnector.lookupUtrUri(nino)
 
+  def lookupNinoUrl(utr: String): String = appConfig.citizenDetailsURL + CitizenDetailsConnector.lookupNinoUri(utr)
+
   def lookupUtr(nino: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
     http.GET[GetCitizenDetailsResponse](lookupUtrUrl(nino)).map {
       case r@Right(Some(success)) =>
@@ -47,8 +49,25 @@ class CitizenDetailsConnector @Inject()(appConfig: AppConfig,
         logging.warn("CitizenDetailsConnector.lookupUtr failure, status=" + status)
         l
     }
+
+  def lookupNino(utr: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
+    http.GET[GetCitizenDetailsResponse](lookupNinoUrl(utr)).map {
+      case r@Right(Some(success)) =>
+        logging.debug("CitizenDetailsConnector.lookupNino successful, returned OK")
+        r
+      case r@Right(None) =>
+        logging.debug("CitizenDetailsConnector.lookupNino successful, returned Not Found")
+        r
+      case l@Left(CitizenDetailsFailureResponse(status)) =>
+        logging.warn("CitizenDetailsConnector.lookupNino failure, status=" + status)
+        l
+    }
+
+
 }
 
 object CitizenDetailsConnector {
   def lookupUtrUri(nino: String): String = s"/citizen-details/nino/$nino"
+
+  def lookupNinoUri(utr: String): String = s"/citizen-details/sautr/$utr"
 }

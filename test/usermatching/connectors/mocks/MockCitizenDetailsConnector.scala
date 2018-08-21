@@ -45,11 +45,20 @@ trait MockCitizenDetailsConnector extends MockTrait {
       )
     ).thenReturn(response)
 
+  def mockLookupNino(utr: String)(response: Future[Either[CitizenDetailsFailureResponse, Option[CitizenDetailsSuccess]]]): Unit =
+    when(
+      mockCitizenDetailsConnector.lookupNino(
+        ArgumentMatchers.eq(utr)
+      )(
+        ArgumentMatchers.any[HeaderCarrier]
+      )
+    ).thenReturn(response)
+
   def mockLookupUserWithUtr(nino: String)(utr: String): Unit =
-    mockLookupUtr(nino)(Future.successful(Right(Some(CitizenDetailsSuccess(Some(utr))))))
+    mockLookupUtr(nino)(Future.successful(Right(Some(CitizenDetailsSuccess(Some(utr), nino)))))
 
   def mockLookupUserWithoutUtr(nino: String): Unit =
-    mockLookupUtr(nino)(Future.successful(Right(Some(CitizenDetailsSuccess(None)))))
+    mockLookupUtr(nino)(Future.successful(Right(Some(CitizenDetailsSuccess(None, nino)))))
 
   def mockLookupUserNotFound(nino: String): Unit =
     mockLookupUtr(nino)(Future.successful(Right(None)))

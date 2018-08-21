@@ -19,10 +19,7 @@ package usermatching.services
 import core.utils.TestConstants._
 import core.utils.UnitTestTrait
 import org.scalatest.concurrent.ScalaFutures
-import play.api.http.Status.BAD_REQUEST
-import uk.gov.hmrc.http.InternalServerException
-import usermatching.httpparsers.CitizenDetailsResponseHttpParser.GetCitizenDetailsResponse
-import usermatching.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
+import usermatching.models.CitizenDetailsSuccess
 import usermatching.services.mocks.TestCitizenDetailsService
 
 import scala.concurrent.Future
@@ -46,6 +43,26 @@ class CitizenDetailsServiceSpec extends UnitTestTrait with TestCitizenDetailsSer
       val result = call
 
       whenReady(result.failed)(_.getMessage mustBe "unexpected error calling the citizen details service")
+    }
+  }
+
+  "lookupNino" should {
+    def call: Future[String] = TestCitizenDetailsService.lookupNino(testUtr)
+
+    "return a success from the CitizenDetailsConnector" in {
+      mockLookupNino(testUtr)(Future.successful(Right(Some(CitizenDetailsSuccess(None, testNino)))))
+
+      whenReady(call)(_ mustBe testNino)
+    }
+
+    "return a failure from the CitizenDetailsConnector" in {
+      val failureMessage = "unexpected error calling the citizen details service"
+
+      mockLookupNino(testUtr)(Future.failed(new Exception(failureMessage)))
+
+      val result = call
+
+      whenReady(result.failed)(_.getMessage mustBe failureMessage)
     }
   }
 

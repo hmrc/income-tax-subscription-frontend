@@ -16,12 +16,10 @@
 
 package usermatching.services
 
-import javax.inject.{Inject, Singleton}
-
 import core.config.AppConfig
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.connectors.CitizenDetailsConnector
-import usermatching.httpparsers.CitizenDetailsResponseHttpParser.GetCitizenDetailsResponse
 import usermatching.models.CitizenDetailsSuccess
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,15 +34,21 @@ class CitizenDetailsService @Inject()(appConfig: AppConfig,
 *  The hc must not be edited in production
 */
   def amendHCForTest(implicit hc: HeaderCarrier): HeaderCarrier =
-    appConfig.hasEnabledTestOnlyRoutes match {
-      case true => hc.copy(trueClientIp = Some("ITSA"))
-      case false => hc
-    }
+    if(appConfig.hasEnabledTestOnlyRoutes) hc.copy(trueClientIp = Some("ITSA"))
+    else hc
 
   def lookupUtr(nino: String)(implicit hc: HeaderCarrier): Future[Option[String]] =
     citizenDetailsConnector.lookupUtr(nino)(amendHCForTest) map {
-      case Right(Some(CitizenDetailsSuccess(utr))) =>
+      case Right(Some(CitizenDetailsSuccess(utr, _))) =>
         utr
+      case _ =>
+        throw new InternalServerException("unexpected error calling the citizen details service")
+    }
+
+  def lookupNino(utr: String)(implicit hc: HeaderCarrier): Future[String] =
+    citizenDetailsConnector.lookupNino(utr)(amendHCForTest) map {
+      case Right(Some(CitizenDetailsSuccess(_, nino))) =>
+        nino
       case _ =>
         throw new InternalServerException("unexpected error calling the citizen details service")
     }
