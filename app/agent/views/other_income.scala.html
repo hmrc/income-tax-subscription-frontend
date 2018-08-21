@@ -16,12 +16,13 @@
 
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
-@import agent.models.OtherIncomeModel
+@import core.models.{YesNo, Yes, No}
 @import core.config.AppConfig
 @import agent.forms.OtherIncomeForm
 @import agent.forms.IncomeSourceForm.option_property
+@import core.forms.submapping.YesNoMapping
 
-@(otherIncomeForm: Form[OtherIncomeModel], incomeSource:String, postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(otherIncomeForm: Form[YesNo], incomeSource:String, postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
     @core.views.html.templates.main_template(title = Messages("agent.income-other.title"), form = otherIncomeForm) {
         @back_link(backUrl)
@@ -55,8 +56,8 @@
                 legend = Messages("agent.income-other.heading"),
                 inline = true,
                 options = Seq(
-                    RadioOption(OtherIncomeForm.option_yes, Messages("agent.income-other.yes")),
-                    RadioOption(OtherIncomeForm.option_no, Messages("agent.income-other.no"))
+                    RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
+                    RadioOption(YesNoMapping.option_no, No.toMessageString)
                 ),
                 parentForm = otherIncomeForm
             )

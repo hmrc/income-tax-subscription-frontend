@@ -16,6 +16,7 @@
 
 package incometax.business
 
+import core.models.No
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{keystoreData, testMatchTaxYearNo, testMatchTaxYearYes}
@@ -23,8 +24,6 @@ import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import incometax.business.forms.AccountingMethodForm
 import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel}
-import incometax.incomesource.forms.OtherIncomeForm
-import incometax.incomesource.models.OtherIncomeModel
 import incometax.subscription.models.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
@@ -151,7 +150,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
       "changing to the Accruals radio button on the accounting method page" in {
         val keystoreIncomeSource = Both
-        val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
+        val keystoreIncomeOther = No
         val keystoreMatchTaxYear = testMatchTaxYearNo
         val keystoreAccountingPeriodDates: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
         val keystoreAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
@@ -182,7 +181,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
 
       "simulate not changing accounting method when calling page from Check Your Answers" in {
         val keystoreIncomeSource = Both
-        val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
+        val keystoreIncomeOther = No
         val keystoreTaxYear = testMatchTaxYearNo
         val keystoreAccountingPeriodDates: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
         val keystoreAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)

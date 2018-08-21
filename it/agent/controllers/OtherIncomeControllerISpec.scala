@@ -16,13 +16,12 @@
 
 package agent.controllers
 
-import _root_.agent.forms.OtherIncomeForm
 import _root_.agent.helpers.ComponentSpecBase
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
-import _root_.agent.models.OtherIncomeModel
 import _root_.agent.services.CacheConstants
+import core.models.{No, Yes}
 import incometax.subscription.models.{Both, Business, Property}
 import play.api.http.Status._
 import play.api.i18n.Messages
@@ -44,7 +43,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(Messages("agent.income-other.title")),
-          radioButtonSet(id = "choice", selectedRadioButton = Some(Messages("agent.income-other.no")))
+          radioButtonSet(id = "choice", selectedRadioButton = Some(Messages("base.no")))
         )
       }
     }
@@ -94,8 +93,8 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
 
       "if income source is not in key store redirect to income page" in {
         val keystoreIncomeSource = Business
-        val keystoreOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_yes)
+        val keystoreOtherIncome = No
+        val userInput = Yes
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -113,7 +112,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
       }
 
       "select the Yes other income radio button on the other income page" in {
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_yes)
+        val userInput = Yes
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -132,7 +131,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
 
       "select the No other income radio button on the other income page while on Business journey" in {
         val keystoreIncomeSource = Business
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
+        val userInput = No
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -151,7 +150,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
 
       "select the No other income radio button on the other income page while on Both journey" in {
         val keystoreIncomeSource = Both
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
+        val userInput = No
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -170,7 +169,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
 
       "select the No other income radio button on the other income page while on Property journey" in {
         val keystoreIncomeSource = Property
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
+        val userInput = No
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -220,32 +219,14 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "select invalid other income option on the other income page as if the user it trying to manipulate the html" in {
-        val userInput = OtherIncomeModel("madeup")
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(testIncomeSourceBoth)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.OtherIncome, "madeup")
-
-        When("POST /income-other is called")
-        val res = IncomeTaxSubscriptionFrontend.submitOtherIncome(inEditMode = false, Some(userInput))
-
-        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-        res should have(
-          httpStatus(BAD_REQUEST),
-          errorDisplayed()
-        )
-      }
-
     }
 
     "in edit mode" should {
 
       "if income source is not in key store redirect to income page" in {
         val keystoreIncomeSource = Business
-        val keystoreOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_yes)
+        val keystoreOtherIncome = No
+        val userInput = Yes
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -264,8 +245,8 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
 
       "changing to the Yes other income radio button on the other income page" in {
         val keystoreIncomeSource = Business
-        val keystoreOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_yes)
+        val keystoreOtherIncome = No
+        val userInput = Yes
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -284,8 +265,8 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
 
       "simulate not changing other income when already selected no on the other income page" in {
         val keystoreIncomeSource = Business
-        val keystoreOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
+        val keystoreOtherIncome = No
+        val userInput = No
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

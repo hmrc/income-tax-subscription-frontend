@@ -21,10 +21,10 @@ import javax.inject.{Inject, Singleton}
 import core.audit.Logging
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
+import core.models.{No, Yes, YesNo}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.OtherIncomeForm
-import incometax.incomesource.models.OtherIncomeModel
 import incometax.incomesource.services.CurrentTimeService
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.data.Form
@@ -42,7 +42,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                       val currentTimeService: CurrentTimeService
                                      ) extends SignUpController {
 
-  def view(otherIncomeForm: Form[OtherIncomeModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
+  def view(otherIncomeForm: Form[YesNo], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
     incometax.incomesource.views.html.other_income(
       otherIncomeForm = otherIncomeForm,
       postAction = incometax.incomesource.controllers.routes.OtherIncomeController.submit(editMode = isEditMode),
@@ -64,11 +64,11 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  private def defaultRedirections(cache: CacheMap, choice: OtherIncomeModel)(implicit request: Request[_]): Result =
-    choice.choice match {
-      case OtherIncomeForm.option_yes =>
+  private def defaultRedirections(cache: CacheMap, choice: YesNo)(implicit request: Request[_]): Result =
+    choice match {
+      case Yes =>
         Redirect(incometax.incomesource.controllers.routes.OtherIncomeErrorController.show())
-      case OtherIncomeForm.option_no =>
+      case No =>
         cache.getIncomeSourceType() match {
           case Some(Business) =>
             Redirect(incometax.business.controllers.routes.BusinessNameController.show())

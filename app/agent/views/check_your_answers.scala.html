@@ -25,6 +25,7 @@
 @import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 
+@import core.models.YesNo
 @(summaryModel: SummaryModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @import SummaryIdConstants._
 @import agent.views.html.helpers.SummaryHelper._
@@ -58,13 +59,10 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@otherIncome(source: OtherIncomeModel) = @{
+@otherIncome(source: YesNo) = @{
     val rowName = OtherIncomeId
     val rowQuestion = Messages("agent.summary.other_income")
-    val rowAnswer = source.choice match {
-        case "Yes" => Messages("base.yes")
-        case "No" => Messages("base.no")
-    }
+    val rowAnswer = source.toMessageString
     val rowUrl = agent.controllers.routes.OtherIncomeController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }

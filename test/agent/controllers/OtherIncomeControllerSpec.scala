@@ -21,7 +21,8 @@ import agent.forms.OtherIncomeForm
 import agent.models.OtherIncomeModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
-import core.config.featureswitch.{FeatureSwitching}
+import core.config.featureswitch.FeatureSwitching
+import core.models.{No, Yes}
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models._
 import play.api.http.Status
@@ -87,7 +88,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
   "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user" when {
     def callSubmit = TestOtherIncomeController.submit(isEditMode = true)(subscriptionRequest
-      .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_yes)))
+      .post(OtherIncomeForm.otherIncomeForm, Yes))
 
     "income source is not in keystore" should {
       s"return redirect (303) to ${agent.controllers.routes.IncomeSourceController.show().url}" in {
@@ -110,7 +111,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
     "income source is in keystore and saying yes to other income" should {
 
       def callSubmit = TestOtherIncomeController.submit(isEditMode = true)(subscriptionRequest
-        .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_yes)))
+        .post(OtherIncomeForm.otherIncomeForm, Yes))
 
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockKeystore(
@@ -145,7 +146,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
     "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and saying no to other income" should {
 
       def callSubmit = TestOtherIncomeController.submit(isEditMode = true)(subscriptionRequest
-        .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
+        .post(OtherIncomeForm.otherIncomeForm, No))
 
       "return a redirect status (SEE_OTHER - 303)" in {
 
@@ -212,7 +213,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
         val dummy = "Invalid"
 
         def badrequest = TestOtherIncomeController.submit(isEditMode = true)(subscriptionRequest
-          .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(dummy)))
+          .postInvalid(OtherIncomeForm.otherIncomeForm, dummy))
 
         "return a bad request status (400)" in {
           setupMockKeystore(

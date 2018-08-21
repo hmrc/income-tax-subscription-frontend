@@ -18,14 +18,14 @@ package agent.controllers
 
 import agent.audit.Logging
 import agent.forms.OtherIncomeForm
-import agent.models.OtherIncomeModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.models.No
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{await, _}
+import play.api.test.Helpers._
 
 class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKeystoreService {
 
@@ -59,7 +59,7 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
   "Calling the submitOtherIncomeError action of the OtherIncomeError controller with an authorised user" should {
 
     def callSubmit = TestOtherIncomeErrorController.submit(subscriptionRequest
-      .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
+      .post(OtherIncomeForm.otherIncomeForm, No))
 
     "return a redirect status (SEE_OTHER - 303)" in {
 

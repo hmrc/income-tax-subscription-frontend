@@ -20,7 +20,7 @@ import _root_.agent.forms._
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.models._
 import _root_.agent.services.CacheConstants
-import core.models.DateModel
+import core.models.{DateModel, No, Yes, YesNo}
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models._
 import incometax.unauthorisedagent.models.StoredSubscription
@@ -71,7 +71,7 @@ object IntegrationTestModels {
 
   def keystoreData(
                     incomeSource: Option[IncomeSourceType] = None,
-                    otherIncome: Option[OtherIncomeModel] = None,
+                    otherIncome: Option[YesNo] = None,
                     accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                     accountingPeriodDate: Option[AccountingPeriodModel] = None,
                     businessName: Option[BusinessNameModel] = None,
@@ -79,7 +79,7 @@ object IntegrationTestModels {
                     terms: Option[Boolean] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
-      otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++
+      otherIncome.map(model => OtherIncome -> YesNo.format.writes(model)) ++
       accountingPeriodPrior.map(model => AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
@@ -99,9 +99,9 @@ object IntegrationTestModels {
 
   lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
-  lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
+  lazy val testOtherIncomeNo = No
 
-  lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
+  lazy val testOtherIncomeYes = Yes
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
   lazy val testClientDetails = _root_.helpers.IntegrationTestModels.testUserDetails

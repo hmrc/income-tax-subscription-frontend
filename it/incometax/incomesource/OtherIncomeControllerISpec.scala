@@ -16,6 +16,7 @@
 
 package incometax.incomesource
 
+import core.models.{No, Yes}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -43,7 +44,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(Messages("income-other.title")),
-          radioButtonSet(id = "choice", selectedRadioButton = Some(Messages("income-other.no")))
+          radioButtonSet(id = "choice", selectedRadioButton = Some(Messages("base.no")))
         )
       }
     }
@@ -72,7 +73,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
     "not in edit mode" should {
 
       "select the Yes other income radio button on the other income page" in {
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_yes)
+        val userInput = Yes
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -89,7 +90,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
       }
 
       "select the No other income radio button on the other income page while on Business journey" in {
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
+        val userInput = No
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -109,7 +110,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
       }
 
       "select the No other income radio button on the other income page while on Both journey" in {
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
+        val userInput = No
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -129,7 +130,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
       }
 
       "select the No other income radio button on the other income page while on Property journey" in {
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
+        val userInput = No
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -162,31 +163,13 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "select invalid other income option on the other income page as if the user it trying to manipulate the html" in {
-        val userInput = OtherIncomeModel("madeup")
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
-        KeystoreStub.stubKeystoreSave(CacheConstants.OtherIncome, "madeup")
-
-        When("POST /income-other is called")
-        val res = IncomeTaxSubscriptionFrontend.submitOtherIncome(inEditMode = false, Some(userInput))
-
-        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-        res should have(
-          httpStatus(BAD_REQUEST),
-          errorDisplayed()
-        )
-      }
-
     }
 
     "in edit mode" should {
 
       "changing to the Yes other income radio button on the other income page" in {
-        val keystoreOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_yes)
+        val keystoreOtherIncome = No
+        val userInput = Yes
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -204,8 +187,8 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
       }
 
       "simulate not changing other income when already selected no on the other income page" in {
-        val keystoreOtherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
-        val userInput = OtherIncomeModel(OtherIncomeForm.option_no)
+        val keystoreOtherIncome = No
+        val userInput = No
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

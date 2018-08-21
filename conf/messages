@@ -421,8 +421,6 @@ income-other.bullet2                                            = UK pensions or
 income-other.bullet3                                            = taxable state benefits
 income-other.bullet4                                            = employment or investments from outside the UK
 income-other.bullet5                                            = capital gains
-income-other.yes                                                = Yes
-income-other.no                                                 = No
 
 ## cannot report before 6 April 2018 page ##
 cannot-report-yet.title                                        = You can''t use software to report your Income Tax yet
@@ -843,8 +841,6 @@ agent.income-other.bullet2                                            = UK pensi
 agent.income-other.bullet3                                            = taxable state benefits
 agent.income-other.bullet4                                            = employment or investments from outside the UK
 agent.income-other.bullet5                                            = capital gains
-agent.income-other.yes                                                = Yes
-agent.income-other.no                                                 = No
 
 ## Not Enrolled to Agent Services
 agent.not_enrolled_agent_services.title                               = You can''t use this service yet

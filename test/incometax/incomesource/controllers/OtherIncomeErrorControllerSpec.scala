@@ -19,14 +19,14 @@ package incometax.incomesource.controllers
 import core.audit.Logging
 import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
+import core.models.No
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
 import incometax.incomesource.forms.OtherIncomeForm
-import incometax.incomesource.models.OtherIncomeModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.Helpers.{await, _}
+import play.api.test.Helpers._
 
 class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
@@ -62,7 +62,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
   "Calling the submit action of the OtherIncomeError controller with an authorised user" should {
 
     def callSubmit = TestOtherIncomeErrorController.submit(subscriptionRequest
-      .post(OtherIncomeForm.otherIncomeForm, OtherIncomeModel(OtherIncomeForm.option_no)))
+      .post(OtherIncomeForm.otherIncomeForm, No))
 
 
     s"redirect to '${incometax.business.controllers.routes.BusinessNameController.show().url}' on the business journey" in {

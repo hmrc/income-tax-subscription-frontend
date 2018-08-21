@@ -16,7 +16,7 @@
 
 package core.models
 
-
+// todo remove once all dependcies are removed
 object YesNoModel {
   val YES = "Yes"
   val NO = "No"

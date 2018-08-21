@@ -421,8 +421,6 @@ income-other.bullet2                                            = pensiynau neu 
 income-other.bullet3                                            = budd-daliadau trethadwy''r Wladwriaeth
 income-other.bullet4                                            = cyflogaeth neu fuddsoddiadau y tu allan i''r DU
 income-other.bullet5                                            = enillion cyfalaf
-income-other.yes                                                = Iawn
-income-other.no                                                 = Na
 
 ## cannot report before 6 April 2018 page ##
 cannot-report-yet.title                                        = Ni allwch ddefnyddio meddalwedd i roi gwybod am eich Treth Incwm ar hyn o bryd
@@ -830,8 +828,6 @@ agent.income-other.bullet2                                            = pensiyna
 agent.income-other.bullet3                                            = budd-daliadau trethadwy''r Wladwriaeth
 agent.income-other.bullet4                                            = cyflogaeth neu fuddsoddiadau y tu allan i''r DU
 agent.income-other.bullet5                                            = enillion cyfalaf
-agent.income-other.yes                                                = Iawn
-agent.income-other.no                                                 = Na
 
 ## Not Enrolled to Agent Services
 agent.not_enrolled_agent_services.title                               = Ni allwch ddefnyddio''r gwasanaeth hwn ar hyn o bryd

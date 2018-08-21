@@ -18,12 +18,12 @@ package incometax.unauthorisedagent.services
 
 import javax.inject.{Inject, Singleton}
 
-import agent.forms.{AccountingPeriodPriorForm, OtherIncomeForm}
+import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
 import agent.services.CacheUtil._
 import agent.services.KeystoreService
 import core.config.AppConfig
-import incometax.incomesource.models.OtherIncomeModel
+import core.models.{No, Yes}
 import incometax.subscription.models.IncomeSourceType
 import incometax.unauthorisedagent.connectors.SubscriptionStoreConnector
 import incometax.unauthorisedagent.httpparsers.StoreSubscriptionResponseHttpParser.StoreSubscriptionResponse
@@ -54,8 +54,8 @@ class SubscriptionStorePersistenceService @Inject()(subscriptionStoreConnector: 
       arn,
       IncomeSourceType(incomeSource.get.source),
       otherIncome.map {
-        case OtherIncomeModel(OtherIncomeForm.option_yes) => true
-        case OtherIncomeModel(OtherIncomeForm.option_no) => false
+        case Yes => true
+        case No => false
       }.get,
       accountingPeriodPrior.map {
         case AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes) => true

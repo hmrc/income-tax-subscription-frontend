@@ -40,7 +40,7 @@
     @dataHelper("rent-uk-property", summary.rentUkProperty.map(_.rentUkProperty))
     @dataHelper("only-source-of-self-employed-income", summary.rentUkProperty.flatMap(_.onlySourceOfSelfEmployedIncome))
     @dataHelper("work-for-yourself", summary.workForYourself.map(_.doYouWorkForYourself))
-    @dataHelper("other-income", summary.otherIncome.map(_.choice))
+    @dataHelper("other-income", summary.otherIncome.map(_.toString))
     @dataHelper("accounting-period-prior", summary.accountingPeriodPrior.map(_.currentPeriodIsPrior))
     @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod))
 

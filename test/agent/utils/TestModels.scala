@@ -19,10 +19,10 @@ package agent.utils
 import _root_.agent.services.CacheConstants
 import agent.forms._
 import agent.models._
-import core.models.DateModel
+import core.models.{DateModel, No, Yes, YesNo}
 import core.utils.Implicits
 import incometax.business.models.AccountingPeriodModel
-import incometax.subscription.models.{Business, Both, IncomeSourceType, Other, Property}
+import incometax.subscription.models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -67,7 +67,7 @@ object TestModels extends Implicits {
 
   def testCacheMapCustom(
                           incomeSource: Option[IncomeSourceType] = testIncomeSourceBoth,
-                          otherIncome: Option[OtherIncomeModel] = testOtherIncomeNo,
+                          otherIncome: Option[YesNo] = testOtherIncomeNo,
                           accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                           businessName: Option[BusinessNameModel] = testBusinessName,
@@ -83,7 +83,7 @@ object TestModels extends Implicits {
       terms = terms)
 
   def testCacheMap(incomeSource: Option[IncomeSourceType] = None,
-                   otherIncome: Option[OtherIncomeModel] = None,
+                   otherIncome: Option[YesNo] = None,
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
@@ -92,7 +92,7 @@ object TestModels extends Implicits {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceType.format.writes(model))) ++
-      otherIncome.fold(emptyMap)(model => Map(OtherIncome -> OtherIncomeModel.format.writes(model))) ++
+      otherIncome.fold(emptyMap)(model => Map(OtherIncome -> YesNo.format.writes(model))) ++
       accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
@@ -113,9 +113,9 @@ object TestModels extends Implicits {
 
   lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
-  lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
+  lazy val testOtherIncomeNo = No
 
-  lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
+  lazy val testOtherIncomeYes = Yes
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
   // TODO change when consolidating models

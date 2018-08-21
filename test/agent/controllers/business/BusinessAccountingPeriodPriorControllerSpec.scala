@@ -22,6 +22,7 @@ import agent.forms.OtherIncomeForm._
 import agent.models.{AccountingPeriodPriorModel, OtherIncomeModel}
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.models.{No, Yes, YesNo}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -45,7 +46,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
   )
 
   // answer to other income is only significant for testing the backurl.
-  val defaultOtherIncomeAnswer: OtherIncomeModel = TestModels.testOtherIncomeNo
+  val defaultOtherIncomeAnswer: YesNo = TestModels.testOtherIncomeNo
 
   "Calling the show action of the BusinessAccountingPeriodPriorController with an authorised user" should {
 
@@ -74,21 +75,21 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
 
   "The back url" should {
 
-    def result(choice: String): Future[Result] = {
+    def result(choice: YesNo): Future[Result] = {
       setupMockKeystore(
         fetchAccountingPeriodPrior = None,
-        fetchOtherIncome = OtherIncomeModel(choice)
+        fetchOtherIncome = choice
       )
       TestAccountingPeriodPriorController.show(isEditMode = false)(subscriptionRequest)
     }
 
     s"When the user previously answered yes to otherIncome, it should point to '${agent.controllers.routes.OtherIncomeErrorController.show().url}'" in {
-      val document = Jsoup.parse(contentAsString(result(option_yes)))
+      val document = Jsoup.parse(contentAsString(result(Yes)))
       document.select("#back").attr("href") mustBe agent.controllers.routes.OtherIncomeErrorController.show().url
     }
 
     s"When the user previously answered no to otherIncome, it should point to '${agent.controllers.routes.OtherIncomeController.show().url}'" in {
-      val document = Jsoup.parse(contentAsString(result(option_no)))
+      val document = Jsoup.parse(contentAsString(result(No)))
       document.select("#back").attr("href") mustBe agent.controllers.routes.OtherIncomeController.show().url
     }
 

@@ -3,14 +3,13 @@ package helpers
 
 import core.Constants
 import core.Constants.GovernmentGateway._
-import core.models.DateModel
 import core.models.YesNoModel._
+import core.models.{DateModel, No, Yes, YesNo}
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
 import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
-import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models._
 import incometax.subscription.models._
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
@@ -68,7 +67,7 @@ object IntegrationTestModels {
   def keystoreData(incomeSource: Option[IncomeSourceType] = None,
                    rentUkProperty: Option[RentUkPropertyModel] = None,
                    workForYourself: Option[WorkForYourselfModel] = None,
-                   otherIncome: Option[OtherIncomeModel] = None,
+                   otherIncome: Option[YesNo] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
@@ -80,7 +79,7 @@ object IntegrationTestModels {
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
       rentUkProperty.map(model => RentUkProperty -> RentUkPropertyModel.format.writes(model)) ++
       workForYourself.map(model => WorkForYourself -> WorkForYourselfModel.format.writes(model)) ++
-      otherIncome.map(model => OtherIncome -> OtherIncomeModel.format.writes(model)) ++
+      otherIncome.map(model => OtherIncome -> YesNo.format.writes(model)) ++
       matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
@@ -103,9 +102,9 @@ object IntegrationTestModels {
   lazy val testWorkForYourself_yes = WorkForYourselfModel(YES)
   lazy val testWorkForYourself_no = WorkForYourselfModel(NO)
 
-  lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
+  lazy val testOtherIncomeNo = No
 
-  lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
+  lazy val testOtherIncomeYes = Yes
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testStartDate)
 

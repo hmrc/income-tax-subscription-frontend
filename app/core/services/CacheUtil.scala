@@ -17,6 +17,7 @@
 package core.services
 
 import core.config.AppConfig
+import core.models.YesNo
 import core.models.YesNoModel._
 import core.services.CacheConstants._
 import incometax.business.models._
@@ -39,7 +40,7 @@ object CacheUtil {
                               readW: Reads[WorkForYourselfModel]): Option[IncomeSourceType] =
       getRentUkProperty().flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, getWorkForYourself()))
 
-    def getOtherIncome()(implicit read: Reads[OtherIncomeModel]): Option[OtherIncomeModel] = cacheMap.getEntry(OtherIncome)
+    def getOtherIncome()(implicit read: Reads[YesNo]): Option[YesNo] = cacheMap.getEntry(OtherIncome)
 
     def getMatchTaxYear()(implicit read: Reads[MatchTaxYearModel]): Option[MatchTaxYearModel] = cacheMap.getEntry(MatchTaxYear)
 

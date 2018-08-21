@@ -16,41 +16,23 @@
 
 package agent.forms
 
+import core.forms.submapping.YesNoMapping
 import core.forms.validation.ErrorMessageFactory
-import core.forms.validation.utils.ConstraintUtil._
-import core.forms.validation.utils.MappingUtil._
-import agent.models.OtherIncomeModel
+import core.models.YesNo
 import play.api.data.Form
-import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid}
+import play.api.data.Forms.single
 
 object OtherIncomeForm {
 
   val choice = "choice"
-  val option_yes = "Yes"
-  val option_no = "No"
-
-  val choiceEmpty: Constraint[String] = constraint[String](
-    choice => {
-      lazy val emptyChoice = ErrorMessageFactory.error("agent.error.other-income.empty")
-      if (choice.isEmpty) emptyChoice else Valid
-    }
-  )
-
-  val choiceInvalid: Constraint[String] = constraint[String](
-    choice => {
-      lazy val invalidChoice = ErrorMessageFactory.error("agent.error.other-income.invalid")
-      choice match {
-        case `option_yes` | `option_no` => Valid
-        case _ => invalidChoice
-      }
-    }
-  )
 
   val otherIncomeForm = Form(
-    mapping(
-      choice -> oText.toText.verifying(choiceEmpty andThen choiceInvalid)
-    )(OtherIncomeModel.apply)(OtherIncomeModel.unapply)
+    single[YesNo](
+      choice -> YesNoMapping.yesNoMapping(
+        yesNoInvalid = ErrorMessageFactory.error("agent.error.other-income.invalid"),
+        yesNoEmpty = Some(ErrorMessageFactory.error("agent.error.other-income.empty"))
+      )
+    )
   )
 
 }

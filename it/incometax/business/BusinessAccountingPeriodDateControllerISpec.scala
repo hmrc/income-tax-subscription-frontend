@@ -16,17 +16,14 @@
 
 package incometax.business
 
-import core.config.featureswitch.{FeatureSwitching}
-import core.models.DateModel
+import core.config.featureswitch.FeatureSwitching
+import core.models.{DateModel, No}
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import incometax.business.models.AccountingPeriodModel
-import incometax.incomesource.forms.OtherIncomeForm
-import incometax.incomesource.models.OtherIncomeModel
-import incometax.subscription.models.{Both, Business}
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -56,7 +53,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
     "keystore returns no data" should {
       "show the accounting period dates page without date values entered" in {
-        val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
+        val keystoreIncomeOther = No
         val keystoreMatchTaxYear = testMatchTaxYearNo
 
         Given("I setup the Wiremock stubs")
@@ -185,7 +182,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
       "simulate changing accounting period dates when calling page from Check Your Answers" when {
         "the new accounting period ends in the same tax year" in {
-          val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
+          val keystoreIncomeOther = No
           val keystoreMatchTaxYear = testMatchTaxYearNo
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("04", "05", "2019"))
           val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("05", "05", "2019"))
@@ -214,7 +211,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         }
 
         "The new accounting period ends in a different tax year" in {
-          val keystoreIncomeOther = OtherIncomeModel(OtherIncomeForm.option_no)
+          val keystoreIncomeOther = No
           val keystoreMatchTaxYear = testMatchTaxYearNo
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2020"))
           val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2019"))
