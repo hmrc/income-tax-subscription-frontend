@@ -60,6 +60,9 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
     implicit def post[T](form: Form[T], data: T): FakeRequest[AnyContentAsFormUrlEncoded] =
       fakeRequest.post(form.fill(data))
 
+    implicit def postInvalid[T,I](form: Form[T], data: I): FakeRequest[AnyContentAsFormUrlEncoded] =
+      fakeRequest.withFormUrlEncodedBody(form.mapping.key -> data.toString)
+
     implicit def post[T](form: Form[T]): FakeRequest[AnyContentAsFormUrlEncoded] =
       fakeRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
   }

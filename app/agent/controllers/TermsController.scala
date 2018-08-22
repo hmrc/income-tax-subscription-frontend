@@ -19,17 +19,17 @@ package agent.controllers
 import javax.inject.{Inject, Singleton}
 
 import agent.auth.AuthenticatedController
-import core.config.BaseControllerConfig
 import agent.forms.IncomeSourceForm
-import agent.models.OtherIncomeModel
+import agent.services.KeystoreService
+import core.config.BaseControllerConfig
+import core.models.{No, Yes}
+import core.services.AuthService
+import core.utils.Implicits._
+import incometax.util.AccountingPeriodUtil
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import agent.services.KeystoreService
-import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
-import core.utils.Implicits._
-import incometax.util.AccountingPeriodUtil
 
 import scala.concurrent.Future
 
@@ -69,24 +69,23 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
     if (editMode)
       agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
     else
-    keystoreService.fetchIncomeSource() flatMap {
-      case Some(source) => source.source match {
-        case IncomeSourceForm.option_business =>
-          agent.controllers.business.routes.BusinessAccountingMethodController.show().url
-        case IncomeSourceForm.option_both =>
-          agent.controllers.business.routes.BusinessAccountingMethodController.show().url
-        case IncomeSourceForm.option_property =>
-          import agent.forms.OtherIncomeForm._
-          keystoreService.fetchOtherIncome() flatMap {
-            case Some(OtherIncomeModel(`option_yes`)) =>
-              agent.controllers.routes.OtherIncomeErrorController.show().url
-            case Some(OtherIncomeModel(`option_no`)) =>
-              agent.controllers.routes.OtherIncomeController.show().url
-            case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
-          }
-        case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
+      keystoreService.fetchIncomeSource() flatMap {
+        case Some(source) => source.source match {
+          case IncomeSourceForm.option_business =>
+            agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+          case IncomeSourceForm.option_both =>
+            agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+          case IncomeSourceForm.option_property =>
+            keystoreService.fetchOtherIncome() flatMap {
+              case Some(Yes) =>
+                agent.controllers.routes.OtherIncomeErrorController.show().url
+              case Some(No) =>
+                agent.controllers.routes.OtherIncomeController.show().url
+              case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
+            }
+          case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
+        }
+        case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no income source retrieve from Keystore")
       }
-      case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no income source retrieve from Keystore")
-    }
 
 }

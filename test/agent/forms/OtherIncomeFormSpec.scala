@@ -17,10 +17,11 @@
 package agent.forms
 
 import agent.assets.MessageLookup
-import core.forms.validation.ErrorMessageFactory
-import core.forms.validation.testutils.{DataMap =>_, _}
 import agent.forms.validation.testutils.DataMap
-import agent.models.OtherIncomeModel
+import core.forms.submapping.YesNoMapping
+import core.forms.validation.ErrorMessageFactory
+import core.forms.validation.testutils.{DataMap => _, _}
+import core.models.No
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
@@ -30,10 +31,10 @@ class OtherIncomeFormSpec extends PlaySpec with OneAppPerTest {
   import OtherIncomeForm._
 
   "The OtherIncomeForm" should {
-    "transform the request to the form case class" in {
-      val testChoice = option_no
-      val testInput = Map(choice -> testChoice)
-      val expected = OtherIncomeModel(testChoice)
+    "transform the request to the correct value" in {
+      val testChoice = No
+      val testInput = Map(choice -> YesNoMapping.option_no)
+      val expected = testChoice
       val actual = otherIncomeForm.bind(testInput).value
 
       actual shouldBe Some(expected)
@@ -63,11 +64,11 @@ class OtherIncomeFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "The following submission should be valid" in {
-      val testsYes = DataMap.notEligibleChoice(option_yes)
+      val testsYes = DataMap.notEligibleChoice(YesNoMapping.option_yes)
       otherIncomeForm isValidFor testsYes
-      val testsNo = DataMap.notEligibleChoice(option_no)
+      val testsNo = DataMap.notEligibleChoice(YesNoMapping.option_no)
       otherIncomeForm isValidFor testsNo
     }
+  }
 
-}
 }

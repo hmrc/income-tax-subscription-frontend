@@ -15,9 +15,7 @@
  *@
 
 @import core.config.AppConfig
-@import core.models.DateModel
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import core.views.html.helpers._
 @import incometax.subscription.models.AgentSummary
 
 @(summary: AgentSummary, postAction: Call, signOutAction: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -31,7 +29,7 @@
     @core.views.html.templates.main_template(title = Messages("agent.confirmation.title")) {
 
         @dataHelper("income-source", summary.incomeSource.map(_.source))
-        @dataHelper("other-income", summary.otherIncome.map(_.choice))
+        @dataHelper("other-income", summary.otherIncome.map(_.toString))
         @dataHelper("accounting-period-prior", summary.accountingPeriodPrior.map(_.currentPeriodIsPrior))
         @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod))
 

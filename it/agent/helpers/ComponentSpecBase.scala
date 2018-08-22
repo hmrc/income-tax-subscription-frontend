@@ -29,6 +29,7 @@ import agent.common.Constants
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import core.models.YesNo
 import helpers.UserMatchingIntegrationRequestSupport
 import helpers.servicemocks.AuditStub
 import incometax.business.models.AccountingPeriodModel
@@ -291,7 +292,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def confirmation(): WSResponse = get("/confirmation")
 
-    def submitOtherIncome(inEditMode: Boolean, request: Option[OtherIncomeModel]): WSResponse = {
+    def submitOtherIncome(inEditMode: Boolean, request: Option[YesNo]): WSResponse = {
       val uri = s"/income-other?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(

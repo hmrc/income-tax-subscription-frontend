@@ -20,16 +20,15 @@ package core.utils
 import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
 import agent.services.CacheConstants.AccountingPeriodPrior
-import core.models.DateModel
 import core.models.YesNoModel._
+import core.models.{DateModel, No, Yes, YesNo}
 import core.services.CacheConstants
 import core.utils.TestConstants._
 import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
-import incometax.incomesource.forms.OtherIncomeForm
 import incometax.incomesource.models._
-import incometax.subscription.models.{SummaryModel, _}
+import incometax.subscription.models._
 import incometax.unauthorisedagent.models.StoredSubscription
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
@@ -90,7 +89,7 @@ object TestModels extends Implicits {
                           incomeSource: Option[IncomeSourceType] = testIncomeSourceBoth,
                           rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty_property_and_other,
                           workForYourself: Option[WorkForYourselfModel] = testWorkForYourself_yes,
-                          otherIncome: Option[OtherIncomeModel] = testOtherIncomeNo,
+                          otherIncome: Option[YesNo] = testOtherIncomeNo,
                           matchTaxYear: Option[MatchTaxYearModel] = testMatchTaxYearNo,
                           accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
@@ -117,7 +116,7 @@ object TestModels extends Implicits {
   def testCacheMap(incomeSource: Option[IncomeSourceType] = None,
                    rentUkProperty: Option[RentUkPropertyModel] = None,
                    workForYourself: Option[WorkForYourselfModel] = None,
-                   otherIncome: Option[OtherIncomeModel] = None,
+                   otherIncome: Option[YesNo] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
@@ -132,7 +131,7 @@ object TestModels extends Implicits {
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceType.format.writes(model))) ++
       rentUkProperty.fold(emptyMap)(model => Map(RentUkProperty -> RentUkPropertyModel.format.writes(model))) ++
       workForYourself.fold(emptyMap)(model => Map(WorkForYourself -> WorkForYourselfModel.format.writes(model))) ++
-      otherIncome.fold(emptyMap)(model => Map(OtherIncome -> OtherIncomeModel.format.writes(model))) ++
+      otherIncome.fold(emptyMap)(model => Map(OtherIncome -> YesNo.format.writes(model))) ++
       accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
       matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
@@ -162,9 +161,9 @@ object TestModels extends Implicits {
 
   lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
-  lazy val testOtherIncomeNo = OtherIncomeModel(OtherIncomeForm.option_no)
+  lazy val testOtherIncomeNo = No
 
-  lazy val testOtherIncomeYes = OtherIncomeModel(OtherIncomeForm.option_yes)
+  lazy val testOtherIncomeYes = Yes
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, TestConstants.testNino, testStartDate)
 
@@ -175,7 +174,7 @@ object TestModels extends Implicits {
   lazy val testSummaryData = IndividualSummary(
     rentUkProperty = testRentUkProperty_property_and_other,
     workForYourself = testWorkForYourself_yes,
-    otherIncome = OtherIncomeModel(OtherIncomeForm.option_no),
+    otherIncome = testOtherIncomeNo,
     matchTaxYear = testMatchTaxYearNo,
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,

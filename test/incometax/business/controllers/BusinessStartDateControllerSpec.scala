@@ -18,15 +18,15 @@ package incometax.business.controllers
 
 import core.config.MockConfig
 import core.controllers.ControllerBaseSpec
+import core.forms.submapping.YesNoMapping.{option_no, option_yes}
 import core.services.mocks.MockKeystoreService
-import incometax.incomesource.forms.OtherIncomeForm.{option_no, option_yes}
+import core.utils.TestModels.testBusinessStartDate
+import incometax.business.forms.BusinessStartDateForm
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{contentAsString, _}
 import uk.gov.hmrc.http.NotFoundException
-import core.utils.TestModels.testBusinessStartDate
-import incometax.business.forms.BusinessStartDateForm
 
 import scala.concurrent.Future
 

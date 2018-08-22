@@ -19,6 +19,7 @@ package agent.services
 import javax.inject._
 
 import agent.models._
+import core.models.YesNo
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
@@ -73,11 +74,11 @@ class KeystoreService @Inject()(val session: SessionCache)(implicit ec: Executio
   def saveTerms(terms: Boolean)(implicit hc: HeaderCarrier, reads: Reads[Boolean]): FC =
     save[Boolean](Terms, terms)
 
-  def fetchOtherIncome()(implicit hc: HeaderCarrier, reads: Reads[OtherIncomeModel]): FO[OtherIncomeModel] =
-    fetch[OtherIncomeModel](OtherIncome)
+  def fetchOtherIncome()(implicit hc: HeaderCarrier, reads: Reads[YesNo]): FO[YesNo] =
+    fetch[YesNo](OtherIncome)
 
-  def saveOtherIncome(otherIncome: OtherIncomeModel)(implicit hc: HeaderCarrier, reads: Reads[OtherIncomeModel]): FC =
-    save[OtherIncomeModel](OtherIncome, otherIncome)
+  def saveOtherIncome(otherIncome: YesNo)(implicit hc: HeaderCarrier, reads: Reads[YesNo]): FC =
+    save[YesNo](OtherIncome, otherIncome)
 
   def fetchNotEligible()(implicit hc: HeaderCarrier, reads: Reads[NotEligibleModel]): FO[NotEligibleModel] =
     fetch[NotEligibleModel](NotEligible)

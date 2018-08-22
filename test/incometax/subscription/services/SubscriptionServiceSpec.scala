@@ -17,11 +17,10 @@
 package incometax.subscription.services
 
 import core.config.featureswitch.FeatureSwitching
+import core.models.No
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.{TestConstants, TestModels}
-import incometax.incomesource.forms.OtherIncomeForm
-import incometax.incomesource.models.OtherIncomeModel
 import incometax.subscription.models._
 import incometax.subscription.services.mocks.TestSubscriptionService
 import incometax.util.AccountingPeriodUtil
@@ -69,7 +68,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
       val testSummaryData = IndividualSummary(
         rentUkProperty = testRentUkProperty_property_only,
         workForYourself = None,
-        otherIncome = OtherIncomeModel(OtherIncomeForm.option_no)
+        otherIncome = No
       )
       val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
       request.nino mustBe nino

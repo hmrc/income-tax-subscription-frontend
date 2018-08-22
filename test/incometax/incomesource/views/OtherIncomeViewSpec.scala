@@ -17,6 +17,7 @@
 package incometax.incomesource.views
 
 import assets.MessageLookup.{OtherIncome => messages}
+import core.forms.submapping.YesNoMapping
 import core.views.ViewSpecTrait
 import incometax.incomesource.forms.OtherIncomeForm
 import play.api.i18n.Messages.Implicits._
@@ -28,7 +29,7 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean) =  incometax.incomesource.views.html.other_income(
+  def page(isEditMode: Boolean, addFormErrors: Boolean) = incometax.incomesource.views.html.other_income(
     otherIncomeForm = OtherIncomeForm.otherIncomeForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
@@ -61,8 +62,8 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       legend = messages.heading,
       radioName = OtherIncomeForm.choice
     )(
-      OtherIncomeForm.option_yes -> messages.yes,
-      OtherIncomeForm.option_no -> messages.no
+      YesNoMapping.option_yes -> messages.yes,
+      YesNoMapping.option_no -> messages.no
     )
 
     form.mustHaveContinueButton()

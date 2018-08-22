@@ -21,13 +21,13 @@ import javax.inject.{Inject, Singleton}
 import agent.audit.Logging
 import agent.auth.AuthenticatedController
 import agent.forms.{IncomeSourceForm, OtherIncomeForm}
-import agent.models.OtherIncomeModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
+import core.models.{No, Yes, YesNo}
 import core.services.AuthService
 import core.utils.Implicits._
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.{IncomeSourceType, Property}
+import incometax.subscription.models.IncomeSourceType
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -45,7 +45,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                       currentTimeService: CurrentTimeService
                                      ) extends AuthenticatedController {
 
-  def view(otherIncomeForm: Form[OtherIncomeModel],
+  def view(otherIncomeForm: Form[YesNo],
            incomeSource: String,
            isEditMode: Boolean,
            backUrl: String
@@ -79,11 +79,11 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  def defaultRedirections(optIncomeSource: Option[IncomeSourceType], otherIncomeModel: OtherIncomeModel)(implicit request: Request[_]): Future[Result] =
-    otherIncomeModel.choice match {
-      case OtherIncomeForm.option_yes =>
+  def defaultRedirections(optIncomeSource: Option[IncomeSourceType], otherIncome: YesNo)(implicit request: Request[_]): Future[Result] =
+    otherIncome match {
+      case Yes =>
         Redirect(agent.controllers.routes.OtherIncomeErrorController.show())
-      case OtherIncomeForm.option_no =>
+      case No =>
         optIncomeSource match {
           case Some(incomeSource) => incomeSource.source match {
             case IncomeSourceForm.option_business =>

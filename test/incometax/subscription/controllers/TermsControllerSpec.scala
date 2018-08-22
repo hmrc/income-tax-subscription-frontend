@@ -18,9 +18,9 @@ package incometax.subscription.controllers
 
 import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
+import core.models.{No, Yes}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
-import incometax.incomesource.forms.OtherIncomeForm
 import incometax.subscription.models.{Both, Business, Property}
 import incometax.util.AccountingPeriodUtil
 import play.api.http.Status
@@ -204,7 +204,7 @@ class TermsControllerSpec extends ControllerBaseSpec
           TestTermsController.getBackUrl(
             editMode = true,
             Property,
-            OtherIncomeForm.option_yes,
+            Yes,
             matchTaxYear = true
           )(subscriptionRequest) mustBe incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
         }
@@ -214,7 +214,7 @@ class TermsControllerSpec extends ControllerBaseSpec
           TestTermsController.getBackUrl(
             editMode = true,
             Property,
-            OtherIncomeForm.option_yes,
+            Yes,
             matchTaxYear = false
           )(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
         }
@@ -225,7 +225,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         TestTermsController.getBackUrl(
           editMode = false,
           Business,
-          OtherIncomeForm.option_yes,
+          Yes,
           matchTaxYear = false
         )(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
       }
@@ -234,7 +234,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         TestTermsController.getBackUrl(
           editMode = false,
           Both,
-          OtherIncomeForm.option_yes,
+          Yes,
           matchTaxYear = false
         )(subscriptionRequest) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
       }
@@ -243,7 +243,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         TestTermsController.getBackUrl(
           editMode = false,
           Property,
-          OtherIncomeForm.option_yes,
+          Yes,
           matchTaxYear = false
         )(subscriptionRequest) mustBe incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url
       }
@@ -252,7 +252,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         TestTermsController.getBackUrl(
           editMode = false,
           Property,
-          OtherIncomeForm.option_no,
+          No,
           matchTaxYear = false
         )(subscriptionRequest) mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
       }

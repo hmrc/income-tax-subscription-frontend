@@ -20,11 +20,10 @@ import javax.inject.{Inject, Singleton}
 
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
+import core.models.Yes
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.BusinessNameForm
 import incometax.business.models.BusinessNameModel
-import incometax.incomesource.forms.OtherIncomeForm
-import incometax.incomesource.models.OtherIncomeModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -76,12 +75,11 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   def backUrl(isEditMode: Boolean)(implicit request: Request[_]): Future[String] = {
-    import OtherIncomeForm._
     if (isEditMode)
       Future.successful(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
     else
       keystoreService.fetchOtherIncome().map {
-        case Some(OtherIncomeModel(`option_yes`)) =>
+        case Some(Yes) =>
           incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url
         case _ =>
           incometax.incomesource.controllers.routes.OtherIncomeController.show().url

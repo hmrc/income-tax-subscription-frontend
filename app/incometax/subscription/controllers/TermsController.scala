@@ -20,11 +20,11 @@ import javax.inject.{Inject, Singleton}
 
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
+import core.models.{No, Yes, YesNo}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
-import incometax.incomesource.forms.OtherIncomeForm
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import incometax.util.AccountingPeriodUtil._
 import play.api.i18n.MessagesApi
@@ -50,7 +50,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       for {
         cacheMap <- keystoreService.fetchAll()
         incomeSource = cacheMap.getIncomeSourceType().get
-        backUrl = getBackUrl(editMode, incomeSource, cacheMap.getOtherIncome().get.choice, cacheMap.getMatchTaxYear().exists(_.matchTaxYear == MatchTaxYearForm.option_yes))
+        backUrl = getBackUrl(editMode, incomeSource, cacheMap.getOtherIncome().get, cacheMap.getMatchTaxYear().exists(_.matchTaxYear == MatchTaxYearForm.option_yes))
       } yield
         (incomeSource, cacheMap.getMatchTaxYear(), cacheMap.getEnteredAccountingPeriodDate()) match {
           case (Property, _, _) =>
@@ -70,7 +70,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         _ => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
   }
 
-  def getBackUrl(editMode: Boolean, incomeSource: IncomeSourceType, otherIncome: String, matchTaxYear: Boolean)(implicit request: Request[_]): String =
+  def getBackUrl(editMode: Boolean, incomeSource: IncomeSourceType, otherIncome: YesNo, matchTaxYear: Boolean)(implicit request: Request[_]): String =
     if (editMode && matchTaxYear)
       incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
     else if (editMode)
@@ -81,9 +81,9 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
           incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
         case Property =>
           otherIncome match {
-            case OtherIncomeForm.option_yes =>
+            case Yes =>
               incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url
-            case OtherIncomeForm.option_no =>
+            case No =>
               incometax.incomesource.controllers.routes.OtherIncomeController.show().url
           }
       }

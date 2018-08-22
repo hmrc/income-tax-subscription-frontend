@@ -19,6 +19,7 @@ package agent.services.mocks
 import _root_.agent.services.KeystoreService
 import _root_.core.utils.MockTrait
 import agent.models._
+import core.models.YesNo
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.IncomeSourceType
 import org.mockito.ArgumentMatchers
@@ -62,7 +63,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchAccountingMethod: MFO[AccountingMethodModel] = DoNotConfigure,
                                          fetchTerms: MFO[Boolean] = DoNotConfigure,
                                          fetchNotEligible: MFO[NotEligibleModel] = DoNotConfigure,
-                                         fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
+                                         fetchOtherIncome: MFO[YesNo] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
@@ -74,7 +75,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
     mockFetchFromKeyStore[Boolean](Terms, fetchTerms)
     mockFetchFromKeyStore[NotEligibleModel](NotEligible, fetchNotEligible)
-    mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
+    mockFetchFromKeyStore[YesNo](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
 

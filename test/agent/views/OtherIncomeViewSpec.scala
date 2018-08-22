@@ -18,6 +18,7 @@ package agent.views
 
 import agent.assets.MessageLookup.{OtherIncome => messages}
 import agent.forms.{IncomeSourceForm, OtherIncomeForm}
+import core.forms.submapping.YesNoMapping
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
@@ -62,8 +63,8 @@ class OtherIncomeViewSpec extends ViewSpecTrait {
       legend = messages.heading,
       radioName = OtherIncomeForm.choice
     )(
-      OtherIncomeForm.option_yes -> messages.yes,
-      OtherIncomeForm.option_no -> messages.no
+      YesNoMapping.option_yes -> messages.yes,
+      YesNoMapping.option_no -> messages.no
     )
 
     form.mustHaveContinueButton()

@@ -22,6 +22,7 @@ import core.ITSASessionKeys._
 import core.auth.{JourneyState, Registration, SignUp, UserMatching}
 import core.config.AppConfig
 import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
+import core.models.YesNo
 import helpers.IntegrationTestConstants._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
@@ -263,7 +264,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def confirmation(): WSResponse = get("/confirmation")
 
-    def submitOtherIncome(inEditMode: Boolean, request: Option[OtherIncomeModel]): WSResponse = {
+    def submitOtherIncome(inEditMode: Boolean, request: Option[YesNo]): WSResponse = {
       val uri = s"/income-other?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(

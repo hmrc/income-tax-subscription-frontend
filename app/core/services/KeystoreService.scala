@@ -18,9 +18,10 @@ package core.services
 
 import javax.inject._
 
+import core.models.YesNo
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
+import incometax.incomesource.models.{RentUkPropertyModel, WorkForYourselfModel}
 import incometax.subscription.models.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
@@ -119,11 +120,11 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveTerms(terms: Boolean)(implicit hc: HeaderCarrier, reads: Reads[Boolean]): FC =
     save[Boolean](Terms, terms)
 
-  def fetchOtherIncome()(implicit hc: HeaderCarrier, reads: Reads[OtherIncomeModel]): FO[OtherIncomeModel] =
-    fetch[OtherIncomeModel](OtherIncome)
+  def fetchOtherIncome()(implicit hc: HeaderCarrier, reads: Reads[YesNo]): FO[YesNo] =
+    fetch[YesNo](OtherIncome)
 
-  def saveOtherIncome(otherIncome: OtherIncomeModel)(implicit hc: HeaderCarrier, reads: Reads[OtherIncomeModel]): FC =
-    save[OtherIncomeModel](OtherIncome, otherIncome)
+  def saveOtherIncome(otherIncome: YesNo)(implicit hc: HeaderCarrier, reads: Reads[YesNo]): FC =
+    save[YesNo](OtherIncome, otherIncome)
 
   def fetchSubscriptionId()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = fetch[String](MtditId)
 

@@ -19,10 +19,9 @@ package incometax.unauthorisedagent.services
 import javax.inject.{Inject, Singleton}
 
 import core.config.AppConfig
+import core.models.{No, Yes}
 import core.services.KeystoreService
 import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel}
-import incometax.incomesource.forms.OtherIncomeForm
-import incometax.incomesource.models.OtherIncomeModel
 import incometax.unauthorisedagent.connectors.SubscriptionStoreConnector
 import incometax.unauthorisedagent.models.{DeleteSubscriptionFailure, DeleteSubscriptionSuccess, StoredSubscription}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
@@ -48,8 +47,8 @@ class SubscriptionStoreRetrievalService @Inject()(subscriptionStoreConnector: Su
     val incomeSource = storedSubscription.incomeSource
 
     val otherIncome = storedSubscription.otherIncome match {
-      case true => OtherIncomeModel(OtherIncomeForm.option_yes)
-      case false => OtherIncomeModel(OtherIncomeForm.option_no)
+      case true => Yes
+      case false => No
     }
 
     val accountingPeriod = for {

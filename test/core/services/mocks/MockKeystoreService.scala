@@ -16,11 +16,12 @@
 
 package core.services.mocks
 
+import core.models.YesNo
 import core.services.KeystoreService
 import core.utils.MockTrait
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
+import incometax.incomesource.models.{RentUkPropertyModel, WorkForYourselfModel}
 import incometax.subscription.models.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -68,7 +69,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchAccountingPeriodDate: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchAccountingMethod: MFO[AccountingMethodModel] = DoNotConfigure,
                                          fetchTerms: MFO[Boolean] = DoNotConfigure,
-                                         fetchOtherIncome: MFO[OtherIncomeModel] = DoNotConfigure,
+                                         fetchOtherIncome: MFO[YesNo] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchPaperlessPreferenceToken: MFO[String] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
@@ -85,7 +86,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
     mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
     mockFetchFromKeyStore[Boolean](Terms, fetchTerms)
-    mockFetchFromKeyStore[OtherIncomeModel](OtherIncome, fetchOtherIncome)
+    mockFetchFromKeyStore[YesNo](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[String](PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
 
