@@ -17,12 +17,12 @@
 package incometax.incomesource
 
 
+import core.models.{No, Yes}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import incometax.incomesource.forms.RentUkPropertyForm
 import incometax.incomesource.models.RentUkPropertyModel
 import play.api.http.Status._
 import play.api.i18n.Messages
@@ -75,7 +75,7 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
 
     "not in edit mode" should {
       "select the No rent uk property radio button on the rent uk property page" in {
-        val userInput = RentUkPropertyModel(RentUkPropertyForm.option_no, None)
+        val userInput = RentUkPropertyModel(No, None)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -93,7 +93,7 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
       }
 
       "select the Yes rent uk property radio button and No to only income source on the rent uk property page" in {
-        val userInput = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no))
+        val userInput = RentUkPropertyModel(Yes, Some(No))
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -110,7 +110,7 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
       }
 
       "select the Yes rent uk property radio button and Yes to only income source on the rent uk property page" in {
-        val userInput = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_yes))
+        val userInput = RentUkPropertyModel(Yes, Some(Yes))
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -130,8 +130,8 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
     "when in edit mode" should {
 
       "simulate not changing rent uk property from No when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_no, None)
-        val userInput = RentUkPropertyModel(RentUkPropertyForm.option_no, None)
+        val keystoreRentUkProperty = RentUkPropertyModel(No, None)
+        val userInput = RentUkPropertyModel(No, None)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -149,8 +149,8 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
       }
 
       "simulate not changing rent uk property from Yes and only income source from No when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no))
-        val userInput = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no))
+        val keystoreRentUkProperty = RentUkPropertyModel(Yes, Some(No))
+        val userInput = RentUkPropertyModel(Yes, Some(No))
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -168,8 +168,8 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
       }
 
       "simulate not changing rent uk property from Yes and only income source from Yes when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_yes))
-        val userInput = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_yes))
+        val keystoreRentUkProperty = RentUkPropertyModel(Yes, Some(Yes))
+        val userInput = RentUkPropertyModel(Yes, Some(Yes))
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -187,8 +187,8 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing rent uk property from No when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_no, None)
-        val userInput = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no))
+        val keystoreRentUkProperty = RentUkPropertyModel(No, None)
+        val userInput = RentUkPropertyModel(Yes, Some(No))
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -206,8 +206,8 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing rent uk property from Yes and only income source from No when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no))
-        val userInput = RentUkPropertyModel(RentUkPropertyForm.option_no, None)
+        val keystoreRentUkProperty = RentUkPropertyModel(Yes, Some(No))
+        val userInput = RentUkPropertyModel(No, None)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -225,8 +225,8 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
       }
 
       "simulate changing rent uk property from Yes and only income source from Yes when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_yes))
-        val userInput = RentUkPropertyModel(RentUkPropertyForm.option_no, None)
+        val keystoreRentUkProperty = RentUkPropertyModel(Yes, Some(Yes))
+        val userInput = RentUkPropertyModel(No, None)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

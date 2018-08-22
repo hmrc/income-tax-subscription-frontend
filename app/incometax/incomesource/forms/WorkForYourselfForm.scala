@@ -16,41 +16,26 @@
 
 package incometax.incomesource.forms
 
+import core.forms.submapping.YesNoMapping
 import core.forms.validation.ErrorMessageFactory
-import core.forms.validation.utils.ConstraintUtil._
-import core.forms.validation.utils.MappingUtil._
+import core.models.YesNo
 import incometax.incomesource.models.WorkForYourselfModel
-import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid}
+import play.api.data.{Form, Mapping}
 
 
 object WorkForYourselfForm {
 
   val choice = "choice"
-  val option_yes = "Yes"
-  val option_no = "No"
 
-  val choiceEmpty: Constraint[String] = constraint[String](
-    choice => {
-      lazy val emptyChoice = ErrorMessageFactory.error("error.work_for_yourself.empty")
-      if (choice.isEmpty) emptyChoice else Valid
-    }
-  )
-
-  val choiceInvalid: Constraint[String] = constraint[String](
-    choice => {
-      lazy val invalidChoice = ErrorMessageFactory.error("error.work_for_yourself.invalid")
-      choice match {
-        case `option_yes` | `option_no` => Valid
-        case _ => invalidChoice
-      }
-    }
+  val choiceMapping: Mapping[YesNo] = YesNoMapping.yesNoMapping(
+    yesNoInvalid = ErrorMessageFactory.error("error.work_for_yourself.invalid"),
+    yesNoEmpty = Some(ErrorMessageFactory.error("error.work_for_yourself.empty"))
   )
 
   val workForYourselfForm = Form(
     mapping(
-      choice -> oText.toText.verifying(choiceEmpty andThen choiceInvalid)
+      choice -> choiceMapping
     )(WorkForYourselfModel.apply)(WorkForYourselfModel.unapply)
   )
 

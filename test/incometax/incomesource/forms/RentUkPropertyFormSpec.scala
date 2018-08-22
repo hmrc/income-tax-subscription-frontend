@@ -17,8 +17,10 @@
 package incometax.incomesource.forms
 
 import assets.MessageLookup
+import core.forms.submapping.YesNoMapping
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
+import core.models.{No, Yes}
 import incometax.incomesource.models.RentUkPropertyModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
@@ -30,8 +32,8 @@ class RentUkPropertyFormSpec extends PlaySpec with OneAppPerTest {
 
   "The RentUkProperty Form" should {
     "transform the request to the form case class when No is bound to rent uk property question" in {
-      val testChoice = option_no
-      val testInput = Map(rentUkProperty -> testChoice)
+      val testChoice = No
+      val testInput = Map(rentUkProperty -> YesNoMapping.option_no)
       val expected = RentUkPropertyModel(testChoice, None)
       val actual = rentUkPropertyForm.bind(testInput).value
 
@@ -39,8 +41,8 @@ class RentUkPropertyFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "transform the request to the form case class when Yes is bound to rent uk property question and Yes to only source of income" in {
-      val testChoice = option_yes
-      val testInput = Map(rentUkProperty -> testChoice, onlySourceOfSelfEmployedIncome -> testChoice)
+      val testChoice = Yes
+      val testInput = Map(rentUkProperty -> YesNoMapping.option_yes, onlySourceOfSelfEmployedIncome -> YesNoMapping.option_yes)
       val expected = RentUkPropertyModel(testChoice, Some(testChoice))
       val actual = rentUkPropertyForm.bind(testInput).value
 
@@ -48,8 +50,8 @@ class RentUkPropertyFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "transform the request to the form case class when Yes is bound to rent uk property question and No to only source of income" in {
-      val testInput = Map(rentUkProperty -> option_yes, onlySourceOfSelfEmployedIncome -> option_no)
-      val expected = RentUkPropertyModel(option_yes, Some(option_no))
+      val testInput = Map(rentUkProperty -> YesNoMapping.option_yes, onlySourceOfSelfEmployedIncome -> YesNoMapping.option_no)
+      val expected = RentUkPropertyModel(Yes, Some(No))
       val actual = rentUkPropertyForm.bind(testInput).value
 
       actual shouldBe Some(expected)
@@ -99,9 +101,9 @@ class RentUkPropertyFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "The following submission should be valid" in {
-      val testNo = DataMap.rentUkProperty(option_no)
+      val testNo = DataMap.rentUkProperty(YesNoMapping.option_no)
       rentUkPropertyForm isValidFor testNo
-      val testsYes = DataMap.rentUkProperty(option_yes, Some(option_yes))
+      val testsYes = DataMap.rentUkProperty(YesNoMapping.option_yes, Some(YesNoMapping.option_yes))
       rentUkPropertyForm isValidFor testsYes
     }
 

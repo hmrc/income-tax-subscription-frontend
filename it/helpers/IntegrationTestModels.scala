@@ -3,7 +3,6 @@ package helpers
 
 import core.Constants
 import core.Constants.GovernmentGateway._
-import core.models.YesNoModel._
 import core.models.{DateModel, No, Yes, YesNo}
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
@@ -95,12 +94,12 @@ object IntegrationTestModels {
 
   lazy val testIncomeSourceBoth = Both
 
-  lazy val testRentUkProperty_no_property = RentUkPropertyModel(NO, None)
-  lazy val testRentUkProperty_property_only = RentUkPropertyModel(YES, Some(YES))
-  lazy val testRentUkProperty_property_and_other = RentUkPropertyModel(YES, Some(NO))
+  lazy val testRentUkProperty_no_property = RentUkPropertyModel(No, None)
+  lazy val testRentUkProperty_property_only = RentUkPropertyModel(Yes, Some(Yes))
+  lazy val testRentUkProperty_property_and_other = RentUkPropertyModel(Yes, Some(No))
 
-  lazy val testWorkForYourself_yes = WorkForYourselfModel(YES)
-  lazy val testWorkForYourself_no = WorkForYourselfModel(NO)
+  lazy val testWorkForYourself_yes = WorkForYourselfModel(Yes)
+  lazy val testWorkForYourself_no = WorkForYourselfModel(No)
 
   lazy val testOtherIncomeNo = No
 

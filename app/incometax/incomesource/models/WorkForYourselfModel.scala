@@ -16,9 +16,10 @@
 
 package incometax.incomesource.models
 
+import core.models.YesNo
 import play.api.libs.json.Json
 
-case class WorkForYourselfModel(doYouWorkForYourself: String)
+case class WorkForYourselfModel(doYouWorkForYourself: YesNo)
 
 object WorkForYourselfModel {
   implicit val format = Json.format[WorkForYourselfModel]

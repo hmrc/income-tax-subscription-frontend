@@ -20,7 +20,6 @@ package core.utils
 import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
 import agent.services.CacheConstants.AccountingPeriodPrior
-import core.models.YesNoModel._
 import core.models.{DateModel, No, Yes, YesNo}
 import core.services.CacheConstants
 import core.utils.TestConstants._
@@ -150,12 +149,12 @@ object TestModels extends Implicits {
 
   lazy val testIncomeSourceBoth = Both
 
-  lazy val testRentUkProperty_no_property = RentUkPropertyModel(NO, None)
-  lazy val testRentUkProperty_property_only = RentUkPropertyModel(YES, YES)
-  lazy val testRentUkProperty_property_and_other = RentUkPropertyModel(YES, NO)
+  lazy val testRentUkProperty_no_property = RentUkPropertyModel(No, None)
+  lazy val testRentUkProperty_property_only = RentUkPropertyModel(Yes, Yes)
+  lazy val testRentUkProperty_property_and_other = RentUkPropertyModel(Yes, No)
 
-  lazy val testWorkForYourself_yes = WorkForYourselfModel(YES)
-  lazy val testWorkForYourself_no = WorkForYourselfModel(NO)
+  lazy val testWorkForYourself_yes = WorkForYourselfModel(Yes)
+  lazy val testWorkForYourself_no = WorkForYourselfModel(No)
 
   lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
 

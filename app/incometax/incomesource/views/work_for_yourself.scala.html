@@ -20,6 +20,8 @@
 @import incometax.incomesource.models._
 @import incometax.incomesource.forms.WorkForYourselfForm
 @import core.views.html.templates.main_template
+@import core.models.{Yes, No}
+@import core.forms.submapping.YesNoMapping
 
 @(workForYourselfForm: Form[WorkForYourselfModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -41,8 +43,8 @@
             legend = Messages("work_for_yourself.heading"),
             inline = true,
             options = Seq(
-                RadioOption(WorkForYourselfForm.option_yes, Messages("base.yes")),
-                RadioOption(WorkForYourselfForm.option_no, Messages("base.no"))
+                RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
+                RadioOption(YesNoMapping.option_no, No.toMessageString))
             ),
             parentForm = workForYourselfForm
         )

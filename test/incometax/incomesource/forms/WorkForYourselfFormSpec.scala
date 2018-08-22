@@ -17,8 +17,10 @@
 package incometax.incomesource.forms
 
 import assets.MessageLookup
+import core.forms.submapping.YesNoMapping
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
+import core.models.{No, Yes}
 import incometax.incomesource.models.WorkForYourselfModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
@@ -30,8 +32,8 @@ class WorkForYourselfFormSpec extends PlaySpec with OneAppPerTest {
 
   "The WorkForYourselfForm" should {
     "transform the request to the form case class" in {
-      val testChoice = option_no
-      val testInput = Map(choice -> testChoice)
+      val testChoice = No
+      val testInput = Map(choice -> YesNoMapping.option_no)
       val expected = WorkForYourselfModel(testChoice)
       val actual = workForYourselfForm.bind(testInput).value
 
@@ -62,9 +64,9 @@ class WorkForYourselfFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "The following submission should be valid" in {
-      val testsYes = DataMap.workForYourself(option_yes)
+      val testsYes = DataMap.workForYourself(YesNoMapping.option_yes)
       workForYourselfForm isValidFor testsYes
-      val testsNo = DataMap.workForYourself(option_no)
+      val testsNo = DataMap.workForYourself(YesNoMapping.option_no)
       workForYourselfForm isValidFor testsNo
     }
 

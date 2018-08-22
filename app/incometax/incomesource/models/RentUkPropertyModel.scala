@@ -16,21 +16,21 @@
 
 package incometax.incomesource.models
 
-import play.api.libs.json.Json
+import core.models.{No, Yes, YesNo}
+import play.api.libs.json.{Json, OFormat}
 
-case class RentUkPropertyModel(rentUkProperty: String, onlySourceOfSelfEmployedIncome: Option[String]) {
-
-  import core.models.YesNoModel._
+case class RentUkPropertyModel(rentUkProperty: YesNo, onlySourceOfSelfEmployedIncome: Option[YesNo]) {
 
   def needSecondPage: Boolean = this match {
-    case RentUkPropertyModel(YES, Some(YES)) => false
-    case RentUkPropertyModel(YES, Some(NO)) => true
-    case RentUkPropertyModel(NO, _) => true
+    case RentUkPropertyModel(Yes, Some(Yes)) => false
+    case RentUkPropertyModel(Yes, Some(No)) => true
+    case RentUkPropertyModel(No, _) => true
   }
+
 }
 
-object RentUkPropertyModel{
-  implicit val format = Json.format[RentUkPropertyModel]
+object RentUkPropertyModel {
+  implicit val format: OFormat[RentUkPropertyModel] = Json.format[RentUkPropertyModel]
 
   implicit class RentUkPropertyModelUtil(rentUkPropertyModel: Option[RentUkPropertyModel]) {
     def needSecondPage: Boolean = rentUkPropertyModel.fold(false)(_.needSecondPage)

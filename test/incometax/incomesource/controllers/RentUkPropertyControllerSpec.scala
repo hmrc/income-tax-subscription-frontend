@@ -18,6 +18,7 @@ package incometax.incomesource.controllers
 
 import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
+import core.models.{No, Yes, YesNo}
 import core.services.mocks.MockKeystoreService
 import incometax.incomesource.forms.RentUkPropertyForm
 import incometax.incomesource.models.RentUkPropertyModel
@@ -26,7 +27,6 @@ import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.NotFoundException
 
 class RentUkPropertyControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
@@ -77,14 +77,14 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
   "Calling the submit action of the RentUkProperty controller with an authorised user and valid submission" should {
 
 
-    def callSubmit(option: (String, Option[String]), isEditMode: Boolean) = TestRentUkPropertyController.submit(isEditMode = isEditMode)(subscriptionRequest
+    def callSubmit(option: (YesNo, Option[YesNo]), isEditMode: Boolean) = TestRentUkPropertyController.submit(isEditMode = isEditMode)(subscriptionRequest
       .post(RentUkPropertyForm.rentUkPropertyForm, RentUkPropertyModel(option._1, option._2)))
 
     "When it is not edit mode" should {
       s"return a SEE_OTHER (303) when answering 'NO' to rent uk property" in {
         setupMockKeystoreSaveFunctions()
 
-        val goodRequest = callSubmit((RentUkPropertyForm.option_no, None), isEditMode = false)
+        val goodRequest = callSubmit((No, None), isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
@@ -96,7 +96,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
       s"return a SEE_OTHER (303) when answering 'Yes' to rent uk property and then 'No' to only income source" in {
         setupMockKeystoreSaveFunctions()
 
-        val goodRequest = callSubmit((RentUkPropertyForm.option_yes, RentUkPropertyForm.option_no), isEditMode = false)
+        val goodRequest = callSubmit((Yes, No), isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
@@ -109,7 +109,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
       s"return a SEE_OTHER (303) when answering 'Yes' to rent uk property and then 'Yes' to only income source" in {
         setupMockKeystoreSaveFunctions()
 
-        val goodRequest = callSubmit((RentUkPropertyForm.option_yes, RentUkPropertyForm.option_yes), isEditMode = false)
+        val goodRequest = callSubmit((Yes, Yes), isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get must be(incometax.incomesource.controllers.routes.OtherIncomeController.show().url)
@@ -123,9 +123,9 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
     "When it is in edit mode and user's selection has not changed" should {
       s"return an SEE OTHER (303) for 'No' to rent a uk property and goto " +
         s"${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
-        setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_no, None))
+        setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
 
-        val goodRequest = callSubmit((RentUkPropertyForm.option_no, None), isEditMode = true)
+        val goodRequest = callSubmit((No, None), isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
@@ -137,9 +137,9 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
 
     "When it is in edit mode and user's selection has changed" should {
       s"return an SEE OTHER (303) and goto ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url}" in {
-        setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(RentUkPropertyForm.option_no, None))
+        setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
 
-        val goodRequest = callSubmit((RentUkPropertyForm.option_yes, RentUkPropertyForm.option_no), isEditMode = true)
+        val goodRequest = callSubmit((Yes, No), isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
