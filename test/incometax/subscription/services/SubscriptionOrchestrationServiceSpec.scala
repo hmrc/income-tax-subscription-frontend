@@ -37,7 +37,6 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
       mockCreateSubscriptionSuccess(testNino, testSummaryData, None)
       mockAddKnownFactsSuccess(testMTDID, testNino)
       mockEnrolSuccess(testMTDID, testNino)
-      mockRefreshProfileSuccess()
 
       whenReady(res)(_ mustBe testSubscriptionSuccess)
     }
@@ -80,7 +79,6 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
       mockCreateSubscriptionSuccess(testNino, testSummaryData, Some(testArn))
       mockAddKnownFactsSuccess(testMTDID, testNino)
       mockEnrolSuccess(testMTDID, testNino)
-      mockRefreshProfileSuccess()
 
       whenReady(res)(_ mustBe testSubscriptionSuccess)
     }
@@ -120,7 +118,6 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
 
     "return a success when enrolment and refresh profile succeed" in {
       mockEnrolSuccess(testMTDID, testNino)
-      mockRefreshProfileSuccess()
 
       whenReady(res)(_ mustBe Right(testMTDID))
     }
@@ -138,19 +135,6 @@ class SubscriptionOrchestrationServiceSpec extends UnitTestTrait with ScalaFutur
         whenReady(res.failed)(_ mustBe testException)
       }
 
-      "refreshProfile returns an error" in {
-        mockEnrolSuccess(testMTDID, testNino)
-        mockRefreshProfileFailure()
-
-        whenReady(res)(_ mustBe testRefreshProfileFailure)
-      }
-
-      "add known facts returns an exception" in {
-        mockEnrolSuccess(testMTDID, testNino)
-        mockRefreshProfileException()
-
-        whenReady(res.failed)(_ mustBe testException)
-      }
     }
   }
 }

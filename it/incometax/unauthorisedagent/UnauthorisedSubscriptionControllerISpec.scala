@@ -19,10 +19,8 @@ package incometax.unauthorisedagent
 import core.config.featureswitch.UnauthorisedAgentFeature
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
-import helpers.IntegrationTestModels._
 import helpers.servicemocks._
 import play.api.http.Status._
-import play.api.i18n.Messages
 
 class UnauthorisedSubscriptionControllerISpec extends ComponentSpecBase {
 
@@ -39,7 +37,6 @@ class UnauthorisedSubscriptionControllerISpec extends ComponentSpecBase {
         SubscriptionStub.stubSuccessfulSubscription(subscribeUnauthorisedUri)
         GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(OK)
-        GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
         KeystoreStub.stubPutMtditId()
         SubscriptionStoreStub.stubSuccessfulDeletion()
 

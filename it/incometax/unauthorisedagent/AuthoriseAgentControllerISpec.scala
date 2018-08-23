@@ -20,7 +20,7 @@ import core.config.featureswitch.UnauthorisedAgentFeature
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
-import helpers.servicemocks.{GGAuthenticationStub, _}
+import helpers.servicemocks._
 import play.api.http.Status._
 import play.api.i18n.Messages
 

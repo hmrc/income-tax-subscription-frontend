@@ -16,12 +16,11 @@
 
 package incometax.subscription.services
 
-import javax.inject.{Inject, Singleton}
-
 import cats.data.EitherT
 import cats.implicits._
 import core.connectors.models.ConnectorError
-import incometax.subscription.models.{RefreshProfileResult, SubscriptionSuccess, SummaryModel}
+import incometax.subscription.models.{SubscriptionSuccess, SummaryModel}
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,8 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SubscriptionOrchestrationService @Inject()(subscriptionService: SubscriptionService,
                                                  knownFactsService: KnownFactsService,
-                                                 enrolmentService: EnrolmentService,
-                                                 refreshProfileService: RefreshProfileService
+                                                 enrolmentService: EnrolmentService
                                                 )(implicit ec: ExecutionContext) {
 
   def createSubscription(nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
@@ -53,7 +51,6 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
   def enrolAndRefresh(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] = {
     val res = for {
       _ <- EitherT(enrolmentService.enrol(mtditId, nino))
-      _ <- EitherT[Future, ConnectorError, RefreshProfileResult](refreshProfileService.refreshProfile())
     } yield mtditId
 
     res.value

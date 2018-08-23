@@ -18,11 +18,15 @@ package testonly.controllers
 
 import core.auth.BaseFrontendController
 import core.config.AppConfig
+import core.services.AuthService
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import testonly.connectors.EnrolmentStoreStubConnector
 import testonly.forms.UpdateEnrolmentsForm
+import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrievals}
+import uk.gov.hmrc.auth.otac.Authorised
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
@@ -30,14 +34,22 @@ import scala.concurrent.Future
 
 class UpdateEnrolmentsController @Inject()(implicit val applicationConfig: AppConfig,
                                            val messagesApi: MessagesApi,
-                                           enrolmentStoreStubConnector: EnrolmentStoreStubConnector
+                                           enrolmentStoreStubConnector: EnrolmentStoreStubConnector,
+                                           authService: AuthService
                                           ) extends FrontendController with I18nSupport {
-  def show: Action[AnyContent] = Action(implicit req =>
-    Ok(testonly.views.html.update_enrolments(
-      UpdateEnrolmentsForm.updateEnrolmentsForm,
-      testonly.controllers.routes.UpdateEnrolmentsController.submit()
-    ))
+
+  import authService._
+
+  def show: Action[AnyContent] = Action.async(implicit req =>
+    authorised().retrieve(Retrievals.credentials) {
+      case Credentials(credId, _) =>
+        Future.successful(Ok(testonly.views.html.update_enrolments(
+          UpdateEnrolmentsForm.updateEnrolmentsForm.fill(credId),
+          testonly.controllers.routes.UpdateEnrolmentsController.submit()
+        )))
+    }
   )
+
 
   def submit: Action[AnyContent] = Action.async(implicit req =>
     UpdateEnrolmentsForm.updateEnrolmentsForm.bindFromRequest.fold(
