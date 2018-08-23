@@ -17,7 +17,6 @@
 @import core.config.AppConfig
 @import core.views.html.helpers._
 @import core.views.html.templates.main_template
-@import incometax.business.forms.MatchTaxYearForm
 @import incometax.business.models.address.Address
 @import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
 @import incometax.incomesource.models._
@@ -132,10 +131,7 @@
 @matchTaxYear(matchTaxYear: MatchTaxYearModel) = @{
     val rowName = MatchTaxYearId
     val rowQuestion = Messages("summary.match_tax_year")
-    val rowAnswer = matchTaxYear.matchTaxYear match {
-        case "Yes" => Messages("base.yes")
-        case "No" => Messages("base.no")
-    }
+    val rowAnswer = matchTaxYear.matchTaxYear.toMessageString
     val rowUrl = incometax.business.controllers.routes.MatchTaxYearController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
@@ -179,7 +175,7 @@
         @summaryModel.businessAddress.map(businessAddress)
         @summaryModel.businessStartDate.map(businessStartDate)
         @summaryModel.matchTaxYear.map(matchTaxYear)
-        @if(summaryModel.matchTaxYear.exists(_.matchTaxYear == MatchTaxYearForm.option_no)) {
+        @if(summaryModel.matchTaxYear.exists(_.matchTaxYear == No)) {
             @summaryModel.accountingPeriod.map(accountingPeriodDate)
         }
         @summaryModel.accountingMethod.map(accountingMethod)

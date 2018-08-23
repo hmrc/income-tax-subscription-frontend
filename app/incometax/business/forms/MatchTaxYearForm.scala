@@ -16,40 +16,22 @@
 
 package incometax.business.forms
 
+import core.forms.submapping.YesNoMapping
 import core.forms.validation.ErrorMessageFactory
-import core.forms.validation.utils.ConstraintUtil._
-import core.forms.validation.utils.MappingUtil._
 import incometax.business.models.MatchTaxYearModel
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.{Constraint, Valid}
 
 object MatchTaxYearForm {
 
   val matchTaxYear = "matchToTaxYear"
-  val option_yes = "Yes"
-  val option_no = "No"
-
-  val nonEmpty: Constraint[String] = constraint[String](
-    source => {
-      lazy val emptySource = ErrorMessageFactory.error("error.business.match_tax_year.empty")
-      if (source.isEmpty) emptySource else Valid
-    }
-  )
-
-  val validOption: Constraint[String] = constraint[String](
-    source => {
-      lazy val invalidSource = ErrorMessageFactory.error("error.business.match_tax_year.invalid")
-      source match {
-        case `option_yes` | `option_no` => Valid
-        case _ => invalidSource
-      }
-    }
-  )
 
   val matchTaxYearForm = Form(
     mapping(
-      matchTaxYear -> oText.toText.verifying(nonEmpty andThen validOption)
+      matchTaxYear -> YesNoMapping.yesNoMapping(
+        yesNoInvalid = ErrorMessageFactory.error("error.business.match_tax_year.invalid"),
+        yesNoEmpty = Some(ErrorMessageFactory.error("error.business.match_tax_year.empty"))
+      )
     )(MatchTaxYearModel.apply)(MatchTaxYearModel.unapply)
   )
 

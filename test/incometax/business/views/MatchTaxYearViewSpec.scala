@@ -18,6 +18,7 @@ package incometax.business.views
 
 import assets.MessageLookup.Business.{MatchTaxYear => messages}
 import assets.MessageLookup.{Base => common}
+import core.forms.submapping.YesNoMapping
 import core.views.ViewSpecTrait
 import incometax.business.forms.MatchTaxYearForm
 import play.api.i18n.Messages.Implicits._
@@ -62,8 +63,8 @@ class MatchTaxYearViewSpec extends ViewSpecTrait {
         legend = messages.SignUp.heading,
         radioName = MatchTaxYearForm.matchTaxYear
       )(
-        MatchTaxYearForm.option_yes -> common.yes,
-        MatchTaxYearForm.option_no -> common.no
+        YesNoMapping.option_yes -> common.yes,
+        YesNoMapping.option_no -> common.no
       )
 
       form.mustHaveContinueButton()
@@ -111,8 +112,8 @@ class MatchTaxYearViewSpec extends ViewSpecTrait {
         legend = messages.Registration.heading,
         radioName = MatchTaxYearForm.matchTaxYear
       )(
-        MatchTaxYearForm.option_yes -> common.yes,
-        MatchTaxYearForm.option_no -> common.no
+        YesNoMapping.option_yes -> common.yes,
+        YesNoMapping.option_no -> common.no
       )
 
       form.mustHaveContinueButton()

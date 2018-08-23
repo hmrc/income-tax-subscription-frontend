@@ -23,7 +23,6 @@ import core.config.BaseControllerConfig
 import core.models.{No, Yes, YesNo}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
-import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import incometax.util.AccountingPeriodUtil._
@@ -50,12 +49,12 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
       for {
         cacheMap <- keystoreService.fetchAll()
         incomeSource = cacheMap.getIncomeSourceType().get
-        backUrl = getBackUrl(editMode, incomeSource, cacheMap.getOtherIncome().get, cacheMap.getMatchTaxYear().exists(_.matchTaxYear == MatchTaxYearForm.option_yes))
+        backUrl = getBackUrl(editMode, incomeSource, cacheMap.getOtherIncome().get, cacheMap.getMatchTaxYear().exists(_.matchTaxYear == Yes))
       } yield
         (incomeSource, cacheMap.getMatchTaxYear(), cacheMap.getEnteredAccountingPeriodDate()) match {
           case (Property, _, _) =>
             Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
-          case (_, Some(MatchTaxYearModel(matchTaxYear)), _) if matchTaxYear == MatchTaxYearForm.option_yes =>
+          case (_, Some(MatchTaxYearModel(Yes)), _) =>
             Ok(view(backUrl = backUrl, taxEndYear = getCurrentTaxEndYear))
           case (_, _, Some(date)) =>
             Ok(view(backUrl = backUrl, taxEndYear = date.taxEndYear))

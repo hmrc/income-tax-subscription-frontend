@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
+import core.models.{No, Yes}
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
@@ -66,15 +67,12 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
             _ <- if (changedAnswer) keystoreService.saveTerms(terms = false) else Future.successful(Unit)
             _ <- keystoreService.saveMatchTaxYear(matchTaxYear)
           } yield (isEditMode, matchTaxYear.matchTaxYear) match {
-            case (false, MatchTaxYearForm.option_yes) =>
+            case (false, Yes) =>
               Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-            case (false, MatchTaxYearForm.option_no) => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show())
-            case (true, MatchTaxYearForm.option_yes) => {
-              if(changedAnswer)
-                Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-              else Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-            }
-            case (true, MatchTaxYearForm.option_no) =>
+            case (false, No) => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show())
+            case (true, Yes) =>
+              Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+            case (true, No) =>
               Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true))
           }
         }

@@ -17,8 +17,7 @@
 package core.services
 
 import core.config.AppConfig
-import core.models.YesNo
-import core.models.YesNoModel._
+import core.models.{No, Yes, YesNo}
 import core.services.CacheConstants._
 import incometax.business.models._
 import incometax.business.models.address.Address
@@ -48,8 +47,8 @@ object CacheUtil {
 
     def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] =
       (getIncomeSourceType(), getMatchTaxYear()) match {
-        case (Some(Business | Both), Some(MatchTaxYearModel(YES))) => Some(getCurrentTaxYear)
-        case (Some(Business | Both), Some(MatchTaxYearModel(NO))) => getEnteredAccountingPeriodDate()
+        case (Some(Business | Both), Some(MatchTaxYearModel(Yes))) => Some(getCurrentTaxYear)
+        case (Some(Business | Both), Some(MatchTaxYearModel(No))) => getEnteredAccountingPeriodDate()
         case _ => None
       }
 
