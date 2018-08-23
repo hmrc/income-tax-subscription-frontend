@@ -18,6 +18,7 @@ package incometax.business.controllers
 
 import core.config.featureswitch._
 import core.controllers.ControllerBaseSpec
+import core.models.{No, Yes, YesNo}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
 import incometax.business.forms.MatchTaxYearForm
@@ -97,16 +98,16 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the MatchTaxYearController with an authorised user and valid submission" when {
 
-    def callShowCore(answer: String, isEditMode: Boolean): Future[Result] = TestMatchTaxYearController.submit(isEditMode)(subscriptionRequest
+    def callShowCore(answer: YesNo, isEditMode: Boolean): Future[Result] = TestMatchTaxYearController.submit(isEditMode)(subscriptionRequest
       .post(MatchTaxYearForm.matchTaxYearForm, MatchTaxYearModel(answer)))
 
     "Not in edit mode and " when {
-      def callShow(answer: String): Future[Result] = callShowCore(answer, isEditMode = false)
+      def callShow(answer: YesNo): Future[Result] = callShowCore(answer, isEditMode = false)
 
       "Option 'Yes' is selected " in {
         setupMockKeystore(fetchMatchTaxYear = None)
 
-        val goodRequest = callShow(MatchTaxYearForm.option_yes)
+        val goodRequest = callShow(Yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
         verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
@@ -115,7 +116,7 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
       "Option 'No' is selected and there were no previous entries" in {
         setupMockKeystore(fetchMatchTaxYear = None)
 
-        val goodRequest = callShow(MatchTaxYearForm.option_no)
+        val goodRequest = callShow(No)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
@@ -124,13 +125,13 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
     }
 
     "Is in edit mode and " when {
-      def callShow(answer: String): Future[Result] = callShowCore(answer, isEditMode = true)
+      def callShow(answer: YesNo): Future[Result] = callShowCore(answer, isEditMode = true)
 
       "Option 'Yes' is selected and the answer has not changed" should {
         "Redirect to Check Your Answers page" in {
           setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearYes)
 
-          val goodRequest = callShow(MatchTaxYearForm.option_yes)
+          val goodRequest = callShow(Yes)
           status(goodRequest) mustBe Status.SEE_OTHER
           redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
           verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
@@ -139,20 +140,20 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
       "Option 'Yes' is selected and the answer has changed" should {
         "Redirect to Check Your Answers Page page" in {
-           setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
+          setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
 
-            val goodRequest = callShow(MatchTaxYearForm.option_yes)
-            status(goodRequest) mustBe Status.SEE_OTHER
-            redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
-            verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 1)
-          }
+          val goodRequest = callShow(Yes)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+          verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 1)
+        }
       }
 
 
       "Option 'No' is selected " in {
         setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearYes)
 
-        val goodRequest = callShow(MatchTaxYearForm.option_no)
+        val goodRequest = callShow(No)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url
         await(goodRequest)
@@ -162,7 +163,7 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
       "if the answer is not changed then do not update terms" in {
         setupMockKeystore(fetchMatchTaxYear = TestModels.testMatchTaxYearNo)
 
-        val goodRequest = callShow(MatchTaxYearForm.option_no)
+        val goodRequest = callShow(No)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url
         await(goodRequest)

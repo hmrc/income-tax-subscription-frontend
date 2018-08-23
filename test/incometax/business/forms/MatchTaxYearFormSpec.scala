@@ -17,8 +17,10 @@
 package incometax.business.forms
 
 import assets.MessageLookup
+import core.forms.submapping.YesNoMapping
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
+import core.models.Yes
 import incometax.business.forms.MatchTaxYearForm._
 import incometax.business.models.MatchTaxYearModel
 import org.scalatest.Matchers._
@@ -29,8 +31,8 @@ class MatchTaxYearFormSpec extends PlaySpec with OneAppPerTest {
 
   "The MatchTaxYearForm" should {
     "transform the request to the form case class" in {
-      val testMatchTaxYear = option_yes
-      val testInput = Map(matchTaxYear -> testMatchTaxYear)
+      val testMatchTaxYear = Yes
+      val testInput = Map(matchTaxYear -> YesNoMapping.option_yes)
       val expected = MatchTaxYearModel(testMatchTaxYear)
       val actual = matchTaxYearForm.bind(testInput).value
 
@@ -61,9 +63,9 @@ class MatchTaxYearFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "The following submission should be valid" in {
-      val testYes = DataMap.matchTaxYear(option_yes)
+      val testYes = DataMap.matchTaxYear(YesNoMapping.option_yes)
       matchTaxYearForm isValidFor testYes
-      val testNo = DataMap.matchTaxYear(option_no)
+      val testNo = DataMap.matchTaxYear(YesNoMapping.option_no)
       matchTaxYearForm isValidFor testNo
     }
   }

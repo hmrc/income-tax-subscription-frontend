@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
+import core.models.{No, Yes}
 import core.services.CacheUtil.CacheMapUtil
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
@@ -79,9 +80,9 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       Future.successful(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
     else {
       keystoreService.fetchAll() map (_.getMatchTaxYear() match {
-        case Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)) =>
+        case Some(MatchTaxYearModel(Yes)) =>
           incometax.business.controllers.routes.MatchTaxYearController.show().url
-        case Some(MatchTaxYearModel(MatchTaxYearForm.option_no)) =>
+        case Some(MatchTaxYearModel(No)) =>
           incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
       })
     }

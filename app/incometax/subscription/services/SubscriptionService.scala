@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import core.audit.Logging
 import core.config.AppConfig
-import core.models.YesNoModel.{NO, YES}
+import core.models.{No, Yes}
 import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.connectors.SubscriptionConnector
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
@@ -42,8 +42,8 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
                                             arn: Option[String]): Option[AccountingPeriodModel] =
     if (arn.isEmpty) {
       (incomeSourceType, summaryData.matchTaxYear) match {
-        case (Business | Both, Some(MatchTaxYearModel(YES))) => Some(getCurrentTaxYear)
-        case (Business | Both, Some(MatchTaxYearModel(NO))) => summaryData.accountingPeriod
+        case (Business | Both, Some(MatchTaxYearModel(Yes))) => Some(getCurrentTaxYear)
+        case (Business | Both, Some(MatchTaxYearModel(No))) => summaryData.accountingPeriod
         case _ => None
       }
     } else {

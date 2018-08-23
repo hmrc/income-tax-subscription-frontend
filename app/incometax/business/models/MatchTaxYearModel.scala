@@ -16,9 +16,10 @@
 
 package incometax.business.models
 
+import core.models.YesNo
 import play.api.libs.json.Json
 
-case class MatchTaxYearModel(matchTaxYear: String)
+case class MatchTaxYearModel(matchTaxYear: YesNo)
 
 object MatchTaxYearModel {
   implicit val format = Json.format[MatchTaxYearModel]

@@ -18,6 +18,7 @@ package incometax.business
 
 
 import core.config.featureswitch.FeatureSwitching
+import core.models.{No, Yes}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -73,7 +74,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
     "select the Yes radio button on the match tax year page" in {
 
-      val userInput = MatchTaxYearModel(MatchTaxYearForm.option_yes)
+      val userInput = MatchTaxYearModel(Yes)
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
@@ -92,7 +93,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
     "always" should {
 
       "select the No radio button on the match tax year page" in {
-        val userInput = MatchTaxYearModel(MatchTaxYearForm.option_no)
+        val userInput = MatchTaxYearModel(No)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -116,23 +117,6 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
         When("POST /business/match-to-tax-year is called")
         val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(inEditMode = false, None)
-
-        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-        res should have(
-          httpStatus(BAD_REQUEST),
-          errorDisplayed()
-        )
-      }
-
-      "select invalid option on the match tax year page as if the user it trying to manipulate the html" in {
-        val userInput = MatchTaxYearModel("madeup")
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, "madeup")
-
-        When("POST /business/match-to-tax-year is called")
-        val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(inEditMode = false, Some(userInput))
 
         Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
         res should have(

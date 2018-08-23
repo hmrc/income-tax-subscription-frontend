@@ -6,7 +6,7 @@ import core.Constants.GovernmentGateway._
 import core.models.{DateModel, No, Yes, YesNo}
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
-import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
+import incometax.business.forms.AccountingMethodForm
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.models._
@@ -30,8 +30,8 @@ object IntegrationTestModels {
   val testStartDate = AccountingPeriodUtil.getCurrentTaxYearStartDate
   val testEndDate = AccountingPeriodUtil.getCurrentTaxYearEndDate
   val testEndDateNext = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1)
-  val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_yes)
-  val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(MatchTaxYearForm.option_no)
+  val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
+  val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 

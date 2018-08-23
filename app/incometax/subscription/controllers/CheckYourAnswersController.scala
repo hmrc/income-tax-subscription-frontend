@@ -22,8 +22,8 @@ import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.{IncomeTaxSAUser, Registration, SignUpController}
 import core.config.BaseControllerConfig
+import core.models.{No, Yes}
 import core.services.{AuthService, KeystoreService}
-import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.models.{Property, SubscriptionSuccess}
 import incometax.subscription.services.SubscriptionOrchestrationService
@@ -85,9 +85,9 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                 processFunc(user)(request)(cache)
               else
                 (cache.getMatchTaxYear(), cache.getEnteredAccountingPeriodDate()) match {
-                  case (Some(MatchTaxYearModel(MatchTaxYearForm.option_yes)), _) | (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), Some(_)) =>
+                  case (Some(MatchTaxYearModel(Yes)), _) | (Some(MatchTaxYearModel(No)), Some(_)) =>
                     processFunc(user)(request)(cache)
-                  case (Some(MatchTaxYearModel(MatchTaxYearForm.option_no)), _) =>
+                  case (Some(MatchTaxYearModel(No)), _) =>
                     Future.successful(Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
                 }
             case Some(false) => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show(editMode = true)))
