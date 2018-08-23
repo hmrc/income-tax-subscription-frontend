@@ -16,7 +16,8 @@
 
 package incometax.incomesource.views
 
-import assets.MessageLookup.{WorkForYourself => messages,Base => coomon}
+import assets.MessageLookup.{Base => coomon, WorkForYourself => messages}
+import core.forms.submapping.YesNoMapping
 import core.views.ViewSpecTrait
 import incometax.incomesource.forms.WorkForYourselfForm
 import play.api.i18n.Messages.Implicits._
@@ -28,7 +29,7 @@ class WorkForYourselfViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean) =  incometax.incomesource.views.html.work_for_yourself(
+  def page(isEditMode: Boolean, addFormErrors: Boolean) = incometax.incomesource.views.html.work_for_yourself(
     workForYourselfForm = WorkForYourselfForm.workForYourselfForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
@@ -53,8 +54,8 @@ class WorkForYourselfViewSpec extends ViewSpecTrait {
       legend = messages.heading,
       radioName = WorkForYourselfForm.choice
     )(
-      WorkForYourselfForm.option_yes -> coomon.yes,
-      WorkForYourselfForm.option_no -> coomon.no
+      YesNoMapping.option_yes -> coomon.yes,
+      YesNoMapping.option_no -> coomon.no
     )
 
     form.mustHaveContinueButton()

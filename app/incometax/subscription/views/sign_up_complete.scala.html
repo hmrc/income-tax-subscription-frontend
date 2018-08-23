@@ -37,9 +37,9 @@
 }
 @main_template(title = Messages("sign-up-complete.title"), scriptElem = scripts) {
 
-    @dataHelper("rent-uk-property", summary.rentUkProperty.map(_.rentUkProperty))
-    @dataHelper("only-source-of-self-employed-income", summary.rentUkProperty.flatMap(_.onlySourceOfSelfEmployedIncome))
-    @dataHelper("work-for-yourself", summary.workForYourself.map(_.doYouWorkForYourself))
+    @dataHelper("rent-uk-property", summary.rentUkProperty.map(_.rentUkProperty.toString))
+    @dataHelper("only-source-of-self-employed-income", summary.rentUkProperty.flatMap(_.onlySourceOfSelfEmployedIncome.toString))
+    @dataHelper("work-for-yourself", summary.workForYourself.map(_.doYouWorkForYourself.toString))
     @dataHelper("other-income", summary.otherIncome.map(_.toString))
     @dataHelper("accounting-period-prior", summary.accountingPeriodPrior.map(_.currentPeriodIsPrior))
     @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod))

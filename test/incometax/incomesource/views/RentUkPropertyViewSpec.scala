@@ -17,6 +17,7 @@
 package incometax.incomesource.views
 
 import assets.MessageLookup.{RentUkProperty => messages}
+import core.forms.submapping.YesNoMapping
 import core.views.ViewSpecTrait
 import incometax.incomesource.forms.RentUkPropertyForm
 import play.api.i18n.Messages
@@ -52,16 +53,16 @@ class RentUkPropertyViewSpec extends ViewSpecTrait {
       legend = messages.heading,
       radioName = RentUkPropertyForm.rentUkProperty
     )(
-      RentUkPropertyForm.option_yes -> messages.yes,
-      RentUkPropertyForm.option_no -> messages.no
+      YesNoMapping.option_yes -> messages.yes,
+      YesNoMapping.option_no -> messages.no
     )
 
     form.mustHaveRadioSet(
       legend = messages.question,
       radioName = RentUkPropertyForm.onlySourceOfSelfEmployedIncome
     )(
-      RentUkPropertyForm.option_yes -> Messages("base.yes"),
-      RentUkPropertyForm.option_no -> Messages("base.no")
+      YesNoMapping.option_yes -> Messages("base.yes"),
+      YesNoMapping.option_no -> Messages("base.no")
     )
 
     form.mustHaveContinueButton()

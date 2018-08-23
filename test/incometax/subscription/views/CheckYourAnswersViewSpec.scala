@@ -217,7 +217,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
+        expectedAnswer = expectedAnswer.toMessageString,
         expectedEditLink = expectedEditLink
       )
     }
@@ -231,7 +231,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
+        expectedAnswer = expectedAnswer.toMessageString,
         expectedEditLink = expectedEditLink
       )
     }
@@ -256,7 +256,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       sectionTest(
         sectionId = sectionId,
         expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
+        expectedAnswer = expectedAnswer.toMessageString,
         expectedEditLink = expectedEditLink
       )
     }

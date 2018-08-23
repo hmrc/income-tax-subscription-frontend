@@ -20,8 +20,8 @@ import javax.inject.{Inject, Singleton}
 
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
+import core.models.{No, Yes}
 import core.services.{AuthService, KeystoreService}
-import incometax.incomesource.forms.RentUkPropertyForm
 import incometax.incomesource.forms.RentUkPropertyForm._
 import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.CurrentTimeService
@@ -69,12 +69,12 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
           lazy val linearJourney: Future[Result] =
             keystoreService.saveRentUkProperty(data) flatMap { _ =>
               (data.rentUkProperty, data.onlySourceOfSelfEmployedIncome) match {
-                case (RentUkPropertyForm.option_no, _) =>
+                case (No, _) =>
                   Future.successful(Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show()))
-                case (RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_no)) =>
+                case (Yes, Some(No)) =>
                   Future.successful(Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show()))
-                case (RentUkPropertyForm.option_yes, Some(RentUkPropertyForm.option_yes)) =>
-                    Future.successful(Redirect(routes.OtherIncomeController.show()))
+                case (Yes, Some(Yes)) =>
+                  Future.successful(Redirect(routes.OtherIncomeController.show()))
               }
             }
 

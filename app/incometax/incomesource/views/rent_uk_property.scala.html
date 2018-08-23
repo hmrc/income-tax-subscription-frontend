@@ -17,6 +17,8 @@
 @import play.api.data.Form
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
+@import core.models.{Yes, No}
+@import core.forms.submapping.YesNoMapping
 
 @import core.config.AppConfig
 @import incometax.incomesource.models._
@@ -49,10 +51,10 @@
             legend = Messages("rent_uk_property.heading"),
             inline = true,
             options = Seq(
-            RadioOption(RentUkPropertyForm.option_yes, Messages("base.yes")),
-            RadioOption(RentUkPropertyForm.option_no, Messages("base.no"))),
+            RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
+            RadioOption(YesNoMapping.option_no, No.toMessageString)),
             parentForm = rentUkPropertyForm,
-            targetHostId = RentUkPropertyForm.option_yes,
+            targetHostId = YesNoMapping.option_yes,
             target = RentUkPropertyForm.onlySourceOfSelfEmployedIncome
         )
 
@@ -65,8 +67,8 @@
                 legend = Messages("rent_uk_property.question"),
                 inline = true,
                 options = Seq(
-                RadioOption(RentUkPropertyForm.option_yes, Messages("base.yes")),
-                RadioOption(RentUkPropertyForm.option_no, Messages("base.no"))),
+                RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
+                RadioOption(YesNoMapping.option_no, No.toMessageString)),
                 parentForm = rentUkPropertyForm
             )
 

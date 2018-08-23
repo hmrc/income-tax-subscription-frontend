@@ -16,64 +16,60 @@
 
 package incometax.incomesource.forms
 
+import core.forms.submapping.YesNoMapping
+import core.forms.submapping.YesNoMapping._
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.models.TargetIds
-import core.forms.validation.utils.ConstraintUtil._
-import core.forms.validation.utils.MappingUtil._
+import core.models.{No, Yes, YesNo}
 import incometax.incomesource.models.RentUkPropertyModel
-import play.api.data.Form
-import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Valid}
+import play.api.data.Forms.{mapping, of}
+import play.api.data.format.Formatter
+import play.api.data.validation.Invalid
+import play.api.data.{Form, FormError, Mapping}
 
 object RentUkPropertyForm {
 
   val rentUkProperty = "rentUkProperty"
   val onlySourceOfSelfEmployedIncome = "onlySourceOfSelfEmployedIncome"
-  val option_yes = "Yes"
-  val option_no = "No"
 
-  val choiceEmpty: Constraint[String] = constraint[String](
-    choice => {
-      lazy val emptyChoice = ErrorMessageFactory.error("error.rent-uk-property.empty")
-      if (choice.isEmpty) emptyChoice else Valid
-    }
+  val rentUkPropertyMapping: Mapping[YesNo] = YesNoMapping.yesNoMapping(
+    yesNoInvalid = ErrorMessageFactory.error("error.rent-uk-property.invalid"),
+    yesNoEmpty = Some(ErrorMessageFactory.error("error.rent-uk-property.empty"))
   )
 
-  val choiceInvalid: Constraint[String] = constraint[String](
-    choice => {
-      lazy val invalidChoice = ErrorMessageFactory.error("error.rent-uk-property.invalid")
-      choice match {
-        case `option_yes` | `option_no` => Valid
-        case _ => invalidChoice
+  val onlySourceOfSelfEmployedIncomeMapping: Mapping[Option[YesNo]] = of(new Formatter[Option[YesNo]] {
+
+    val invalid: Invalid = ErrorMessageFactory.error(TargetIds(onlySourceOfSelfEmployedIncome), "error.rent-uk-property.only-source-invalid")
+    val empty: Invalid = ErrorMessageFactory.error(TargetIds(onlySourceOfSelfEmployedIncome), "error.rent-uk-property.only-source-empty")
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Option[YesNo]] = {
+      data.get(rentUkProperty) match {
+        case Some(`option_yes`) =>
+          data.get(key) match {
+            case Some(`option_yes`) => Right(Some(Yes))
+            case Some(`option_no`) => Right(Some(No))
+            case Some(other) if other.nonEmpty => Left(invalid.errors.map(e => FormError(key, e.message, e.args)))
+            case _ => Left(empty.errors.map(e => FormError(key, e.message, e.args)))
+          }
+        case _ => Right(None)
       }
     }
-  )
 
-  val crossFieldEmptyRentUkProperty: Constraint[RentUkPropertyModel] = constraint[RentUkPropertyModel](
-    rentUkPropertyModel => {
-      lazy val empty = ErrorMessageFactory.error(TargetIds(onlySourceOfSelfEmployedIncome), "error.rent-uk-property.only-source-empty")
-      if (rentUkPropertyModel.rentUkProperty == option_yes &&
-        rentUkPropertyModel.onlySourceOfSelfEmployedIncome.isEmpty) empty else Valid
+    override def unbind(key: String, value: Option[YesNo]): Map[String, String] = {
+      val stringValue = value map {
+        case Yes => option_yes
+        case No => option_no
+      }
+      Map(key -> stringValue.getOrElse(""))
     }
-  )
 
-  val crossFieldInvalidRentUkProperty: Constraint[RentUkPropertyModel] = constraint[RentUkPropertyModel](
-    rentUkPropertyModel => {
-      lazy val invalid = ErrorMessageFactory.error(TargetIds(onlySourceOfSelfEmployedIncome), "error.rent-uk-property.only-source-invalid")
-
-      if (rentUkPropertyModel.rentUkProperty == option_yes) {
-        rentUkPropertyModel.onlySourceOfSelfEmployedIncome match {
-          case Some(`option_yes`) | Some(`option_no`) => Valid
-          case _ => invalid
-        }
-      } else Valid
-    }
-  )
+  })
 
   val rentUkPropertyForm = Form(
     mapping(
-      rentUkProperty -> oText.toText.verifying(choiceEmpty andThen choiceInvalid),
-      onlySourceOfSelfEmployedIncome -> oText
-    )(RentUkPropertyModel.apply)(RentUkPropertyModel.unapply).verifying(crossFieldEmptyRentUkProperty andThen crossFieldInvalidRentUkProperty)
+      rentUkProperty -> rentUkPropertyMapping,
+      onlySourceOfSelfEmployedIncome -> onlySourceOfSelfEmployedIncomeMapping
+    )(RentUkPropertyModel.apply)(RentUkPropertyModel.unapply)
   )
+
 }

@@ -16,7 +16,7 @@
 
 package incometax.subscription.models
 
-import core.models.YesNoModel.{NO, YES}
+import core.models.{No, Yes}
 import incometax.incomesource.models.{RentUkPropertyModel, WorkForYourselfModel}
 
 sealed trait IncomeSourceType {
@@ -81,11 +81,11 @@ object IncomeSourceType {
 
   def from(rentUkPropertyModel: RentUkPropertyModel, workForYourselfModel: Option[WorkForYourselfModel]): Option[IncomeSourceType] =
     (rentUkPropertyModel, workForYourselfModel) match {
-      case (RentUkPropertyModel(YES, Some(YES)), _) => Some(Property)
-      case (RentUkPropertyModel(YES, Some(NO)), Some(WorkForYourselfModel(YES))) => Some(Both)
-      case (RentUkPropertyModel(YES, Some(NO)), Some(WorkForYourselfModel(NO))) => Some(Property)
-      case (RentUkPropertyModel(NO, _), Some(WorkForYourselfModel(YES))) => Some(Business)
-      case (RentUkPropertyModel(NO, _), Some(WorkForYourselfModel(NO))) => Some(Other)
+      case (RentUkPropertyModel(Yes, Some(Yes)), _) => Some(Property)
+      case (RentUkPropertyModel(Yes, Some(No)), Some(WorkForYourselfModel(Yes))) => Some(Both)
+      case (RentUkPropertyModel(Yes, Some(No)), Some(WorkForYourselfModel(No))) => Some(Property)
+      case (RentUkPropertyModel(No, _), Some(WorkForYourselfModel(Yes))) => Some(Business)
+      case (RentUkPropertyModel(No, _), Some(WorkForYourselfModel(No))) => Some(Other)
       case _ => None
     }
 
