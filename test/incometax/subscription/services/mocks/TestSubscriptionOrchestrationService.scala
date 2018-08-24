@@ -30,14 +30,12 @@ import scala.concurrent.Future
 
 trait TestSubscriptionOrchestrationService extends MockSubscriptionService
   with MockKnownFactsService
-  with MockEnrolmentService
-  with MockRefreshProfileService {
+  with MockEnrolmentService {
 
   object TestSubscriptionOrchestrationService extends SubscriptionOrchestrationService(
     mockSubscriptionService,
     mockKnownFactsService,
-    mockEnrolmentService,
-    mockRefreshProfileService
+    mockEnrolmentService
   )
 
 }

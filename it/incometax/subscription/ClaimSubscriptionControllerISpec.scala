@@ -31,7 +31,6 @@ class ClaimSubscriptionControllerISpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreData(Map(MtditId -> toJson(testMTDID)))
       GGConnectorStub.stubEnrolResult(OK)
-      GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
 
       When("GET /claim-subscription is called")
       val res = IncomeTaxSubscriptionFrontend.claimSubscription()

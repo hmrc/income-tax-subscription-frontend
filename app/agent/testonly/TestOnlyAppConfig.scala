@@ -27,8 +27,6 @@ import play.api.{Configuration, Environment}
 class TestOnlyAppConfig @Inject()(configuration: Configuration,
                                   environment: Environment) extends FrontendAppConfig(configuration, environment) {
 
-  lazy val ggStubsURL: String = baseUrl("gg-stubs")
-
   lazy val preferencesURL: String = baseUrl("preferences")
 
   lazy val entityResolverURL: String = baseUrl("entity-resolver")

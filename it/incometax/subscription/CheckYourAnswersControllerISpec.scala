@@ -73,7 +73,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(OK)
-        GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
         KeystoreStub.stubPutMtditId()
 
         When("POST /check-your-answers is called")
@@ -95,7 +94,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         GGAdminStub.stubAddKnownFactsResult(OK)
         GGConnectorStub.stubEnrolResult(OK)
-        GGAuthenticationStub.stubRefreshProfileResult(BAD_REQUEST)
 
         When("POST /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -220,7 +218,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
-        GGAuthenticationStub.stubRefreshProfileResult(NO_CONTENT)
         KeystoreStub.stubPutMtditId()
 
         And("The ES6 and ES8 feature switch is on")
