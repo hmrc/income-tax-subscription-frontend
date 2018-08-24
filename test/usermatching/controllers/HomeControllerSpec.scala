@@ -28,6 +28,7 @@ import core.utils.TestConstants._
 import incometax.subscription.services.mocks.MockSubscriptionService
 import incometax.unauthorisedagent.services.mocks.MockSubscriptionStoreRetrievalService
 import org.jsoup.Jsoup
+import org.mockito.Mockito.reset
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers.{await, contentAsString, _}
@@ -48,8 +49,6 @@ class HomeControllerSpec extends ControllerBaseSpec
   )
 
   override def beforeEach(): Unit = {
-    import org.mockito.Mockito._
-
     super.beforeEach()
     reset(mockAuthService)
     mockNinoRetrieval()
@@ -199,6 +198,19 @@ class HomeControllerSpec extends ControllerBaseSpec
 
           intercept[InternalServerException](await(TestHomeController().index(fakeRequest)))
         }
+      }
+    }
+    "the user does not have a nino but has an IR-SA enrolment" should {
+      "use SAUTR to get NINO from Citizen details and redirect to rent property page" in {
+        mockUtrRetrieval()
+        mockLookupNinoSuccess(testUtr)
+        val redirectControllerUrl = incometax.incomesource.controllers.routes.RentUkPropertyController.show().url
+
+        val result = await(TestHomeController().index(fakeRequest))
+        session(result).get(ITSASessionKeys.NINO) must contain(testNino)
+        status(result) mustBe Status.SEE_OTHER
+        redirectLocation(result).get mustBe redirectControllerUrl
+
       }
     }
     "the user does not have a nino" should {

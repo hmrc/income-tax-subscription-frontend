@@ -16,8 +16,6 @@
 
 package usermatching.controllers
 
-import javax.inject.{Inject, Singleton}
-
 import core.ITSASessionKeys._
 import core.audit.Logging
 import core.auth.JourneyState._
@@ -28,6 +26,7 @@ import core.utils.Implicits._
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionService
 import incometax.unauthorisedagent.services.SubscriptionStoreRetrievalService
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
@@ -56,32 +55,43 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
     else Redirect(redirect)
   }
 
-  def index: Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user =>
-      val timestamp: String = java.time.LocalDateTime.now().toString
+  def index: Action[AnyContent] =
+    Authenticated.async { implicit request =>
+      implicit user =>
+        val timestamp: String = java.time.LocalDateTime.now().toString
 
-      user.nino match {
-        case Some(nino) =>
-          getSubscription(nino) flatMap {
-            case None =>
-              subscriptionStoreService.retrieveSubscriptionData(nino) flatMap {
-                case Some(storedSubscription) =>
-                  Future.successful(goToAuthoriseAgent(timestamp, storedSubscription.arn))
-                case None =>
-                  resolveUtr(user, nino) map {
-                    case Some(utr) =>
-                      goToSignUp(timestamp)
-                        .addingToSession(UTR -> utr)
-                    case None =>
-                      goToRegistration(timestamp)
-                  }
-              }
-            case Some(SubscriptionSuccess(mtditId)) =>
-              claimSubscription(mtditId)
+        user.nino match {
+          case Some(nino) => {
+            getSubscription(nino) flatMap {
+              case None =>
+                subscriptionStoreService.retrieveSubscriptionData(nino) flatMap {
+                  case Some(storedSubscription) =>
+                    Future.successful(goToAuthoriseAgent(timestamp, storedSubscription.arn))
+                  case None =>
+                    resolveUtr(user, nino) map {
+                      case Some(utr) =>
+                        goToSignUp(timestamp)
+                          .addingToSession(UTR -> utr)
+                      case None =>
+                        goToRegistration(timestamp)
+                    }
+                }
+              case Some(SubscriptionSuccess(mtditId)) =>
+                claimSubscription(mtditId)
+            }
           }
-        case None => Future.successful(goToUserMatching withJourneyState UserMatching)
-      }
-  }
+          case None =>
+            user.utr match {
+              case Some(utr) =>
+                citizenDetailsService.lookupNino(utr) map {
+                  nino => Redirect(incometax.incomesource.controllers.routes.RentUkPropertyController.show())
+                    .addingToSession(NINO -> nino)
+                }
+              case None =>
+                Future.successful(goToUserMatching withJourneyState UserMatching)
+            }
+        }
+    }
 
   private def goToAuthoriseAgent(timestamp: String, arn: String)(implicit request: Request[AnyContent]): Result =
     Redirect(incometax.unauthorisedagent.controllers.routes.AuthoriseAgentController.show())

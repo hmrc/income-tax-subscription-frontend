@@ -20,7 +20,6 @@ import _root_.uk.gov.hmrc.http.SessionKeys._
 import core.ITSASessionKeys
 import core.auth.AuthPredicate.AuthPredicateSuccess
 import core.auth.JourneyState._
-import core.config.{AppConfig, MockConfig}
 import core.services.mocks.MockAuthService
 import core.utils.UnitTestTrait
 import org.scalatest.EitherValues

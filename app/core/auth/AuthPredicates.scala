@@ -108,7 +108,7 @@ trait AuthPredicates extends Results {
 
   val defaultPredicates = timeoutPredicate |+| affinityPredicate |+| ninoPredicate
 
-  val homePredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate
+  val homePredicates = administratorRolePredicate |+| timeoutPredicate |+| affinityPredicate |+| mtdidPredicate
 
   val userMatchingPredicates = administratorRolePredicate |+| timeoutPredicate |+| affinityPredicate |+| mtdidPredicate |+| userMatchingJourneyPredicate
 
@@ -133,7 +133,7 @@ object AuthPredicates extends Results {
   lazy val userMatching: Result = Redirect(usermatching.controllers.routes.UserDetailsController.show())
 
   val ninoPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user =>
-    if (user.nino(request).isDefined) {
+    if (user.nino.isDefined) {
       Right(AuthPredicateSuccess)
     } else {
       Left(Future.successful(userMatching withJourneyState UserMatching))
