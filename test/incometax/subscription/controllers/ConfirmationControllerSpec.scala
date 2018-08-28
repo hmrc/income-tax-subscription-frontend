@@ -24,7 +24,7 @@ import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
-import incometax.subscription.models.{IncomeSourceType, Other}
+import incometax.subscription.models.Other
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
 import play.api.Play
@@ -112,7 +112,12 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
     "the user is in the unauthorised agent journey state" should {
       "return OK with the confirm subscription request view" in {
         mockAuthEnrolled()
-        setupMockKeystore(fetchAll = TestModels.testCacheMap)
+        setupMockKeystore(
+          fetchAll = TestModels.testCacheMapCustom(
+            rentUkProperty = None,
+            workForYourself = None
+          )
+        )
         val result: Future[Result] = TestConfirmationController.show(
           confirmAgentSubscriptionRequest
             .addStartTime(startTime)

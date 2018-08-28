@@ -24,13 +24,12 @@ import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
-import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.subscription.models.Other
 import incometax.subscription.views.html.sign_up_complete
 import incometax.unauthorisedagent.views.html.unauthorised_agent_confirmation
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Request}
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.userjourneys.ConfirmAgentSubscription
 
@@ -48,16 +47,33 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
       val endTime = java.time.LocalDateTime.now()
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
-      keystoreService.fetchAll() map (_.getSummary()) map { summary =>
-        summary.incomeSource match {
-          case Some(incomeSource) if incomeSource != Other =>
-            if (request.isInState(ConfirmAgentSubscription))
-              Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource))
-            else
-              Ok(sign_up_complete(journeyDuration, summary))
-          case _ =>
-            throw new InternalServerException("Confirmation Controller, call to show confirmation with invalid income source")
-        }
+      if (request.isInState(ConfirmAgentSubscription))
+        unauthorisedAgentJourney(journeyDuration)
+      else
+        individualJourney(journeyDuration)
+  }
+
+  private def individualJourney(journeyDuration: Int)(implicit request: Request[_]) = {
+    import core.services.CacheUtil._
+    keystoreService.fetchAll() map (_.getSummary()) map { summary =>
+      summary.incomeSource match {
+        case Some(incomeSource) if incomeSource != Other =>
+          Ok(sign_up_complete(journeyDuration, summary))
+        case _ =>
+          throw new InternalServerException("Confirmation Controller, call to show confirmation with invalid income source")
       }
+    }
+  }
+
+  private def unauthorisedAgentJourney(journeyDuration: Int)(implicit request: Request[_]) = {
+    import agent.services.CacheUtil._
+    keystoreService.fetchAll() map (_.getSummary()) map { summary =>
+      summary.incomeSource match {
+        case Some(incomeSource) if incomeSource != Other =>
+          Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource))
+        case _ =>
+          throw new InternalServerException("Confirmation Controller, call to show confirmation with invalid income source")
+      }
+    }
   }
 }
