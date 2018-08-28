@@ -25,8 +25,7 @@ object DataMap {
 
   import agent.forms.BusinessNameForm._
   import agent.forms.OtherIncomeForm._
-  import agent.forms.{IncomeSourceForm, AccountingMethodForm}
-  import agent.forms.preferences.BackToPreferencesForm
+  import agent.forms.{AccountingMethodForm, IncomeSourceForm}
   import core.forms.submapping.DateMapping._
 
 
@@ -50,8 +49,6 @@ object DataMap {
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 
   def otherIncomeChoice(iType: String): DataMap = Map(choice -> iType)
-
-  def acceptPaperlessDataMap(accept: String): DataMap = Map(BackToPreferencesForm.backToPreferences -> accept)
 
   val alwaysFailInvalid: Invalid = ErrorMessageFactory.error("always fail")
 
