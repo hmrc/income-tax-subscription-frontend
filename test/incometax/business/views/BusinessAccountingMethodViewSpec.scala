@@ -17,6 +17,7 @@
 package incometax.business.views
 
 import assets.MessageLookup.{AccountingMethod => messages}
+import core.forms.submapping.AccountingMethodMapping
 import core.views.ViewSpecTrait
 import incometax.business.forms.AccountingMethodForm
 import play.api.i18n.Messages.Implicits._
@@ -64,8 +65,8 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
       legend = messages.heading,
       radioName = AccountingMethodForm.accountingMethod
     )(
-      AccountingMethodForm.option_cash -> messages.cash,
-      AccountingMethodForm.option_accruals -> messages.accruals
+      AccountingMethodMapping.option_cash -> messages.cash,
+      AccountingMethodMapping.option_accruals -> messages.accruals
     )
 
     form.mustHaveContinueButton()

@@ -16,7 +16,7 @@
 
 package incometax.unauthorisedagent.models
 
-import core.models.DateModel
+import core.models.{AccountingMethod, DateModel}
 import incometax.subscription.models.IncomeSourceType
 import play.api.libs.json.Json
 
@@ -27,7 +27,7 @@ case class StoredSubscription(arn: String,
                               accountingPeriodStart: Option[DateModel] = None,
                               accountingPeriodEnd: Option[DateModel] = None,
                               tradingName: Option[String] = None,
-                              cashOrAccruals: Option[String] = None)
+                              cashOrAccruals: Option[AccountingMethod] = None)
 
 case object StoreSubscriptionSuccess
 

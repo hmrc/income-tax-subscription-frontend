@@ -16,7 +16,7 @@
 
 package incometax.subscription.models
 
-import core.models.DateModel
+import core.models.{AccountingMethod, DateModel}
 import play.api.libs.json.Json
 
 case class SubscriptionRequest(nino: String,
@@ -26,7 +26,7 @@ case class SubscriptionRequest(nino: String,
                                accountingPeriodStart: Option[DateModel] = None,
                                accountingPeriodEnd: Option[DateModel] = None,
                                tradingName: Option[String] = None,
-                               cashOrAccruals: Option[String] = None)
+                               cashOrAccruals: Option[AccountingMethod] = None)
 
 object SubscriptionRequest {
   implicit val format = Json.format[SubscriptionRequest]

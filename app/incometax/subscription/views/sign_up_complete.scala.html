@@ -42,7 +42,7 @@
     @dataHelper("work-for-yourself", summary.workForYourself.map(_.doYouWorkForYourself.toString))
     @dataHelper("other-income", summary.otherIncome.map(_.toString))
     @dataHelper("accounting-period-prior", summary.accountingPeriodPrior.map(_.currentPeriodIsPrior))
-    @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod))
+    @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod.toString))
 
     <div class="form-group" data-metrics="itsa:journey duration:@incomeSource:@journeyDuration">
         <section id="confirmation-heading" class="transaction-banner--complete">

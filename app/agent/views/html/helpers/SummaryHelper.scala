@@ -17,7 +17,7 @@
 package agent.views.html.helpers
 
 
-import incometax.business.forms.AccountingMethodForm
+import core.models.{Accruals, Cash}
 import incometax.business.models.AccountingMethodModel
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.i18n.Messages
@@ -25,8 +25,8 @@ import play.api.i18n.Messages
 object SummaryHelper {
 
   def accountingMethodText(src: AccountingMethodModel)(implicit messages: Messages): String = src.accountingMethod match {
-    case AccountingMethodForm.option_cash => Messages("agent.summary.income_type.cash")
-    case AccountingMethodForm.option_accruals => Messages("agent.summary.income_type.accruals")
+    case Cash => Messages("agent.summary.income_type.cash")
+    case Accruals => Messages("agent.summary.income_type.accruals")
   }
 
   def incomeSourceText(src: IncomeSourceType)(implicit messages: Messages): String = src match {

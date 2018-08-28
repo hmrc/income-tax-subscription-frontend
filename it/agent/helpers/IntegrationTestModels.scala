@@ -20,7 +20,7 @@ import _root_.agent.forms._
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.models._
 import _root_.agent.services.CacheConstants
-import core.models.{DateModel, No, Yes, YesNo}
+import core.models._
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models._
 import incometax.unauthorisedagent.models.StoredSubscription
@@ -42,7 +42,7 @@ object IntegrationTestModels {
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
-  val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
+  val testAccountingMethod = AccountingMethodModel(Cash)
   val testTerms = true
 
   //n.b. this must match the data in fullKeystoreData

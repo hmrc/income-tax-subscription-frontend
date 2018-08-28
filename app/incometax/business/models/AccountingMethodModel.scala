@@ -16,9 +16,10 @@
 
 package incometax.business.models
 
+import core.models.AccountingMethod
 import play.api.libs.json.Json
 
-case class AccountingMethodModel(accountingMethod: String)
+case class AccountingMethodModel(accountingMethod: AccountingMethod)
 
 object AccountingMethodModel {
   implicit val format = Json.format[AccountingMethodModel]

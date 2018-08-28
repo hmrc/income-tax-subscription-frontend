@@ -22,7 +22,7 @@ import java.util.UUID
 
 import core.Constants.GovernmentGateway._
 import core.Constants._
-import core.models.DateModel
+import core.models.{Cash, DateModel}
 import core.utils.TestModels._
 import incometax.subscription.models._
 import play.api.http.Status._
@@ -75,7 +75,7 @@ object TestConstants {
     incomeSource = Both,
     accountingPeriodStart = Some(testAccountingPeriod.startDate),
     accountingPeriodEnd = Some(testAccountingPeriod.endDate),
-    cashOrAccruals = Some("Cash"),
+    cashOrAccruals = Some(Cash),
     tradingName = testBusinessName.businessName,
     arn = None
   )
@@ -85,7 +85,7 @@ object TestConstants {
     incomeSource = Both,
     accountingPeriodStart = Some(testAccountingPeriod.adjustedTaxYear.startDate),
     accountingPeriodEnd = Some(testAccountingPeriod.adjustedTaxYear.endDate),
-    cashOrAccruals = Some("Cash"),
+    cashOrAccruals = Some(Cash),
     tradingName = testBusinessName.businessName,
     arn = None
   )

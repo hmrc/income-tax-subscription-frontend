@@ -19,7 +19,7 @@ package agent.utils
 import _root_.agent.services.CacheConstants
 import agent.forms._
 import agent.models._
-import core.models.{DateModel, No, Yes, YesNo}
+import core.models._
 import core.utils.Implicits
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models._
@@ -50,7 +50,7 @@ object TestModels extends Implicits {
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
-  val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
+  val testAccountingMethod = AccountingMethodModel(Cash)
   val testTerms = true
 
   val emptyCacheMap = CacheMap("", Map())
