@@ -54,19 +54,19 @@ class OtherIncomeFormSpec extends PlaySpec with OneAppPerTest {
       val emptyTest0 = otherIncomeForm.bind(emptyInput0)
       emptyTest0 assert choice hasExpectedErrors empty
 
-      val emptyInput = DataMap.notEligibleChoice("")
+      val emptyInput = DataMap.otherIncomeChoice("")
       val emptyTest = otherIncomeForm.bind(emptyInput)
       emptyTest assert choice hasExpectedErrors empty
 
-      val invalidInput = DataMap.notEligibleChoice("α")
+      val invalidInput = DataMap.otherIncomeChoice("α")
       val invalidTest = otherIncomeForm.bind(invalidInput)
       invalidTest assert choice hasExpectedErrors invalid
     }
 
     "The following submission should be valid" in {
-      val testsYes = DataMap.notEligibleChoice(YesNoMapping.option_yes)
+      val testsYes = DataMap.otherIncomeChoice(YesNoMapping.option_yes)
       otherIncomeForm isValidFor testsYes
-      val testsNo = DataMap.notEligibleChoice(YesNoMapping.option_no)
+      val testsNo = DataMap.otherIncomeChoice(YesNoMapping.option_no)
       otherIncomeForm isValidFor testsNo
     }
   }

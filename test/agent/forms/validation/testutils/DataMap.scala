@@ -24,8 +24,8 @@ import play.api.data.validation.{Constraint, Invalid}
 object DataMap {
 
   import agent.forms.BusinessNameForm._
+  import agent.forms.OtherIncomeForm._
   import agent.forms.{IncomeSourceForm, AccountingMethodForm}
-  import agent.forms.NotEligibleForm._
   import agent.forms.preferences.BackToPreferencesForm
   import core.forms.submapping.DateMapping._
 
@@ -49,7 +49,7 @@ object DataMap {
 
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 
-  def notEligibleChoice(iType: String): DataMap = Map(choice -> iType)
+  def otherIncomeChoice(iType: String): DataMap = Map(choice -> iType)
 
   def acceptPaperlessDataMap(accept: String): DataMap = Map(BackToPreferencesForm.backToPreferences -> accept)
 
