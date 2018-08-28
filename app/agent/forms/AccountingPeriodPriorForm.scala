@@ -16,40 +16,22 @@
 
 package agent.forms
 
-import core.forms.validation.ErrorMessageFactory
-import core.forms.validation.utils.ConstraintUtil._
-import core.forms.validation.utils.MappingUtil._
 import agent.models.AccountingPeriodPriorModel
+import core.forms.submapping.YesNoMapping
+import core.forms.validation.ErrorMessageFactory
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.{Constraint, Valid}
 
 object AccountingPeriodPriorForm {
 
   val accountingPeriodPrior = "accountingPeriodPrior"
-  val option_yes = "Yes"
-  val option_no = "No"
-
-  val nonEmpty: Constraint[String] = constraint[String](
-    source => {
-      lazy val emptySource = ErrorMessageFactory.error("agent.error.business.current_financial_period_prior.empty")
-      if (source.isEmpty) emptySource else Valid
-    }
-  )
-
-  val validOption: Constraint[String] = constraint[String](
-    source => {
-      lazy val invalidSource = ErrorMessageFactory.error("agent.error.business.current_financial_period_prior.invalid")
-      source match {
-        case `option_yes` | `option_no` => Valid
-        case _ => invalidSource
-      }
-    }
-  )
 
   val accountingPeriodPriorForm = Form(
     mapping(
-      accountingPeriodPrior -> oText.toText.verifying(nonEmpty andThen validOption)
+      accountingPeriodPrior -> YesNoMapping.yesNoMapping(
+        yesNoInvalid = ErrorMessageFactory.error("agent.error.business.current_financial_period_prior.invalid"),
+        yesNoEmpty = Some(ErrorMessageFactory.error("agent.error.business.current_financial_period_prior.empty"))
+      )
     )(AccountingPeriodPriorModel.apply)(AccountingPeriodPriorModel.unapply)
   )
 

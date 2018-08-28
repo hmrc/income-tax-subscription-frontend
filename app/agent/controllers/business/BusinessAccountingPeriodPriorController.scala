@@ -23,7 +23,7 @@ import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.models.Yes
+import core.models.{No, Yes}
 import core.services.AuthService
 import core.utils.Implicits._
 import play.api.data.Form
@@ -69,8 +69,8 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
                   Redirect(agent.controllers.routes.CheckYourAnswersController.show())
                 else
                   accountingPeriodPrior.currentPeriodIsPrior match {
-                    case AccountingPeriodPriorForm.option_yes => yes
-                    case AccountingPeriodPriorForm.option_no => no
+                    case Yes => yes
+                    case No => no
                   }
               }
           }

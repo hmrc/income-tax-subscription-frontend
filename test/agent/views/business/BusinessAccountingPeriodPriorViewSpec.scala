@@ -18,6 +18,7 @@ package agent.views.business
 
 import agent.assets.MessageLookup.Business.{AccountingPeriodPrior => messages}
 import agent.forms.AccountingPeriodPriorForm
+import core.forms.submapping.YesNoMapping
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import core.views.ViewSpecTrait
@@ -55,8 +56,8 @@ class BusinessAccountingPeriodPriorViewSpec extends ViewSpecTrait {
       legend = messages.heading,
       radioName = AccountingPeriodPriorForm.accountingPeriodPrior
     )(
-      AccountingPeriodPriorForm.option_yes -> messages.yes,
-      AccountingPeriodPriorForm.option_no -> messages.no
+      YesNoMapping.option_yes -> messages.yes,
+      YesNoMapping.option_no -> messages.no
     )
 
     form.mustHaveContinueButton()

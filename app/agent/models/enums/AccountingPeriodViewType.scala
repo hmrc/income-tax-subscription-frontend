@@ -16,6 +16,8 @@
 
 package agent.models.enums
 
+import core.models.{No, Yes}
+
 sealed trait AccountingPeriodViewType
 
 case object CurrentAccountingPeriodView extends AccountingPeriodViewType
@@ -25,14 +27,13 @@ case object NextAccountingPeriodView extends AccountingPeriodViewType
 
 object AccountingPeriodViewType {
 
-  import agent.forms.AccountingPeriodPriorForm
   import agent.models.AccountingPeriodPriorModel
 
   implicit def conv(accountingPeriodPrior: AccountingPeriodPriorModel): AccountingPeriodViewType =
     accountingPeriodPrior.currentPeriodIsPrior match {
-      case AccountingPeriodPriorForm.option_yes =>
+      case Yes =>
         NextAccountingPeriodView
-      case AccountingPeriodPriorForm.option_no =>
+      case No =>
         CurrentAccountingPeriodView
     }
 

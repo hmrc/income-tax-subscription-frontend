@@ -21,10 +21,9 @@ import _root_.agent.helpers.IntegrationTestModels.{keystoreData, _}
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
 import _root_.agent.services.CacheConstants
-import agent.forms._
 import agent.models._
 import core.config.featureswitch.FeatureSwitching
-import core.models.{DateModel, No}
+import core.models.{DateModel, No, Yes}
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.Both
 import play.api.http.Status._
@@ -58,7 +57,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
       "show the current accounting period dates page without date values entered" in {
         val keystoreIncomeSource = Both
         val keystoreIncomeOther = No
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -88,7 +87,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
       "show the future accounting period dates page with date values entered" in {
         val keystoreIncomeSource = Both
         val keystoreIncomeOther = No
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
+        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(Yes)
         val keystoreAccountingPeriodDates: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
 
         Given("I setup the Wiremock stubs")
@@ -120,7 +119,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
       "show the future accounting period dates page without date values entered" in {
         val keystoreIncomeSource = Both
         val keystoreIncomeOther = No
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
+        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(Yes)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -150,7 +149,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
 
   "POST /business/accounting-period-dates" when {
-    val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+    val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
 
     "not in edit mode" should {
 
@@ -217,7 +216,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         "The new accounting period ends in the same tax year" in {
           val keystoreIncomeSource = Both
           val keystoreIncomeOther = No
-          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("04", "05", "2019"))
           val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("05", "05", "2019"))
 
@@ -246,7 +245,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         "The new accounting period ends in a different tax year" in {
           val keystoreIncomeSource = Both
           val keystoreIncomeOther = No
-          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2020"))
           val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2019"))
 

@@ -16,12 +16,12 @@
 
 package agent.controllers.business
 
-import _root_.agent.services.CacheConstants
-import agent.forms._
-import agent.models._
 import _root_.agent.helpers.ComponentSpecBase
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
+import _root_.agent.services.CacheConstants
+import agent.models._
+import core.models.{No, Yes}
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -42,7 +42,7 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(OK),
           pageTitle(Messages("agent.business.current_financial_period_prior.title")),
-          radioButtonSet(id = "accountingPeriodPrior", selectedRadioButton = Some(Messages("agent.business.current_financial_period_prior.no")))
+          radioButtonSet(id = "accountingPeriodPrior", selectedRadioButton = Some(Messages("base.no")))
         )
       }
     }
@@ -72,7 +72,7 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
     "always" should {
 
       "select the Yes current accounting period radio button on the accounting period prior page" in {
-        val userInput = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
+        val userInput = AccountingPeriodPriorModel(Yes)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -89,7 +89,7 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
       }
 
       "select the No current accounting period radio button on the accounting period prior page" in {
-        val userInput = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+        val userInput = AccountingPeriodPriorModel(No)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -113,23 +113,6 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
 
         When("POST /business/accounting-period-prior is called")
         val res = IncomeTaxSubscriptionFrontend.submitBusinessAccountingPeriodPrior(inEditMode = false, None)
-
-        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-        res should have(
-          httpStatus(BAD_REQUEST),
-          errorDisplayed()
-        )
-      }
-
-      "select invalid other income option on the accounting period prior page as if the user it trying to manipulate the html" in {
-        val userInput = AccountingPeriodPriorModel("madeup")
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodPrior, "madeup")
-
-        When("POST /business/accounting-period-prior is called")
-        val res = IncomeTaxSubscriptionFrontend.submitBusinessAccountingPeriodPrior(inEditMode = false, Some(userInput))
 
         Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
         res should have(

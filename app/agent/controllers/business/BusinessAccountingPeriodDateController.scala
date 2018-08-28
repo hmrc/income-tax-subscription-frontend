@@ -24,10 +24,11 @@ import agent.models.enums._
 import agent.services.CacheUtil._
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
+import core.models.{No, Yes}
 import core.services.AuthService
 import core.utils.Implicits._
 import incometax.business.models.AccountingPeriodModel
-import incometax.subscription.models.{Both, IncomeSourceType}
+import incometax.subscription.models.IncomeSourceType
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -110,9 +111,9 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
     keystoreService.fetchAccountingPeriodPrior().flatMap {
       case Some(currentPeriodPrior) =>
         currentPeriodPrior.currentPeriodIsPrior match {
-          case AccountingPeriodPriorForm.option_yes =>
+          case Yes =>
             NextAccountingPeriodView
-          case AccountingPeriodPriorForm.option_no =>
+          case No =>
             CurrentAccountingPeriodView
         }
       case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")
@@ -126,9 +127,9 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
     else
       keystoreService.fetchAccountingPeriodPrior() flatMap {
         case Some(currentPeriodPrior) => currentPeriodPrior.currentPeriodIsPrior match {
-          case AccountingPeriodPriorForm.option_yes =>
+          case Yes =>
             agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-          case AccountingPeriodPriorForm.option_no =>
+          case No =>
             agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
         }
         case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")

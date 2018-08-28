@@ -30,7 +30,7 @@
 
         @dataHelper("income-source", summary.incomeSource.map(_.source))
         @dataHelper("other-income", summary.otherIncome.map(_.toString))
-        @dataHelper("accounting-period-prior", summary.accountingPeriodPrior.map(_.currentPeriodIsPrior))
+        @dataHelper("accounting-period-prior", summary.accountingPeriodPrior.map(_.currentPeriodIsPrior.toString))
         @dataHelper("accounting-method", summary.accountingMethod.map(_.accountingMethod.toString))
 
         <div class="form-group">

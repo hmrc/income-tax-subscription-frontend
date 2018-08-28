@@ -16,9 +16,10 @@
 
 package agent.models
 
+import core.models.YesNo
 import play.api.libs.json.Json
 
-case class AccountingPeriodPriorModel(currentPeriodIsPrior: String)
+case class AccountingPeriodPriorModel(currentPeriodIsPrior: YesNo)
 
 object AccountingPeriodPriorModel {
   implicit val format = Json.format[AccountingPeriodPriorModel]

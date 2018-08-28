@@ -16,7 +16,6 @@
 
 package agent.helpers
 
-import _root_.agent.forms._
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.models._
 import _root_.agent.services.CacheConstants
@@ -32,8 +31,8 @@ object IntegrationTestModels {
 
   val testStartDate = _root_.helpers.IntegrationTestModels.testStartDate
   val testEndDate = _root_.helpers.IntegrationTestModels.testEndDate
-  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
+  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(No)
+  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(Yes)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
@@ -94,10 +93,6 @@ object IntegrationTestModels {
   lazy val testIncomeSourceProperty = Property
 
   lazy val testIncomeSourceBoth = Both
-
-  lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-
-  lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
   lazy val testOtherIncomeNo = No
 

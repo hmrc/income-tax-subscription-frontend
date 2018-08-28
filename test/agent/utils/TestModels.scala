@@ -40,8 +40,8 @@ object TestModels extends Implicits {
 
   val testStartDate = core.utils.TestModels.testStartDate
   val testEndDate = core.utils.TestModels.testEndDate
-  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
+  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(No)
+  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(Yes)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
@@ -108,10 +108,6 @@ object TestModels extends Implicits {
   lazy val testIncomeSourceProperty = Property
 
   lazy val testIncomeSourceBoth = Both
-
-  lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-
-  lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
   lazy val testOtherIncomeNo = No
 
