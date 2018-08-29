@@ -16,7 +16,6 @@
 
 package usermatching
 
-import agent.services.CacheConstants
 import agent.services.CacheConstants._
 import core.ITSASessionKeys
 import core.config.featureswitch
@@ -170,6 +169,24 @@ class HomeControllerISpec extends ComponentSpecBase {
           val cookie = SessionCookieCrumbler.getSessionMap(res)
           cookie.keys should not contain ITSASessionKeys.UTR
         }
+      }
+    }
+
+    "the user only has a utr enrolment" should {
+      "go to rent uk property page" in {
+        Given("I setup the Wiremock stubs")
+
+        AuthStub.stubAuthNoNino()
+        CitizenDetailsStub.stubCIDUserWithUtr(testUtr, testNino)
+
+        When("GET /index is called")
+        val res = IncomeTaxSubscriptionFrontend.indexPage()
+
+        Then("Should redirect to rent uk property page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(rentUkPropertyURI)
+        )
       }
     }
 

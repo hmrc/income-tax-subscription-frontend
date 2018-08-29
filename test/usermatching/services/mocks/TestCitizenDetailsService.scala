@@ -20,10 +20,8 @@ import core.utils.MockTrait
 import core.utils.TestConstants._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
-import play.api.http.Status._
 import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.connectors.mocks.MockCitizenDetailsConnector
-import usermatching.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 import usermatching.services.CitizenDetailsService
 
 import scala.concurrent.Future
@@ -46,6 +44,13 @@ trait MockCitizenDetailsService extends MockTrait {
       )
     ).thenReturn(response)
 
+  private def mockLookupNino(utr: String)(response: Future[String]) =
+    when(
+      mockCitizenDetailsService.lookupNino(
+        ArgumentMatchers.eq(utr)
+      )(ArgumentMatchers.any[HeaderCarrier])
+    ).thenReturn(response)
+
   def mockLookupUserWithUtr(nino: String)(utr: String): Unit =
     mockLookupUtr(nino)(Future.successful(Some(utr)))
 
@@ -54,5 +59,8 @@ trait MockCitizenDetailsService extends MockTrait {
 
   def mockLookupException(nino: String): Unit =
     mockLookupUtr(nino)(Future.failed(testException))
+
+  def mockLookupNinoSuccess(utr: String): Unit =
+    mockLookupNino(utr)(Future.successful(testNino))
 
 }

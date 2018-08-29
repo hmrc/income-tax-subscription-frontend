@@ -33,6 +33,10 @@ object CitizenDetailsStub extends WireMockMethods {
     when(method = GET, uri = s"/citizen-details/nino/$nino")
       .thenReturn(status = status, body = body)
 
+  private def stubCitizenDetailsUtr(utr: String)(status: Int, body: JsObject): Unit =
+    when(method = GET, uri = s"/citizen-details/sautr/$utr")
+    .thenReturn(status = status, body = body)
+
   def stubCIDUserWithNinoAndUtr(nino: String, utr: String): Unit =
     stubCitizenDetails(nino)(OK, successResponse(nino, Some(utr)))
 
@@ -41,5 +45,8 @@ object CitizenDetailsStub extends WireMockMethods {
 
   def stubCIDNotFound(nino: String): Unit =
     stubCitizenDetails(nino)(NOT_FOUND, Json.obj())
+
+  def stubCIDUserWithUtr(utr: String, nino: String): Unit =
+    stubCitizenDetailsUtr(utr)(OK, successResponse(utr, Some(nino)))
 
 }
