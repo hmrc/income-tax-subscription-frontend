@@ -18,9 +18,10 @@ package agent.views.business
 
 import agent.assets.MessageLookup.{AccountingMethod => messages}
 import agent.forms.AccountingMethodForm
+import core.forms.submapping.AccountingMethodMapping
+import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import core.views.ViewSpecTrait
 
 class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
@@ -52,8 +53,8 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
       legend = messages.heading,
       radioName = AccountingMethodForm.accountingMethod
     )(
-      AccountingMethodForm.option_cash -> messages.cash,
-      AccountingMethodForm.option_accruals -> messages.accruals
+      AccountingMethodMapping.option_cash -> messages.cash,
+      AccountingMethodMapping.option_accruals -> messages.accruals
     )
 
     form.mustHaveContinueButton()

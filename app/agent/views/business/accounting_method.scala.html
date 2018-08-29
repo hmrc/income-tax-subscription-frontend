@@ -17,6 +17,7 @@
 @import agent.models.AccountingMethodModel
 @import play.api.data.Form
 @import agent.forms.AccountingMethodForm
+@import core.forms.submapping.AccountingMethodMapping
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
 @import core.views.html.helpers._
@@ -40,8 +41,8 @@
             field = accountingMethodForm(AccountingMethodForm.accountingMethod),
             legend = question,
             options = Seq(
-                RadioOption(AccountingMethodForm.option_cash, Messages("agent.business.accounting_method.cash")),
-                RadioOption(AccountingMethodForm.option_accruals, Messages("agent.business.accounting_method.accruals"))
+                RadioOption(AccountingMethodMapping.option_cash, Messages("agent.business.accounting_method.cash")),
+                RadioOption(AccountingMethodMapping.option_accruals, Messages("agent.business.accounting_method.accruals"))
             ),
             parentForm = accountingMethodForm
         )

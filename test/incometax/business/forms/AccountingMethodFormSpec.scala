@@ -17,8 +17,10 @@
 package incometax.business.forms
 
 import assets.MessageLookup
+import core.forms.submapping.AccountingMethodMapping
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
+import core.models.Cash
 import incometax.business.models.AccountingMethodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
@@ -30,8 +32,8 @@ class AccountingMethodFormSpec extends PlaySpec with OneAppPerTest {
 
   "The AccountingMethodForm" should {
     "transform the request to the form case class" in {
-      val testAccountingMethod = option_cash
-      val testInput = Map(accountingMethod -> testAccountingMethod)
+      val testAccountingMethod = Cash
+      val testInput = Map(accountingMethod -> AccountingMethodMapping.option_cash)
       val expected = AccountingMethodModel(testAccountingMethod)
       val actual = accountingMethodForm.bind(testInput).value
 
@@ -62,9 +64,9 @@ class AccountingMethodFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "The following submission should be valid" in {
-      val testCash = DataMap.accountingMethod(option_cash)
+      val testCash = DataMap.accountingMethod(AccountingMethodMapping.option_cash)
       accountingMethodForm isValidFor testCash
-      val testAccruals = DataMap.accountingMethod(option_accruals)
+      val testAccruals = DataMap.accountingMethod(AccountingMethodMapping.option_accruals)
       accountingMethodForm isValidFor testAccruals
     }
   }

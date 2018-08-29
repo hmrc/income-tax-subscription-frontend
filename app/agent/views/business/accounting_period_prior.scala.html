@@ -20,6 +20,8 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
 @import core.views.html.helpers._
+@import core.forms.submapping.YesNoMapping
+@import core.models.{Yes,No}
 
 @(accountingPeriodPriorForm: Form[AccountingPeriodPriorModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -46,8 +48,8 @@
             field = accountingPeriodPriorForm(AccountingPeriodPriorForm.accountingPeriodPrior),
             legend = question,
             options = Seq(
-                RadioOption(AccountingPeriodPriorForm.option_yes, Messages("agent.business.current_financial_period_prior.yes")),
-                RadioOption(AccountingPeriodPriorForm.option_no, Messages("agent.business.current_financial_period_prior.no"))
+                RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
+                RadioOption(YesNoMapping.option_no, No.toMessageString)
             ),
             parentForm = accountingPeriodPriorForm,
             inline = true

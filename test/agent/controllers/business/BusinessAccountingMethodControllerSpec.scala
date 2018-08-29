@@ -20,6 +20,7 @@ import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
 import agent.services.mocks.MockKeystoreService
+import core.models.Cash
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
@@ -57,7 +58,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   "Calling the submit action of the BusinessAccountingMethod with an authorised user and valid submission" should {
 
     def callShow(isEditMode: Boolean) = TestBusinessAccountingMethodController.submit(isEditMode = isEditMode)(subscriptionRequest
-      .post(AccountingMethodForm.accountingMethodForm, AccountingMethodModel(AccountingMethodForm.option_cash)))
+      .post(AccountingMethodForm.accountingMethodForm, AccountingMethodModel(Cash)))
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {

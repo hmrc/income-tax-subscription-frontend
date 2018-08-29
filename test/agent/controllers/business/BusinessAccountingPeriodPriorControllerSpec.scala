@@ -18,8 +18,7 @@ package agent.controllers.business
 
 import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingPeriodPriorForm
-import agent.forms.OtherIncomeForm._
-import agent.models.{AccountingPeriodPriorModel, OtherIncomeModel}
+import agent.models.AccountingPeriodPriorModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
 import core.models.{No, Yes, YesNo}
@@ -97,23 +96,23 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
 
   "Calling the submit action of the BusinessAccountingPeriodPriorController with an authorised user and valid submission" when {
 
-    def callShowCore(answer: String, isEditMode: Boolean): Future[Result] = TestAccountingPeriodPriorController.submit(isEditMode)(subscriptionRequest
+    def callShowCore(answer: YesNo, isEditMode: Boolean): Future[Result] = TestAccountingPeriodPriorController.submit(isEditMode)(subscriptionRequest
       .post(AccountingPeriodPriorForm.accountingPeriodPriorForm, AccountingPeriodPriorModel(answer)))
 
     "Not in edit mode and " when {
-      def callShow(answer: String): Future[Result] = callShowCore(answer, isEditMode = false)
+      def callShow(answer: YesNo): Future[Result] = callShowCore(answer, isEditMode = false)
 
       "Option 'Yes' is selected and there were no previous entries" in {
         setupMockKeystore(fetchAccountingPeriodPrior = None)
-        val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
+        val goodRequest = callShow(Yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
       "Option 'Yes' is selected and there is previous entry" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
-        val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(Yes))
+        val goodRequest = callShow(Yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
@@ -121,7 +120,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
 
       "Option 'No' is selected and there were no previous entries" in {
         setupMockKeystore(fetchAccountingPeriodPrior = None)
-        val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
+        val goodRequest = callShow(No)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
@@ -129,8 +128,8 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
       }
 
       "Option 'No' is selected and there there is previous entry" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
-        val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(Yes))
+        val goodRequest = callShow(No)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
@@ -139,28 +138,28 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
     }
 
     "Is in edit mode and " when {
-      def callShow(answer: String): Future[Result] = callShowCore(answer, isEditMode = true)
+      def callShow(answer: YesNo): Future[Result] = callShowCore(answer, isEditMode = true)
 
       "Option 'Yes' is selected and there were no previous entries" in {
         // this condition shouldn't happen, but no reason to break the journey, just proceed through the journey normally
         setupMockKeystore(fetchAccountingPeriodPrior = None)
-        val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
+        val goodRequest = callShow(Yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
       "Option 'Yes' is selected and there is previous entry and it is the same as the current answer" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
-        val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(Yes))
+        val goodRequest = callShow(Yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.CheckYourAnswersController.show().url
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
       }
 
       "Option 'Yes' is selected and there is previous entry and it is the different from the current answer" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no))
-        val goodRequest = callShow(AccountingPeriodPriorForm.option_yes)
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(No))
+        val goodRequest = callShow(Yes)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
         verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
@@ -169,7 +168,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
       "Option 'No' is selected and there were no previous entries" in {
         // this condition shouldn't happen, but no reason to break the journey, just proceed through the journey normally
         setupMockKeystore(fetchAccountingPeriodPrior = None)
-        val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
+        val goodRequest = callShow(No)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
@@ -177,8 +176,8 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
       }
 
       "Option 'No' is selected and there there is previous entry and it is the same as the current answer" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no))
-        val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(No))
+        val goodRequest = callShow(No)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe agent.controllers.routes.CheckYourAnswersController.show().url
         await(goodRequest)
@@ -186,8 +185,8 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
       }
 
       "Option 'No' is selected and there there is previous entry and it is the different from the current answer" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes))
-        val goodRequest = callShow(AccountingPeriodPriorForm.option_no)
+        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(Yes))
+        val goodRequest = callShow(No)
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)

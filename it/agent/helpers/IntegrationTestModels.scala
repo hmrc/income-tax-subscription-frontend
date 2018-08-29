@@ -16,11 +16,10 @@
 
 package agent.helpers
 
-import _root_.agent.forms._
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.models._
 import _root_.agent.services.CacheConstants
-import core.models.{DateModel, No, Yes, YesNo}
+import core.models._
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models._
 import incometax.unauthorisedagent.models.StoredSubscription
@@ -32,8 +31,8 @@ object IntegrationTestModels {
 
   val testStartDate = _root_.helpers.IntegrationTestModels.testStartDate
   val testEndDate = _root_.helpers.IntegrationTestModels.testEndDate
-  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
+  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(No)
+  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(Yes)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
@@ -42,7 +41,7 @@ object IntegrationTestModels {
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
-  val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
+  val testAccountingMethod = AccountingMethodModel(Cash)
   val testTerms = true
 
   //n.b. this must match the data in fullKeystoreData
@@ -94,10 +93,6 @@ object IntegrationTestModels {
   lazy val testIncomeSourceProperty = Property
 
   lazy val testIncomeSourceBoth = Both
-
-  lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-
-  lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
   lazy val testOtherIncomeNo = No
 

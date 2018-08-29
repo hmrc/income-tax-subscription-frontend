@@ -19,7 +19,7 @@ package agent.utils
 import _root_.agent.services.CacheConstants
 import agent.forms._
 import agent.models._
-import core.models.{DateModel, No, Yes, YesNo}
+import core.models._
 import core.utils.Implicits
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models._
@@ -40,8 +40,8 @@ object TestModels extends Implicits {
 
   val testStartDate = core.utils.TestModels.testStartDate
   val testEndDate = core.utils.TestModels.testEndDate
-  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
+  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(No)
+  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(Yes)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
@@ -50,7 +50,7 @@ object TestModels extends Implicits {
     AccountingPeriodModel(startDate, endDate)
 
   val testBusinessName = BusinessNameModel("test business")
-  val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
+  val testAccountingMethod = AccountingMethodModel(Cash)
   val testTerms = true
 
   val emptyCacheMap = CacheMap("", Map())
@@ -108,10 +108,6 @@ object TestModels extends Implicits {
   lazy val testIncomeSourceProperty = Property
 
   lazy val testIncomeSourceBoth = Both
-
-  lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-
-  lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
   lazy val testOtherIncomeNo = No
 

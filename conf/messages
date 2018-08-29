@@ -572,8 +572,6 @@ agent.property.income.line_1                                          = This is 
 # Current Financial Period Prior page
 agent.business.current_financial_period_prior.title                   = Business accounting period
 agent.business.current_financial_period_prior.heading                 = Did your client''s current accounting period start before 6 April 2017?
-agent.business.current_financial_period_prior.yes                     = Yes
-agent.business.current_financial_period_prior.no                      = No
 
 # Current Financial Period Prior page
 agent.business.register_next_accounting_period.title                   = You can''t send quarterly reports yet

@@ -17,13 +17,11 @@
 package core.utils
 
 
-import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
 import agent.services.CacheConstants.AccountingPeriodPrior
-import core.models.{DateModel, No, Yes, YesNo}
+import core.models._
 import core.services.CacheConstants
 import core.utils.TestConstants._
-import incometax.business.forms.AccountingMethodForm
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.models._
@@ -48,8 +46,8 @@ object TestModels extends Implicits {
 
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)
-  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
+  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(No)
+  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(Yes)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
@@ -64,7 +62,7 @@ object TestModels extends Implicits {
   val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
   val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
   val testBusinessStartDate = BusinessStartDateModel(testStartDate)
-  val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
+  val testAccountingMethod = AccountingMethodModel(Cash)
   val testTerms = true
 
   val emptyCacheMap = CacheMap("", Map())
@@ -155,10 +153,6 @@ object TestModels extends Implicits {
 
   lazy val testWorkForYourself_yes = WorkForYourselfModel(Yes)
   lazy val testWorkForYourself_no = WorkForYourselfModel(No)
-
-  lazy val testIsCurrentPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
-
-  lazy val testIsNextPeriod = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_yes)
 
   lazy val testOtherIncomeNo = No
 

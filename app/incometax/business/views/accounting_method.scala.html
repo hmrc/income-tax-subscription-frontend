@@ -19,6 +19,7 @@
 @import core.views.html.helpers._
 @import core.config.AppConfig
 @import incometax.business.forms.AccountingMethodForm
+@import core.forms.submapping.AccountingMethodMapping
 @import incometax.business.models.AccountingMethodModel
 @import core.views.html.templates.main_template
 
@@ -56,8 +57,8 @@
             field = accountingMethodForm(AccountingMethodForm.accountingMethod),
             legend = question,
             options = Seq(
-                RadioOption(AccountingMethodForm.option_cash, Messages("business.accounting_method.cash")),
-                RadioOption(AccountingMethodForm.option_accruals, Messages("business.accounting_method.accruals"))
+                RadioOption(AccountingMethodMapping.option_cash, Messages("business.accounting_method.cash")),
+                RadioOption(AccountingMethodMapping.option_accruals, Messages("business.accounting_method.accruals"))
             ),
             parentForm = accountingMethodForm
         )

@@ -3,10 +3,9 @@ package helpers
 
 import core.Constants
 import core.Constants.GovernmentGateway._
-import core.models.{DateModel, No, Yes, YesNo}
+import core.models._
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
-import incometax.business.forms.AccountingMethodForm
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.models._
@@ -41,7 +40,7 @@ object IntegrationTestModels {
 
   val testBusinessName = BusinessNameModel("test business")
   val testBusinessPhoneNumber = BusinessPhoneNumberModel("01234567890")
-  val testAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
+  val testAccountingMethod = AccountingMethodModel(Cash)
   val testTerms = true
 
   val testBusinessStartDate = BusinessStartDateModel(testStartDate)

@@ -21,6 +21,8 @@ import agent.forms.AccountingPeriodPriorForm._
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
 import agent.models.AccountingPeriodPriorModel
+import core.forms.submapping.YesNoMapping
+import core.models.Yes
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
@@ -29,8 +31,8 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
 
   "The AccountingPeriodForm" should {
     "transform the request to the form case class" in {
-      val testIncomeSource = option_yes
-      val testInput = Map(accountingPeriodPrior -> testIncomeSource)
+      val testIncomeSource = Yes
+      val testInput = Map(accountingPeriodPrior -> YesNoMapping.option_yes)
       val expected = AccountingPeriodPriorModel(testIncomeSource)
       val actual = accountingPeriodPriorForm.bind(testInput).value
 
@@ -61,9 +63,9 @@ class AccountingPeriodFormSpec extends PlaySpec with OneAppPerTest {
     }
 
     "The following submission should be valid" in {
-      val testYes = DataMap.accountingPeriodPrior(option_yes)
+      val testYes = DataMap.accountingPeriodPrior(YesNoMapping.option_yes)
       accountingPeriodPriorForm isValidFor testYes
-      val testNo = DataMap.accountingPeriodPrior(option_no)
+      val testNo = DataMap.accountingPeriodPrior(YesNoMapping.option_no)
       accountingPeriodPriorForm isValidFor testNo
     }
   }

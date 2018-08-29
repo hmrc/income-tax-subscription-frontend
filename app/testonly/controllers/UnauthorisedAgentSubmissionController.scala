@@ -18,9 +18,8 @@ package testonly.controllers
 
 import javax.inject.{Inject, Singleton}
 
-import agent.forms.AccountingMethodForm
 import core.config.AppConfig
-import core.models.DateModel
+import core.models.{Cash, DateModel}
 import core.services.AuthService
 import core.utils.Implicits._
 import incometax.subscription.models._
@@ -88,7 +87,7 @@ class UnauthorisedAgentSubmissionController @Inject()(implicit val applicationCo
       accountingPeriodStart = Some(DateModel("06", "04", "2017")),
       accountingPeriodEnd = Some(DateModel("05", "04", "2018")),
       tradingName = Some(RandomStringUtil.randomAlpha(10)),
-      cashOrAccruals = Some(AccountingMethodForm.option_cash)
+      cashOrAccruals = Some(Cash)
     )
 
   private def property(arn: String) =
@@ -107,7 +106,7 @@ class UnauthorisedAgentSubmissionController @Inject()(implicit val applicationCo
       accountingPeriodStart = Some(DateModel("06", "04", "2018")),
       accountingPeriodEnd = Some(DateModel("05", "04", "2019")),
       tradingName = Some(RandomStringUtil.randomAlpha(10)),
-      cashOrAccruals = Some(AccountingMethodForm.option_cash)
+      cashOrAccruals = Some(Cash)
     )
 }
 

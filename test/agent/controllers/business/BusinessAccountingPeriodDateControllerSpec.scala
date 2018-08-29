@@ -53,7 +53,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
         lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest)
 
         // required for backurl
-        setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = testIsCurrentPeriod)
+        setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = testAccountingPeriodPriorCurrent)
 
         status(result) must be(Status.OK)
 
@@ -71,7 +71,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
         lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest)
 
         // required for backurl
-        setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = testIsNextPeriod)
+        setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = testAccountingPeriodPriorNext)
 
         status(result) must be(Status.OK)
 
@@ -99,7 +99,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
             fetchAll = testCacheMap(
               accountingPeriodDate = Some(testAccountingPeriodDates)
             ),
-            fetchAccountingPeriodPrior = testIsNextPeriod
+            fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
           )
           setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates)
 
@@ -119,7 +119,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
             fetchAll = testCacheMap(
               accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
             ),
-            fetchAccountingPeriodPrior = testIsNextPeriod
+            fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
           )
 
           val goodRequest = callShow(isEditMode = false)
@@ -140,7 +140,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
             fetchAll = testCacheMap(
               accountingPeriodDate = Some(testAccountingPeriodDates)
             ),
-            fetchAccountingPeriodPrior = testIsNextPeriod
+            fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
           )
 
           val goodRequest = callShow(isEditMode = true)
@@ -160,7 +160,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
               fetchAll = testCacheMap(
                 accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
               ),
-              fetchAccountingPeriodPrior = testIsNextPeriod
+              fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
             )
 
             val goodRequest = callShow(isEditMode = true)
@@ -181,7 +181,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
     "return a bad request status (400)" in {
       // required for backurl
-      setupMockKeystore(fetchIncomeSource = testIncomeSourceBusiness, fetchAccountingPeriodPrior = testIsCurrentPeriod)
+      setupMockKeystore(fetchIncomeSource = testIncomeSourceBusiness, fetchAccountingPeriodPrior = testAccountingPeriodPriorCurrent)
 
       status(badrequest) must be(Status.BAD_REQUEST)
 
@@ -192,7 +192,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
   "The back url when the user is submitting details for current period" should {
     s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}" in {
-      setupMockKeystore(fetchAccountingPeriodPrior = testIsCurrentPeriod)
+      setupMockKeystore(fetchAccountingPeriodPrior = testAccountingPeriodPriorCurrent)
       await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(FakeRequest())) mustBe agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
       verifyKeystore(fetchAccountingPeriodPrior = 1)
     }
@@ -200,7 +200,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
   "The back url when the user is submitting details for next period" should {
     s"point to ${agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in {
-      setupMockKeystore(fetchAccountingPeriodPrior = testIsNextPeriod)
+      setupMockKeystore(fetchAccountingPeriodPrior = testAccountingPeriodPriorNext)
       await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(FakeRequest())) mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
       verifyKeystore(fetchAccountingPeriodPrior = 1)
     }

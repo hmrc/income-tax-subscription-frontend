@@ -27,6 +27,5 @@ object CacheConstants {
   val AccountingMethod = "AccountingMethod"
   val Terms = "Terms"
   val OtherIncome = "OtherIncome"
-  val NotEligible = "NotEligible"
   val MtditId = "MtditId"
 }

@@ -21,9 +21,8 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
-import agent.forms._
 import agent.models._
-import core.models.No
+import core.models.{Accruals, Cash, No}
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.Both
 import play.api.http.Status._
@@ -77,7 +76,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
     "not in edit mode" should {
 
       "select the Cash radio button on the accounting method page" in {
-        val userInput = AccountingMethodModel(AccountingMethodForm.option_cash)
+        val userInput = AccountingMethodModel(Cash)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -94,7 +93,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       }
 
       "select the Accruals radio button on the accounting method page" in {
-        val userInput = AccountingMethodModel(AccountingMethodForm.option_accruals)
+        val userInput = AccountingMethodModel(Accruals)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -126,33 +125,15 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       )
     }
 
-    "select invalid other income option on the other income page as if the user it trying to manipulate the html" in {
-      val userInput = AccountingMethodModel("madeup")
-
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "madeup")
-
-      When("POST /business/accounting-method is called")
-      val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
-
-      Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
-      res should have(
-        httpStatus(BAD_REQUEST),
-        errorDisplayed()
-      )
-    }
-
-
     "in edit mode" should {
 
       "changing to the Accruals radio button on the accounting method page" in {
         val keystoreIncomeSource = Both
         val keystoreIncomeOther = No
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
         val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
-        val keystoreAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
-        val userInput = AccountingMethodModel(AccountingMethodForm.option_accruals)
+        val keystoreAccountingMethod = AccountingMethodModel(Cash)
+        val userInput = AccountingMethodModel(Accruals)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -180,10 +161,10 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       "simulate not changing accounting method when calling page from Check Your Answers" in {
         val keystoreIncomeSource = Both
         val keystoreIncomeOther = No
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(AccountingPeriodPriorForm.option_no)
+        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
         val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
-        val keystoreAccountingMethod = AccountingMethodModel(AccountingMethodForm.option_cash)
-        val userInput = AccountingMethodModel(AccountingMethodForm.option_cash)
+        val keystoreAccountingMethod = AccountingMethodModel(Cash)
+        val userInput = AccountingMethodModel(Accruals)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

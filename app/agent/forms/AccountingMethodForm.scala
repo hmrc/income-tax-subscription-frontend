@@ -16,40 +16,22 @@
 
 package agent.forms
 
-import core.forms.validation.ErrorMessageFactory
-import core.forms.validation.utils.ConstraintUtil._
-import core.forms.validation.utils.MappingUtil._
 import agent.models.AccountingMethodModel
+import core.forms.submapping.AccountingMethodMapping
+import core.forms.validation.ErrorMessageFactory
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.{Constraint, Valid}
 
 object AccountingMethodForm {
 
   val accountingMethod = "accountingMethod"
-  val option_cash = "Cash"
-  val option_accruals = "Accruals"
-
-  val incomeEmpty: Constraint[String] = constraint[String](
-    income => {
-      lazy val emptyIncome = ErrorMessageFactory.error("agent.error.accounting-method.empty")
-      if (income.isEmpty) emptyIncome else Valid
-    }
-  )
-
-  val incomeInvalid: Constraint[String] = constraint[String](
-    income => {
-      lazy val invalidIncome = ErrorMessageFactory.error("agent.error.accounting-method.invalid")
-      income match {
-        case `option_cash` | `option_accruals` => Valid
-        case _ => invalidIncome
-      }
-    }
-  )
 
   val accountingMethodForm = Form(
     mapping(
-      accountingMethod -> oText.toText.verifying(incomeEmpty andThen incomeInvalid)
+      accountingMethod -> AccountingMethodMapping(
+        errInvalid = ErrorMessageFactory.error("agent.error.accounting-method.invalid"),
+        errEmpty = Some(ErrorMessageFactory.error("agent.error.accounting-method.empty"))
+      )
     )(AccountingMethodModel.apply)(AccountingMethodModel.unapply)
   )
 

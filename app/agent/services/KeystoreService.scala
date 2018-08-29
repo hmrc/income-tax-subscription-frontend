@@ -80,12 +80,6 @@ class KeystoreService @Inject()(val session: SessionCache)(implicit ec: Executio
   def saveOtherIncome(otherIncome: YesNo)(implicit hc: HeaderCarrier, reads: Reads[YesNo]): FC =
     save[YesNo](OtherIncome, otherIncome)
 
-  def fetchNotEligible()(implicit hc: HeaderCarrier, reads: Reads[NotEligibleModel]): FO[NotEligibleModel] =
-    fetch[NotEligibleModel](NotEligible)
-
-  def saveNotEligible(choice: NotEligibleModel)(implicit hc: HeaderCarrier, reads: Reads[NotEligibleModel]): FC =
-    save[NotEligibleModel](NotEligible, choice)
-
   def fetchSubscriptionId()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = fetch[String](MtditId)
 
   def saveSubscriptionId(mtditId: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC = save[String](MtditId, mtditId)

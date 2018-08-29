@@ -572,8 +572,6 @@ agent.property.income.line_1                                          = Dyma''r 
 # Current Financial Period Prior page
 agent.business.current_financial_period_prior.title                   = Cyfnod cyfrifyddu''r busnes
 agent.business.current_financial_period_prior.heading                 = A ddechreuodd cyfnod cyfrifyddu presennol eich cleient cyn 6 Ebrill 2017?
-agent.business.current_financial_period_prior.yes                     = Iawn
-agent.business.current_financial_period_prior.no                      = Na
 
 # Current Financial Period Prior page
 agent.business.register_next_accounting_period.title                   = Ni allwch anfon adroddiadau chwarterol ar hyn o bryd

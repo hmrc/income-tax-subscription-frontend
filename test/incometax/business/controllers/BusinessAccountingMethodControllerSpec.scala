@@ -18,7 +18,7 @@ package incometax.business.controllers
 
 import core.config.featureswitch._
 import core.controllers.ControllerBaseSpec
-import core.models.DateModel
+import core.models.{Cash, DateModel}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import incometax.business.forms.AccountingMethodForm
@@ -95,7 +95,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   "Calling the submit action of the BusinessAccountingMethod with an authorised user and valid submission" should {
 
     def callShow(isEditMode: Boolean) = TestBusinessAccountingMethodController.submit(isEditMode = isEditMode)(subscriptionRequest
-      .post(AccountingMethodForm.accountingMethodForm, AccountingMethodModel(AccountingMethodForm.option_cash)))
+      .post(AccountingMethodForm.accountingMethodForm, AccountingMethodModel(Cash)))
 
     "When it is not in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
