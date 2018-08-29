@@ -133,11 +133,9 @@ object AuthPredicates extends Results {
   lazy val userMatching: Result = Redirect(usermatching.controllers.routes.UserDetailsController.show())
 
   val ninoPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user =>
-    if (user.nino.isDefined) {
-      Right(AuthPredicateSuccess)
-    } else {
-      Left(Future.successful(userMatching withJourneyState UserMatching))
-    }
+    if (user.nino.isDefined) Right(AuthPredicateSuccess)
+    else if (user.utr.isDefined) Left(Future.successful(homeRoute))
+    else Left(Future.successful(userMatching withJourneyState UserMatching))
 
   lazy val alreadyEnrolledRoute: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.show())
 

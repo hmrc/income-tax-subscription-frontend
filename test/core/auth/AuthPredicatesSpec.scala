@@ -50,7 +50,7 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   val userWithNinoEnrolment = testUser(None, ninoEnrolment)
   val userWithMtditIdEnrolment = testUser(None, mtdidEnrolment)
   val userWithMtditIdEnrolmentAndNino = testUser(None, ninoEnrolment, mtdidEnrolment)
-  val userWithUtrButNoNino = testUser(None, utrEnrolment)
+  val userWithUtrButNoNino = testUser(Some(AffinityGroup.Individual), utrEnrolment)
   val blankUser = testUser(None, None, confidenceLevel = ConfidenceLevel.L0)
 
   val userWithIndividualAffinity = testUser(Some(AffinityGroup.Individual))
@@ -86,9 +86,8 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       res mustBe (AuthPredicates.userMatching withJourneyState UserMatching)
     }
 
-    "redirect to user matching if a nino enrolment does not exists but a utr enrolment does" in {
-      val res = await(AuthPredicates.ninoPredicate(FakeRequest())(userWithUtrButNoNino).left.value)
-      res mustBe (AuthPredicates.userMatching withJourneyState UserMatching)
+    "redirect to home if a nino enrolment does not exist but a utr enrolment does" in {
+      await(AuthPredicates.ninoPredicate(FakeRequest())(userWithUtrButNoNino).left.value) mustBe AuthPredicates.homeRoute
 
     }
   }
@@ -112,7 +111,6 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
       intercept[NotFoundException](await(enrolledPredicate(FakeRequest())(blankUser).left.value))
     }
   }
-
 
   "timeoutPredicate" should {
     "return an AuthPredicateSuccess where the lastRequestTimestamp is not set" in {
@@ -199,6 +197,10 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
 
     "return the already-enrolled page where an mtdid enrolment already exists" in {
       await(homePredicates(homelessAuthorisedRequest)(enrolledPredicateUser).left.value) mustBe alreadyEnrolled
+    }
+
+    "return to HomeController if there is no nino, but we have a utr" in {
+      homePredicates(homelessAuthorisedRequest)(userWithUtrButNoNino).right.value mustBe AuthPredicateSuccess
     }
   }
 
