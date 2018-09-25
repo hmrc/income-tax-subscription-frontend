@@ -18,11 +18,12 @@ package core.services
 
 import core.config.SessionCache
 import core.services.mocks.MockKeystoreService
-import org.scalatest.Matchers._
-import play.api.http.Status
-import uk.gov.hmrc.http.HttpResponse
 import core.utils.{TestModels, UnitTestTrait}
 import incometax.business.models.BusinessNameModel
+import org.scalatest.Matchers._
+import play.api.http.Status
+import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
 
 class KeystoreServiceSpec extends UnitTestTrait
   with MockKeystoreService {
@@ -44,41 +45,38 @@ class KeystoreServiceSpec extends UnitTestTrait
     "configure and verify fetch and save business name as specified" in {
       val testBusinessName = BusinessNameModel("my business name")
       setupMockKeystore(fetchBusinessName = testBusinessName)
-      for {
-        businessName <- TestKeystore.keystoreService.fetchBusinessName()
-        _ <- TestKeystore.keystoreService.saveBusinessName(testBusinessName)
-      } yield {
-        businessName shouldBe testBusinessName
 
-        verifyKeystore(
-          fetchBusinessName = 1,
-          saveBusinessName = 1
-        )
-      }
+      val businessName = await(
+        for {
+          businessName <- TestKeystore.keystoreService.fetchBusinessName()
+          _ <- TestKeystore.keystoreService.saveBusinessName(testBusinessName)
+        } yield businessName
+      )
+
+      businessName shouldBe Some(testBusinessName)
+
+      verifyKeystore(
+        fetchBusinessName = 1,
+        saveBusinessName = 1
+      )
     }
 
     "configure and verify fetch all as specified" in {
       val testFetchAll = TestModels.emptyCacheMap
       setupMockKeystore(fetchAll = testFetchAll)
-      for {
-        fetched <- TestKeystore.keystoreService.fetchAll()
-      } yield {
-        fetched shouldBe testFetchAll
 
-        verifyKeystore(fetchAll = 1)
-      }
+      val fetched = await(TestKeystore.keystoreService.fetchAll())
+      fetched shouldBe testFetchAll
+
+      verifyKeystore(fetchAll = 1)
     }
 
     "configure and verify remove all as specified" in {
       val testDeleteAll = HttpResponse(Status.OK)
       setupMockKeystore(deleteAll = testDeleteAll)
-      for {
-        response <- TestKeystore.keystoreService.deleteAll()
-      } yield {
-        response shouldBe testDeleteAll
 
-        verifyKeystore(fetchAll = 1)
-      }
+      val response = await(TestKeystore.keystoreService.deleteAll())
+      verifyKeystore(deleteAll = 1)
     }
 
   }
