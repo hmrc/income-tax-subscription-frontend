@@ -22,7 +22,6 @@
         bodyClasses: Option[String] = None,
         mainClass: Option[String] = None,
         scriptElem: Option[Html] = None,
-        articleLayout: Boolean = true,
         showSignOutLink: Boolean = true,
         overrideSignOutCall: Option[Call] = None
 )(mainContent: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -56,15 +55,6 @@
         <link rel="stylesheet" href=@routes.Assets.at("stylesheets/banner-panel.css")>
 }
 
-@content = {
-
-@if(articleLayout) {
-    @layouts.article(mainContent)
-} else {
-    @mainContent
-}
-}
-
 @prefixedTitle = @{
     form match {
         case Some(validationForm) if validationForm.hasErrors => Messages("base.title.error", title)
@@ -78,7 +68,7 @@
     bodyClasses = bodyClasses,
     sidebar = sidebar,
     contentHeader = contentHeader,
-    mainContent = content,
+    mainContent = layouts.article(mainContent),
     serviceInfoContent = serviceInfoContent,
     scriptElem = Some(defaultScriptElem),
     headStyle = Some(headStyle),
