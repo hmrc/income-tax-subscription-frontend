@@ -34,18 +34,7 @@ class MessagesSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
     "global.error.pageNotFound404.message",
     "global.error.InternalServerError500.title",
     "global.error.InternalServerError500.heading",
-    "global.error.InternalServerError500.message",
-    "agent.sign-up-complete.title",
-    "agent.sign-up-complete.heading",
-    "agent.sign-up-complete.whatHappensNext.heading",
-    "agent.sign-up-complete.whatHappensNext.para1",
-    "agent.sign-up-complete.whatHappensNext.number1",
-    "agent.sign-up-complete.whatHappensNext.number2",
-    "agent.sign-up-complete.whatHappensNext.number3",
-    "agent.sign-up-complete.whatHappensNext.number4",
-    "agent.sign-up-complete.whatHappensNext.number5",
-    "agent.sign-up-complete.whatHappensNext.para2",
-    "agent.sign-up-complete.add_another"
+    "global.error.InternalServerError500.message"
   )
 
   "the messages file must have welsh translations" should {

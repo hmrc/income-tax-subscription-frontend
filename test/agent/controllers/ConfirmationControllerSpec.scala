@@ -90,7 +90,7 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
         )
         status(result) shouldBe OK
 
-        Jsoup.parse(contentAsString(result)).title shouldBe Messages("agent.confirmation.title")(applicationMessages(Welsh, app))
+        Jsoup.parse(contentAsString(result)).title shouldBe Messages("agent.sign-up-complete.title")(applicationMessages(Welsh, app))
       }
     }
 
