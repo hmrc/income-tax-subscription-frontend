@@ -678,21 +678,18 @@ agent.summary.income_type                                             = Pa ddull
 agent.summary.income_type.cash                                        = Sail arian parod
 agent.summary.income_type.accruals                                    = Cyfrifyddu traddodiadol
 
-## Confirmation page ##
-agent.confirmation.title                                              = Rydych wedi gorffen cofrestru
-agent.confirmation.heading                                            = Rydych wedi gorffen cofrestru
-agent.confirmation.whatHappensNext.heading                            = Yr hyn sy''n digwydd nesaf
-agent.confirmation.whatHappensNext.para1                              = Rhaid i chi neu''ch cleient gwblhau''r camau isod.
-agent.confirmation.whatHappensNext.para2                              = Mae''n bwysig i''ch cleient ddewis pecyn meddalwedd sy''n gallu rhyngweithio â''ch un chi.
-agent.confirmation.whatHappensNext.number1                            = <a id="accountingSoftware" href="{0}">Dewiswch feddalwedd cyfrifyddu</a> os nad ydych wedi gwneud hynny eisoes.
-agent.confirmation.whatHappensNext.number2                            = Mewngofnodwch i''r meddalwedd gyda''ch manylion Porth y Llywodraeth a''i awdurdodi i ryngweithio â CThEM.
-agent.confirmation.whatHappensNext.number3                            = Ychwanegwch unrhyw incwm y mae''ch cleient eisoes wedi''i gael neu dreuliau y mae eisoes wedi''u talu.
-agent.confirmation.whatHappensNext.number4                            = Cofnodwch incwm a threuliau''ch cleient yn y dyfodol gan ddefnyddio''r meddalwedd, yna anfonwch adroddiad i CThEM bob chwarter, o leiaf.
-agent.confirmation.whatHappensNext.number5                            = Ychwanegwch unrhyw ffynonellau eraill o incwm fel rhan o''i adroddiad terfynol - rhaid i''ch cleient anfon yr adroddiad hwn erbyn 31 Ionawr.
-agent.confirmation.whatHappensNext.para3                              = Ar ôl i chi anfon adroddiad, bydd eich cleient yn cael amcangyfrif o''i Dreth Incwm. Gall weld ei amcangyfrif a dyddiadau cau ei adroddiadau yn ei:
-agent.confirmation.whatHappensNext.bullet1                            = feddalwedd cyfrifyddu
-agent.confirmation.whatHappensNext.bullet2                            = <a id="bta" href="{0}">gyfrif treth busnes</a>
-agent.confirmation.add_another                                        = Cofrestru cleient arall
+## Sign Up Complete page ##
+agent.sign-up-complete.title                                          = Rydych wedi gorffen cofrestru
+agent.sign-up-complete.heading                                        = Rydych wedi gorffen cofrestru
+agent.sign-up-complete.whatHappensNext.heading                        = Yr hyn sy''n digwydd nesaf
+agent.sign-up-complete.whatHappensNext.para1                          = Rhaid i chi neu''ch cleient gwblhau''r camau isod. Os bydd y ddau ohonoch yn defnyddio meddalwedd, mae''n bwysig eich bod yn dewis pecynau sy''n gallu rhyngweithio gyda''i gilydd.
+agent.sign-up-complete.whatHappensNext.number1                        = <a id="accountingSoftware" href="{0}">Dewiswch feddalwedd perthnasol (yn agor ffenestr newydd)</a> os nad ydych wedi gwneud hynny eisoes.
+agent.sign-up-complete.whatHappensNext.number2                        = Caniatau i''ch meddalwedd ryngweithio â CThEM.
+agent.sign-up-complete.whatHappensNext.number3                        = Ychwanegwch unrhyw incwm y mae''ch cleient eisoes wedi''i gael neu dreuliau y mae eisoes wedi''u talu.
+agent.sign-up-complete.whatHappensNext.number4                        = Parhewch i gofnodi incwm a threuliau''ch cleient drwy ddefnyddio meddalwedd cyfrifyddu, ac anfonwch adroddiad i CThEM o leiaf unwaith bob 3 mis.
+agent.sign-up-complete.whatHappensNext.number5                        = Anfonwch adroddiad terfynol eich cleient erbyn 31 Ionawr. Gallwch ychwanegu unrhyw ffynonellau incwm, lwfansau neu ryddhad arall yn yr adroddiad hwn.
+agent.sign-up-complete.whatHappensNext.para2                          = Ar ôl i''ch cleient anfon adroddiad, bydd yn cael amcangyfrif o''i Dreth Incwm. Gall weld yr hyn sydd arno ar gyfer y flwyddyn dreth ar ôl iddo anfon yr adroddiad terfynol.
+agent.sign-up-complete.add_another                                    = Cofrestru cleient arall
 
 ## Unauthorised Agent Confirmation page ##
 agent.confirmation.unauthorised.title                                 = Anfon cysylltiad at y cleient

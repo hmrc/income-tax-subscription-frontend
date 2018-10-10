@@ -16,20 +16,16 @@
 
 package agent.controllers
 
-import java.time.LocalDate
-import javax.inject.{Inject, Singleton}
-
 import agent.audit.Logging
 import agent.auth.PostSubmissionController
-import core.models.DateModel.dateConvert
-import agent.services.KeystoreService
 import agent.services.CacheUtil._
-import agent.views.html.{confirmation, sign_up_complete}
+import agent.services.KeystoreService
+import agent.views.html.sign_up_complete
 import core.config.BaseControllerConfig
 import core.services.AuthService
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.language.LanguageUtils._
 
 @Singleton
 class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
@@ -43,15 +39,9 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
     implicit user =>
       val postAction = agent.controllers.routes.AddAnotherClientController.addAnother()
       val signOutAction = core.controllers.SignOutController.signOut(origin = routes.ConfirmationController.show())
-      keystoreService.fetchAll() map(_.get.getSummary()) map {
-        agentSummary =>
-          if (getCurrentLang == Welsh)
-            Ok(confirmation(agentSummary, postAction, signOutAction))
-          else
-            Ok(sign_up_complete(agentSummary, postAction, signOutAction))
+      keystoreService.fetchAll() map (_.get.getSummary()) map {
+        agentSummary => Ok(sign_up_complete(agentSummary, postAction, signOutAction))
       }
-
-
   }
 
 }
