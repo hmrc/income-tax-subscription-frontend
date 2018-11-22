@@ -26,7 +26,7 @@ sealed trait FeatureSwitch {
 object FeatureSwitch {
   val prefix = "feature-switch"
 
-  val switches = Set(
+  val switches: Set[FeatureSwitch]  = Set(
     RegistrationFeature,
     EmacEs6ApiFeature,
     EmacEs8ApiFeature,
@@ -44,27 +44,32 @@ object FeatureSwitch {
 
 }
 
-object RegistrationFeature extends FeatureSwitch {
-  val name = s"$prefix.enable-registration"
-  val displayText = "Registration journey"
+case object RegistrationFeature extends FeatureSwitch {
+  override val name = s"$prefix.enable-registration"
+  override val displayText = "Registration journey"
 }
 
-object EmacEs6ApiFeature extends FeatureSwitch {
-  val name = s"$prefix.enable-emac-es6"
-  val displayText = "EMAC ES6 API (Upsert Enrolment)"
+case object EmacEs6ApiFeature extends FeatureSwitch {
+  override val name = s"$prefix.enable-emac-es6"
+  override val displayText = "EMAC ES6 API (Upsert Enrolment)"
 }
 
-object EmacEs8ApiFeature extends FeatureSwitch {
-  val name = s"$prefix.enable-emac-es8"
-  val displayText = "EMAC ES8 API (Allocate enrolment)"
+case object EmacEs8ApiFeature extends FeatureSwitch {
+  override val name = s"$prefix.enable-emac-es8"
+  override val displayText = "EMAC ES8 API (Allocate enrolment)"
 }
 
-object UnauthorisedAgentFeature extends FeatureSwitch {
-  val name = s"$prefix.enable-unauthorised-agent"
-  val displayText = "Unauthorised agent journey"
+case object UnauthorisedAgentFeature extends FeatureSwitch {
+  override val name = s"$prefix.enable-unauthorised-agent"
+  override val displayText = "Unauthorised agent journey"
 }
 
-object WelshLanguageFeature extends FeatureSwitch {
-  val name = s"$prefix.welsh-translation"
-  val displayText = "Enable welsh language"
+case object WelshLanguageFeature extends FeatureSwitch {
+  override val name = s"$prefix.welsh-translation"
+  override val displayText = "Enable welsh language"
+}
+
+case object UnplannedShutter extends FeatureSwitch {
+  override val name: String = s"$prefix.unplanned-shutter"
+  override val displayText: String = "Unplanned shutter for the service"
 }
