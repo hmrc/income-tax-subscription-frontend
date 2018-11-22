@@ -100,6 +100,11 @@ trait MockConfig extends AppConfig {
   override val betaFeedbackUrl: String = "/feedback"
 
   override val betaFeedbackUnauthenticatedUrl: String = "/feedback"
+
+  override val unplannedOutagePageMainContent: String = "https://www.gov.uk/income-tax"
+
+  override val unplannedOutagePageRelatedContent: String = "https://www.gov.uk/browse/tax/income-tax"
+
 }
 
 object MockConfig extends MockConfig
