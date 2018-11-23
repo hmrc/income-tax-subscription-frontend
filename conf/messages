@@ -890,3 +890,11 @@ confirmation.unauthorised.whatHappensNext.para3                       = After yo
 confirmation.unauthorised.whatHappensNext.bullet1                     = accounting software
 confirmation.unauthorised.whatHappensNext.bullet2                     = <a id="bta" href="{0}">business tax account</a>
 confirmation.unauthorised.whatHappensNext.para4                       = It may take a few hours for them all to appear.
+
+# unplanned outage page
+unplanned_outage.title                                                 = Sorry, there is a problem with the service
+unplanned_outage.heading                                               = Sorry, there is a problem with the service
+unplanned_outage.line1                                                 = Try again later.
+unplanned_outage.line2                                                 = In the meantime:
+unplanned_outage.bullet1                                               = go to the <a id="main" href="{0}">Income Tax main page</a>
+unplanned_outage.bullet2                                               = get <a id="related" href="{0}">Income Tax related content</a>
