@@ -38,7 +38,7 @@ class UnplannedOutageFilter @Inject()(val messagesApi: MessagesApi,
     import play.api.mvc._
 
     override def apply(rh: RequestHeader): Accumulator[ByteString, Result] =
-      if (isEnabled(UnplannedShutter))
+      if (isEnabled(UnplannedShutter) && rh.path.contains("/report-quarterly/income-and-expenses/sign-up"))
         nextFilter(rh).map(_ => Ok(unplanned_outage()(Request(rh, ""), request2Messages(rh), appConfig)))
       else
         nextFilter(rh)
