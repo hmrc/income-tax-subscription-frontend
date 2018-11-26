@@ -36,13 +36,14 @@ class UnplannedOutageFilterSpec extends UnitSpec with GuiceOneServerPerSuite wit
 
   override def fakeApplication(): Application = new GuiceApplicationBuilder()
     .routes({
+      case ("GET", "/report-quarterly/income-and-expenses/sign-up/index") => Action(Ok(testString))
       case ("GET", "/index") => Action(Ok(testString))
       case _ => Action(Ok("failure"))
     }).build()
 
   implicit lazy val appConfig = app.injector.instanceOf[AppConfig]
   implicit lazy val messagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val request = FakeRequest("GET", "/index")
+  implicit val request = FakeRequest("GET", "/report-quarterly/income-and-expenses/sign-up/index")
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -54,26 +55,37 @@ class UnplannedOutageFilterSpec extends UnitSpec with GuiceOneServerPerSuite wit
     disable(UnplannedShutter)
   }
 
-  "UnplannedOutageFilter" should {
+  "UnplannedOutageFilter" when {
+    "unplanned shutter is false" should {
+      "permit traffic" in {
+        disable(UnplannedShutter)
 
-    "permit traffic if unplanned shutter is false" in {
-      disable(UnplannedShutter)
+        Call(request.method, request.uri)
 
-      Call(request.method, request.uri)
+        val Some(result) = route(app, request)
 
-      val Some(result) = route(app, request)
-
-      status(result) shouldBe OK
-      contentAsString(result) shouldBe testString
+        status(result) shouldBe OK
+        contentAsString(result) shouldBe testString
+      }
     }
+    "unplanned shutter is false" should {
+      "permit traffic if the path doesn't contain /report-quarterly/income-and-expenses/sign-up" in {
+        enable(UnplannedShutter)
 
-    "display the unplanned outage page otherwise" in {
-      enable(UnplannedShutter)
+        val Some(result) = route(app, FakeRequest("GET", "/index"))
 
-      val Some(result) = route(app, request)
+        status(result) shouldBe OK
+        contentAsString(result) shouldBe testString
+      }
 
-      status(result) shouldBe OK
-      contentAsString(result) shouldBe unplanned_outage().toString()
+      "display the unplanned outage page otherwise" in {
+        enable(UnplannedShutter)
+
+        val Some(result) = route(app, request)
+
+        status(result) shouldBe OK
+        contentAsString(result) shouldBe unplanned_outage().toString()
+      }
     }
 
   }
