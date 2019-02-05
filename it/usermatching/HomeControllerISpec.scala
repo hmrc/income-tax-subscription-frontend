@@ -38,10 +38,10 @@ class HomeControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.startPage()
 
         Then("Return the guidance page")
-        res.status shouldBe Status.OK
-        val document = Jsoup.parse(res.body)
-
-        document.title shouldBe Messages("frontpage.title")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(indexURI)
+        )
       }
     }
   }

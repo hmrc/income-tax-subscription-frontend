@@ -50,9 +50,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
 
   def home: Action[AnyContent] = Action { implicit request =>
     val redirect = routes.HomeController.index()
-
-    if (showGuidance) Ok(views.html.frontpage(redirect))
-    else Redirect(redirect)
+    Redirect(redirect)
   }
 
   def index: Action[AnyContent] =
