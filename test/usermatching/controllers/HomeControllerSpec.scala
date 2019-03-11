@@ -73,20 +73,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
   "Calling the home action of the Home controller with an authorised user" when {
 
-    "the start page (showStartPage) is enabled" should {
-
-      lazy val result = TestHomeController(showStartPage = true).home()(subscriptionRequest)
-
-      "Return status OK (200)" in {
-        status(result) must be(Status.OK)
-      }
-
-      "Should have the page title" in {
-        Jsoup.parse(contentAsString(result)).title mustBe FrontPage.title
-      }
-    }
-
-    "the start page (showStartPage) is disabled" should {
+    "there is no start page" should {
       lazy val result = TestHomeController(showStartPage = false).home()(subscriptionRequest)
 
       "Return status SEE_OTHER (303) redirect" in {
