@@ -16,17 +16,17 @@ private object AppDependencies {
   import play.core.PlayVersion
 
   private val bootstrapPlayVersion = "1.7.0"
-  private val govukTemplateVersion = "5.22.0"
-  private val playUiVersion = "7.17.0"
+  private val govukTemplateVersion = "5.23.0"
+  private val playUiVersion = "7.22.0"
   private val playPartialsVersion = "6.1.0"
-  private val hmrcTestVersion = "3.0.0"
-  private val scalaTestVersion = "3.0.1"
-  private val scalaTestPlusVersion = "2.0.0"
+  private val hmrcTestVersion = "3.3.0"
+  private val scalaTestVersion = "3.0.7"
+  private val scalaTestPlusVersion = "2.0.1"
   private val pegdownVersion = "1.6.0"
   private val httpCachingCleintVersion = "7.1.0"
   private val playWhitelistFilterVersion = "2.0.0"
-  private val wiremockVersion = "2.5.1"
-  private val domainVersion = "5.2.0"
+  private val wiremockVersion = "2.22.0"
+  private val domainVersion = "5.3.0"
   private val catsVersion = "0.9.0"
   private val playLanguageVersion = "3.4.0"
 
@@ -41,7 +41,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "domain" % domainVersion,
     "org.typelevel" %% "cats" % catsVersion,
     "uk.gov.hmrc" %% "play-language" % playLanguageVersion,
-    "uk.gov.hmrc" %% "logback-json-logger" % "4.0.0"
+    "uk.gov.hmrc" %% "logback-json-logger" % "4.4.0"
   )
 
   trait TestDependencies {
@@ -56,9 +56,9 @@ private object AppDependencies {
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
         "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope,
         "org.pegdown" % "pegdown" % pegdownVersion % scope,
-        "org.jsoup" % "jsoup" % "1.10.2" % scope,
+        "org.jsoup" % "jsoup" % "1.11.3" % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "org.mockito" % "mockito-core" % "2.7.6" % scope
+        "org.mockito" % "mockito-core" % "2.25.1" % scope
       )
     }.test
   }
@@ -75,7 +75,7 @@ private object AppDependencies {
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope,
         "com.github.fge" % "json-schema-validator" % "2.2.6" % scope,
-        "org.jsoup" % "jsoup" % "1.10.2" % scope,
+        "org.jsoup" % "jsoup" % "1.11.3" % scope,
         "com.github.tomakehurst" % "wiremock" % wiremockVersion % scope
       )
     }.test
