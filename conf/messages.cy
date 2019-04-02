@@ -301,7 +301,7 @@ error.business.current_financial_period_prior.invalid           = Rhaid i chi dd
 error.business.register_next_accounting_period.empty            = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.business.register_next_accounting_period.invalid          = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
-error.business_accounting_period.minStartDate                   = Ni allwch nodi dyddiad dechrau sydd cyn 6 Ebrill 2017
+error.business_accounting_period.minStartDate                   = Mae’n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
 error.business_accounting_period.maxEndDate                     = Rhaid i chi nodi dyddiad dod i ben nad yw''n fwy na 24 mis ar ôl eich dyddiad dechrau
 
 error.business_name.empty                                       = Rhaid i chi nodi enw''ch busnes
