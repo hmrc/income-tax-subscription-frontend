@@ -151,10 +151,10 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           violation fieldErrorIs MessageLookup.Error.EndDate.end_past
           violation summaryErrorIs MessageLookup.Error.EndDate.end_past
 
-          val testDay = LocalDate.now().minusDays(1).getDayOfMonth.toString
+          val pastDate = LocalDate.now().minusDays(1)
 
-          val endDateViolationInput = DataMap.date(startDate)(testDay, today.month, today.year) ++
-            DataMap.date(endDate)(testDay, today.month,  today.year)
+          val endDateViolationInput = DataMap.date(startDate)(pastDate.getDayOfMonth.toString, pastDate.getMonthValue.toString, pastDate.getYear.toString) ++
+            DataMap.date(endDate)(pastDate.getDayOfMonth.toString, pastDate.getMonthValue.toString,  pastDate.getYear.toString)
           val violationTest = accountingPeriodDateForm.bind(endDateViolationInput)
           violationTest assert endDate hasExpectedErrors violation
         }

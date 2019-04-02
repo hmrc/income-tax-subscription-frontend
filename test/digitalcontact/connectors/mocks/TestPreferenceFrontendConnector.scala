@@ -27,17 +27,19 @@ import digitalcontact.models.{Activated, PaperlessPreferenceError, PaperlessStat
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
-import play.api.i18n.MessagesApi
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json.JsValue
 import play.api.mvc.{AnyContent, Request}
+import uk.gov.hmrc.crypto.ApplicationCrypto
 
 import scala.concurrent.Future
 
-trait MockPreferenceFrontendConnector extends MockTrait {
+trait MockPreferenceFrontendConnector extends MockTrait with I18nSupport {
   val mockPreferenceFrontendConnector = mock[PreferenceFrontendConnector]
+  implicit val messages = app.injector.instanceOf[MessagesApi]
 
   private def mockCheckPaperless(token: String)(result: Future[Either[PaperlessPreferenceError.type, PaperlessState]]): Unit =
-    when(mockPreferenceFrontendConnector.checkPaperless(ArgumentMatchers.eq(token))(ArgumentMatchers.any[Request[AnyContent]]))
+    when(mockPreferenceFrontendConnector.checkPaperless(ArgumentMatchers.eq(token))(ArgumentMatchers.any[Request[AnyContent]], ArgumentMatchers.any[Messages]))
       .thenReturn(result)
 
   def mockCheckPaperlessActivated(token: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Activated)))
@@ -47,19 +49,22 @@ trait MockPreferenceFrontendConnector extends MockTrait {
   def mockCheckPaperlessException(token: String): Unit = mockCheckPaperless(token)(Future.failed(testException))
 
   def mockChoosePaperlessUrl(url: String): Unit =
-    when(mockPreferenceFrontendConnector.choosePaperlessUrl) thenReturn url
+    when(mockPreferenceFrontendConnector.choosePaperlessUrl(ArgumentMatchers.any())) thenReturn url
 
 }
 
-trait TestPreferenceFrontendConnector extends UnitTestTrait
+trait TestPreferenceFrontendConnector extends UnitTestTrait with I18nSupport
   with MockHttp {
+
+  implicit val messages = app.injector.instanceOf[MessagesApi]
 
   object TestPreferenceFrontendConnector extends PreferenceFrontendConnector(
     app.injector.instanceOf[AppConfig],
     app.injector.instanceOf[ITSAHeaderCarrierForPartialsConverter],
     mockHttp,
     app.injector.instanceOf[MessagesApi],
-    app.injector.instanceOf[Logging]
+    app.injector.instanceOf[Logging],
+    app.injector.instanceOf[ApplicationCrypto]
   )
 
   def setupCheckPaperless(token: String)(tuple: (Int, Option[JsValue]))(implicit request: Request[AnyContent]): Unit =

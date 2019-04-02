@@ -302,7 +302,7 @@ trait ViewSpecTrait extends UnitTestTrait {
     def mustHaveSubmitButton(text: String): Unit =
       s"$name must have the a submit button (Button) '$text'" in {
         import collection.JavaConversions._
-        val submitButtons = element.select("button").filter(_.attr("type") == "submit")
+        val submitButtons = element.select("button").toSeq.filter(_.attr("type") == "submit")
         submitButtons.size mustBe 1
         submitButtons.head.text() mustBe text
       }
@@ -342,7 +342,7 @@ trait ViewSpecTrait extends UnitTestTrait {
     def mustHaveCheckbox(name: String, message: String): Unit =
       s"${this.name} must have a checkbox for '$name' with label '$message'" in {
         import collection.JavaConversions._
-        val checkbox: Elements = new Elements(element.select("input").filter(x => x.attr("type").equals("checkbox")))
+        val checkbox: Elements = new Elements(element.select("input").toSeq.filter(x => x.attr("type").equals("checkbox")))
         if (checkbox.size() == 0) fail(s"""Unable to locate any checkboxes in "${this.name}""""")
         if (checkbox.size() > 1) fail(s"""Multiple checkboxes located in "$name", please specify an id""")
         checkbox.attr("name") mustBe name
