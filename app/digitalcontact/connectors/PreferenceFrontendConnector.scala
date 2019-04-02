@@ -39,20 +39,21 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
                                             hc: ITSAHeaderCarrierForPartialsConverter,
                                             http: HttpClient,
                                             val messagesApi: MessagesApi,
-                                            logging: Logging
-                                           ) extends I18nSupport {
+                                            logging: Logging,
+                                            applicationCrypto: ApplicationCrypto
+                                           ) {
 
   import hc._
 
-  lazy val returnUrl: String = PreferenceFrontendConnector.returnUrl(appConfig.baseUrl)
+  lazy val returnUrl: String = returnUrl(appConfig.baseUrl)
 
-  def checkPaperlessUrl(token: String): String =
-    appConfig.preferencesFrontend + PreferenceFrontendConnector.checkPaperlessUri(returnUrl, token)
+  def checkPaperlessUrl(token: String)(implicit messages: Messages): String =
+    appConfig.preferencesFrontend + checkPaperlessUri(returnUrl, token)
 
-  lazy val choosePaperlessUrl: String =
-    appConfig.preferencesFrontendRedirect + PreferenceFrontendConnector.choosePaperlessUri(returnUrl)
+  def choosePaperlessUrl(implicit messages: Messages): String =
+    appConfig.preferencesFrontendRedirect + choosePaperlessUri(returnUrl)
 
-  def checkPaperless(token: String)(implicit request: Request[AnyContent]): Future[Either[PaperlessPreferenceError.type, PaperlessState]] = {
+  def checkPaperless(token: String)(implicit request: Request[AnyContent], messages: Messages): Future[Either[PaperlessPreferenceError.type, PaperlessState]] = {
     // The header carrier must include the current user's session in order to be authenticated by the preferences-frontend service
     // this header is converted implicitly by functions in core.config.ITSAHeaderCarrierForPartialsConverter which implements
     // uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
@@ -63,13 +64,10 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
         Left(PaperlessPreferenceError)
     }
   }
-}
-
-object PreferenceFrontendConnector {
 
   private[digitalcontact] def urlEncode(text: String) = URLEncoder.encode(text, "UTF-8")
 
-  private[digitalcontact] def encryptAndEncode(s: String) = urlEncode(ApplicationCrypto.QueryParameterCrypto.encrypt(PlainText(s)).value)
+  private[digitalcontact] def encryptAndEncode(s: String) = urlEncode(applicationCrypto.QueryParameterCrypto.encrypt(PlainText(s)).value)
 
   def returnUrl(baseUrl: String): String =
     encryptAndEncode(baseUrl + digitalcontact.controllers.routes.PreferencesController.callback().url)
@@ -81,5 +79,4 @@ object PreferenceFrontendConnector {
 
   def choosePaperlessUri(returnUrl: String)(implicit messages: Messages): String =
     s"""/paperless/choose?returnUrl=$returnUrl&returnLinkText=$returnLinkText"""
-
 }

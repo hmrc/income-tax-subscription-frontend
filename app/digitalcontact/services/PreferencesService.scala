@@ -17,9 +17,9 @@
 package digitalcontact.services
 
 import javax.inject.{Inject, Singleton}
-
 import digitalcontact.connectors.PreferenceFrontendConnector
 import digitalcontact.models.{PaperlessPreferenceError, PaperlessState}
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}
 
 import scala.concurrent.Future
@@ -27,9 +27,9 @@ import scala.concurrent.Future
 @Singleton
 class PreferencesService @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector) {
 
-  @inline def checkPaperless(token: String)(implicit request: Request[AnyContent]): Future[Either[PaperlessPreferenceError.type, PaperlessState]] =
+  @inline def checkPaperless(token: String)(implicit request: Request[AnyContent], messages: Messages): Future[Either[PaperlessPreferenceError.type, PaperlessState]] =
     preferenceFrontendConnector.checkPaperless(token)
 
-  @inline def defaultChoosePaperlessUrl(implicit request: Request[AnyContent]): String = preferenceFrontendConnector.choosePaperlessUrl
+  @inline def defaultChoosePaperlessUrl(implicit request: Request[AnyContent], messages: Messages): String = preferenceFrontendConnector.choosePaperlessUrl
 
 }

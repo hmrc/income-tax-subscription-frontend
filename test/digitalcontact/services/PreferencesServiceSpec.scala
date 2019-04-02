@@ -16,18 +16,20 @@
 
 package digitalcontact.services
 
+import core.utils.TestConstants._
+import core.utils.UnitTestTrait
 import digitalcontact.models.{Activated, Unset}
 import digitalcontact.services.mocks.TestPreferencesService
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import core.utils.TestConstants._
-import core.utils.UnitTestTrait
 
-class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService with EitherValues {
+class PreferencesServiceSpec extends UnitTestTrait with TestPreferencesService with EitherValues with I18nSupport {
 
   implicit val fakeRequest = FakeRequest()
+  implicit val fakeMessages = app.injector.instanceOf[MessagesApi]
 
   "TestPreferencesService" should {
 

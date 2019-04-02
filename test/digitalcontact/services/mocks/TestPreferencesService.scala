@@ -24,6 +24,7 @@ import org.mockito.Mockito._
 import play.api.mvc.{AnyContent, Request}
 import core.utils.TestConstants._
 import core.utils.{MockTrait, UnitTestTrait}
+import play.api.i18n.Messages
 
 import scala.concurrent.Future
 
@@ -31,7 +32,7 @@ trait MockPreferencesService extends MockTrait {
   val mockPreferencesService = mock[PreferencesService]
 
   private def mockCheckPaperless(token: String)(result: Future[Either[PaperlessPreferenceError.type, PaperlessState]]): Unit =
-    when(mockPreferencesService.checkPaperless(ArgumentMatchers.eq(token))(ArgumentMatchers.any[Request[AnyContent]]))
+    when(mockPreferencesService.checkPaperless(ArgumentMatchers.eq(token))(ArgumentMatchers.any[Request[AnyContent]], ArgumentMatchers.any[Messages]))
       .thenReturn(result)
 
   def mockCheckPaperlessActivated(token: String): Unit = mockCheckPaperless(token)(Future.successful(Right(Activated)))
@@ -41,7 +42,7 @@ trait MockPreferencesService extends MockTrait {
   def mockCheckPaperlessException(token: String): Unit = mockCheckPaperless(token)(Future.failed(testException))
 
   def mockChoosePaperlessUrl(url: String): Unit =
-    when(mockPreferencesService.defaultChoosePaperlessUrl(ArgumentMatchers.any[Request[AnyContent]]))
+    when(mockPreferencesService.defaultChoosePaperlessUrl(ArgumentMatchers.any[Request[AnyContent]], ArgumentMatchers.any[Messages]))
       .thenReturn(url)
 
 }
