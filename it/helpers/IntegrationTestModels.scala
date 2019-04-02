@@ -1,6 +1,8 @@
 
 package helpers
 
+import java.time.{LocalDate, LocalDateTime}
+
 import core.Constants
 import core.Constants.GovernmentGateway._
 import core.models._
@@ -26,8 +28,8 @@ object IntegrationTestModels {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate = AccountingPeriodUtil.getCurrentTaxYearStartDate
-  val testEndDate = AccountingPeriodUtil.getCurrentTaxYearEndDate
+  val testStartDate = DateModel.dateConvert(LocalDate.now)
+  val testEndDate = DateModel.dateConvert(LocalDate.now.plusYears(1))
   val testEndDateNext = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1)
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)

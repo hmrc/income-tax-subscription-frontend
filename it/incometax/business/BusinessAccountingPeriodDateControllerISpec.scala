@@ -16,6 +16,8 @@
 
 package incometax.business
 
+import java.time.LocalDate
+
 import core.config.featureswitch.FeatureSwitching
 import core.models.{DateModel, No}
 import core.services.CacheConstants
@@ -184,8 +186,10 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         "the new accounting period ends in the same tax year" in {
           val keystoreIncomeOther = No
           val keystoreMatchTaxYear = testMatchTaxYearNo
-          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("04", "05", "2019"))
-          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("05", "05", "2019"))
+          val startCurrenttestYear = LocalDate.now.plusYears(1).getYear
+          val endCurrenttestYear = startCurrenttestYear + 1
+          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", startCurrenttestYear.toString), DateModel("04", "05", endCurrenttestYear.toString))
+          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "05", startCurrenttestYear.toString), DateModel("05", "05", endCurrenttestYear.toString))
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -213,8 +217,10 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         "The new accounting period ends in a different tax year" in {
           val keystoreIncomeOther = No
           val keystoreMatchTaxYear = testMatchTaxYearNo
-          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2020"))
-          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2019"))
+          val startCurrenttestYear = LocalDate.now.plusYears(1).getYear
+          val endCurrenttestYear = startCurrenttestYear + 1
+          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", startCurrenttestYear.toString), DateModel("06", "05", (endCurrenttestYear + 1).toString))
+          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", startCurrenttestYear.toString), DateModel("06", "05", endCurrenttestYear.toString))
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
