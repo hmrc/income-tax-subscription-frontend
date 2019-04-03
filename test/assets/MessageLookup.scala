@@ -529,7 +529,7 @@ object MessageLookup {
     }
 
     object BusinessAccountingPeriod {
-      val minStartDate = "You can't enter a start date before 6 April 2017"
+      val minStartDate = "Enter the start date of your next accounting period."
       val maxEndDate = "You must provide an end date that is not more than 24 months after your start date"
     }
 

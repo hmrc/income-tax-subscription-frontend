@@ -16,6 +16,8 @@
 
 package agent.controllers.business
 
+import java.time.LocalDate
+
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels.{keystoreData, _}
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
@@ -217,8 +219,10 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           val keystoreIncomeSource = Both
           val keystoreIncomeOther = No
           val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
-          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("04", "05", "2019"))
-          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "05", "2018"), DateModel("05", "05", "2019"))
+          val startCurrenttestYear = LocalDate.now.plusYears(1).getYear
+          val endCurrenttestYear = startCurrenttestYear + 1
+          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", startCurrenttestYear.toString), DateModel("04", "05", endCurrenttestYear.toString))
+          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "05", startCurrenttestYear.toString), DateModel("05", "05", endCurrenttestYear.toString))
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -246,8 +250,10 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           val keystoreIncomeSource = Both
           val keystoreIncomeOther = No
           val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
-          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2020"))
-          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", "2018"), DateModel("06", "05", "2019"))
+          val startCurrenttestYear = LocalDate.now.plusYears(1).getYear
+          val endCurrenttestYear = startCurrenttestYear + 1
+          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", startCurrenttestYear.toString), DateModel("06", "05", (endCurrenttestYear + 1).toString))
+          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", startCurrenttestYear.toString), DateModel("06", "05", endCurrenttestYear.toString))
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()

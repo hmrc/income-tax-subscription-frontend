@@ -16,9 +16,11 @@
 
 package incometax.business.controllers
 
+import java.time.LocalDate
+
 import assets.MessageLookup
 import core.config.MockConfig
-import core.config.featureswitch.{FeatureSwitching}
+import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.models.DateModel
 import core.services.mocks.MockKeystoreService
@@ -96,8 +98,8 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
     "Calling the submit action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
 
-      val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, AccountingPeriodUtil.getCurrentTaxYearEndDate)
-      val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1))
+      val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel dateConvert AccountingPeriodDateForm.minStartDate.plusYears(1))
+      val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel dateConvert AccountingPeriodDateForm.minStartDate.plusYears(2))
 
       def callShow(isEditMode: Boolean) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode, editMatch = false)(request
         .post(AccountingPeriodDateForm.accountingPeriodDateForm, testAccountingPeriodDates))
