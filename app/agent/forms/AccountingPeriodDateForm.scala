@@ -32,7 +32,7 @@ import scala.util.Try
 
 object AccountingPeriodDateForm {
 
-  val minStartDate: LocalDate = LocalDate.now.minusDays(1)
+  val minStartDate: LocalDate = LocalDate.now
   val maxMonths: Int = 24
   val startDate: String = "startDate"
   val endDate: String = "endDate"
