@@ -742,7 +742,7 @@ agent.error.business.current_financial_period_prior.invalid           = Dewiswch
 agent.error.business.register_next_accounting_period.empty            = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 agent.error.business.register_next_accounting_period.invalid          = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
-agent.error.business_accounting_period.minStartDate                   = Nodwch ddyddiad dechrau sydd ar ôl 5 Ebrill 2017
+agent.error.business_accounting_period.minStartDate                   = Mae’n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
 agent.error.business_accounting_period.maxEndDate                     = Nodwch ddyddiad dod i ben sy''n llai na 24 mis ar ôl eich dyddiad dechrau
 
 agent.error.business_name.empty                                       = Nodwch enw busnes eich cleient
