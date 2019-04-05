@@ -85,15 +85,19 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           invalidTest assert startDate hasExpectedErrors invalid
         }
 
-        "it is before the 6 April 2017" in {
+        "it is before or during there current tax period" in {
           val beforeMin = ErrorMessageFactory.error("error.business_accounting_period.minStartDate")
           beforeMin fieldErrorIs MessageLookup.Error.BusinessAccountingPeriod.minStartDate
           beforeMin summaryErrorIs MessageLookup.Error.BusinessAccountingPeriod.minStartDate
+          val invalidTestDate = LocalDate.now.minusDays(2)
 
-          val beforeMinTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("05", "4", "2017"))
+          val beforeMinTest = accountingPeriodDateForm.bind(DataMap.date(startDate)
+          (invalidTestDate.getDayOfMonth.toString, invalidTestDate.getMonthValue.toString, invalidTestDate.getYear.toString))
           beforeMinTest assert startDate hasExpectedErrors beforeMin
 
-          val minTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("06", "4", "2017"))
+          val validTestDate = LocalDate.now
+          val minTest = accountingPeriodDateForm.bind(DataMap.date(startDate)
+          (validTestDate.getDayOfMonth.toString, validTestDate.getMonthValue.toString, validTestDate.getYear.toString))
           minTest assert startDate doesNotHaveSpecifiedErrors beforeMin
         }
       }
@@ -165,11 +169,21 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           violation fieldErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate
           violation summaryErrorIs MessageLookup.Error.BusinessAccountingPeriod.maxEndDate
 
-          val endDateViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("28", "6", "2019")
+          val validStartDate = LocalDate.now
+          val invalidEndDate = validStartDate.plusYears(2).plusDays(1)
+          val validEndDate = validStartDate.plusYears(1).plusDays(364)
+
+          val endDateViolationInput =
+            DataMap.date(startDate)(validStartDate.getDayOfMonth.toString, validStartDate.getMonthValue.toString, validStartDate.getYear.toString) ++
+              DataMap.date(endDate)(invalidEndDate.getDayOfMonth.toString, invalidEndDate.getMonthValue.toString, invalidEndDate.getYear.toString)
+
           val violationTest = accountingPeriodDateForm.bind(endDateViolationInput)
           violationTest assert endDate hasExpectedErrors violation
 
-          val endDateNoViolationInput = DataMap.date(startDate)("28", "6", "2017") ++ DataMap.date(endDate)("27", "6", "2019")
+          val endDateNoViolationInput =
+            DataMap.date(startDate)(validStartDate.getDayOfMonth.toString, validStartDate.getMonthValue.toString, validStartDate.getYear.toString) ++
+              DataMap.date(endDate)(validEndDate.getDayOfMonth.toString, validEndDate.getMonthValue.toString, validEndDate.getYear.toString)
+
           val noViolationTest = accountingPeriodDateForm.bind(endDateNoViolationInput)
           noViolationTest assert endDate doesNotHaveSpecifiedErrors violation
         }
@@ -185,6 +199,15 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
         DataMap.date(endDate)(testEndDate.day, testEndDate.month, testEndDate.year)
       accountingPeriodDateForm isValidFor testData
     }
+  }
+
+
+  "The user tries to submit a accounting period in the past" in {
+    val testStartDate = DateModel.dateConvert(LocalDate.now())
+    val testEndDate = DateModel.dateConvert(LocalDate.now().plusDays(1))
+
+    val testData = DataMap.date(startDate)(testStartDate.day, testStartDate.month, testStartDate.year) ++
+      DataMap.date(endDate)(testEndDate.day, testEndDate.month, testEndDate.year)
   }
 
 }

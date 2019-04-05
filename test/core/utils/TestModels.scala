@@ -17,6 +17,8 @@
 package core.utils
 
 
+import java.time.LocalDate
+
 import agent.models.AccountingPeriodPriorModel
 import agent.services.CacheConstants.AccountingPeriodPrior
 import core.models._
@@ -41,8 +43,8 @@ object TestModels extends Implicits {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate = DateModel("06", "04", "2017")
-  val testEndDate = DateModel("01", "04", "2018")
+  val testStartDate = DateModel("06", "04", LocalDate.now.getYear.toString)
+  val testEndDate = DateModel("01", "04", LocalDate.now.plusYears(1).getYear.toString)
 
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)

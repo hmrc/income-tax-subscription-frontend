@@ -301,7 +301,7 @@ error.business.current_financial_period_prior.invalid           = You must selec
 error.business.register_next_accounting_period.empty            = You must select an option to continue
 error.business.register_next_accounting_period.invalid          = You must select an option to continue
 
-error.business_accounting_period.minStartDate                   = You can''t enter a start date before 6 April 2017
+error.business_accounting_period.minStartDate                   = The start date of your accounting period must be in the future.
 error.business_accounting_period.maxEndDate                     = You must provide an end date that is not more than 24 months after your start date
 
 error.business_name.empty                                       = You must enter your Business name
@@ -742,7 +742,7 @@ agent.error.business.current_financial_period_prior.invalid           = Select y
 agent.error.business.register_next_accounting_period.empty            = You must select an option to continue
 agent.error.business.register_next_accounting_period.invalid          = You must select an option to continue
 
-agent.error.business_accounting_period.minStartDate                   = Enter a start date after 5 April 2017
+agent.error.business_accounting_period.minStartDate                   = The start date of your accounting period must be in the future.
 agent.error.business_accounting_period.maxEndDate                     = Enter an end date that''s less than 24 months after your start date
 
 agent.error.business_name.empty                                       = Enter your client''s business name
