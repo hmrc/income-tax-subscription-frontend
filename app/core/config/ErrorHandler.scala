@@ -51,6 +51,7 @@ class ErrorHandler @Inject()(val appConfig: AppConfig,
       case _: NotFoundException =>
         NotFound(notFoundTemplate(Request(rh, "")))
       case _ =>
+        Logger.error("[ErrorHandler][resolveError] Exception did not get resolved", ex)
         super.resolveError(rh, ex)
     }
   }
