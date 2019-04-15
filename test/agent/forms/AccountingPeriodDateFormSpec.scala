@@ -174,15 +174,15 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           val invalidEndDate =validStartDate.plusYears(3)
 
           val endDateViolationInput =
-            DataMap.date(startDate)(validStartDate.getDayOfMonth.toString, validStartDate.getDayOfMonth.toString, validStartDate.getYear.toString) ++
-            DataMap.date(endDate)(invalidEndDate.getDayOfMonth.toString, invalidEndDate.getDayOfMonth.toString, invalidEndDate.getYear.toString)
+            DataMap.date(startDate)(validStartDate.getDayOfMonth.toString, validStartDate.getMonthValue.toString, validStartDate.getYear.toString) ++
+            DataMap.date(endDate)(invalidEndDate.getDayOfMonth.toString, invalidEndDate.getMonthValue.toString, invalidEndDate.getYear.toString)
 
           val violationTest = accountingPeriodDateForm.bind(endDateViolationInput)
           violationTest assert endDate hasExpectedErrors violation
 
           val endDateNoViolationInput =
-            DataMap.date(startDate)(validStartDate.getDayOfMonth.toString, validStartDate.getDayOfMonth.toString, validStartDate.getYear.toString) ++
-            DataMap.date(endDate)(validEndDate.getDayOfMonth.toString, validEndDate.getDayOfMonth.toString, validEndDate.getYear.toString)
+            DataMap.date(startDate)(validStartDate.getDayOfMonth.toString, validStartDate.getMonthValue.toString, validStartDate.getYear.toString) ++
+            DataMap.date(endDate)(validEndDate.getDayOfMonth.toString, validEndDate.getMonthValue.toString, validEndDate.getYear.toString)
 
           val noViolationTest = accountingPeriodDateForm.bind(endDateNoViolationInput)
           noViolationTest assert endDate doesNotHaveSpecifiedErrors violation
