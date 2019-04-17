@@ -17,6 +17,7 @@
 package core.config
 
 import javax.inject.Inject
+
 import core.views.html.templates.error_template
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
@@ -27,11 +28,17 @@ import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
 
+import scala.concurrent.Future
+
 class ErrorHandler @Inject()(val appConfig: AppConfig,
                              val messagesApi: MessagesApi,
                              val config: Configuration,
                              val env: Environment
                             ) extends FrontendErrorHandler with AuthRedirects {
+
+  override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
+    Future.successful(resolveError(request, exception))
+  }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]):
   _root_.play.twirl.api.HtmlFormat.Appendable =
@@ -51,7 +58,7 @@ class ErrorHandler @Inject()(val appConfig: AppConfig,
       case _: NotFoundException =>
         NotFound(notFoundTemplate(Request(rh, "")))
       case _ =>
-        Logger.error("[ErrorHandler][resolveError] Exception did not get resolved", ex)
+        Logger.error(s"[ErrorHandler][resolveError] Internal Server Error, (${rh.method})(${rh.uri})", ex)
         super.resolveError(rh, ex)
     }
   }
