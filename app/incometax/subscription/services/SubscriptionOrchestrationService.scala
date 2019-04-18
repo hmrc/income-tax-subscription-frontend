@@ -55,11 +55,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       _ <- EitherT(enrolmentService.enrol(mtditId, nino))
     } yield mtditId
 
-    res.value.map {
-      case result: Left[EnrolFailure, String] => Logger.error(s"[SubscriptionOrchestrationService][enrolAndRefresh] could not enrol due to: $result")
-        result
-      case result: Right[EnrolFailure, String] => result
-    }
+    res.value
 
   }
 
