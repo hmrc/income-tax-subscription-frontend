@@ -19,8 +19,10 @@ package incometax.subscription.services
 import cats.data.EitherT
 import cats.implicits._
 import core.connectors.models.ConnectorError
-import incometax.subscription.models.{SubscriptionSuccess, SummaryModel}
+import incometax.subscription.models.{EnrolFailure, SubscriptionSuccess, SummaryModel}
 import javax.inject.{Inject, Singleton}
+
+import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -53,7 +55,12 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
       _ <- EitherT(enrolmentService.enrol(mtditId, nino))
     } yield mtditId
 
-    res.value
+    res.value.map {
+      case result: Left[EnrolFailure, String] => Logger.error(s"[SubscriptionOrchestrationService][enrolAndRefresh] could not enrol due to: $result")
+        result
+      case result: Right[EnrolFailure, String] => result
+    }
+
   }
 
 }
