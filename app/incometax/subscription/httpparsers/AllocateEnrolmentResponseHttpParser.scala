@@ -17,6 +17,7 @@
 package incometax.subscription.httpparsers
 
 import incometax.subscription.models.{EnrolFailure, EnrolSuccess, KnownFactsFailure, KnownFactsSuccess}
+import play.api.Logger
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
@@ -27,7 +28,8 @@ object AllocateEnrolmentResponseHttpParser {
     override def read(method: String, url: String, response: HttpResponse): AllocateEnrolmentResponse =
       response.status match {
         case CREATED => Right(EnrolSuccess)
-        case _ => Left(EnrolFailure(response.body))
+        case _ =>  Logger.error(s"[AllocateEnrolmentResponseHttpReads] issue allocating enrolment status: ${response.status} body: ${response.body}")
+          Left(EnrolFailure(response.body))
       }
   }
 }

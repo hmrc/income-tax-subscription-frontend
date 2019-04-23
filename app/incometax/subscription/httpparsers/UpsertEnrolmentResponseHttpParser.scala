@@ -17,6 +17,7 @@
 package incometax.subscription.httpparsers
 
 import incometax.subscription.models.{KnownFactsFailure, KnownFactsSuccess}
+import play.api.Logger
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
@@ -27,7 +28,8 @@ object UpsertEnrolmentResponseHttpParser {
     override def read(method: String, url: String, response: HttpResponse): UpsertEnrolmentResponse =
       response.status match {
         case NO_CONTENT => Right(KnownFactsSuccess)
-        case _ => Left(KnownFactsFailure(response.body))
+        case _ => Logger.error(s"[UpsertEnrolmentResponseHttpReads] issue upserting enrolment status: ${response.status} body: ${response.body}")
+          Left(KnownFactsFailure(response.body))
       }
   }
 }

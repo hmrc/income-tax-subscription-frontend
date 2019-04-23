@@ -19,8 +19,10 @@ package incometax.subscription.services
 import cats.data.EitherT
 import cats.implicits._
 import core.connectors.models.ConnectorError
-import incometax.subscription.models.{SubscriptionSuccess, SummaryModel}
+import incometax.subscription.models.{EnrolFailure, SubscriptionSuccess, SummaryModel}
 import javax.inject.{Inject, Singleton}
+
+import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -54,6 +56,7 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     } yield mtditId
 
     res.value
+
   }
 
 }
