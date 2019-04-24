@@ -16,6 +16,7 @@
 
 package incometax.business.forms
 
+import java.time
 import java.time.LocalDate
 
 import core.forms.submapping.DateMapping._
@@ -32,7 +33,7 @@ import scala.util.Try
 
 object AccountingPeriodDateForm {
 
-  val minStartDate = LocalDate.now
+  val minStartDate = LocalDate.of(LocalDate.now.getYear, 4, 6)
   val maxMonths: Int = 24
   val startDate: String = "startDate"
   val endDate: String = "endDate"
