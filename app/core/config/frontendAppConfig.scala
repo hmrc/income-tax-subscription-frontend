@@ -90,6 +90,8 @@ trait AppConfig extends FeatureSwitching {
 
   val backendFeatureSwitchUrl: String
 
+  val eligibilityFeatureSwitchUrl: String
+
   def getAgencyNameUrl(arn: String): String
 
   def languageMap: Map[String, Lang] = Map(
@@ -235,7 +237,11 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override lazy val sendSAReturnLink: String = loadConfig("sa-return.url")
 
-  override lazy val backendFeatureSwitchUrl: String = s"$protectedMicroServiceUrl/income-tax-subscription/test-only/feature-switch"
+  override lazy val backendFeatureSwitchUrl: String =
+    s"$protectedMicroServiceUrl/income-tax-subscription/test-only/feature-switch"
+
+  override lazy val eligibilityFeatureSwitchUrl: String =
+    s"${baseUrl("income-tax-subscription-eligibility")}/income-tax-subscription-eligibility/test-only/feature-switch"
 
   lazy val taxEnrolments = baseUrl("tax-enrolments")
 
@@ -252,13 +258,16 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   lazy val agentServicesAccount = baseUrl("agent-services-account")
 
-  override def getAgencyNameUrl(arn: String): String = s"$agentServicesAccount/agent-services-account/client/agency-name/$arn"
+  override def getAgencyNameUrl(arn: String): String =
+    s"$agentServicesAccount/agent-services-account/client/agency-name/$arn"
 
   override def languageTranslationEnabled: Boolean = isEnabled(featureswitch.WelshLanguageFeature)
 
-  override lazy val betaFeedbackUrl: String = s"$contactFrontendService/contact/beta-feedback?service=$contactFormServiceIdentifier"
+  override lazy val betaFeedbackUrl: String =
+    s"$contactFrontendService/contact/beta-feedback?service=$contactFormServiceIdentifier"
 
-  override lazy val betaFeedbackUnauthenticatedUrl: String = s"$contactFrontendService/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+  override lazy val betaFeedbackUnauthenticatedUrl: String =
+    s"$contactFrontendService/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 
   override lazy val unplannedOutagePageMainContent: String = loadConfig("unplanned-outage.main")
 

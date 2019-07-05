@@ -17,37 +17,46 @@
 package testonly.controllers
 
 import javax.inject.Inject
-
 import core.auth.BaseFrontendController
 import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitch._
 import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import core.services.AuthService
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, Request}
 import play.twirl.api.Html
-import testonly.connectors.BackendFeatureSwitchConnector
+import testonly.connectors.{BackendFeatureSwitchConnector, EligibilityFeatureSwitchConnector}
 import testonly.models.FeatureSwitchSetting
 
 import scala.collection.immutable.ListMap
+import scala.concurrent.Future
 
 class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
                                         val baseConfig: BaseControllerConfig,
                                         val authService: AuthService,
-                                        featureSwitchConnector: BackendFeatureSwitchConnector)
+                                        backendFeatureSwitchConnector: BackendFeatureSwitchConnector,
+                                        eligibilityFeatureSwitchConnector: EligibilityFeatureSwitchConnector)
   extends BaseFrontendController with FeatureSwitching with I18nSupport {
-  private def view(switchNames: Map[FeatureSwitch, Boolean], backendFeatureSwitches: Map[String, Boolean])(implicit request: Request[_]): Html =
+
+  private def view(switchNames: Map[FeatureSwitch, Boolean],
+                   backendFeatureSwitches: Map[String, Boolean],
+                   eligibilityFeatureSwitches: Map[String, Boolean]
+                  )(implicit request: Request[_]): Html =
+
     testonly.views.html.feature_switch(
       switchNames = switchNames,
       backendFeatureSwitches = backendFeatureSwitches,
+      eligibilityFeatureSwitches = eligibilityFeatureSwitches,
       testonly.controllers.routes.FeatureSwitchController.submit()
     )
 
   lazy val show = Action.async { implicit req =>
     for {
-      backendFeatureSwitches <- featureSwitchConnector.getBackendFeatureSwitches
-      featureSwitches =     ListMap(switches.toSeq sortBy(_.displayText) map (switch => switch -> isEnabled(switch)):_*)
-    } yield Ok(view(featureSwitches, backendFeatureSwitches))
+      backendFeatureSwitches <- backendFeatureSwitchConnector.getBackendFeatureSwitches
+      eligibilityFeatureSwitches <- eligibilityFeatureSwitchConnector.getEligibilityFeatureSwitches
+      featureSwitches = ListMap(switches.toSeq sortBy(_.displayText) map (switch => switch -> isEnabled(switch)):_*)
+    } yield Ok(view(featureSwitches, backendFeatureSwitches, eligibilityFeatureSwitches))
   }
 
   lazy val submit = Action.async { implicit req =>
@@ -56,6 +65,13 @@ class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
       case Some(data) => data.keySet
     }
 
+    def settingsFromFeatureSwitchMap (featureSwitches: Future[Map[String, Boolean]]): Future[Set[FeatureSwitchSetting]] =
+      featureSwitches map {
+        _.keySet map {
+          switchName => FeatureSwitchSetting(switchName, submittedData contains switchName)
+        }
+      }
+
     val frontendFeatureSwitches = submittedData flatMap FeatureSwitch.get
 
     switches.foreach(fs =>
@@ -63,16 +79,12 @@ class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
       else disable(fs)
     )
 
-    featureSwitchConnector.getBackendFeatureSwitches map {
-      _.keySet map { switchName =>
-        FeatureSwitchSetting(
-          feature = switchName,
-          enable = submittedData contains switchName
-        )
-      }
-    } flatMap featureSwitchConnector.submitBackendFeatureSwitches map {
-      _ => Redirect(testonly.controllers.routes.FeatureSwitchController.show())
-    }
+    for {
+      backendFeatureSwitches <- settingsFromFeatureSwitchMap(backendFeatureSwitchConnector.getBackendFeatureSwitches)
+      eligibilityFeatureSwitches <- settingsFromFeatureSwitchMap(eligibilityFeatureSwitchConnector.getEligibilityFeatureSwitches)
+      _ <- backendFeatureSwitchConnector.submitBackendFeatureSwitches(backendFeatureSwitches)
+      _ <- eligibilityFeatureSwitchConnector.submitEligibilityFeatureSwitches(eligibilityFeatureSwitches)
+    } yield Redirect(testonly.controllers.routes.FeatureSwitchController.show())
   }
 
 }
