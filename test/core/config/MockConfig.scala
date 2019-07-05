@@ -105,6 +105,8 @@ trait MockConfig extends AppConfig {
 
   override val unplannedOutagePageRelatedContent: String = "https://www.gov.uk/browse/tax/income-tax"
 
+  override lazy val eligibilityFeatureSwitchUrl: String = "/income-tax-subscription-eligibility/test-only/feature-switch"
+
 }
 
 object MockConfig extends MockConfig
