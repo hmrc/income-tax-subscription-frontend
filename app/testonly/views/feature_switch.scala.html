@@ -19,7 +19,11 @@
 @import core.config.featureswitch.FeatureSwitch
 @import core.views.html.templates.main_template
 
-@(switchNames: Map[FeatureSwitch, Boolean], backendFeatureSwitches: Map[String, Boolean], action: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(switchNames: Map[FeatureSwitch, Boolean],
+  backendFeatureSwitches: Map[String, Boolean],
+  eligibilityFeatureSwitches: Map[String, Boolean],
+  action: Call
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @main_template(title = Messages("Feature switch")) {
     <form method="@action.method" action="@action.url">
@@ -46,6 +50,16 @@
                     <label for="@switch._1">@switch._1</label>
                 </div>
             }
+            </div>
+
+            <h3 class="heading-small">Eligibility features</h3>
+            <div class="form-group">
+              @for(switch <- eligibilityFeatureSwitches) {
+              <div class="multiple-choice">
+                <input type="checkbox" id="@switch._1" name="@switch._1" value="true" @{if(switch._2){"Checked"}}>
+                <label for="@switch._1">@switch._1</label>
+              </div>
+              }
             </div>
         </fieldset>
         <button type="submit">Update global settings</button>
