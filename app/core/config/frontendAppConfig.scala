@@ -90,6 +90,8 @@ trait AppConfig extends FeatureSwitching {
 
   val backendFeatureSwitchUrl: String
 
+  val incomeTaxEligibilityUrl: String
+
   val eligibilityFeatureSwitchUrl: String
 
   def getAgencyNameUrl(arn: String): String
@@ -240,8 +242,9 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override lazy val backendFeatureSwitchUrl: String =
     s"$protectedMicroServiceUrl/income-tax-subscription/test-only/feature-switch"
 
-  override lazy val eligibilityFeatureSwitchUrl: String =
-    s"${baseUrl("income-tax-subscription-eligibility")}/income-tax-subscription-eligibility/test-only/feature-switch"
+  override lazy val incomeTaxEligibilityUrl: String = s"${baseUrl("income-tax-subscription-eligibility")}/income-tax-subscription-eligibility"
+
+  override lazy val eligibilityFeatureSwitchUrl: String = s"$incomeTaxEligibilityUrl/test-only/feature-switch"
 
   lazy val taxEnrolments = baseUrl("tax-enrolments")
 
