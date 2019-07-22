@@ -744,4 +744,10 @@ object MessageLookup {
     val bullet2 = s"get $link2"
   }
 
+  object NotEligibleForIncomeTax {
+    val title = "You cannot use this service yet"
+    val heading: String = "You cannot use this service yet"
+    val para1 = "This is a trial service. You may be able to use the 'Report your income and expenses quarterly' service in the future."
+  }
+
 }

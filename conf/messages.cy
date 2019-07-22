@@ -890,3 +890,8 @@ confirmation.unauthorised.whatHappensNext.para3                       = Ar ôl i
 confirmation.unauthorised.whatHappensNext.bullet1                     = meddalwedd cyfrifyddu
 confirmation.unauthorised.whatHappensNext.bullet2                     = <a id="bta" href="{0}">cyfrif treth busnes</a>
 confirmation.unauthorised.whatHappensNext.para4                       = Gall gymryd rhai oriau cyn eu bod i gyd i''w gweld.
+
+# Not eligible for income tax
+not_eligible_for_income_tax.title                                      = Ni allwch ddefnyddio''r gwasanaeth hwn eto
+not_eligible_for_income_tax.heading                                    = Ni allwch ddefnyddio''r gwasanaeth hwn eto
+not_eligible_for_income_tax.para1                                      = Mae hwn yn wasanaeth sy''n cael ei brofi. Efallai y bydd modd i chi ddefnyddio''r gwasanaeth ''Rhoi gwybod am eich incwm a''ch treuliau bob chwarter'' yn y dyfodol.

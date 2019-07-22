@@ -898,3 +898,8 @@ unplanned_outage.line1                                                 = Try aga
 unplanned_outage.line2                                                 = In the meantime:
 unplanned_outage.bullet1                                               = go to the <a id="main" href="{0}">Income Tax main page</a>
 unplanned_outage.bullet2                                               = get <a id="related" href="{0}">Income Tax related content</a>
+
+# Not eligible for income tax
+not_eligible_for_income_tax.title                                      = You cannot use this service yet
+not_eligible_for_income_tax.heading                                    = You cannot use this service yet
+not_eligible_for_income_tax.para1                                      = This is a trial service. You may be able to use the ''Report your income and expenses quarterly'' service in the future.
