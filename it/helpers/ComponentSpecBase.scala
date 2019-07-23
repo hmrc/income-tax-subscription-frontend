@@ -169,6 +169,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def cannotUseService(): WSResponse = get("/error/cannot-use-service")
 
+    def notEligibleForIncomeTax(): WSResponse = get("/cannot-use-service-yet")
+
     def cannotReportYet(): WSResponse = get("/error/cannot-report-yet")
 
     def submitCannotReportYet(editMode: Boolean): WSResponse =

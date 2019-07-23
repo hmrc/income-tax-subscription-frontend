@@ -100,5 +100,8 @@ GET         /error/cannot-sign-up         incometax.incomesource.controllers.Can
 # Cannot Use Service
 GET         /error/cannot-use-service     incometax.incomesource.controllers.CannotUseServiceController.show()
 
+# Cannot use service because not eligible
+GET         /cannot-use-service-yet       incometax.eligibility.controllers.NotEligibleForIncomeTaxController.show()
+
 #Language
 GET         /language/:lang               core.controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
