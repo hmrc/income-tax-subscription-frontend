@@ -16,10 +16,9 @@
 
 package incometax.eligibility.controllers
 
-import core.audit.Logging
-import core.auth.{SignUpController, StatelessController}
+import core.auth.StatelessController
 import core.config.BaseControllerConfig
-import core.services.{AuthService, KeystoreService}
+import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -33,10 +32,6 @@ class NotEligibleForIncomeTaxController @Inject()(val baseConfig: BaseController
                                       ) extends StatelessController {
 
   val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
-    implicit user =>
-      Future.successful(Ok(incometax.eligibility.views.html.not_eligible_for_income_tax(
-      )))
+    implicit user => Future.successful(Ok(incometax.eligibility.views.html.not_eligible_for_income_tax()))
   }
-
-
 }
