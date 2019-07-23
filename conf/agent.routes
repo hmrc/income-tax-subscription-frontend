@@ -81,5 +81,8 @@ POST        /error/not-authorised                   agent.controllers.AgentNotAu
 # Agent not authorised Confirmation
 GET         /send-client-link                       agent.controllers.UnauthorisedAgentConfirmationController.show
 
+# Cannot use service because not eligible
+GET         /cannot-use-service-yet                 agent.controllers.eligibility.NotEligibleForIncomeTaxController.show()
+
 #Language
 GET         /language/:lang                         core.controllers.language.LanguageSwitchController.switchToLanguage(lang: String)

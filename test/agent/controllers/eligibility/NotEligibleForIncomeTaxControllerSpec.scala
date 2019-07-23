@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package incometax.eligibility.controllers
+package agent.controllers.eligibility
 
-import assets.MessageLookup.{NotEligibleForIncomeTax => messages}
+import assets.MessageLookup.{AgentNotEligibleForIncomeTax => messages}
 import core.controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -34,7 +34,7 @@ class NotEligibleForIncomeTaxControllerSpec extends ControllerBaseSpec {
     mockAuthService
   )
 
-  "Calling the show action of the Not Eligible For Income Tax Controller" when {
+  "Calling the show action of the Agent Not Eligible For Income Tax Controller" when {
 
     def call = TestCannotUseServiceController.show(subscriptionRequest)
 
