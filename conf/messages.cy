@@ -895,3 +895,8 @@ confirmation.unauthorised.whatHappensNext.para4                       = Gall gym
 not_eligible_for_income_tax.title                                      = Ni allwch ddefnyddio''r gwasanaeth hwn eto
 not_eligible_for_income_tax.heading                                    = Ni allwch ddefnyddio''r gwasanaeth hwn eto
 not_eligible_for_income_tax.para1                                      = Mae hwn yn wasanaeth sy''n cael ei brofi. Efallai y bydd modd i chi ddefnyddio''r gwasanaeth ''Rhoi gwybod am eich incwm a''ch treuliau bob chwarter'' yn y dyfodol.
+
+# Not eligible for income tax (agent)
+agent_not_eligible_for_income_tax.title                                = Ni allwch ddefnyddio''r gwasanaeth hwn eto
+agent_not_eligible_for_income_tax.heading                              = Ni allwch ddefnyddio''r gwasanaeth hwn eto
+agent_not_eligible_for_income_tax.para1                                = Mae hwn yn wasanaeth sy''n cael ei brofi. Efallai y bydd modd i chi ddefnyddio''r gwasanaeth ''Rhoi gwybod am eich incwm a''ch treuliau bob chwarter'' ar gyfer eich cleientiaid yn y dyfodol.
