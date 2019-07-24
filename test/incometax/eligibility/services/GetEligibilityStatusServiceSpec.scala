@@ -18,6 +18,7 @@ package incometax.eligibility.services
 
 import core.utils.HttpResult.HttpConnectorError
 import core.utils.TestConstants.testUtr
+import incometax.eligibility.httpparsers.{Eligible, Ineligible}
 import incometax.eligibility.services.mocks.TestGetEligibilityStatusService
 import play.api.libs.json.JsError
 import play.api.test.Helpers._
@@ -30,20 +31,20 @@ class GetEligibilityStatusServiceSpec extends TestGetEligibilityStatusService {
   "getEligibilityStatus" should {
     "return Eligible" when {
       "the GetEligibilityStatusConnector returns OK and true" in {
-        mockGetEligibilityStatus(testUtr)(Future.successful(Right(true)))
+        mockGetEligibilityStatus(testUtr)(Future.successful(Right(Eligible)))
 
         val res = await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr))
 
-        res mustBe Right(true)
+        res mustBe Right(Eligible)
       }
     }
     "return Ineligible" when {
       "the GetEligibilityStatusConnector returns OK and false" in {
-        mockGetEligibilityStatus(testUtr)(Future.successful(Right(false)))
+        mockGetEligibilityStatus(testUtr)(Future.successful(Right(Ineligible)))
 
         val res = await(TestGetEligibilityStatusService.getEligibilityStatus(testUtr))
 
-        res mustBe Right(false)
+        res mustBe Right(Ineligible)
       }
     }
     "return InvalidJsonError" when {

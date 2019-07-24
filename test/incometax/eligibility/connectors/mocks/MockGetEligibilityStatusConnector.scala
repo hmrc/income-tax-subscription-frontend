@@ -21,6 +21,7 @@ import core.connectors.mocks.MockHttp
 import core.utils.HttpResult.HttpResult
 import core.utils.MockTrait
 import incometax.eligibility.connectors.GetEligibilityStatusConnector
+import incometax.eligibility.httpparsers.EligibilityStatus
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.libs.json.JsValue
@@ -31,8 +32,8 @@ trait MockGetEligibilityStatusConnector extends MockTrait {
 
   val mockGetEligibilityStatusConnector = mock[GetEligibilityStatusConnector]
 
-  def mockGetEligibilityStatus(sautr: String)(result: Future[HttpResult[Boolean]]): Unit =
-    when(mockGetEligibilityStatusConnector.getEligibilityStatus(ArgumentMatchers.eq(sautr))).thenReturn(result)
+  def mockGetEligibilityStatus(sautr: String)(result: Future[HttpResult[EligibilityStatus]]): Unit =
+    when(mockGetEligibilityStatusConnector.getEligibilityStatus(ArgumentMatchers.eq(sautr))(ArgumentMatchers.any())).thenReturn(result)
 
 }
 

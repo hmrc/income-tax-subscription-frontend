@@ -20,9 +20,10 @@ import core.utils.MockTrait
 import core.utils.TestConstants._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.connectors.mocks.MockCitizenDetailsConnector
-import usermatching.services.CitizenDetailsService
+import usermatching.services.{CitizenDetailsService, OptionalIdentifiers}
 
 import scala.concurrent.Future
 
@@ -50,6 +51,17 @@ trait MockCitizenDetailsService extends MockTrait {
         ArgumentMatchers.eq(utr)
       )(ArgumentMatchers.any[HeaderCarrier])
     ).thenReturn(response)
+
+  def mockResolveIdentifiers(optNino: Option[String], optUtr: Option[String])
+                            (optReturnNino: Option[String], optReturnUtr: Option[String]): Unit =
+    when(
+      mockCitizenDetailsService.resolveKnownFacts(
+        ArgumentMatchers.eq(optNino),
+        ArgumentMatchers.eq(optUtr)
+      )(
+        ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[Request[AnyContent]]
+      )
+    ).thenReturn(Future.successful(OptionalIdentifiers(optReturnNino, optReturnUtr)))
 
   def mockLookupUserWithUtr(nino: String)(utr: String): Unit =
     mockLookupUtr(nino)(Future.successful(Some(utr)))
