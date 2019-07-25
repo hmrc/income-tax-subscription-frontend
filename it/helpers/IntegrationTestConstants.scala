@@ -49,6 +49,7 @@ object IntegrationTestConstants {
 
   val baseURI = "/report-quarterly/income-and-expenses/sign-up"
   val indexURI = s"$baseURI/index"
+  val notEligibleURI = "/cannot-use-service-yet"
   val noSaURI = s"$baseURI/register-for-SA"
   val userDetailsURI = "/user-details"
   val confirmDetailsURI = "/confirm-details"

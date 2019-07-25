@@ -19,6 +19,7 @@ package incometax.eligibility.services.mocks
 import core.utils.HttpResult.HttpResult
 import core.utils.MockTrait
 import incometax.eligibility.connectors.mocks.MockGetEligibilityStatusConnector
+import incometax.eligibility.httpparsers.EligibilityStatus
 import incometax.eligibility.services.GetEligibilityStatusService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -33,8 +34,8 @@ trait MockGetEligibilityStatusService extends MockTrait {
     reset(mockGetEligibilityStatusService)
   }
 
-  def mockGetEligibilityStatus(sautr: String)(result: Future[HttpResult[Boolean]]): Unit =
-    when(mockGetEligibilityStatusService.getEligibilityStatus(ArgumentMatchers.eq(sautr))).thenReturn(result)
+  def mockGetEligibilityStatus(sautr: String)(result: Future[HttpResult[EligibilityStatus]]): Unit =
+    when(mockGetEligibilityStatusService.getEligibilityStatus(ArgumentMatchers.eq(sautr))(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(result)
 
 }
 

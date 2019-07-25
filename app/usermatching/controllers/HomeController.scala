@@ -23,6 +23,8 @@ import core.auth._
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import core.utils.Implicits._
+import incometax.eligibility.httpparsers.{Eligible, Ineligible}
+import incometax.eligibility.services.GetEligibilityStatusService
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionService
 import incometax.unauthorisedagent.services.SubscriptionStoreRetrievalService
@@ -30,8 +32,9 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
-import usermatching.services.CitizenDetailsService
+import usermatching.services.{CitizenDetailsService, OptionalIdentifiers}
 import usermatching.userjourneys.ConfirmAgentSubscription
+import incometax.eligibility.controllers.{routes => eligibilityRoutes}
 
 import scala.concurrent.Future
 
@@ -43,6 +46,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                val authService: AuthService,
                                citizenDetailsService: CitizenDetailsService,
                                subscriptionStoreService: SubscriptionStoreRetrievalService,
+                               getEligibilityStatusService: GetEligibilityStatusService,
                                logging: Logging
                               ) extends StatelessController {
 
@@ -58,40 +62,32 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       implicit user =>
         val timestamp: String = java.time.LocalDateTime.now().toString
 
-        user.nino match {
-          case Some(nino) => {
+        citizenDetailsService.resolveKnownFacts(user.nino, user.utr) flatMap {
+          case OptionalIdentifiers(Some(nino), Some(utr)) =>
             getSubscription(nino) flatMap {
-              case None =>
-                subscriptionStoreService.retrieveSubscriptionData(nino) flatMap {
-                  case Some(storedSubscription) =>
-                    Future.successful(goToAuthoriseAgent(timestamp, storedSubscription.arn))
-                  case None =>
-                    resolveUtr(user, nino) map {
-                      case Some(utr) =>
-                        goToSignUp(timestamp)
-                          .addingToSession(UTR -> utr)
-                      case None =>
-                        goToRegistration(timestamp)
-                    }
-                }
               case Some(SubscriptionSuccess(mtditId)) =>
                 claimSubscription(mtditId)
-            }
-          }
-          case None =>
-            user.utr match {
-              case Some(utr) =>
-                citizenDetailsService.lookupNino(utr) map {
-                  nino => Redirect(incometax.incomesource.controllers.routes.RentUkPropertyController.show())
-                    .addingToSession(NINO -> nino)
-                }
               case None =>
-                Future.successful(goToUserMatching withJourneyState UserMatching)
+                getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
+                  case Right(Eligible) =>
+                    subscriptionStoreService.retrieveSubscriptionData(nino) flatMap {
+                      case Some(storedSubscription) =>
+                        goToAuthoriseAgent(timestamp, storedSubscription.arn)
+                      case None =>
+                        goToSignUp(timestamp).addingToSession(UTR -> utr)
+                    }
+                  case Right(Ineligible) =>
+                    Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show())
+                }
             }
+          case OptionalIdentifiers(Some(_), None) =>
+            goToRegistration(timestamp)
+          case _ =>
+            Future.successful(goToUserMatching withJourneyState UserMatching)
         }
     }
 
-  private def goToAuthoriseAgent(timestamp: String, arn: String)(implicit request: Request[AnyContent]): Result =
+  private def goToAuthoriseAgent(timestamp: String, arn: String)(implicit request: Request[AnyContent]): Future[Result] =
     Redirect(incometax.unauthorisedagent.controllers.routes.AuthoriseAgentController.show())
       .addingToSession(AgentReferenceNumber -> arn)
       .addingToSession(StartTime -> timestamp)

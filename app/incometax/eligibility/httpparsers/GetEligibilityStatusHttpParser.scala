@@ -25,12 +25,13 @@ object GetEligibilityStatusHttpParser {
 
   val key = "eligible"
 
-  implicit object GetEligibilityStatusHttpReads extends HttpResultParser[Boolean] {
-    override def read(method: String, url: String, response: HttpResponse): HttpResult[Boolean] = {
+  implicit object GetEligibilityStatusHttpReads extends HttpResultParser[EligibilityStatus] {
+    override def read(method: String, url: String, response: HttpResponse): HttpResult[EligibilityStatus] = {
 
       response.status match {
         case OK => (response.json \ key).validate[Boolean] match {
-          case JsSuccess(eligibilityStatus, _) => Right(eligibilityStatus)
+          case JsSuccess(isEligible, _) if isEligible => Right(Eligible)
+          case JsSuccess(_, _) => Right(Ineligible)
           case error: JsError => Left(HttpConnectorError(response, Some(error)))
         }
         case _ => Left(HttpConnectorError(response))
@@ -40,3 +41,9 @@ object GetEligibilityStatusHttpParser {
   }
 
 }
+
+sealed trait EligibilityStatus
+
+case object Eligible extends EligibilityStatus
+
+case object Ineligible extends EligibilityStatus

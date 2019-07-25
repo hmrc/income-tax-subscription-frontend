@@ -18,6 +18,7 @@ package incometax.eligibility.connectors
 
 import core.config.AppConfig
 import core.utils.HttpResult.HttpResult
+import incometax.eligibility.httpparsers.EligibilityStatus
 import incometax.eligibility.httpparsers.GetEligibilityStatusHttpParser._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,11 +28,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GetEligibilityStatusConnector @Inject()(appConfig: AppConfig, http: HttpClient)
-                                             (implicit hc: HeaderCarrier, ec: ExecutionContext) {
+                                             (implicit ec: ExecutionContext) {
 
-  def eligibilityUrl(sautr: String): String = s"${appConfig.incomeTaxEligibilityUrl}/eligibility/$sautr"
+  def eligibilityUrl(sautr: String)(implicit hc: HeaderCarrier): String = s"${appConfig.incomeTaxEligibilityUrl}/eligibility/$sautr"
 
-  def getEligibilityStatus(sautr: String): Future[HttpResult[Boolean]] = {
+  def getEligibilityStatus(sautr: String)(implicit hc: HeaderCarrier): Future[HttpResult[EligibilityStatus]] = {
     http.GET(eligibilityUrl(sautr))
   }
 

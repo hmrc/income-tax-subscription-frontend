@@ -16,8 +16,10 @@
 
 package usermatching.services
 
+import core.auth.IncomeTaxSAUser
 import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
+import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.connectors.CitizenDetailsConnector
 import usermatching.models.CitizenDetailsSuccess
@@ -53,4 +55,17 @@ class CitizenDetailsService @Inject()(appConfig: AppConfig,
         throw new InternalServerException("unexpected error calling the citizen details service")
     }
 
+  def resolveKnownFacts(optNino: Option[String], optUtr: Option[String])
+                       (implicit hc: HeaderCarrier, request: Request[AnyContent]): Future[OptionalIdentifiers] = {
+
+    (optNino, optUtr) match {
+      case (Some(nino), Some(utr)) => Future.successful(OptionalIdentifiers(Some(nino), Some(utr)))
+      case (Some(nino), _        ) => lookupUtr(nino) map (optUtr => OptionalIdentifiers(Some(nino), optUtr))
+      case (_         , Some(utr)) => lookupNino(utr) map (nino => OptionalIdentifiers(Some(nino), Some(utr)))
+      case _ => Future.successful(OptionalIdentifiers(None, None))
+    }
+  }
 }
+
+case class OptionalIdentifiers(nino: Option[String], utr: Option[String])
+
