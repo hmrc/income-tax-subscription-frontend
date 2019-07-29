@@ -259,6 +259,7 @@ class HomeControllerSpec extends ControllerBaseSpec
               val result = await(TestHomeController().index(fakeRequest))
               status(result) must be(Status.SEE_OTHER)
               redirectLocation(result).get mustBe digitalcontact.controllers.routes.PreferencesController.checkPreferences().url
+              session(result).get(ITSASessionKeys.NINO) must contain(testNino)
             }
           }
         }

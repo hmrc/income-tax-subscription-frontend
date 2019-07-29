@@ -74,7 +74,9 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                       case Some(storedSubscription) =>
                         goToAuthoriseAgent(timestamp, storedSubscription.arn)
                       case None =>
-                        goToSignUp(timestamp).addingToSession(UTR -> utr)
+                        goToSignUp(timestamp)
+                          .addingToSession(UTR -> utr)
+                          .addingToSession(NINO -> nino)
                     }
                   case Right(Ineligible) =>
                     Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show())
