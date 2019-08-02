@@ -17,7 +17,6 @@
 package agent.controllers.matching
 
 import javax.inject.{Inject, Singleton}
-
 import agent.auth.AgentJourneyState._
 import agent.auth._
 import agent.controllers.ITSASessionKeys
@@ -25,6 +24,8 @@ import agent.controllers.ITSASessionKeys.FailedClientMatching
 import agent.services._
 import core.config.BaseControllerConfig
 import core.services.AuthService
+import incometax.eligibility.httpparsers.{Eligible, Ineligible}
+import incometax.eligibility.services.GetEligibilityStatusService
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.twirl.api.Html
@@ -42,7 +43,8 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                                         val messagesApi: MessagesApi,
                                         val agentQualificationService: AgentQualificationService,
                                         val authService: AuthService,
-                                        val lockOutService: UserLockoutService
+                                        val lockOutService: UserLockoutService,
+                                        val eligibilityService: GetEligibilityStatusService
                                        ) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
@@ -111,8 +113,27 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                 Redirect(agent.controllers.routes.NoClientRelationshipController.show())
                   .removingFromSession(FailedClientMatching))
             }
-          case Right(approvedAgent@ApprovedAgent(nino, optUtr)) =>
-            successful(matched(approvedAgent, agent.controllers.routes.HomeController.index(), AgentUserMatched)
+          case Right(ApprovedAgent(nino, Some(utr))) =>
+            eligibilityService.getEligibilityStatus(utr) map {
+              case Right(Eligible) =>
+                Redirect(agent.controllers.routes.HomeController.index())
+                  .withJourneyState(AgentUserMatched)
+                  .addingToSession(ITSASessionKeys.NINO -> nino)
+                  .addingToSession(ITSASessionKeys.UTR -> utr)
+                  .removingFromSession(FailedClientMatching)
+                  .clearUserDetails
+              case Right(Ineligible) =>
+                Redirect(agent.controllers.eligibility.routes.NotEligibleForIncomeTaxController.show())
+                  .removingFromSession(FailedClientMatching)
+                  .clearUserDetails
+              case Left(error) =>
+                throw new InternalServerException(s"Call to eligibility service failed with ${error.httpResponse}")
+            }
+          case Right(ApprovedAgent(nino, None)) =>
+            Future.successful(Redirect(agent.controllers.routes.HomeController.index())
+              .withJourneyState(AgentUserMatched)
+              .addingToSession(ITSASessionKeys.NINO -> nino)
+              .removingFromSession(FailedClientMatching)
               .clearUserDetails)
         }
       }

@@ -22,6 +22,8 @@ import agent.services._
 import agent.services.mocks.{MockAgentQualificationService, MockKeystoreService}
 import agent.utils.{TestConstants, TestModels}
 import core.config.MockConfig
+import incometax.eligibility.httpparsers.{Eligible, Ineligible}
+import incometax.eligibility.services.mocks.MockGetEligibilityStatusService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status
@@ -35,7 +37,8 @@ import scala.concurrent.Future
 class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   with MockAgentQualificationService
   with MockUserLockoutService
-  with MockKeystoreService {
+  with MockKeystoreService
+  with MockGetEligibilityStatusService {
 
   override val controllerName: String = "ConfirmClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -52,7 +55,8 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     messagesApi,
     mockAgentQualificationService,
     mockAuthService,
-    mockUserLockoutService
+    mockUserLockoutService,
+    mockGetEligibilityStatusService
   )
 
   lazy val TestConfirmClientController = createTestConfirmClientController()
@@ -66,7 +70,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   def mockOrchestrateAgentQualificationSuccess(arn: String, nino: String, utr: Option[String], preExistingRelationship: Boolean = true): Unit =
 
     when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-      .thenReturn(Future.successful(if(preExistingRelationship) Right(ApprovedAgent(nino, utr)) else Right(UnApprovedAgent(nino, utr))))
+      .thenReturn(Future.successful(if (preExistingRelationship) Right(ApprovedAgent(nino, utr)) else Right(UnApprovedAgent(nino, utr))))
 
   def mockOrchestrateAgentQualificationFailure(arn: String, expectedResult: UnqualifiedAgent): Unit =
     when(mockAgentQualificationService.orchestrateAgentQualification(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
@@ -192,23 +196,43 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     }
 
     "AgentQualificationService returned ApprovedAgent" when {
-      "the user has a utr" should {
-        s"redirect user to ${agent.controllers.routes.HomeController.index().url}" in {
-          mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
-          setupMockNotLockedOut(arn)
+      "the user has a utr" when {
+        "the client is eligible" should {
+          s"redirect user to ${agent.controllers.routes.HomeController.index().url}" in {
+            mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
+            mockGetEligibilityStatus(utr)(Future.successful(Eligible))
+            setupMockNotLockedOut(arn)
 
-          val fresult = callSubmit()
+            val fresult = callSubmit()
 
-          status(fresult) mustBe SEE_OTHER
-          redirectLocation(fresult) mustBe Some(agent.controllers.routes.HomeController.index().url)
+            status(fresult) mustBe SEE_OTHER
+            redirectLocation(fresult) mustBe Some(agent.controllers.routes.HomeController.index().url)
 
-          val result = await(fresult)
-          val session = result.session(request)
+            val result = await(fresult)
+            val session = result.session(request)
 
-          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
-          session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-          session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-          result.verifyStoredUserDetailsIs(None)(request)
+            session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatched.name)
+            session.get(ITSASessionKeys.NINO) mustBe Some(nino)
+            session.get(ITSASessionKeys.UTR) mustBe Some(utr)
+            result.verifyStoredUserDetailsIs(None)(request)
+          }
+        }
+        "the client is ineligible" should {
+          s"redirect user to ${agent.controllers.eligibility.routes.NotEligibleForIncomeTaxController.show().url}" in {
+            mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
+            mockGetEligibilityStatus(utr)(Future.successful(Ineligible))
+            setupMockNotLockedOut(arn)
+
+            val fresult = callSubmit()
+
+            status(fresult) mustBe SEE_OTHER
+            redirectLocation(fresult) mustBe Some(agent.controllers.eligibility.routes.NotEligibleForIncomeTaxController.show().url)
+
+            val result = await(fresult)
+            val session = result.session(request)
+
+            result.verifyStoredUserDetailsIs(None)(request)
+          }
         }
       }
 
@@ -281,12 +305,16 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
       s"have the ${ITSASessionKeys.FailedClientMatching} removed from session" in {
         mockOrchestrateAgentQualificationSuccess(arn, nino, utr)
+        mockGetEligibilityStatus(utr)(Future.successful(Eligible))
+
         setupMockNotLockedOut(arn)
 
         await(result).session(request).get(ITSASessionKeys.FailedClientMatching) mustBe None
       }
 
       s"should not be redirected to ${agent.controllers.matching.routes.ClientDetailsLockoutController.show().url}" in {
+        mockGetEligibilityStatus(utr)(Future.successful(Eligible))
+
         status(result) mustBe SEE_OTHER
         redirectLocation(result) must not be Some(agent.controllers.matching.routes.ClientDetailsLockoutController.show().url)
       }

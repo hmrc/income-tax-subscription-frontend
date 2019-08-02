@@ -23,7 +23,7 @@ import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import helpers.UserMatchingIntegrationResultSupport
-import helpers.servicemocks.{AuditStub, AuthenticatorStub, SubscriptionStub, UserLockoutStub}
+import helpers.servicemocks.{AuditStub, AuthenticatorStub, EligibilityStub, SubscriptionStub, UserLockoutStub}
 import play.api.http.Status._
 
 
@@ -217,31 +217,57 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
       }
     }
 
-    "the agent is fully qualified" should {
-      "redirects to income source page" in {
-        Given("I setup the wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
-        AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
-        SubscriptionStub.stubGetNoSubscription()
-        AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+    "the agent is fully qualified" when {
+      "the user is eligible" should {
+        "redirect to the home page" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
+          SubscriptionStub.stubGetNoSubscription()
+          AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+          EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
 
-        When("I call POST /confirm-client")
-        val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
+          When("I call POST /confirm-client")
+          val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
 
-        Then("The result should have a status of SEE_OTHER and redirect to index")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(indexURI)
-        )
+          Then("The result should have a status of SEE_OTHER and redirect to index")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(indexURI)
+          )
 
-        val session = SessionCookieCrumbler.getSessionMap(res)
-        session.get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
-        session.get(ITSASessionKeys.NINO) shouldBe Some(testNino)
-        session.get(ITSASessionKeys.UTR) shouldBe Some(testUtr)
+          val session = SessionCookieCrumbler.getSessionMap(res)
+          session.get(ITSASessionKeys.JourneyStateKey) shouldBe Some(AgentUserMatched.name)
+          session.get(ITSASessionKeys.NINO) shouldBe Some(testNino)
+          session.get(ITSASessionKeys.UTR) shouldBe Some(testUtr)
 
-        Then("The client matching request should have been audited")
-        AuditStub.verifyAudit()
+          Then("The client matching request should have been audited")
+          AuditStub.verifyAudit()
+        }
+      }
+      "the user is ineligible" should {
+        "redirect to the ineligible page" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubFullKeystore()
+          AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
+          SubscriptionStub.stubGetNoSubscription()
+          AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
+          EligibilityStub.stubEligibilityResponse(testUtr)(response = false)
+
+          When("I call POST /confirm-client")
+          val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
+
+          Then("The result should have a status of SEE_OTHER and redirect to ineligible")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(ineligibleURI)
+          )
+
+          Then("The client matching request should have been audited")
+          AuditStub.verifyAudit()
+        }
       }
     }
   }

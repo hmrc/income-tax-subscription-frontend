@@ -98,6 +98,8 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.agent-microservice.port" -> mockPort,
     "microservice.services.income-tax-subscription-store.host" -> mockHost,
     "microservice.services.income-tax-subscription-store.port" -> mockPort,
+    "microservice.services.income-tax-subscription-eligibility.host" -> mockHost,
+    "microservice.services.income-tax-subscription-eligibility.port" -> mockPort,
     "microservice.services.feature-switch.show-guidance" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> mockPort
