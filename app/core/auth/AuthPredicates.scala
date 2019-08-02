@@ -116,7 +116,7 @@ trait AuthPredicates extends Results {
 
   val registrationPredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
 
-  val enrolledPredicates = administratorRolePredicate |+| journeyStatePredicate |+| timeoutPredicate |+| enrolledPredicate
+  val enrolledPredicates = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate
 
   val unauthorisedAgentPredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+|
     unauthorisedAgentSignUpJourneyPredicate |+| ivPredicate
