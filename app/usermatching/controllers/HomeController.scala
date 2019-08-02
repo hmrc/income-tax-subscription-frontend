@@ -80,6 +80,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                     }
                   case Right(Ineligible) =>
                     Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show())
+                  case Left(_) => throw new InternalServerException(s"[HomeController] [index] Could not retrieve eligibility status")
                 }
             }
           case OptionalIdentifiers(Some(_), None) =>
