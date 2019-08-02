@@ -58,6 +58,7 @@ object IntegrationTestConstants {
   val termsURI = s"$baseURI/terms"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
+  val ineligibleURI = s"$baseURI/cannot-use-service-yet"
     //TODO see if this needs to be different for agents/individuals
   val ggSignOutURI = s"/gg/sign-out"
   val signOutURI = s"/report-quarterly/income-and-expenses/sign-up/logout"
