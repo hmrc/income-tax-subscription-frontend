@@ -96,7 +96,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
 
           val validStartdate = LocalDate.now.plusDays(1)
           val minTest = accountingPeriodDateForm.bind(DataMap.date(startDate)
-          (validStartdate.getDayOfMonth.toString, validStartdate.getDayOfMonth.toString, validStartdate.getYear.toString))
+          (validStartdate.getDayOfMonth.toString, validStartdate.getMonth.toString, validStartdate.getYear.toString))
           minTest assert startDate doesNotHaveSpecifiedErrors beforeMin
         }
 
