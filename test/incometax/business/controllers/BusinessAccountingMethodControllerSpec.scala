@@ -16,6 +16,7 @@
 
 package incometax.business.controllers
 
+import core.config.MockConfig
 import core.config.featureswitch._
 import core.controllers.ControllerBaseSpec
 import core.models.{Cash, DateModel}
@@ -45,6 +46,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     mockAuthService,
+    MockConfig,
     mockCurrentTimeService
   )
 
@@ -64,7 +66,6 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
       matchTaxYear = matchTaxYear,
       accountingPeriodDate = accountingPeriod
     )
-
 
   val taxYear2018AccountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2017"), DateModel("5", "4", "2018"))
   val taxYear2019AccountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2017"), DateModel("5", "4", "2019"))
@@ -109,7 +110,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAll = 0, saveAccountingMethod = 1)
       }
 
-      s"redirect to '${digitalcontact.controllers.routes.PreferencesController.checkPreferences().url}'" in {
+      s"redirect to '${incometax.subscription.controllers.routes.TermsController.show().url}' when the Eligibility Pages feature switch is disabled" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
@@ -119,6 +120,18 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         await(goodRequest)
         verifyKeystore(fetchAll = 0, saveAccountingMethod = 1)
       }
+
+      s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}' when the Eligibility Pages feature switch is enabled" in {
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callShow(isEditMode = true)
+
+        redirectLocation(goodRequest) mustBe Some(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchAll = 0, saveAccountingMethod = 1)
+      }
+
     }
 
     "When it is in edit mode" should {

@@ -16,8 +16,6 @@
 
 package incometax.subscription.controllers
 
-import javax.inject.{Inject, Singleton}
-
 import core.auth.SignUpController
 import core.config.BaseControllerConfig
 import core.models.{No, Yes, YesNo}
@@ -26,6 +24,7 @@ import core.services.{AuthService, KeystoreService}
 import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import incometax.util.AccountingPeriodUtil._
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
@@ -61,6 +60,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
           case _ =>
             Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = editMode, editMatch = editMode))
         }
+
   }
 
   def submit(isEditMode: Boolean = false): Action[AnyContent] = Authenticated.async { implicit request =>
