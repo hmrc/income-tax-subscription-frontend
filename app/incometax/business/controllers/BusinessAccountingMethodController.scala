@@ -16,17 +16,15 @@
 
 package incometax.business.controllers
 
-import javax.inject.{Inject, Singleton}
-
 import core.auth.SignUpController
-import core.config.BaseControllerConfig
+import core.config.{AppConfig, BaseControllerConfig}
 import core.models.{No, Yes}
 import core.services.CacheUtil.CacheMapUtil
 import core.services.{AuthService, KeystoreService}
-import incometax.business.forms.{AccountingMethodForm, MatchTaxYearForm}
+import incometax.business.forms.AccountingMethodForm
 import incometax.business.models.{AccountingMethodModel, MatchTaxYearModel}
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.Both
+import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -40,6 +38,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
                                                    val authService: AuthService,
+                                                   val appConfig: AppConfig,
                                                    val currentTimeService: CurrentTimeService
                                                   ) extends SignUpController {
 
@@ -67,9 +66,10 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       AccountingMethodForm.accountingMethodForm.bindFromRequest.fold(
         formWithErrors => view(accountingMethodForm = formWithErrors, isEditMode = isEditMode).map(view => BadRequest(view)),
         accountingMethod => {
-          keystoreService.saveAccountingMethod(accountingMethod) map (_ => isEditMode match {
-            case true => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-            case _ => Redirect(incometax.subscription.controllers.routes.TermsController.show())
+          keystoreService.saveAccountingMethod(accountingMethod) map (_ => if (isEditMode || appConfig.eligibilityPagesEnabled) {
+            Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+          } else {
+            Redirect(incometax.subscription.controllers.routes.TermsController.show())
           })
         }
       )

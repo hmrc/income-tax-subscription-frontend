@@ -16,17 +16,16 @@
 
 package incometax.subscription.controllers
 
-import javax.inject.{Inject, Singleton}
-
 import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.{IncomeTaxSAUser, Registration, SignUpController}
-import core.config.BaseControllerConfig
+import core.config.{AppConfig, BaseControllerConfig}
 import core.models.{No, Yes}
 import core.services.{AuthService, KeystoreService}
 import incometax.business.models.MatchTaxYearModel
-import incometax.subscription.models.{Property, SubscriptionSuccess}
+import incometax.subscription.models._
 import incometax.subscription.services.SubscriptionOrchestrationService
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -40,12 +39,26 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val keystoreService: KeystoreService,
                                            val subscriptionService: SubscriptionOrchestrationService,
                                            val authService: AuthService,
+                                           val appConfig: AppConfig,
                                            logging: Logging
                                           ) extends SignUpController {
 
   import core.services.CacheUtil._
 
-  lazy val backUrl: String = incometax.subscription.controllers.routes.TermsController.show().url
+
+  def backUrl(incomeSource: IncomeSourceType): String = {
+    if (appConfig.eligibilityPagesEnabled) {
+      incomeSource match {
+        case Business | Both =>
+          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+        case Property =>
+          incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+      }
+    } else {
+      incometax.subscription.controllers.routes.TermsController.show().url
+    }
+  }
+
   val show = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
@@ -54,7 +67,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
             cache.getSummary(),
             isRegistration = request.isInState(Registration),
             incometax.subscription.controllers.routes.CheckYourAnswersController.submit(),
-            backUrl = backUrl
+            backUrl = backUrl(cache.getIncomeSourceType().get)
           ))
         )
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any keystore cached data")
@@ -78,20 +91,33 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     Authenticated.async { implicit request =>
       implicit user =>
         keystoreService.fetchAll().flatMap { cache =>
-          cache.getTerms match {
-            case Some(true) =>
-              val isProperty = cache.getIncomeSourceType().contains(Property)
-              if (isProperty)
-                processFunc(user)(request)(cache)
-              else
-                (cache.getMatchTaxYear(), cache.getEnteredAccountingPeriodDate()) match {
-                  case (Some(MatchTaxYearModel(Yes)), _) | (Some(MatchTaxYearModel(No)), Some(_)) =>
-                    processFunc(user)(request)(cache)
-                  case (Some(MatchTaxYearModel(No)), _) =>
-                    Future.successful(Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
-                }
-            case Some(false) => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show(editMode = true)))
-            case _ => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show()))
+          if (appConfig.eligibilityPagesEnabled) {
+            val isProperty = cache.getIncomeSourceType().contains(Property)
+            if (isProperty)
+              processFunc(user)(request)(cache)
+            else
+              (cache.getMatchTaxYear(), cache.getEnteredAccountingPeriodDate()) match {
+                case (Some(MatchTaxYearModel(Yes)), _) | (Some(MatchTaxYearModel(No)), Some(_)) =>
+                  processFunc(user)(request)(cache)
+                case (Some(MatchTaxYearModel(No)), _) =>
+                  Future.successful(Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
+              }
+          } else {
+            cache.getTerms match {
+              case Some(true) =>
+                val isProperty = cache.getIncomeSourceType().contains(Property)
+                if (isProperty)
+                  processFunc(user)(request)(cache)
+                else
+                  (cache.getMatchTaxYear(), cache.getEnteredAccountingPeriodDate()) match {
+                    case (Some(MatchTaxYearModel(Yes)), _) | (Some(MatchTaxYearModel(No)), Some(_)) =>
+                      processFunc(user)(request)(cache)
+                    case (Some(MatchTaxYearModel(No)), _) =>
+                      Future.successful(Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
+                  }
+              case Some(false) => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show(editMode = true)))
+              case _ => Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show()))
+            }
           }
         }
     }

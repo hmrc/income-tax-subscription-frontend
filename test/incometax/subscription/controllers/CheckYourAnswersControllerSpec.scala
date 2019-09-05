@@ -17,12 +17,14 @@
 package incometax.subscription.controllers
 
 import core.audit.Logging
+import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.CacheUtil._
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants._
 import core.utils.TestModels._
+import incometax.subscription.models.{Both, Business, Property}
 import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -46,6 +48,19 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     MockKeystoreService,
     subscriptionService = mockSubscriptionOrchestrationService,
     mockAuthService,
+    MockConfig,
+    app.injector.instanceOf[Logging]
+  )
+
+  object TestCheckYourAnswersControllerFsEnabled extends CheckYourAnswersController(
+    MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService,
+    subscriptionService = mockSubscriptionOrchestrationService,
+    mockAuthService,
+    new MockConfig {
+      override val eligibilityPagesEnabled: Boolean = true
+    },
     app.injector.instanceOf[Logging]
   )
 
@@ -167,12 +182,44 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         redirectLocation(result) must contain(incometax.subscription.controllers.routes.TermsController.show(editMode = true).url)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
+
+      "successfully submit when the Eligibility Pages feature switch is enabled" should {
+        lazy val result = TestCheckYourAnswersControllerFsEnabled.submit(request)
+
+        "return a redirect status (SEE_OTHER - 303)" in {
+          setupMockKeystore(fetchAll = testCacheMapCustom(terms = None))
+          mockCreateSubscriptionSuccess(testNino, testCacheMapCustom(terms = None).getSummary())
+          status(result) must be(Status.SEE_OTHER)
+          await(result)
+          verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
+        }
+
+        s"redirect to '${incometax.subscription.controllers.routes.ConfirmationController.show().url}'" in {
+          redirectLocation(result) mustBe Some(incometax.subscription.controllers.routes.ConfirmationController.show().url)
+        }
+      }
     }
   }
 
-  "The back url" should {
-    s"point to ${incometax.subscription.controllers.routes.TermsController.show().url}" in {
-      TestCheckYourAnswersController.backUrl mustBe incometax.subscription.controllers.routes.TermsController.show().url
+  "The back url" when {
+    "The Eligibility Pages feature switch is disabled" should {
+      s"point to the ${incometax.subscription.controllers.routes.TermsController.show().url} when the Eligibility Pages feature switch is off" in {
+        TestCheckYourAnswersController.backUrl(incomeSource = Business) mustBe incometax.subscription.controllers.routes.TermsController.show().url
+      }
+    }
+
+    "The Eligibility Pages feature switch is enabled" should {
+      s"point to the ${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url} when the income source is Business" in {
+        TestCheckYourAnswersControllerFsEnabled.backUrl(incomeSource = Business) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+      }
+
+      s"point to the ${incometax.business.controllers.routes.BusinessAccountingMethodController.show().url} when the income source is Both" in {
+        TestCheckYourAnswersControllerFsEnabled.backUrl(incomeSource = Both) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+      }
+
+      s"point to the ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url} when the income source is Property" in {
+        TestCheckYourAnswersControllerFsEnabled.backUrl(incomeSource = Property) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+      }
     }
   }
 
