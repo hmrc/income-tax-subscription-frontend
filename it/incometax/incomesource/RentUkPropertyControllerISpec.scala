@@ -17,6 +17,7 @@
 package incometax.incomesource
 
 
+import core.config.featureswitch.EligibilityPagesFeature
 import core.models.{No, Yes}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
@@ -124,6 +125,28 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
           httpStatus(SEE_OTHER),
           redirectURI(otherIncomeURI)
         )
+      }
+
+      "select the Yes rent uk property radio button and Yes to only income source on the rent uk property page" should {
+        "redirect to the check your answers page" when {
+          "the eligibility pages feature switch is enabled" in {
+            enable(EligibilityPagesFeature)
+            val userInput = RentUkPropertyModel(Yes, Some(Yes))
+
+            Given("I setup the Wiremock stubs")
+            AuthStub.stubAuthSuccess()
+            KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
+
+            When("POST /rent-uk-property is called")
+            val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
+
+            Then("Should return a SEE_OTHER and redirect to the check you answers page")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(checkYourAnswersURI)
+            )
+          }
+        }
       }
     }
 

@@ -169,7 +169,11 @@
         @if(summaryModel.rentUkProperty.exists(_.needSecondPage)) {
             @summaryModel.workForYourself.map(WorkForYourself)
         }
-        @summaryModel.otherIncome.map(otherIncome)
+        @if(appConfig.eligibilityPagesEnabled) {
+            @Html("")
+        } else {
+            @summaryModel.otherIncome.map(otherIncome)
+        }
         @summaryModel.businessName.map(businessName)
         @summaryModel.businessPhoneNumber.map(businessPhoneNumber)
         @summaryModel.businessAddress.map(businessAddress)

@@ -16,6 +16,7 @@
 
 package incometax.incomesource.controllers
 
+import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
@@ -24,12 +25,15 @@ import incometax.incomesource.forms.WorkForYourselfForm
 import incometax.incomesource.models.WorkForYourselfModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, status, _}
+
+import scala.concurrent.Future
 
 class WorkForYourselfControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
   with FeatureSwitching
+with MockConfig
   with MockCurrentTimeService {
 
   override val controllerName: String = "WorkForYourselfController"
@@ -40,6 +44,7 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     mockAuthService,
+    MockConfig,
     mockCurrentTimeService
   )
 
@@ -221,6 +226,72 @@ class WorkForYourselfControllerSpec extends ControllerBaseSpec
           }
         }
 
+      }
+    }
+
+    "the eligibility pages feature switch is enabled" should {
+
+      object TestWorkForYourselfController extends WorkForYourselfController(
+        MockBaseControllerConfig,
+        messagesApi,
+        MockKeystoreService,
+        mockAuthService,
+        new MockConfig {
+          override val eligibilityPagesEnabled: Boolean = true
+        },
+        mockCurrentTimeService
+      )
+
+      def call(workForYourself: WorkForYourselfModel, isEditMode: Boolean): Future[Result] =
+        TestWorkForYourselfController.submit(isEditMode = isEditMode)(subscriptionRequest.post(WorkForYourselfForm.workForYourselfForm, workForYourself))
+
+      def submit(workForYourself: WorkForYourselfModel, isEditMode: Boolean = false): Future[Result] = call(workForYourself, isEditMode = isEditMode)
+
+
+      "redirect to the check your answers page" when {
+        "the user has chosen property only" in {
+          setupMockKeystore(fetchAll =
+            testCacheMapCustom(
+              rentUkProperty = testRentUkProperty_property_and_other
+            )
+          )
+          val result = submit(testWorkForYourself_no)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+        }
+
+        "the user has chosen business only" in {
+          setupMockKeystore(fetchAll =
+            testCacheMapCustom(
+              rentUkProperty = testRentUkProperty_no_property
+            )
+          )
+          val result = submit(testWorkForYourself_yes)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+        }
+
+        "the user has chosen business and property" in {
+          setupMockKeystore(fetchAll =
+            testCacheMapCustom(
+              rentUkProperty = testRentUkProperty_property_and_other
+            )
+          )
+          val result = submit(testWorkForYourself_yes)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+        }
+
+        "the user does not qualify" in {
+          setupMockKeystore(fetchAll =
+            testCacheMapCustom(
+              rentUkProperty = testRentUkProperty_no_property
+            )
+          )
+          val result = submit(testWorkForYourself_no)
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.CannotSignUpController.show().url
+        }
       }
     }
   }

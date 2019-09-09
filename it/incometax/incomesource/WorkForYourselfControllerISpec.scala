@@ -16,6 +16,7 @@
 
 package incometax.incomesource
 
+import core.config.featureswitch.EligibilityPagesFeature
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -159,19 +160,99 @@ class WorkForYourselfControllerISpec extends ComponentSpecBase {
           When("POST /work-for-yourself is called")
           val res = IncomeTaxSubscriptionFrontend.submitWorkForYourself(inEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of other income")
+          Then("Should return a SEE_OTHER with a redirect location of cannot sign up")
           res should have(
             httpStatus(SEE_OTHER),
             redirectURI(cannotSignUpURI)
           )
         }
+      }
+    }
+
+    "eligibility feature switch is enabled" should {
+      "the user answered Yes and No on the rent uk property page" when {
+        "select the Yes radio button on the work for yourself page" in {
+          enable(EligibilityPagesFeature)
+          val userInput = testWorkForYourself_yes
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          setRentUkPropertyInKeystore(Some(testRentUkProperty_property_and_other))
+          KeystoreStub.stubKeystoreSave(CacheConstants.WorkForYourself, userInput)
+          When("POST /work-for-yourself is called")
+          val res = IncomeTaxSubscriptionFrontend.submitWorkForYourself(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of check your answers")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(checkYourAnswersURI)
+          )
+        }
+
+        "select the No radio button on the work for yourself page" in {
+          enable(EligibilityPagesFeature)
+          val userInput = testWorkForYourself_no
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          setRentUkPropertyInKeystore(Some(testRentUkProperty_property_and_other))
+          KeystoreStub.stubKeystoreSave(CacheConstants.WorkForYourself, userInput)
+
+          When("POST /work-for-yourself is called")
+          val res = IncomeTaxSubscriptionFrontend.submitWorkForYourself(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of check your answers")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(checkYourAnswersURI)
+          )
+        }
 
       }
 
+      "the user answered No on the rent uk property page" when {
+        "select the Yes radio button on the work for yourself page" in {
+          enable(EligibilityPagesFeature)
+          val userInput = testWorkForYourself_yes
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          setRentUkPropertyInKeystore(Some(testRentUkProperty_no_property))
+          KeystoreStub.stubKeystoreSave(CacheConstants.WorkForYourself, userInput)
+          When("POST /work-for-yourself is called")
+          val res = IncomeTaxSubscriptionFrontend.submitWorkForYourself(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of check your answers")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(checkYourAnswersURI)
+          )
+        }
+
+        "select the No radio button on the work for yourself page" in {
+          enable(EligibilityPagesFeature)
+          val userInput = testWorkForYourself_no
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          setRentUkPropertyInKeystore(Some(testRentUkProperty_no_property))
+          KeystoreStub.stubKeystoreSave(CacheConstants.WorkForYourself, userInput)
+
+          When("POST /work-for-yourself is called")
+          val res = IncomeTaxSubscriptionFrontend.submitWorkForYourself(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of cannot sign up")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(cannotSignUpURI)
+          )
+        }
+      }
     }
 
     "when in edit mode" when {
       "user does not change their answer be redirected back to check your answers page" in {
+        disable(EligibilityPagesFeature)
         val userInput = testWorkForYourself_yes
 
         Given("I setup the Wiremock stubs")
