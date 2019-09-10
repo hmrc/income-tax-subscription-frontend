@@ -16,14 +16,13 @@
 
 package incometax.business.controllers
 
-import javax.inject.{Inject, Singleton}
-
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.models.Yes
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.BusinessNameForm
 import incometax.business.models.BusinessNameModel
+import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -77,13 +76,16 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
   def backUrl(isEditMode: Boolean)(implicit request: Request[_]): Future[String] = {
     if (isEditMode)
       Future.successful(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
-    else
+    else if (applicationConfig.eligibilityPagesEnabled) {
+      Future.successful(incometax.incomesource.controllers.routes.WorkForYourselfController.show().url)
+    } else {
       keystoreService.fetchOtherIncome().map {
         case Some(Yes) =>
           incometax.incomesource.controllers.routes.OtherIncomeErrorController.show().url
         case _ =>
           incometax.incomesource.controllers.routes.OtherIncomeController.show().url
       }
+    }
   }
 
 }
