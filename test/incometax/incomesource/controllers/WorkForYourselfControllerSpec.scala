@@ -268,7 +268,7 @@ with MockConfig
           )
           val result = submit(testWorkForYourself_yes)
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+          redirectLocation(result).get mustBe incometax.business.controllers.routes.BusinessNameController.show().url
         }
 
         "the user has chosen business and property" in {
@@ -279,7 +279,7 @@ with MockConfig
           )
           val result = submit(testWorkForYourself_yes)
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+          redirectLocation(result).get mustBe incometax.business.controllers.routes.BusinessNameController.show().url
         }
 
         "the user does not qualify" in {

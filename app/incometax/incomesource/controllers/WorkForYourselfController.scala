@@ -16,7 +16,6 @@
 
 package incometax.incomesource.controllers
 
-import javax.inject.{Inject, Singleton}
 import core.auth.SignUpController
 import core.config.{AppConfig, BaseControllerConfig}
 import core.services.CacheUtil._
@@ -25,6 +24,7 @@ import incometax.incomesource.forms.WorkForYourselfForm
 import incometax.incomesource.models.WorkForYourselfModel
 import incometax.incomesource.services.CurrentTimeService
 import incometax.subscription.models._
+import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -75,7 +75,9 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
             val incomeSourceType = IncomeSourceType(rentUkProperty, Some(workForYourself))
             lazy val linearJourney: Result =
               incomeSourceType match {
-                case Business | Property | Both if appConfig.eligibilityPagesEnabled =>
+                case Business | Both if appConfig.eligibilityPagesEnabled =>
+                  Redirect(incometax.business.controllers.routes.BusinessNameController.show())
+                case Property if appConfig.eligibilityPagesEnabled =>
                   Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
                 case Business | Property | Both =>
                   Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
