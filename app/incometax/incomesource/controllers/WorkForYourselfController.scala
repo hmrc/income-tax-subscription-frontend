@@ -17,9 +17,8 @@
 package incometax.incomesource.controllers
 
 import javax.inject.{Inject, Singleton}
-
 import core.auth.SignUpController
-import core.config.BaseControllerConfig
+import core.config.{AppConfig, BaseControllerConfig}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.WorkForYourselfForm
@@ -38,6 +37,7 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
                                           val messagesApi: MessagesApi,
                                           val keystoreService: KeystoreService,
                                           val authService: AuthService,
+                                          val appConfig: AppConfig,
                                           val currentTimeService: CurrentTimeService
                                          ) extends SignUpController {
 
@@ -75,10 +75,12 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
             val incomeSourceType = IncomeSourceType(rentUkProperty, Some(workForYourself))
             lazy val linearJourney: Result =
               incomeSourceType match {
-                case Business => business
-                case Property => property
-                case Both => both
-                case Other => doNotQualify
+                case Business | Property | Both if appConfig.eligibilityPagesEnabled =>
+                  Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+                case Business | Property | Both =>
+                  Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
+                case Other =>
+                  Redirect(incometax.incomesource.controllers.routes.CannotSignUpController.show())
               }
             cache.getIncomeSourceType() match {
               case Some(`incomeSourceType`) if isEditMode => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.submit())
@@ -87,19 +89,6 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
           }
       )
   }
-
-  def business(implicit request: Request[_]): Result =
-    Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
-
-  def property(implicit request: Request[_]): Result = {
-      Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
-  }
-
-  def both(implicit request: Request[_]): Result =
-    Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
-
-  def doNotQualify(implicit request: Request[_]): Result =
-    Redirect(incometax.incomesource.controllers.routes.CannotSignUpController.show())
 
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode)

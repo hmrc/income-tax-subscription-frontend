@@ -16,6 +16,7 @@
 
 package incometax.incomesource.controllers
 
+import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.models.{No, Yes, YesNo}
@@ -25,12 +26,15 @@ import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import play.api.http.Status
 import play.api.i18n.Messages
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class RentUkPropertyControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
   with MockCurrentTimeService
+  with MockConfig
   with FeatureSwitching {
 
   override val controllerName: String = "IncomeSourceController"
@@ -45,6 +49,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     mockAuthService,
+    MockConfig,
     mockCurrentTimeService
   )
 
@@ -119,7 +124,6 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
       }
     }
 
-
     "When it is in edit mode and user's selection has not changed" should {
       s"return an SEE OTHER (303) for 'No' to rent a uk property and goto " +
         s"${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
@@ -146,6 +150,68 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
 
         await(goodRequest)
         verifyKeystore(fetchRentUkProperty = 1, saveRentUkProperty = 1)
+      }
+    }
+  }
+
+
+  "Calling the submit action of the RentUkProperty controller with an authorised user and valid submission" should {
+
+    object TestRentUkPropertyController extends RentUkPropertyController(
+      MockBaseControllerConfig,
+      messagesApi,
+      MockKeystoreService,
+      mockAuthService,
+      new MockConfig {
+        override val eligibilityPagesEnabled = true
+      },
+      mockCurrentTimeService
+    )
+
+    def callSubmit(option: (YesNo, Option[YesNo]), isEditMode: Boolean): Future[Result] =
+      TestRentUkPropertyController.submit(isEditMode = isEditMode)(
+        subscriptionRequest.post(
+          RentUkPropertyForm.rentUkPropertyForm,
+          RentUkPropertyModel(option._1, option._2)
+        )
+      )
+
+    "When the eligibility pages feature switch is enabled" should {
+      s"return a SEE_OTHER (303) when answering 'NO' to rent uk property" in {
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callSubmit((No, None), isEditMode = false)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+
+        await(goodRequest)
+        verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
+      }
+
+      s"return a SEE_OTHER (303) when answering 'Yes' to rent uk property and then 'No' to only income source" in {
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callSubmit((Yes, No), isEditMode = false)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+
+        await(goodRequest)
+        verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
+      }
+
+
+      s"return a SEE_OTHER (303) when answering 'Yes' to rent uk property and then 'Yes' to check your answers" in {
+        setupMockKeystoreSaveFunctions()
+
+        val goodRequest = callSubmit((Yes, Yes), isEditMode = false)
+
+        status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest).get must be(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
       }
     }
   }

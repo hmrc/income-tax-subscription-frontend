@@ -19,7 +19,7 @@ package incometax.incomesource.controllers
 import javax.inject.{Inject, Singleton}
 
 import core.auth.SignUpController
-import core.config.BaseControllerConfig
+import core.config.{AppConfig, BaseControllerConfig}
 import core.models.{No, Yes}
 import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.RentUkPropertyForm._
@@ -37,6 +37,7 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                                          val messagesApi: MessagesApi,
                                          val keystoreService: KeystoreService,
                                          val authService: AuthService,
+                                         val appConfig: AppConfig,
                                          val currentTimeService: CurrentTimeService
                                         ) extends SignUpController {
 
@@ -73,6 +74,8 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                   Future.successful(Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show()))
                 case (Yes, Some(No)) =>
                   Future.successful(Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show()))
+                case (Yes, Some(Yes)) if appConfig.eligibilityPagesEnabled =>
+                  Future.successful(Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
                 case (Yes, Some(Yes)) =>
                   Future.successful(Redirect(routes.OtherIncomeController.show()))
               }
