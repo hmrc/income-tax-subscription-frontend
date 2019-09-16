@@ -58,7 +58,7 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
         KeystoreStub.stubKeystoreData(
           keystoreData(
             rentUkProperty = Some(testRentUkProperty_no_property),
-            workForYourself = Some(testWorkForYourself_yes),
+            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
             otherIncome = Some(keystoreIncomeOther)
           )
         )
@@ -81,7 +81,7 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
         KeystoreStub.stubKeystoreData(
           keystoreData(
             rentUkProperty = Some(testRentUkProperty_property_and_other),
-            workForYourself = Some(testWorkForYourself_yes),
+            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
             otherIncome = Some(keystoreIncomeOther)
           )
         )
@@ -104,7 +104,7 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
         KeystoreStub.stubKeystoreData(
           keystoreData(
             rentUkProperty = Some(testRentUkProperty_property_only),
-            workForYourself = None,
+            areYouSelfEmployed = None,
             otherIncome = Some(keystoreIncomeOther)
           )
         )

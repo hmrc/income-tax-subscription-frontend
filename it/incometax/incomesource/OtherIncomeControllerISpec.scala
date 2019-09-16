@@ -22,8 +22,6 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import incometax.incomesource.forms.OtherIncomeForm
-import incometax.incomesource.models.OtherIncomeModel
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -58,10 +56,10 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         When("GET /income-other is called")
         val res = IncomeTaxSubscriptionFrontend.otherIncome()
 
-        Then("Should redirect back to work for yourself page")
+        Then("Should redirect back to are you self-employed4 page")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(workForYourselfURI)
+          redirectURI(areYouSelfEmployedURI)
         )
       }
     }
@@ -96,7 +94,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(keystoreData(
           rentUkProperty = Some(testRentUkProperty_no_property),
-          workForYourself = Some(testWorkForYourself_yes)))
+          areYouSelfEmployed = Some(testAreYouSelfEmployed_yes)))
         KeystoreStub.stubKeystoreSave(CacheConstants.OtherIncome, userInput)
 
         When("POST /income-other is called")
@@ -116,7 +114,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(keystoreData(
           rentUkProperty = Some(testRentUkProperty_property_and_other),
-          workForYourself = Some(testWorkForYourself_yes)))
+          areYouSelfEmployed = Some(testAreYouSelfEmployed_yes)))
         KeystoreStub.stubKeystoreSave(CacheConstants.OtherIncome, userInput)
 
         When("POST /income-other is called")

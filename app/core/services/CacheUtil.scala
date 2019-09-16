@@ -33,11 +33,11 @@ object CacheUtil {
 
     def getRentUkProperty()(implicit read: Reads[RentUkPropertyModel]): Option[RentUkPropertyModel] = cacheMap.getEntry(RentUkProperty)
 
-    def getWorkForYourself()(implicit read: Reads[WorkForYourselfModel]): Option[WorkForYourselfModel] = cacheMap.getEntry(WorkForYourself)
+    def getAreYouSelfEmployed()(implicit read: Reads[AreYouSelfEmployedModel]): Option[AreYouSelfEmployedModel] = cacheMap.getEntry(AreYouSelfEmployed)
 
     def getIncomeSourceType()(implicit read: Reads[IncomeSourceType], readR: Reads[RentUkPropertyModel],
-                              readW: Reads[WorkForYourselfModel]): Option[IncomeSourceType] =
-      getRentUkProperty().flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, getWorkForYourself()))
+                              readW: Reads[AreYouSelfEmployedModel]): Option[IncomeSourceType] =
+      getRentUkProperty().flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, getAreYouSelfEmployed()))
 
     def getOtherIncome()(implicit read: Reads[YesNo]): Option[YesNo] = cacheMap.getEntry(OtherIncome)
 
@@ -69,14 +69,14 @@ object CacheUtil {
         case Some(Property) =>
           IndividualSummary(
             rentUkProperty = getRentUkProperty(),
-            workForYourself = getWorkForYourself(),
+            areYouSelfEmployed = getAreYouSelfEmployed(),
             otherIncome = getOtherIncome(),
             terms = getTerms()
           )
         case Some(_) =>
           IndividualSummary(
             rentUkProperty = getRentUkProperty(),
-            workForYourself = getWorkForYourself(),
+            areYouSelfEmployed = getAreYouSelfEmployed(),
             otherIncome = getOtherIncome(),
             matchTaxYear = getMatchTaxYear(),
             accountingPeriod = getEnteredAccountingPeriodDate(),

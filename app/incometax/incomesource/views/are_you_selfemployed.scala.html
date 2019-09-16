@@ -18,35 +18,35 @@
 @import core.views.html.helpers._
 @import core.config.AppConfig
 @import incometax.incomesource.models._
-@import incometax.incomesource.forms.WorkForYourselfForm
+@import incometax.incomesource.forms.AreYouSelfEmployedForm
 @import core.views.html.templates.main_template
 @import core.models.{Yes, No}
 @import core.forms.submapping.YesNoMapping
 
-@(workForYourselfForm: Form[WorkForYourselfModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(areYouSelfEmployedForm: Form[AreYouSelfEmployedModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@main_template(title = Messages("work_for_yourself.title"), form = workForYourselfForm) {
+@main_template(title = Messages("are_you_selfemployed.title"), form = areYouSelfEmployedForm) {
     @back_link(backUrl)
 
-    @summaryErrorHelper(workForYourselfForm)
+    @summaryErrorHelper(areYouSelfEmployedForm)
 
-    <h1 class="heading-large">@Messages("work_for_yourself.heading")</h1>
+    <h1 class="heading-large">@Messages("are_you_selfemployed.heading")</h1>
 
     <div class="form-group">
-        <p>@Messages("work_for_yourself.para1")</p>
+        <p>@Messages("are_you_selfemployed.para1")</p>
     </div>
 
     @form(action = postAction) {
 
         @radioHelper(
-            field = workForYourselfForm(WorkForYourselfForm.choice),
-            legend = Messages("work_for_yourself.heading"),
+            field = areYouSelfEmployedForm(AreYouSelfEmployedForm.choice),
+            legend = Messages("are_you_selfemployed.heading"),
             inline = true,
             options = Seq(
                 RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
                 RadioOption(YesNoMapping.option_no, No.toMessageString)
             ),
-            parentForm = workForYourselfForm
+            parentForm = areYouSelfEmployedForm
         )
 
         @if(isEditMode) {

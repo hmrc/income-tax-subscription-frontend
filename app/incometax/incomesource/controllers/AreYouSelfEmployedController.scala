@@ -20,8 +20,8 @@ import core.auth.SignUpController
 import core.config.{AppConfig, BaseControllerConfig}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
-import incometax.incomesource.forms.WorkForYourselfForm
-import incometax.incomesource.models.WorkForYourselfModel
+import incometax.incomesource.forms.AreYouSelfEmployedForm
+import incometax.incomesource.models.AreYouSelfEmployedModel
 import incometax.incomesource.services.CurrentTimeService
 import incometax.subscription.models._
 import javax.inject.{Inject, Singleton}
@@ -33,18 +33,18 @@ import play.twirl.api.Html
 import scala.concurrent.Future
 
 @Singleton
-class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
-                                          val messagesApi: MessagesApi,
-                                          val keystoreService: KeystoreService,
-                                          val authService: AuthService,
-                                          val appConfig: AppConfig,
-                                          val currentTimeService: CurrentTimeService
-                                         ) extends SignUpController {
+class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfig,
+                                             val messagesApi: MessagesApi,
+                                             val keystoreService: KeystoreService,
+                                             val authService: AuthService,
+                                             val appConfig: AppConfig,
+                                             val currentTimeService: CurrentTimeService
+                                            ) extends SignUpController {
 
-  def view(workForYourselfForm: Form[WorkForYourselfModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    incometax.incomesource.views.html.work_for_yourself(
-      workForYourselfForm = workForYourselfForm,
-      postAction = incometax.incomesource.controllers.routes.WorkForYourselfController.submit(editMode = isEditMode),
+  def view(areYouSelfEmployedForm: Form[AreYouSelfEmployedModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
+    incometax.incomesource.views.html.are_you_selfemployed(
+      areYouSelfEmployedForm = areYouSelfEmployedForm,
+      postAction = incometax.incomesource.controllers.routes.AreYouSelfEmployedController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl(isEditMode)
     )
@@ -57,22 +57,22 @@ class WorkForYourselfController @Inject()(val baseConfig: BaseControllerConfig,
         if (!cache.getRentUkProperty().needSecondPage)
           Redirect(incometax.incomesource.controllers.routes.RentUkPropertyController.show().url)
         else {
-          val cachedModel = cache.getWorkForYourself()
-          Ok(view(workForYourselfForm = WorkForYourselfForm.workForYourselfForm.fill(cachedModel), isEditMode = isEditMode))
+          val cachedModel = cache.getAreYouSelfEmployed()
+          Ok(view(areYouSelfEmployedForm = AreYouSelfEmployedForm.areYouSelfEmployedForm.fill(cachedModel), isEditMode = isEditMode))
         }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      WorkForYourselfForm.workForYourselfForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(workForYourselfForm = formWithErrors, isEditMode = isEditMode))),
-        workForYourself =>
+      AreYouSelfEmployedForm.areYouSelfEmployedForm.bindFromRequest.fold(
+        formWithErrors => Future.successful(BadRequest(view(areYouSelfEmployedForm = formWithErrors, isEditMode = isEditMode))),
+        areYouSelfEmployed =>
           for {
             cache <- keystoreService.fetchAll()
-            _ <- keystoreService.saveWorkForYourself(workForYourself)
+            _ <- keystoreService.saveAreYouSelfEmployed(areYouSelfEmployed)
             rentUkProperty = cache.getRentUkProperty().get
           } yield {
-            val incomeSourceType = IncomeSourceType(rentUkProperty, Some(workForYourself))
+            val incomeSourceType = IncomeSourceType(rentUkProperty, Some(areYouSelfEmployed))
             lazy val linearJourney: Result =
               incomeSourceType match {
                 case Business | Both if appConfig.eligibilityPagesEnabled =>

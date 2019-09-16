@@ -75,14 +75,14 @@
     }
 }
 
-@WorkForYourself(workForYourself: WorkForYourselfModel) = @{
-    val rowName = WorkForYourselfId
-    val rowQuestion = Messages("summary.work_for_your_self")
-    val rowAnswer = workForYourself.doYouWorkForYourself match {
+@AreYouSelfEmployed(areYouSelfEmployed: AreYouSelfEmployedModel) = @{
+    val rowName = AreYouSelfEmployedId
+    val rowQuestion = Messages("summary.are_you_selfemployed")
+    val rowAnswer = areYouSelfEmployed.areYouSelfEmployed match {
         case Yes => Messages("base.yes")
         case No => Messages("base.no")
     }
-    val rowUrl = incometax.incomesource.controllers.routes.WorkForYourselfController.show(editMode = true).url
+    val rowUrl = incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -167,7 +167,7 @@
         @summaryModel.rentUkProperty.map(rentUkProperty)
         @summaryModel.rentUkProperty.map(onlySourceOfIncome)
         @if(summaryModel.rentUkProperty.exists(_.needSecondPage)) {
-            @summaryModel.workForYourself.map(WorkForYourself)
+            @summaryModel.areYouSelfEmployed.map(AreYouSelfEmployed)
         }
         @if(appConfig.eligibilityPagesEnabled) {
             @Html("")

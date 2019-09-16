@@ -59,10 +59,10 @@ preferences_callback.heading                                    = You need to ag
 preferences_callback.line_1                                     = To sign up for this service, you need to allow HM Revenue and Customs to send you electronic communications.
 preferences_callback.button                                     = Go back
 
-# work for yourself page
-work_for_yourself.title                                         = Do you work for yourself?
-work_for_yourself.heading                                       = Do you work for yourself?
-work_for_yourself.para1                                         = This does not include if your business is a limited company or partnership.
+# are you self-employed page
+are_you_selfemployed.title                                         = Are you self-employed?
+are_you_selfemployed.heading                                       = Are you self-employed?
+are_you_selfemployed.para1                                         = This does not include if your business is a limited company or partnership.
 
 ## Rent Uk Property page
 rent_uk_property.title                                          = Do you rent out a UK property?
@@ -79,9 +79,9 @@ property.income.line_1                                          = This is the am
 cannot-sign-up.title                                            = You can''t use this service
 cannot-sign-up.heading                                          = You can''t use this service
 cannot-sign-up.para1                                            = You can only use software to report your Income Tax if you either:
-cannot-sign-up.bullet1                                          = work for yourself
+cannot-sign-up.bullet1                                          = are you self-employed
 cannot-sign-up.bullet2                                          = rent out UK property
-cannot-sign-up.bullet3                                          = work for yourself and rent out UK property
+cannot-sign-up.bullet3                                          = are you self-employed and rent out UK property
 cannot-sign-up.para2                                            = You need to <a id="signOut" href="{0}">send a Self Assessment tax return</a> instead.
 
 # Cannot Use Service page
@@ -231,7 +231,7 @@ summary.h2                                                      = You''ve told u
 summary.income_source                                           = Where does your income come from?
 summary.rent_uk_property_1                                      = Do you rent out a UK property?
 summary.rent_uk_property_2                                      = Is this your only source of self-employed income?
-summary.work_for_your_self                                      = Do you work for yourself?
+summary.are_you_selfemployed                                    = Are you self-employed?
 summary.income_source.business                                  = Sole trader business
 summary.income_source.property                                  = Property
 summary.income_source.both                                      = Sole trader business and property
@@ -280,8 +280,8 @@ error.back_to_preferences.empty                                 = You must selec
 error.income_source.empty                                       = You must select an option to continue
 error.income_source.invalid                                     = You must select an option to continue
 
-error.work_for_yourself.empty                                   = You must select an option to continue
-error.work_for_yourself.invalid                                 = You must select an option to continue
+error.are_you_selfemployed.empty                                = You must select an option to continue
+error.are_you_selfemployed.invalid                              = You must select an option to continue
 
 error.business.sole_trader.empty                                = You must select an option to continue
 error.business.sole_trader.invalid                              = You must select an option to continue

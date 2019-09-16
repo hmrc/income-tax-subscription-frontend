@@ -91,9 +91,9 @@ object MessageLookup {
     val no = "No"
   }
 
-  object WorkForYourself {
-    val title = "Do you work for yourself?"
-    val heading = "Do you work for yourself?"
+  object AreYouSelfEmployed {
+    val title = "Are you self-employed?"
+    val heading = "Are you self-employed?"
     val para1 = "This does not include if your business is a limited company or partnership."
   }
 
@@ -294,7 +294,7 @@ object MessageLookup {
     val income_source = "Where does your income come from?"
     val rentUkProperty = "Do you rent out a UK property?"
     val onlySourceOfIncome = "Is this your only source of self-employed income?"
-    val workForYourself = "Do you work for yourself?"
+    val areYouSelfEmployed = "Are you self-employed?"
 
     object IncomeSource {
       val business = "Sole trader business"
@@ -571,7 +571,7 @@ object MessageLookup {
       val invalid = "You must select an option to continue"
     }
 
-    object WorkForYourself {
+    object AreYouSelfEmployed {
       val empty = "You must select an option to continue"
       val invalid = "You must select an option to continue"
     }
@@ -721,9 +721,9 @@ object MessageLookup {
     val heading: String = title
     val linktext = "send a Self Assessment tax return"
     val line1 = "You can only use software to report your Income Tax if you either:"
-    val bullet1 = "work for yourself"
+    val bullet1 = "are you self-employed"
     val bullet2 = "rent out UK property"
-    val bullet3 = "work for yourself and rent out UK property"
+    val bullet3 = "are you self-employed and rent out UK property"
     val line2 = s"You need to $linktext instead."
   }
 

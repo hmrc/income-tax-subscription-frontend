@@ -17,7 +17,7 @@
 package core.forms.validation.testutils
 
 import agent.forms.{AccountingPeriodPriorForm, IncomeSourceForm}
-import incometax.incomesource.forms.{RentUkPropertyForm, WorkForYourselfForm}
+import incometax.incomesource.forms.{RentUkPropertyForm, AreYouSelfEmployedForm}
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil.constraint
 import incometax.business.forms.MatchTaxYearForm
@@ -61,7 +61,7 @@ object DataMap {
       Map(RentUkPropertyForm.rentUkProperty -> iType, RentUkPropertyForm.onlySourceOfSelfEmployedIncome -> i))
 
 
-  def workForYourself(iType: String): DataMap = Map(WorkForYourselfForm.choice -> iType)
+  def areYouSelfEmployed(iType: String): DataMap = Map(AreYouSelfEmployedForm.choice -> iType)
 
   def otherIncome(iType: String): DataMap = Map(OtherIncomeForm.choice -> iType)
 

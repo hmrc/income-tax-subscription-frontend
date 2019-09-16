@@ -69,7 +69,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
 
       setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
         rentUkProperty = TestModels.testRentUkProperty_no_property,
-        workForYourself = TestModels.testWorkForYourself_yes
+        areYouSelfEmployed = TestModels.testAreYouSelfEmployed_yes
       ))
 
       val goodRequest = callSubmit
@@ -85,7 +85,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
 
       setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
         rentUkProperty = TestModels.testRentUkProperty_property_only,
-        workForYourself = None
+        areYouSelfEmployed = None
       ))
 
       val goodRequest = callSubmit
@@ -101,7 +101,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
 
       setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
         rentUkProperty = TestModels.testRentUkProperty_property_and_other,
-        workForYourself = TestModels.testWorkForYourself_no
+        areYouSelfEmployed = TestModels.testAreYouSelfEmployed_no
       ))
 
       val goodRequest = callSubmit
@@ -117,7 +117,7 @@ class OtherIncomeErrorControllerSpec extends ControllerBaseSpec
 
       setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
         rentUkProperty = TestModels.testRentUkProperty_property_and_other,
-        workForYourself = TestModels.testWorkForYourself_yes
+        areYouSelfEmployed = TestModels.testAreYouSelfEmployed_yes
       ))
 
       val goodRequest = callSubmit

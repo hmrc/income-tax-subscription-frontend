@@ -63,7 +63,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         KeystoreStub.stubKeystoreData(
           keystoreData(
             rentUkProperty = Some(testRentUkProperty_property_and_other),
-            workForYourself = Some(testWorkForYourself_yes),
+            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
             otherIncome = Some(keystoreIncomeOther),
             matchTaxYear = Some(keystoreMatchTaxYear)
           )
@@ -100,7 +100,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         KeystoreStub.stubKeystoreData(
           keystoreData(
             rentUkProperty = Some(testRentUkProperty_no_property),
-            workForYourself = Some(testWorkForYourself_yes),
+            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
             matchTaxYear = Some(keystoreMatchTaxYear)))
 
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
@@ -125,7 +125,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         KeystoreStub.stubKeystoreData(
           keystoreData(
             rentUkProperty = Some(testRentUkProperty_no_property),
-            workForYourself = Some(testWorkForYourself_yes),
+            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
             matchTaxYear = Some(keystoreMatchTaxYear))
         )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
@@ -196,7 +196,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           KeystoreStub.stubKeystoreData(
             keystoreData(
               rentUkProperty = Some(testRentUkProperty_property_and_other),
-              workForYourself = Some(testWorkForYourself_yes),
+              areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
               otherIncome = Some(keystoreIncomeOther),
               matchTaxYear = Some(keystoreMatchTaxYear),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates)
@@ -227,7 +227,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           KeystoreStub.stubKeystoreData(
             keystoreData(
               rentUkProperty = Some(testRentUkProperty_no_property),
-              workForYourself = Some(testWorkForYourself_yes),
+              areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
               otherIncome = Some(keystoreIncomeOther),
               matchTaxYear = Some(keystoreMatchTaxYear),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates)

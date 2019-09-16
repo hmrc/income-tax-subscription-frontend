@@ -28,8 +28,8 @@ import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import incometax.business.forms._
 import incometax.business.models._
-import incometax.incomesource.forms.{OtherIncomeForm, RentUkPropertyForm, WorkForYourselfForm}
-import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, WorkForYourselfModel}
+import incometax.incomesource.forms.{OtherIncomeForm, RentUkPropertyForm, AreYouSelfEmployedForm}
+import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, AreYouSelfEmployedModel}
 import incometax.subscription.models.IncomeSourceType
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
@@ -151,14 +151,14 @@ trait ComponentSpecBase extends UnitSpec
 
     def rentUkProperty(): WSResponse = get("/rent-uk-property")
 
-    def workForYourself(): WSResponse = get("/work-for-yourself")
+    def areYouSelfEmployed(): WSResponse = get("/are-you-self-employed")
 
-    def submitWorkForYourself(inEditMode: Boolean, request: Option[WorkForYourselfModel]): WSResponse = {
-      val uri = s"/work-for-yourself?editMode=$inEditMode"
+    def submitAreYouSelfEmployed(inEditMode: Boolean, request: Option[AreYouSelfEmployedModel]): WSResponse = {
+      val uri = s"/are-you-self-employed?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model =>
-            WorkForYourselfForm.workForYourselfForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+            AreYouSelfEmployedForm.areYouSelfEmployedForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

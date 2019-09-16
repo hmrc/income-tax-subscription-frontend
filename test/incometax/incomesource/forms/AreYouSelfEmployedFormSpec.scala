@@ -21,53 +21,53 @@ import core.forms.submapping.YesNoMapping
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
 import core.models.{No, Yes}
-import incometax.incomesource.models.WorkForYourselfModel
+import incometax.incomesource.models.AreYouSelfEmployedModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 
-class WorkForYourselfFormSpec extends PlaySpec with OneAppPerTest {
+class AreYouSelfEmployedFormSpec extends PlaySpec with OneAppPerTest {
 
-  import WorkForYourselfForm._
+  import AreYouSelfEmployedForm._
 
-  "The WorkForYourselfForm" should {
+  "The AreYouSelfEmployedForm" should {
     "transform the request to the form case class" in {
       val testChoice = No
       val testInput = Map(choice -> YesNoMapping.option_no)
-      val expected = WorkForYourselfModel(testChoice)
-      val actual = workForYourselfForm.bind(testInput).value
+      val expected = AreYouSelfEmployedModel(testChoice)
+      val actual = areYouSelfEmployedForm.bind(testInput).value
 
       actual shouldBe Some(expected)
     }
 
     "validate income type correctly" in {
-      val empty = ErrorMessageFactory.error("error.work_for_yourself.empty")
-      val invalid = ErrorMessageFactory.error("error.work_for_yourself.invalid")
+      val empty = ErrorMessageFactory.error("error.are_you_selfemployed.empty")
+      val invalid = ErrorMessageFactory.error("error.are_you_selfemployed.invalid")
 
-      empty fieldErrorIs MessageLookup.Error.WorkForYourself.empty
-      empty summaryErrorIs MessageLookup.Error.WorkForYourself.empty
+      empty fieldErrorIs MessageLookup.Error.AreYouSelfEmployed.empty
+      empty summaryErrorIs MessageLookup.Error.AreYouSelfEmployed.empty
 
-      invalid fieldErrorIs MessageLookup.Error.WorkForYourself.invalid
-      invalid summaryErrorIs MessageLookup.Error.WorkForYourself.invalid
+      invalid fieldErrorIs MessageLookup.Error.AreYouSelfEmployed.invalid
+      invalid summaryErrorIs MessageLookup.Error.AreYouSelfEmployed.invalid
 
       val emptyInput0 = DataMap.EmptyMap
-      val emptyTest0 = workForYourselfForm.bind(emptyInput0)
+      val emptyTest0 = areYouSelfEmployedForm.bind(emptyInput0)
       emptyTest0 assert choice hasExpectedErrors empty
 
-      val emptyInput = DataMap.workForYourself("")
-      val emptyTest = workForYourselfForm.bind(emptyInput)
+      val emptyInput = DataMap.areYouSelfEmployed("")
+      val emptyTest = areYouSelfEmployedForm.bind(emptyInput)
       emptyTest assert choice hasExpectedErrors empty
 
-      val invalidInput = DataMap.workForYourself("α")
-      val invalidTest = workForYourselfForm.bind(invalidInput)
+      val invalidInput = DataMap.areYouSelfEmployed("α")
+      val invalidTest = areYouSelfEmployedForm.bind(invalidInput)
       invalidTest assert choice hasExpectedErrors invalid
     }
 
     "The following submission should be valid" in {
-      val testsYes = DataMap.workForYourself(YesNoMapping.option_yes)
-      workForYourselfForm isValidFor testsYes
-      val testsNo = DataMap.workForYourself(YesNoMapping.option_no)
-      workForYourselfForm isValidFor testsNo
+      val testsYes = DataMap.areYouSelfEmployed(YesNoMapping.option_yes)
+      areYouSelfEmployedForm isValidFor testsYes
+      val testsNo = DataMap.areYouSelfEmployed(YesNoMapping.option_no)
+      areYouSelfEmployedForm isValidFor testsNo
     }
 
   }

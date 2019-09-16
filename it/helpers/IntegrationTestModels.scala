@@ -1,7 +1,7 @@
 
 package helpers
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 
 import core.Constants
 import core.Constants.GovernmentGateway._
@@ -18,6 +18,7 @@ import incometax.util.AccountingPeriodUtil
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import usermatching.models.UserDetailsModel
+
 
 object IntegrationTestModels {
 
@@ -53,7 +54,7 @@ object IntegrationTestModels {
     keystoreData(
       incomeSource = Some(Both),
       rentUkProperty = Some(testRentUkProperty_property_and_other),
-      workForYourself = Some(testWorkForYourself_yes),
+      areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
       otherIncome = Some(testOtherIncomeNo),
       matchTaxYear = Some(testMatchTaxYearNo),
       accountingPeriodDate = Some(testAccountingPeriod),
@@ -66,7 +67,7 @@ object IntegrationTestModels {
 
   def keystoreData(incomeSource: Option[IncomeSourceType] = None,
                    rentUkProperty: Option[RentUkPropertyModel] = None,
-                   workForYourself: Option[WorkForYourselfModel] = None,
+                   areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
                    otherIncome: Option[YesNo] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
@@ -78,7 +79,7 @@ object IntegrationTestModels {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
       rentUkProperty.map(model => RentUkProperty -> RentUkPropertyModel.format.writes(model)) ++
-      workForYourself.map(model => WorkForYourself -> WorkForYourselfModel.format.writes(model)) ++
+      areYouSelfEmployed.map(model => AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model)) ++ //
       otherIncome.map(model => OtherIncome -> YesNo.format.writes(model)) ++
       matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
@@ -99,8 +100,8 @@ object IntegrationTestModels {
   lazy val testRentUkProperty_property_only = RentUkPropertyModel(Yes, Some(Yes))
   lazy val testRentUkProperty_property_and_other = RentUkPropertyModel(Yes, Some(No))
 
-  lazy val testWorkForYourself_yes = WorkForYourselfModel(Yes)
-  lazy val testWorkForYourself_no = WorkForYourselfModel(No)
+  lazy val testAreYouSelfEmployed_yes = AreYouSelfEmployedModel(Yes)
+  lazy val testAreYouSelfEmployed_no = AreYouSelfEmployedModel(No)
 
   lazy val testOtherIncomeNo = No
 

@@ -59,10 +59,10 @@ preferences_callback.heading                                    = Rhaid i chi gy
 preferences_callback.line_1                                     = I gofrestru ar gyfer y gwasanaeth hwn, rhaid i chi ganiatáu i Gyllid a Thollau EM anfon gohebiaeth electronig atoch.
 preferences_callback.button                                     = Ewch yn ôl
 
-# work for yourself page
-work_for_yourself.title                                         = Ydych chi''n gweithio i chi''ch hun?
-work_for_yourself.heading                                       = Ydych chi''n gweithio i chi''ch hun?
-work_for_yourself.para1                                         = Nid yw hyn yn cynnwys os yw''ch busnes yn gwmni cyfyngedig neu''n bartneriaeth.
+# are you self-employed page
+are_you_selfemployed.title                                         = A ydych yn hunangyflogedig?
+are_you_selfemployed.heading                                       = A ydych yn hunangyflogedig?
+are_you_selfemployed.para1                                         = Nid yw hyn yn cynnwys os yw’ch busnes yn gwmni cyfyngedig neu’n bartneriaeth.
 
 ## Rent Uk Property page
 rent_uk_property.title                                          = Ydych chi''n gosod eiddo yn y DU?
@@ -231,7 +231,7 @@ summary.h2                                                      = Rydych wedi rh
 summary.income_source                                           = O ble mae''ch incwm yn dod?
 summary.rent_uk_property_1                                      = Ydych chi''n gosod eiddo yn y DU?
 summary.rent_uk_property_2                                      = Ai dyma''ch unig ffynhonnell o incwm hunangyflogedig?
-summary.work_for_your_self                                      = Ydych chi''n gweithio i chi''ch hun?
+summary.are_you_selfemployed                                    = Ydych chi''n gweithio i chi''ch hun?
 summary.income_source.business                                  = Busnes fel unig fasnachwr
 summary.income_source.property                                  = Eiddo
 summary.income_source.both                                      = Busnes fel unig fasnachwr ac eiddo
@@ -280,8 +280,8 @@ error.back_to_preferences.empty                                 = Rhaid i chi dd
 error.income_source.empty                                       = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.income_source.invalid                                     = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
-error.work_for_yourself.empty                                   = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.work_for_yourself.invalid                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
+error.are_you_selfemployed.empty                                = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
+error.are_you_selfemployed.invalid                              = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
 error.business.sole_trader.empty                                = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.business.sole_trader.invalid                              = Rhaid i chi ddewis opsiwn i fynd yn eich blaen

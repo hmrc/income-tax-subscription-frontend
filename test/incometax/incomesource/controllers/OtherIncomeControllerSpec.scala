@@ -24,7 +24,6 @@ import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
 import core.utils.TestModels._
 import incometax.incomesource.forms.OtherIncomeForm
-import incometax.incomesource.models.OtherIncomeModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models.{Both, Property}
 import play.api.http.Status
@@ -67,12 +66,12 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           verifyKeystore(fetchAll = 1, saveOtherIncome = 0)
         }
 
-        "return redirection (303) back to work for yourself if there isn't income source in keystore" in {
+        "return redirection (303) back to are you self-employed if there isn't income source in keystore" in {
           setupMockKeystore(fetchAll = None)
 
           val result = call
           status(result) must be(Status.SEE_OTHER)
-          redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+          redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
           await(result)
           verifyKeystore(fetchAll = 1, saveOtherIncome = 0)
         }
@@ -151,7 +150,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchAll = TestModels.testCacheMapCustom(
               rentUkProperty = TestModels.testRentUkProperty_no_property,
-              workForYourself = TestModels.testWorkForYourself_yes,
+              areYouSelfEmployed = TestModels.testAreYouSelfEmployed_yes,
               otherIncome = None
             )
           )
@@ -168,7 +167,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchAll = TestModels.testCacheMapCustom(
               rentUkProperty = TestModels.testRentUkProperty_property_only,
-              workForYourself = None,
+              areYouSelfEmployed = None,
               otherIncome = None
             )
           )
@@ -185,7 +184,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchAll = TestModels.testCacheMapCustom(
               rentUkProperty = TestModels.testRentUkProperty_property_and_other,
-              workForYourself = TestModels.testWorkForYourself_no,
+              areYouSelfEmployed = TestModels.testAreYouSelfEmployed_no,
               otherIncome = None
             )
           )
@@ -202,7 +201,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchAll = TestModels.testCacheMapCustom(
               rentUkProperty = TestModels.testRentUkProperty_property_and_other,
-              workForYourself = TestModels.testWorkForYourself_yes,
+              areYouSelfEmployed = TestModels.testAreYouSelfEmployed_yes,
               otherIncome = None
             )
           )
@@ -225,7 +224,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchAll = TestModels.testCacheMapCustom(
               rentUkProperty = TestModels.testRentUkProperty_no_property,
-              workForYourself = TestModels.testWorkForYourself_yes,
+              areYouSelfEmployed = TestModels.testAreYouSelfEmployed_yes,
               otherIncome = No
             )
           )
@@ -245,7 +244,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchAll = TestModels.testCacheMapCustom(
               rentUkProperty = TestModels.testRentUkProperty_property_and_other,
-              workForYourself = TestModels.testWorkForYourself_no,
+              areYouSelfEmployed = TestModels.testAreYouSelfEmployed_no,
               otherIncome = No
             )
           )
@@ -267,7 +266,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchAll = TestModels.testCacheMapCustom(
               rentUkProperty = TestModels.testRentUkProperty_property_and_other,
-              workForYourself = TestModels.testWorkForYourself_yes,
+              areYouSelfEmployed = TestModels.testAreYouSelfEmployed_yes,
               otherIncome = No
             )
           )
@@ -285,7 +284,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchAll = TestModels.testCacheMapCustom(
               rentUkProperty = TestModels.testRentUkProperty_no_property,
-              workForYourself = TestModels.testWorkForYourself_yes,
+              areYouSelfEmployed = TestModels.testAreYouSelfEmployed_yes,
               otherIncome = Yes
             )
           )
@@ -303,7 +302,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchAll = TestModels.testCacheMapCustom(
               rentUkProperty = TestModels.testRentUkProperty_property_only,
-              workForYourself = None,
+              areYouSelfEmployed = None,
               otherIncome = Yes
             )
           )
@@ -322,7 +321,7 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
           setupMockKeystore(
             fetchAll = TestModels.testCacheMapCustom(
               rentUkProperty = TestModels.testRentUkProperty_property_and_other,
-              workForYourself = TestModels.testWorkForYourself_yes,
+              areYouSelfEmployed = TestModels.testAreYouSelfEmployed_yes,
               otherIncome = Yes
             )
           )
@@ -359,8 +358,8 @@ class OtherIncomeControllerSpec extends ControllerBaseSpec
   }
 
   "The back url not in edit mode" should {
-    s"point to ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url} on other income page" in {
-      TestOtherIncomeController.backUrl(Both, isEditMode = false) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+    s"point to ${incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url} on other income page" in {
+      TestOtherIncomeController.backUrl(Both, isEditMode = false) mustBe incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
     }
   }
 

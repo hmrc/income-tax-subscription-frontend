@@ -21,8 +21,8 @@ import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
-import incometax.incomesource.forms.WorkForYourselfForm
-import incometax.incomesource.models.WorkForYourselfModel
+import incometax.incomesource.forms.AreYouSelfEmployedForm
+import incometax.incomesource.models.AreYouSelfEmployedModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -30,16 +30,17 @@ import play.api.test.Helpers.{await, status, _}
 
 import scala.concurrent.Future
 
-class WorkForYourselfControllerSpec extends ControllerBaseSpec
+class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
+
   with MockKeystoreService
   with FeatureSwitching
-with MockConfig
+  with MockConfig
   with MockCurrentTimeService {
 
-  override val controllerName: String = "WorkForYourselfController"
+  override val controllerName: String = "AreYouSelfEmployedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestWorkForYourselfController extends WorkForYourselfController(
+  object TestAreYouSelfEmployedController$$ extends AreYouSelfEmployedController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
@@ -48,9 +49,9 @@ with MockConfig
     mockCurrentTimeService
   )
 
-  "Calling the show action of the WorkForYourself controller with an authorised user" when {
+  "Calling the show action of the AreYouSelfEmployed controller with an authorised user" when {
 
-    def call = TestWorkForYourselfController.show(isEditMode = true)(subscriptionRequest)
+    def call = TestAreYouSelfEmployedController$$.show(isEditMode = true)(subscriptionRequest)
 
     "There are no rentUkProperty data" should {
       "return ok (200)" in {
@@ -61,15 +62,15 @@ with MockConfig
         redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.RentUkPropertyController.show().url
 
         await(result)
-        verifyKeystore(fetchAll = 1, saveWorkForYourself = 0)
+        verifyKeystore(fetchAll = 1, saveAreYouSelfEmployed = 0)
       }
 
-      "There are no rentUkProperty in keystore and but it doesn't needs work for yourself to be answered" should {
+      "There are no rentUkProperty in keystore and but it doesn't needs are you self-employed to be answered" should {
         "return ok (200)" in {
           setupMockKeystore(fetchAll =
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_only,
-              workForYourself = None)
+              areYouSelfEmployed = None)
           )
 
           val result = call
@@ -77,39 +78,39 @@ with MockConfig
           redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.RentUkPropertyController.show().url
 
           await(result)
-          verifyKeystore(fetchAll = 1, saveWorkForYourself = 0)
+          verifyKeystore(fetchAll = 1, saveAreYouSelfEmployed = 0)
         }
       }
-      "There is rentUkProperty in keystore and it needs work for yourself answered" should {
+      "There is rentUkProperty in keystore and it needs are you self-employed answered" should {
         "return ok (200)" in {
           setupMockKeystore(fetchAll =
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_and_other,
-              workForYourself = testWorkForYourself_yes)
+              areYouSelfEmployed = testAreYouSelfEmployed_yes)
           )
 
           val result = call
           status(result) must be(Status.OK)
 
           await(result)
-          verifyKeystore(fetchAll = 1, saveWorkForYourself = 0)
+          verifyKeystore(fetchAll = 1, saveAreYouSelfEmployed = 0)
         }
       }
     }
   }
 
-  "Calling the submit action of the WorkForYourself controller with an authorised user" when {
-    def call(workForYourself: WorkForYourselfModel, isEditMode: Boolean) =
-      TestWorkForYourselfController.submit(isEditMode = isEditMode)(subscriptionRequest.post(WorkForYourselfForm.workForYourselfForm, workForYourself))
+  "Calling the submit action of the AreYouSelfEmployed controller with an authorised user" when {
+    def call(areYouSelfEmployed: AreYouSelfEmployedModel, isEditMode: Boolean) =
+      TestAreYouSelfEmployedController$$.submit(isEditMode = isEditMode)(subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm, areYouSelfEmployed))
 
     "invalid submission" should {
       "return bad request (400)" in {
-        status(TestWorkForYourselfController.submit(isEditMode = true)(subscriptionRequest.post(WorkForYourselfForm.workForYourselfForm))) mustBe BAD_REQUEST
+        status(TestAreYouSelfEmployedController$$.submit(isEditMode = true)(subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm))) mustBe BAD_REQUEST
       }
     }
 
     "not in editMode" when {
-      def submit(workForYourself: WorkForYourselfModel = testWorkForYourself_yes) = call(workForYourself, isEditMode = false)
+      def submit(areYouSelfEmployed: AreYouSelfEmployedModel = testAreYouSelfEmployed_yes) = call(areYouSelfEmployed, isEditMode = false)
 
 
       "a property only submission" when {
@@ -119,7 +120,7 @@ with MockConfig
               rentUkProperty = testRentUkProperty_property_and_other
             )
           )
-          val result = submit(testWorkForYourself_no)
+          val result = submit(testAreYouSelfEmployed_no)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
         }
@@ -132,7 +133,7 @@ with MockConfig
               rentUkProperty = testRentUkProperty_no_property
             )
           )
-          val result = submit(testWorkForYourself_yes)
+          val result = submit(testAreYouSelfEmployed_yes)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
         }
@@ -145,7 +146,7 @@ with MockConfig
               rentUkProperty = testRentUkProperty_property_and_other
             )
           )
-          val result = submit(testWorkForYourself_yes)
+          val result = submit(testAreYouSelfEmployed_yes)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
         }
@@ -158,7 +159,7 @@ with MockConfig
               rentUkProperty = testRentUkProperty_no_property
             )
           )
-          val result = submit(testWorkForYourself_no)
+          val result = submit(testAreYouSelfEmployed_no)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.CannotSignUpController.show().url
         }
@@ -167,17 +168,17 @@ with MockConfig
 
 
     "in editMode" when {
-      def submit(workForYourself: WorkForYourselfModel = testWorkForYourself_yes) = call(workForYourself, isEditMode = true)
+      def submit(areYouSelfEmployed: AreYouSelfEmployedModel = testAreYouSelfEmployed_yes) = call(areYouSelfEmployed, isEditMode = true)
 
       "the user kept their answer the same" should {
         "return to check your answers" in {
           setupMockKeystore(fetchAll =
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_and_other,
-              workForYourself = testWorkForYourself_no
+              areYouSelfEmployed = testAreYouSelfEmployed_no
             )
           )
-          val result = submit(testWorkForYourself_no)
+          val result = submit(testAreYouSelfEmployed_no)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
         }
@@ -189,10 +190,10 @@ with MockConfig
             setupMockKeystore(fetchAll =
               testCacheMapCustom(
                 rentUkProperty = testRentUkProperty_property_and_other,
-                workForYourself = testWorkForYourself_yes
+                areYouSelfEmployed = testAreYouSelfEmployed_yes
               )
             )
-            val result = submit(testWorkForYourself_no)
+            val result = submit(testAreYouSelfEmployed_no)
             status(result) mustBe SEE_OTHER
             redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
           }
@@ -203,10 +204,10 @@ with MockConfig
             setupMockKeystore(fetchAll =
               testCacheMapCustom(
                 rentUkProperty = testRentUkProperty_property_and_other,
-                workForYourself = testWorkForYourself_no
+                areYouSelfEmployed = testAreYouSelfEmployed_no
               )
             )
-            val result = submit(testWorkForYourself_yes)
+            val result = submit(testAreYouSelfEmployed_yes)
             status(result) mustBe SEE_OTHER
             redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
           }
@@ -217,10 +218,10 @@ with MockConfig
             setupMockKeystore(fetchAll =
               testCacheMapCustom(
                 rentUkProperty = testRentUkProperty_property_and_other,
-                workForYourself = testWorkForYourself_no
+                areYouSelfEmployed = testAreYouSelfEmployed_no
               )
             )
-            val result = submit(testWorkForYourself_yes)
+            val result = submit(testAreYouSelfEmployed_yes)
             status(result) mustBe SEE_OTHER
             redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.OtherIncomeController.show().url
           }
@@ -231,7 +232,7 @@ with MockConfig
 
     "the eligibility pages feature switch is enabled" should {
 
-      object TestWorkForYourselfController extends WorkForYourselfController(
+      object TestAreYouSelfEmployedController extends AreYouSelfEmployedController(
         MockBaseControllerConfig,
         messagesApi,
         MockKeystoreService,
@@ -242,10 +243,10 @@ with MockConfig
         mockCurrentTimeService
       )
 
-      def call(workForYourself: WorkForYourselfModel, isEditMode: Boolean): Future[Result] =
-        TestWorkForYourselfController.submit(isEditMode = isEditMode)(subscriptionRequest.post(WorkForYourselfForm.workForYourselfForm, workForYourself))
+      def call(areYouSelfEmployed: AreYouSelfEmployedModel, isEditMode: Boolean): Future[Result] =
+        TestAreYouSelfEmployedController.submit(isEditMode = isEditMode)(subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm, areYouSelfEmployed))
 
-      def submit(workForYourself: WorkForYourselfModel, isEditMode: Boolean = false): Future[Result] = call(workForYourself, isEditMode = isEditMode)
+      def submit(areYouSelfEmployed: AreYouSelfEmployedModel, isEditMode: Boolean = false): Future[Result] = call(areYouSelfEmployed, isEditMode = isEditMode)
 
 
       "redirect to the check your answers page" when {
@@ -255,7 +256,7 @@ with MockConfig
               rentUkProperty = testRentUkProperty_property_and_other
             )
           )
-          val result = submit(testWorkForYourself_no)
+          val result = submit(testAreYouSelfEmployed_no)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
         }
@@ -266,7 +267,7 @@ with MockConfig
               rentUkProperty = testRentUkProperty_no_property
             )
           )
-          val result = submit(testWorkForYourself_yes)
+          val result = submit(testAreYouSelfEmployed_yes)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.business.controllers.routes.BusinessNameController.show().url
         }
@@ -277,7 +278,7 @@ with MockConfig
               rentUkProperty = testRentUkProperty_property_and_other
             )
           )
-          val result = submit(testWorkForYourself_yes)
+          val result = submit(testAreYouSelfEmployed_yes)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.business.controllers.routes.BusinessNameController.show().url
         }
@@ -288,7 +289,7 @@ with MockConfig
               rentUkProperty = testRentUkProperty_no_property
             )
           )
-          val result = submit(testWorkForYourself_no)
+          val result = submit(testAreYouSelfEmployed_no)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe incometax.incomesource.controllers.routes.CannotSignUpController.show().url
         }

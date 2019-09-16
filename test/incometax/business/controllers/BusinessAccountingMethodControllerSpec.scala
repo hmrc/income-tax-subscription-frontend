@@ -62,7 +62,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         case Business => testRentUkProperty_no_property
         case Both => testRentUkProperty_property_and_other
       },
-      workForYourself = testWorkForYourself_yes,
+      areYouSelfEmployed = testAreYouSelfEmployed_yes,
       matchTaxYear = matchTaxYear,
       accountingPeriodDate = accountingPeriod
     )
