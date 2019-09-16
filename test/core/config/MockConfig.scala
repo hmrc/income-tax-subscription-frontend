@@ -27,6 +27,7 @@ trait MockConfig extends AppConfig {
   override val contactFormServiceIdentifier: String = "MTDIT"
   override val contactFrontendPartialBaseUrl: String = "/contact/partial"
   override val subscriptionUrl: String = "/income-tax-subscription/subscription"
+  override val subscriptionUrlV2: String = "/income-tax-subscription/subscription-v2"
   override val clientMatchingUrl = "/income-tax-subscription/client-matching"
   override val agentMicroserviceUrl: String = "/agent-subscription"
   override val preferencesFrontend: String = ""
