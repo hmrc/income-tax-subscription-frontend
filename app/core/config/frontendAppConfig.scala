@@ -34,6 +34,7 @@ trait AppConfig extends FeatureSwitching {
   val reportAProblemNonJSUrl: String
   val ggSignInContinueUrl: String
   val subscriptionUrl: String
+  val subscriptionUrlV2: String
   val userMatchingUrl: String
   val clientMatchingUrl: String
   val authUrl: String
@@ -168,6 +169,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   // protected microservice
   protected lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
+  override lazy val subscriptionUrlV2 = s"$protectedMicroServiceUrl/income-tax-subscription/subscription-v2"
   override lazy val userMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
   override lazy val clientMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
 

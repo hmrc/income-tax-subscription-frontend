@@ -32,7 +32,8 @@ object FeatureSwitch {
     EmacEs8ApiFeature,
     UnauthorisedAgentFeature,
     WelshLanguageFeature,
-    EligibilityPagesFeature
+    EligibilityPagesFeature,
+    UseSubscriptionApiV2
   )
 
   def apply(str: String): FeatureSwitch =
@@ -78,4 +79,9 @@ case object EligibilityPagesFeature extends FeatureSwitch {
 case object UnplannedShutter extends FeatureSwitch {
   override val name: String = s"$prefix.unplanned-shutter"
   override val displayText: String = "Unplanned shutter for the service"
+}
+
+case object UseSubscriptionApiV2 extends FeatureSwitch {
+  override val displayText: String = "Use version 2 of the subscription API"
+  override val name: String = s"$prefix.use-subscription-api-v2"
 }
