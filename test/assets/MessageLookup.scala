@@ -121,9 +121,9 @@ object MessageLookup {
     object MatchTaxYear {
 
       object SignUp {
-        val title = "Does your accounting period match the tax year?"
-        val heading: String = "Does your accounting period match the tax year?"
-        val line1 = "The tax year runs from 6 April to 5 April. Your accounting period is usually the same, unless you chose different dates when you registered for Self Assessment."
+        val title = "Is your accounting period from 6 April to 5 April?"
+        val heading: String = "Is your accounting period from 6 April to 5 April?"
+        val line1 = "The tax year runs from 6 April to 5 April. Your accounting period is the same, unless you have previously chosen different dates."
       }
 
       object Registration {
@@ -483,8 +483,8 @@ object MessageLookup {
       }
 
       object MatchTaxYear {
-        val empty = "You must select an option to continue"
-        val invalid = "You must select an option to continue"
+        val empty = "Select yes if your accounting period is from 6 April to 5 April"
+        val invalid = "Select yes if your accounting period is from 6 April to 5 April"
       }
 
       object AccountingPeriodPrior {
