@@ -92,7 +92,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
         val goodRequest = callSubmit((No, None), isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
@@ -104,7 +104,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
         val goodRequest = callSubmit((Yes, No), isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
@@ -140,13 +140,13 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
     }
 
     "When it is in edit mode and user's selection has changed" should {
-      s"return an SEE OTHER (303) and goto ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url}" in {
+      s"return an SEE OTHER (303) and goto ${incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url}" in {
         setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
 
         val goodRequest = callSubmit((Yes, No), isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchRentUkProperty = 1, saveRentUkProperty = 1)
@@ -183,7 +183,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
         val goodRequest = callSubmit((No, None), isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
@@ -195,7 +195,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
         val goodRequest = callSubmit((Yes, No), isEditMode = false)
 
         status(goodRequest) must be(Status.SEE_OTHER)
-        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+        redirectLocation(goodRequest).get mustBe incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
 
         await(goodRequest)
         verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)

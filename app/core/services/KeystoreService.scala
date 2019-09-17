@@ -16,13 +16,12 @@
 
 package core.services
 
-import javax.inject._
-
 import core.models.YesNo
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{RentUkPropertyModel, WorkForYourselfModel}
+import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import incometax.subscription.models.IncomeSourceType
+import javax.inject._
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
@@ -52,11 +51,11 @@ class KeystoreService @Inject()(val session: SessionCache) {
   import CacheConstants._
 
 
-  def fetchWorkForYourself()(implicit hc: HeaderCarrier, reads: Reads[WorkForYourselfModel]): FO[WorkForYourselfModel] =
-    fetch[WorkForYourselfModel](WorkForYourself)
+  def fetchAreYouSelfEmployed()(implicit hc: HeaderCarrier, reads: Reads[AreYouSelfEmployedModel]): FO[AreYouSelfEmployedModel] =
+    fetch[AreYouSelfEmployedModel](AreYouSelfEmployed)
 
-  def saveWorkForYourself(workForYourself: WorkForYourselfModel)(implicit hc: HeaderCarrier, reads: Reads[WorkForYourselfModel]): FC =
-    save[WorkForYourselfModel](WorkForYourself, workForYourself)
+  def saveAreYouSelfEmployed(areYouSelfEmployed: AreYouSelfEmployedModel)(implicit hc: HeaderCarrier, reads: Reads[AreYouSelfEmployedModel]): FC =
+    save[AreYouSelfEmployedModel](AreYouSelfEmployed, areYouSelfEmployed)
 
   //TODO remove when we switch to the new income source flow
   def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FO[IncomeSourceType] =

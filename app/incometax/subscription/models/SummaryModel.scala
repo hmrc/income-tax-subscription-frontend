@@ -20,7 +20,7 @@ import agent.models.AccountingPeriodPriorModel
 import core.models.YesNo
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{RentUkPropertyModel, WorkForYourselfModel}
+import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
 
 
 sealed trait SummaryModel {
@@ -49,7 +49,7 @@ sealed trait SummaryModel {
 
 
 case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
-                             workForYourself: Option[WorkForYourselfModel] = None,
+                             areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
                              otherIncome: Option[YesNo] = None,
                              matchTaxYear: Option[MatchTaxYearModel] = None,
                              accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
@@ -62,7 +62,7 @@ case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
                              terms: Option[Boolean] = None) extends SummaryModel {
 
   def incomeSource: Option[IncomeSourceType] =
-    rentUkProperty.flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, workForYourself))
+    rentUkProperty.flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, areYouSelfEmployed))
 
 }
 

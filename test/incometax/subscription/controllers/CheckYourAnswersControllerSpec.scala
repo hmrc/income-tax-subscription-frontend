@@ -71,7 +71,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     "return ok (200) for business journey" in {
       val testBusinessCacheMap = testCacheMapCustom(
         rentUkProperty = testRentUkProperty_no_property,
-        workForYourself = testWorkForYourself_yes,
+        areYouSelfEmployed = testAreYouSelfEmployed_yes,
         otherIncome = testOtherIncomeNo,
         terms = testTerms
       )
@@ -83,7 +83,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     "return ok (200) for property only journey)" in {
       val testPropertyCacheMap = testCacheMap(
         rentUkProperty = testRentUkProperty_property_only,
-        workForYourself = None,
+        areYouSelfEmployed = None,
         otherIncome = testOtherIncomeNo,
         terms = testTerms
       )
@@ -95,7 +95,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     "return ok (200) for property and other income but no sole trader journey" in {
       val testPropertyCacheMap = testCacheMap(
         rentUkProperty = testRentUkProperty_property_and_other,
-        workForYourself = testWorkForYourself_no,
+        areYouSelfEmployed = testAreYouSelfEmployed_no,
         otherIncome = testOtherIncomeNo,
         terms = testTerms
       )
@@ -217,8 +217,8 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         TestCheckYourAnswersControllerFsEnabled.backUrl(incomeSource = Both) mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
       }
 
-      s"point to the ${incometax.incomesource.controllers.routes.WorkForYourselfController.show().url} when the income source is Property" in {
-        TestCheckYourAnswersControllerFsEnabled.backUrl(incomeSource = Property) mustBe incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+      s"point to the ${incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url} when the income source is Property" in {
+        TestCheckYourAnswersControllerFsEnabled.backUrl(incomeSource = Property) mustBe incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
       }
     }
   }

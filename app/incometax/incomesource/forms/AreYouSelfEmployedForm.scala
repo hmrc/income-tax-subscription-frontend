@@ -19,24 +19,24 @@ package incometax.incomesource.forms
 import core.forms.submapping.YesNoMapping
 import core.forms.validation.ErrorMessageFactory
 import core.models.YesNo
-import incometax.incomesource.models.WorkForYourselfModel
+import incometax.incomesource.models.AreYouSelfEmployedModel
 import play.api.data.Forms.mapping
 import play.api.data.{Form, Mapping}
 
 
-object WorkForYourselfForm {
+object AreYouSelfEmployedForm {
 
   val choice = "choice"
 
   val choiceMapping: Mapping[YesNo] = YesNoMapping.yesNoMapping(
-    yesNoInvalid = ErrorMessageFactory.error("error.work_for_yourself.invalid"),
-    yesNoEmpty = Some(ErrorMessageFactory.error("error.work_for_yourself.empty"))
+    yesNoInvalid = ErrorMessageFactory.error("error.are_you_selfemployed.invalid"),
+    yesNoEmpty = Some(ErrorMessageFactory.error("error.are_you_selfemployed.empty"))
   )
 
-  val workForYourselfForm = Form(
+  val areYouSelfEmployedForm = Form(
     mapping(
       choice -> choiceMapping
-    )(WorkForYourselfModel.apply)(WorkForYourselfModel.unapply)
+    )(AreYouSelfEmployedModel.apply)(AreYouSelfEmployedModel.unapply)
   )
 
 }

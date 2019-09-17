@@ -86,10 +86,10 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
 
 
-        Then("Should return a SEE_OTHER with a redirect location of work for yourself")
+        Then("Should return a SEE_OTHER with a redirect location of are you self-employed")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(workForYourselfURI)
+          redirectURI(areYouSelfEmployedURI)
         )
       }
 
@@ -103,10 +103,10 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         When("POST /rent-uk-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of work for yourself")
+        Then("Should return a SEE_OTHER with a redirect location of are you self-employed")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(workForYourselfURI)
+          redirectURI(areYouSelfEmployedURI)
         )
       }
 
@@ -221,10 +221,10 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         When("POST /rent-uk-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of work for yourself")
+        Then("Should return a SEE_OTHER with a redirect location of are you self-employed")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(workForYourselfURI)
+          redirectURI(areYouSelfEmployedURI)
         )
       }
 
@@ -240,10 +240,10 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         When("POST /rent-uk-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of work for yourself")
+        Then("Should return a SEE_OTHER with a redirect location of are you self-employed")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(workForYourselfURI)
+          redirectURI(areYouSelfEmployedURI)
         )
       }
 
@@ -262,7 +262,7 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(workForYourselfURI)
+          redirectURI(areYouSelfEmployedURI)
         )
       }
     }

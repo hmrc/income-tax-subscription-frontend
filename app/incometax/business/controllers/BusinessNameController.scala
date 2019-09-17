@@ -77,7 +77,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
     if (isEditMode)
       Future.successful(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
     else if (applicationConfig.eligibilityPagesEnabled) {
-      Future.successful(incometax.incomesource.controllers.routes.WorkForYourselfController.show().url)
+      Future.successful(incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url)
     } else {
       keystoreService.fetchOtherIncome().map {
         case Some(Yes) =>

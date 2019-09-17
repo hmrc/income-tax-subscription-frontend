@@ -57,7 +57,7 @@ class OtherIncomeErrorController @Inject()(val baseConfig: BaseControllerConfig,
         case Some(Both) =>
           Redirect(incometax.business.controllers.routes.BusinessNameController.show())
         case _ =>
-          Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show())
+          Redirect(incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show())
       }
   }
 

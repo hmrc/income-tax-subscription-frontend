@@ -21,7 +21,7 @@ import core.services.KeystoreService
 import core.utils.MockTrait
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{RentUkPropertyModel, WorkForYourselfModel}
+import incometax.incomesource.models.{RentUkPropertyModel, AreYouSelfEmployedModel}
 import incometax.subscription.models.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -60,7 +60,7 @@ trait MockKeystoreService extends MockTrait {
   protected final def setupMockKeystore(
                                          fetchIncomeSource: MFO[IncomeSourceType] = DoNotConfigure,
                                          fetchRentUkProperty: MFO[RentUkPropertyModel] = DoNotConfigure,
-                                         fetchWorkForYourself: MFO[WorkForYourselfModel] = DoNotConfigure,
+                                         fetchAreYouSelfEmployed: MFO[AreYouSelfEmployedModel] = DoNotConfigure,
                                          fetchBusinessName: MFO[BusinessNameModel] = DoNotConfigure,
                                          fetchBusinessPhoneNumber: MFO[BusinessPhoneNumberModel] = DoNotConfigure,
                                          fetchBusinessAddress: MFO[Address] = DoNotConfigure,
@@ -77,7 +77,7 @@ trait MockKeystoreService extends MockTrait {
                                        ): Unit = {
     mockFetchFromKeyStore[IncomeSourceType](IncomeSource, fetchIncomeSource)
     mockFetchFromKeyStore[RentUkPropertyModel](RentUkProperty, fetchRentUkProperty)
-    mockFetchFromKeyStore[WorkForYourselfModel](WorkForYourself, fetchWorkForYourself)
+    mockFetchFromKeyStore[AreYouSelfEmployedModel](AreYouSelfEmployed, fetchAreYouSelfEmployed)
     mockFetchFromKeyStore[BusinessNameModel](BusinessName, fetchBusinessName)
     mockFetchFromKeyStore[BusinessPhoneNumberModel](BusinessPhoneNumber, fetchBusinessPhoneNumber)
     mockFetchFromKeyStore[Address](BusinessAddress, fetchBusinessAddress)
@@ -101,8 +101,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveIncomeSource: Option[Int] = None,
                                       fetchRentUkProperty: Option[Int] = None,
                                       saveRentUkProperty: Option[Int] = None,
-                                      fetchWorkForYourself: Option[Int] = None,
-                                      saveWorkForYourself: Option[Int] = None,
+                                      fetchAreYouSelfEmployed: Option[Int] = None,
+                                      saveAreYouSelfEmployed: Option[Int] = None,
                                       fetchBusinessName: Option[Int] = None,
                                       saveBusinessName: Option[Int] = None,
                                       fetchBusinessPhoneNumber: Option[Int] = None,
@@ -132,8 +132,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(IncomeSource, saveIncomeSource)
     verifyKeystoreFetch(RentUkProperty, fetchRentUkProperty)
     verifyKeystoreSave(RentUkProperty, saveRentUkProperty)
-    verifyKeystoreFetch(WorkForYourself, fetchWorkForYourself)
-    verifyKeystoreSave(WorkForYourself, saveWorkForYourself)
+    verifyKeystoreFetch(AreYouSelfEmployed, fetchAreYouSelfEmployed)
+    verifyKeystoreSave(AreYouSelfEmployed, saveAreYouSelfEmployed)
     verifyKeystoreFetch(BusinessName, fetchBusinessName)
     verifyKeystoreSave(BusinessName, saveBusinessName)
     verifyKeystoreFetch(BusinessPhoneNumber, fetchBusinessPhoneNumber)

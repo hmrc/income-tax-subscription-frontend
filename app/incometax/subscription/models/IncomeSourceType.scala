@@ -17,7 +17,7 @@
 package incometax.subscription.models
 
 import core.models.{No, Yes}
-import incometax.incomesource.models.{RentUkPropertyModel, WorkForYourselfModel}
+import incometax.incomesource.models.{RentUkPropertyModel, AreYouSelfEmployedModel}
 
 sealed trait IncomeSourceType {
   val source: String
@@ -76,16 +76,16 @@ object IncomeSourceType {
     case `other` => Other
   }
 
-  def apply(rentUkPropertyModel: RentUkPropertyModel, workForYourselfModel: Option[WorkForYourselfModel]): IncomeSourceType =
-    from(rentUkPropertyModel, workForYourselfModel).get
+  def apply(rentUkPropertyModel: RentUkPropertyModel, areYouSelfEmployedModel: Option[AreYouSelfEmployedModel]): IncomeSourceType =
+    from(rentUkPropertyModel, areYouSelfEmployedModel).get
 
-  def from(rentUkPropertyModel: RentUkPropertyModel, workForYourselfModel: Option[WorkForYourselfModel]): Option[IncomeSourceType] =
-    (rentUkPropertyModel, workForYourselfModel) match {
+  def from(rentUkPropertyModel: RentUkPropertyModel, areYouSelfEmployedModel: Option[AreYouSelfEmployedModel]): Option[IncomeSourceType] =
+    (rentUkPropertyModel, areYouSelfEmployedModel) match {
       case (RentUkPropertyModel(Yes, Some(Yes)), _) => Some(Property)
-      case (RentUkPropertyModel(Yes, Some(No)), Some(WorkForYourselfModel(Yes))) => Some(Both)
-      case (RentUkPropertyModel(Yes, Some(No)), Some(WorkForYourselfModel(No))) => Some(Property)
-      case (RentUkPropertyModel(No, _), Some(WorkForYourselfModel(Yes))) => Some(Business)
-      case (RentUkPropertyModel(No, _), Some(WorkForYourselfModel(No))) => Some(Other)
+      case (RentUkPropertyModel(Yes, Some(No)), Some(AreYouSelfEmployedModel(Yes))) => Some(Both)
+      case (RentUkPropertyModel(Yes, Some(No)), Some(AreYouSelfEmployedModel(No))) => Some(Property)
+      case (RentUkPropertyModel(No, _), Some(AreYouSelfEmployedModel(Yes))) => Some(Business)
+      case (RentUkPropertyModel(No, _), Some(AreYouSelfEmployedModel(No))) => Some(Other)
       case _ => None
     }
 

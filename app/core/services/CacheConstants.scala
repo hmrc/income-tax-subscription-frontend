@@ -20,7 +20,7 @@ object CacheConstants {
   // n.b. IncomeSource is still used on the agent flow
   val IncomeSource = "IncomeSource"
   val RentUkProperty = "RentUkProperty"
-  val WorkForYourself = "WorkForYourself"
+  val AreYouSelfEmployed = "AreYouSelfEmployed"
   val PropertyIncome = "PropertyIncome"
   val SoleTrader = "SoleTrader"
   val MatchTaxYear = "MatchTaxYear"

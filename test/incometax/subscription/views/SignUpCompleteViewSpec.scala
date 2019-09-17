@@ -19,7 +19,7 @@ package incometax.subscription.views
 import assets.MessageLookup
 import core.controllers.SignOutController
 import core.models.DateModel
-import core.utils.TestModels.{testSummaryData, testWorkForYourself_no}
+import core.utils.TestModels.{testSummaryData, testAreYouSelfEmployed_no}
 import core.views.ViewSpecTrait
 import incometax.subscription.models.{Both, Business, IncomeSourceType}
 import org.jsoup.Jsoup
@@ -38,7 +38,7 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
     journeyDuration = duration,
     summary = incomeSource match {
       case Both => testSummaryData
-      case _ => testSummaryData.copy(workForYourself = Some(testWorkForYourself_no))
+      case _ => testSummaryData.copy(areYouSelfEmployed = Some(testAreYouSelfEmployed_no))
     }
   )(request, applicationMessages, appConfig)
 

@@ -43,5 +43,5 @@ class CannotSignUpController @Inject()(val baseConfig: BaseControllerConfig,
       )))
   }
 
-  lazy val backUrl: String = incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+  lazy val backUrl: String = incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
 }

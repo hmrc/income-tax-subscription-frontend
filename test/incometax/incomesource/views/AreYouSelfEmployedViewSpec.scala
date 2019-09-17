@@ -16,30 +16,30 @@
 
 package incometax.incomesource.views
 
-import assets.MessageLookup.{Base => coomon, WorkForYourself => messages}
+import assets.MessageLookup.{AreYouSelfEmployed => messages, Base => coomon}
 import core.forms.submapping.YesNoMapping
 import core.views.ViewSpecTrait
-import incometax.incomesource.forms.WorkForYourselfForm
+import incometax.incomesource.forms.AreYouSelfEmployedForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 
-class WorkForYourselfViewSpec extends ViewSpecTrait {
+class AreYouSelfEmployedViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean) = incometax.incomesource.views.html.work_for_yourself(
-    workForYourselfForm = WorkForYourselfForm.workForYourselfForm.addError(addFormErrors),
+  def page(isEditMode: Boolean, addFormErrors: Boolean) = incometax.incomesource.views.html.are_you_selfemployed(
+    areYouSelfEmployedForm = AreYouSelfEmployedForm.areYouSelfEmployedForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
-  "The Work for Yourself View" should {
+  "The Are you self-employed View" should {
 
     val testPage = TestView(
-      name = "Work for Yourself View",
+      name = "Are you self-employed View",
       title = messages.title,
       heading = messages.heading,
       page = page(isEditMode = false, addFormErrors = false))
@@ -48,11 +48,11 @@ class WorkForYourselfViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.para1)
 
-    val form = testPage.getForm("Work for Yourself form")(actionCall = action)
+    val form = testPage.getForm("Are you self-employed form")(actionCall = action)
 
     form.mustHaveRadioSet(
       legend = messages.heading,
-      radioName = WorkForYourselfForm.choice
+      radioName = AreYouSelfEmployedForm.choice
     )(
       YesNoMapping.option_yes -> coomon.yes,
       YesNoMapping.option_no -> coomon.no
@@ -61,7 +61,7 @@ class WorkForYourselfViewSpec extends ViewSpecTrait {
     form.mustHaveContinueButton()
 
     val editModePage = TestView(
-      name = "Edit Work for Yourself View",
+      name = "Edit Are you self-employed View",
       title = messages.title,
       heading = messages.heading,
       page = page(isEditMode = true, addFormErrors = false))
@@ -71,7 +71,7 @@ class WorkForYourselfViewSpec extends ViewSpecTrait {
 
   "Append Error to the page title if the form has error" should {
     def documentCore() = TestView(
-      name = "Work for Yourself View",
+      name = "Are you self-employed View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
       page = page(isEditMode = false, addFormErrors = true)

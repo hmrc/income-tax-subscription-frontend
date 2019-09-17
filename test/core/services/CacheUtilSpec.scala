@@ -34,7 +34,7 @@ class CacheUtilSpec extends UnitTestTrait
 
     "In the respective get calls, return None if they are not in the cachemap" in {
       emptyCacheMap.getRentUkProperty() shouldBe None
-      emptyCacheMap.getWorkForYourself() shouldBe None
+      emptyCacheMap.getAreYouSelfEmployed() shouldBe None
       emptyCacheMap.getIncomeSourceType() shouldBe None
       emptyCacheMap.getOtherIncome() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
@@ -50,7 +50,7 @@ class CacheUtilSpec extends UnitTestTrait
 
     "In the respective get calls, return the models if they are in the cachemap" in {
       testCacheMap.getRentUkProperty() shouldBe Some(testRentUkProperty_property_and_other)
-      testCacheMap.getWorkForYourself() shouldBe Some(testWorkForYourself_yes)
+      testCacheMap.getAreYouSelfEmployed() shouldBe Some(testAreYouSelfEmployed_yes)
       testCacheMap.getIncomeSourceType() shouldBe Some(Both)
       testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
@@ -69,7 +69,7 @@ class CacheUtilSpec extends UnitTestTrait
         "return none even if accounting period is filled in" in {
           testCacheMapCustom(
             rentUkProperty = testRentUkProperty_property_only,
-            workForYourself = None,
+            areYouSelfEmployed = None,
             matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe None
         }
       }
@@ -80,7 +80,7 @@ class CacheUtilSpec extends UnitTestTrait
             testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe Some(getCurrentTaxYear)
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_and_other,
-              workForYourself = testWorkForYourself_yes,
+              areYouSelfEmployed = testAreYouSelfEmployed_yes,
               matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe Some(getCurrentTaxYear)
           }
         }
@@ -90,7 +90,7 @@ class CacheUtilSpec extends UnitTestTrait
             testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearNo).getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_and_other,
-              workForYourself = testWorkForYourself_yes,
+              areYouSelfEmployed = testAreYouSelfEmployed_yes,
               matchTaxYear = testMatchTaxYearNo).getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
           }
         }
@@ -101,7 +101,7 @@ class CacheUtilSpec extends UnitTestTrait
       testCacheMap.getSummary() shouldBe
         IndividualSummary(
           rentUkProperty = testRentUkProperty_property_and_other,
-          workForYourself = testWorkForYourself_yes,
+          areYouSelfEmployed = testAreYouSelfEmployed_yes,
           otherIncome = testOtherIncomeNo,
           matchTaxYear = testMatchTaxYearNo,
           accountingPeriod = testAccountingPeriod,
@@ -118,7 +118,7 @@ class CacheUtilSpec extends UnitTestTrait
       val overPopulatedPropertyCacheMap =
       testCacheMap(
         rentUkProperty = testRentUkProperty_property_only,
-        workForYourself = None,
+        areYouSelfEmployed = None,
         otherIncome = testOtherIncomeNo,
         matchTaxYear = testMatchTaxYearNo,
         accountingPeriodDate = testAccountingPeriod,
@@ -133,7 +133,7 @@ class CacheUtilSpec extends UnitTestTrait
       overPopulatedPropertyCacheMap.getSummary() shouldBe
         IndividualSummary(
           rentUkProperty = testRentUkProperty_property_only,
-          workForYourself = None,
+          areYouSelfEmployed = None,
           otherIncome = testOtherIncomeNo,
           terms = testTerms
         )

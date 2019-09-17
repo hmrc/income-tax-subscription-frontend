@@ -52,7 +52,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
         case Business | Both =>
           incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
         case Property =>
-          incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+          incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
       }
     } else {
       incometax.subscription.controllers.routes.TermsController.show().url

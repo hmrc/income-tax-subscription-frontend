@@ -111,5 +111,5 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
     }
 
   private def defaultInvalidIncomeSourceAction: String =
-    incometax.incomesource.controllers.routes.WorkForYourselfController.show().url
+    incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
 }

@@ -16,8 +16,6 @@
 
 package incometax.incomesource.controllers
 
-import javax.inject.{Inject, Singleton}
-
 import core.auth.SignUpController
 import core.config.{AppConfig, BaseControllerConfig}
 import core.models.{No, Yes}
@@ -25,6 +23,7 @@ import core.services.{AuthService, KeystoreService}
 import incometax.incomesource.forms.RentUkPropertyForm._
 import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.CurrentTimeService
+import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -71,11 +70,12 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
             keystoreService.saveRentUkProperty(data) flatMap { _ =>
               (data.rentUkProperty, data.onlySourceOfSelfEmployedIncome) match {
                 case (No, _) =>
-                  Future.successful(Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show()))
+                  Future.successful(Redirect(incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show()))
                 case (Yes, Some(No)) =>
-                  Future.successful(Redirect(incometax.incomesource.controllers.routes.WorkForYourselfController.show()))
+                  Future.successful(Redirect(incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show()))
                 case (Yes, Some(Yes)) if appConfig.eligibilityPagesEnabled =>
                   Future.successful(Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
+
                 case (Yes, Some(Yes)) =>
                   Future.successful(Redirect(routes.OtherIncomeController.show()))
               }

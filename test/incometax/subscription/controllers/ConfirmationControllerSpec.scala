@@ -91,7 +91,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         mockAuthEnrolled()
         setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
           incomeSource = Some(Other),
-          workForYourself = None,
+          areYouSelfEmployed = None,
           rentUkProperty = None
         ))
         val result: Future[Result] = TestConfirmationController.show(
@@ -115,7 +115,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         setupMockKeystore(
           fetchAll = TestModels.testCacheMapCustom(
             rentUkProperty = None,
-            workForYourself = None
+            areYouSelfEmployed = None
           )
         )
         val result: Future[Result] = TestConfirmationController.show(

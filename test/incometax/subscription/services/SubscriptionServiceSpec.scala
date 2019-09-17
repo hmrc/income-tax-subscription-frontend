@@ -67,7 +67,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
       val nino = TestModels.newNino
       val testSummaryData = IndividualSummary(
         rentUkProperty = testRentUkProperty_property_only,
-        workForYourself = None,
+        areYouSelfEmployed = None,
         otherIncome = No
       )
       val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)

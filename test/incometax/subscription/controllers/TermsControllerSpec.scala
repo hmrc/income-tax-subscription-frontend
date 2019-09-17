@@ -58,7 +58,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         setupMockKeystore(
           fetchAll = testCacheMap(
             rentUkProperty = testRentUkProperty_no_property,
-            workForYourself = testWorkForYourself_yes,
+            areYouSelfEmployed = testAreYouSelfEmployed_yes,
             matchTaxYear = testMatchTaxYearNo,
             accountingPeriodDate = testAccountingPeriod(),
             otherIncome = testOtherIncomeNo
@@ -81,7 +81,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         setupMockKeystore(
           fetchAll = testCacheMap(
             rentUkProperty = testRentUkProperty_no_property,
-            workForYourself = testWorkForYourself_yes,
+            areYouSelfEmployed = testAreYouSelfEmployed_yes,
             matchTaxYear = testMatchTaxYearYes,
             accountingPeriodDate = testAccountingPeriod(),
             otherIncome = testOtherIncomeNo
@@ -105,7 +105,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         setupMockKeystore(
           fetchAll = testCacheMap(
             rentUkProperty = testRentUkProperty_property_only,
-            workForYourself = None,
+            areYouSelfEmployed = None,
             otherIncome = testOtherIncomeNo
           )
         )
@@ -127,7 +127,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         setupMockKeystore(
           fetchAll = testCacheMap(
             rentUkProperty = testRentUkProperty_property_and_other,
-            workForYourself = testWorkForYourself_no,
+            areYouSelfEmployed = testAreYouSelfEmployed_no,
             otherIncome = testOtherIncomeNo
           )
         )
@@ -149,7 +149,7 @@ class TermsControllerSpec extends ControllerBaseSpec
         setupMockKeystore(
           fetchAll = testCacheMap(
             rentUkProperty = testRentUkProperty_no_property,
-            workForYourself = testWorkForYourself_yes,
+            areYouSelfEmployed = testAreYouSelfEmployed_yes,
             matchTaxYear = testMatchTaxYearNo,
             otherIncome = testOtherIncomeNo
           )

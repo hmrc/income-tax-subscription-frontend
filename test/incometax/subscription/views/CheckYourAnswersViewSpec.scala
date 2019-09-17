@@ -23,7 +23,7 @@ import core.utils.{TestModels, UnitTestTrait}
 import core.views.html.helpers.SummaryIdConstants._
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{RentUkPropertyModel, WorkForYourselfModel}
+import incometax.incomesource.models.{RentUkPropertyModel, AreYouSelfEmployedModel}
 import incometax.subscription.models.{IncomeSourceType, IndividualSummary}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
@@ -42,7 +42,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testIncomeSource: IncomeSourceType = TestModels.testIncomeSourceBoth
   val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
-  val testWorkForYourself: WorkForYourselfModel = TestModels.testWorkForYourself_yes
+  val testAreYouSelfEmployed: AreYouSelfEmployedModel = TestModels.testAreYouSelfEmployed_yes
   val testOtherIncome: YesNo = No
   val testSummary = customTestSummary()
 
@@ -50,7 +50,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
                         matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
                         accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod) = IndividualSummary(
     rentUkProperty = rentUkProperty,
-    workForYourself = testWorkForYourself,
+    areYouSelfEmployed = testAreYouSelfEmployed,
     otherIncome = testOtherIncome,
     matchTaxYear = matchTaxYear,
     accountingPeriod = accountingPeriod,
@@ -247,11 +247,11 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       doc.getElementById(sectionId) mustBe null
     }
 
-    "display the correct info for the work for yourself" in {
-      val sectionId = WorkForYourselfId
-      val expectedQuestion = messages.workForYourself
-      val expectedAnswer = testWorkForYourself.doYouWorkForYourself
-      val expectedEditLink = incometax.incomesource.controllers.routes.WorkForYourselfController.show(editMode = true).url
+    "display the correct info for the are you self-employed" in {
+      val sectionId = AreYouSelfEmployedId
+      val expectedQuestion = messages.areYouSelfEmployed
+      val expectedAnswer = testAreYouSelfEmployed.areYouSelfEmployed
+      val expectedEditLink = incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -261,8 +261,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       )
     }
 
-    "do not display work for yourself if rent uk property is answered with YES YES" in {
-      val sectionId = WorkForYourselfId
+    "do not display are you self-employed if rent uk property is answered with YES YES" in {
+      val sectionId = AreYouSelfEmployedId
 
       val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_property_only))
 
