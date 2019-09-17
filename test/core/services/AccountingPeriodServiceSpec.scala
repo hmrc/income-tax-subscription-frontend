@@ -40,7 +40,7 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
 
         mockCurrentDate(currentDate)
 
-        TestAccountingPeriodService.accountingPeriodElligibilty(testStart, testEnd) shouldBe false
+        TestAccountingPeriodService.isElligibleAccountingPeriod(testStart, testEnd) shouldBe false
       }
 
       "the accounting period end date is a year more then the current tax year" in new Setup {
@@ -49,7 +49,7 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
 
         mockCurrentDate(currentDate)
 
-        TestAccountingPeriodService.accountingPeriodElligibilty(testStart, testEnd) shouldBe false
+        TestAccountingPeriodService.isElligibleAccountingPeriod(testStart, testEnd) shouldBe false
       }
 
       "the accounting period is greater than a year" in new Setup {
@@ -58,7 +58,7 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
 
         mockCurrentDate(currentDate)
 
-        TestAccountingPeriodService.accountingPeriodElligibilty(testStart, testEnd) shouldBe false
+        TestAccountingPeriodService.isElligibleAccountingPeriod(testStart, testEnd) shouldBe false
       }
 
       "the accounting period is less than a year" in new Setup(LocalDate.of(2020, 9, 1)) {
@@ -67,7 +67,7 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
 
         mockCurrentDate(currentDate)
 
-        TestAccountingPeriodService.accountingPeriodElligibilty(testStart, testEnd) shouldBe false
+        TestAccountingPeriodService.isElligibleAccountingPeriod(testStart, testEnd) shouldBe false
       }
     }
     "return true" when {
@@ -77,61 +77,7 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
 
         mockCurrentDate(currentDate)
 
-        TestAccountingPeriodService.accountingPeriodElligibilty(testStart, testEnd) shouldBe true
-      }
-    }
-  }
-  "isWholeYear" should {
-    "return false" when {
-      "the accounting period start date and end date does not span a whole year" in new Setup {
-        val testStart: LocalDate = LocalDate.of(2020, 4, 6)
-        val testEnd: LocalDate = LocalDate.of(2021, 4, 4)
-
-        TestAccountingPeriodService.isWholeYear(testStart, testEnd) shouldBe false
-      }
-      "the accounting period start date and end date spans more than a whole year" in new Setup {
-        val testStart: LocalDate = LocalDate.of(2019, 4, 6)
-        val testEnd: LocalDate = LocalDate.of(2020, 4, 6)
-
-        TestAccountingPeriodService.isWholeYear(testStart, testEnd) shouldBe false
-      }
-    }
-    "return true" when {
-      "the accounting period start date and end date spans a whole year exactly" in new Setup {
-        val testStart: LocalDate = LocalDate.of(2019, 4, 6)
-        val testEnd: LocalDate = LocalDate.of(2020, 4, 5)
-
-        TestAccountingPeriodService.isWholeYear(testStart, testEnd) shouldBe true
-      }
-    }
-  }
-  "isValidTaxYear" should {
-    "return false" when {
-      "the end date is before the current tax year" in new Setup {
-        val testStart: LocalDate = LocalDate.of(2018, 4, 6)
-        val testEnd: LocalDate = LocalDate.of(2019, 4, 5)
-
-        mockCurrentDate(currentDate)
-
-        TestAccountingPeriodService.isValidTaxYear(testStart, testEnd) shouldBe false
-      }
-      "the end date is a year after the current tax year" in new Setup {
-        val testStart: LocalDate = LocalDate.of(2020, 4, 7)
-        val testEnd: LocalDate = LocalDate.of(2021, 4, 6)
-
-        mockCurrentDate(currentDate)
-
-        TestAccountingPeriodService.isValidTaxYear(testStart, testEnd) shouldBe false
-      }
-    }
-    "return true" when {
-      "the end date is in the range for the current tax year" in new Setup{
-        val testStart: LocalDate = LocalDate.of(2019, 4, 6)
-        val testEnd: LocalDate = LocalDate.of(2020, 4, 5)
-
-        mockCurrentDate(currentDate)
-
-        TestAccountingPeriodService.isValidTaxYear(testStart, testEnd) shouldBe true
+        TestAccountingPeriodService.isElligibleAccountingPeriod(testStart, testEnd) shouldBe true
       }
     }
   }
