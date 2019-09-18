@@ -23,11 +23,16 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider) {
+
   def isEligibleAccountingPeriod(startDate: LocalDate, endDate: LocalDate): Boolean = {
     val isWholeYear = startDate.minusDays(1).plusYears(1) == endDate
     val currentTaxYearEndYear = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate())
     val isValidTaxYear = endDate.getYear >= currentTaxYearEndYear && endDate.getYear < currentTaxYearEndYear + 1
 
     isWholeYear && isValidTaxYear
+  }
+
+  def isEligibleAccountingPeriod(startDate: LocalDate, endDate: LocalDate): Boolean = {
+    startDate.plusDays(4).plusYears(1) <= endDate
   }
 }

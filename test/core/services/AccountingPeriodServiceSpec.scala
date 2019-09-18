@@ -69,7 +69,17 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
 
         TestAccountingPeriodService.isEligibleAccountingPeriod(testStart, testEnd) shouldBe false
       }
+
+      "the accounting period start date is less than the current tax year" in new Setup {
+        val testStart: LocalDate = LocalDate.of(2019, 3, 31)
+        val testEnd: LocalDate = LocalDate.of(2020, 4, 5)
+
+        mockCurrentDate(currentDate)
+
+        TestAccountingPeriodService.isEligibleAccountingPeriodEnhancement(testStart, testEnd) shouldBe false
+      }
     }
+
     "return true" when {
       "the accounting period end date is in the current tax year and is a period of exactly one year" in new Setup {
         val testStart: LocalDate = LocalDate.of(2019, 4, 6)
@@ -78,6 +88,24 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
         mockCurrentDate(currentDate)
 
         TestAccountingPeriodService.isEligibleAccountingPeriod(testStart, testEnd) shouldBe true
+      }
+
+      "the accounting period end date is in the current tax year and is a period of exactly one year and five days" in new Setup {
+        val testStart: LocalDate = LocalDate.of(2019, 4, 1)
+        val testEnd: LocalDate = LocalDate.of(2020, 4, 5)
+
+        mockCurrentDate(currentDate)
+
+        TestAccountingPeriodService.isEligibleAccountingPeriodEnhancement(testStart, testEnd) shouldBe true
+      }
+
+      "the accounting period end date is in the current tax year and is a period of exactly one year and five dayss" in new Setup {
+        val testStart: LocalDate = LocalDate.of(2020, 4, 1)
+        val testEnd: LocalDate = LocalDate.of(2021, 4, 5)
+
+        mockCurrentDate(currentDate)
+
+        TestAccountingPeriodService.isEligibleAccountingPeriodEnhancement(testStart, testEnd) shouldBe true
       }
     }
   }
