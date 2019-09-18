@@ -40,7 +40,7 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
 
         mockCurrentDate(currentDate)
 
-        TestAccountingPeriodService.isElligibleAccountingPeriod(testStart, testEnd) shouldBe false
+        TestAccountingPeriodService.isEligibleAccountingPeriod(testStart, testEnd) shouldBe false
       }
 
       "the accounting period end date is a year more then the current tax year" in new Setup {
@@ -49,7 +49,7 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
 
         mockCurrentDate(currentDate)
 
-        TestAccountingPeriodService.isElligibleAccountingPeriod(testStart, testEnd) shouldBe false
+        TestAccountingPeriodService.isEligibleAccountingPeriod(testStart, testEnd) shouldBe false
       }
 
       "the accounting period is greater than a year" in new Setup {
@@ -58,7 +58,7 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
 
         mockCurrentDate(currentDate)
 
-        TestAccountingPeriodService.isElligibleAccountingPeriod(testStart, testEnd) shouldBe false
+        TestAccountingPeriodService.isEligibleAccountingPeriod(testStart, testEnd) shouldBe false
       }
 
       "the accounting period is less than a year" in new Setup(LocalDate.of(2020, 9, 1)) {
@@ -67,7 +67,7 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
 
         mockCurrentDate(currentDate)
 
-        TestAccountingPeriodService.isElligibleAccountingPeriod(testStart, testEnd) shouldBe false
+        TestAccountingPeriodService.isEligibleAccountingPeriod(testStart, testEnd) shouldBe false
       }
     }
     "return true" when {
@@ -77,7 +77,7 @@ class AccountingPeriodTestAccountingPeriodServiceSpec extends UnitSpec with Befo
 
         mockCurrentDate(currentDate)
 
-        TestAccountingPeriodService.isElligibleAccountingPeriod(testStart, testEnd) shouldBe true
+        TestAccountingPeriodService.isEligibleAccountingPeriod(testStart, testEnd) shouldBe true
       }
     }
   }
