@@ -17,7 +17,6 @@
 package incometax.subscription.connectors
 
 import core.config.AppConfig
-import incometax.subscription.httpparsers.{GetSubscriptionResponseHttpParserV2 => ApiV2}
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser._
 import incometax.subscription.models.SubscriptionRequestV2
 import javax.inject.{Inject, Singleton}
@@ -35,8 +34,5 @@ class SubscriptionConnectorV2 @Inject()(val appConfig: AppConfig,
 
   def subscribe(request: SubscriptionRequestV2)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] =
     http.POST[SubscriptionRequestV2, SubscriptionResponse](subscriptionUrl(request.nino), request)
-
-  def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[ApiV2.GetSubscriptionResponse] =
-    http.GET[ApiV2.GetSubscriptionResponse](subscriptionUrl(nino))
 
 }

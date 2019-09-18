@@ -16,8 +16,8 @@
 
 package incometax.subscription.services
 
-import core.config.featureswitch.FeatureSwitching
-import core.models.No
+import core.config.featureswitch.{FeatureSwitching, UseSubscriptionApiV2}
+import core.models.{Cash, No}
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.{TestConstants, TestModels}
@@ -81,28 +81,71 @@ class SubscriptionServiceSpec extends TestSubscriptionService
     }
   }
 
-  "SubscriptionService.submitSubscription" should {
-    def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData, arn = None))
+  "subscriptionService.buildRequestV2" should {
+    "convert the user's data into the correct format" in {
+      val nino = TestModels.newNino
+      val request = TestSubscriptionService.buildRequestV2(nino, testSummaryData, None)
 
-    "return the safeId when the subscription is successful" in {
-      setupMockSubscribeSuccess(testSubmissionRequest)
-      call.right.value shouldBe SubscriptionSuccess(testMTDID)
+      request.nino mustBe nino
+      request.businessIncome.get.accountingPeriod.startDate mustBe testAccountingPeriod.startDate
+      request.businessIncome.get.accountingPeriod.endDate mustBe testAccountingPeriod.endDate
+      request.businessIncome.get.accountingMethod mustBe Cash
+      request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
+      request.propertyIncome.isDefined mustBe false
+      request.isAgent mustBe false
     }
+  }
 
-    "return the error if subscription fails on bad request" in {
-      setupMockSubscribeFailure(testSubmissionRequest)
-      call.left.value shouldBe SubscriptionFailureResponse(BAD_REQUEST)
+  "SubscriptionService.submitSubscription" when {
+    "the UseSubscriptionApiV2 feature switch is enabled" should {
+      enable(UseSubscriptionApiV2)
+
+      def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData, arn = None))
+
+      "return the safeId when the subscription is successful" in {
+        setupMockSubscribeSuccess(testSubmissionRequest)
+        call.right.value shouldBe SubscriptionSuccess(testMTDID)
+      }
+
+      "return the error if subscription fails on bad request" in {
+        setupMockSubscribeFailure(testSubmissionRequest)
+        call.left.value shouldBe SubscriptionFailureResponse(BAD_REQUEST)
+      }
+
+      "return the error if subscription fails on bad formatting" in {
+        setupMockSubscribeBadFormatting(testSubmissionRequest)
+        call.left.value shouldBe BadlyFormattedSubscriptionResponse
+      }
+
+      "return the error if subscription throws an exception" in {
+        setupMockSubscribeException(testSubmissionRequest)
+        intercept[Exception](call) shouldBe testException
+      }
     }
+    "the UseSubscriptionApiV2 feature switch is disabled" should {
+      disable(UseSubscriptionApiV2)
 
-    "return the error if subscription fails on bad formatting" in {
-      setupMockSubscribeBadFormatting(testSubmissionRequest)
-      call.left.value shouldBe BadlyFormattedSubscriptionResponse
-    }
+      def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData, arn = None))
 
-    "return the error if subscription throws an exception" in {
-      setupMockSubscribeException(testSubmissionRequest)
-      intercept[Exception](call) shouldBe testException
+      "return the safeId when the subscription is successful" in {
+        setupMockSubscribeSuccess(testSubmissionRequest)
+        call.right.value shouldBe SubscriptionSuccess(testMTDID)
+      }
 
+      "return the error if subscription fails on bad request" in {
+        setupMockSubscribeFailure(testSubmissionRequest)
+        call.left.value shouldBe SubscriptionFailureResponse(BAD_REQUEST)
+      }
+
+      "return the error if subscription fails on bad formatting" in {
+        setupMockSubscribeBadFormatting(testSubmissionRequest)
+        call.left.value shouldBe BadlyFormattedSubscriptionResponse
+      }
+
+      "return the error if subscription throws an exception" in {
+        setupMockSubscribeException(testSubmissionRequest)
+        intercept[Exception](call) shouldBe testException
+      }
     }
   }
 
