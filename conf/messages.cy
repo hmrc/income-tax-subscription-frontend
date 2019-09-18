@@ -113,9 +113,9 @@ business.address.edit.add_line_3                                = Cyfeiriad - ll
 
 
 # Match tax year
-business.match_tax_year.title.signup                            = A yw''ch cyfnod cyfrifyddu yn paru â''r flwyddyn dreth?
-business.match_tax_year.heading.signup                          = A yw''ch cyfnod cyfrifyddu yn paru â''r flwyddyn dreth?
-business.match_tax_year.line_1.signup                           = Mae''r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Fel arfer, mae''ch cyfnod cyfrifyddu yr un peth, oni bai eich bod wedi dewis gwahanol ddyddiadau wrth gofrestru ar gyfer Hunanasesiad.
+business.match_tax_year.title.signup                            = A yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill?
+business.match_tax_year.heading.signup                          = A yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill?
+business.match_tax_year.line_1.signup                           = Mae’r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Mae’ch cyfnod cyfrifyddu’r un peth oni bai eich bod eisoes wedi dewis gwahanol ddyddiadau.
 
 business.match_tax_year.title.registration                      = Ydych chi am baru''ch cyfnod cyfrifyddu â''r flwyddyn dreth?
 business.match_tax_year.heading.registration                    = Ydych chi am baru''ch cyfnod cyfrifyddu â''r flwyddyn dreth?
@@ -292,8 +292,8 @@ error.property.income.invalid                                   = Rhaid i chi dd
 error.date.empty                                                = Rhaid i chi nodi dyddiad
 error.date.invalid                                              = Rhaid i chi nodi dyddiad dilys
 
-error.business.match_tax_year.empty                             = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.business.match_tax_year.invalid                           = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
+error.business.match_tax_year.empty                             = Dewiswch ‘iawn’ os yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill
+error.business.match_tax_year.invalid                           = Dewiswch ‘iawn’ os yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill
 
 error.business.current_financial_period_prior.empty             = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.business.current_financial_period_prior.invalid           = Rhaid i chi ddewis opsiwn i fynd yn eich blaen

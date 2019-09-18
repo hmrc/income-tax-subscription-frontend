@@ -113,9 +113,9 @@ business.address.edit.add_line_3                                = Address line 3
 
 
 # Match tax year
-business.match_tax_year.title.signup                            = Does your accounting period match the tax year?
-business.match_tax_year.heading.signup                          = Does your accounting period match the tax year?
-business.match_tax_year.line_1.signup                           = The tax year runs from 6 April to 5 April. Your accounting period is usually the same, unless you chose different dates when you registered for Self Assessment.
+business.match_tax_year.title.signup                            = Is your accounting period from 6 April to 5 April?
+business.match_tax_year.heading.signup                          = Is your accounting period from 6 April to 5 April?
+business.match_tax_year.line_1.signup                           = The tax year runs from 6 April to 5 April. Your accounting period is the same, unless you have previously chosen different dates.
 
 business.match_tax_year.title.registration                      = Do you want to match your accounting period to the tax year?
 business.match_tax_year.heading.registration                    = Do you want to match your accounting period to the tax year?
@@ -292,8 +292,8 @@ error.property.income.invalid                                   = You must selec
 error.date.empty                                                = You must enter a date
 error.date.invalid                                              = You must enter a valid date
 
-error.business.match_tax_year.empty                             = You must select an option to continue
-error.business.match_tax_year.invalid                           = You must select an option to continue
+error.business.match_tax_year.empty                             = Select yes if your accounting period is from 6 April to 5 April
+error.business.match_tax_year.invalid                           = Select yes if your accounting period is from 6 April to 5 April
 
 error.business.current_financial_period_prior.empty             = You must select an option to continue
 error.business.current_financial_period_prior.invalid           = You must select an option to continue
