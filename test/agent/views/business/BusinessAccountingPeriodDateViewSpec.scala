@@ -20,29 +20,33 @@ import agent.assets.MessageLookup.{AccountingPeriod => messages, Base => common}
 import agent.forms.AccountingPeriodDateForm
 import agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
 import core.views.ViewSpecTrait
+import incometax.util.AccountingPeriodUtil
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import play.twirl.api.Html
 
 class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
+  val taxEndYear = AccountingPeriodUtil.getCurrentTaxYear.taxEndYear
 
-  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean, addFormErrors: Boolean) = agent.views.html.business.accounting_period_date(
+  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean, addFormErrors: Boolean): Html = agent.views.html.business.accounting_period_date(
     accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     viewType = viewType,
-    isEditMode = isEditMode
+    isEditMode = isEditMode,
+    taxEndYear = taxEndYear
   )(FakeRequest(), applicationMessages, appConfig)
 
   def documentCore(prefix: String, suffix: Option[String] = None, viewType: AccountingPeriodViewType, isEditMode: Boolean) = TestView(
     name = s"$prefix Business Accounting Period Date View${suffix.fold("")(x => x)}",
     title = messages.title,
     heading = (isEditMode, viewType) match {
-      case (true, _) => messages.heading_editMode
-      case (_, CurrentAccountingPeriodView) => messages.heading_current
-      case (_, NextAccountingPeriodView) => messages.heading_next
+      case (true, _) => messages.heading
+      case (_, CurrentAccountingPeriodView) => messages.heading
+      case (_, NextAccountingPeriodView) => messages.heading
     },
     page = page(viewType = viewType, isEditMode = isEditMode, addFormErrors = false)
   )
@@ -68,8 +72,8 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
           legend = common.startDate,
           exampleDate =
             viewType match {
-              case CurrentAccountingPeriodView => messages.exampleStartDate_current
-              case _ => messages.exampleStartDate_next
+              case CurrentAccountingPeriodView => messages.exampleStartDate(taxEndYear - 1)
+              case _ => messages.exampleStartDate(taxEndYear)
             }
         )
 
@@ -78,8 +82,8 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
           legend = common.endDate,
           exampleDate =
             viewType match {
-              case CurrentAccountingPeriodView => messages.exampleEndDate_current
-              case _ => messages.exampleEndDate_next
+              case CurrentAccountingPeriodView => messages.exampleEndDate(taxEndYear)
+              case _ => messages.exampleEndDate(taxEndYear + 1)
             }
         )
 
@@ -90,8 +94,9 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
           isEditMode = true
         )
 
-        editModePage.mustHaveUpdateButton()
+        editModePage.mustHavePara(messages.line1)
 
+        editModePage.mustHaveUpdateButton()
     }
   }
 
@@ -100,7 +105,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
     def documentCore() = TestView(
       name = s"Business Accounting Period Date View",
       title = titleErrPrefix + messages.title,
-      heading = messages.heading_current,
+      heading = messages.heading,
       page = page(viewType = CurrentAccountingPeriodView, isEditMode = false, addFormErrors = true)
     )
 

@@ -48,7 +48,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         res should have(
           httpStatus(OK),
           pageTitle(Messages("agent.accounting_period.title")),
-          mainHeading(Messages("agent.accounting_period.heading.current")),
+          mainHeading(Messages("agent.accounting_period.heading")),
           dateField("startDate", testAccountingPeriod.startDate),
           dateField("endDate", testAccountingPeriod.endDate)
         )
@@ -78,7 +78,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         res should have(
           httpStatus(OK),
           pageTitle(Messages("agent.accounting_period.title")),
-          mainHeading(Messages("agent.accounting_period.heading.current")),
+          mainHeading(Messages("agent.accounting_period.heading")),
           dateField("startDate", DateModel("", "", "")),
           dateField("endDate", DateModel("", "", ""))
         )
@@ -110,7 +110,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         res should have(
           httpStatus(OK),
           pageTitle(Messages("agent.accounting_period.title")),
-          mainHeading(Messages("agent.accounting_period.heading.next")),
+          mainHeading(Messages("agent.accounting_period.heading")),
           dateField("startDate", testAccountingPeriod.startDate),
           dateField("endDate", testAccountingPeriod.endDate)
         )
@@ -140,7 +140,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         res should have(
           httpStatus(OK),
           pageTitle(Messages("agent.accounting_period.title")),
-          mainHeading(Messages("agent.accounting_period.heading.next")),
+          mainHeading(Messages("agent.accounting_period.heading")),
           dateField("startDate", DateModel("", "", "")),
           dateField("endDate", DateModel("", "", ""))
         )

@@ -581,14 +581,13 @@ agent.business.register_next_accounting_period.line_1                  = You can
 agent.business.register_next_accounting_period.button                  = Continue to sign up
 
 ## Business Accounting Period page
-agent.accounting_period.title                                         = Business accounting period
-agent.accounting_period.heading                                       = What are the dates of your accounting period?
-agent.accounting_period.heading.current                               = Enter your client''s current accounting period dates
-agent.accounting_period.heading.next                                  = Enter your client''s next accounting period dates
-agent.accounting_period.exampleStartDate.current                      = For example, 6 4 2017
-agent.accounting_period.exampleEndDate.current                        = For example, 5 4 2018
-agent.accounting_period.exampleStartDate.next                         = For example, 1 4 2018
-agent.accounting_period.exampleEndDate.next                           = For example, 31 3 2019
+agent.accounting_period.title                                         = What accounting period are you signing your client up for?
+agent.accounting_period.heading                                       = What accounting period are you signing your client up for?
+agent.accounting_period.line1                                         = For example, if your accounting period is 1 August {0} to 31 July {1}, you will be signing up for the {1} to {2} tax year.
+agent.accounting_period.exampleStartDate.current                      = For example, 1 4 {0}
+agent.accounting_period.exampleEndDate.current                        = For example, 31 3 {0}
+agent.accounting_period.exampleStartDate.next                         = For example, 1 4 {0}
+agent.accounting_period.exampleEndDate.next                           = For example, 31 3 {0}
 
 # Sole trader page
 agent.business.sole_trader.title                                      = Are you a sole trader?

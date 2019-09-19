@@ -17,7 +17,6 @@
 package agent.controllers.business
 
 import javax.inject.{Inject, Singleton}
-
 import agent.auth.AuthenticatedController
 import agent.forms._
 import agent.models.enums._
@@ -29,6 +28,7 @@ import core.services.AuthService
 import core.utils.Implicits._
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.IncomeSourceType
+import incometax.util.{AccountingPeriodUtil, CurrentDateProvider}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -41,16 +41,21 @@ import scala.concurrent.Future
 class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseControllerConfig,
                                                        val messagesApi: MessagesApi,
                                                        val keystoreService: KeystoreService,
-                                                       val authService: AuthService
+                                                       val authService: AuthService,
+                                                       val currentDateProvider: CurrentDateProvider
                                                       ) extends AuthenticatedController {
 
-  def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, viewType: AccountingPeriodViewType)(implicit request: Request[_]): Html =
+  def view(form: Form[AccountingPeriodModel],
+           backUrl: String, isEditMode: Boolean,
+           viewType: AccountingPeriodViewType
+          )(implicit request: Request[_]): Html =
     agent.views.html.business.accounting_period_date(
       form,
       agent.controllers.business.routes.BusinessAccountingPeriodDateController.submit(editMode = isEditMode),
       isEditMode,
       backUrl,
-      viewType
+      viewType,
+      AccountingPeriodUtil.getCurrentTaxYear.taxEndYear
     )
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -70,6 +75,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
+
       whichView.flatMap {
         viewType =>
           AccountingPeriodDateForm.accountingPeriodDateForm.bindFromRequest().fold(
