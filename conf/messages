@@ -147,9 +147,9 @@ business.register_next_accounting_period.continue                = Continue to s
 ## Business Accounting Period page
 accounting_period.title                                         = Business accounting period
 accounting_period.heading                                       = Change your accounting period dates
-accounting_period.heading.signup                                = Enter your accounting period dates
+accounting_period.heading.signup                                = What accounting period are you signing up for?
 accounting_period.heading.registration                          = When is your current accounting period?
-accounting_period.line_1.signup                                 = Your accounting period is usually 12 months. For example, 1 May 2017 to 30 April 2018.
+accounting_period.line_1.signup                                 = For example, if your accounting period is 1 August 2019 to 31 July 2020, you will be signing up for the 2020 to 2021 tax year.
 accounting_period.line_1.registration                           = Your accounting period is usually 12 months. For example, 6 April 2017 to 5 April 2018.
 accounting_period.exampleStartDate.signup                       = For example, 1 4 2018
 accounting_period.exampleEndDate.signup                         = For example, 31 3 2019
@@ -902,7 +902,7 @@ unplanned_outage.bullet2                                               = get <a 
 # Not eligible for income tax
 not_eligible_for_income_tax.title                                      = You cannot use this service yet
 not_eligible_for_income_tax.heading                                    = You cannot use this service yet
-not_eligible_for_income_tax.para1                                      = This is a trial service. You may be able to use the ''Report your income and expenses quarterly'' service in the future.
+not_eligible_for_income_tax.para1                                      = This is a trial service. You may be able to use the ''Use software to send Income Tax updates'' service in the future.
 
 # Not eligible for income tax (agents)
 agent_not_eligible_for_income_tax.title                                = You cannot use this service yet
