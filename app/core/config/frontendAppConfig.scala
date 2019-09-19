@@ -146,7 +146,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override lazy val btaUrl = loadConfig(s"bta.url")
 
   // Software choices link
-  override lazy val softwareUrl: String = "https://www.gov.uk/guidance/software-for-sending-income-tax-updates"
+  override lazy val softwareUrl: String = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
 
   // Agent Auth link
   override lazy val agentAuthUrl = loadConfig(s"agent-auth.url")

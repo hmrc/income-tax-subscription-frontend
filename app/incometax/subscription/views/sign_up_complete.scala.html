@@ -59,6 +59,7 @@
                 <li>@Messages("sign-up-complete.whatHappensNext.number3")</li>
                 <li>@Messages("sign-up-complete.whatHappensNext.number4")</li>
                 <li>@Messages("sign-up-complete.whatHappensNext.number5")</li>
+                <li>@Messages("sign-up-complete.whatHappensNext.number6")</li>
         </ol>
 
         <p>@Messages("sign-up-complete.whatHappensNext.para1")</p>
@@ -67,9 +68,7 @@
             <li>@Messages("sign-up-complete.whatHappensNext.bullet1")</li>
             <li>@Html(Messages("sign-up-complete.whatHappensNext.bullet2", appConfig.btaUrl))</li>
         </ul>
-        @if(incomeSource == Both) {
             <p>@Messages("sign-up-complete.whatHappensNext.para2")</p>
-        }
     </section>
 
     @signOutButton()

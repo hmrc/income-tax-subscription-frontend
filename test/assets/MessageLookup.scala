@@ -420,15 +420,16 @@ object MessageLookup {
 
     object whatHappensNext {
       val heading = "What happens next"
-      val linkText = "Choose accounting software"
-      val number1 = s"$linkText if you have not already."
+      val linkText = "Make sure you have"
+      val number1 = s"$linkText compatible software (opens in a new tab)."
       val number2 = "Sign in to the software with your Government Gateway details and authorise it to interact with HMRC."
-      val number3 = "Add any income and expenses that you have already received or paid out."
-      val number4 = "Record your future income and expenses using software, then send HMRC a report at least every quarter."
-      val number5 = "Add any other income sources in your final report, you need to send this report by 31 January."
+      val number3 = "Add any income and expenses you have already received or paid out from the start of your tax year into your software."
+      val number4 = "Record all income and expenses in your software from now on."
+      val number5 = "Send HMRC a report every 3 months."
+      val number6 = "Add any other income sources and send this as a final report to HMRC by 31 January."
       val para1 = "After you have sent a report you will get an Income Tax estimate. You can view your estimate and report deadlines in your:"
       val bullet1 = "accounting software"
-      val bullet2 = "business tax account"
+      val bullet2 = "HMRC online account"
       val para2 = "It may take a few hours for your information to appear."
     }
 
