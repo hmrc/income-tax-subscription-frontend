@@ -17,9 +17,10 @@
 package incometax.subscription.views
 
 import assets.MessageLookup
+import assets.MessageLookup.SignUpComplete
 import core.controllers.SignOutController
 import core.models.DateModel
-import core.utils.TestModels.{testSummaryData, testAreYouSelfEmployed_no}
+import core.utils.TestModels.{testAreYouSelfEmployed_no, testSummaryData}
 import core.views.ViewSpecTrait
 import incometax.subscription.models.{Both, Business, IncomeSourceType}
 import org.jsoup.Jsoup
@@ -84,6 +85,7 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
         list.get(2).text mustBe MessageLookup.SignUpComplete.whatHappensNext.number3
         list.get(3).text mustBe MessageLookup.SignUpComplete.whatHappensNext.number4
         list.get(4).text mustBe MessageLookup.SignUpComplete.whatHappensNext.number5
+        list.get(5).text mustBe MessageLookup.SignUpComplete.whatHappensNext.number6
       }
 
       s"has a paragraph referring to Income Tax Estimate '${MessageLookup.SignUpComplete.whatHappensNext.para1}'" in {
@@ -101,8 +103,8 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
         bul2.select("a").attr("href") mustBe appConfig.btaUrl
       }
 
-      s"does not have a paragraph stating information to appear '${MessageLookup.SignUpComplete.whatHappensNext.para2}'" in {
-        document.select("#whatHappensNext p").text() must not include MessageLookup.SignUpComplete.whatHappensNext.para2
+      s"does have a paragraph stating information to appear '${MessageLookup.SignUpComplete.whatHappensNext.para2}'" in {
+        document.select("#whatHappensNext p").text() must include (MessageLookup.SignUpComplete.whatHappensNext.para2)
       }
 
     }

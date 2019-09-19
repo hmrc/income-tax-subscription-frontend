@@ -263,14 +263,15 @@ confirmation.whatHappensNext.para4                              = Gall gymryd rh
 sign-up-complete.title                                          = Rydych wedi gorffen cofrestru
 sign-up-complete.heading                                        = Rydych wedi gorffen cofrestru
 sign-up-complete.whatHappensNext.heading                        = Yr hyn sy''n digwydd nesaf
-sign-up-complete.whatHappensNext.number1                        = <a id="accountingSoftware" href="{0}">Dewiswch feddalwedd cyfrifyddu</a> os nad ydych wedi gwneud hynny eisoes.
-sign-up-complete.whatHappensNext.number2                        = Mewngofnodwch i''r meddalwedd gyda''ch manylion Porth y Llywodraeth a''i awdurdodi i ryngweithio â CThEM.
-sign-up-complete.whatHappensNext.number3                        = Ychwanegwch unrhyw incwm yr ydych eisoes wedi''i gael a threuliau yr ydych eisoes wedi''u talu.
-sign-up-complete.whatHappensNext.number4                        = Cofnodwch eich incwm a''ch treuliau yn y dyfodol gan ddefnyddio meddalwedd, yna anfonwch adroddiad at CThEM bob chwarter, o leiaf.
-sign-up-complete.whatHappensNext.number5                        = Ychwanegwch unrhyw ffynonellau eraill o incwm fel rhan o''ch adroddiad terfynol - rhaid i chi anfon yr adroddiad hwn erbyn 31 Ionawr.
+sign-up-complete.whatHappensNext.number1                        = Sicrhewch fod gennych <a id="accountingSoftware" href="{0}">feddalwedd sy''n cydweddu (yn agor mewn tab newydd)</a>.
+sign-up-complete.whatHappensNext.number2                        = Mewngofnodwch i''r feddalwedd gyda''ch manylion ar gyfer Porth y Llywodraeth a''i hawdurdodi i ryngweithio â CThEM.
+sign-up-complete.whatHappensNext.number3                        = Ychwanegwch unrhyw incwm a threuliau rydych eisoes wedi''u cael neu wedi''u talu allan ers cychwyn eich blwyddyn dreth i mewn i''ch meddalwedd.
+sign-up-complete.whatHappensNext.number4                        = Cofnodwch eich holl incwm a threuliau yn eich meddalwedd o hyn ymlaen.
+sign-up-complete.whatHappensNext.number5                        = Anfonwch adroddiad at CThEM bob 3 mis.
+sign-up-complete.whatHappensNext.number6                        = Ychwanegwch unrhyw ffynonellau eraill o incwm a''i hanfon fel adroddiad terfynol i CThEM erbyn 31 Ionawr.
 sign-up-complete.whatHappensNext.para1                          = Ar ôl i chi anfon adroddiad, cewch amcangyfrif o''ch Treth Incwm. Gallwch weld eich amcangyfrif a dyddiadau cau''ch adroddiadau yn eich:
 sign-up-complete.whatHappensNext.bullet1                        = meddalwedd cyfrifyddu
-sign-up-complete.whatHappensNext.bullet2                        = <a id="bta" href="{0}">cyfrif treth busnes</a>
+sign-up-complete.whatHappensNext.bullet2                        = <a id="bta" href="{0}">cyfrif CThEM ar-lein</a>
 sign-up-complete.whatHappensNext.para2                          = Gall gymryd rhai oriau cyn i chi allu gweld eich gwybodaeth.
 
 
