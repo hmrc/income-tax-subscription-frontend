@@ -17,32 +17,30 @@
 package core.services
 
 import java.time.LocalDate
-import java.time.Month._
+import java.time.Month.{APRIL, MARCH}
+
+import incometax.util.AccountingPeriodUtil._
 import incometax.util.{AccountingPeriodUtil, CurrentDateProvider}
 import javax.inject.{Inject, Singleton}
+
+import Ordering.Implicits._
 
 @Singleton
 class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider) {
 
   def checkEligibleAccountingPeriod(startDate: LocalDate, endDate: LocalDate): Boolean = {
-    val endsOnFifth = endDate.getMonth == APRIL && endDate.getDayOfMonth == 5
-    val isEligible = isAccountingPeriodEligible(startDate, endDate)
+    val taxYear = AccountingPeriodUtil.getTaxEndYear(endDate)
 
-    if (endsOnFifth) isEligible && isEligibleStartDate(startDate)
-    else isEligible && isWholeTaxYear(startDate, endDate)
+    val isEligibleTaxYear = taxYear == currentTaxYear || taxYear == currentTaxYear + 1
+
+    val isEligibleStartDate = if (endDate.getDayOfMonth == 5 && endDate.getMonth == APRIL) {
+      val minimumStartDate = LocalDate.of(endDate.getYear - 1, APRIL, 1)
+      val maximumStartDate = LocalDate.of(endDate.getYear - 1, APRIL, 6)
+      startDate >= minimumStartDate && startDate <= maximumStartDate
+    } else startDate == endDate.minusYears(1).plusDays(1)
+
+    isEligibleTaxYear && isEligibleStartDate
   }
 
-  private def isWholeTaxYear(startDate: LocalDate, endDate: LocalDate): Boolean =
-    startDate.minusDays(1).plusYears(1) == endDate
-
-  private def isAccountingPeriodEligible(startDate: LocalDate, endDate: LocalDate): Boolean = {
-    val currentTaxYear = AccountingPeriodUtil.getCurrentTaxEndYear
-    val comparisonTaxYear = AccountingPeriodUtil.getTaxEndYear(endDate)
-
-    (comparisonTaxYear >= currentTaxYear) && (comparisonTaxYear <= currentTaxYear + 1)
-  }
-
-  private def isEligibleStartDate(startDate: LocalDate): Boolean = {
-    startDate.getMonth == APRIL && startDate.getDayOfMonth >= 1
-  }
+  def currentTaxYear: Int = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate())
 }
