@@ -147,9 +147,9 @@ business.register_next_accounting_period.continue                = Parhau i gofr
 ## Business Accounting Period page
 accounting_period.title                                         = Cyfnod cyfrifyddu''r busnes
 accounting_period.heading                                       = Newidiwch ddyddiadau''ch cyfnod cyfrifyddu
-accounting_period.heading.signup                                = Nodwch ddyddiadau''ch cyfnod cyfrifyddu
+accounting_period.heading.signup                                = Am ba gyfnod cyfrifyddu rydych yn cofrestru ar ei chyfer?
 accounting_period.heading.registration                          = Pryd y mae''ch cyfnod cyfrifyddu presennol?
-accounting_period.line_1.signup                                 = Fel arfer, 12 mis yw''ch cyfnod cyfrifyddu. Er enghraifft, 1 Mai 2017 hyd at 30 Ebrill 2018.
+accounting_period.line_1.signup                                 = Er enghraifft, os eich cyfnod cyfrifyddu yw 1 Awst 2019 i 31 Gorffennaf 2020, byddwch yn cofrestru ar gyfer y flwyddyn dreth 2020 i 2021.
 accounting_period.line_1.registration                           = Fel arfer, 12 mis yw''ch cyfnod cyfrifyddu. Er enghraifft, 6 Ebrill 2017 hyd at 5 Ebrill 2018.
 accounting_period.exampleStartDate.signup                       = Er enghraifft, 1 4 2018
 accounting_period.exampleEndDate.signup                         = Er enghraifft, 31 3 2019
@@ -894,7 +894,7 @@ confirmation.unauthorised.whatHappensNext.para4                       = Gall gym
 # Not eligible for income tax
 not_eligible_for_income_tax.title                                      = Ni allwch ddefnyddio''r gwasanaeth hwn eto
 not_eligible_for_income_tax.heading                                    = Ni allwch ddefnyddio''r gwasanaeth hwn eto
-not_eligible_for_income_tax.para1                                      = Mae hwn yn wasanaeth sy''n cael ei brofi. Efallai y bydd modd i chi ddefnyddio''r gwasanaeth ''Rhoi gwybod am eich incwm a''ch treuliau bob chwarter'' yn y dyfodol.
+not_eligible_for_income_tax.para1                                      = Mae hwn yn wasanaeth sy''n cael ei brofi. Efallai y gallwch ddefnyddio''r gwasanaeth ''Defnyddio meddalwedd i anfon diweddariadau Treth Incwm'' yn y dyfodol.
 
 # Not eligible for income tax (agent)
 agent_not_eligible_for_income_tax.title                                = Ni allwch ddefnyddio''r gwasanaeth hwn eto

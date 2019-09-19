@@ -164,10 +164,10 @@ object MessageLookup {
 
   object AccountingPeriod {
     val title = "Business accounting period"
-    val heading_signup = "Enter your accounting period dates"
+    val heading_signup = "What accounting period are you signing up for?"
     val heading_registration = "When is your current accounting period?"
     val heading_editMode = "Change your accounting period dates"
-    val line_1_signup = "Your accounting period is usually 12 months. For example, 1 May 2017 to 30 April 2018."
+    val line_1_signup = "For example, if your accounting period is 1 August 2019 to 31 July 2020, you will be signing up for the 2020 to 2021 tax year."
     val line_1_registration = "Your accounting period is usually 12 months. For example, 6 April 2017 to 5 April 2018"
     val exampleStartDate_signup = "For example, 1 4 2018"
     val exampleEndDate_signup = "For example, 31 3 2019"
@@ -747,7 +747,7 @@ object MessageLookup {
   object NotEligibleForIncomeTax {
     val title = "You cannot use this service yet"
     val heading: String = "You cannot use this service yet"
-    val para1 = "This is a trial service. You may be able to use the 'Report your income and expenses quarterly' service in the future."
+    val para1 = "This is a trial service. You may be able to use the 'Use software to send Income Tax updates' service in the future."
   }
 
   object AgentNotEligibleForIncomeTax {
