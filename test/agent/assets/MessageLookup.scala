@@ -16,8 +16,6 @@
 
 package agent.assets
 
-import core.models.DateModel
-
 object MessageLookup {
 
   object Base {
@@ -124,14 +122,11 @@ object MessageLookup {
   }
 
   object AccountingPeriod {
-    val title = "Business accounting period"
-    val heading_current = "Enter your client's current accounting period dates"
-    val heading_next = "Enter your client's next accounting period dates"
-    val heading_editMode = "What are the dates of your accounting period?"
-    val exampleStartDate_current = "For example, 6 4 2017"
-    val exampleEndDate_current = "For example, 5 4 2018"
-    val exampleStartDate_next = "For example, 1 4 2018"
-    val exampleEndDate_next = "For example, 31 3 2019"
+    val title = "What accounting period are you signing your client up for?"
+    val heading = "What accounting period are you signing your client up for?"
+    val line1 = "For example, if your accounting period is 1 August 2019 to 31 July 2020, you will be signing up for the 2020 to 2021 tax year."
+    def exampleStartDate(year: Int): String = s"For example, 1 4 ${year.toString}"
+    def exampleEndDate(year: Int): String = s"For example, 31 3 ${year.toString}"
   }
 
   object ContactEmail {

@@ -21,12 +21,11 @@ import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingPeriodDateForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels._
-import core.config.featureswitch.{FeatureSwitching}
+import core.config.featureswitch.FeatureSwitching
 import core.models.DateModel
 import incometax.business.models.AccountingPeriodModel
-import incometax.util.AccountingPeriodUtil
+import incometax.util.CurrentDateProvider
 import org.jsoup.Jsoup
-import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -40,51 +39,42 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
     "submitSummary" -> TestBusinessAccountingPeriodController.submit(isEditMode = false)
   )
 
+  object DateProvider extends CurrentDateProvider
+
   object TestBusinessAccountingPeriodController extends BusinessAccountingPeriodDateController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService
+    mockAuthService,
+    DateProvider
   )
 
   "show" when {
     "it is not the current period" should {
       "return the correct view" in {
-        lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest)
-
-        // required for backurl
         setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = testAccountingPeriodPriorCurrent)
+        lazy val result = await(TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest))
 
-        status(result) must be(Status.OK)
-
-        await(result)
+        status(result) mustBe OK
         verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 0)
 
-
         val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading_current
-
+        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading
       }
     }
     "it is the current period" should {
       "return the correct view" in {
-        lazy val result = TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest)
-
-        // required for backurl
         setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = testAccountingPeriodPriorNext)
+        lazy val result = await(TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest))
 
-        status(result) must be(Status.OK)
-
-        await(result)
+        status(result) mustBe OK
         verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 0, fetchAccountingPeriodPrior = 2)
 
-
         val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading_next
+        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading
       }
     }
   }
-
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" should {
     val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel dateConvert AccountingPeriodDateForm.minStartDate.plusYears(1))
     val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert AccountingPeriodDateForm.minStartDate, DateModel dateConvert AccountingPeriodDateForm.minStartDate.plusYears(2))
@@ -103,16 +93,13 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
           )
           setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates)
 
-          val goodRequest = callShow(isEditMode = false)
+          val goodRequest = await(callShow(isEditMode = false))
 
-          status(goodRequest) must be(Status.SEE_OTHER)
+          status(goodRequest) mustBe SEE_OTHER
           redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.show().url)
-
-          await(goodRequest)
           verifyKeystore(saveAccountingPeriodDate = 1, saveTerms = 0)
         }
       }
-
       "the tax year changed" should {
         s"return a redirect status (SEE_OTHER - 303) and update terms" in {
           setupMockKeystore(
@@ -122,17 +109,14 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
             fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
           )
 
-          val goodRequest = callShow(isEditMode = false)
+          val goodRequest = await(callShow(isEditMode = false))
 
-          status(goodRequest) must be(Status.SEE_OTHER)
+          status(goodRequest) mustBe SEE_OTHER
           redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.show().url)
-
-          await(goodRequest)
           verifyKeystore(saveAccountingPeriodDate = 1, saveTerms = 1)
         }
       }
     }
-
     "When it is in edit mode" should {
       "tax year remains the same" should {
         "return a redirect status (SEE_OTHER - 303)" in {
@@ -143,16 +127,13 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
             fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
           )
 
-          val goodRequest = callShow(isEditMode = true)
+          val goodRequest = await(callShow(isEditMode = true))
 
-          status(goodRequest) must be(Status.SEE_OTHER)
+          status(goodRequest) mustBe SEE_OTHER
           redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
-
-          await(goodRequest)
           verifyKeystore(saveAccountingPeriodDate = 1)
         }
       }
-
       "tax year changes" when {
         "the client can report" should {
           "return a redirect status (SEE_OTHER - 303)" in {
@@ -163,12 +144,10 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
               fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
             )
 
-            val goodRequest = callShow(isEditMode = true)
+            val goodRequest = await(callShow(isEditMode = true))
 
-            status(goodRequest) must be(Status.SEE_OTHER)
+            status(goodRequest) mustBe SEE_OTHER
             redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.show(editMode = true).url)
-
-            await(goodRequest)
             verifyKeystore(saveAccountingPeriodDate = 1)
           }
         }
@@ -177,15 +156,13 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
   }
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user and invalid submission" should {
-    lazy val badrequest = TestBusinessAccountingPeriodController.submit(isEditMode = false)(subscriptionRequest)
+    lazy val badrequest = await(TestBusinessAccountingPeriodController.submit(isEditMode = false)(subscriptionRequest))
 
     "return a bad request status (400)" in {
       // required for backurl
       setupMockKeystore(fetchIncomeSource = testIncomeSourceBusiness, fetchAccountingPeriodPrior = testAccountingPeriodPriorCurrent)
 
-      status(badrequest) must be(Status.BAD_REQUEST)
-
-      await(badrequest)
+      status(badrequest) mustBe BAD_REQUEST
       verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 0)
     }
   }

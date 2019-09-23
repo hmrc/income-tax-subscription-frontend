@@ -581,14 +581,13 @@ agent.business.register_next_accounting_period.line_1                  = Gallwch
 agent.business.register_next_accounting_period.button                  = Parhau i gofrestru
 
 ## Business Accounting Period page
-agent.accounting_period.title                                         = Cyfnod cyfrifyddu''r busnes
-agent.accounting_period.heading                                       = Beth yw dyddiadau''r cyfnod cyfrifyddu?
-agent.accounting_period.heading.current                               = Nodwch ddyddiadau cyfnod cyfrifyddu presennol eich cleient
-agent.accounting_period.heading.next                                  = Nodwch ddyddiadau cyfnod cyfrifyddu nesaf eich cleient
-agent.accounting_period.exampleStartDate.current                      = Er enghraifft, 6 4 2017
-agent.accounting_period.exampleEndDate.current                        = Er enghraifft, 5 4 2018
-agent.accounting_period.exampleStartDate.next                         = Er enghraifft, 1 4 2018
-agent.accounting_period.exampleEndDate.next                           = Er enghraifft, 31 3 2019
+agent.accounting_period.title                                         = Ar gyfer pa gyfnod cyfrifyddu rydych yn cofrestru''ch cleient ar ei chyfer?
+agent.accounting_period.heading                                       = Ar gyfer pa gyfnod cyfrifyddu rydych yn cofrestru''ch cleient ar ei chyfer?
+agent.accounting_period.line1                                         = Er enghraifft, os eich cyfnod cyfrifyddu yw 1 Awst {0} i 31 Gorffennaf {1}, byddwch yn cofrestru ar gyfer y flwyddyn dreth {1} i {2}.
+agent.accounting_period.exampleStartDate.current                      = Er enghraifft, 1 4 {0}
+agent.accounting_period.exampleEndDate.current                        = Er enghraifft, 31 3 {0}
+agent.accounting_period.exampleStartDate.next                         = Er enghraifft, 1 4 {0}
+agent.accounting_period.exampleEndDate.next                           = Er enghraifft, 31 3 {0}
 
 # Sole trader page
 agent.business.sole_trader.title                                      = Ydych chi''n unig fasnachwr?

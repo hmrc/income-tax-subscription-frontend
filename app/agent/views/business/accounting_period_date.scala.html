@@ -23,55 +23,54 @@
 
 @import core.views.html.helpers._
 
-@(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, isEditMode: Boolean, backUrl: String, viewType: AccountingPeriodViewType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, isEditMode: Boolean, backUrl: String, viewType: AccountingPeriodViewType, taxEndYear: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@core.views.html.templates.main_template(title = Messages("agent.accounting_period.title"), form = accountingPeriodForm) {
+@currentApStartYear(year: Int) = @{
+  (year - 1).toString
+}
+
+@nextApEndYear(year: Int) = @{
+  (year + 1).toString
+}
+
+@core.views.html.templates.main_template(title = messages("agent.accounting_period.title"), form = accountingPeriodForm) {
 
     @back_link(backUrl)
 
     @summaryErrorHelper(accountingPeriodForm)
 
-    <h1 class="heading-large">
-    @if(isEditMode) {
-        @Messages("agent.accounting_period.heading")
-    } else {
-        @if(viewType == CurrentAccountingPeriodView) {
-            @Messages("agent.accounting_period.heading.current")
-        } else {
-            @Messages("agent.accounting_period.heading.next")
-        }
-    }
-    </h1>
+    <h1 class="heading-large">@messages("agent.accounting_period.heading")</h1>
 
+    <p>@messages("agent.accounting_period.line1", currentApStartYear(taxEndYear), taxEndYear.toString, nextApEndYear(taxEndYear))</p>
 
     @form(action = postAction) {
 
         @dateHelper(
             field = accountingPeriodForm(startDate),
-            label = Messages("agent.base.startDate"),
+            label = messages("agent.base.startDate"),
             parentForm = accountingPeriodForm,
             hintText =
                     if(viewType == CurrentAccountingPeriodView) {
-                        Messages("agent.accounting_period.exampleStartDate.current")
+                        messages("agent.accounting_period.exampleStartDate.current", currentApStartYear(taxEndYear))
                     } else {
-                        Messages("agent.accounting_period.exampleStartDate.next")
+                        messages("agent.accounting_period.exampleStartDate.next", taxEndYear.toString)
                     }
         )
 
         @dateHelper(
             field = accountingPeriodForm(endDate),
-            label = Messages("agent.base.endDate"),
+            label = messages("agent.base.endDate"),
             parentForm = accountingPeriodForm,
             hintText =
                     if(viewType == CurrentAccountingPeriodView) {
-                        Messages("agent.accounting_period.exampleEndDate.current")
+                        messages("agent.accounting_period.exampleEndDate.current", taxEndYear.toString)
                     } else {
-                        Messages("agent.accounting_period.exampleEndDate.next")
+                        messages("agent.accounting_period.exampleEndDate.next", nextApEndYear(taxEndYear))
                     }
         )
 
         @if(isEditMode) {
-            @continueButton(Messages("agent.base.update"))
+            @continueButton(messages("agent.base.update"))
         } else {
             @continueButton()
         }
