@@ -17,11 +17,15 @@
 package agent.controllers
 
 import agent.audit.Logging
+import agent.models.{AccountingMethodModel, BusinessNameModel}
 import agent.services.CacheUtil._
 import agent.services.mocks._
 import agent.utils.TestConstants.{testNino, _}
 import agent.utils.TestModels
 import agent.utils.TestModels.testCacheMap
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.models.{Cash, No, Yes}
+import incometax.subscription.models.{Both, Business, Property}
 import incometax.unauthorisedagent.services.mocks.MockSubscriptionStorePersistenceService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -35,10 +39,12 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService
   with MockClientRelationshipService
   with MockSubscriptionOrchestrationService
-  with MockSubscriptionStorePersistenceService {
+  with MockSubscriptionStorePersistenceService
+  with FeatureSwitching {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    disable(EligibilityPagesFeature)
   }
 
   override val controllerName: String = "CheckYourAnswersController"
@@ -64,7 +70,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
     "There are both a matched nino and terms in keystore" should {
       "return ok (200)" in {
-        setupMockKeystore(fetchAll = TestModels.testCacheMap)
+        setupMockKeystore(fetchAll = TestModels.testCacheMap, fetchIncomeSource = Business)
 
         status(call()) must be(Status.OK)
       }
@@ -82,7 +88,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     }
 
     "When the terms have not been agreed" should {
-
       "redirect back to Terms if there is no terms in keystore" in {
         setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(terms = None))
         val result = call()
@@ -100,6 +105,28 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
         status(result) mustBe SEE_OTHER
         redirectLocation(result) must contain(agent.controllers.routes.TermsController.show(editMode = true).url)
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
+      }
+    }
+
+    "When the terms have not been agreed" should {
+      "show the CYA page if there is no terms in keystore when the eligibility pages feature switch is enabled" in {
+        enable(EligibilityPagesFeature)
+        setupMockKeystore(
+          fetchIncomeSource = Business,
+          fetchAll = TestModels.testCacheMapCustom(terms = None)
+        )
+
+        status(call()) must be(Status.OK)
+      }
+
+      "show the CYA page if there is terms is set to false in keystore when the eligibility pages feature switch is enabled" in {
+        enable(EligibilityPagesFeature)
+        setupMockKeystore(
+          fetchIncomeSource = Business,
+          fetchAll = TestModels.testCacheMapCustom(terms = None)
+        )
+
+        status(call()) must be(Status.OK)
       }
     }
   }
@@ -133,8 +160,35 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "The agent is authorised and" should {
+    "There is a matched nino but no terms in keystore" should {
+      s"return redirect ${agent.controllers.routes.TermsController.show().url} when the eligibility pages feature switch is enabled" should {
+        lazy val newTestNino = new Generator().nextNino.nino
+        lazy val authorisedAgentRequest = subscriptionRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN, ITSASessionKeys.NINO -> newTestNino)
+        lazy val result = call(authorisedAgentRequest)
+        lazy val testSummary = TestModels.testCacheMapCustom(terms = None)
 
+        "return a redirect status (SEE_OTHER - 303)" in {
+          enable(EligibilityPagesFeature)
+          setupMockKeystore(
+            fetchIncomeSource = Business,
+            fetchAll = TestModels.testCacheMapCustom(terms = None)
+          )
+          mockCreateSubscriptionSuccess(testARN, newTestNino, testSummary.getSummary())
+
+          status(result) must be(Status.SEE_OTHER)
+          await(result)
+          verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
+        }
+
+        s"redirect to '${agent.controllers.routes.ConfirmationController.show().url}'" in {
+          enable(EligibilityPagesFeature)
+          redirectLocation(result) mustBe Some(agent.controllers.routes.ConfirmationController.show().url)
+        }
+      }
+    }
+
+
+    "The agent is authorised and" should {
       "There are both a matched nino and terms in keystore and the submission is successful" should {
         // generate a new nino specifically for this test,
         // since the default value in test constant may be used by accident
@@ -223,8 +277,22 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${agent.controllers.routes.TermsController.show().url}" in {
-      TestCheckYourAnswersController.backUrl mustBe agent.controllers.routes.TermsController.show().url
+    s"point to ${agent.controllers.business.routes.BusinessAccountingMethodController.show().url} on the business journey" in {
+      enable(EligibilityPagesFeature)
+      TestCheckYourAnswersController.backUrl(Some(Business))(fakeRequest) mustBe agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+    }
+
+    s"point to ${agent.controllers.business.routes.BusinessAccountingMethodController.show().url} on the both journey" in {
+      enable(EligibilityPagesFeature)
+      TestCheckYourAnswersController.backUrl(Some(Both))(fakeRequest) mustBe agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+    }
+
+    s"point to ${agent.controllers.routes.OtherIncomeErrorController.show().url} on the property journey" in {
+      enable(EligibilityPagesFeature)
+      TestCheckYourAnswersController.backUrl(Some(Property))(fakeRequest) mustBe agent.controllers.routes.IncomeSourceController.show().url
+    }
+    s"point to ${agent.controllers.routes.TermsController.show().url} when the eligibility pages feature switch is disabled" in {
+      TestCheckYourAnswersController.backUrl(None)(fakeRequest) mustBe agent.controllers.routes.TermsController.show().url
     }
   }
 

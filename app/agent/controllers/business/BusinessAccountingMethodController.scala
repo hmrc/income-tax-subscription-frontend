@@ -16,18 +16,18 @@
 
 package agent.controllers.business
 
-import javax.inject.{Inject, Singleton}
-
 import agent.auth.AuthenticatedController
-import core.config.BaseControllerConfig
 import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
+import agent.services.KeystoreService
+import core.config.BaseControllerConfig
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.services.AuthService
+import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import agent.services.KeystoreService
-import core.services.AuthService
 
 import scala.concurrent.Future
 
@@ -36,7 +36,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
                                                    val authService: AuthService
-                                                  ) extends AuthenticatedController {
+                                                  ) extends AuthenticatedController with FeatureSwitching {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     agent.views.html.business.accounting_method(
@@ -58,10 +58,13 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       AccountingMethodForm.accountingMethodForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(accountingMethodForm = formWithErrors, isEditMode = isEditMode))),
         accountingMethod => {
-          keystoreService.saveAccountingMethod(accountingMethod) map (_ => isEditMode match {
-            case true => Redirect(agent.controllers.routes.CheckYourAnswersController.show())
-            case _ => Redirect(agent.controllers.routes.TermsController.show())
-          })
+          keystoreService.saveAccountingMethod(accountingMethod) map { _ =>
+            if (isEditMode || isEnabled(EligibilityPagesFeature)) {
+              Redirect(agent.controllers.routes.CheckYourAnswersController.show())
+            } else {
+              Redirect(agent.controllers.routes.TermsController.show())
+            }
+          }
         }
       )
   }

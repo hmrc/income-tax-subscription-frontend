@@ -18,10 +18,9 @@ package agent.controllers
 
 import agent.audit.Logging
 import agent.forms.OtherIncomeForm
-import agent.models.OtherIncomeModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
-import core.config.featureswitch.FeatureSwitching
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.models.{No, Yes}
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models._
@@ -37,6 +36,11 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
     "show" -> TestOtherIncomeController.show(isEditMode = true),
     "submit" -> TestOtherIncomeController.submit(isEditMode = true)
   )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EligibilityPagesFeature)
+  }
 
   object TestOtherIncomeController extends OtherIncomeController(
     MockBaseControllerConfig,
@@ -188,6 +192,21 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
         val goodRequest = callSubmit
 
         redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.show().url)
+
+        await(goodRequest)
+        verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
+      }
+
+      s"redirect to '${agent.controllers.routes.CheckYourAnswersController.show().url}' on the property journey when the eligibility page feature switch is enabled" in {
+        enable(EligibilityPagesFeature)
+        setupMockKeystore(
+          fetchIncomeSource = TestModels.testIncomeSourceProperty,
+          fetchOtherIncome = None
+        )
+
+        val goodRequest = callSubmit
+
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)

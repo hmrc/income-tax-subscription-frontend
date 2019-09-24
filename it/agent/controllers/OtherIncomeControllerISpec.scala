@@ -21,15 +21,20 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.models.{No, Yes}
 import incometax.subscription.models.{Both, Business, Property}
 import play.api.http.Status._
 import play.api.i18n.Messages
 
-class OtherIncomeControllerISpec extends ComponentSpecBase {
+class OtherIncomeControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EligibilityPagesFeature)
+  }
 
   "GET /income-other" when {
-
     "keystore returns all data" should {
       "show the other income page with an option selected" in {
         Given("I setup the Wiremock stubs")
@@ -88,9 +93,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
   }
 
   "POST /client/income-other" when {
-
     "not in edit mode" should {
-
       "if income source is not in key store redirect to income page" in {
         val keystoreIncomeSource = Business
         val keystoreOtherIncome = No
@@ -186,6 +189,26 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
         )
       }
 
+      "select the No other income radio button on the other income page while on Property journey and the eligibility pages feature switch is enabled" in {
+        val keystoreIncomeSource = Property
+        val userInput = No
+        enable(EligibilityPagesFeature)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
+        KeystoreStub.stubKeystoreSave(CacheConstants.OtherIncome, userInput)
+
+        When("POST /income-other is called")
+        val res = IncomeTaxSubscriptionFrontend.submitOtherIncome(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of terms")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
+        )
+      }
+
       "income source is not present" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -222,7 +245,6 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
     }
 
     "in edit mode" should {
-
       "if income source is not in key store redirect to income page" in {
         val keystoreIncomeSource = Business
         val keystoreOtherIncome = No

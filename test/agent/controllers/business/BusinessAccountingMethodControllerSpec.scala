@@ -20,13 +20,19 @@ import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
 import agent.services.mocks.MockKeystoreService
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.models.Cash
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
 class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService {
+  with MockKeystoreService with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EligibilityPagesFeature)
+  }
 
   override val controllerName: String = "BusinessAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -78,6 +84,18 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         val goodRequest = callShow(isEditMode = false)
 
         redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.show().url)
+
+        await(goodRequest)
+        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
+      }
+
+      s"redirect to '${agent.controllers.routes.CheckYourAnswersController.show().url}' when the eligibility pages feature switch is on" in {
+        setupMockKeystoreSaveFunctions()
+        enable(EligibilityPagesFeature)
+
+        val goodRequest = callShow(isEditMode = false)
+
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
