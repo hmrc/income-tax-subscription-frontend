@@ -23,9 +23,15 @@ import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
 import play.api.i18n.Messages
 import _root_.agent.services.CacheConstants._
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import helpers.servicemocks.{SubscriptionStoreStub, SubscriptionStub}
 
-class CheckYourAnswersControllerISpec extends ComponentSpecBase {
+class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EligibilityPagesFeature)
+  }
 
   "GET /check-your-answers" when {
     "keystore returns all data" should {
@@ -60,6 +66,22 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       )
     }
 
+    "keystore does not return the terms field and the eligibility pages feature switch is on" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      KeystoreStub.stubKeystoreData(fullKeystoreData - Terms)
+      enable(EligibilityPagesFeature)
+
+      When("GET /check-your-answers is called")
+      val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
+
+      Then("Should return an OK and show the check your answers page")
+      res should have(
+        httpStatus(OK),
+        pageTitle(Messages("agent.summary.title"))
+      )
+    }
+
   }
 
 
@@ -73,6 +95,30 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
           SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
           GGAdminStub.stubKnowFactsSuccess(testNino, testMTDID)
           KeystoreStub.stubPutMtditId()
+
+          When("I call POST /check-your-answers")
+          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(confirmationURI)
+          )
+
+          val cookieMap = SessionCookieCrumbler.getSessionMap(res)
+          cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
+
+          GGAdminStub.verifyKnownFacts(testNino, testMTDID, Some(1))
+        }
+
+        "call subscription on the back end service and redirect to confirmation page when the eligibility pages feature switch is on" in {
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(fullKeystoreData - Terms)
+          SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
+          GGAdminStub.stubKnowFactsSuccess(testNino, testMTDID)
+          KeystoreStub.stubPutMtditId()
+          enable(EligibilityPagesFeature)
 
           When("I call POST /check-your-answers")
           val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -107,21 +153,39 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
           )
         }
       }
-    }
 
-    "keystore does not return the terms field" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      KeystoreStub.stubKeystoreData(fullKeystoreData - Terms)
 
-      When("POST /check-your-answers is called")
-      val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+      "keystore does not return the terms field" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(fullKeystoreData - Terms)
 
-      Then("Should return a SEE_OTHER with a redirect location of terms")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(termsURI)
-      )
+        When("POST /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+        Then("Should return a SEE_OTHER with a redirect location of terms")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(termsURI)
+        )
+      }
+
+      "keystore does not return the terms field and the eligibility pages feature switch is on" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(fullKeystoreData - Terms)
+        SubscriptionStoreStub.stubSuccessfulStore(testStoredSubscription)
+        enable(EligibilityPagesFeature)
+
+        When("POST /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(isAgentUnauthorised = true)
+
+        Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(unauthorisedAgentConfirmationURI)
+        )
+      }
     }
   }
 

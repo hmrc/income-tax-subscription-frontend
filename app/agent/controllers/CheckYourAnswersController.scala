@@ -16,17 +16,18 @@
 
 package agent.controllers
 
-import javax.inject.{Inject, Singleton}
-
 import agent.audit.Logging
 import agent.auth.AgentJourneyState._
 import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
 import agent.common.Constants
 import agent.services.{ClientRelationshipService, KeystoreService, SubscriptionOrchestrationService}
 import core.config.BaseControllerConfig
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.models.{No, Yes, YesNo}
 import core.services.AuthService
-import incometax.subscription.models.SubscriptionSuccess
+import incometax.subscription.models.{Both, Business, IncomeSourceType, Property, SubscriptionSuccess}
 import incometax.unauthorisedagent.services.SubscriptionStorePersistenceService
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -43,7 +44,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val subscriptionStorePersistenceService: SubscriptionStorePersistenceService,
                                            val authService: AuthService,
                                            logging: Logging
-                                          ) extends AuthenticatedController {
+                                          ) extends AuthenticatedController with FeatureSwitching {
 
   import agent.services.CacheUtil._
 
@@ -51,30 +52,50 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                               (noCacheMapErrMessage: String) =
     Authenticated.async { implicit request =>
       implicit user =>
-        keystoreService.fetchAll().flatMap {
-          case Some(cache) =>
-            (user.clientNino, cache.getTerms()) match {
-              case (None, _) => Future.successful(Redirect(agent.controllers.matching.routes.ConfirmClientController.show()))
-              case (_, Some(true)) => processFunc(user)(request)(cache)
-              case (_, Some(false)) => Future.successful(Redirect(agent.controllers.routes.TermsController.show(editMode = true)))
-              case _ => Future.successful(Redirect(agent.controllers.routes.TermsController.show()))
-            }
-          case _ => error(noCacheMapErrMessage)
+        if (user.clientNino.isDefined) {
+          keystoreService.fetchAll().flatMap {
+            case Some(cache) =>
+              if (isEnabled(EligibilityPagesFeature))
+                processFunc(user)(request)(cache)
+              else {
+                cache.getTerms() match {
+                  case Some(true) => processFunc(user)(request)(cache)
+                  case Some(false) => Future.successful(Redirect(agent.controllers.routes.TermsController.show(editMode = true)))
+                  case _ => Future.successful(Redirect(agent.controllers.routes.TermsController.show()))
+                }
+              }
+            case _ => error(noCacheMapErrMessage)
+          }
+        } else {
+          Future.successful(Redirect(agent.controllers.matching.routes.ConfirmClientController.show()))
         }
     }
 
-  lazy val backUrl: String = agent.controllers.routes.TermsController.show().url
+  def backUrl(incomeSource: Option[IncomeSourceType])(implicit request: Request[_]): String = {
+    if (isEnabled(EligibilityPagesFeature))
+      incomeSource match {
+        case Some(Business) | Some(Both) =>
+          agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+        case Some(Property) =>
+          agent.controllers.routes.IncomeSourceController.show().url
+        case None => throw new InternalServerException("User is missing income source type in keystore")
+      }
+    else
+      agent.controllers.routes.TermsController.show().url
+  }
 
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
-        Future.successful(
+        for {
+          incomeSource <- keystoreService.fetchIncomeSource()
+          backLinkUrl = backUrl(incomeSource)
+        } yield
           Ok(agent.views.html.check_your_answers(
             cache.getSummary,
             agent.controllers.routes.CheckYourAnswersController.submit(),
-            backUrl = backUrl
+            backUrl = backLinkUrl
           ))
-        )
   }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any keystore cached data")
 
   private def submitForAuthorisedAgent(arn: String, nino: String

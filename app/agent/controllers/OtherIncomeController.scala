@@ -17,12 +17,12 @@
 package agent.controllers
 
 import javax.inject.{Inject, Singleton}
-
 import agent.audit.Logging
 import agent.auth.AuthenticatedController
 import agent.forms.{IncomeSourceForm, OtherIncomeForm}
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.models.{No, Yes, YesNo}
 import core.services.AuthService
 import core.utils.Implicits._
@@ -43,7 +43,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
                                       val authService: AuthService,
                                       val logging: Logging,
                                       currentTimeService: CurrentTimeService
-                                     ) extends AuthenticatedController {
+                                     ) extends AuthenticatedController with FeatureSwitching {
 
   def view(otherIncomeForm: Form[YesNo],
            incomeSource: String,
@@ -88,6 +88,8 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
           case Some(incomeSource) => incomeSource.source match {
             case IncomeSourceForm.option_business =>
               Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+            case IncomeSourceForm.option_property if isEnabled(EligibilityPagesFeature) =>
+              Redirect(agent.controllers.routes.CheckYourAnswersController.show())
             case IncomeSourceForm.option_property =>
               Redirect(agent.controllers.routes.TermsController.show())
             case IncomeSourceForm.option_both =>
