@@ -24,11 +24,10 @@ import agent.services.CacheUtil._
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.models.{No, Yes}
-import core.services.AuthService
+import core.services.{AccountingPeriodService, AuthService}
 import core.utils.Implicits._
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.IncomeSourceType
-import incometax.util.{AccountingPeriodUtil, CurrentDateProvider}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -36,12 +35,14 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
+import incometax.util.{AccountingPeriodUtil, CurrentDateProvider}
 
 @Singleton
 class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseControllerConfig,
                                                        val messagesApi: MessagesApi,
                                                        val keystoreService: KeystoreService,
                                                        val authService: AuthService,
+                                                       val accountingPeriodService: AccountingPeriodService,
                                                        val currentDateProvider: CurrentDateProvider
                                                       ) extends AuthenticatedController {
 
@@ -75,7 +76,6 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
-
       whichView.flatMap {
         viewType =>
           AccountingPeriodDateForm.accountingPeriodDateForm.bindFromRequest().fold(
@@ -85,28 +85,33 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
               isEditMode = isEditMode,
               viewType = viewType
             ))),
-            accountingPeriod => for {
-              cache <- keystoreService.fetchAll() map (_.get)
-              optOldAccountingPeriodDates = cache.getAccountingPeriodDate()
-              incomeSource = cache.getIncomeSource() map (source => IncomeSourceType(source.source))
-              _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
-              taxYearChanged = optOldAccountingPeriodDates match {
-                case Some(oldAccountingPeriod) => oldAccountingPeriod.taxEndYear != accountingPeriod.taxEndYear
-                case None => true
-              }
-              _ <- if (taxYearChanged) keystoreService.saveTerms(terms = false)
-              else Future.successful(Unit)
-            } yield {
-              if (isEditMode) {
-                if (taxYearChanged) {
-                  Redirect(agent.controllers.routes.TermsController.show(editMode = true))
-                } else {
-                  Redirect(agent.controllers.routes.CheckYourAnswersController.show())
+            accountingPeriod =>
+              if (accountingPeriodService.checkEligibleAccountingPeriod(accountingPeriod.startDate.toLocalDate, accountingPeriod.endDate.toLocalDate)) {
+                for {
+                  cache <- keystoreService.fetchAll() map (_.get)
+                  optOldAccountingPeriodDates = cache.getAccountingPeriodDate()
+                  _ = cache.getIncomeSource() map (source => IncomeSourceType(source.source))
+                  _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
+                  taxYearChanged = optOldAccountingPeriodDates match {
+                    case Some(oldAccountingPeriod) => (oldAccountingPeriod.taxEndYear != accountingPeriod.taxEndYear)
+                    case None => true
+                  }
+                  _ <- if (taxYearChanged) keystoreService.saveTerms(terms = false)
+                  else Future.successful(Unit)
+                } yield {
+                  if (isEditMode) {
+                    if (taxYearChanged) {
+                      Redirect(agent.controllers.routes.TermsController.show(editMode = true))
+                    } else {
+                      Redirect(agent.controllers.routes.CheckYourAnswersController.show())
+                    }
+                  } else {
+                    Redirect(agent.controllers.business.routes.BusinessNameController.show())
+                  }
                 }
               } else {
-                Redirect(agent.controllers.business.routes.BusinessNameController.show())
+                Redirect(agent.controllers.eligibility.routes.NotEligibleForIncomeTaxController.show())
               }
-            }
           )
       }
     }
