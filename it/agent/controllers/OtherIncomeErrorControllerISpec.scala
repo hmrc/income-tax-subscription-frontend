@@ -20,12 +20,13 @@ import _root_.agent.helpers.ComponentSpecBase
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.models.Yes
 import incometax.subscription.models.{Both, Business, Property}
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 
-class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
+class OtherIncomeErrorControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
   "GET /error/other-income" should {
     "show the error other income page" in {
@@ -114,6 +115,29 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase {
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(termsURI)
+        )
+      }
+
+      "select the Continue button on the error other income page whilst on Property journey when the eligibility pages feature switch is enabled" in {
+        val keystoreIncomeSource = Property
+        val keystoreIncomeOther = Yes
+        enable(EligibilityPagesFeature)
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            incomeSource = Some(keystoreIncomeSource),
+            otherIncome = Some(keystoreIncomeOther)
+          )
+        )
+
+        When("POST /error/other-income is called")
+        val res = IncomeTaxSubscriptionFrontend.submitOtherIncomeError()
+
+        Then("Should return a SEE_OTHER with a redirect location of check your answers page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
         )
       }
     }
