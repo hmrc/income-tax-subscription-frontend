@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-package core.TestAccountingPeriodServices
-
+package core.services
 import java.time.LocalDate
 
 import core.services.AccountingPeriodService

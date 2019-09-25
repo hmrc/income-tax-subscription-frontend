@@ -16,8 +16,6 @@
 
 package agent.forms
 
-import java.time.LocalDate
-
 import core.forms.submapping.DateMapping._
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.models.TargetIds
@@ -32,8 +30,6 @@ import scala.util.Try
 
 object AccountingPeriodDateForm {
 
-  val minStartDate: LocalDate = LocalDate.of(LocalDate.now.getYear, 4, 6)
-  val maxMonths: Int = 24
   val startDate: String = "startDate"
   val endDate: String = "endDate"
 
@@ -65,13 +61,6 @@ object AccountingPeriodDateForm {
     }
   )
 
-  val startDateBeforeApr17: Constraint[DateModel] = constraint[DateModel](
-    date => {
-      lazy val invalid = ErrorMessageFactory.error(TargetIds(startDate), "agent.error.business_accounting_period.minStartDate")
-      if (DateModel.dateConvert(date).isBefore(minStartDate)) invalid else Valid
-    }
-  )
-
   val endDateAfterStart: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
     accountingPeriod => {
       lazy val invalid = ErrorMessageFactory.error(TargetIds(endDate), "agent.error.end_date_violation")
@@ -79,39 +68,21 @@ object AccountingPeriodDateForm {
     }
   )
 
-  val presentOrFutureDate: Constraint[DateModel] = constraint[DateModel](
-    date => {
-      lazy val invalid = ErrorMessageFactory.error(TargetIds(endDate), "agent.error.end_date_past")
-      if (DateModel.dateConvert(date).isBefore(LocalDate.now())) invalid else Valid
-    }
-  )
-
-  val endDate24MonthRule: Constraint[AccountingPeriodModel] = constraint[AccountingPeriodModel](
-    accountingPeriod => {
-      lazy val maxEndDate = DateModel.dateConvert(accountingPeriod.startDate).plusMonths(maxMonths).minusDays(1)
-      lazy val invalid = ErrorMessageFactory.error(
-        TargetIds(endDate),
-        "agent.error.business_accounting_period.maxEndDate"
-      )
-      if (DateModel.dateConvert(accountingPeriod.endDate).isAfter(maxEndDate)) invalid else Valid
-    }
-  )
-
   val startDateConstraints = {
     val name = "start_date"
-    dateEmpty(name) andThen dateIsNumeric(name) andThen dateValidation(name) andThen startDateBeforeApr17
+    dateEmpty(name) andThen dateIsNumeric(name) andThen dateValidation(name)
   }
 
   val endDateConstraints = {
     val name = "end_date"
-    dateEmpty(name) andThen dateIsNumeric(name) andThen dateValidation(name) andThen presentOrFutureDate
+    dateEmpty(name) andThen dateIsNumeric(name) andThen dateValidation(name)
   }
 
   val accountingPeriodDateForm = Form(
     mapping(
       startDate -> dateMapping.verifying(startDateConstraints),
       endDate -> dateMapping.verifying(endDateConstraints)
-    )(AccountingPeriodModel.apply)(AccountingPeriodModel.unapply).verifying(endDateAfterStart andThen endDate24MonthRule)
+    )(AccountingPeriodModel.apply)(AccountingPeriodModel.unapply).verifying(endDateAfterStart)
   )
 
 }

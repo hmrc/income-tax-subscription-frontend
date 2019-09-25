@@ -152,7 +152,26 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
   "POST /business/accounting-period-dates" when {
     val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
+    "ineligible dates" should {
+      "redirect to Kickout page" in {
+        val userInput: AccountingPeriodModel = AccountingPeriodModel(testStartDate, testEndDate.plusDays(10))
 
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(fullKeystoreData)
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of cannot-use-service-yet")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(ineligibleURI)
+        )
+      }
+    }
     "not in edit mode" should {
 
       "enter accounting period start and end dates on the accounting period page" in {
@@ -221,8 +240,8 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
           val startCurrenttestYear = LocalDate.now.plusYears(1).getYear
           val endCurrenttestYear = startCurrenttestYear + 1
-          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", startCurrenttestYear.toString), DateModel("04", "05", endCurrenttestYear.toString))
-          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "05", startCurrenttestYear.toString), DateModel("05", "05", endCurrenttestYear.toString))
+          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "04", startCurrenttestYear.toString), DateModel("04", "04", endCurrenttestYear.toString))
+          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "04", startCurrenttestYear.toString), DateModel("05", "04", endCurrenttestYear.toString))
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -250,10 +269,10 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           val keystoreIncomeSource = Both
           val keystoreIncomeOther = No
           val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
-          val startCurrenttestYear = LocalDate.now.plusYears(1).getYear
+          val startCurrenttestYear = LocalDate.now.getYear
           val endCurrenttestYear = startCurrenttestYear + 1
-          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", startCurrenttestYear.toString), DateModel("06", "05", (endCurrenttestYear + 1).toString))
-          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", startCurrenttestYear.toString), DateModel("06", "05", endCurrenttestYear.toString))
+          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "04", startCurrenttestYear.toString), DateModel("05", "04", endCurrenttestYear.toString))
+          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "04", (startCurrenttestYear).toString), DateModel("06", "04", (endCurrenttestYear).toString))
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()

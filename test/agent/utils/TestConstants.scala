@@ -16,6 +16,8 @@
 
 package agent.utils
 
+import java.time.LocalDate
+
 import agent.common.Constants._
 import incometax.subscription.models._
 import play.api.http.Status._
@@ -45,6 +47,7 @@ object TestConstants {
   val testErrorMessage = "This is an error"
   val testException = core.utils.TestConstants.testException
 
+  val minStartDate: LocalDate = LocalDate.of(LocalDate.now.getYear, 4, 6)
 
   val testSubscriptionSuccess = Right(SubscriptionSuccess(testMTDID))
 
