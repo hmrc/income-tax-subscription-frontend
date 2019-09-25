@@ -20,6 +20,7 @@ import agent.audit.Logging
 import agent.forms.OtherIncomeForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.models.No
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -27,7 +28,7 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
-class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKeystoreService {
+class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKeystoreService with FeatureSwitching {
 
   override val controllerName: String = "OtherIncomeErrorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -95,6 +96,19 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)
+    }
+
+    s"redirect to '${agent.controllers.routes.CheckYourAnswersController.show().url}' on the property journey when the eligibility feature switch os enabled" in {
+      enable(EligibilityPagesFeature)
+      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceProperty)
+
+      val goodRequest = callSubmit
+
+      redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
+
+      await(goodRequest)
+      verifyKeystore(fetchIncomeSource = 1)
+      disable(EligibilityPagesFeature)
     }
 
     s"redirect to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the both journey" in {

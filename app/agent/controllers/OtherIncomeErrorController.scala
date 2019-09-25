@@ -17,7 +17,6 @@
 package agent.controllers
 
 import javax.inject.{Inject, Singleton}
-
 import agent.audit.Logging
 import agent.auth.AuthenticatedController
 import core.config.BaseControllerConfig
@@ -25,6 +24,7 @@ import agent.forms.IncomeSourceForm
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import agent.services.KeystoreService
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
 
@@ -36,7 +36,7 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
                                            val keystoreService: KeystoreService,
                                            val authService: AuthService,
                                            val logging: Logging
-                                          ) extends AuthenticatedController {
+                                          ) extends AuthenticatedController with FeatureSwitching {
 
   val show = Action.async { implicit request =>
     Future.successful(Ok(agent.views.html.other_income_error(postAction = agent.controllers.routes.OtherIncomeErrorController.submit(), backUrl)))
@@ -48,6 +48,8 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
         case Some(incomeSource) => incomeSource.source match {
           case IncomeSourceForm.option_business =>
             Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+          case IncomeSourceForm.option_property if isEnabled(EligibilityPagesFeature) =>
+            Redirect(agent.controllers.routes.CheckYourAnswersController.show())
           case IncomeSourceForm.option_property =>
             Redirect(agent.controllers.routes.TermsController.show())
           case IncomeSourceForm.option_both =>
