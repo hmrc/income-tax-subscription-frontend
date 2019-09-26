@@ -33,7 +33,8 @@ object FeatureSwitch {
     UnauthorisedAgentFeature,
     WelshLanguageFeature,
     EligibilityPagesFeature,
-    UseSubscriptionApiV2
+    UseSubscriptionApiV2,
+    PropertyCashOrAccruals
   )
 
   def apply(str: String): FeatureSwitch =
@@ -84,4 +85,9 @@ case object UnplannedShutter extends FeatureSwitch {
 case object UseSubscriptionApiV2 extends FeatureSwitch {
   override val displayText: String = "Use version 2 of the subscription API"
   override val name: String = s"$prefix.use-subscription-api-v2"
+}
+
+case object PropertyCashOrAccruals extends FeatureSwitch {
+  override val displayText: String = "Enable cash or accruals choice for property income"
+  override val name: String = s"$prefix.property-cash-or-accruals"
 }
