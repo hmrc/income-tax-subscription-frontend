@@ -26,6 +26,7 @@ import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
 import incometax.business.models.AccountingPeriodModel
+import incometax.util.AccountingPeriodUtil
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -91,9 +92,16 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
     "not in edit mode" when {
 
-      "enter accounting period start and end dates on the accounting period page" in {
+      "enter valid accounting period start and end dates on the accounting period page" in {
 
-        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
+        val start = LocalDate.now
+        val end = LocalDate.now.plusYears(1).minusDays(1)
+
+        val testAccountingPeriodDates = AccountingPeriodModel(
+          DateModel.dateConvert(start),
+          DateModel.dateConvert(end)
+        )
+        val userInput: AccountingPeriodModel = testAccountingPeriodDates
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -116,9 +124,17 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
       }
 
 
-      "enter accounting period after the 2017 - 2018 tax year on the accounting period page" in {
+      "enter accounting period after current tax year on the accounting period page" in {
 
-        val userInput: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod(testStartDate, testEndDateNext)
+        val start = testEndDatePlus1Y.plusYears(-1).plusDays(1)
+        val end = testEndDatePlus1Y
+
+        val testAccountingPeriodDates = AccountingPeriodModel(
+          start,
+          end
+        )
+
+        val userInput: AccountingPeriodModel = testAccountingPeriodDates
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -186,10 +202,14 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         "the new accounting period ends in the same tax year" in {
           val keystoreIncomeOther = No
           val keystoreMatchTaxYear = testMatchTaxYearNo
-          val startCurrenttestYear = LocalDate.now.plusYears(1).getYear
-          val endCurrenttestYear = startCurrenttestYear + 1
-          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "05", startCurrenttestYear.toString), DateModel("04", "05", endCurrenttestYear.toString))
-          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "05", startCurrenttestYear.toString), DateModel("05", "05", endCurrenttestYear.toString))
+          val start = LocalDate.now
+          val end = LocalDate.now.plusYears(1).minusDays(1)
+
+          val testAccountingPeriodDates = AccountingPeriodModel(
+            DateModel.dateConvert(start),
+            DateModel.dateConvert(end)
+          )
+          val userInput: AccountingPeriodModel = testAccountingPeriodDates
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -199,42 +219,10 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
               areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
               otherIncome = Some(keystoreIncomeOther),
               matchTaxYear = Some(keystoreMatchTaxYear),
-              accountingPeriodDate = Some(keystoreAccountingPeriodDates)
+              accountingPeriodDate = Some(testAccountingPeriodDates)
             )
           )
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
-
-          When("POST /business/accounting-period-dates is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
-
-        "The new accounting period ends in a different tax year" in {
-          val keystoreIncomeOther = No
-          val keystoreMatchTaxYear = testMatchTaxYearNo
-          val startCurrenttestYear = LocalDate.now.plusYears(1).getYear
-          val endCurrenttestYear = startCurrenttestYear + 1
-          val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("07", "05", startCurrenttestYear.toString), DateModel("06", "05", (endCurrenttestYear + 1).toString))
-          val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("07", "05", startCurrenttestYear.toString), DateModel("06", "05", endCurrenttestYear.toString))
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(
-            keystoreData(
-              rentUkProperty = Some(testRentUkProperty_no_property),
-              areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
-              otherIncome = Some(keystoreIncomeOther),
-              matchTaxYear = Some(keystoreMatchTaxYear),
-              accountingPeriodDate = Some(keystoreAccountingPeriodDates)
-            )
-          )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
-          KeystoreStub.stubKeystoreSave(CacheConstants.Terms, false)
 
           When("POST /business/accounting-period-dates is called")
           val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
@@ -248,5 +236,4 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
       }
     }
   }
-
 }
