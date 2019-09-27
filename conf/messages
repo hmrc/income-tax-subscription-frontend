@@ -303,7 +303,6 @@ error.business.register_next_accounting_period.empty            = You must selec
 error.business.register_next_accounting_period.invalid          = You must select an option to continue
 
 error.business_accounting_period.minStartDate                   = The start date of your accounting period must be in the future.
-error.business_accounting_period.maxEndDate                     = You must provide an end date that is not more than 24 months after your start date
 
 error.business_name.empty                                       = You must enter your Business name
 error.business_name.maxLength                                   = You can''t enter more than 105 characters for your Business name
@@ -341,8 +340,6 @@ error.start_date.invalid                                        = Enter a real s
 error.end_date.empty                                            = Enter an end date
 error.end_date.invalid_chars                                    = Enter an end date using numbers 0 to 9
 error.end_date.invalid                                          = Enter a real end date
-error.end_date_violation                                        = Enter an end date that''s after the start date
-error.end_date_past                                             = Enter an end date that''s the present date or a future date
 
 
 error.not-eligible.empty                                        = You must select an option to continue
@@ -902,7 +899,7 @@ unplanned_outage.bullet2                                               = get <a 
 # Not eligible for income tax
 not_eligible_for_income_tax.title                                      = You cannot use this service yet
 not_eligible_for_income_tax.heading                                    = You cannot use this service yet
-not_eligible_for_income_tax.para1                                      = This is a trial service. You may be able to use the ''Use software to send Income Tax updates'' service in the future.
+not_eligible_for_income_tax.para1                                      = This is a trial service. You may be able to use the ''Report your income and expenses quarterly'' service in the future.
 
 # Not eligible for income tax (agents)
 agent_not_eligible_for_income_tax.title                                = You cannot use this service yet

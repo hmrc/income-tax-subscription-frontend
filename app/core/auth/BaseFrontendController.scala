@@ -16,7 +16,6 @@
 
 package core.auth
 
-import agent.auth.IncomeTaxAgentUser
 import core.auth.AuthPredicate._
 import core.auth.JourneyState.{RequestFunctions, SessionFunctions}
 import core.config.BaseControllerConfig

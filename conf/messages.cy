@@ -341,7 +341,6 @@ error.start_date.invalid                                        = Nodwch ddyddia
 error.end_date.empty                                            = Nodwch ddyddiad dod i ben
 error.end_date.invalid_chars                                    = Nodwch ddyddiad dod i ben gan ddefnyddio''r rhifau 0 i 9
 error.end_date.invalid                                          = Nodwch ddyddiad dod i ben go iawn
-error.end_date_violation                                        = Nodwch ddyddiad dod i ben sydd ar ôl y dyddiad dechrau
 error.end_date_past                                             = Nodwch ddyddiad dod i ben, sef dyddiad heddiw neu ddyddiad yn y dyfodol
 
 
@@ -894,7 +893,7 @@ confirmation.unauthorised.whatHappensNext.para4                       = Gall gym
 # Not eligible for income tax
 not_eligible_for_income_tax.title                                      = Ni allwch ddefnyddio''r gwasanaeth hwn eto
 not_eligible_for_income_tax.heading                                    = Ni allwch ddefnyddio''r gwasanaeth hwn eto
-not_eligible_for_income_tax.para1                                      = Mae hwn yn wasanaeth sy''n cael ei brofi. Efallai y gallwch ddefnyddio''r gwasanaeth ''Defnyddio meddalwedd i anfon diweddariadau Treth Incwm'' yn y dyfodol.
+not_eligible_for_income_tax.para1                                      = Mae hwn yn wasanaeth sy''n cael ei brofi. Efallai y gallwch ddefnyddio''r gwasanaeth ''Rhoi gwybod am eich incwm a''ch treuliau bob chwarter'' yn y dyfodol.
 
 # Not eligible for income tax (agent)
 agent_not_eligible_for_income_tax.title                                = Ni allwch ddefnyddio''r gwasanaeth hwn eto

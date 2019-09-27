@@ -748,7 +748,7 @@ object MessageLookup {
   object NotEligibleForIncomeTax {
     val title = "You cannot use this service yet"
     val heading: String = "You cannot use this service yet"
-    val para1 = "This is a trial service. You may be able to use the 'Use software to send Income Tax updates' service in the future."
+    val para1 = "This is a trial service. You may be able to use the 'Report your income and expenses quarterly' service in the future."
   }
 
   object AgentNotEligibleForIncomeTax {
