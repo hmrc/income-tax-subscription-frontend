@@ -65,6 +65,7 @@ object TestModels extends Implicits {
   val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
   val testBusinessStartDate = BusinessStartDateModel(testStartDate)
   val testAccountingMethod = AccountingMethodModel(Cash)
+  val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testTerms = true
 
   val emptyCacheMap = CacheMap("", Map())
@@ -82,6 +83,7 @@ object TestModels extends Implicits {
       businessAddress = testAddress,
       businessStartDate = testBusinessStartDate,
       accountingMethod = testAccountingMethod,
+      accountingMethodProperty = testAccountingMethodProperty,
       terms = testTerms)
 
   def testCacheMapCustom(
@@ -97,6 +99,7 @@ object TestModels extends Implicits {
                           businessAddress: Option[Address] = testAddress,
                           businessStartDate: Option[BusinessStartDateModel] = testBusinessStartDate,
                           accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
+                          accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty,
                           terms: Option[Boolean] = testTerms): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
@@ -110,6 +113,7 @@ object TestModels extends Implicits {
       businessAddress = businessAddress,
       businessStartDate = businessStartDate,
       accountingMethod = accountingMethod,
+      accountingMethodProperty = accountingMethodProperty,
       terms = terms)
 
   def testCacheMap(incomeSource: Option[IncomeSourceType] = None,
@@ -124,6 +128,7 @@ object TestModels extends Implicits {
                    businessAddress: Option[Address] = None,
                    businessStartDate: Option[BusinessStartDateModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
+                   accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                    terms: Option[Boolean] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
@@ -139,6 +144,7 @@ object TestModels extends Implicits {
       businessAddress.fold(emptyMap)(model => Map(BusinessAddress -> Address.format.writes(model))) ++
       businessStartDate.fold(emptyMap)(model => Map(BusinessStartDate -> BusinessStartDateModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
+      accountingMethodProperty.fold(emptyMap)(model => Map(AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model))) ++
       terms.fold(emptyMap)(model => Map(Terms -> Json.toJson(model)))
     CacheMap("", map)
   }

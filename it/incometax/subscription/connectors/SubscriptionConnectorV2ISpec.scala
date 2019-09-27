@@ -35,7 +35,7 @@ class SubscriptionConnectorV2ISpec extends ComponentSpecBase with Matchers {
   )
 
   val testPropertyIncome = PropertyIncomeModel(
-    cashOrAccruals = Some(Cash)
+    accountingMethod = Some(Cash)
   )
 
   "subscription" should {

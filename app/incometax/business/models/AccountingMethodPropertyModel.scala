@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package agent.services
+package incometax.business.models
 
-object CacheConstants {
-  val IncomeSource = "IncomeSource"
-  val PropertyIncome = "PropertyIncome"
-  val SoleTrader = "SoleTrader"
-  val AccountingPeriodPrior = "AccountingPeriodPrior"
-  val RegisterNextAccountingPeriod = "RegisterNextAccountingPeriod"
-  val BusinessName = "BusinessName"
-  val AccountingPeriodDate = "AccountingPeriodDate"
-  val AccountingMethod = "AccountingMethod"
-  val AccountingMethodProperty = "AccountingMethodProperty"
-  val Terms = "Terms"
-  val OtherIncome = "OtherIncome"
-  val MtditId = "MtditId"
+import core.models.AccountingMethod
+import play.api.libs.json.Json
+
+case class AccountingMethodPropertyModel(accountingMethod: AccountingMethod)
+
+object AccountingMethodPropertyModel {
+  implicit val format = Json.format[AccountingMethodPropertyModel]
 }

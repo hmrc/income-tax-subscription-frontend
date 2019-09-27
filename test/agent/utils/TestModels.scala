@@ -21,7 +21,7 @@ import agent.forms._
 import agent.models._
 import core.models._
 import core.utils.Implicits
-import incometax.business.models.AccountingPeriodModel
+import incometax.business.models.{AccountingMethodPropertyModel, AccountingPeriodModel}
 import incometax.subscription.models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
@@ -51,6 +51,7 @@ object TestModels extends Implicits {
 
   val testBusinessName = BusinessNameModel("test business")
   val testAccountingMethod = AccountingMethodModel(Cash)
+  val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testTerms = true
 
   val emptyCacheMap = CacheMap("", Map())
@@ -63,6 +64,7 @@ object TestModels extends Implicits {
       accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
       accountingMethod = testAccountingMethod,
+      accountingMethodProperty = testAccountingMethodProperty,
       terms = testTerms)
 
   def testCacheMapCustom(
@@ -72,6 +74,7 @@ object TestModels extends Implicits {
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                           businessName: Option[BusinessNameModel] = testBusinessName,
                           accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
+                          accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty,
                           terms: Option[Boolean] = testTerms): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
@@ -80,6 +83,7 @@ object TestModels extends Implicits {
       accountingPeriodDate = accountingPeriodDate,
       businessName = businessName,
       accountingMethod = accountingMethod,
+      accountingMethodProperty = accountingMethodProperty,
       terms = terms)
 
   def testCacheMap(incomeSource: Option[IncomeSourceType] = None,
@@ -88,6 +92,7 @@ object TestModels extends Implicits {
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
+                   accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                    terms: Option[Boolean] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
@@ -97,6 +102,7 @@ object TestModels extends Implicits {
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
+      accountingMethodProperty.fold(emptyMap)(model => Map(AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model))) ++
       terms.fold(emptyMap)(model => Map(Terms -> Json.toJson(model)))
     CacheMap("", map)
   }
