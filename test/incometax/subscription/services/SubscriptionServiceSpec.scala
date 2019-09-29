@@ -82,7 +82,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
   }
 
   "subscriptionService.buildRequestV2" should {
-    "convert the user's data into the correct format" in {
+    "convert the user's data into the correct format when they own a property and self employed" in {
       val nino = TestModels.newNino
       val request = TestSubscriptionService.buildRequestV2(nino, testSummaryData, None)
 
@@ -92,6 +92,29 @@ class SubscriptionServiceSpec extends TestSubscriptionService
       request.businessIncome.get.accountingMethod mustBe Cash
       request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
       request.propertyIncome.isDefined mustBe true
+      request.isAgent mustBe false
+    }
+
+    "convert the user's data into the correct format when they own a property" in {
+      val nino = TestModels.newNino
+      val request = TestSubscriptionService.buildRequestV2(nino, testSummaryDataProperty, None)
+
+      request.nino mustBe nino
+      request.businessIncome.isDefined mustBe false
+      request.propertyIncome.isDefined mustBe true
+      request.isAgent mustBe false
+    }
+
+    "convert the user's data into the correct format when they are self employed" in {
+      val nino = TestModels.newNino
+      val request = TestSubscriptionService.buildRequestV2(nino, testSummaryDataBusiness, None)
+
+      request.nino mustBe nino
+      request.businessIncome.get.accountingPeriod.startDate mustBe testAccountingPeriod.startDate
+      request.businessIncome.get.accountingPeriod.endDate mustBe testAccountingPeriod.endDate
+      request.businessIncome.get.accountingMethod mustBe Cash
+      request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
+      request.propertyIncome.isDefined mustBe false
       request.isAgent mustBe false
     }
   }

@@ -45,6 +45,7 @@ object IntegrationTestModels {
   val testBusinessName = BusinessNameModel("test business")
   val testBusinessPhoneNumber = BusinessPhoneNumberModel("01234567890")
   val testAccountingMethod = AccountingMethodModel(Cash)
+  val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testTerms = true
 
   val testBusinessStartDate = BusinessStartDateModel(testStartDate)
@@ -65,6 +66,33 @@ object IntegrationTestModels {
       accountingMethod = Some(testAccountingMethod),
       terms = Some(testTerms)
     )
+
+  lazy val fullKeystoreDataBothV2: Map[String, JsValue] =
+    keystoreDataV2(
+      incomeSource = Some(Both),
+      rentUkProperty = Some(testRentUkProperty_property_and_other),
+      areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
+      otherIncome = Some(testOtherIncomeNo),
+      matchTaxYear = Some(testMatchTaxYearNo),
+      accountingPeriodDate = Some(testAccountingPeriod),
+      businessName = Some(testBusinessName),
+      businessPhoneNumber = Some(testBusinessPhoneNumber),
+      businessAddress = Some(testAddress),
+      accountingMethod = Some(testAccountingMethod),
+      accountingMethodProperty = Some(testAccountingMethodProperty),
+      terms = Some(testTerms)
+    )
+
+  lazy val fullKeystoreDataPropertyV2: Map[String, JsValue] =
+    keystoreDataV2(
+      incomeSource = Some(Property),
+      rentUkProperty = Some(testRentUkProperty_property_only),
+      areYouSelfEmployed = Some(testAreYouSelfEmployed_no),
+      otherIncome = Some(testOtherIncomeNo),
+      accountingMethodProperty = Some(testAccountingMethodProperty),
+      terms = Some(testTerms)
+    )
+
 
   def keystoreData(incomeSource: Option[IncomeSourceType] = None,
                    rentUkProperty: Option[RentUkPropertyModel] = None,
@@ -89,6 +117,33 @@ object IntegrationTestModels {
       businessAddress.map(model => BusinessAddress -> Address.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       terms.map(model => Terms -> Json.toJson(model))
+  }
+
+  def keystoreDataV2(incomeSource: Option[IncomeSourceType] = None,
+                     rentUkProperty: Option[RentUkPropertyModel] = None,
+                     areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
+                     otherIncome: Option[YesNo] = None,
+                     matchTaxYear: Option[MatchTaxYearModel] = None,
+                     accountingPeriodDate: Option[AccountingPeriodModel] = None,
+                     businessName: Option[BusinessNameModel] = None,
+                     businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
+                     businessAddress: Option[Address] = None,
+                     accountingMethod: Option[AccountingMethodModel] = None,
+                     accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
+                     terms: Option[Boolean] = None): Map[String, JsValue] = {
+    Map.empty[String, JsValue] ++
+      incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
+      rentUkProperty.map(model => RentUkProperty -> RentUkPropertyModel.format.writes(model)) ++
+      areYouSelfEmployed.map(model => AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model)) ++ //
+      otherIncome.map(model => OtherIncome -> YesNo.format.writes(model)) ++
+      matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
+      accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
+      businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
+      businessPhoneNumber.map(model => BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model)) ++
+      businessAddress.map(model => BusinessAddress -> Address.format.writes(model)) ++
+      accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
+      terms.map(model => Terms -> Json.toJson(model)) ++
+      accountingMethodProperty.map(model => AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model))
   }
 
   lazy val testIncomeSourceBusiness = Business

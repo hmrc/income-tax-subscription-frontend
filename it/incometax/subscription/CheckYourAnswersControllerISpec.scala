@@ -234,6 +234,52 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         )
       }
     }
+
+    "the new api feature switch is on" should {
+      "successfully send the correct details to the backend for a user with business and property income" in {
+
+        enable(featureswitch.UseSubscriptionApiV2)
+
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystoreBothV2()
+        SubscriptionStub.stubSuccessfulSubscriptionV2WithBoth(checkYourAnswersURI)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+        KeystoreStub.stubPutMtditId()
+
+        enable(featureswitch.EmacEs6ApiFeature)
+        enable(featureswitch.EmacEs8ApiFeature)
+
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(confirmationURI)
+        )
+      }
+
+      "successfully send the correct details to the backend for a user with property income" in {
+
+        enable(featureswitch.UseSubscriptionApiV2)
+
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystorePropertyV2()
+        SubscriptionStub.stubSuccessfulSubscriptionV2WithProperty(checkYourAnswersURI)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+        KeystoreStub.stubPutMtditId()
+
+        enable(featureswitch.EmacEs6ApiFeature)
+        enable(featureswitch.EmacEs8ApiFeature)
+
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(confirmationURI)
+        )
+      }
+    }
   }
 
 }

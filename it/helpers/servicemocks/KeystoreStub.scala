@@ -41,6 +41,10 @@ object KeystoreStub extends WireMockMethods {
 
   def stubFullKeystore(): Unit = stubKeystoreData(fullKeystoreData)
 
+  def stubFullKeystoreBothV2(): Unit = stubKeystoreData(fullKeystoreDataBothV2)
+  def stubFullKeystorePropertyV2(): Unit = stubKeystoreData(fullKeystoreDataPropertyV2)
+
+
   def stubEmptyKeystore(): Unit = stubKeystoreData(keystoreData())
 
   def stubKeystoreData(data: Map[String, JsValue]): Unit = {
