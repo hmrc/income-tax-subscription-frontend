@@ -41,6 +41,7 @@ object MessageLookup {
     val titleError = "Error: "
     val yes = "Yes"
     val no = "No"
+    val back = "Back"
   }
 
   object FrontPage {
@@ -269,6 +270,19 @@ object MessageLookup {
     val accordion_bullet_2 = "March 2017, then you use 'accruals basis'"
     val cash = "Cash basis You record on the date you receive money or pay a bill. Many sole traders and small businesses use this method."
     val accruals = "Accruals basis You record on the date you send or receive an invoice, even if you don't receive or pay any money. This method is also called 'traditional accounting'."
+  }
+
+  object PropertyAccountingMethod {
+    val title = "How do you record your income and expenses for your property business?"
+    val heading = "How do you record your income and expenses for your property business?"
+    val accordionSummary = "Show me an example"
+    val accordionContentPara = "You invoiced someone in March 2017 but didn't receive the money until May 2017. If you tell HM Revenue and Customs you received this income in:"
+    val accordionContentBullet1 = "May 2017, you use 'cash basis' accounting"
+    val accordionContentBullet2 = "March 2017, you use 'accruals basis' accounting"
+    val radioCash = "Cash basis"
+    val radioCashDetail = "You record when you receive a payment from your tenants into your back account and when you pay a bill, for example for repairs and maintenance. Most people use this method."
+    val radioAccruals = "Accruals basis"
+    val radioAccrualsDetail = "You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called traditional accounting."
   }
 
   object Terms {

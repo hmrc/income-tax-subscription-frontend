@@ -253,7 +253,7 @@ object MessageLookup {
       val number3 = "Add any income and expenses that your client has already received or paid out."
       val number4 = "Continue to record your client's income and expenses using software, then send a report to HMRC at least every 3 months."
       val number5 = "Send your client's final report by 31 January. You can add any other income sources, allowances or reliefs in this report."
-      val para2 = "After your client has sent a report they will get an Income Tax estimate. They can see what they owe for the tax year after they’ve sent their final report."
+      val para2 = "After your client has sent a report they will get an Income Tax estimate. They can see what they owe for the tax year after they've sent their final report."
     }
 
   }
@@ -413,8 +413,8 @@ object MessageLookup {
   object OtherIncomeError {
     val title = "You can use software to report your client's Income Tax"
     val heading: String = title
-    val para1 = "You only need to send quarterly reports on your client’s income from either:"
-    val para2 = "You can tell us about your client’s other income sources in their final summary report. Your client needs to submit this report by 31 January."
+    val para1 = "You only need to send quarterly reports on your client's income from either:"
+    val para2 = "You can tell us about your client's other income sources in their final summary report. Your client needs to submit this report by 31 January."
     val bullet1 = "their sole trader business"
     val bullet2 = "renting out a UK property"
     val bullet3 = "their sole trader business and renting out a UK property"

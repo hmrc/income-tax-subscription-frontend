@@ -173,6 +173,17 @@ business.accounting_method.accordion.bullet_2                   = March 2017, th
 business.accounting_method.cash                                 = <span class="heading-small">Cash basis</span><br>You record on the date you receive money or pay a bill. Many sole traders and small businesses use this method.
 business.accounting_method.accruals                             = <span class="heading-small">Accruals basis</span><br>You record on the date you send or receive an invoice, even if you don''t receive or pay any money. This method is also called ''traditional accounting''.
 
+# Property Accounting Method Page
+property.accounting_method.title                                = How do you record your income and expenses for your property business?
+property.accounting_method.heading                              = How do you record your income and expenses for your property business?
+property.accounting_method.accordion.summary                    = Show me an example
+property.accounting_method.accordion.content.para               = You invoiced someone in March 2017 but didn''t receive the money until May 2017. If you tell HM Revenue and Customs you received this income in:
+property.accounting_method.accordion.content.bullet1            = May 2017, you use ''cash basis'' accounting
+property.accounting_method.accordion.content.bullet2            = March 2017, you use ''accruals basis'' accounting
+property.accounting_method.radio.cash                           = Cash basis
+property.accounting_method.radio.cash.detail                    = You record when you receive a payment from your tenants into your back account and when you pay a bill, for example for repairs and maintenance. Most people use this method.
+property.accounting_method.radio.accruals                       = Accruals basis
+property.accounting_method.radio.accruals.detail                = You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called 'traditional accounting'.
 
 ## Business Name
 business.name.title                                             = Business name
@@ -685,7 +696,7 @@ agent.sign-up-complete.whatHappensNext.number2                        = Allow yo
 agent.sign-up-complete.whatHappensNext.number3                        = Add any income and expenses that your client has already received or paid out.
 agent.sign-up-complete.whatHappensNext.number4                        = Continue to record your client''s income and expenses using software, then send a report to HMRC at least every 3 months.
 agent.sign-up-complete.whatHappensNext.number5                        = Send your client''s final report by 31 January. You can add any other income sources, allowances or reliefs in this report.
-agent.sign-up-complete.whatHappensNext.para2                          = After your client has sent a report they will get an Income Tax estimate. They can see what they owe for the tax year after they’ve sent their final report.
+agent.sign-up-complete.whatHappensNext.para2                          = After your client has sent a report they will get an Income Tax estimate. They can see what they owe for the tax year after they''ve sent their final report.
 agent.sign-up-complete.add_another                                    = Sign up another client
 
 ## Unauthorised Agent Confirmation page ##
@@ -804,11 +815,11 @@ agent.main-income-error.bullet3                                       = a sole t
 ## Other income error page ##
 agent.other-income-error.title                                        = You can use software to report your client''s Income Tax
 agent.other-income-error.heading                                      = You can use software to report your client''s Income Tax
-agent.other-income-error.para1                                        = You only need to send quarterly reports on your client’s income from either:
+agent.other-income-error.para1                                        = You only need to send quarterly reports on your client''s income from either:
 agent.other-income-error.bullet1                                      = their sole trader business
 agent.other-income-error.bullet2                                      = renting out a UK property
 agent.other-income-error.bullet3                                      = their sole trader business and renting out a UK property
-agent.other-income-error.para2                                        = You can tell us about your client’s other income sources in their final summary report. Your client needs to submit this report by 31 January.
+agent.other-income-error.para2                                        = You can tell us about your client''s other income sources in their final summary report. Your client needs to submit this report by 31 January.
 
 ## Other sources of income page ##
 agent.income-other.title                                              = Does your client have any other sources of income?
