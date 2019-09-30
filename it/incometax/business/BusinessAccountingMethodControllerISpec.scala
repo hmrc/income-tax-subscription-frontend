@@ -16,6 +16,7 @@
 
 package incometax.business
 
+import core.config.featureswitch.EligibilityPagesFeature
 import core.models.{Accruals, Cash, No}
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
@@ -28,6 +29,11 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    disable(EligibilityPagesFeature)
+    super.beforeEach()
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-method" when {
 

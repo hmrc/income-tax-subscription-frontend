@@ -62,7 +62,7 @@ preferences_callback.button                                     = Ewch yn ôl
 # are you self-employed page
 are_you_selfemployed.title                                         = A ydych yn hunangyflogedig?
 are_you_selfemployed.heading                                       = A ydych yn hunangyflogedig?
-are_you_selfemployed.para1                                         = Nid yw hyn yn cynnwys os yw’ch busnes yn gwmni cyfyngedig neu’n bartneriaeth.
+are_you_selfemployed.para1                                         = Nid yw hyn yn cynnwys os yw''ch busnes yn gwmni cyfyngedig neu''n bartneriaeth.
 
 ## Rent Uk Property page
 rent_uk_property.title                                          = Ydych chi''n gosod eiddo yn y DU?
@@ -113,9 +113,9 @@ business.address.edit.add_line_3                                = Cyfeiriad - ll
 
 
 # Match tax year
-business.match_tax_year.title.signup                            = A yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill?
-business.match_tax_year.heading.signup                          = A yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill?
-business.match_tax_year.line_1.signup                           = Mae’r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Mae’ch cyfnod cyfrifyddu’r un peth oni bai eich bod eisoes wedi dewis gwahanol ddyddiadau.
+business.match_tax_year.title.signup                            = A yw''ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill?
+business.match_tax_year.heading.signup                          = A yw''ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill?
+business.match_tax_year.line_1.signup                           = Mae''r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Mae''ch cyfnod cyfrifyddu''r un peth oni bai eich bod eisoes wedi dewis gwahanol ddyddiadau.
 
 business.match_tax_year.title.registration                      = Ydych chi am baru''ch cyfnod cyfrifyddu â''r flwyddyn dreth?
 business.match_tax_year.heading.registration                    = Ydych chi am baru''ch cyfnod cyfrifyddu â''r flwyddyn dreth?
@@ -173,6 +173,17 @@ business.accounting_method.accordion.bullet_2                   = mis Mawrth 201
 business.accounting_method.cash                                 = <span class="heading-small">Sail arian parod</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn cael arian neu''n talu bil. Mae llawer o unig fasnachwyr a busnesau bach yn defnyddio''r dull hwn.
 business.accounting_method.accruals                             = <span class="heading-small">Sail croniadau</span><br>Rydych yn cofnodi ar y dyddiad yr ydych yn anfon neu''n cael anfoneb, hyd yn oed os nad ydych yn cael neu''n talu unrhyw arian. Mae''r dull hwn hefyd yn cael ei alw''n ''cyfrifyddu traddodiadol''.
 
+# Property Accounting Method Page
+property.accounting_method.title                                = Sut ydych chi''n cofnodi''ch incwm a''ch treuliau ar gyfer eich busnes eiddo?
+property.accounting_method.heading                              = Sut ydych chi''n cofnodi''ch incwm a''ch treuliau ar gyfer eich busnes eiddo?
+property.accounting_method.accordion.summary                    = Rhowch enghraifft i mi
+property.accounting_method.accordion.content.para               = Rhoesoch anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Petaech yn rhoi gwybod i Gyllid a Thollau EM eich bod wedi cael yr incwm hwn ym:
+property.accounting_method.accordion.content.bullet1            = mis Mai 2017, buasech yn defnyddio cyfrifyddu ar ''sail arian parod''
+property.accounting_method.accordion.content.bullet2            = mis Mawrth 2017, buasech yn defnyddio''r ''sail croniadau''
+property.accounting_method.radio.cash                           = Sail arian parod
+property.accounting_method.radio.cash.detail                    = Rydych yn cofnodi pan fydd taliad oddi wrth eich tenantiaid yn cyrraedd eich cyfrif banc, a phan fyddwch yn talu bil, er enghraifft am atgyweiriadau a gwaith cynnal a chadw. Mae''r rhan fwyaf o bobl yn defnyddio''r dull hwn.
+property.accounting_method.radio.accruals                       = Sail croniadau
+property.accounting_method.radio.accruals.detail                = Rydych yn cofnodi ar y dyddiad rydych yn anfon anfoneb i''ch tenant neu''n gofyn am daliad oddi wrtho, hyd yn oed os nad ydych yn cael unrhyw arian. Rydych yn cofnodi ar y dyddiad rydych yn cael anfoneb am atgyweiriadau neu waith cynnal a chadw.
 
 ## Business Name
 business.name.title                                             = Enw''r busnes
@@ -293,8 +304,8 @@ error.property.income.invalid                                   = Rhaid i chi dd
 error.date.empty                                                = Rhaid i chi nodi dyddiad
 error.date.invalid                                              = Rhaid i chi nodi dyddiad dilys
 
-error.business.match_tax_year.empty                             = Dewiswch ‘iawn’ os yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill
-error.business.match_tax_year.invalid                           = Dewiswch ‘iawn’ os yw’ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill
+error.business.match_tax_year.empty                             = Dewiswch ''iawn'' os yw''ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill
+error.business.match_tax_year.invalid                           = Dewiswch ''iawn'' os yw''ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill
 
 error.business.current_financial_period_prior.empty             = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.business.current_financial_period_prior.invalid           = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
@@ -302,7 +313,7 @@ error.business.current_financial_period_prior.invalid           = Rhaid i chi dd
 error.business.register_next_accounting_period.empty            = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.business.register_next_accounting_period.invalid          = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
-error.business_accounting_period.minStartDate                   = Mae’n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
+error.business_accounting_period.minStartDate                   = Mae''n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
 error.business_accounting_period.maxEndDate                     = Rhaid i chi nodi dyddiad dod i ben nad yw''n fwy na 24 mis ar ôl eich dyddiad dechrau
 
 error.business_name.empty                                       = Rhaid i chi nodi enw''ch busnes
@@ -741,7 +752,7 @@ agent.error.business.current_financial_period_prior.invalid           = Dewiswch
 agent.error.business.register_next_accounting_period.empty            = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 agent.error.business.register_next_accounting_period.invalid          = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
-agent.error.business_accounting_period.minStartDate                   = Mae’n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
+agent.error.business_accounting_period.minStartDate                   = Mae''n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
 agent.error.business_accounting_period.maxEndDate                     = Nodwch ddyddiad dod i ben sy''n llai na 24 mis ar ôl eich dyddiad dechrau
 
 agent.error.business_name.empty                                       = Nodwch enw busnes eich cleient
