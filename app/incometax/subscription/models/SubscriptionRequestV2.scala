@@ -32,7 +32,7 @@ case class BusinessIncomeModel(tradingName: Option[String],
                                accountingPeriod: AccountingPeriodModel,
                                accountingMethod: AccountingMethod)
 
-case class PropertyIncomeModel(cashOrAccruals: Option[AccountingMethod])
+case class PropertyIncomeModel(accountingMethod: Option[AccountingMethod])
 
 object SubscriptionRequestV2 {
   implicit val format: OFormat[SubscriptionRequestV2] = Json.format[SubscriptionRequestV2]

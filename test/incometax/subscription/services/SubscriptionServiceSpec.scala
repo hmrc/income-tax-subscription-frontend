@@ -91,7 +91,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
       request.businessIncome.get.accountingPeriod.endDate mustBe testAccountingPeriod.endDate
       request.businessIncome.get.accountingMethod mustBe Cash
       request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
-      request.propertyIncome.isDefined mustBe false
+      request.propertyIncome.isDefined mustBe true
       request.isAgent mustBe false
     }
   }

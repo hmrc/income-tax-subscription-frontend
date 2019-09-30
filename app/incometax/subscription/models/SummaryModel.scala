@@ -44,6 +44,8 @@ sealed trait SummaryModel {
 
   def accountingMethod: Option[AccountingMethodModel]
 
+  def accountingMethodProperty: Option[AccountingMethodPropertyModel]
+
   def terms: Option[Boolean]
 }
 
@@ -59,6 +61,7 @@ case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
                              businessAddress: Option[Address] = None,
                              businessStartDate: Option[BusinessStartDateModel] = None,
                              accountingMethod: Option[AccountingMethodModel] = None,
+                             accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                              terms: Option[Boolean] = None) extends SummaryModel {
 
   def incomeSource: Option[IncomeSourceType] =
@@ -77,4 +80,5 @@ case class AgentSummary(incomeSource: Option[IncomeSourceType] = None,
                         businessAddress: Option[Address] = None,
                         businessStartDate: Option[BusinessStartDateModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                         terms: Option[Boolean] = None) extends SummaryModel

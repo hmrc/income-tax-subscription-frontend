@@ -18,9 +18,9 @@ package agent.services
 
 
 import agent.models.AccountingPeriodPriorModel
+import core.config.AppConfig
 import core.models.YesNo
-import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel}
-import incometax.incomesource.models.OtherIncomeModel
+import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel, BusinessNameModel}
 import incometax.subscription.models.{AgentSummary, IncomeSourceType, Property}
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -43,40 +43,33 @@ object CacheUtil {
 
     def getAccountingMethod()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
 
+    def getAccountingMethodProperty()(implicit read: Reads[AccountingMethodPropertyModel]): Option[AccountingMethodPropertyModel] = cacheMap.getEntry(AccountingMethodProperty)
+
     def getTerms()(implicit read: Reads[Boolean]): Option[Boolean] = cacheMap.getEntry(Terms)
 
-    def getSummary()(implicit
-                     isrc: Reads[IncomeSourceType],
-                     oirc: Reads[YesNo],
-                     accP: Reads[AccountingPeriodPriorModel],
-                     accD: Reads[AccountingPeriodModel],
-                     bus: Reads[BusinessNameModel],
-                     accM: Reads[AccountingMethodModel],
-                     ter: Reads[Boolean]): AgentSummary = {
-      val incomeSource = getIncomeSource()
-      incomeSource match {
-        case Some(src) =>
-          src match {
-            case Property =>
-              AgentSummary(
-                incomeSource,
-                otherIncome = getOtherIncome(),
-                terms = getTerms()
-              )
-            case _ =>
-              AgentSummary(
-                incomeSource = incomeSource,
-                otherIncome = getOtherIncome(),
-                accountingPeriodPrior = getAccountingPeriodPrior(),
-                accountingPeriod = getAccountingPeriodDate(),
-                businessName = getBusinessName(),
-                businessPhoneNumber = None,
-                businessAddress = None,
-                businessStartDate = None,
-                accountingMethod = getAccountingMethod(),
-                terms = getTerms()
-              )
-          }
+    def getSummary()(implicit appConfig: AppConfig): AgentSummary = {
+      getIncomeSource() match {
+        case Some(Property) =>
+          AgentSummary(
+            incomeSource = getIncomeSource(),
+            otherIncome = getOtherIncome(),
+            accountingMethodProperty = getAccountingMethodProperty(),
+            terms = getTerms()
+          )
+        case Some(_) =>
+          AgentSummary(
+            incomeSource = getIncomeSource(),
+            otherIncome = getOtherIncome(),
+            accountingPeriodPrior = getAccountingPeriodPrior(),
+            accountingPeriod = getAccountingPeriodDate(),
+            businessName = getBusinessName(),
+            businessPhoneNumber = None,
+            businessAddress = None,
+            businessStartDate = None,
+            accountingMethod = getAccountingMethod(),
+            accountingMethodProperty = getAccountingMethodProperty(),
+            terms = getTerms()
+          )
         case _ => AgentSummary()
       }
 

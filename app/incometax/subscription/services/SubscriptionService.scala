@@ -87,10 +87,11 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
     }
 
     val propertySection = model.incomeSource flatMap {
-      case Property =>
+      case Property | Both =>
         for {
           accountingMethod <- model.accountingMethod map(_.accountingMethod)
-        } yield PropertyIncomeModel(cashOrAccruals = Some(accountingMethod))
+//TODO    accountingMethod <- model.accountingMethodProperty map(_.accountingMethod)     replace the line above with this after the new view and controller are implemented for property accounting method
+        } yield PropertyIncomeModel(accountingMethod = Some(accountingMethod))
       case _ => None
     }
 

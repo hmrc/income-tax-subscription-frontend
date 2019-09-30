@@ -113,6 +113,12 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveAccountingMethod(accountingMethod: AccountingMethodModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodModel]): FC =
     save[AccountingMethodModel](AccountingMethod, accountingMethod)
 
+  def fetchAccountingMethodProperty()(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodPropertyModel]): FO[AccountingMethodPropertyModel] =
+    fetch[AccountingMethodPropertyModel](AccountingMethodProperty)
+
+  def saveAccountingMethodProperty(accountingMethod: AccountingMethodPropertyModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodPropertyModel]): FC =
+    save[AccountingMethodPropertyModel](AccountingMethodProperty, accountingMethod)
+
   def fetchTerms()(implicit hc: HeaderCarrier, reads: Reads[Boolean]): FO[Boolean] =
     fetch[Boolean](Terms)
 
