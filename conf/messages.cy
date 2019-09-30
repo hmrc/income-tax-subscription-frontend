@@ -165,7 +165,7 @@ business.sole_trader.no                                         = Na - rwy''n fa
 
 ## Business Accounting Method page
 business.accounting_method.title                                = Dull cyfrifyddu
-business.accounting_method.heading                              = Dewiswch sut rydych chi’n cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes hunangyflogedig
+business.accounting_method.heading                              = Dewiswch sut rydych chi''n cofnodi''ch incwm a''ch treuliau ar gyfer eich busnes hunangyflogedig
 business.accounting_method.accordion                            = Rhowch enghraifft i mi
 business.accounting_method.accordion.line_1                     = Rhoesoch anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Petaech yn rhoi gwybod i Gyllid a Thollau EM eich bod wedi cael yr incwm hwn ym:
 business.accounting_method.accordion.bullet_1                   = mis Mai 2017, buasech yn defnyddio cyfrifyddu ar ''sail arian parod''
@@ -185,7 +185,7 @@ property.accounting_method.radio.cash.detail                    = Rydych yn cofn
 property.accounting_method.radio.accruals                       = Sail croniadau
 property.accounting_method.radio.accruals.detail                = Rydych yn cofnodi ar y dyddiad rydych yn anfon anfoneb i''ch tenant neu''n gofyn am daliad oddi wrtho, hyd yn oed os nad ydych yn cael unrhyw arian. Rydych yn cofnodi ar y dyddiad rydych yn cael anfoneb am atgyweiriadau neu waith cynnal a chadw.
 
-## Business Namev
+## Business Name
 business.name.title                                             = Enw''r busnes
 business.name.heading                                           = Beth yw enw''ch busnes?
 business.name.signup.line_1                                     = Dyma enw''r busnes a ddefnyddioch i gofrestru ar gyfer Hunanasesiad. Os nad oes enw ar eich busnes, nodwch eich enw''ch hun.
