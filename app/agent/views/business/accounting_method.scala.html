@@ -40,6 +40,7 @@
         @radioHelper(
             field = accountingMethodForm(AccountingMethodForm.accountingMethod),
             legend = question,
+            inline = true,
             options = Seq(
                 RadioOption(AccountingMethodMapping.option_cash, Messages("agent.business.accounting_method.cash")),
                 RadioOption(AccountingMethodMapping.option_accruals, Messages("agent.business.accounting_method.accruals"))

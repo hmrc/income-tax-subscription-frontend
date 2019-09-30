@@ -263,7 +263,7 @@ object MessageLookup {
 
   object AccountingMethod {
     val title = "Accounting method"
-    val heading: String = "How do you record your income and expenses?"
+    val heading: String = "How do you record your income and expenses for your self-employed business?"
     val accordion = "Show me an example"
     val accordion_line_1 = "You invoiced someone in March 2017 but didn't receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:"
     val accordion_bullet_1 = "May 2017, then you use 'cash basis' accounting"

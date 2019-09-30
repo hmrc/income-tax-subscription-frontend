@@ -165,7 +165,7 @@ business.sole_trader.no                                         = No - I am a di
 
 ## Business Accounting Method page
 business.accounting_method.title                                = Accounting method
-business.accounting_method.heading                              = How do you record your income and expenses?
+business.accounting_method.heading                              = How do you record your income and expenses for your self-employed business?
 business.accounting_method.accordion                            = Show me an example
 business.accounting_method.accordion.line_1                     = You invoiced someone in March 2017 but didn''t receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:
 business.accounting_method.accordion.bullet_1                   = May 2017, then you use ''cash basis'' accounting
