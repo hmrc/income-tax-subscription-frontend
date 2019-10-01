@@ -17,6 +17,7 @@
 package incometax.subscription.services
 
 import javax.inject.{Inject, Singleton}
+
 import core.audit.Logging
 import core.config.AppConfig
 import core.config.featureswitch.{FeatureSwitching, UseSubscriptionApiV2}
@@ -74,12 +75,10 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
   }
 
   private[services] def buildRequestV2(nino: String, model: SummaryModel, arn: Option[String]): SubscriptionRequestV2 = {
-    val initialRequest = SubscriptionRequestV2(nino = nino, arn = arn, businessIncome = None, propertyIncome = None)
-
     val businessSection = model.incomeSource.flatMap {
       case Business | Both =>
         for {
-          accountingPeriod <- model.accountingPeriod
+          accountingPeriod <- getAccountingPeriod(model.incomeSource.get, model, arn )
           accountingMethod <- model.accountingMethod map(_.accountingMethod)
           businessName = model.businessName map(_.businessName)
         } yield BusinessIncomeModel(businessName, accountingPeriod, accountingMethod)
@@ -92,10 +91,8 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
       case _ => None
     }
 
-    initialRequest.copy(
-      businessIncome = businessSection,
-      propertyIncome = propertySection
-    )
+
+    SubscriptionRequestV2(nino, arn, businessSection, propertySection)
   }
 
   def submitSubscription(nino: String,

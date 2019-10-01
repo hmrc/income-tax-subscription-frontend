@@ -15,15 +15,15 @@ private object AppDependencies {
   import play.sbt.PlayImport._
   import play.core.PlayVersion
 
-  private val bootstrapPlayVersion = "4.13.0"
+  private val bootstrapPlayVersion = "5.1.0"
   private val govukTemplateVersion = "5.23.0"
-  private val playUiVersion = "7.40.0-play-25"
+  private val playUiVersion = "8.2.0-play-25"
   private val playPartialsVersion = "6.9.0-play-25"
   private val hmrcTestVersion = "3.9.0-play-25"
   private val scalaTestVersion = "3.0.7"
   private val scalaTestPlusVersion = "2.0.1"
   private val pegdownVersion = "1.6.0"
-  private val httpCachingClientVersion = "8.4.0-play-25"
+  private val httpCachingClientVersion = "9.0.0-play-25"
   private val playWhitelistFilterVersion = "2.0.0"
   private val wiremockVersion = "2.22.0"
   private val domainVersion = "5.6.0-play-25"
@@ -41,7 +41,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "domain" % domainVersion,
     "org.typelevel" %% "cats" % catsVersion,
     "uk.gov.hmrc" %% "play-language" % playLanguageVersion,
-    "uk.gov.hmrc" %% "logback-json-logger" % "4.4.0"
+    "uk.gov.hmrc" %% "logback-json-logger" % "4.6.0"
   )
 
   trait TestDependencies {

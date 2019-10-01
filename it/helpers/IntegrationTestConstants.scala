@@ -25,6 +25,7 @@ import uk.gov.hmrc.domain.Generator
 
 object IntegrationTestConstants {
   lazy val testNino: String = new Generator().nextNino.nino
+  lazy val staticTestNino = "AA111111A"
   lazy val testUtr: String = new Generator().nextAtedUtr.utr
   lazy val testMTDID = "XE0001234567890"
   lazy val startDate = DateModel("05", "04", "2017")

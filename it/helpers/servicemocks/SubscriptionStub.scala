@@ -18,17 +18,35 @@ package helpers.servicemocks
 
 import core.ITSASessionKeys
 import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestModels
 import incometax.subscription.models.SubscriptionSuccess
 import play.api.http.Status
 import play.api.libs.json.Json
 
 object SubscriptionStub extends WireMockMethods {
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"
+  def subscriptionURIV2(nino: String): String = s"/income-tax-subscription/subscription-v2/$nino"
 
   def stubSuccessfulSubscription(callingPageUri: String): Unit = {
     when(method = POST, uri = subscriptionURI(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri))
       .thenReturn(Status.OK, successfulSubscriptionResponse)
   }
+
+  def stubSuccessfulSubscriptionV2WithBoth(callingPageUri: String): Unit = {
+    val nino = testNino
+    when(method = POST, uri = subscriptionURIV2(nino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri),
+      body = successfulSubscriptionWithBodyBoth(nino = nino))
+    .thenReturn(Status.OK, successfulSubscriptionResponse)
+  }
+
+  def stubSuccessfulSubscriptionV2WithProperty(callingPageUri: String): Unit = {
+    val nino = testNino
+    when(method = POST, uri = subscriptionURIV2(nino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri),
+      body = successfulSubscriptionWithBodyProperty(nino = nino))
+      .thenReturn(Status.OK, successfulSubscriptionResponse)
+  }
+
+
 
   def stubGetSubscriptionFound(): Unit = {
     when(method = GET, uri = subscriptionURI(testNino))
@@ -49,6 +67,34 @@ object SubscriptionStub extends WireMockMethods {
     when(method = POST, uri = subscriptionURI(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri))
       .thenReturn(Status.NOT_FOUND)
   }
+
+  def successfulSubscriptionWithBodyBoth(arn: Option[String] = None, nino: String) = Json.obj(
+    "nino" -> nino,
+    "businessIncome" -> Json.obj(
+      "tradingName" -> "test business",
+      "accountingPeriod" -> Json.obj(
+        "startDate" -> Json.obj(
+          "day" -> IntegrationTestModels.testStartDate.day,
+          "month" -> IntegrationTestModels.testStartDate.month,
+          "year" -> IntegrationTestModels.testStartDate.year
+        ),
+        "endDate" -> Json.obj(
+          "day" -> IntegrationTestModels.testEndDate.day,
+          "month" -> IntegrationTestModels.testEndDate.month,
+          "year" -> IntegrationTestModels.testEndDate.year
+        )
+      ),
+      "accountingMethod" -> "Cash"
+    ),
+    "propertyIncome" -> Json.obj("accountingMethod" -> "Cash")
+  ) ++ arn.fold(Json.obj())(arn => Json.obj("arn" -> arn))
+
+  def successfulSubscriptionWithBodyProperty(arn: Option[String] = None, nino: String) = Json.obj(
+    "nino" -> nino,
+    "propertyIncome" -> Json.obj("accountingMethod" -> "Cash")
+  ) ++ arn.fold(Json.obj())(arn => Json.obj("arn" -> arn))
+
+
 
   val successfulSubscriptionResponse = SubscriptionSuccess(testMTDID)
   val failureSubscriptionResponse = Json.obj()

@@ -172,6 +172,25 @@ object TestModels extends Implicits {
 
   lazy val testMatchNoUtrModel = UserMatchSuccessResponseModel(testFirstName, testLastName, TestConstants.testNino, testNino, None)
 
+  lazy val testSummaryDataProperty = IndividualSummary(
+    rentUkProperty = testRentUkProperty_property_only,
+    otherIncome = testOtherIncomeNo,
+    matchTaxYear = testMatchTaxYearNo,
+    accountingPeriod = testAccountingPeriod,
+    businessName = testBusinessName,
+    accountingMethod = testAccountingMethod
+  )
+
+  lazy val testSummaryDataBusiness = IndividualSummary(
+    rentUkProperty = testRentUkProperty_no_property,
+    areYouSelfEmployed = testAreYouSelfEmployed_yes,
+    otherIncome = testOtherIncomeNo,
+    matchTaxYear = testMatchTaxYearNo,
+    accountingPeriod = testAccountingPeriod,
+    businessName = testBusinessName,
+    accountingMethod = testAccountingMethod
+  )
+
   lazy val testSummaryData = IndividualSummary(
     rentUkProperty = testRentUkProperty_property_and_other,
     areYouSelfEmployed = testAreYouSelfEmployed_yes,
