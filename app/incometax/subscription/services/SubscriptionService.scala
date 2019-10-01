@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import core.audit.Logging
 import core.config.AppConfig
 import core.config.featureswitch.{FeatureSwitching, UseSubscriptionApiV2}
-import core.models.{Cash, No, Yes}
+import core.models.{No, Yes}
 import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.connectors.{SubscriptionConnector, SubscriptionConnectorV2}
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
