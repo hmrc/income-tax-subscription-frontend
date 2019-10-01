@@ -307,8 +307,8 @@ object MessageLookup {
     val h2 = "You've told us"
     val income_source = "Where does your income come from?"
     val rentUkProperty = "Do you rent out a UK property?"
-    val onlySourceOfIncome = "Is this your only source of self-employed income?"
-    val areYouSelfEmployed = "Are you self-employed?"
+    val onlySourceOfIncome = "Do you have any other sources of income?"
+    val areYouSelfEmployed = "Do you work for yourself?"
 
     object IncomeSource {
       val business = "Sole trader business"
@@ -316,7 +316,7 @@ object MessageLookup {
       val both = "Sole trader business and property"
     }
 
-    val match_tax_year = "Does your accounting period match the tax year?"
+    val match_tax_year = "Do you want to match your accounting period to the tax year?"
     val accounting_period = s"Your accounting period dates"
     val accounting_period_registration = s"When's your current accounting period?"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
