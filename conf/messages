@@ -328,7 +328,9 @@ error.contact_email.maxLength                                   = The email is t
 error.contact_email.invalid                                     = The email is invalid
 
 error.accounting-method.empty                                   = You must select an option to continue
+error.accounting-method-property.empty                          = Select how you record your income and expenses for your property business
 error.accounting-method.invalid                                 = You must select an option to continue
+error.accounting-method-property.invalid                        = Select how you record your income and expenses for your property business
 
 error.user_details.first_name.empty                             = Enter your first name
 error.user_details.last_name.empty                              = Enter your last name

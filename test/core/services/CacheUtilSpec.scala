@@ -45,7 +45,7 @@ class CacheUtilSpec extends UnitTestTrait
       emptyCacheMap.getEnteredAccountingPeriodDate() shouldBe None
       emptyCacheMap.getAccountingPeriodDate() shouldBe None
       emptyCacheMap.getAccountingMethod() shouldBe None
-      emptyCacheMap.getAccountingMethodProperty() shouldBe None
+      emptyCacheMap.getPropertyAccountingMethod() shouldBe None
       emptyCacheMap.getTerms() shouldBe None
     }
 
@@ -62,7 +62,8 @@ class CacheUtilSpec extends UnitTestTrait
       testCacheMap.getEnteredAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingMethod() shouldBe Some(testAccountingMethod)
-      testCacheMap.getAccountingMethodProperty() shouldBe Some(testAccountingMethodProperty)
+      testCacheMap.getPropertyAccountingMethod().contains(testAccountingMethodProperty) shouldBe true
+      testCacheMap.getPropertyAccountingMethod() shouldBe Some(testAccountingMethodProperty)
       testCacheMap.getTerms() shouldBe Some(testTerms)
     }
 

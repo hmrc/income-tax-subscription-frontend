@@ -144,7 +144,7 @@ object TestModels extends Implicits {
       businessAddress.fold(emptyMap)(model => Map(BusinessAddress -> Address.format.writes(model))) ++
       businessStartDate.fold(emptyMap)(model => Map(BusinessStartDate -> BusinessStartDateModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
-      accountingMethodProperty.fold(emptyMap)(model => Map(AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model))) ++
+      accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))) ++
       terms.fold(emptyMap)(model => Map(Terms -> Json.toJson(model)))
     CacheMap("", map)
   }

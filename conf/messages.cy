@@ -329,7 +329,9 @@ error.contact_email.maxLength                                   = Mae''r e-bost 
 error.contact_email.invalid                                     = Mae''r e-bost yn annilys
 
 error.accounting-method.empty                                   = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
+error.accounting-method-property.empty                          = Dewiswch sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo
 error.accounting-method.invalid                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
+error.accounting-method-property.invalid                        = Dewiswch sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo
 
 error.user_details.first_name.empty                             = Nodwch eich enw cyntaf
 error.user_details.last_name.empty                              = Nodwch eich enw olaf

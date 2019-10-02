@@ -18,7 +18,7 @@ package incometax.business.views
 
 import assets.MessageLookup.{Base => common, PropertyAccountingMethod => messages}
 import core.views.ViewSpecTrait
-import incometax.business.forms.AccountingMethodForm
+import incometax.business.forms.AccountingMethodPropertyForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
@@ -34,7 +34,7 @@ class PropertyAccountingMethodViewSpec extends ViewSpecTrait {
 
   class Setup(isEditMode: Boolean = false) {
     val page: HtmlFormat.Appendable = incometax.business.views.html.property_accounting_method(
-      accountingMethodForm = AccountingMethodForm.accountingMethodForm,
+      accountingMethodForm = AccountingMethodPropertyForm.accountingMethodPropertyForm,
       postAction = action,
       isEditMode,
       backUrl = backUrl
@@ -81,8 +81,8 @@ class PropertyAccountingMethodViewSpec extends ViewSpecTrait {
 
       "has a cash radio button" in new Setup {
         val radioWithLabel: Elements = document.select("form div fieldset div.multiple-choice")
-        radioWithLabel.select("input[id=accountingMethod-Cash]").`val` mustBe "Cash"
-        radioWithLabel.select("label[for=accountingMethod-Cash]").text mustBe Seq(
+        radioWithLabel.select("input[id=accountingMethodProperty-Cash]").`val` mustBe "Cash"
+        radioWithLabel.select("label[for=accountingMethodProperty-Cash]").text mustBe Seq(
           messages.radioCash,
           messages.radioCashDetail
         ).mkString(" ")
@@ -90,8 +90,8 @@ class PropertyAccountingMethodViewSpec extends ViewSpecTrait {
 
       "has a accruals radio button" in new Setup {
         val radioWithLabel: Elements = document.select("form div fieldset div.multiple-choice")
-        radioWithLabel.select("input[id=accountingMethod-Accruals]").`val` mustBe "Accruals"
-        radioWithLabel.select("label[for=accountingMethod-Accruals]").text mustBe Seq(
+        radioWithLabel.select("input[id=accountingMethodProperty-Accruals]").`val` mustBe "Accruals"
+        radioWithLabel.select("label[for=accountingMethodProperty-Accruals]").text mustBe Seq(
           messages.radioAccruals,
           messages.radioAccrualsDetail
         ).mkString(" ")

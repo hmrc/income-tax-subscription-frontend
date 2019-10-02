@@ -19,11 +19,12 @@ package incometax.business.controllers
 import core.config.MockConfig
 import core.config.featureswitch._
 import core.controllers.ControllerBaseSpec
-import core.models.{Cash, DateModel}
+import core.models.{Cash, DateModel, No}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import incometax.business.forms.AccountingMethodForm
 import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, MatchTaxYearModel}
+import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models.{Both, Business, IncomeSourceType}
 import play.api.http.Status
@@ -123,6 +124,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
       s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}' when the Eligibility Pages feature switch is enabled" in {
         setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
 
         val goodRequest = callShow(isEditMode = true)
 
@@ -137,6 +139,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     "When it is in edit mode" should {
       "return a redirect status (SEE_OTHER - 303)" in {
         setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
 
         val goodRequest = callShow(isEditMode = true)
 
@@ -148,6 +151,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
       s"redirect to '${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
 
         val goodRequest = callShow(isEditMode = true)
 

@@ -46,6 +46,7 @@ object IntegrationTestModels {
   val testBusinessPhoneNumber = BusinessPhoneNumberModel("01234567890")
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
+
   val testTerms = true
 
   val testBusinessStartDate = BusinessStartDateModel(testStartDate)
@@ -64,6 +65,7 @@ object IntegrationTestModels {
       businessPhoneNumber = Some(testBusinessPhoneNumber),
       businessAddress = Some(testAddress),
       accountingMethod = Some(testAccountingMethod),
+      propertyAccountingMethod = Some(testAccountingMethodProperty),
       terms = Some(testTerms)
     )
 
@@ -104,6 +106,7 @@ object IntegrationTestModels {
                    businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
                    businessAddress: Option[Address] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
+                   propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None,
                    terms: Option[Boolean] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
@@ -116,6 +119,7 @@ object IntegrationTestModels {
       businessPhoneNumber.map(model => BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model)) ++
       businessAddress.map(model => BusinessAddress -> Address.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
+      propertyAccountingMethod.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)) ++
       terms.map(model => Terms -> Json.toJson(model))
   }
 
@@ -143,7 +147,7 @@ object IntegrationTestModels {
       businessAddress.map(model => BusinessAddress -> Address.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       terms.map(model => Terms -> Json.toJson(model)) ++
-      accountingMethodProperty.map(model => AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model))
+      accountingMethodProperty.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))
   }
 
   lazy val testIncomeSourceBusiness = Business
@@ -177,7 +181,8 @@ object IntegrationTestModels {
     accountingPeriodStart = Some(testAccountingPeriod.startDate),
     accountingPeriodEnd = Some(testAccountingPeriod.endDate),
     tradingName = Some(testBusinessName.businessName),
-    cashOrAccruals = Some(testAccountingMethod.accountingMethod)
+    cashOrAccruals = Some(testAccountingMethod.accountingMethod),
+    cashOrAccrualsProperty = Some(testAccountingMethodProperty.propertyAccountingMethod)
   )
 
   val testConfirmAgentYes = ConfirmAgentModel(ConfirmAgentForm.option_yes)

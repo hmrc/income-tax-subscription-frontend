@@ -23,6 +23,7 @@ import core.services.CacheUtil.CacheMapUtil
 import core.services.{AuthService, KeystoreService}
 import incometax.business.forms.AccountingMethodForm
 import incometax.business.models.{AccountingMethodModel, MatchTaxYearModel}
+import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
@@ -66,11 +67,18 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       AccountingMethodForm.accountingMethodForm.bindFromRequest.fold(
         formWithErrors => view(accountingMethodForm = formWithErrors, isEditMode = isEditMode).map(view => BadRequest(view)),
         accountingMethod => {
-          keystoreService.saveAccountingMethod(accountingMethod) map (_ => if (isEditMode || appConfig.eligibilityPagesEnabled) {
-            Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-          } else {
-            Redirect(incometax.subscription.controllers.routes.TermsController.show())
-          })
+          keystoreService.saveAccountingMethod(accountingMethod) flatMap { _ =>
+            if (isEditMode || appConfig.eligibilityPagesEnabled) {
+              keystoreService.fetchRentUkProperty() map {
+                case Some(RentUkPropertyModel(Yes, _)) if appConfig.propertyCashOrAccrualsEnabled =>
+                  Redirect(incometax.business.controllers.routes.PropertyAccountingMethodController.show())
+                case _ =>
+                  Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+              }
+            } else {
+              Future.successful(Redirect(incometax.subscription.controllers.routes.TermsController.show()))
+            }
+          }
         }
       )
   }

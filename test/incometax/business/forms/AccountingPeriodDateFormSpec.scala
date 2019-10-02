@@ -80,7 +80,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           val invalid = ErrorMessageFactory.error("error.start_date.invalid")
           invalid fieldErrorIs MessageLookup.Error.StartDate.invalid
           invalid summaryErrorIs MessageLookup.Error.StartDate.invalid
-          val invalidTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("32", "2", LocalDate.now.getDayOfYear.toString))
+          val invalidTest = accountingPeriodDateForm.bind(DataMap.date(startDate)("32", "2", "2017"))
           invalidTest assert startDate hasExpectedErrors invalid
         }
       }
@@ -116,7 +116,7 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           invalid fieldErrorIs MessageLookup.Error.EndDate.invalid
           invalid summaryErrorIs MessageLookup.Error.EndDate.invalid
 
-          val invalidTest = accountingPeriodDateForm.bind(DataMap.date(endDate)("29", "2", LocalDate.now.getDayOfYear.toString))
+          val invalidTest = accountingPeriodDateForm.bind(DataMap.date(endDate)("34", "2", "2017"))
           invalidTest assert endDate hasExpectedErrors invalid
         }
       }

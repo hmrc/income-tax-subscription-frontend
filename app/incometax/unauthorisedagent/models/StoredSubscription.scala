@@ -27,7 +27,8 @@ case class StoredSubscription(arn: String,
                               accountingPeriodStart: Option[DateModel] = None,
                               accountingPeriodEnd: Option[DateModel] = None,
                               tradingName: Option[String] = None,
-                              cashOrAccruals: Option[AccountingMethod] = None)
+                              cashOrAccruals: Option[AccountingMethod] = None,
+                              cashOrAccrualsProperty: Option[AccountingMethod] = None)
 
 case object StoreSubscriptionSuccess
 

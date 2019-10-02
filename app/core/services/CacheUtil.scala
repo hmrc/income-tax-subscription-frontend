@@ -62,7 +62,7 @@ object CacheUtil {
 
     def getAccountingMethod()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
 
-    def getAccountingMethodProperty()(implicit read: Reads[AccountingMethodPropertyModel]): Option[AccountingMethodPropertyModel] = cacheMap.getEntry(AccountingMethodProperty)
+    def getPropertyAccountingMethod()(implicit read: Reads[AccountingMethodPropertyModel]): Option[AccountingMethodPropertyModel] = cacheMap.getEntry(PropertyAccountingMethod)
 
     def getTerms()(implicit read: Reads[Boolean]): Option[Boolean] = cacheMap.getEntry(Terms)
 
@@ -73,7 +73,7 @@ object CacheUtil {
             rentUkProperty = getRentUkProperty(),
             areYouSelfEmployed = getAreYouSelfEmployed(),
             otherIncome = getOtherIncome(),
-            accountingMethodProperty = getAccountingMethodProperty(),
+            accountingMethodProperty = getPropertyAccountingMethod(),
             terms = getTerms()
           )
         case Some(_) =>
@@ -88,7 +88,7 @@ object CacheUtil {
             businessAddress = getBusinessAddress(),
             businessStartDate = getBusinessStartDate(),
             accountingMethod = getAccountingMethod(),
-            accountingMethodProperty = getAccountingMethodProperty(),
+            accountingMethodProperty = getPropertyAccountingMethod(),
             terms = getTerms()
           )
         case _ => IndividualSummary()
