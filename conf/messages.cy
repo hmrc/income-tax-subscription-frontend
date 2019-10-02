@@ -608,9 +608,9 @@ agent.business.sole_trader.no                                         = Na - rwy
 
 ## Business Income page
 agent.business.accounting_method.title                                = Dull cyfrifyddu
-agent.business.accounting_method.heading                              = Pa ddull cyfrifyddu y mae''ch cleient yn ei ddefnyddio?
+agent.business.accounting_method.heading                              = Pa ddull cyfrifyddu mae''ch cleient yn ei ddefnyddio ar gyfer ei fusnes hunangyflogedig?
 agent.business.accounting_method.cash                                 = Sail arian parod
-agent.business.accounting_method.accruals                             = Cyfrifyddu traddodiadol
+agent.business.accounting_method.accruals                             = Sail croniadau
 
 ## Business Name
 agent.business.name.title                                             = Enw''r busnes

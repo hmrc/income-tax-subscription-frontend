@@ -241,13 +241,13 @@ summary.line_1                                                  = You can edit y
 summary.h2                                                      = You''ve told us
 summary.income_source                                           = Where does your income come from?
 summary.rent_uk_property_1                                      = Do you rent out a UK property?
-summary.rent_uk_property_2                                      = Is this your only source of self-employed income?
-summary.are_you_selfemployed                                    = Are you self-employed?
+summary.rent_uk_property_2                                      = Do you have any other sources of income?
+summary.are_you_selfemployed                                    = Do you work for yourself?
 summary.income_source.business                                  = Sole trader business
 summary.income_source.property                                  = Property
 summary.income_source.both                                      = Sole trader business and property
 summary.other_income                                            = Do you have any other sources of income?
-summary.match_tax_year                                          = Does your accounting period match the tax year?
+summary.match_tax_year                                          = Do you want to match your accounting period to the tax year?
 summary.accounting_period                                       = Your accounting period dates
 summary.accounting_period.registration                          = When''s your current accounting period?
 summary.business_name                                           = What''s the name of your business?
@@ -606,9 +606,9 @@ agent.business.sole_trader.no                                         = No - I a
 
 ## Business Income page
 agent.business.accounting_method.title                                = Accounting method
-agent.business.accounting_method.heading                              = What accounting method does your client use?
+agent.business.accounting_method.heading                              = What accounting method does your client use for their self-employed business?
 agent.business.accounting_method.cash                                 = Cash basis
-agent.business.accounting_method.accruals                             = Traditional accounting
+agent.business.accounting_method.accruals                             = Accurals basis
 
 ## Business Name
 agent.business.name.title                                             = Business name
@@ -675,14 +675,14 @@ agent.summary.heading_hidden                                          = before s
 agent.summary.confirm_and_sign_up                                     = Confirm and sign up
 agent.summary.line_1                                                  = You can edit your answers if you need to.<br>When you''re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
 agent.summary.h2                                                      = You''ve told us
-agent.summary.income_source                                           = Your client''s income type
+agent.summary.income_source                                           = Client''s income type
 agent.summary.income_source.business                                  = Sole trader business
 agent.summary.income_source.property                                  = Property
 agent.summary.income_source.both                                      = Sole trader business and property
 agent.summary.other_income                                            = Does your client have any other sources of income?
 agent.summary.accounting_period                                       = Your client''s accounting period dates
-agent.summary.business_name                                           = What''s the name of your client''s business?
-agent.summary.income_type                                             = What accounting method does your client use?
+agent.summary.business_name                                           = Business name
+agent.summary.income_type                                             = Accounting method for their self-employed business
 agent.summary.income_type.cash                                        = Cash basis
 agent.summary.income_type.accruals                                    = Traditional accounting
 
