@@ -29,21 +29,21 @@
 @import core.views.html.helpers.SummaryIdConstants._
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
-    <div class="tabular-data__entry divider--top--thick" id="@field-row">
-        <span class="tabular-data__heading tabular-data__heading--label" id="@field-question">
+    <div class="tabular-data__entry divider--top--thick grid-row" id="@field-row">
+        <span class="tabular-data__heading tabular-data__heading--label column-one-third" id="@field-question">
         @question
         </span>
-        <div class="tabular-data__data-1" id="@field-answer">
+        <div class="tabular-data__data-1 column-one-third" id="@field-answer">
         @if(enableHtml) {@Html(answer)} else {
             @answer
         }
         </div>
         @changeUrl match {
             case Some(url) => {
-                <a class="tabular-data__data-2" data-journey-click="itsa:changeLink:@field" href="@url" id="@field-edit">@Messages("base.change") <span class="visuallyhidden">@question</span> </a>
+                <a class="tabular-data__data-2 column-one-third" data-journey-click="itsa:changeLink:@field" href="@url" id="@field-edit">@Messages("base.change") <span class="visuallyhidden">@question</span> </a>
             }
             case _ => {
-                <div class="tabular-data__data-2"></div>
+                <div class="tabular-data__data-2 column-one-third"></div>
             }
         }
     </div>
