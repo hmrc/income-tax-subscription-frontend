@@ -71,7 +71,8 @@ object TestModels extends Implicits {
   val emptyCacheMap = CacheMap("", Map())
 
   lazy val testCacheMap: CacheMap =
-    testCacheMap(incomeSource = testIncomeSourceBoth,
+    testCacheMap(
+      incomeSource = testIncomeSourceBoth,
       rentUkProperty = testRentUkProperty_property_and_other,
       areYouSelfEmployed = testAreYouSelfEmployed_yes,
       otherIncome = testOtherIncomeNo,
@@ -84,7 +85,8 @@ object TestModels extends Implicits {
       businessStartDate = testBusinessStartDate,
       accountingMethod = testAccountingMethod,
       accountingMethodProperty = testAccountingMethodProperty,
-      terms = testTerms)
+      terms = testTerms
+    )
 
   def testCacheMapCustom(
                           incomeSource: Option[IncomeSourceType] = testIncomeSourceBoth,

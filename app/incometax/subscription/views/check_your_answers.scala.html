@@ -18,7 +18,7 @@
 @import core.views.html.helpers._
 @import core.views.html.templates.main_template
 @import incometax.business.models.address.Address
-@import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
+@import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel, AccountingMethodPropertyModel}
 @import incometax.incomesource.models._
 @import incometax.subscription.models.IndividualSummary
 @import uk.gov.hmrc.play.views.html.helpers.form
@@ -155,6 +155,14 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
+@accountingMethodProperty(income: AccountingMethodPropertyModel) = @{
+    val rowName = AccountingMethodPropertyId
+    val rowQuestion = messages("summary.accounting_method_property")
+    val rowAnswer = accountingMethodText(income)
+    val rowUrl = incometax.business.controllers.routes.PropertyAccountingMethodController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
 @main_template(title = Messages("summary.title")) {
 
     @back_link(backUrl)
@@ -183,6 +191,7 @@
             @summaryModel.accountingPeriod.map(accountingPeriodDate)
         }
         @summaryModel.accountingMethod.map(accountingMethod)
+        @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
         <div class="divider--top--thick"></div>
     </div>
 
