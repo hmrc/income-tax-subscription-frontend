@@ -18,12 +18,12 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 @import core.config.AppConfig
-@import incometax.business.forms.AccountingMethodForm
+@import incometax.business.forms.AccountingMethodPropertyForm
 @import core.forms.submapping.AccountingMethodMapping
-@import incometax.business.models.AccountingMethodModel
+@import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel}
 @import core.views.html.templates.main_template
 
-@(accountingMethodForm: Form[AccountingMethodModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingMethodForm: Form[AccountingMethodPropertyModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @question = @{
     messages("property.accounting_method.heading")
@@ -55,7 +55,7 @@
     @form(action = postAction) {
 
         @radioHelper(
-            field = accountingMethodForm(AccountingMethodForm.accountingMethod),
+            field = accountingMethodForm(AccountingMethodPropertyForm.accountingMethodProperty),
             legend = question,
             options = Seq(
                 RadioOption(

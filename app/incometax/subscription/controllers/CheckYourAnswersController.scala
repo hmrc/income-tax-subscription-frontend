@@ -48,11 +48,20 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
 
   def backUrl(incomeSource: IncomeSourceType): String = {
     if (appConfig.eligibilityPagesEnabled) {
-      incomeSource match {
-        case Business | Both =>
-          incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
-        case Property =>
-          incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
+      if(appConfig.propertyCashOrAccrualsEnabled) {
+        incomeSource match {
+          case Property | Both =>
+            incometax.business.controllers.routes.PropertyAccountingMethodController.show().url
+          case Business =>
+            incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+        }
+      } else {
+        incomeSource match {
+          case Business | Both =>
+            incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+          case Property =>
+            incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show().url
+        }
       }
     } else {
       incometax.subscription.controllers.routes.TermsController.show().url

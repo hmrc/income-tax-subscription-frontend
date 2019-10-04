@@ -77,8 +77,11 @@ class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfi
               incomeSourceType match {
                 case Business | Both if appConfig.eligibilityPagesEnabled =>
                   Redirect(incometax.business.controllers.routes.BusinessNameController.show())
-                case Property if appConfig.eligibilityPagesEnabled =>
-                  Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+                case Property if appConfig.eligibilityPagesEnabled => {
+                  if (appConfig.propertyCashOrAccrualsEnabled)
+                    Redirect(incometax.business.controllers.routes.PropertyAccountingMethodController.show())
+                  else Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+                }
                 case Business | Property | Both =>
                   Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
                 case Other =>

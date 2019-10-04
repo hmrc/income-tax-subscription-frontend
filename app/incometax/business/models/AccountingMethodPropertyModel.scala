@@ -19,7 +19,7 @@ package incometax.business.models
 import core.models.AccountingMethod
 import play.api.libs.json.Json
 
-case class AccountingMethodPropertyModel(accountingMethod: AccountingMethod)
+case class AccountingMethodPropertyModel(propertyAccountingMethod: AccountingMethod)
 
 object AccountingMethodPropertyModel {
   implicit val format = Json.format[AccountingMethodPropertyModel]

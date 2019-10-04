@@ -74,10 +74,13 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                 case (Yes, Some(No)) =>
                   Future.successful(Redirect(incometax.incomesource.controllers.routes.AreYouSelfEmployedController.show()))
                 case (Yes, Some(Yes)) if appConfig.eligibilityPagesEnabled =>
-                  Future.successful(Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
-
-                case (Yes, Some(Yes)) =>
-                  Future.successful(Redirect(routes.OtherIncomeController.show()))
+                  if(appConfig.propertyCashOrAccrualsEnabled) {
+                    Future.successful(Redirect(incometax.business.controllers.routes.PropertyAccountingMethodController.show()))
+                  } else {
+                    Future.successful(Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
+                  }
+                case _ =>
+                  Future.successful(Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show()))
               }
             }
 

@@ -77,6 +77,8 @@ trait AppConfig extends FeatureSwitching {
 
   def eligibilityPagesEnabled: Boolean
 
+  def propertyCashOrAccrualsEnabled: Boolean
+
   def storeNinoUrl(token: String): String
 
   def upsertEnrolmentUrl(enrolmentKey: String): String
@@ -238,6 +240,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override def unauthorisedAgentEnabled: Boolean = isEnabled(featureswitch.UnauthorisedAgentFeature)
 
   override def eligibilityPagesEnabled: Boolean = isEnabled(featureswitch.EligibilityPagesFeature)
+
+  override def propertyCashOrAccrualsEnabled: Boolean = isEnabled(featureswitch.PropertyCashOrAccruals)
 
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 

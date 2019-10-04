@@ -22,6 +22,9 @@ POST        /start-date                             incometax.business.controlle
 GET         /accounting-method                      incometax.business.controllers.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /accounting-method                      incometax.business.controllers.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
 
+GET         /accounting-method-property             incometax.business.controllers.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /accounting-method-property             incometax.business.controllers.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+
 GET         /address                                incometax.business.controllers.BusinessAddressController.show(editMode: Boolean ?= false)
 POST        /address                                incometax.business.controllers.BusinessAddressController.submit(editMode: Boolean ?= false)
 GET         /address/init                           incometax.business.controllers.BusinessAddressController.init(editMode: Boolean ?= false)
