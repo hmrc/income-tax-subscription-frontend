@@ -49,7 +49,12 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
   def backUrl(incomeSource: IncomeSourceType): String = {
     if (appConfig.eligibilityPagesEnabled) {
       if(appConfig.propertyCashOrAccrualsEnabled) {
-        incometax.business.controllers.routes.PropertyAccountingMethodController.show().url
+        incomeSource match {
+          case Property | Both =>
+            incometax.business.controllers.routes.PropertyAccountingMethodController.show().url
+          case Business =>
+            incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+        }
       } else {
         incomeSource match {
           case Business | Both =>
