@@ -68,7 +68,9 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
         formWithErrors => view(accountingMethodForm = formWithErrors, isEditMode = isEditMode).map(view => BadRequest(view)),
         accountingMethod => {
           keystoreService.saveAccountingMethod(accountingMethod) flatMap { _ =>
-            if (isEditMode || appConfig.eligibilityPagesEnabled) {
+            if (isEditMode) {
+              Future.successful(Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show()))
+            } else if (appConfig.eligibilityPagesEnabled) {
               keystoreService.fetchRentUkProperty() map {
                 case Some(RentUkPropertyModel(Yes, _)) if appConfig.propertyCashOrAccrualsEnabled =>
                   Redirect(incometax.business.controllers.routes.PropertyAccountingMethodController.show())
