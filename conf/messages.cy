@@ -164,8 +164,8 @@ business.sole_trader.yes                                        = Iawn - rwy''n 
 business.sole_trader.no                                         = Na - rwy''n fath gwahanol o fusnes
 
 ## Business Accounting Method page
-business.accounting_method.title                                = Dull cyfrifyddu
-business.accounting_method.heading                              = Dewiswch sut rydych chi''n cofnodi''ch incwm a''ch treuliau ar gyfer eich busnes hunangyflogedig
+business.accounting_method.title                                = Sut ydych chi''n cofnodi''ch incwm a''ch treuliau ar gyfer eich busnes hunangyflogedig?
+business.accounting_method.heading                              = Sut ydych chi''n cofnodi''ch incwm a''ch treuliau ar gyfer eich busnes hunangyflogedig?
 business.accounting_method.accordion                            = Rhowch enghraifft i mi
 business.accounting_method.accordion.line_1                     = Rhoesoch anfoneb i rywun ym mis Mawrth 2017, ond ni chawsoch yr arian tan fis Mai 2017. Petaech yn rhoi gwybod i Gyllid a Thollau EM eich bod wedi cael yr incwm hwn ym:
 business.accounting_method.accordion.bullet_1                   = mis Mai 2017, buasech yn defnyddio cyfrifyddu ar ''sail arian parod''
@@ -254,7 +254,7 @@ summary.business_name                                           = Beth yw enw''c
 summary.business_phone                                          = Beth yw rhif ffôn eich busnes?
 summary.business_address                                        = Beth yw cyfeiriad eich busnes?
 summary.business_start_date                                     = Pryd y dechreuodd eich busnes fasnachu?
-summary.income_type                                             = Pa ddull ydych chi''n ei ddefnyddio ar gyfer eich cyfrifyddu?
+summary.income_type                                             = Eich dull cyfrifyddu ar gyfer eich busnes hunangyflogedig
 summary.income_type.cash                                        = Sail arian parod
 summary.income_type.accruals                                    = Sail croniadau
 summary.terms                                                   = Telerau cyfranogi
@@ -329,10 +329,10 @@ error.contact_email.empty                                       = Nodwch e-bost 
 error.contact_email.maxLength                                   = Mae''r e-bost yn rhy hir
 error.contact_email.invalid                                     = Mae''r e-bost yn annilys
 
-error.accounting-method.empty                                   = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.accounting-method-property.empty                          = Dewiswch sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo
-error.accounting-method.invalid                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.accounting-method-property.invalid                        = Dewiswch sut rydych yn cofnodi’ch incwm a’ch treuliau ar gyfer eich busnes eiddo
+error.accounting-method.empty                                   = Dewiswch sut rydych chi''n cofnodi''ch incwm a''ch treuliau ar gyfer eich busnes hunangyflogedig
+error.accounting-method-property.empty                          = Dewiswch sut rydych yn cofnodi''ch incwm a''ch treuliau ar gyfer eich busnes eiddo
+error.accounting-method.invalid                                 = Dewiswch sut rydych chi''n cofnodi''ch incwm a''ch treuliau ar gyfer eich busnes hunangyflogedig
+error.accounting-method-property.invalid                        = Dewiswch sut rydych yn cofnodi''ch incwm a''ch treuliau ar gyfer eich busnes eiddo
 
 error.user_details.first_name.empty                             = Nodwch eich enw cyntaf
 error.user_details.last_name.empty                              = Nodwch eich enw olaf
@@ -610,7 +610,7 @@ agent.business.sole_trader.yes                                        = Iawn - r
 agent.business.sole_trader.no                                         = Na - rwy''n fath gwahanol o fusnes
 
 ## Business Income page
-agent.business.accounting_method.title                                = Dull cyfrifyddu
+agent.business.accounting_method.title                                = Pa ddull cyfrifyddu mae''ch cleient yn ei ddefnyddio ar gyfer ei fusnes hunangyflogedig?
 agent.business.accounting_method.heading                              = Pa ddull cyfrifyddu mae''ch cleient yn ei ddefnyddio ar gyfer ei fusnes hunangyflogedig?
 agent.business.accounting_method.cash                                 = Sail arian parod
 agent.business.accounting_method.accruals                             = Sail croniadau
@@ -687,9 +687,9 @@ agent.summary.income_source.both                                      = Busnes f
 agent.summary.other_income                                            = A oes gan eich cleient ffynonellau eraill o incwm?
 agent.summary.accounting_period                                       = Dyddiadau cyfnod cyfrifyddu''ch cleient
 agent.summary.business_name                                           = Beth yw enw busnes eich cleient?
-agent.summary.income_type                                             = Pa ddull cyfrifyddu y mae''ch cleient yn ei ddefnyddio?
+agent.summary.income_type                                             = Dull cyfrifyddu ar gyfer ei fusnes hunangyflogedig
 agent.summary.income_type.cash                                        = Sail arian parod
-agent.summary.income_type.accruals                                    = Cyfrifyddu traddodiadol
+agent.summary.income_type.accruals                                    = Sail croniadau
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                          = Rydych wedi gorffen cofrestru
