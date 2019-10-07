@@ -40,6 +40,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testBusinessStartDate: BusinessStartDateModel = TestModels.testBusinessStartDate
   val testBusinessAddress: Address = TestModels.testAddress
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
+  val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
   val testIncomeSource: IncomeSourceType = TestModels.testIncomeSourceBoth
   val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
   val testAreYouSelfEmployed: AreYouSelfEmployedModel = TestModels.testAreYouSelfEmployed_yes
@@ -48,7 +49,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
   def customTestSummary(rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty,
                         matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
-                        accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod) = IndividualSummary(
+                        accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod,
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) = IndividualSummary(
     rentUkProperty = rentUkProperty,
     areYouSelfEmployed = testAreYouSelfEmployed,
     otherIncome = testOtherIncome,
@@ -58,7 +60,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     businessAddress = testBusinessAddress,
     businessStartDate = testBusinessStartDate,
     businessPhoneNumber = testBusinessPhoneNumber,
-    accountingMethod = testAccountingMethod
+    accountingMethod = testAccountingMethod,
+    accountingMethodProperty = accountingMethodProperty
   )
 
   lazy val postAction: Call = incometax.subscription.controllers.routes.CheckYourAnswersController.submit()
@@ -354,6 +357,22 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink
+      )
+    }
+
+
+    "display the correct info for the accounting method Property " in {
+      val sectionId = AccountingMethodPropertyId
+      val expectedQuestion = messages.accountingMethodProperty
+      val expectedAnswer = messages.AccountingMethod.cash
+      val expectedEditLink = incometax.business.controllers.routes.PropertyAccountingMethodController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink,
+        testSummaryModel = customTestSummary(accountingMethodProperty = testAccountingPropertyModel)
       )
     }
 

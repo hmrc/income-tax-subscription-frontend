@@ -259,6 +259,7 @@ summary.income_type.cash                                        = Sail arian par
 summary.income_type.accruals                                    = Sail croniadau
 summary.terms                                                   = Telerau cyfranogi
 summary.terms.agreed                                            = Rwy''n cytuno
+summary.accounting_method_property                              = Eich dull cyfrifyddu ar gyfer eich incwm eiddo
 
 ## Confirmation page ##
 confirmation.title                                              = Tudalen gadarnhau

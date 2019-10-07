@@ -76,6 +76,20 @@ object CacheUtil {
             accountingMethodProperty = getPropertyAccountingMethod(),
             terms = getTerms()
           )
+        case Some(Business) =>
+          IndividualSummary(
+            rentUkProperty = getRentUkProperty(),
+            areYouSelfEmployed = getAreYouSelfEmployed(),
+            otherIncome = getOtherIncome(),
+            matchTaxYear = getMatchTaxYear(),
+            accountingPeriod = getEnteredAccountingPeriodDate(),
+            businessName = getBusinessName(),
+            businessPhoneNumber = getBusinessPhoneNumber(),
+            businessAddress = getBusinessAddress(),
+            businessStartDate = getBusinessStartDate(),
+            accountingMethod = getAccountingMethod(),
+            terms = getTerms()
+          )
         case Some(_) =>
           IndividualSummary(
             rentUkProperty = getRentUkProperty(),

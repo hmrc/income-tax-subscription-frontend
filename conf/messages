@@ -259,6 +259,7 @@ summary.income_type.cash                                        = Cash basis
 summary.income_type.accruals                                    = Accruals basis
 summary.terms                                                   = Terms of participation
 summary.terms.agreed                                            = I agree
+summary.accounting_method_property                              = Your accounting method for your property income
 
 ## Confirmation page ##
 confirmation.title                                              = Confirmation page

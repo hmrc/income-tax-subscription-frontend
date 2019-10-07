@@ -100,53 +100,54 @@ class CacheUtilSpec extends UnitTestTrait
       }
     }
 
-    "The getSummary should populate the Summary model correctly" in {
-      testCacheMap.getSummary() shouldBe
-        IndividualSummary(
-          rentUkProperty = testRentUkProperty_property_and_other,
-          areYouSelfEmployed = testAreYouSelfEmployed_yes,
-          otherIncome = testOtherIncomeNo,
-          matchTaxYear = testMatchTaxYearNo,
-          accountingPeriod = testAccountingPeriod,
-          businessName = testBusinessName,
-          businessPhoneNumber = testBusinessPhoneNumber,
-          businessAddress = testAddress,
-          businessStartDate = testBusinessStartDate,
-          accountingMethod = testAccountingMethod,
-          accountingMethodProperty = testAccountingMethodProperty,
-          terms = testTerms
-        )
-
-      // for the property only journey, this should only populate the subset of views
-      // relevant to the journey
-      val overPopulatedPropertyCacheMap =
-      testCacheMap(
-        rentUkProperty = testRentUkProperty_property_only,
-        areYouSelfEmployed = None,
-        otherIncome = testOtherIncomeNo,
-        matchTaxYear = testMatchTaxYearNo,
-        accountingPeriodDate = testAccountingPeriod,
-        businessName = testBusinessName,
-        businessPhoneNumber = testBusinessPhoneNumber,
-        businessAddress = testAddress,
-        businessStartDate = testBusinessStartDate,
-        accountingMethod = testAccountingMethod,
-        accountingMethodProperty = testAccountingMethodProperty,
-        terms = testTerms,
-        accountingPeriodPrior = None // no longer used in individual journey
-      )
-      overPopulatedPropertyCacheMap.getSummary() shouldBe
-        IndividualSummary(
-          rentUkProperty = testRentUkProperty_property_only,
-          areYouSelfEmployed = None,
-          otherIncome = testOtherIncomeNo,
-          accountingMethodProperty = testAccountingMethodProperty,
-          terms = testTerms
-        )
-
-      emptyCacheMap.getSummary() shouldBe IndividualSummary()
+    "The getSummary should populate the Summary model correctly" when {
+      "income source is just property" in {
+        testCacheMapCustom(rentUkProperty = testRentUkProperty_property_only, areYouSelfEmployed = None).getSummary() shouldBe
+          IndividualSummary(
+            rentUkProperty = testRentUkProperty_property_only,
+            areYouSelfEmployed = None,
+            otherIncome = testOtherIncomeNo,
+            accountingMethodProperty = testAccountingMethodProperty,
+            terms = testTerms
+          )
+      }
+      "income source is just business" in {
+        testCacheMapCustom(rentUkProperty = testRentUkProperty_no_property, areYouSelfEmployed = testAreYouSelfEmployed_yes).getSummary() shouldBe
+          IndividualSummary(
+            rentUkProperty = testRentUkProperty_no_property,
+            areYouSelfEmployed = testAreYouSelfEmployed_yes,
+            otherIncome = testOtherIncomeNo,
+            matchTaxYear = testMatchTaxYearNo,
+            accountingPeriod = testAccountingPeriod,
+            businessName = testBusinessName,
+            businessPhoneNumber = testBusinessPhoneNumber,
+            businessAddress = testAddress,
+            businessStartDate = testBusinessStartDate,
+            accountingMethod = testAccountingMethod,
+            terms = testTerms
+          )
+      }
+      "income source is both property and business" in {
+        testCacheMapCustom(rentUkProperty = testRentUkProperty_property_and_other, areYouSelfEmployed = testAreYouSelfEmployed_yes).getSummary() shouldBe
+          IndividualSummary(
+            rentUkProperty = testRentUkProperty_property_and_other,
+            areYouSelfEmployed = testAreYouSelfEmployed_yes,
+            otherIncome = testOtherIncomeNo,
+            matchTaxYear = testMatchTaxYearNo,
+            accountingPeriod = testAccountingPeriod,
+            businessName = testBusinessName,
+            businessPhoneNumber = testBusinessPhoneNumber,
+            businessAddress = testAddress,
+            businessStartDate = testBusinessStartDate,
+            accountingMethod = testAccountingMethod,
+            accountingMethodProperty = testAccountingMethodProperty,
+            terms = testTerms
+          )
+      }
+      "income source is neither property or business" in {
+        emptyCacheMap.getSummary() shouldBe IndividualSummary()
+      }
     }
   }
 
 }
-
