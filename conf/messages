@@ -164,7 +164,7 @@ business.sole_trader.yes                                        = Yes - I''m a s
 business.sole_trader.no                                         = No - I am a different type of business
 
 ## Business Accounting Method page
-business.accounting_method.title                                = Accounting method
+business.accounting_method.title                                = How do you record your income and expenses for your self-employed business?
 business.accounting_method.heading                              = How do you record your income and expenses for your self-employed business?
 business.accounting_method.accordion                            = Show me an example
 business.accounting_method.accordion.line_1                     = You invoiced someone in March 2017 but didn''t receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:
@@ -241,7 +241,7 @@ summary.line_1                                                  = You can edit y
 summary.h2                                                      = You''ve told us
 summary.income_source                                           = Where does your income come from?
 summary.rent_uk_property_1                                      = Do you rent out a UK property?
-summary.rent_uk_property_2                                      = Do you have any other sources of income?
+summary.rent_uk_property_2                                      = Is this your only source of self-employed income?
 summary.are_you_selfemployed                                    = Do you work for yourself?
 summary.income_source.business                                  = Sole trader business
 summary.income_source.property                                  = Property
@@ -254,7 +254,7 @@ summary.business_name                                           = What''s the na
 summary.business_phone                                          = What''s your business telephone number?
 summary.business_address                                        = What''s your business address?
 summary.business_start_date                                     = When did your business start trading?
-summary.income_type                                             = What method do you use for your accounting?
+summary.income_type                                             = Your accounting method for your self-employed business
 summary.income_type.cash                                        = Cash basis
 summary.income_type.accruals                                    = Accruals basis
 summary.terms                                                   = Terms of participation
@@ -328,9 +328,9 @@ error.contact_email.empty                                       = Please enter a
 error.contact_email.maxLength                                   = The email is too long
 error.contact_email.invalid                                     = The email is invalid
 
-error.accounting-method.empty                                   = You must select an option to continue
+error.accounting-method.empty                                   = Select how you record your income and expenses for your self-employed business
 error.accounting-method-property.empty                          = Select how you record your income and expenses for your property business
-error.accounting-method.invalid                                 = You must select an option to continue
+error.accounting-method.invalid                                 = Select how you record your income and expenses for your self-employed business
 error.accounting-method-property.invalid                        = Select how you record your income and expenses for your property business
 
 error.user_details.first_name.empty                             = Enter your first name
@@ -608,7 +608,7 @@ agent.business.sole_trader.yes                                        = Yes - I'
 agent.business.sole_trader.no                                         = No - I am a different type of business
 
 ## Business Income page
-agent.business.accounting_method.title                                = Accounting method
+agent.business.accounting_method.title                                = What accounting method does your client use for their self-employed business?
 agent.business.accounting_method.heading                              = What accounting method does your client use for their self-employed business?
 agent.business.accounting_method.cash                                 = Cash basis
 agent.business.accounting_method.accruals                             = Accurals basis
@@ -687,7 +687,7 @@ agent.summary.accounting_period                                       = Your cli
 agent.summary.business_name                                           = Business name
 agent.summary.income_type                                             = Accounting method for their self-employed business
 agent.summary.income_type.cash                                        = Cash basis
-agent.summary.income_type.accruals                                    = Traditional accounting
+agent.summary.income_type.accruals                                    = Accruals basis
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                          = Sign up complete
@@ -764,8 +764,8 @@ agent.error.contact_email.empty                                       = Please e
 agent.error.contact_email.maxLength                                   = The email is too long
 agent.error.contact_email.invalid                                     = The email is invalid
 
-agent.error.accounting-method.empty                                   = Select an accounting method
-agent.error.accounting-method.invalid                                 = Select an accounting method
+agent.error.accounting-method.empty                                   = Select how your client records their income and expenses for their self-employed business
+agent.error.accounting-method.invalid                                 = Select how your client records their income and expenses for their self-employed business
 
 agent.error.not-eligible.empty                                        = You must select an option to continue
 agent.error.not-eligible.invalid                                      = You must select an option to continue

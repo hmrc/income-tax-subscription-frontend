@@ -142,7 +142,7 @@ object MessageLookup {
   }
 
   object AccountingMethod {
-    val title = "Accounting method"
+    val title = "What accounting method does your client use for their self-employed business?"
     val heading: String = "What accounting method does your client use for their self-employed business?"
     val cash = "Cash basis"
     val accruals = "Accurals basis"
@@ -337,8 +337,8 @@ object MessageLookup {
     }
 
     object AccountingMethod {
-      val empty = "Select an accounting method"
-      val invalid = "Select an accounting method"
+      val empty = "Select how your client records their income and expenses for their self-employed business"
+      val invalid = "Select how your client records their income and expenses for their self-employed business"
     }
 
     object NotEligible {

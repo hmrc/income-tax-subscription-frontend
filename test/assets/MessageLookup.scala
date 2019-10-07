@@ -262,7 +262,7 @@ object MessageLookup {
   }
 
   object AccountingMethod {
-    val title = "Accounting method"
+    val title = "How do you record your income and expenses for your self-employed business?"
     val heading: String = "How do you record your income and expenses for your self-employed business?"
     val accordion = "Show me an example"
     val accordion_line_1 = "You invoiced someone in March 2017 but didn't receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:"
@@ -307,7 +307,7 @@ object MessageLookup {
     val h2 = "You've told us"
     val income_source = "Where does your income come from?"
     val rentUkProperty = "Do you rent out a UK property?"
-    val onlySourceOfIncome = "Do you have any other sources of income?"
+    val onlySourceOfIncome = "Is this your only source of self-employed income?"
     val areYouSelfEmployed = "Do you work for yourself?"
     val accountingMethodProperty = "Your accounting method for your property income"
 
@@ -325,7 +325,7 @@ object MessageLookup {
     val business_phone_number = "What's your business telephone number?"
     val business_address = "What's your business address?"
     val business_start_date = "When did your business start trading?"
-    val income_type = "What method do you use for your accounting?"
+    val income_type = "Your accounting method for your self-employed business"
     val other_income = "Do you have any other sources of income?"
 
     object AccountingMethod {
@@ -568,8 +568,8 @@ object MessageLookup {
     }
 
     object AccountingMethod {
-      val empty = "You must select an option to continue"
-      val invalid = "You must select an option to continue"
+      val empty = "Select how you record your income and expenses for your self-employed business"
+      val invalid = "Select how you record your income and expenses for your self-employed business"
     }
 
     object NotEligible {
