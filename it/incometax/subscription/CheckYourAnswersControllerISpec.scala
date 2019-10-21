@@ -71,7 +71,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        GGAdminStub.stubAddKnownFactsResult(OK)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         GGConnectorStub.stubEnrolResult(OK)
         KeystoreStub.stubPutMtditId()
 
@@ -92,7 +92,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        GGAdminStub.stubAddKnownFactsResult(OK)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         GGConnectorStub.stubEnrolResult(OK)
 
         When("POST /check-your-answers is called")
@@ -111,7 +111,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        GGAdminStub.stubAddKnownFactsResult(BAD_REQUEST)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, BAD_REQUEST)
 
         When("POST /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -129,7 +129,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        GGAdminStub.stubAddKnownFactsResult(OK)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         GGConnectorStub.stubEnrolResult(FORBIDDEN)
 
         When("POST /check-your-answers is called")
@@ -148,7 +148,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        GGAdminStub.stubAddKnownFactsResult(OK)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         GGConnectorStub.stubEnrolResult(BAD_REQUEST)
 
         When("POST /check-your-answers is called")
@@ -167,7 +167,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        GGAdminStub.stubAddKnownFactsResult(OK)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         GGConnectorStub.stubEnrolResult(INTERNAL_SERVER_ERROR)
 
         When("POST /check-your-answers is called")
@@ -220,8 +220,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         KeystoreStub.stubPutMtditId()
 
-        And("The ES6 and ES8 feature switch is on")
-        enable(featureswitch.EmacEs6ApiFeature)
+        And("The ES8 feature switch is on")
+
         enable(featureswitch.EmacEs8ApiFeature)
 
         When("POST /check-your-answers is called")
@@ -247,7 +247,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         KeystoreStub.stubPutMtditId()
 
-        enable(featureswitch.EmacEs6ApiFeature)
         enable(featureswitch.EmacEs8ApiFeature)
 
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
@@ -269,7 +268,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         KeystoreStub.stubPutMtditId()
 
-        enable(featureswitch.EmacEs6ApiFeature)
         enable(featureswitch.EmacEs8ApiFeature)
 
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()

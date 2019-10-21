@@ -16,45 +16,24 @@
 
 package incometax.subscription.services
 
-import javax.inject.{Inject, Singleton}
-
 import core.Constants
 import core.Constants.GovernmentGateway._
 import core.config.AppConfig
-import incometax.subscription.connectors.{GGAdminConnector, TaxEnrolmentsConnector}
+import incometax.subscription.connectors.TaxEnrolmentsConnector
 import incometax.subscription.models._
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
 @Singleton
-class KnownFactsService @Inject()(gGAdminConnector: GGAdminConnector,
-                                  taxEnrolmentsConnector: TaxEnrolmentsConnector,
-                                  appConfig: AppConfig) {
+class KnownFactsService @Inject()(taxEnrolmentsConnector: TaxEnrolmentsConnector,
+                                   appConfig: AppConfig) {
   def addKnownFacts(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
-    if(appConfig.emacEs6ApiEnabled) esAddKnownFacts(mtditId, nino)
-    else ggAddKnownFacts(mtditId, nino)
-  }
-
-
-  private def esAddKnownFacts(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
     val enrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> mtditId)
     val enrolmentVerifiers = EnrolmentVerifiers(NINO -> nino)
 
     taxEnrolmentsConnector.upsertEnrolment(enrolmentKey, enrolmentVerifiers)
   }
 
-  private def ggAddKnownFacts(mtditId: String, nino: String)(implicit hc: HeaderCarrier): Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] = {
-    val mtditIdKnownFact = TypeValuePair(MTDITID, mtditId)
-    val ninoKnownFact = TypeValuePair(NINO, nino)
-
-    val request = KnownFactsRequest(
-      List(
-        mtditIdKnownFact,
-        ninoKnownFact
-      )
-    )
-
-    gGAdminConnector.addKnownFacts(request)
-  }
 }

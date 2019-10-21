@@ -50,7 +50,6 @@ trait MockConfig extends AppConfig {
   override val matchingAttempts: Int = 3
   override val matchingLockOutSeconds: Int = 60
 
-  override val ggAdminURL: String = "/gg-admin"
   override val ggURL: String = "/gg"
   override val ggAuthenticationURL: String = "/gg-auth"
 
@@ -63,8 +62,6 @@ trait MockConfig extends AppConfig {
   override val hasEnabledTestOnlyRoutes: Boolean = false
 
   override val enableRegistration: Boolean = false
-
-  override val emacEs6ApiEnabled: Boolean = false
 
   override val emacEs8ApiEnabled: Boolean = false
 
