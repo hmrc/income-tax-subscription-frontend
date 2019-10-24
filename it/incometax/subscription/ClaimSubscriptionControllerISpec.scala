@@ -18,7 +18,8 @@ package incometax.subscription
 
 import core.services.CacheConstants.MtditId
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.testMTDID
+import helpers.IntegrationTestConstants.{testGroupId, testMTDID}
+import helpers.IntegrationTestModels.testEnrolmentKey
 import helpers.servicemocks._
 import play.api.http.Status._
 import play.api.libs.json.Json.toJson
@@ -30,8 +31,7 @@ class ClaimSubscriptionControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       KeystoreStub.stubKeystoreData(Map(MtditId -> toJson(testMTDID)))
-      GGConnectorStub.stubEnrolResult(OK)
-
+      TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
       When("GET /claim-subscription is called")
       val res = IncomeTaxSubscriptionFrontend.claimSubscription()
 

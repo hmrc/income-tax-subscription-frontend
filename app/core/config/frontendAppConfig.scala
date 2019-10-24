@@ -71,8 +71,6 @@ trait AppConfig extends FeatureSwitching {
 
   def emacEs6ApiEnabled: Boolean
 
-  def emacEs8ApiEnabled: Boolean
-
   def unauthorisedAgentEnabled: Boolean
 
   def eligibilityPagesEnabled: Boolean
@@ -234,8 +232,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override def enableRegistration: Boolean = isEnabled(featureswitch.RegistrationFeature)
 
   override def emacEs6ApiEnabled: Boolean = isEnabled(featureswitch.EmacEs6ApiFeature)
-
-  override def emacEs8ApiEnabled: Boolean = isEnabled(featureswitch.EmacEs8ApiFeature)
 
   override def unauthorisedAgentEnabled: Boolean = isEnabled(featureswitch.UnauthorisedAgentFeature)
 

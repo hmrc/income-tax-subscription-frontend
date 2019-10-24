@@ -66,8 +66,6 @@ trait MockConfig extends AppConfig {
 
   override val emacEs6ApiEnabled: Boolean = false
 
-  override val emacEs8ApiEnabled: Boolean = false
-
   override def unauthorisedAgentEnabled: Boolean = false
 
   override val eligibilityPagesEnabled: Boolean = false
