@@ -28,55 +28,32 @@ import scala.concurrent.Future
 
 class KnownFactsServiceSpec extends UnitTestTrait with TestKnownFactsService with ScalaFutures {
 
-  "addKnownFacts" when {
-    "the EMAC ES6 feature switch is turned off" should {
-      def result: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] =
-        TestKnownFactsService.addKnownFacts(testMTDID, testNino)
+  "addKnownFacts" should {
 
-      "return a success from the GGAdminConnector" in {
-        mockAddKnownFactsSuccess(expectedRequestModel)
-
-        whenReady(result)(_ mustBe Right(KnownFactsSuccess))
-      }
-
-      "return a failure from the GGAdminConnector" in {
-        mockAddKnownFactsFailure(expectedRequestModel)
-
-        whenReady(result)(_ mustBe Left(KnownFactsFailure(testErrorMessage)))
-      }
-
-      "pass through the exception if the GGAdminConnector fails" in {
-        mockAddKnownFactsException(expectedRequestModel)
-
-        whenReady(result.failed)(_ mustBe testException)
-      }
-    }
-
-    "the EMAC ES6 feature switch is turned on" should {
-      def result: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] =
-        TestKnownFactsServiceFeatureSwitched.addKnownFacts(testMTDID, testNino)
+    def result: Future[Either[KnownFactsFailure, KnownFactsSuccess.type]] =
+      TestKnownFactsService.addKnownFacts(testMTDID, testNino)
 
       val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMTDID)
       val testEnrolmentVerifiers = EnrolmentVerifiers(NINO -> testNino)
 
-      "return a success from the EnrolmentStoreConnector" in {
-        mockUpsertEnrolmentSuccess(testEnrolmentKey, testEnrolmentVerifiers)
+    "return a success from the EnrolmentStoreConnector" in {
+      mockUpsertEnrolmentSuccess(testEnrolmentKey, testEnrolmentVerifiers)
 
-        whenReady(result)(_ mustBe Right(KnownFactsSuccess))
-      }
+      whenReady(result)(_ mustBe Right(KnownFactsSuccess))
+    }
 
-      "return a failure from the EnrolmentStoreConnector" in {
-        mockUpsertEnrolmentFailure(testEnrolmentKey, testEnrolmentVerifiers)
+    "return a failure from the EnrolmentStoreConnector" in {
+      mockUpsertEnrolmentFailure(testEnrolmentKey, testEnrolmentVerifiers)
 
-        whenReady(result)(_ mustBe Left(KnownFactsFailure(testErrorMessage)))
-      }
+      whenReady(result)(_ mustBe Left(KnownFactsFailure(testErrorMessage)))
+    }
 
-      "pass through the exception if the EnrolmentStoreConnector fails" in {
-        mockUpsertEnrolmentException(testEnrolmentKey, testEnrolmentVerifiers)
+    "pass through the exception if the EnrolmentStoreConnector fails" in {
+      mockUpsertEnrolmentException(testEnrolmentKey, testEnrolmentVerifiers)
 
-        whenReady(result.failed)(_ mustBe testException)
-      }
+      whenReady(result.failed)(_ mustBe testException)
     }
   }
+
 
 }

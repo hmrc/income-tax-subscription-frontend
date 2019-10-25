@@ -36,8 +36,8 @@ class UnauthorisedSubscriptionControllerISpec extends ComponentSpecBase {
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
         SubscriptionStub.stubSuccessfulSubscription(subscribeUnauthorisedUri)
-        GGAdminStub.stubAddKnownFactsResult(OK)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         KeystoreStub.stubPutMtditId()
         SubscriptionStoreStub.stubSuccessfulDeletion()
 

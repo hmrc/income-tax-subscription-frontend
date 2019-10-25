@@ -20,11 +20,12 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels.{fullKeystoreData, testStoredSubscription}
 import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
-import play.api.http.Status._
-import play.api.i18n.Messages
 import _root_.agent.services.CacheConstants._
 import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
-import helpers.servicemocks.{SubscriptionStoreStub, SubscriptionStub}
+import helpers.IntegrationTestModels.testEnrolmentKey
+import helpers.servicemocks.{SubscriptionStoreStub, SubscriptionStub, TaxEnrolmentsStub}
+import play.api.http.Status._
+import play.api.i18n.Messages
 
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -32,6 +33,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
     super.beforeEach()
     disable(EligibilityPagesFeature)
   }
+
+
 
   "GET /check-your-answers" when {
     "keystore returns all data" should {
@@ -93,7 +96,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubFullKeystore()
           SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-          GGAdminStub.stubKnowFactsSuccess(testNino, testMTDID)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
           KeystoreStub.stubPutMtditId()
 
           When("I call POST /check-your-answers")
@@ -108,7 +111,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
           val cookieMap = SessionCookieCrumbler.getSessionMap(res)
           cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
 
-          GGAdminStub.verifyKnownFacts(testNino, testMTDID, Some(1))
         }
 
         "call subscription on the back end service and redirect to confirmation page when the eligibility pages feature switch is on" in {
@@ -116,7 +118,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(fullKeystoreData - Terms)
           SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-          GGAdminStub.stubKnowFactsSuccess(testNino, testMTDID)
+          TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
           KeystoreStub.stubPutMtditId()
           enable(EligibilityPagesFeature)
 
@@ -132,7 +134,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
           val cookieMap = SessionCookieCrumbler.getSessionMap(res)
           cookieMap(ITSASessionKeys.MTDITID) shouldBe testMTDID
 
-          GGAdminStub.verifyKnownFacts(testNino, testMTDID, Some(1))
         }
       }
 

@@ -59,7 +59,6 @@ trait AppConfig extends FeatureSwitching {
   val agentMicroserviceUrl: String
   val authenticatorUrl: String
   val hasEnabledTestOnlyRoutes: Boolean
-  val ggAdminURL: String
   val ggAuthenticationURL: String
   val identityVerificationURL: String
   val contactHmrcLink: String
@@ -68,8 +67,6 @@ trait AppConfig extends FeatureSwitching {
   val matchingLockOutSeconds: Int
 
   def enableRegistration: Boolean
-
-  def emacEs6ApiEnabled: Boolean
 
   def unauthorisedAgentEnabled: Boolean
 
@@ -199,7 +196,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override lazy val ggAuthenticationURL = baseUrl("gg-authentication")
   override lazy val ggURL = baseUrl("government-gateway")
-  override lazy val ggAdminURL = baseUrl("gg-admin")
 
   override lazy val identityVerificationURL: String = loadConfig("identity-verification-frontend.url")
 
@@ -230,8 +226,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override lazy val authenticatorUrl: String = baseUrl("authenticator")
 
   override def enableRegistration: Boolean = isEnabled(featureswitch.RegistrationFeature)
-
-  override def emacEs6ApiEnabled: Boolean = isEnabled(featureswitch.EmacEs6ApiFeature)
 
   override def unauthorisedAgentEnabled: Boolean = isEnabled(featureswitch.UnauthorisedAgentFeature)
 

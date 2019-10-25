@@ -28,7 +28,6 @@ object FeatureSwitch {
 
   val switches: Set[FeatureSwitch]  = Set(
     RegistrationFeature,
-    EmacEs6ApiFeature,
     UnauthorisedAgentFeature,
     WelshLanguageFeature,
     EligibilityPagesFeature,
@@ -49,11 +48,6 @@ object FeatureSwitch {
 case object RegistrationFeature extends FeatureSwitch {
   override val name = s"$prefix.enable-registration"
   override val displayText = "Registration journey"
-}
-
-case object EmacEs6ApiFeature extends FeatureSwitch {
-  override val name = s"$prefix.enable-emac-es6"
-  override val displayText = "EMAC ES6 API (Upsert Enrolment)"
 }
 
 case object UnauthorisedAgentFeature extends FeatureSwitch {

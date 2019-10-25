@@ -91,19 +91,6 @@ object IntegrationTestConstants {
   val subscribeUnauthorisedUri = s"$baseURI/subscribe-unauthorised"
 
   object Auth {
-    def authResponseJson(uri: String, userDetailsLink: String, gatewayId: String, idsLink: String): JsValue = Json.parse(
-      s"""
-         |{
-         |  "uri":"$uri",
-         |  "userDetailsLink":"$userDetailsLink",
-         |  "credentials" : {
-         |    "gatewayId":"$gatewayId"
-         |  },
-         |  "ids":"$idsLink"
-         |}
-     """.stripMargin
-    )
-
     def idsResponseJson(internalId: String, externalId: String): JsValue = Json.parse(
       s"""{
            "internalId":"$internalId",

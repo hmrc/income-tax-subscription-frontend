@@ -74,8 +74,6 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.feature-switch.show-guidance" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> mockPort,
-    "microservice.services.gg-admin.host" -> mockHost,
-    "microservice.services.gg-admin.port" -> mockPort,
     "microservice.services.government-gateway.host" -> mockHost,
     "microservice.services.government-gateway.port" -> mockPort,
     "microservice.services.gg-authentication.host" -> mockHost,
