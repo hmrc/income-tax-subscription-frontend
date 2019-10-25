@@ -29,52 +29,28 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import scala.concurrent.Future
 
 class EnrolmentServiceSpec extends UnitTestTrait with TestEnrolmentService with ScalaFutures {
-  "addKnownFacts" when {
-    "the ES8 feature switch is turned off" should {
-      def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentService.enrol(testMTDID, testNino)
+  "addKnownFacts" should {
+    def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentServiceFeatureSwitched.enrol(testMTDID, testNino)
 
-      "return a success from the GGConnector" in {
-        mockEnrolSuccess(expectedRequestModel)
+    "return a success from the EnrolmentStoreConnector" in {
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
+      mockAllocateEnrolmentSuccess(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
-        whenReady(result)(_ mustBe Right(EnrolSuccess))
-      }
-
-      "return a failure from the GGConnector" in {
-        mockEnrolFailure(expectedRequestModel)
-
-        whenReady(result)(_ mustBe Left(EnrolFailure(testErrorMessage)))
-      }
-
-      "pass through the exception if the GGConnector fails" in {
-        mockEnrolException(expectedRequestModel)
-
-        whenReady(result.failed)(_ mustBe testException)
-      }
+      whenReady(result)(_ mustBe Right(EnrolSuccess))
     }
 
-    "the ES8 feature switch is turned on" should {
-      def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentServiceFeatureSwitched.enrol(testMTDID, testNino)
+    "return a failure from the EnrolmentStoreConnector" in {
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
+      mockAllocateEnrolmentFailure(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
-      "return a success from the EnrolmentStoreConnector" in {
-        mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
-        mockAllocateEnrolmentSuccess(testGroupId, testEnrolmentKey, testEnrolmentRequest)
+      whenReady(result)(_ mustBe Left(EnrolFailure(testErrorMessage)))
+    }
 
-        whenReady(result)(_ mustBe Right(EnrolSuccess))
-      }
+    "pass through the exception if the EnrolmentStoreConnector fails" in {
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
+      mockAllocateEnrolmentException(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
-      "return a failure from the EnrolmentStoreConnector" in {
-        mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
-        mockAllocateEnrolmentFailure(testGroupId, testEnrolmentKey, testEnrolmentRequest)
-
-        whenReady(result)(_ mustBe Left(EnrolFailure(testErrorMessage)))
-      }
-
-      "pass through the exception if the EnrolmentStoreConnector fails" in {
-        mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
-        mockAllocateEnrolmentException(testGroupId, testEnrolmentKey, testEnrolmentRequest)
-
-        whenReady(result.failed)(_ mustBe testException)
-      }
+      whenReady(result.failed)(_ mustBe testException)
     }
   }
 }

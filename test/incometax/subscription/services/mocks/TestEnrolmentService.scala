@@ -19,26 +19,23 @@ package incometax.subscription.services.mocks
 import core.Constants.GovernmentGateway.{ggServiceName, _}
 import core.config.MockConfig
 import core.connectors.mocks.MockAuth
-import incometax.subscription.connectors.mocks.{MockGGConnector, MockTaxEnrolmentsConnector}
+import core.utils.MockTrait
+import core.utils.TestConstants._
+import incometax.subscription.connectors.mocks.MockTaxEnrolmentsConnector
 import incometax.subscription.models.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import incometax.subscription.services.EnrolmentService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
-import core.utils.MockTrait
-import core.utils.TestConstants._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-trait TestEnrolmentService extends MockGGConnector with MockTaxEnrolmentsConnector with MockAuth {
+trait TestEnrolmentService extends MockTaxEnrolmentsConnector with MockAuth {
 
-  object TestEnrolmentService extends EnrolmentService(MockConfig, mockGGConnector, mockTaxEnrolmentsConnector, mockAuth)
+  object TestEnrolmentService extends EnrolmentService(MockConfig, mockTaxEnrolmentsConnector, mockAuth)
 
   object TestEnrolmentServiceFeatureSwitched extends EnrolmentService(
-    new MockConfig {
-      override val emacEs8ApiEnabled = true
-    },
-    mockGGConnector,
+    MockConfig,
     mockTaxEnrolmentsConnector,
     mockAuth
   )
