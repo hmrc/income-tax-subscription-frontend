@@ -16,6 +16,8 @@
 
 package assets
 
+import java.time.LocalDate
+
 import core.models.DateModel
 
 object MessageLookup {
@@ -467,6 +469,11 @@ object MessageLookup {
 
   object Error {
 
+    object AccountingYear {
+      val empty = "You must select an option to continue"
+      val invalid = "You must select an option to continue"
+    }
+
     object UserDetails {
       val firstNameEmpty = "Enter your first name"
       val lastNameEmpty = "Enter your last name"
@@ -772,4 +779,13 @@ object MessageLookup {
     val para1 = "This is a trial service. You may be able to use the 'Report your income and expenses quarterly' service for your clients in the future."
   }
 
+  object WhatYearToSignUp {
+    val title = "What tax year do you want to sign up for?"
+    val heading: String = title
+    val line1 = "You can sign up for the current year or the next year."
+    val example1 = s"For example, if your accounting period runs from 6 April ${LocalDate.now.getYear.toString} to 5 April ${(LocalDate.now.getYear + 1).toString}, you will sign up for the current year ${LocalDate.now.getYear.toString} to ${(LocalDate.now.getYear + 1).toString}."
+    val example2 = s"If your accounting period runs from 6 April ${(LocalDate.now.getYear + 1).toString} to 5 April ${(LocalDate.now.getYear + 2).toString}, you will sign up for next year ${(LocalDate.now.getYear + 1).toString} to ${(LocalDate.now.getYear + 2).toString}."
+    val option1 = s"Current tax year (${LocalDate.now.getYear.toString} to ${(LocalDate.now.getYear + 1).toString})"
+    val option2 = s"Next tax year (${(LocalDate.now.getYear + 1).toString} to ${(LocalDate.now.getYear + 2).toString})"
+  }
 }

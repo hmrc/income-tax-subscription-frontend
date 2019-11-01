@@ -1,0 +1,61 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import play.api.data.Form
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import core.views.html.helpers._
+@import core.config.AppConfig
+@import incometax.business.forms.AccountingYearForm
+@import core.forms.submapping.AccountingYearMapping
+@import incometax.business.models.AccountingYearModel
+@import core.views.html.templates.main_template
+@import java.time.LocalDate
+
+@(accountingYearForm: Form[AccountingYearModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@question = @{Messages("business.what_year_to_sign_up.heading.signup")}
+@pageTitle = @{Messages("business.what_year_to_sign_up.title.signup")}
+
+@main_template(title = pageTitle, form = accountingYearForm) {
+
+    @back_link(backUrl)
+
+    @summaryErrorHelper(accountingYearForm)
+
+    <h1 class="heading-large">@question</h1>
+    <p>@Messages("business.what_year_to_sign_up.line_1.signup")</p>
+    <div class="panel panel-border-wide">
+        <p>@Messages("business.what_year_to_sign_up.example_line_1.signup", LocalDate.now.getYear.toString, (LocalDate.now.getYear + 1).toString)</p>
+        <p>@Messages("business.what_year_to_sign_up.example_line_2.signup", (LocalDate.now.getYear + 1).toString, (LocalDate.now.getYear + 2).toString)</p>
+    </div>
+
+    @form(action = postAction) {
+        @radioHelper(
+            field = accountingYearForm(AccountingYearForm.accountingYear),
+            legend = question,
+            options = Seq(
+                RadioOption(AccountingYearMapping.option_current, Messages("business.what_year_to_sign_up.option_1.signup", LocalDate.now.getYear.toString, (LocalDate.now.getYear + 1).toString)),
+                RadioOption(AccountingYearMapping.option_next, Messages("business.what_year_to_sign_up.option_2.signup", (LocalDate.now.getYear + 1).toString, (LocalDate.now.getYear + 2).toString))
+            ),
+            parentForm = accountingYearForm
+        )
+        @if(isEditMode) {
+            @continueButton(Messages("base.update"))
+        } else {
+            @continueButton()
+        }
+    }
+}
