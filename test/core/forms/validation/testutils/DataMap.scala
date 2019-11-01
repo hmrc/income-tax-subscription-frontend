@@ -17,10 +17,10 @@
 package core.forms.validation.testutils
 
 import agent.forms.{AccountingPeriodPriorForm, IncomeSourceForm}
-import incometax.incomesource.forms.{RentUkPropertyForm, AreYouSelfEmployedForm}
+import incometax.incomesource.forms.{AreYouSelfEmployedForm, RentUkPropertyForm}
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil.constraint
-import incometax.business.forms.MatchTaxYearForm
+import incometax.business.forms.{AccountingYearForm, MatchTaxYearForm}
 import incometax.incomesource.forms
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import play.api.data.validation.{Constraint, Invalid}
@@ -53,6 +53,8 @@ object DataMap {
   def accountingPeriodPrior(currentPeriodIsPrior: String): DataMap = Map(AccountingPeriodPriorForm.accountingPeriodPrior -> currentPeriodIsPrior)
 
   def accountingMethod(iType: String): DataMap = Map(AccountingMethodForm.accountingMethod -> iType)
+
+  def accountingYear(iType: String): DataMap = Map(AccountingYearForm.accountingYear -> iType)
 
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
 
