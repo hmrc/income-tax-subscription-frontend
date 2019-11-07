@@ -180,7 +180,9 @@ object MessageLookup {
     val title = "You can't use software to report your Income Tax yet"
     val heading: String = title
     val linkText = "Self Assessment tax return"
+
     def para1(startDate: DateModel) = s"You can sign up and use software to record your income and expenses, but you can't send any reports until ${startDate.toOutputDateFormat}."
+
     val para2 = s"You need to send a $linkText instead."
   }
 
@@ -198,7 +200,9 @@ object MessageLookup {
     val linkText = "send a Self Assessment tax return"
     val para1 = "You can sign up and use software to record your income and expenses, but you won't be able to submit a report for:"
     val bullet1 = "property income until 6 April 2018"
+
     def bullet2(startDate: DateModel) = s"sole trader income until ${startDate.toOutputDateFormat}"
+
     val para2 = s"You need to $linkText instead."
   }
 
@@ -208,7 +212,9 @@ object MessageLookup {
     val linkText = "send a Self Assessment tax return"
     val para1 = "You can still sign this client up and use software to record their income and expenses, but they won't be able to submit a report for their:"
     val bullet1 = "property income until 6 April 2018"
+
     def bullet2(businessStartDate: DateModel) = s"sole trader income until ${businessStartDate.toOutputDateFormat}"
+
     val para2 = s"Your client still needs to $linkText."
   }
 
@@ -291,7 +297,9 @@ object MessageLookup {
     val line_1 = "By taking part in this trial, you agree to:"
     val bullet_1 = "use relevant software to record your income and expenses"
     val bullet_2 = "submit a report at least once every 3 months from the start of your accounting period"
+
     def bullet_3(taxStartYear: Int, taxEndYear: Int, taxDueYear: Int) = s"send your final report for the $taxStartYear to $taxEndYear tax year by 31 January $taxDueYear"
+
     val bullet_4 = "declare any other income sources and reliefs"
     val bullet_5 = "authorise any third party you use (such as your accountant) and have responsibility for any information they give to HMRC on your behalf"
     val bullet_6 = "tell HMRC if you want to stop trading or start a new business"
@@ -466,6 +474,11 @@ object MessageLookup {
   }
 
   object Error {
+
+    object AccountingYear {
+      val empty = "You must select an option to continue"
+      val invalid = "You must select an option to continue"
+    }
 
     object UserDetails {
       val firstNameEmpty = "Enter your first name"
@@ -770,6 +783,20 @@ object MessageLookup {
     val title = "You cannot use this service yet"
     val heading: String = "You cannot use this service yet"
     val para1 = "This is a trial service. You may be able to use the 'Report your income and expenses quarterly' service for your clients in the future."
+  }
+
+  object WhatYearToSignUp {
+    val title = "What tax year do you want to sign up for?"
+    val heading: String = title
+    val line1 = "You can sign up for the current year or the next year."
+
+    def example1(fromYear: String, toYear: String) = s"For example, if your accounting period runs from 6 April $fromYear to 5 April $toYear, you will sign up for the current year $fromYear to $toYear."
+
+    def example2(fromYear: String, toYear: String) = s"If your accounting period runs from 6 April $fromYear to 5 April $toYear, you will sign up for next year $fromYear to $toYear."
+
+    def option1(fromYear: String, toYear: String) = s"Current tax year ($fromYear to $toYear)"
+
+    def option2(fromYear: String, toYear: String) = s"Next tax year ($fromYear to $toYear)"
   }
 
 }

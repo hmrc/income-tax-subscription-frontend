@@ -122,6 +122,14 @@ business.match_tax_year.heading.registration                    = Ydych chi am b
 business.match_tax_year.line_1.registration                     = Mae''r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill. Mae''r rhan fwyaf o unig fasnachwyr yn paru eu cyfnod cyfrifyddu â''r flwyddyn dreth.
 business.match_tax_year.line_2.registration                     = Gallwch wneud hyn hyd yn oed os yw''r flwyddyn dreth eisoes wedi dechrau.
 
+# What year to sign up
+business.what_year_to_sign_up.title.signup                      = Pa flwyddyn dreth rydych am gofrestru ar ei chyfer?
+business.what_year_to_sign_up.heading.signup                    = Pa flwyddyn dreth rydych am gofrestru ar ei chyfer?
+business.what_year_to_sign_up.line_1.signup                     = Gallwch gofrestru ar gyfer y flwyddyn hon neu’r nesaf.
+business.what_year_to_sign_up.example_line_1.signup             = Er enghraifft, os yw''ch cyfnod cyfrifyddu yn rhedeg o 6 Ebrill {0} i 5 Ebrill {1}, byddwch yn cofrestru ar gyfer y flwyddyn bresennol {0} i {1}.
+business.what_year_to_sign_up.example_line_2.signup             = Os yw''ch cyfnod cyfrifyddu yn rhedeg o 6 Ebrill {0} i 5 Ebrill {1}, byddwch yn cofrestru ar gyfer y flwyddyn nesaf {0} i {1}.
+business.what_year_to_sign_up.option_1.signup                   = Y flwyddyn dreth bresennol ({0} i {1})
+business.what_year_to_sign_up.option_2.signup                   = Y flwyddyn dreth nesaf ({0} i {1})
 
 # Business start date
 business.start_date.title                                        = Dyddiad dechrau''r busnes
@@ -289,6 +297,9 @@ sign-up-complete.whatHappensNext.para2                          = Gall gymryd rh
 
 ## Errors ##
 error.back_to_preferences.empty                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
+
+error.what-year.empty                                           = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
+error.what-year.invalid                                         = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
 error.income_source.empty                                       = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.income_source.invalid                                     = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
