@@ -268,6 +268,9 @@ summary.income_type.accruals                                    = Sail croniadau
 summary.terms                                                   = Telerau cyfranogi
 summary.terms.agreed                                            = Rwy''n cytuno
 summary.accounting_method_property                              = Eich dull cyfrifyddu ar gyfer eich incwm eiddo
+summary.selected_year                                           = Y flwyddyn cofrestrwyd ar ei chyfer
+summary.selected_year.current                                   = Y flwyddyn dreth bresennol ({0} i {1})
+summary.selected_year.next                                      = Y flwyddyn dreth nesaf ({0} i {1})
 
 ## Confirmation page ##
 confirmation.title                                              = Tudalen gadarnhau

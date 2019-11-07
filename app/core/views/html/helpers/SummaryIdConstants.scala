@@ -31,6 +31,7 @@ object SummaryIdConstants {
   val BusinessPhoneNumberId = "businessPhoneNumber"
   val BusinessAddressId = "businessAddress"
   val BusinessStartDateId = "businessStartDate"
+  val SelectedTaxYearId = "selectedTaxYear"
   val AccountingMethodId = "accountingMethod"
   val AccountingMethodPropertyId = "accountingMethodProperty"
   val TermsId = "terms"

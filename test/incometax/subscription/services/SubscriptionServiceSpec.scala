@@ -17,7 +17,7 @@
 package incometax.subscription.services
 
 import core.config.featureswitch.{FeatureSwitching, UseSubscriptionApiV2}
-import core.models.{Cash, No}
+import core.models.{Cash, Next, No}
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.{TestConstants, TestModels}
@@ -116,6 +116,22 @@ class SubscriptionServiceSpec extends TestSubscriptionService
       request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
       request.propertyIncome.isDefined mustBe false
       request.isAgent mustBe false
+    }
+
+    "convert the user's data into the correct format when they are self employed and they are signing up in next Tax year" in {
+      val nino = TestModels.newNino
+      val request = TestSubscriptionService.buildRequestV2(nino, testSummaryDataBusinessMatchTaxYear.copy(selectedTaxYear = Some(testSelectedTaxYearNext)), None)
+
+      val expectedTaxYear = AccountingPeriodUtil.getNextTaxYear
+
+      request.nino mustBe nino
+      request.businessIncome.get.accountingPeriod.startDate mustBe expectedTaxYear.startDate
+      request.businessIncome.get.accountingPeriod.endDate mustBe expectedTaxYear.endDate
+      request.businessIncome.get.accountingMethod mustBe Cash
+      request.businessIncome.get.tradingName.get mustBe testBusinessName.businessName
+      request.propertyIncome.isDefined mustBe false
+      request.isAgent mustBe false
+
     }
   }
 

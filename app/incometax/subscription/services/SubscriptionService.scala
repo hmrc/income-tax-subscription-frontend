@@ -16,18 +16,17 @@
 
 package incometax.subscription.services
 
-import javax.inject.{Inject, Singleton}
-
 import core.audit.Logging
 import core.config.AppConfig
 import core.config.featureswitch.{FeatureSwitching, UseSubscriptionApiV2}
-import core.models.{No, Yes}
-import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
+import core.models.{Next, No, Yes}
+import incometax.business.models.{AccountingPeriodModel, AccountingYearModel, MatchTaxYearModel}
 import incometax.subscription.connectors.{SubscriptionConnector, SubscriptionConnectorV2}
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import incometax.subscription.models._
 import incometax.util.AccountingPeriodUtil._
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -44,9 +43,10 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
                                             summaryData: SummaryModel,
                                             arn: Option[String]): Option[AccountingPeriodModel] =
     if (arn.isEmpty) {
-      (incomeSourceType, summaryData.matchTaxYear) match {
-        case (Business | Both, Some(MatchTaxYearModel(Yes))) => Some(getCurrentTaxYear)
-        case (Business | Both, Some(MatchTaxYearModel(No))) => summaryData.accountingPeriod
+      (incomeSourceType, summaryData.matchTaxYear, summaryData.selectedTaxYear) match {
+        case (Business, Some(MatchTaxYearModel(Yes)), Some(AccountingYearModel(Next)))=> Some(getNextTaxYear)
+        case (Business | Both, Some(MatchTaxYearModel(Yes)), _) => Some(getCurrentTaxYear)
+        case (Business | Both, Some(MatchTaxYearModel(No)), _) => summaryData.accountingPeriod
         case _ => None
       }
     } else {

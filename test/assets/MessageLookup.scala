@@ -17,6 +17,7 @@
 package assets
 
 import core.models.DateModel
+import incometax.business.models.AccountingPeriodModel
 
 object MessageLookup {
 
@@ -325,6 +326,7 @@ object MessageLookup {
       val both = "Sole trader business and property"
     }
 
+
     val match_tax_year = "Do you want to match your accounting period to the tax year?"
     val accounting_period = s"Your accounting period dates"
     val accounting_period_registration = s"When's your current accounting period?"
@@ -333,12 +335,18 @@ object MessageLookup {
     val business_phone_number = "What's your business telephone number?"
     val business_address = "What's your business address?"
     val business_start_date = "When did your business start trading?"
+    val selected_tax_year = "Year signed-up for"
     val income_type = "Your accounting method for your self-employed business"
     val other_income = "Do you have any other sources of income?"
 
     object AccountingMethod {
       val cash = "Cash basis"
       val accruals = "Accruals basis"
+    }
+
+    object SelectedTaxYear {
+      val current = "Current Tax Year ({0} to {1})"
+      val next = "Next tax year ({0} to {1})"
     }
 
     val contact_email = "Do you want to receive electronic communications from HMRC?"
