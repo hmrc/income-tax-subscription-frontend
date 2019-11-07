@@ -59,6 +59,7 @@ class CacheUtilSpec extends UnitTestTrait {
           None,
           None,
           None,
+          None,
           testAccountingMethod,
           testAccountingMethodProperty,
           testTerms

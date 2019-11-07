@@ -60,6 +60,8 @@ object CacheUtil {
 
     def getBusinessStartDate()(implicit read: Reads[BusinessStartDateModel]): Option[BusinessStartDateModel] = cacheMap.getEntry(BusinessStartDate)
 
+    def getSelectedTaxYear()(implicit read: Reads[AccountingYearModel]): Option[AccountingYearModel] = cacheMap.getEntry(SelectedTaxYear)
+
     def getAccountingMethod()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
 
     def getPropertyAccountingMethod()(implicit read: Reads[AccountingMethodPropertyModel]): Option[AccountingMethodPropertyModel] = cacheMap.getEntry(PropertyAccountingMethod)
@@ -87,6 +89,7 @@ object CacheUtil {
             businessPhoneNumber = getBusinessPhoneNumber(),
             businessAddress = getBusinessAddress(),
             businessStartDate = getBusinessStartDate(),
+            selectedTaxYear = getSelectedTaxYear(),
             accountingMethod = getAccountingMethod(),
             terms = getTerms()
           )
