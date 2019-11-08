@@ -64,6 +64,7 @@ object TestModels extends Implicits {
   val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
   val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
   val testBusinessStartDate = BusinessStartDateModel(testStartDate)
+  val testSelectedTaxYear = AccountingYearModel(Current)
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testTerms = true
@@ -83,6 +84,7 @@ object TestModels extends Implicits {
       businessPhoneNumber = testBusinessPhoneNumber,
       businessAddress = testAddress,
       businessStartDate = testBusinessStartDate,
+      selectedTaxYear = testSelectedTaxYear,
       accountingMethod = testAccountingMethod,
       accountingMethodProperty = testAccountingMethodProperty,
       terms = testTerms
@@ -100,6 +102,7 @@ object TestModels extends Implicits {
                           businessPhoneNumber: Option[BusinessPhoneNumberModel] = testBusinessPhoneNumber,
                           businessAddress: Option[Address] = testAddress,
                           businessStartDate: Option[BusinessStartDateModel] = testBusinessStartDate,
+                          selectedTaxYear: Option[AccountingYearModel] =testSelectedTaxYear,
                           accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
                           accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty,
                           terms: Option[Boolean] = testTerms): CacheMap =
@@ -114,6 +117,7 @@ object TestModels extends Implicits {
       businessPhoneNumber = businessPhoneNumber,
       businessAddress = businessAddress,
       businessStartDate = businessStartDate,
+      selectedTaxYear = selectedTaxYear,
       accountingMethod = accountingMethod,
       accountingMethodProperty = accountingMethodProperty,
       terms = terms)
@@ -129,6 +133,7 @@ object TestModels extends Implicits {
                    businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
                    businessAddress: Option[Address] = None,
                    businessStartDate: Option[BusinessStartDateModel] = None,
+                   selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
                    accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                    terms: Option[Boolean] = None): CacheMap = {
@@ -145,6 +150,7 @@ object TestModels extends Implicits {
       businessPhoneNumber.fold(emptyMap)(model => Map(BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model))) ++
       businessAddress.fold(emptyMap)(model => Map(BusinessAddress -> Address.format.writes(model))) ++
       businessStartDate.fold(emptyMap)(model => Map(BusinessStartDate -> BusinessStartDateModel.format.writes(model))) ++
+      selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
       accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))) ++
       terms.fold(emptyMap)(model => Map(Terms -> Json.toJson(model)))
@@ -190,6 +196,7 @@ object TestModels extends Implicits {
     matchTaxYear = testMatchTaxYearNo,
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
+    selectedTaxYear = testSelectedTaxYear,
     accountingMethod = testAccountingMethod
   )
 

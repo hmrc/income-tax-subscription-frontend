@@ -44,6 +44,7 @@ class CacheUtilSpec extends UnitTestTrait
       emptyCacheMap.getMatchTaxYear() shouldBe None
       emptyCacheMap.getEnteredAccountingPeriodDate() shouldBe None
       emptyCacheMap.getAccountingPeriodDate() shouldBe None
+      emptyCacheMap.getSelectedTaxYear() shouldBe None
       emptyCacheMap.getAccountingMethod() shouldBe None
       emptyCacheMap.getPropertyAccountingMethod() shouldBe None
       emptyCacheMap.getTerms() shouldBe None
@@ -123,6 +124,7 @@ class CacheUtilSpec extends UnitTestTrait
             businessPhoneNumber = testBusinessPhoneNumber,
             businessAddress = testAddress,
             businessStartDate = testBusinessStartDate,
+            selectedTaxYear = testSelectedTaxYear,
             accountingMethod = testAccountingMethod,
             terms = testTerms
           )
