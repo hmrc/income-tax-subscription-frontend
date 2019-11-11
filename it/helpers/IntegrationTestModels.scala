@@ -35,6 +35,8 @@ object IntegrationTestModels {
   val testEndDatePlus1Y = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1)
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)
+  val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
+  val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
@@ -60,6 +62,7 @@ object IntegrationTestModels {
       areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
       otherIncome = Some(testOtherIncomeNo),
       matchTaxYear = Some(testMatchTaxYearNo),
+      selectedTaxYear = Some(testAccountingYearCurrent),
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       businessPhoneNumber = Some(testBusinessPhoneNumber),
@@ -101,6 +104,7 @@ object IntegrationTestModels {
                    areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
                    otherIncome: Option[YesNo] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
+                   selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
@@ -114,6 +118,7 @@ object IntegrationTestModels {
       areYouSelfEmployed.map(model => AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model)) ++ //
       otherIncome.map(model => OtherIncome -> YesNo.format.writes(model)) ++
       matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
+      selectedTaxYear.map(model => SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       businessPhoneNumber.map(model => BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model)) ++
@@ -128,6 +133,7 @@ object IntegrationTestModels {
                      areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
                      otherIncome: Option[YesNo] = None,
                      matchTaxYear: Option[MatchTaxYearModel] = None,
+                     accountingYear: Option[AccountingYearModel] = None,
                      accountingPeriodDate: Option[AccountingPeriodModel] = None,
                      businessName: Option[BusinessNameModel] = None,
                      businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
