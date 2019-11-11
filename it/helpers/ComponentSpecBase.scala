@@ -28,9 +28,8 @@ import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
 import incometax.business.forms._
 import incometax.business.models._
-import incometax.incomesource.forms.{OtherIncomeForm, RentUkPropertyForm, AreYouSelfEmployedForm}
-import incometax.incomesource.models.{OtherIncomeModel, RentUkPropertyModel, AreYouSelfEmployedModel}
-import incometax.subscription.models.IncomeSourceType
+import incometax.incomesource.forms.{AreYouSelfEmployedForm, OtherIncomeForm, RentUkPropertyForm}
+import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
 import org.scalatest._
@@ -246,6 +245,16 @@ trait ComponentSpecBase extends UnitSpec
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
           model => MatchTaxYearForm.matchTaxYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        ))
+    }
+
+    def accountingYear(): WSResponse = get("/business/what-year-to-sign-up")
+
+    def submitAccountingYear(inEditMode: Boolean, request: Option[AccountingYearModel]): WSResponse = {
+      val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         ))
     }
 
