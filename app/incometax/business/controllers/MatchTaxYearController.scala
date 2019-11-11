@@ -17,11 +17,10 @@
 package incometax.business.controllers
 
 import javax.inject.{Inject, Singleton}
-
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.models.{No, Yes}
-import core.services.{AuthService, KeystoreService}
+import core.services.{AuthService, CacheUtil, KeystoreService}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
 import incometax.incomesource.services.CurrentTimeService
@@ -29,6 +28,8 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.twirl.api.Html
+import core.services.CacheUtil._
+import incometax.subscription.models.Business
 
 import scala.concurrent.Future
 
@@ -62,22 +63,21 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
         formWithErrors => Future.successful(BadRequest(view(matchTaxYearForm = formWithErrors, isEditMode = isEditMode))),
         matchTaxYear => {
           for {
-            oldAnswer <- keystoreService.fetchMatchTaxYear()
+            cacheMap <- keystoreService.fetchAll()
+            oldAnswer = cacheMap.getMatchTaxYear()
             changedAnswer = oldAnswer.fold(false)(_ != matchTaxYear)
             _ <- if (changedAnswer) keystoreService.saveTerms(terms = false) else Future.successful(Unit)
             _ <- keystoreService.saveMatchTaxYear(matchTaxYear)
-          } yield (isEditMode, matchTaxYear.matchTaxYear) match {
-            case (false, Yes) =>
-              if(applicationConfig.whatTaxYearToSignUpEnabled) {
-                Redirect(incometax.business.controllers.routes.WhatYearToSignUpController.show())
-              } else {
-                Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-              }
-            case (false, No) =>
+          } yield (isEditMode, matchTaxYear.matchTaxYear, cacheMap.getIncomeSourceType()) match {
+            case (false, Yes, Some(Business)) if applicationConfig.whatTaxYearToSignUpEnabled =>
+              Redirect(incometax.business.controllers.routes.WhatYearToSignUpController.show())
+            case (false, Yes, _) =>
+              Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
+            case (false, No, _) =>
               Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show())
-            case (true, Yes) =>
+            case (true, Yes, _) =>
               Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-            case (true, No) =>
+            case (true, No, _) =>
               Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true))
           }
         }

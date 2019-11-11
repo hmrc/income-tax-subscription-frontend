@@ -22,6 +22,7 @@ import core.models.{No, Yes}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
+import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
@@ -78,22 +79,48 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
   "POST /report-quarterly/income-and-expenses/sign-up/business/match-to-tax-year" when {
 
     "select the Yes radio button on the match tax year page" when {
-      "the whatTaxYearToSignUp feature switch is enabled" in {
+      "the whatTaxYearToSignUp feature switch is enabled and the user has only business income" in {
         enable(WhatTaxYearToSignUp)
 
         val userInput = MatchTaxYearModel(Yes)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreDataV2(rentUkProperty = Some(testRentUkProperty_no_property), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
+        )
         KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
 
         When("POST /business/match-to-tax-year is called")
         val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of accounting methods")
+        Then("Should return a SEE_OTHER with a redirect location of what tax year do you want to sign up for")
+
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(accountingYearURI)
+        )
+      }
+
+      "the whatTaxYearToSignUp feature switch is enabled and the user has both business and property income" in {
+        enable(WhatTaxYearToSignUp)
+
+        val userInput = MatchTaxYearModel(Yes)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreDataV2(rentUkProperty = Some(testRentUkProperty_property_and_other), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
+
+        When("POST /business/match-to-tax-year is called")
+        val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of what tax year do you want to sign up for")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(businessAccountingMethodURI)
         )
       }
 
@@ -102,6 +129,9 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreDataV2(rentUkProperty = Some(testRentUkProperty_no_property), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
+        )
         KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
 
         When("POST /business/match-to-tax-year is called")
@@ -122,6 +152,10 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+
+        KeystoreStub.stubKeystoreData(
+          keystoreDataV2(rentUkProperty = Some(testRentUkProperty_no_property), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
+        )
         KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
 
         When("POST /business/match-to-tax-year is called")
