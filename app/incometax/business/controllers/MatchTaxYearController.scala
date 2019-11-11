@@ -68,8 +68,13 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
             _ <- keystoreService.saveMatchTaxYear(matchTaxYear)
           } yield (isEditMode, matchTaxYear.matchTaxYear) match {
             case (false, Yes) =>
-              Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-            case (false, No) => Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show())
+              if(applicationConfig.whatTaxYearToSignUpEnabled) {
+                Redirect(incometax.business.controllers.routes.WhatYearToSignUpController.show())
+              } else {
+                Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
+              }
+            case (false, No) =>
+              Redirect(incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show())
             case (true, Yes) =>
               Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
             case (true, No) =>
