@@ -353,7 +353,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     "display the correct info for the Selected Year" in {
       val sectionId = SelectedTaxYearId
       val expectedQuestion = messages.selected_tax_year
-      val expectedAnswer = messages.SelectedTaxYear.next
+      val expectedAnswer = messages.SelectedTaxYear.next(getCurrentTaxEndYear, getCurrentTaxEndYear +1)
       val expectedEditLink = incometax.business.controllers.routes.WhatYearToSignUpController.show(editMode = true).url
 
       sectionTest(
