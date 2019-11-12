@@ -64,7 +64,8 @@ object TestModels extends Implicits {
   val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
   val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
   val testBusinessStartDate = BusinessStartDateModel(testStartDate)
-  val testSelectedTaxYear = AccountingYearModel(Current)
+  val testSelectedTaxYearCurrent = AccountingYearModel(Current)
+  val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testTerms = true
@@ -84,7 +85,7 @@ object TestModels extends Implicits {
       businessPhoneNumber = testBusinessPhoneNumber,
       businessAddress = testAddress,
       businessStartDate = testBusinessStartDate,
-      selectedTaxYear = testSelectedTaxYear,
+      selectedTaxYear = testSelectedTaxYearNext,
       accountingMethod = testAccountingMethod,
       accountingMethodProperty = testAccountingMethodProperty,
       terms = testTerms
@@ -102,7 +103,7 @@ object TestModels extends Implicits {
                           businessPhoneNumber: Option[BusinessPhoneNumberModel] = testBusinessPhoneNumber,
                           businessAddress: Option[Address] = testAddress,
                           businessStartDate: Option[BusinessStartDateModel] = testBusinessStartDate,
-                          selectedTaxYear: Option[AccountingYearModel] =testSelectedTaxYear,
+                          selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
                           accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
                           accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty,
                           terms: Option[Boolean] = testTerms): CacheMap =
@@ -189,6 +190,16 @@ object TestModels extends Implicits {
     accountingMethod = testAccountingMethod
   )
 
+  lazy val testSummaryDataBusinessMatchTaxYear = IndividualSummary(
+    rentUkProperty = testRentUkProperty_no_property,
+    areYouSelfEmployed = testAreYouSelfEmployed_yes,
+    otherIncome = testOtherIncomeNo,
+    matchTaxYear = testMatchTaxYearYes,
+    businessName = testBusinessName,
+    selectedTaxYear = testSelectedTaxYearCurrent,
+    accountingMethod = testAccountingMethod
+  )
+
   lazy val testSummaryDataBusiness = IndividualSummary(
     rentUkProperty = testRentUkProperty_no_property,
     areYouSelfEmployed = testAreYouSelfEmployed_yes,
@@ -196,7 +207,7 @@ object TestModels extends Implicits {
     matchTaxYear = testMatchTaxYearNo,
     accountingPeriod = testAccountingPeriod,
     businessName = testBusinessName,
-    selectedTaxYear = testSelectedTaxYear,
+    selectedTaxYear = None,
     accountingMethod = testAccountingMethod
   )
 

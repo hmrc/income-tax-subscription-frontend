@@ -25,6 +25,7 @@ import incometax.business.models._
 import incometax.business.models.address.Address
 import incometax.incomesource.models.{RentUkPropertyModel, AreYouSelfEmployedModel}
 import incometax.subscription.models.{IncomeSourceType, IndividualSummary}
+import incometax.util.AccountingPeriodUtil._
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
@@ -39,6 +40,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testBusinessPhoneNumber: BusinessPhoneNumberModel = TestModels.testBusinessPhoneNumber
   val testBusinessStartDate: BusinessStartDateModel = TestModels.testBusinessStartDate
   val testBusinessAddress: Address = TestModels.testAddress
+  val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
   val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
   val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
   val testIncomeSource: IncomeSourceType = TestModels.testIncomeSourceBoth
@@ -50,6 +52,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   def customTestSummary(rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty,
                         matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
                         accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod,
+                        selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) = IndividualSummary(
     rentUkProperty = rentUkProperty,
     areYouSelfEmployed = testAreYouSelfEmployed,
@@ -60,6 +63,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     businessAddress = testBusinessAddress,
     businessStartDate = testBusinessStartDate,
     businessPhoneNumber = testBusinessPhoneNumber,
+    selectedTaxYear = testSelectedTaxYear,
     accountingMethod = testAccountingMethod,
     accountingMethodProperty = accountingMethodProperty
   )
@@ -344,6 +348,37 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink
       )
+    }
+
+    "display the correct info for the Selected Year" in {
+      val sectionId = SelectedTaxYearId
+      val expectedQuestion = messages.selected_tax_year
+      val expectedAnswer = messages.SelectedTaxYear.next
+      val expectedEditLink = incometax.business.controllers.routes.WhatYearToSignUpController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink,
+        testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_no_property, matchTaxYear = TestModels.testMatchTaxYearYes)
+      )
+    }
+
+    "do not display are you Selected Year if rent uk property is answered with YES" in {
+      val sectionId = SelectedTaxYearId
+
+      val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_property_and_other))
+
+      doc.getElementById(sectionId) mustBe null
+    }
+
+    "do not display are you Selected Year if match Tax Year is answered with No" in {
+      val sectionId = SelectedTaxYearId
+
+      val doc = document(testSummaryModel = customTestSummary(matchTaxYear = TestModels.testMatchTaxYearNo))
+
+      doc.getElementById(sectionId) mustBe null
     }
 
     "display the correct info for the accounting method" in {

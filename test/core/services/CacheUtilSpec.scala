@@ -124,7 +124,7 @@ class CacheUtilSpec extends UnitTestTrait
             businessPhoneNumber = testBusinessPhoneNumber,
             businessAddress = testAddress,
             businessStartDate = testBusinessStartDate,
-            selectedTaxYear = testSelectedTaxYear,
+            selectedTaxYear = testSelectedTaxYearNext,
             accountingMethod = testAccountingMethod,
             terms = testTerms
           )

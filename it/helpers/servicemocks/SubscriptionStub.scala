@@ -68,6 +68,26 @@ object SubscriptionStub extends WireMockMethods {
       .thenReturn(Status.NOT_FOUND)
   }
 
+  def successfulSubscriptionWithBodyBusiness(arn: Option[String] = None, nino: String) = Json.obj(
+    "nino" -> nino,
+    "businessIncome" -> Json.obj(
+      "tradingName" -> "test business",
+      "accountingPeriod" -> Json.obj(
+        "startDate" -> Json.obj(
+          "day" -> IntegrationTestModels.testStartDate.day,
+          "month" -> IntegrationTestModels.testStartDate.month,
+          "year" -> IntegrationTestModels.testStartDate.year
+        ),
+        "endDate" -> Json.obj(
+          "day" -> IntegrationTestModels.testEndDate.day,
+          "month" -> IntegrationTestModels.testEndDate.month,
+          "year" -> IntegrationTestModels.testEndDate.year
+        )
+      ),
+      "accountingMethod" -> "Cash"
+    ), "selectedTaxYear" -> IntegrationTestModels.testAccountingYearNext
+  ) ++ arn.fold(Json.obj())(arn => Json.obj("arn" -> arn))
+
   def successfulSubscriptionWithBodyBoth(arn: Option[String] = None, nino: String) = Json.obj(
     "nino" -> nino,
     "businessIncome" -> Json.obj(
