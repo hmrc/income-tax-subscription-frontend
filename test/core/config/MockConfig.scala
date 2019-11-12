@@ -59,6 +59,8 @@ trait MockConfig extends AppConfig {
 
   override val citizenDetailsURL: String = ""
 
+  override val whatTaxYearToSignUpEnabled: Boolean = false
+
   override val hasEnabledTestOnlyRoutes: Boolean = false
 
   override val enableRegistration: Boolean = false

@@ -16,6 +16,7 @@
 
 package incometax.business.controllers
 
+import core.config.MockConfig
 import core.config.featureswitch._
 import core.controllers.ControllerBaseSpec
 import core.models.{No, Yes, YesNo}
@@ -44,6 +45,16 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
   object TestMatchTaxYearController extends MatchTaxYearController(
     MockBaseControllerConfig,
+    messagesApi,
+    MockKeystoreService,
+    mockAuthService,
+    mockCurrentTimeService
+  )
+
+  object TestMatchTaxYearControllerFSOn extends MatchTaxYearController(
+    mockBaseControllerConfig(new MockConfig {
+      override val whatTaxYearToSignUpEnabled: Boolean = true
+    }),
     messagesApi,
     MockKeystoreService,
     mockAuthService,
@@ -98,19 +109,34 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the MatchTaxYearController with an authorised user and valid submission" when {
 
-    def callShowCore(answer: YesNo, isEditMode: Boolean): Future[Result] = TestMatchTaxYearController.submit(isEditMode)(subscriptionRequest
-      .post(MatchTaxYearForm.matchTaxYearForm, MatchTaxYearModel(answer)))
+    def callShowCore(answer: YesNo, isEditMode: Boolean, whatTaxYearFs: Boolean = false): Future[Result] = {
+      if (whatTaxYearFs) {
+        TestMatchTaxYearControllerFSOn.submit(isEditMode)(subscriptionRequest.post(MatchTaxYearForm.matchTaxYearForm, MatchTaxYearModel(answer)))
+      } else {
+        TestMatchTaxYearController.submit(isEditMode)(subscriptionRequest.post(MatchTaxYearForm.matchTaxYearForm, MatchTaxYearModel(answer)))
+      }
+    }
 
     "Not in edit mode and " when {
-      def callShow(answer: YesNo): Future[Result] = callShowCore(answer, isEditMode = false)
+      def callShow(answer: YesNo, featureSwitch: Boolean = false): Future[Result] = callShowCore(answer, isEditMode = false, whatTaxYearFs = featureSwitch)
 
-      "Option 'Yes' is selected " in {
-        setupMockKeystore(fetchMatchTaxYear = None)
+      "Option 'Yes' is selected" when {
+        "the what tax year to sign up feature switch is disabled" in {
+          setupMockKeystore(fetchMatchTaxYear = None)
 
-        val goodRequest = callShow(Yes)
-        status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
-        verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1, saveTerms = 0)
+          val goodRequest = callShow(Yes)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest).get mustBe incometax.business.controllers.routes.BusinessAccountingMethodController.show().url
+          verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1)
+        }
+        "the what tax year to sign up feature switch is enabled" in {
+          setupMockKeystore(fetchMatchTaxYear = None)
+
+          val goodRequest = callShow(Yes, featureSwitch = true)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest) mustBe Some(incometax.business.controllers.routes.WhatYearToSignUpController.show().url)
+          verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1)
+        }
       }
 
       "Option 'No' is selected and there were no previous entries" in {
