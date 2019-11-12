@@ -17,7 +17,6 @@
 package core.config
 
 import javax.inject.{Inject, Singleton}
-
 import core.config.featureswitch.FeatureSwitching
 import play.api.i18n.Lang
 import play.api.mvc.Call
@@ -65,6 +64,7 @@ trait AppConfig extends FeatureSwitching {
   val citizenDetailsURL: String
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
+
 
   def whatTaxYearToSignUpEnabled: Boolean
 

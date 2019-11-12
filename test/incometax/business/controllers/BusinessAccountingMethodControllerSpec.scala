@@ -43,11 +43,13 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   )
 
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
-    MockBaseControllerConfig,
+    mockBaseControllerConfig(
+      new MockConfig {
+        override val whatTaxYearToSignUpEnabled = false
+      }),
     messagesApi,
     MockKeystoreService,
     mockAuthService,
-    MockConfig,
     mockCurrentTimeService
   )
 
@@ -72,10 +74,13 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   val taxYear2019AccountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2017"), DateModel("5", "4", "2019"))
 
   def matchTaxYearCacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
+  def matchTaxYearYesIncomeSourceBoth(incomeSourceType: IncomeSourceType = Both) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
+  def matchTaxYearNoIncomeSourceBoth(incomeSourceType: IncomeSourceType = Both) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, incomeSourceType = incomeSourceType)
 
   def taxYear2018CacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2018AccountingPeriod, incomeSourceType = incomeSourceType)
 
   def taxYear2019CacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2019AccountingPeriod, incomeSourceType = incomeSourceType)
+
 
   "Calling the show action of the BusinessAccountingMethod with an authorised user" should {
 
@@ -178,27 +183,60 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   }
 
   "The back url not in edit mode" when {
-    "match tax year is answered with yes" should {
-      s"point to ${incometax.business.controllers.routes.MatchTaxYearController.show().url}" in {
-        setupMockKeystore(fetchAll = matchTaxYearCacheMap())
-        await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
-      }
-    }
+    "feature switch WhatYearToSignUp is enabled" when {
+      "income source type is business" should {
+        object TestBusinessAccountingMethodController2 extends BusinessAccountingMethodController(
+          mockBaseControllerConfig(
+            new MockConfig {
+              override val whatTaxYearToSignUpEnabled = true
+            }),
+          messagesApi,
+          MockKeystoreService,
+          mockAuthService,
+          mockCurrentTimeService
+        )
+        s"point to ${incometax.business.controllers.routes.WhatYearToSignUpController.show().url}" in {
+          setupMockKeystore(fetchAll = matchTaxYearCacheMap())
+          await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.WhatYearToSignUpController.show().url
+        }
 
-    "match tax year is answered with no" should {
-      s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url}" in {
-        setupMockKeystore(fetchAll = taxYear2019CacheMap())
-        await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
-      }
-    }
+        "income source type is not business and match tax year is answered with no" should {
+          s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url}" in {
+            setupMockKeystore(fetchAll = matchTaxYearNoIncomeSourceBoth())
+            await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
+          }
+        }
 
-    "The back url in edit mode" should {
-      s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
-        await(TestBusinessAccountingMethodController.backUrl(isEditMode = true)) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+        "income source type is not business and match tax year is answered with yes" should {
+          s"point to ${incometax.business.controllers.routes.WhatYearToSignUpController.show().url}" in {
+            setupMockKeystore(fetchAll = matchTaxYearYesIncomeSourceBoth())
+            await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
+          }
+        }
+      }
+      "feature switch WhatYearToSignUp is disabled" when {
+        "income source type is not business and match tax year is answered with no" should {
+          s"point to ${incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url}" in {
+            setupMockKeystore(fetchAll = matchTaxYearNoIncomeSourceBoth())
+            await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
+          }
+        }
+
+        "income source type is not business and match tax year is answered with yes" should {
+          s"point to ${incometax.business.controllers.routes.WhatYearToSignUpController.show().url}" in {
+            setupMockKeystore(fetchAll = matchTaxYearYesIncomeSourceBoth())
+            await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe incometax.business.controllers.routes.MatchTaxYearController.show().url
+          }
+        }
+      }
+
+      "The back url in edit mode" should {
+        s"point to ${incometax.subscription.controllers.routes.CheckYourAnswersController.show().url}" in {
+          await(TestBusinessAccountingMethodController.backUrl(isEditMode = true)) mustBe incometax.subscription.controllers.routes.CheckYourAnswersController.show().url
+        }
       }
     }
   }
-
   authorisationTests()
 
 }

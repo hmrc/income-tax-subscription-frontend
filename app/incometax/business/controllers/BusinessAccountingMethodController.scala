@@ -25,6 +25,7 @@ import incometax.business.forms.AccountingMethodForm
 import incometax.business.models.{AccountingMethodModel, MatchTaxYearModel}
 import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.CurrentTimeService
+import incometax.subscription.models.Business
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -39,9 +40,11 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
                                                    val authService: AuthService,
-                                                   val appConfig: AppConfig,
                                                    val currentTimeService: CurrentTimeService
                                                   ) extends SignUpController {
+
+
+  val appConfig: AppConfig = baseConfig.applicationConfig
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
     for {
@@ -89,12 +92,16 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
     if (isEditMode)
       Future.successful(incometax.subscription.controllers.routes.CheckYourAnswersController.show().url)
     else {
-      keystoreService.fetchAll() map (_.getMatchTaxYear() match {
-        case Some(MatchTaxYearModel(Yes)) =>
-          incometax.business.controllers.routes.MatchTaxYearController.show().url
-        case Some(MatchTaxYearModel(No)) =>
-          incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
-      })
+      keystoreService.fetchAll() map { cacheMap =>
+        (cacheMap.getIncomeSourceType(), cacheMap.getMatchTaxYear()) match {
+          case (Some(Business), _) if appConfig.whatTaxYearToSignUpEnabled =>
+            incometax.business.controllers.routes.WhatYearToSignUpController.show().url
+          case (_, Some(MatchTaxYearModel(Yes))) =>
+            incometax.business.controllers.routes.MatchTaxYearController.show().url
+          case (_, Some(MatchTaxYearModel(No))) =>
+            incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
+        }
+      }
     }
 
 
