@@ -345,8 +345,8 @@ object MessageLookup {
     }
 
     object SelectedTaxYear {
-      val current = "Current Tax Year ({0} to {1})"
-      val next = "Next tax year ({0} to {1})"
+      def current(staringYear: Int, endYear: Int) = s"Current Tax Year ($staringYear to $endYear)"
+      def next(staringYear: Int, endYear: Int) = s"Next tax year ($staringYear to $endYear)"
     }
 
     val contact_email = "Do you want to receive electronic communications from HMRC?"

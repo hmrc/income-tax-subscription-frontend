@@ -19,6 +19,7 @@ package core.views.html.helpers
 import core.models.{Accruals, Cash, Current, Next}
 import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
+import incometax.util.AccountingPeriodUtil._
 import play.api.i18n.Messages
 
 object SummaryHelper {
@@ -29,8 +30,8 @@ object SummaryHelper {
   }
 
   def accountingYearText(src: AccountingYearModel)(implicit messages: Messages): String = src.accountingYear match {
-    case Current => Messages("summary.selected_year.current")
-    case Next => Messages("summary.selected_year.next")
+    case Current => Messages("summary.selected_year.current", (getCurrentTaxEndYear -1).toString , getCurrentTaxEndYear)
+    case Next => Messages("summary.selected_year.next", getCurrentTaxEndYear.toString, (getCurrentTaxEndYear + 1).toString)
   }
 
   def accountingMethodText(src: AccountingMethodPropertyModel)(implicit messages: Messages): String = src.propertyAccountingMethod match {
