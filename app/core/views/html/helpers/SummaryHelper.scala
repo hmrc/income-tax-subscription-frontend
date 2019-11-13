@@ -30,7 +30,7 @@ object SummaryHelper {
   }
 
   def accountingYearText(src: AccountingYearModel)(implicit messages: Messages): String = src.accountingYear match {
-    case Current => Messages("summary.selected_year.current", (getCurrentTaxEndYear -1).toString , getCurrentTaxEndYear)
+    case Current => Messages("summary.selected_year.current", (getCurrentTaxEndYear -1).toString , getCurrentTaxEndYear.toString)
     case Next => Messages("summary.selected_year.next", getCurrentTaxEndYear.toString, (getCurrentTaxEndYear + 1).toString)
   }
 

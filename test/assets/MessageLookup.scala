@@ -344,7 +344,7 @@ object MessageLookup {
     }
 
     object SelectedTaxYear {
-      def current(staringYear: Int, endYear: Int) = s"Current Tax Year ($staringYear to $endYear)"
+      def current(staringYear: Int, endYear: Int) = s"Current tax year ($staringYear to $endYear)"
       def next(staringYear: Int, endYear: Int) = s"Next tax year ($staringYear to $endYear)"
     }
 

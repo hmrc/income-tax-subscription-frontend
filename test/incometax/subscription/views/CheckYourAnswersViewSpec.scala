@@ -63,7 +63,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     businessAddress = testBusinessAddress,
     businessStartDate = testBusinessStartDate,
     businessPhoneNumber = testBusinessPhoneNumber,
-    selectedTaxYear = testSelectedTaxYear,
+    selectedTaxYear = selectedTaxYear,
     accountingMethod = testAccountingMethod,
     accountingMethodProperty = accountingMethodProperty
   )
@@ -350,19 +350,43 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       )
     }
 
-    "display the correct info for the Selected Year" in {
-      val sectionId = SelectedTaxYearId
-      val expectedQuestion = messages.selected_tax_year
-      val expectedAnswer = messages.SelectedTaxYear.next(getCurrentTaxEndYear, getCurrentTaxEndYear +1)
-      val expectedEditLink = incometax.business.controllers.routes.WhatYearToSignUpController.show(editMode = true).url
+    "display the correct info for the Selected Year" when {
+      "selected year is current" in {
+        val sectionId = SelectedTaxYearId
+        val expectedQuestion = messages.selected_tax_year
+        val expectedAnswer = messages.SelectedTaxYear.current(getCurrentTaxEndYear - 1, getCurrentTaxEndYear)
+        val expectedEditLink = incometax.business.controllers.routes.WhatYearToSignUpController.show(editMode = true).url
 
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink,
-        testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_no_property, matchTaxYear = TestModels.testMatchTaxYearYes)
-      )
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink,
+          testSummaryModel = customTestSummary(
+            rentUkProperty = TestModels.testRentUkProperty_no_property,
+            matchTaxYear = TestModels.testMatchTaxYearYes,
+            selectedTaxYear = TestModels.testSelectedTaxYearCurrent
+          )
+        )
+      }
+      "selected year is next" in {
+        val sectionId = SelectedTaxYearId
+        val expectedQuestion = messages.selected_tax_year
+        val expectedAnswer = messages.SelectedTaxYear.next(getCurrentTaxEndYear, getCurrentTaxEndYear + 1)
+        val expectedEditLink = incometax.business.controllers.routes.WhatYearToSignUpController.show(editMode = true).url
+
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink,
+          testSummaryModel = customTestSummary(
+            rentUkProperty = TestModels.testRentUkProperty_no_property,
+            matchTaxYear = TestModels.testMatchTaxYearYes,
+            selectedTaxYear = TestModels.testSelectedTaxYearNext
+          )
+        )
+      }
     }
 
     "do not display are you Selected Year if rent uk property is answered with YES" in {
