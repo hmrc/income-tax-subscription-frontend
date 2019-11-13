@@ -315,9 +315,9 @@ object MessageLookup {
     val heading_hidden = "before signing up"
     val h2 = "You've told us"
     val income_source = "Where does your income come from?"
-    val rentUkProperty = "Do you rent out a UK property?"
-    val onlySourceOfIncome = "Is this your only source of self-employed income?"
-    val areYouSelfEmployed = "Do you work for yourself?"
+    val rentUkProperty = "You rent out UK property"
+    val onlySourceOfIncome = "You only receive income from self-employment"
+    val areYouSelfEmployed = "You're self-employed"
     val accountingMethodProperty = "Your accounting method for your property income"
 
     object IncomeSource {
@@ -326,12 +326,11 @@ object MessageLookup {
       val both = "Sole trader business and property"
     }
 
-
-    val match_tax_year = "Do you want to match your accounting period to the tax year?"
+    val match_tax_year = "Your accounting period matches the tax year"
     val accounting_period = s"Your accounting period dates"
     val accounting_period_registration = s"When's your current accounting period?"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
-    val business_name = "What's the name of your business?"
+    val business_name = "Your business name"
     val business_phone_number = "What's your business telephone number?"
     val business_address = "What's your business address?"
     val business_start_date = "When did your business start trading?"
