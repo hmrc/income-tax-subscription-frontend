@@ -629,6 +629,11 @@ agent.business.accounting_method.heading                              = Pa ddull
 agent.business.accounting_method.cash                                 = Sail arian parod
 agent.business.accounting_method.accruals                             = Sail croniadau
 
+# Agent Property Accounting Method Page
+agent.property.accounting_method.title                                = Pa ddull cyfrifyddu mae''ch cleient yn ei ddefnyddio ar gyfer ei fusnes eiddo?
+agent.property.accounting_method.radio.cash                           = Sail arian parod
+agent.property.accounting_method.radio.accruals                       = Sail croniadau
+
 ## Business Name
 agent.business.name.title                                             = Enw''r busnes
 agent.business.name.heading                                           = Beth yw enw busnes eich cleient?
@@ -782,6 +787,8 @@ agent.error.contact_email.invalid                                     = Mae''r e
 
 agent.error.accounting-method.empty                                   = Dewiswch ddull cyfrifyddu
 agent.error.accounting-method.invalid                                 = Dewiswch ddull cyfrifyddu
+
+agent.error.accounting-method-property.invalid                        = Dewiswch sut mae''ch cleient yn cofnodi ei incwm a''i dreuliau ar gyfer ei fusnes eiddo
 
 agent.error.not-eligible.empty                                        = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 agent.error.not-eligible.invalid                                      = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
