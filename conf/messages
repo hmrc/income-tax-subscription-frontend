@@ -626,7 +626,14 @@ agent.business.sole_trader.no                                         = No - I a
 agent.business.accounting_method.title                                = What accounting method does your client use for their self-employed business?
 agent.business.accounting_method.heading                              = What accounting method does your client use for their self-employed business?
 agent.business.accounting_method.cash                                 = Cash basis
-agent.business.accounting_method.accruals                             = Accurals basis
+agent.business.accounting_method.accruals                             = Accruals basis
+
+
+# Agent Property Accounting Method Page
+agent.property.accounting_method.title                                = What accounting method does your client use for their property business?
+agent.property.accounting_method.radio.cash                           = Cash basis
+agent.property.accounting_method.radio.accruals                       = Accruals basis
+
 
 ## Business Name
 agent.business.name.title                                             = Business name
@@ -781,6 +788,8 @@ agent.error.contact_email.invalid                                     = The emai
 
 agent.error.accounting-method.empty                                   = Select how your client records their income and expenses for their self-employed business
 agent.error.accounting-method.invalid                                 = Select how your client records their income and expenses for their self-employed business
+
+agent.error.accounting-method-property.invalid                        = Select how your client records their income and expenses for their property business
 
 agent.error.not-eligible.empty                                        = You must select an option to continue
 agent.error.not-eligible.invalid                                      = You must select an option to continue
