@@ -788,6 +788,7 @@ agent.error.contact_email.invalid                                     = Mae''r e
 agent.error.accounting-method.empty                                   = Dewiswch ddull cyfrifyddu
 agent.error.accounting-method.invalid                                 = Dewiswch ddull cyfrifyddu
 
+
 agent.error.accounting-method-property.invalid                        = Dewiswch sut mae''ch cleient yn cofnodi ei incwm a''i dreuliau ar gyfer ei fusnes eiddo
 
 agent.error.not-eligible.empty                                        = Rhaid i chi ddewis opsiwn i fynd yn eich blaen

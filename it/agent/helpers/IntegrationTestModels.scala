@@ -42,6 +42,7 @@ object IntegrationTestModels {
 
   val testBusinessName = BusinessNameModel("test business")
   val testAccountingMethod = AccountingMethodModel(Cash)
+  val testPropertyAccountingMethod = AccountingMethodPropertyModel(Cash)
   val testTerms = true
 
   //n.b. this must match the data in fullKeystoreData
@@ -65,6 +66,7 @@ object IntegrationTestModels {
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
+      accountingMethodProperty = Some(testPropertyAccountingMethod),
       terms = Some(testTerms)
     )
 
@@ -75,6 +77,7 @@ object IntegrationTestModels {
                     accountingPeriodDate: Option[AccountingPeriodModel] = None,
                     businessName: Option[BusinessNameModel] = None,
                     accountingMethod: Option[AccountingMethodModel] = None,
+                    accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
                     terms: Option[Boolean] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
@@ -83,6 +86,7 @@ object IntegrationTestModels {
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
+      accountingMethodProperty.map(model => AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model)) ++
       terms.map(model => Terms -> Json.toJson(model))
   }
 

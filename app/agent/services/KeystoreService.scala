@@ -19,7 +19,8 @@ package agent.services
 import javax.inject._
 import agent.models._
 import core.models.YesNo
-import incometax.business.models.{AccountingMethodPropertyModel, AccountingPeriodModel}
+import agent.models.AccountingMethodPropertyModel
+import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
