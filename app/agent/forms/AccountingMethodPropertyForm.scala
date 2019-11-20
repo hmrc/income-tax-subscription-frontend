@@ -16,9 +16,9 @@
 
 package agent.forms
 
+import agent.models.AccountingMethodPropertyModel
 import core.forms.submapping.AccountingMethodMapping
 import core.forms.validation.ErrorMessageFactory
-import agent.models.AccountingMethodPropertyModel
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -29,6 +29,7 @@ object AccountingMethodPropertyForm {
   val accountingMethodPropertyForm = Form(
     mapping(
       accountingMethodProperty -> AccountingMethodMapping(
+
         errInvalid = ErrorMessageFactory.error("agent.error.accounting-method-property.invalid"),
         errEmpty = Some(ErrorMessageFactory.error("agent.error.accounting-method-property.invalid"))
       )

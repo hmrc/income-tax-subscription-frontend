@@ -6,9 +6,14 @@ POST        /accounting-period-dates                agent.controllers.business.B
 GET         /name                                   agent.controllers.business.BusinessNameController.show(editMode: Boolean ?= false)
 POST        /name                                   agent.controllers.business.BusinessNameController.submit(editMode: Boolean ?= false)
 
-#Income Type Routes
+#Business Income Type Routes
 GET         /accounting-method                      agent.controllers.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /accounting-method                      agent.controllers.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
+
+#Property Income Type Routes
+GET         /accounting-method-property             agent.controllers.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /accounting-method-property            agent.controllers.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+
 
 #Current Financial Period Prior Routes
 GET         /accounting-period-prior                agent.controllers.business.BusinessAccountingPeriodPriorController.show(editMode: Boolean ?= false)
