@@ -33,7 +33,8 @@ object FeatureSwitch {
     EligibilityPagesFeature,
     UseSubscriptionApiV2,
     PropertyCashOrAccruals,
-    WhatTaxYearToSignUp
+    WhatTaxYearToSignUp,
+    AgentPropertyCashOrAccruals
   )
 
   def apply(str: String): FeatureSwitch =
@@ -84,4 +85,9 @@ case object PropertyCashOrAccruals extends FeatureSwitch {
 case object WhatTaxYearToSignUp extends FeatureSwitch {
   override val displayText: String = "Enable what tax year do you want to sign up for"
   override val name: String = s"$prefix.what-tax-year-to-sign-up"
+}
+
+case object AgentPropertyCashOrAccruals extends FeatureSwitch {
+  override val displayText: String = "Enable cash or accruals choice for agent property income"
+  override val name: String = s"$prefix.agent-property-cash-or-accruals"
 }
