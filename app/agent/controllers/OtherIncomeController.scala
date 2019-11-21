@@ -16,18 +16,17 @@
 
 package agent.controllers
 
-import javax.inject.{Inject, Singleton}
 import agent.audit.Logging
 import agent.auth.AuthenticatedController
-import agent.forms.{IncomeSourceForm, OtherIncomeForm}
+import agent.forms.OtherIncomeForm
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
 import core.models.{No, Yes, YesNo}
 import core.services.AuthService
-import core.utils.Implicits._
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.IncomeSourceType
+import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
+import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -79,25 +78,25 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       }
   }
 
-  def defaultRedirections(optIncomeSource: Option[IncomeSourceType], otherIncome: YesNo)(implicit request: Request[_]): Future[Result] =
+  def defaultRedirections(optIncomeSource: Option[IncomeSourceType], otherIncome: YesNo)(implicit request: Request[_]): Result =
     otherIncome match {
       case Yes =>
         Redirect(agent.controllers.routes.OtherIncomeErrorController.show())
       case No =>
         optIncomeSource match {
-          case Some(incomeSource) => incomeSource.source match {
-            case IncomeSourceForm.option_business =>
-              Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
-            case IncomeSourceForm.option_property if isEnabled(EligibilityPagesFeature) =>
+          case Some(Business | Both) =>
+            Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+          case Some(Property) =>
+            if (isEnabled(PropertyCashOrAccruals)) {
+              Redirect(agent.controllers.business.routes.PropertyAccountingMethodController.show())
+            } else if (isEnabled(EligibilityPagesFeature)) {
               Redirect(agent.controllers.routes.CheckYourAnswersController.show())
-            case IncomeSourceForm.option_property =>
+            } else {
               Redirect(agent.controllers.routes.TermsController.show())
-            case IncomeSourceForm.option_both =>
-              Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
-          }
+            }
           case _ =>
             logging.info("Tried to submit other income when no data found in Keystore for income source")
-            new InternalServerException("Other Income, tried to submit with no income source")
+            throw new InternalServerException("Other Income, tried to submit with no income source")
         }
     }
 
@@ -107,28 +106,21 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
         case optIncomeSource@Some(incomeSource) =>
           OtherIncomeForm.otherIncomeForm.bindFromRequest.fold(
             formWithErrors =>
-              Future.successful(
-                BadRequest(
-                  view(
-                    otherIncomeForm = formWithErrors,
-                    incomeSource = incomeSource.source,
-                    isEditMode = isEditMode,
-                    backUrl = backUrl(
-                      isEditMode,
-                      incomeSource
-                    )
-                  )
-                )
-              ),
+              Future.successful(BadRequest(view(
+                otherIncomeForm = formWithErrors,
+                incomeSource = incomeSource.source,
+                isEditMode = isEditMode,
+                backUrl = backUrl(isEditMode, incomeSource)
+              ))),
             choice =>
-              keystoreService.fetchOtherIncome().flatMap {
-                previousOtherIncome =>
-                  keystoreService.saveOtherIncome(choice).flatMap { _ =>
-                    // if it's in update mode and the previous answer is the same as current then return to check your answers page
-                    if (isEditMode && previousOtherIncome.fold(false)(old => old.equals(choice)))
-                      Future.successful(Redirect(agent.controllers.routes.CheckYourAnswersController.show()))
-                    else defaultRedirections(optIncomeSource, choice)
-                  }
+              keystoreService.fetchOtherIncome().flatMap { previousOtherIncome =>
+                keystoreService.saveOtherIncome(choice) map { _ =>
+                  // if it's in update mode and the previous answer is the same as current then return to check your answers page
+                  if (isEditMode && previousOtherIncome.fold(false)(old => old == choice))
+                    Redirect(agent.controllers.routes.CheckYourAnswersController.show())
+                  else
+                    defaultRedirections(optIncomeSource, choice)
+                }
               }
           )
         case _ =>

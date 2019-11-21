@@ -16,16 +16,17 @@
 
 package agent.controllers
 
-import javax.inject.{Inject, Singleton}
-
 import agent.auth.AuthenticatedController
 import agent.forms.IncomeSourceForm
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
+import core.config.featureswitch.{FeatureSwitching, PropertyCashOrAccruals}
 import core.models.{No, Yes}
 import core.services.AuthService
 import core.utils.Implicits._
+import incometax.subscription.models.{Both, Business, Property}
 import incometax.util.AccountingPeriodUtil
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
@@ -38,7 +39,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
                                 val messagesApi: MessagesApi,
                                 val keystoreService: KeystoreService,
                                 val authService: AuthService
-                               ) extends AuthenticatedController {
+                               ) extends AuthenticatedController with FeatureSwitching {
 
   def view(backUrl: String, taxEndYear: Int)(implicit request: Request[_]): Html =
     agent.views.html.terms(
@@ -65,27 +66,23 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         _ => Redirect(agent.controllers.routes.CheckYourAnswersController.show()))
   }
 
-  def backUrl(editMode: Boolean)(implicit request: Request[_]): Future[String] =
-    if (editMode)
+  def backUrl(editMode: Boolean)(implicit request: Request[_]): Future[String] = {
+    if (editMode) {
       agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
-    else
+    } else {
       keystoreService.fetchIncomeSource() flatMap {
-        case Some(source) => source.source match {
-          case IncomeSourceForm.option_business =>
-            agent.controllers.business.routes.BusinessAccountingMethodController.show().url
-          case IncomeSourceForm.option_both =>
-            agent.controllers.business.routes.BusinessAccountingMethodController.show().url
-          case IncomeSourceForm.option_property =>
-            keystoreService.fetchOtherIncome() flatMap {
-              case Some(Yes) =>
-                agent.controllers.routes.OtherIncomeErrorController.show().url
-              case Some(No) =>
-                agent.controllers.routes.OtherIncomeController.show().url
-              case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
-            }
-          case x => new InternalServerException(s"Internal Server Error - TermsController.backUrl, unexpected income source: '$x'")
-        }
-        case _ => new InternalServerException(s"Internal Server Error - TermsController.backUrl, no income source retrieve from Keystore")
+        case Some(Business) => agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+        case Some(Both | Property) if isEnabled(PropertyCashOrAccruals) => agent.controllers.business.routes.PropertyAccountingMethodController.show().url
+        case Some(Both) => agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+        case Some(Property) =>
+          keystoreService.fetchOtherIncome() map {
+            case Some(Yes) => agent.controllers.routes.OtherIncomeErrorController.show().url
+            case Some(No) => agent.controllers.routes.OtherIncomeController.show().url
+            case _ => throw new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
+          }
+        case _ => throw new InternalServerException(s"Internal Server Error - TermsController.backUrl, no income source retrieve from Keystore")
       }
+    }
+  }
 
 }

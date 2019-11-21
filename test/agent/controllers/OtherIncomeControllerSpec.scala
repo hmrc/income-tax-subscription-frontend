@@ -20,13 +20,15 @@ import agent.audit.Logging
 import agent.forms.OtherIncomeForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
 import core.models.{No, Yes}
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models._
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, _}
+
+import scala.concurrent.Future
 
 class OtherIncomeControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService with MockCurrentTimeService with FeatureSwitching {
@@ -40,6 +42,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(EligibilityPagesFeature)
+    disable(PropertyCashOrAccruals)
   }
 
   object TestOtherIncomeController extends OtherIncomeController(
@@ -149,23 +152,9 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
     "Calling the submitOtherIncome action of the OtherIncome controller with an authorised user and saying no to other income" should {
 
-      def callSubmit = TestOtherIncomeController.submit(isEditMode = true)(subscriptionRequest
-        .post(OtherIncomeForm.otherIncomeForm, No))
-
-      "return a redirect status (SEE_OTHER - 303)" in {
-
-        setupMockKeystore(
-          fetchIncomeSource = TestModels.testIncomeSourceBusiness,
-          fetchOtherIncome = None
-        )
-
-        val goodRequest = callSubmit
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
-      }
+      def callSubmit: Future[Result] = TestOtherIncomeController.submit(isEditMode = true)(
+        subscriptionRequest.post(OtherIncomeForm.otherIncomeForm, No)
+      )
 
       s"redirect to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the business journey" in {
 
@@ -176,10 +165,29 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callSubmit
 
+        status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
         await(goodRequest)
         verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
+      }
+
+      s"redirect to ${business.routes.PropertyAccountingMethodController.show().url}" when {
+        "the user is on a property only flow and the property cash accruals feature switch is enabled" in {
+          enable(PropertyCashOrAccruals)
+
+          setupMockKeystore(
+            fetchIncomeSource = Property,
+            fetchOtherIncome = None
+          )
+
+          val goodRequest = await(callSubmit)
+
+          status(goodRequest) mustBe SEE_OTHER
+          redirectLocation(goodRequest) mustBe Some(business.routes.PropertyAccountingMethodController.show().url)
+
+          verifyKeystore(saveOtherIncome = 1, fetchIncomeSource = 1)
+        }
       }
 
       s"redirect to '${agent.controllers.routes.TermsController.show().url}' on the property journey" in {
@@ -191,6 +199,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callSubmit
 
+        status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.show().url)
 
         await(goodRequest)
@@ -206,6 +215,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callSubmit
 
+        status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
@@ -221,6 +231,7 @@ class OtherIncomeControllerSpec extends AgentControllerBaseSpec
 
         val goodRequest = callSubmit
 
+        status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
         await(goodRequest)

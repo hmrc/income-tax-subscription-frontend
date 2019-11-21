@@ -16,16 +16,16 @@
 
 package agent.controllers
 
-import javax.inject.{Inject, Singleton}
 import agent.audit.Logging
 import agent.auth.AuthenticatedController
+import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import agent.forms.IncomeSourceForm
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
+import core.services.AuthService
+import incometax.subscription.models.{Both, Business, Property}
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import agent.services.KeystoreService
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
-import core.services.AuthService
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
@@ -38,23 +38,23 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
                                            val logging: Logging
                                           ) extends AuthenticatedController with FeatureSwitching {
 
-  val show = Action.async { implicit request =>
+  val show: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(agent.views.html.other_income_error(postAction = agent.controllers.routes.OtherIncomeErrorController.submit(), backUrl)))
   }
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.fetchIncomeSource() map {
-        case Some(incomeSource) => incomeSource.source match {
-          case IncomeSourceForm.option_business =>
-            Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
-          case IncomeSourceForm.option_property if isEnabled(EligibilityPagesFeature) =>
+        case Some(Business | Both) =>
+          Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+        case Some(Property) =>
+          if (isEnabled(PropertyCashOrAccruals)) {
+            Redirect(agent.controllers.business.routes.PropertyAccountingMethodController.show())
+          } else if (isEnabled(EligibilityPagesFeature)) {
             Redirect(agent.controllers.routes.CheckYourAnswersController.show())
-          case IncomeSourceForm.option_property =>
+          } else {
             Redirect(agent.controllers.routes.TermsController.show())
-          case IncomeSourceForm.option_both =>
-            Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
-        }
+          }
         case _ =>
           logging.info("Tried to submit 'other income error' when no data found in Keystore for 'income source'")
           throw new InternalServerException("Other Income Error controller, no income source found")

@@ -20,11 +20,14 @@ import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
 import agent.services.mocks.MockKeystoreService
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
 import core.models.Cash
+import incometax.subscription.models.Both
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService with FeatureSwitching {
@@ -32,6 +35,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(EligibilityPagesFeature)
+    disable(PropertyCashOrAccruals)
   }
 
   override val controllerName: String = "BusinessAccountingMethod"
@@ -63,66 +67,66 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
   "Calling the submit action of the BusinessAccountingMethod with an authorised user and valid submission" should {
 
-    def callShow(isEditMode: Boolean) = TestBusinessAccountingMethodController.submit(isEditMode = isEditMode)(subscriptionRequest
+    def callSubmit(isEditMode: Boolean): Future[Result] = TestBusinessAccountingMethodController.submit(isEditMode = isEditMode)(subscriptionRequest
       .post(AccountingMethodForm.accountingMethodForm, AccountingMethodModel(Cash)))
 
     "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
 
-        val goodRequest = callShow(isEditMode = false)
+      s"redirect to ${routes.PropertyAccountingMethodController.show().url}" when {
+        "the property cash/accruals feature switch is enabled and the user has both business and property income" in {
+          setupMockKeystoreSaveFunctions()
+          setupMockKeystore(fetchIncomeSource = Both)
+          enable(PropertyCashOrAccruals)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+          val goodRequest = await(callSubmit(isEditMode = false))
 
-        await(goodRequest)
-        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
+          status(goodRequest) mustBe SEE_OTHER
+          redirectLocation(goodRequest) mustBe Some(routes.PropertyAccountingMethodController.show().url)
+
+          verifyKeystore(fetchIncomeSource = 1, saveAccountingMethod = 1)
+        }
       }
 
       s"redirect to '${agent.controllers.routes.TermsController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchIncomeSource = Both)
 
-        val goodRequest = callShow(isEditMode = false)
+        val goodRequest = callSubmit(isEditMode = false)
 
+        status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
+        verifyKeystore(fetchIncomeSource = 1, saveAccountingMethod = 1)
       }
 
       s"redirect to '${agent.controllers.routes.CheckYourAnswersController.show().url}' when the eligibility pages feature switch is on" in {
         setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchIncomeSource = Both)
         enable(EligibilityPagesFeature)
 
-        val goodRequest = callShow(isEditMode = false)
+        val goodRequest = callSubmit(isEditMode = false)
 
+        status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
+        verifyKeystore(fetchIncomeSource = 1, saveAccountingMethod = 1)
       }
     }
 
     "When it is in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = true)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
-      }
-
       s"redirect to '${agent.controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
+        setupMockKeystore(fetchIncomeSource = Both)
 
-        val goodRequest = callShow(isEditMode = true)
+        val goodRequest = callSubmit(isEditMode = true)
 
+        status(goodRequest) mustBe SEE_OTHER
         redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
-        verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 1)
+        verifyKeystore(fetchIncomeSource = 1, saveAccountingMethod = 1)
       }
     }
   }
@@ -138,18 +142,18 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "The back url when not in edit mode" should {
-    s"point to ${agent.controllers.business.routes.BusinessNameController.show().url}" in {
-      TestBusinessAccountingMethodController.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessNameController.show().url
+  "The back url" when {
+    "not in edit mode" should {
+      s"point to ${agent.controllers.business.routes.BusinessNameController.show().url}" in {
+        TestBusinessAccountingMethodController.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessNameController.show().url
+      }
+    }
+    "in edit mode" should {
+      s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
+        TestBusinessAccountingMethodController.backUrl(isEditMode = true) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
+      }
     }
   }
-
-  "The back url when in edit mode" should {
-    s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
-      TestBusinessAccountingMethodController.backUrl(isEditMode = true) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
-    }
-  }
-
 
   authorisationTests()
 

@@ -21,8 +21,9 @@ import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
 import core.services.AuthService
+import incometax.subscription.models.Both
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -58,8 +59,15 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       AccountingMethodForm.accountingMethodForm.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(accountingMethodForm = formWithErrors, isEditMode = isEditMode))),
         accountingMethod => {
-          keystoreService.saveAccountingMethod(accountingMethod) map { _ =>
-            if (isEditMode || isEnabled(EligibilityPagesFeature)) {
+          for {
+            _ <- keystoreService.saveAccountingMethod(accountingMethod)
+            incomeSource <- keystoreService.fetchIncomeSource()
+          } yield {
+            if (isEditMode) {
+              Redirect(agent.controllers.routes.CheckYourAnswersController.show())
+            } else if (isEnabled(PropertyCashOrAccruals) && incomeSource.contains(Both)) {
+              Redirect(agent.controllers.business.routes.PropertyAccountingMethodController.show())
+            } else if (isEnabled(EligibilityPagesFeature)) {
               Redirect(agent.controllers.routes.CheckYourAnswersController.show())
             } else {
               Redirect(agent.controllers.routes.TermsController.show())

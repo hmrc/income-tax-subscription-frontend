@@ -20,13 +20,19 @@ import _root_.agent.helpers.ComponentSpecBase
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
 import core.models.Yes
 import incometax.subscription.models.{Both, Business, Property}
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 
 class OtherIncomeErrorControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PropertyCashOrAccruals)
+    disable(EligibilityPagesFeature)
+  }
 
   "GET /error/other-income" should {
     "show the error other income page" in {
@@ -95,27 +101,54 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase with FeatureSwit
         )
       }
 
-      "select the Continue button on the error other income page whilst on Property journey" in {
-        val keystoreIncomeSource = Property
-        val keystoreIncomeOther = Yes
+      "select the Continue button on the error other income page whilst on Property journey" when {
+        "the property cash accruals feature switch is enabled" in {
+          enable(PropertyCashOrAccruals)
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
-            otherIncome = Some(keystoreIncomeOther)
+          val keystoreIncomeSource = Property
+          val keystoreIncomeOther = Yes
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(
+            keystoreData(
+              incomeSource = Some(keystoreIncomeSource),
+              otherIncome = Some(keystoreIncomeOther)
+            )
           )
-        )
 
-        When("POST /error/other-income is called")
-        val res = IncomeTaxSubscriptionFrontend.submitOtherIncomeError()
+          When("POST /error/other-income is called")
+          val res = IncomeTaxSubscriptionFrontend.submitOtherIncomeError()
 
-        Then("Should return a SEE_OTHER with a redirect location of terms page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(termsURI)
-        )
+          Then("Should return a SEE_OTHER with a redirect location of terms page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(propertyAccountingMethodURI)
+          )
+        }
+
+        "the property cash accruals feature switch is disabled" in {
+          val keystoreIncomeSource = Property
+          val keystoreIncomeOther = Yes
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(
+            keystoreData(
+              incomeSource = Some(keystoreIncomeSource),
+              otherIncome = Some(keystoreIncomeOther)
+            )
+          )
+
+          When("POST /error/other-income is called")
+          val res = IncomeTaxSubscriptionFrontend.submitOtherIncomeError()
+
+          Then("Should return a SEE_OTHER with a redirect location of terms page")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(termsURI)
+          )
+        }
       }
 
       "select the Continue button on the error other income page whilst on Property journey when the eligibility pages feature switch is enabled" in {

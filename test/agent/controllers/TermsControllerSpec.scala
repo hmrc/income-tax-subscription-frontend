@@ -18,6 +18,8 @@ package agent.controllers
 
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.config.featureswitch.{FeatureSwitching, PropertyCashOrAccruals}
+import incometax.subscription.models.{Both, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
@@ -26,13 +28,18 @@ import play.api.test.Helpers._
 import scala.concurrent.Future
 
 class TermsControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService {
+  with MockKeystoreService with FeatureSwitching {
 
   override val controllerName: String = "TermsController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "showTerms" -> TestTermsController.show(editMode = false),
     "submitTerms" -> TestTermsController.submit()
   )
+
+  override def beforeEach(): Unit = {
+    disable(PropertyCashOrAccruals)
+    super.beforeEach()
+  }
 
   object TestTermsController extends TermsController(
     MockBaseControllerConfig,
@@ -59,7 +66,7 @@ class TermsControllerSpec extends AgentControllerBaseSpec
 
   "Calling the submitTerms action of the TermsController with an authorised user and valid submission" when {
 
-    def callShow(): Future[Result] = {
+    def callSubmit(): Future[Result] = {
       setupMockKeystoreSaveFunctions()
       TestTermsController.submit()(subscriptionRequest)
     }
@@ -68,7 +75,7 @@ class TermsControllerSpec extends AgentControllerBaseSpec
 
       "return a redirect status (SEE_OTHER - 303)" in {
 
-        val goodResult = callShow()
+        val goodResult = callSubmit()
 
         status(goodResult) must be(Status.SEE_OTHER)
 
@@ -79,7 +86,7 @@ class TermsControllerSpec extends AgentControllerBaseSpec
       s"redirect to '${agent.controllers.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
-        val goodResult = callShow()
+        val goodResult = callSubmit()
 
         redirectLocation(goodResult) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
 
@@ -96,6 +103,24 @@ class TermsControllerSpec extends AgentControllerBaseSpec
       }
     }
     "edit mode is false" should {
+
+      s"point to ${business.routes.PropertyAccountingMethodController.show().url}" when {
+        "the property cash/accruals feature switch is enabled" when {
+          "the user is on a property only flow" in {
+            enable(PropertyCashOrAccruals)
+            setupMockKeystore(fetchIncomeSource = Property)
+            await(TestTermsController.backUrl(editMode = false)(subscriptionRequest)) mustBe business.routes.PropertyAccountingMethodController.show().url
+            verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
+          }
+          "the user is on a property and business flow" in {
+            enable(PropertyCashOrAccruals)
+            setupMockKeystore(fetchIncomeSource = Both)
+            await(TestTermsController.backUrl(editMode = false)(subscriptionRequest)) mustBe business.routes.PropertyAccountingMethodController.show().url
+            verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
+          }
+        }
+      }
+
       s"point to ${agent.controllers.business.routes.BusinessAccountingMethodController.show().url} on the business journey" in {
         setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
         await(TestTermsController.backUrl(editMode = false)(subscriptionRequest)) mustBe agent.controllers.business.routes.BusinessAccountingMethodController.show().url
