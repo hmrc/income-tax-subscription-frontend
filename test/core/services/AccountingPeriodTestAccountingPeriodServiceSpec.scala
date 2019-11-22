@@ -15,9 +15,9 @@
  */
 
 package core.services
+
 import java.time.LocalDate
 
-import core.services.AccountingPeriodService
 import core.utils.MockCurrentDateProvider
 import org.scalatest.BeforeAndAfterEach
 import uk.gov.hmrc.play.test.UnitSpec

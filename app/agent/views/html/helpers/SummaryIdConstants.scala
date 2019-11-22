@@ -25,6 +25,7 @@ object SummaryIdConstants {
   val AccountingPeriodDateId = "accountingPeriodDate"
   val BusinessNameId = "businessName"
   val AccountingMethodId = "accountingMethod"
+  val AccountingMethodPropertyId = "accountingMethodProperty"
   val TermsId = "terms"
 
 }

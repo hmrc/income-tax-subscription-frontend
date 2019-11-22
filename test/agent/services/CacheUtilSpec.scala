@@ -16,14 +16,14 @@
 
 package agent.services
 
-import _root_.core.utils.{TestConstants, UnitTestTrait}
-import incometax.subscription.models.{AgentSummary, SummaryModel}
+import _root_.core.utils.UnitTestTrait
+import incometax.subscription.models.AgentSummary
 import org.scalatest.Matchers._
 
 class CacheUtilSpec extends UnitTestTrait {
 
   import CacheUtil._
-  import core.utils.TestModels._
+  import agent.utils.TestModels._
 
   "CacheUtil" should {
 
@@ -42,51 +42,59 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
+      testCacheMap.getAccountingPeriodPrior() shouldBe Some(testAccountingPeriodPriorCurrent)
       testCacheMap.getAccountingMethod() shouldBe Some(testAccountingMethod)
       testCacheMap.getAccountingMethodProperty() shouldBe Some(testAccountingMethodProperty)
       testCacheMap.getTerms() shouldBe Some(testTerms)
     }
 
-    "The getSummary should populate the Summary model correctly" in {
-      testCacheMap.getSummary() shouldBe
-        AgentSummary(
-          testIncomeSourceBoth,
-          testOtherIncomeNo,
-          None, // match tax year
-          testAccountingPeriodPriorCurrent,
-          testAccountingPeriod,
-          testBusinessName,
-          None,
-          None,
-          None,
-          None,
-          testAccountingMethod,
-          testAccountingMethodProperty,
-          testTerms
+    "The getSummary should populate the Summary model correctly" when {
+      "the income type is property" in {
+        testCacheMapCustom(incomeSource = Some(testIncomeSourceProperty), accountingPeriodPrior = None,
+          accountingPeriodDate = None, businessName = None, accountingMethod = None)
+          .getSummary() shouldBe AgentSummary(
+            incomeSource = Some(testIncomeSourceProperty),
+            otherIncome = Some(testOtherIncomeNo),
+            accountingPeriodPrior = None,
+            accountingPeriodDate = None,
+            businessName = None,
+            accountingMethod = None,
+            accountingMethodProperty = Some(testAccountingMethodProperty),
+            terms = Some(testTerms)
+          )
+      }
+
+      "the income type is business" in {
+        val agentSummaryBusinessIncome = AgentSummary(
+          incomeSource = Some(testIncomeSourceBusiness),
+          otherIncome = Some(testOtherIncomeNo),
+          accountingPeriodPrior = Some(testAccountingPeriodPriorCurrent),
+          accountingPeriodDate = Some(testAccountingPeriod),
+          businessName = Some(testBusinessName),
+          accountingMethod = Some(testAccountingMethod),
+          accountingMethodProperty = None,
+          terms = Some(testTerms)
         )
 
-      // for the property only journey, this should only populate the subset of views
-      // relevant to the journey
-      val overPopulatedPropertyCacheMap =
-      agent.utils.TestModels.testCacheMap(
-        Some(agent.utils.TestModels.testIncomeSourceProperty),
-        Some(agent.utils.TestModels.testOtherIncomeNo),
-        Some(agent.utils.TestModels.testAccountingPeriodPriorCurrent),
-        Some(agent.utils.TestModels.testAccountingPeriod),
-        Some(agent.utils.TestModels.testBusinessName),
-        Some(agent.utils.TestModels.testAccountingMethod),
-        Some(agent.utils.TestModels.testAccountingMethodProperty),
-        Some(agent.utils.TestModels.testTerms)
-      )
-      overPopulatedPropertyCacheMap.getSummary() shouldBe
-        AgentSummary(
-          testIncomeSourceProperty,
-          otherIncome = testOtherIncomeNo,
-          accountingMethodProperty = testAccountingMethodProperty,
-          terms = testTerms
-        )
+        testCacheMapCustom(incomeSource = Some(testIncomeSourceBusiness), accountingMethodProperty = None)
+          .getSummary() shouldBe agentSummaryBusinessIncome
+      }
 
-      emptyCacheMap.getSummary() shouldBe AgentSummary()
+      "the income type is both" in {
+        testCacheMapCustom().getSummary() shouldBe
+          AgentSummary(
+            incomeSource = testIncomeSourceBoth,
+            otherIncome = testOtherIncomeNo,
+            accountingPeriodPrior = testAccountingPeriodPriorCurrent,
+            accountingPeriodDate = testAccountingPeriod,
+            businessName = testBusinessName,
+            accountingMethod = testAccountingMethod,
+            accountingMethodProperty = testAccountingMethodProperty,
+            terms = testTerms
+          )
+
+        emptyCacheMap.getSummary() shouldBe AgentSummary()
+      }
     }
 
   }

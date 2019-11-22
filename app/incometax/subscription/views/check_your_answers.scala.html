@@ -196,7 +196,7 @@
         @summaryModel.businessStartDate.map(businessStartDate)
         @summaryModel.matchTaxYear.map(matchTaxYear)
         @if(summaryModel.matchTaxYear.exists(_.matchTaxYear == No)) {
-            @summaryModel.accountingPeriod.map(accountingPeriodDate)
+            @summaryModel.accountingPeriodDate.map(accountingPeriodDate)
         }
         @if(summaryModel.rentUkProperty.exists(_.rentUkProperty == No) && summaryModel.matchTaxYear.exists(_.matchTaxYear == Yes)) {
             @summaryModel.selectedTaxYear.map(selectedTaxYear)

@@ -708,6 +708,7 @@ agent.summary.other_income                                            = Does you
 agent.summary.accounting_period                                       = Your client''s accounting period dates
 agent.summary.business_name                                           = Business name
 agent.summary.income_type                                             = Accounting method for their self-employed business
+agent.summary.income_type_property                                    = Accounting method for their property business
 agent.summary.income_type.cash                                        = Cash basis
 agent.summary.income_type.accruals                                    = Accruals basis
 

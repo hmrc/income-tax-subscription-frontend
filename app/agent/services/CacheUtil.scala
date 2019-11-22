@@ -20,8 +20,8 @@ package agent.services
 import agent.models.AccountingPeriodPriorModel
 import core.config.AppConfig
 import core.models.YesNo
-import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel, BusinessNameModel}
-import incometax.subscription.models.{AgentSummary, IncomeSourceType, Property}
+import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, AccountingMethodPropertyModel, BusinessNameModel}
+import incometax.subscription.models._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -49,6 +49,7 @@ object CacheUtil {
 
     def getSummary()(implicit appConfig: AppConfig): AgentSummary = {
       getIncomeSource() match {
+
         case Some(Property) =>
           AgentSummary(
             incomeSource = getIncomeSource(),
@@ -56,16 +57,24 @@ object CacheUtil {
             accountingMethodProperty = getAccountingMethodProperty(),
             terms = getTerms()
           )
-        case Some(_) =>
+
+        case Some(Business) =>
           AgentSummary(
             incomeSource = getIncomeSource(),
             otherIncome = getOtherIncome(),
             accountingPeriodPrior = getAccountingPeriodPrior(),
-            accountingPeriod = getAccountingPeriodDate(),
+            accountingPeriodDate = getAccountingPeriodDate(),
             businessName = getBusinessName(),
-            businessPhoneNumber = None,
-            businessAddress = None,
-            businessStartDate = None,
+            accountingMethod = getAccountingMethod(),
+            terms = getTerms()
+          )
+        case Some(Both) =>
+          AgentSummary(
+            incomeSource = getIncomeSource(),
+            otherIncome = getOtherIncome(),
+            accountingPeriodPrior = getAccountingPeriodPrior(),
+            accountingPeriodDate = getAccountingPeriodDate(),
+            businessName = getBusinessName(),
             accountingMethod = getAccountingMethod(),
             accountingMethodProperty = getAccountingMethodProperty(),
             terms = getTerms()

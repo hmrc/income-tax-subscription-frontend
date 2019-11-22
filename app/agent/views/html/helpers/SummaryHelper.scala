@@ -18,13 +18,18 @@ package agent.views.html.helpers
 
 
 import core.models.{Accruals, Cash}
-import incometax.business.models.AccountingMethodModel
+import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel}
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.i18n.Messages
 
 object SummaryHelper {
 
   def accountingMethodText(src: AccountingMethodModel)(implicit messages: Messages): String = src.accountingMethod match {
+    case Cash => Messages("agent.summary.income_type.cash")
+    case Accruals => Messages("agent.summary.income_type.accruals")
+  }
+
+  def accountingMethodText(src: AccountingMethodPropertyModel)(implicit messages: Messages): String = src.propertyAccountingMethod match {
     case Cash => Messages("agent.summary.income_type.cash")
     case Accruals => Messages("agent.summary.income_type.accruals")
   }

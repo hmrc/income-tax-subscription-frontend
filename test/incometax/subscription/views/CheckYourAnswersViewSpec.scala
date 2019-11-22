@@ -58,7 +58,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     areYouSelfEmployed = testAreYouSelfEmployed,
     otherIncome = testOtherIncome,
     matchTaxYear = matchTaxYear,
-    accountingPeriod = accountingPeriod,
+    accountingPeriodDate = accountingPeriod,
     businessName = testBusinessName,
     businessAddress = testBusinessAddress,
     businessStartDate = testBusinessStartDate,

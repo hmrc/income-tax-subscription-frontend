@@ -15,18 +15,19 @@
  *@
 
 @import incometax.business.models.{BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel}
-@import incometax.subscription.models.IncomeSourceType
 @import incometax.business.models.address.Address
 @import incometax.incomesource.models._
-@import incometax.subscription.models.SummaryModel
-@import incometax.business.models.AccountingMethodModel
-@import incometax.business.models.AccountingPeriodModel
+@import incometax.subscription.models.{SummaryModel, IncomeSourceType}
+@import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel}
 @import core.config.AppConfig
 @import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
+@import core.views.html.templates.main_template
 
 @import core.models.YesNo
+
 @(summaryModel: SummaryModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
 @import SummaryIdConstants._
 @import agent.views.html.helpers.SummaryHelper._
 
@@ -92,7 +93,15 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@core.views.html.templates.main_template(title = Messages("agent.summary.title")) {
+@accountingMethodProperty(income: AccountingMethodPropertyModel) = @{
+    val rowName = AccountingMethodPropertyId
+    val rowQuestion = messages("agent.summary.income_type_property")
+    val rowAnswer = accountingMethodText(income)
+    val rowUrl = agent.controllers.business.routes.PropertyAccountingMethodController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
+}
+
+@main_template(title = Messages("agent.summary.title")) {
 
     @back_link(backUrl)
 
@@ -103,14 +112,14 @@
     <div class="form-group">
         @summaryModel.incomeSource.map(incomeSource)
         @summaryModel.otherIncome.map(otherIncome)
-        @summaryModel.accountingPeriod.map(accountingPeriodDate)
+        @summaryModel.accountingPeriodDate.map(accountingPeriodDate)
         @summaryModel.businessName.map(businessName)
         @summaryModel.accountingMethod.map(accountingMethod)
+        @summaryModel.accountingMethodProperty.map(accountingMethodProperty)
         <div class="divider--top--thick"></div>
     </div>
 
     @form(action = postAction) {
         @continueButton(Messages("agent.summary.confirm_and_sign_up"))
     }
-
 }

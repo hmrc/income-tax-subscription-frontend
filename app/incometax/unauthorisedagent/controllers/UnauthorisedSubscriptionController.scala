@@ -33,7 +33,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
 import scala.concurrent.Future
 
-/**/
 @Singleton
 class UnauthorisedSubscriptionController @Inject()(val baseConfig: BaseControllerConfig,
                                                    val messagesApi: MessagesApi,
@@ -49,7 +48,8 @@ class UnauthorisedSubscriptionController @Inject()(val baseConfig: BaseControlle
       keystoreService.fetchAll flatMap { cache =>
         val headerCarrier = implicitly[HeaderCarrier].withExtraHeaders(ITSASessionKeys.RequestURI -> req.uri)
 
-        subscriptionOrchestrationService.createSubscriptionFromUnauthorisedAgent(req.session(AgentReferenceNumber), user.nino.get, cache.getSummary())(headerCarrier) flatMap {
+        subscriptionOrchestrationService.createSubscriptionFromUnauthorisedAgent(req.session(AgentReferenceNumber),
+          user.nino.get, cache.getSummary())(headerCarrier) flatMap {
           case Right(SubscriptionSuccess(id)) =>
             for {
               _ <- keystoreService.saveSubscriptionId(id)

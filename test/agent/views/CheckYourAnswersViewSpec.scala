@@ -28,6 +28,14 @@ import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+import core.models.{DateModel, No, YesNo}
+import incometax.business.models._
+import incometax.business.models.address.Address
+import incometax.incomesource.models.AreYouSelfEmployedModel
+import incometax.subscription.models.{IncomeSourceType, SummaryModel}
+import incometax.util.AccountingPeriodUtil._
+import org.jsoup.nodes.{Document, Element}
+
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
 
@@ -35,7 +43,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   lazy val backUrl: String = _root_.agent.controllers.routes.TermsController.show().url
 
   def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Html = _root_.agent.views.html.check_your_answers(
-    summaryModel = testSummaryData,
+    summaryModel = testAgentSummaryData,
     postAction = postAction,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
@@ -60,7 +68,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
   "Summary page view" should {
 
-    s"have a back buttong pointed to $backUrl" in {
+    s"have a back button pointed to $backUrl" in {
       val backLink = document().select("#back")
       backLink.isEmpty shouldBe false
       backLink.attr("href") shouldBe backUrl
@@ -179,6 +187,20 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val expectedQuestion = messages.income_type
       val expectedAnswer = messages.AccountingMethod.cash
       val expectedEditLink = _root_.agent.controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
+
+      sectionTest(
+        sectionId = sectionId,
+        expectedQuestion = expectedQuestion,
+        expectedAnswer = expectedAnswer,
+        expectedEditLink = expectedEditLink
+      )
+    }
+
+    "display the correct info for the property accounting method" in {
+      val sectionId = AccountingMethodPropertyId
+      val expectedQuestion = messages.income_type_property
+      val expectedAnswer = messages.AccountingMethodProperty.cash
+      val expectedEditLink = _root_.agent.controllers.business.routes.PropertyAccountingMethodController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

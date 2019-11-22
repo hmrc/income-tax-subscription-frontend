@@ -185,7 +185,7 @@ object TestModels extends Implicits {
     rentUkProperty = testRentUkProperty_property_only,
     otherIncome = testOtherIncomeNo,
     matchTaxYear = testMatchTaxYearNo,
-    accountingPeriod = testAccountingPeriod,
+    accountingPeriodDate = testAccountingPeriod,
     businessName = testBusinessName,
     accountingMethod = testAccountingMethod
   )
@@ -205,7 +205,7 @@ object TestModels extends Implicits {
     areYouSelfEmployed = testAreYouSelfEmployed_yes,
     otherIncome = testOtherIncomeNo,
     matchTaxYear = testMatchTaxYearNo,
-    accountingPeriod = testAccountingPeriod,
+    accountingPeriodDate = testAccountingPeriod,
     businessName = testBusinessName,
     selectedTaxYear = None,
     accountingMethod = testAccountingMethod
@@ -216,22 +216,21 @@ object TestModels extends Implicits {
     areYouSelfEmployed = testAreYouSelfEmployed_yes,
     otherIncome = testOtherIncomeNo,
     matchTaxYear = testMatchTaxYearNo,
-    accountingPeriod = testAccountingPeriod,
+    accountingPeriodDate = testAccountingPeriod,
     businessName = testBusinessName,
-    accountingMethod = testAccountingMethod
+    accountingMethod = testAccountingMethod,
+    accountingMethodProperty = Some(testAccountingMethodProperty)
   )
 
   lazy val testAgentSummaryData = AgentSummary(
-    incomeSource = Some(testIncomeSourceBusiness),
+    incomeSource = Some(testIncomeSourceBoth),
     otherIncome = Some(testOtherIncomeNo),
     matchTaxYear = Some(testMatchTaxYearYes),
     accountingPeriodPrior = None,
-    accountingPeriod = None,
+    accountingPeriodDate = testAccountingPeriod,
     businessName = Some(testBusinessName),
-    businessPhoneNumber = Some(testBusinessPhoneNumber),
-    businessAddress = Some(testAddress),
-    businessStartDate = Some(testBusinessStartDate),
     accountingMethod = Some(testAccountingMethod),
+    accountingMethodProperty = Some(testAccountingMethodProperty),
     terms = Some(true)
   )
 
