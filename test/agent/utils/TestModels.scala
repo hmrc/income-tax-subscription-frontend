@@ -17,11 +17,10 @@
 package agent.utils
 
 import _root_.agent.services.CacheConstants
-import agent.forms._
-import agent.models._
+import agent.models.AccountingPeriodPriorModel
 import core.models._
 import core.utils.Implicits
-import incometax.business.models.{AccountingMethodPropertyModel, AccountingPeriodModel}
+import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel, BusinessNameModel}
 import incometax.subscription.models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator

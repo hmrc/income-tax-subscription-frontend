@@ -707,6 +707,7 @@ agent.summary.other_income                                            = A oes ga
 agent.summary.accounting_period                                       = Dyddiadau cyfnod cyfrifyddu''ch cleient
 agent.summary.business_name                                           = Beth yw enw busnes eich cleient?
 agent.summary.income_type                                             = Dull cyfrifyddu ar gyfer ei fusnes hunangyflogedig
+agent.summary.income_type_property                                    = Dull cyfrifyddu ar gyfer ei fusnes eiddo
 agent.summary.income_type.cash                                        = Sail arian parod
 agent.summary.income_type.accruals                                    = Sail croniadau
 

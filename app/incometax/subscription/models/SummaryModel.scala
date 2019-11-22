@@ -32,7 +32,7 @@ sealed trait SummaryModel {
 
   def accountingPeriodPrior: Option[AccountingPeriodPriorModel]
 
-  def accountingPeriod: Option[AccountingPeriodModel]
+  def accountingPeriodDate: Option[AccountingPeriodModel]
 
   def businessName: Option[BusinessNameModel]
 
@@ -57,7 +57,7 @@ case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
                              otherIncome: Option[YesNo] = None,
                              matchTaxYear: Option[MatchTaxYearModel] = None,
                              accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
-                             accountingPeriod: Option[AccountingPeriodModel] = None,
+                             accountingPeriodDate: Option[AccountingPeriodModel] = None,
                              businessName: Option[BusinessNameModel] = None,
                              businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
                              businessAddress: Option[Address] = None,
@@ -77,7 +77,7 @@ case class AgentSummary(incomeSource: Option[IncomeSourceType] = None,
                         otherIncome: Option[YesNo] = None,
                         matchTaxYear: Option[MatchTaxYearModel] = None,
                         accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
-                        accountingPeriod: Option[AccountingPeriodModel] = None,
+                        accountingPeriodDate: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
                         businessAddress: Option[Address] = None,

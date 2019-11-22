@@ -41,8 +41,8 @@ class SubscriptionServiceSpec extends TestSubscriptionService
       val nino = TestModels.newNino
       val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
       request.nino mustBe nino
-      request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriod.get.startDate
-      request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriod.get.endDate
+      request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriodDate.get.startDate
+      request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriodDate.get.endDate
       request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
       request.incomeSource mustBe Both
       request.isAgent mustBe false
@@ -53,9 +53,9 @@ class SubscriptionServiceSpec extends TestSubscriptionService
       val nino = TestModels.newNino
       val request = TestSubscriptionService.buildRequest(nino, testSummaryData.copy(matchTaxYear = testMatchTaxYearYes), None)
       request.nino mustBe nino
-      request.accountingPeriodStart.get must not be testSummaryData.accountingPeriod.get.startDate
+      request.accountingPeriodStart.get must not be testSummaryData.accountingPeriodDate.get.startDate
       request.accountingPeriodStart.get mustBe AccountingPeriodUtil.getCurrentTaxYearStartDate
-      request.accountingPeriodEnd.get must not be testSummaryData.accountingPeriod.get.endDate
+      request.accountingPeriodEnd.get must not be testSummaryData.accountingPeriodDate.get.endDate
       request.accountingPeriodEnd.get mustBe AccountingPeriodUtil.getCurrentTaxYearEndDate
       request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
       request.incomeSource mustBe Both

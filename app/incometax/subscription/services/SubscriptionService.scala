@@ -46,13 +46,13 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
       (incomeSourceType, summaryData.matchTaxYear, summaryData.selectedTaxYear) match {
         case (Business, Some(MatchTaxYearModel(Yes)), Some(AccountingYearModel(Next)))=> Some(getNextTaxYear)
         case (Business | Both, Some(MatchTaxYearModel(Yes)), _) => Some(getCurrentTaxYear)
-        case (Business | Both, Some(MatchTaxYearModel(No)), _) => summaryData.accountingPeriod
+        case (Business | Both, Some(MatchTaxYearModel(No)), _) => summaryData.accountingPeriodDate
         case _ => None
       }
     } else {
       incomeSourceType match {
         case Property => None
-        case _ => summaryData.accountingPeriod
+        case _ => summaryData.accountingPeriodDate
       }
     }
 
