@@ -94,12 +94,12 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
     else {
       keystoreService.fetchAll() map { cacheMap =>
         (cacheMap.getIncomeSourceType(), cacheMap.getMatchTaxYear()) match {
+          case (_, Some(MatchTaxYearModel(No))) =>
+          incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
           case (Some(Business), _) if appConfig.whatTaxYearToSignUpEnabled =>
             incometax.business.controllers.routes.WhatYearToSignUpController.show().url
           case (_, Some(MatchTaxYearModel(Yes))) =>
             incometax.business.controllers.routes.MatchTaxYearController.show().url
-          case (_, Some(MatchTaxYearModel(No))) =>
-            incometax.business.controllers.routes.BusinessAccountingPeriodDateController.show().url
         }
       }
     }
