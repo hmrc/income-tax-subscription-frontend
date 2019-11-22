@@ -22,7 +22,7 @@ import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
 import agent.models._
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
 import core.models.{Accruals, Cash, No}
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.Both
@@ -77,6 +77,30 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
   }
 
   "POST /business/accounting-method" when {
+    "the property cash accruals feature switch is enabled and the user is in the both flow" when {
+      "an option is selected on the accounting method page" should {
+        "redirect the user to the property accounting method page" in {
+          val userInput = AccountingMethodModel(Cash)
+          enable(PropertyCashOrAccruals)
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
+          KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both)))
+
+          When("POST /business/accounting-method is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of check your answers")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(propertyAccountingMethodURI)
+          )
+
+          KeystoreStub.verifyKeyStoreSave(CacheConstants.AccountingMethod, userInput, Some(1))
+        }
+      }
+    }
     "the eligibility pages feature switch is enabled" should {
       "not in edit mode" should {
         "select the Cash radio button on the accounting method page" in {

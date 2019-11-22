@@ -17,14 +17,12 @@
 package agent.controllers
 
 import agent.audit.Logging
-import agent.models.{AccountingMethodModel, BusinessNameModel}
 import agent.services.CacheUtil._
 import agent.services.mocks._
 import agent.utils.TestConstants.{testNino, _}
 import agent.utils.TestModels
 import agent.utils.TestModels.testCacheMap
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
-import core.models.{Cash, No, Yes}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
 import incometax.subscription.models.{Both, Business, Property}
 import incometax.unauthorisedagent.services.mocks.MockSubscriptionStorePersistenceService
 import play.api.http.Status
@@ -45,6 +43,7 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(EligibilityPagesFeature)
+    disable(PropertyCashOrAccruals)
   }
 
   override val controllerName: String = "CheckYourAnswersController"
@@ -277,23 +276,41 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   }
 
   "The back url" should {
-    s"point to ${agent.controllers.business.routes.BusinessAccountingMethodController.show().url} on the business journey" in {
-      enable(EligibilityPagesFeature)
-      TestCheckYourAnswersController.backUrl(Some(Business))(fakeRequest) mustBe agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+    s"point to ${agent.controllers.business.routes.PropertyAccountingMethodController.show().url}" when {
+      "the property cash/accruals and the eligibility pages feature switches is enabled" when {
+        "on the property only journey" in {
+          enable(PropertyCashOrAccruals)
+          enable(EligibilityPagesFeature)
+          TestCheckYourAnswersController.backUrl(Some(Property))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
+        }
+        "on the property and business journey" in {
+          enable(PropertyCashOrAccruals)
+          enable(EligibilityPagesFeature)
+          TestCheckYourAnswersController.backUrl(Some(Both))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
+        }
+      }
     }
 
-    s"point to ${agent.controllers.business.routes.BusinessAccountingMethodController.show().url} on the both journey" in {
-      enable(EligibilityPagesFeature)
-      TestCheckYourAnswersController.backUrl(Some(Both))(fakeRequest) mustBe agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+    s"point to ${agent.controllers.business.routes.BusinessAccountingMethodController.show().url}" when {
+      "on the business journey" in {
+        enable(EligibilityPagesFeature)
+        TestCheckYourAnswersController.backUrl(Some(Business))(fakeRequest) mustBe agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+      }
+      "on the both journey" in {
+        enable(EligibilityPagesFeature)
+        TestCheckYourAnswersController.backUrl(Some(Both))(fakeRequest) mustBe agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+      }
     }
 
-    s"point to ${agent.controllers.routes.OtherIncomeErrorController.show().url} on the property journey" in {
+    s"point to ${agent.controllers.routes.IncomeSourceController.show().url} on the property journey" in {
       enable(EligibilityPagesFeature)
       TestCheckYourAnswersController.backUrl(Some(Property))(fakeRequest) mustBe agent.controllers.routes.IncomeSourceController.show().url
     }
+
     s"point to ${agent.controllers.routes.TermsController.show().url} when the eligibility pages feature switch is disabled" in {
       TestCheckYourAnswersController.backUrl(None)(fakeRequest) mustBe agent.controllers.routes.TermsController.show().url
     }
+
   }
 
   authorisationTests()

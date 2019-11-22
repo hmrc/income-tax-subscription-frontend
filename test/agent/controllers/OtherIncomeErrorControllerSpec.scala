@@ -20,13 +20,16 @@ import agent.audit.Logging
 import agent.forms.OtherIncomeForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
 import core.models.No
+import incometax.subscription.models.Property
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKeystoreService with FeatureSwitching {
 
@@ -40,6 +43,11 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
     mockAuthService,
     app.injector.instanceOf[Logging]
   )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(PropertyCashOrAccruals)
+  }
 
   "Calling the showOtherIncomeError action of the OtherIncomeErrorController" should {
 
@@ -59,20 +67,8 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
 
   "Calling the submitOtherIncomeError action of the OtherIncomeError controller with an authorised user" should {
 
-    def callSubmit = TestOtherIncomeErrorController.submit(subscriptionRequest
+    def callSubmit: Future[Result] = TestOtherIncomeErrorController.submit(subscriptionRequest
       .post(OtherIncomeForm.otherIncomeForm, No))
-
-    "return a redirect status (SEE_OTHER - 303)" in {
-
-      setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
-
-      val goodRequest = callSubmit
-
-      status(goodRequest) must be(Status.SEE_OTHER)
-
-      await(goodRequest)
-      verifyKeystore(fetchIncomeSource = 1)
-    }
 
     s"redirect to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the business journey" in {
 
@@ -80,10 +76,26 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
 
       val goodRequest = callSubmit
 
+      status(goodRequest) must be(Status.SEE_OTHER)
       redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)
+    }
+
+    s"redirect to ${business.routes.PropertyAccountingMethodController.show().url}" when {
+      "the user is on a property only journey and the property cash/accruals feature switch is enabled" in {
+        enable(PropertyCashOrAccruals)
+
+        setupMockKeystore(fetchIncomeSource = Property)
+
+        val goodRequest = await(callSubmit)
+
+        status(goodRequest) mustBe SEE_OTHER
+        redirectLocation(goodRequest) mustBe Some(business.routes.PropertyAccountingMethodController.show().url)
+
+        verifyKeystore(fetchIncomeSource = 1)
+      }
     }
 
     s"redirect to '${agent.controllers.routes.TermsController.show().url}' on the property journey" in {
@@ -92,6 +104,7 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
 
       val goodRequest = callSubmit
 
+      status(goodRequest) must be(Status.SEE_OTHER)
       redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.TermsController.show().url)
 
       await(goodRequest)
@@ -104,6 +117,7 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
 
       val goodRequest = callSubmit
 
+      status(goodRequest) must be(Status.SEE_OTHER)
       redirectLocation(goodRequest) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
 
       await(goodRequest)
@@ -117,6 +131,7 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
 
       val goodRequest = callSubmit
 
+      status(goodRequest) must be(Status.SEE_OTHER)
       redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
       await(goodRequest)

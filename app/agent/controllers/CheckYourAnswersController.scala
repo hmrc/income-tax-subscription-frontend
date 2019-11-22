@@ -22,10 +22,9 @@ import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
 import agent.common.Constants
 import agent.services.{ClientRelationshipService, KeystoreService, SubscriptionOrchestrationService}
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
-import core.models.{No, Yes, YesNo}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
 import core.services.AuthService
-import incometax.subscription.models.{Both, Business, IncomeSourceType, Property, SubscriptionSuccess}
+import incometax.subscription.models.{Both, Business, IncomeSourceType, SubscriptionSuccess}
 import incometax.unauthorisedagent.services.SubscriptionStorePersistenceService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
@@ -72,16 +71,27 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     }
 
   def backUrl(incomeSource: Option[IncomeSourceType])(implicit request: Request[_]): String = {
-    if (isEnabled(EligibilityPagesFeature))
-      incomeSource match {
-        case Some(Business) | Some(Both) =>
-          agent.controllers.business.routes.BusinessAccountingMethodController.show().url
-        case Some(Property) =>
-          agent.controllers.routes.IncomeSourceController.show().url
-        case None => throw new InternalServerException("User is missing income source type in keystore")
+    if (isEnabled(EligibilityPagesFeature)) {
+      if (isEnabled(PropertyCashOrAccruals)) {
+        incomeSource match {
+          case Some(Business) =>
+            agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+          case Some(_) =>
+            agent.controllers.business.routes.PropertyAccountingMethodController.show().url
+          case None => throw new InternalServerException("User is missing income source type in keystore")
+        }
+      } else {
+        incomeSource match {
+          case Some(Business) | Some(Both) =>
+            agent.controllers.business.routes.BusinessAccountingMethodController.show().url
+          case Some(_) =>
+            agent.controllers.routes.IncomeSourceController.show().url
+          case None => throw new InternalServerException("User is missing income source type in keystore")
+        }
       }
-    else
+    } else {
       agent.controllers.routes.TermsController.show().url
+    }
   }
 
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>
