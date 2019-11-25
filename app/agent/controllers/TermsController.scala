@@ -20,7 +20,7 @@ import agent.auth.AuthenticatedController
 import agent.forms.IncomeSourceForm
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{FeatureSwitching, PropertyCashOrAccruals}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
 import core.models.{No, Yes}
 import core.services.AuthService
 import core.utils.Implicits._
@@ -72,7 +72,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
     } else {
       keystoreService.fetchIncomeSource() flatMap {
         case Some(Business) => agent.controllers.business.routes.BusinessAccountingMethodController.show().url
-        case Some(Both | Property) if isEnabled(PropertyCashOrAccruals) => agent.controllers.business.routes.PropertyAccountingMethodController.show().url
+        case Some(Both | Property) if isEnabled(AgentPropertyCashOrAccruals) => agent.controllers.business.routes.PropertyAccountingMethodController.show().url
         case Some(Both) => agent.controllers.business.routes.BusinessAccountingMethodController.show().url
         case Some(Property) =>
           keystoreService.fetchOtherIncome() map {

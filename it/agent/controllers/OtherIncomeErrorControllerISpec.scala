@@ -20,7 +20,7 @@ import _root_.agent.helpers.ComponentSpecBase
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, AgentPropertyCashOrAccruals}
 import core.models.Yes
 import incometax.subscription.models.{Both, Business, Property}
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -30,7 +30,7 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase with FeatureSwit
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(PropertyCashOrAccruals)
+    disable(AgentPropertyCashOrAccruals)
     disable(EligibilityPagesFeature)
   }
 
@@ -103,7 +103,7 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase with FeatureSwit
 
       "select the Continue button on the error other income page whilst on Property journey" when {
         "the property cash accruals feature switch is enabled" in {
-          enable(PropertyCashOrAccruals)
+          enable(AgentPropertyCashOrAccruals)
 
           val keystoreIncomeSource = Property
           val keystoreIncomeOther = Yes

@@ -21,7 +21,7 @@ import agent.auth.AuthenticatedController
 import agent.forms.OtherIncomeForm
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.models.{No, Yes, YesNo}
 import core.services.AuthService
 import incometax.incomesource.services.CurrentTimeService
@@ -87,7 +87,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
           case Some(Business | Both) =>
             Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
           case Some(Property) =>
-            if (isEnabled(PropertyCashOrAccruals)) {
+            if (isEnabled(AgentPropertyCashOrAccruals)) {
               Redirect(agent.controllers.business.routes.PropertyAccountingMethodController.show())
             } else if (isEnabled(EligibilityPagesFeature)) {
               Redirect(agent.controllers.routes.CheckYourAnswersController.show())

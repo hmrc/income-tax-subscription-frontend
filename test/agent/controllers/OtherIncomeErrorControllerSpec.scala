@@ -20,7 +20,7 @@ import agent.audit.Logging
 import agent.forms.OtherIncomeForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.models.No
 import incometax.subscription.models.Property
 import org.jsoup.Jsoup
@@ -46,7 +46,7 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(PropertyCashOrAccruals)
+    disable(AgentPropertyCashOrAccruals)
   }
 
   "Calling the showOtherIncomeError action of the OtherIncomeErrorController" should {
@@ -85,7 +85,7 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
 
     s"redirect to ${business.routes.PropertyAccountingMethodController.show().url}" when {
       "the user is on a property only journey and the property cash/accruals feature switch is enabled" in {
-        enable(PropertyCashOrAccruals)
+        enable(AgentPropertyCashOrAccruals)
 
         setupMockKeystore(fetchIncomeSource = Property)
 
