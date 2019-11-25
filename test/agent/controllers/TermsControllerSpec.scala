@@ -18,7 +18,7 @@ package agent.controllers
 
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
-import core.config.featureswitch.{FeatureSwitching, PropertyCashOrAccruals}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
 import incometax.subscription.models.{Both, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -37,7 +37,7 @@ class TermsControllerSpec extends AgentControllerBaseSpec
   )
 
   override def beforeEach(): Unit = {
-    disable(PropertyCashOrAccruals)
+    disable(AgentPropertyCashOrAccruals)
     super.beforeEach()
   }
 
@@ -107,13 +107,13 @@ class TermsControllerSpec extends AgentControllerBaseSpec
       s"point to ${business.routes.PropertyAccountingMethodController.show().url}" when {
         "the property cash/accruals feature switch is enabled" when {
           "the user is on a property only flow" in {
-            enable(PropertyCashOrAccruals)
+            enable(AgentPropertyCashOrAccruals)
             setupMockKeystore(fetchIncomeSource = Property)
             await(TestTermsController.backUrl(editMode = false)(subscriptionRequest)) mustBe business.routes.PropertyAccountingMethodController.show().url
             verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
           }
           "the user is on a property and business flow" in {
-            enable(PropertyCashOrAccruals)
+            enable(AgentPropertyCashOrAccruals)
             setupMockKeystore(fetchIncomeSource = Both)
             await(TestTermsController.backUrl(editMode = false)(subscriptionRequest)) mustBe business.routes.PropertyAccountingMethodController.show().url
             verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)

@@ -22,7 +22,7 @@ import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
 import agent.models._
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.models.{Accruals, Cash, No}
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.Both
@@ -34,6 +34,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(EligibilityPagesFeature)
+    disable(AgentPropertyCashOrAccruals)
   }
 
   "GET /business/accounting-method" when {
@@ -81,7 +82,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       "an option is selected on the accounting method page" should {
         "redirect the user to the property accounting method page" in {
           val userInput = AccountingMethodModel(Cash)
-          enable(PropertyCashOrAccruals)
+          enable(AgentPropertyCashOrAccruals)
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()

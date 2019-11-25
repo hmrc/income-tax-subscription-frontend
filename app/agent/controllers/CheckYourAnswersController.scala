@@ -22,7 +22,7 @@ import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
 import agent.common.Constants
 import agent.services.{ClientRelationshipService, KeystoreService, SubscriptionOrchestrationService}
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.services.AuthService
 import incometax.subscription.models.{Both, Business, IncomeSourceType, SubscriptionSuccess}
 import incometax.unauthorisedagent.services.SubscriptionStorePersistenceService
@@ -72,7 +72,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
 
   def backUrl(incomeSource: Option[IncomeSourceType])(implicit request: Request[_]): String = {
     if (isEnabled(EligibilityPagesFeature)) {
-      if (isEnabled(PropertyCashOrAccruals)) {
+      if (isEnabled(AgentPropertyCashOrAccruals)) {
         incomeSource match {
           case Some(Business) =>
             agent.controllers.business.routes.BusinessAccountingMethodController.show().url

@@ -20,7 +20,7 @@ import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
 import agent.services.mocks.MockKeystoreService
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.models.Cash
 import incometax.subscription.models.Both
 import play.api.http.Status
@@ -35,7 +35,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(EligibilityPagesFeature)
-    disable(PropertyCashOrAccruals)
+    disable(AgentPropertyCashOrAccruals)
   }
 
   override val controllerName: String = "BusinessAccountingMethod"
@@ -76,7 +76,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         "the property cash/accruals feature switch is enabled and the user has both business and property income" in {
           setupMockKeystoreSaveFunctions()
           setupMockKeystore(fetchIncomeSource = Both)
-          enable(PropertyCashOrAccruals)
+          enable(AgentPropertyCashOrAccruals)
 
           val goodRequest = await(callSubmit(isEditMode = false))
 

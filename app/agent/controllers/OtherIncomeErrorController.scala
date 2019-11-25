@@ -20,7 +20,7 @@ import agent.audit.Logging
 import agent.auth.AuthenticatedController
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.services.AuthService
 import incometax.subscription.models.{Both, Business, Property}
 import javax.inject.{Inject, Singleton}
@@ -48,7 +48,7 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
         case Some(Business | Both) =>
           Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
         case Some(Property) =>
-          if (isEnabled(PropertyCashOrAccruals)) {
+          if (isEnabled(AgentPropertyCashOrAccruals)) {
             Redirect(agent.controllers.business.routes.PropertyAccountingMethodController.show())
           } else if (isEnabled(EligibilityPagesFeature)) {
             Redirect(agent.controllers.routes.CheckYourAnswersController.show())

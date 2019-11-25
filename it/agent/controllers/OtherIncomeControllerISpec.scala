@@ -21,7 +21,7 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, PropertyCashOrAccruals}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching, AgentPropertyCashOrAccruals}
 import core.models.{No, Yes}
 import incometax.subscription.models.{Both, Business, Property}
 import play.api.http.Status._
@@ -32,7 +32,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase with FeatureSwitching
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(EligibilityPagesFeature)
-    disable(PropertyCashOrAccruals)
+    disable(AgentPropertyCashOrAccruals)
   }
 
   "GET /income-other" when {
@@ -193,7 +193,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase with FeatureSwitching
       "select the No other income radio button on the other income page while on Property journey and the cash accruals property feature switch is enabled" in {
         val keystoreIncomeSource = Property
         val userInput = No
-        enable(PropertyCashOrAccruals)
+        enable(AgentPropertyCashOrAccruals)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
