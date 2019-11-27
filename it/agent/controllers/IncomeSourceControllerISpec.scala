@@ -21,11 +21,18 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
-import incometax.subscription.models.{Both, Business, Other, Property}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
+import incometax.subscription.models._
 import play.api.http.Status._
 import play.api.i18n.Messages
 
-class IncomeSourceControllerISpec extends ComponentSpecBase {
+class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EligibilityPagesFeature)
+    disable(AgentPropertyCashOrAccruals)
+  }
 
   "GET /income" when {
 
@@ -68,6 +75,160 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
   }
 
   "POST /income" when {
+
+    "the eligibility pages feature switch is enabled" when {
+
+      "not in edit mode" when {
+
+        "the user selects the Both income source option" in {
+          val userInput: IncomeSourceType = Both
+
+          Given("I setup the wiremock stubs and enable feature switches")
+          enable(EligibilityPagesFeature)
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+          When(s"POST ${routes.IncomeSourceController.submit()} is called")
+          val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+
+          Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(accountingPeriodPriorURI)
+          )
+        }
+
+        "the user selects the Business income source option" in {
+          val userInput: IncomeSourceType = Business
+
+          Given("I setup the wiremock stubs and enable feature switches")
+          enable(EligibilityPagesFeature)
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+          When(s"POST ${routes.IncomeSourceController.submit()} is called")
+          val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+
+          Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(accountingPeriodPriorURI)
+          )
+        }
+
+        "the user selects the Property income source option" when {
+
+          "the agent property cash or accruals feature switch is enabled" in {
+            val userInput: IncomeSourceType = Property
+
+            Given("I setup the wiremock stubs and enable feature switches")
+            enable(EligibilityPagesFeature)
+            enable(AgentPropertyCashOrAccruals)
+            AuthStub.stubAuthSuccess()
+            KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+            When(s"POST ${routes.IncomeSourceController.submit()} is called")
+            val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+
+            Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(propertyAccountingMethodURI)
+            )
+          }
+
+          "the agent property cash or accruals feature switch is disabled" in {
+            val userInput: IncomeSourceType = Property
+
+            Given("I setup the wiremock stubs and enable feature switches")
+            enable(EligibilityPagesFeature)
+            AuthStub.stubAuthSuccess()
+            KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+            When(s"POST ${routes.IncomeSourceController.submit()} is called")
+            val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
+
+            Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(checkYourAnswersURI)
+            )
+          }
+
+        }
+
+      }
+
+      "in edit mode" when {
+
+        "the user changes their income to Business" in {
+          val previousInput: IncomeSourceType = Both
+          val userInput: IncomeSourceType = Business
+
+          Given("I setup the wiremock stubs and enable feature switches")
+          enable(EligibilityPagesFeature)
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(previousInput)))
+          KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+          When(s"POST ${routes.IncomeSourceController.submit()} is called")
+          val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
+
+          Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(accountingPeriodPriorURI)
+          )
+        }
+
+        "the user changes their income to Property" when {
+
+          "the agent property cash or accruals feature switch is enabled" in {
+            val previousInput: IncomeSourceType = Both
+            val userInput: IncomeSourceType = Property
+
+            Given("I setup the wiremock stubs and enable feature switches")
+            enable(EligibilityPagesFeature)
+            enable(AgentPropertyCashOrAccruals)
+            AuthStub.stubAuthSuccess()
+            KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(previousInput)))
+            KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+            When(s"POST ${routes.IncomeSourceController.submit()} is called")
+            val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
+
+            Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(propertyAccountingMethodURI)
+            )
+          }
+
+          "the agent property cash or accruals feature switch is disabled" in {
+            val previousInput: IncomeSourceType = Both
+            val userInput: IncomeSourceType = Property
+
+            Given("I setup the wiremock stubs and enable feature switches")
+            enable(EligibilityPagesFeature)
+            AuthStub.stubAuthSuccess()
+            KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(previousInput)))
+            KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
+
+            When(s"POST ${routes.IncomeSourceController.submit()} is called")
+            val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
+
+            Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+            res should have(
+              httpStatus(SEE_OTHER),
+              redirectURI(checkYourAnswersURI)
+            )
+          }
+
+        }
+
+      }
+
+    }
 
     "not in edit mode" should {
       "select the Both income source radio button on the income source page" in {
@@ -152,7 +313,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase {
           errorDisplayed()
         )
       }
-      
+
     }
 
     "in edit mode" should {

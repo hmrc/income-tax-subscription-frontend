@@ -46,7 +46,7 @@ class SubscriptionStoreRetrievalService @Inject()(subscriptionStoreConnector: Su
   private def storeSubscriptionData(storedSubscription: StoredSubscription)(implicit hc: HeaderCarrier): Future[Option[StoredSubscription]] = {
     val incomeSource = storedSubscription.incomeSource
 
-    val otherIncome = storedSubscription.otherIncome match {
+    val otherIncome = storedSubscription.otherIncome map {
       case true => Yes
       case false => No
     }
@@ -62,7 +62,7 @@ class SubscriptionStoreRetrievalService @Inject()(subscriptionStoreConnector: Su
 
     for {
       _ <- keystoreService.saveIncomeSource(incomeSource)
-      _ <- keystoreService.saveOtherIncome(otherIncome)
+      _ <- otherIncome.fold(Future.successful(Unit))(keystoreService.saveOtherIncome(_) map (_ => Unit))
       _ <- accountingPeriod.fold(Future.successful(Unit))(keystoreService.saveAccountingPeriodDate(_) map (_ => Unit))
       _ <- businessName.fold(Future.successful(Unit))(keystoreService.saveBusinessName(_) map (_ => Unit))
       _ <- accountingMethod.fold(Future.successful(Unit))(keystoreService.saveAccountingMethod(_) map (_ => Unit))

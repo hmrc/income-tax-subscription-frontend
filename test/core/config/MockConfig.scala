@@ -109,6 +109,8 @@ trait MockConfig extends AppConfig {
 
   override lazy val incomeTaxEligibilityUrl: String = "/income-tax-subscription-incometax.eligibility"
 
+  override val incomeTaxEligibilityFrontendUrl: String = "/report-quarterly/income-and-expenses/sign-up/eligibility"
+
   override lazy val eligibilityFeatureSwitchUrl: String = s"$incomeTaxEligibilityUrl/test-only/feature-switch"
 
 }

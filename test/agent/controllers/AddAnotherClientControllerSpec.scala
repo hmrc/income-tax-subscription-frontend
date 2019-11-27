@@ -18,13 +18,19 @@ package agent.controllers
 
 import agent.audit.Logging
 import agent.services.mocks.MockKeystoreService
-import play.api.mvc.{Action, AnyContent}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HttpResponse, NotFoundException}
+import uk.gov.hmrc.http.HttpResponse
 
 
 class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService {
+  with MockKeystoreService with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EligibilityPagesFeature)
+  }
 
   override val controllerName: String = "addAnotherClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -39,48 +45,55 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     app.injector.instanceOf[Logging]
   )
 
-  "AddAnotherClientController.addAnother" should {
+  "AddAnotherClientController.addAnother" when {
 
-      lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue", ITSASessionKeys.UnauthorisedAgentKey -> "anyValue")
+    lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue", ITSASessionKeys.UnauthorisedAgentKey -> "anyValue")
 
-      def call = TestAddAnotherClientController.addAnother()(request)
+    def call = TestAddAnotherClientController.addAnother()(request)
 
-      s"redirect to ${agent.controllers.matching.routes.ClientDetailsController.show().url}" in {
+    "eligibility feature switch is enabled" should {
+
+      "redirect to the agent eligibility frontend terms page, clearing keystore and session values" in {
+        enable(EligibilityPagesFeature)
+
         setupMockKeystore(deleteAll = HttpResponse(OK))
 
-        val result = call
+        val result: Result = await(call)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(agent.controllers.matching.routes.ClientDetailsController.show().url)
-      }
-
-      "cleared the keystore" in {
-        setupMockKeystore(deleteAll = HttpResponse(OK))
-
-        val result = call
-
-        await(result)
-        verifyKeystore(deleteAll = 1)
-      }
-
-      s"removed the ${ITSASessionKeys.MTDITID} from session" in {
-        setupMockKeystore(deleteAll = HttpResponse(OK))
-
-        // test validity check
-        request.session.get(ITSASessionKeys.MTDITID) must not be None
-        request.session.get(ITSASessionKeys.JourneyStateKey) must not be None
-        request.session.get(ITSASessionKeys.UnauthorisedAgentKey) must not be None
-        request.session.get(ITSASessionKeys.UTR) must not be None
-        request.session.get(ITSASessionKeys.NINO) must not be None
-
-        val result = await(call)
+        redirectLocation(result) mustBe Some(s"${MockBaseControllerConfig.applicationConfig.incomeTaxEligibilityFrontendUrl}/client/other-income")
 
         result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
         result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
         result.session(request).get(ITSASessionKeys.UnauthorisedAgentKey) mustBe None
         result.session(request).get(ITSASessionKeys.UTR) mustBe None
         result.session(request).get(ITSASessionKeys.NINO) mustBe None
+
+        verifyKeystore(deleteAll = 1)
       }
+
+    }
+
+    "eligibility feature switch is disabled" should {
+
+      s"redirect to ${agent.controllers.matching.routes.ClientDetailsController.show().url}" in {
+        setupMockKeystore(deleteAll = HttpResponse(OK))
+
+        val result: Result = await(call)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(agent.controllers.matching.routes.ClientDetailsController.show().url)
+
+        result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
+        result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
+        result.session(request).get(ITSASessionKeys.UnauthorisedAgentKey) mustBe None
+        result.session(request).get(ITSASessionKeys.UTR) mustBe None
+        result.session(request).get(ITSASessionKeys.NINO) mustBe None
+
+        verifyKeystore(deleteAll = 1)
+      }
+
+    }
 
   }
 

@@ -204,6 +204,14 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "The back url is not in edit mode" when {
 
+      "the user has rental property and the eligibility pages feature switch is enabled" should {
+        s"return ${agent.controllers.routes.IncomeSourceController.show().url}" in {
+          enable(EligibilityPagesFeature)
+          setupMockKeystore(fetchAll = propertyOtherIncomeYes)
+          await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe agent.controllers.routes.IncomeSourceController.show().url
+        }
+      }
+
       "the user has rental property and has other income source" should {
         "redirect to Other Income Error page" in {
           setupMockKeystore(fetchAll = propertyOtherIncomeYes)

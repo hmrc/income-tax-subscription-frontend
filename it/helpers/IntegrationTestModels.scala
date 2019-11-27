@@ -182,7 +182,7 @@ object IntegrationTestModels {
   val testStoredSubscription = StoredSubscription(
     arn = testArn,
     incomeSource = Both,
-    otherIncome = false,
+    otherIncome = Some(false),
     currentPeriodIsPrior = Some(true),
     accountingPeriodStart = Some(testAccountingPeriod.startDate),
     accountingPeriodEnd = Some(testAccountingPeriod.endDate),

@@ -21,6 +21,7 @@ import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.models.{No, Yes, YesNo}
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -29,7 +30,12 @@ import play.api.test.Helpers.{contentAsString, _}
 
 import scala.concurrent.Future
 
-class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpec with MockKeystoreService {
+class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpec with MockKeystoreService with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EligibilityPagesFeature)
+  }
 
   override val controllerName: String = "BusinessAccountingPeriodPriorController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -46,6 +52,29 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
 
   // answer to other income is only significant for testing the backurl.
   val defaultOtherIncomeAnswer: YesNo = TestModels.testOtherIncomeNo
+
+  "The back url" when {
+    "the eligibility pages feature switch is enabled" should {
+      s"redirect to ${agent.controllers.routes.IncomeSourceController.show().url}" in {
+        enable(EligibilityPagesFeature)
+        await(TestAccountingPeriodPriorController.backUrl(subscriptionRequest)) mustBe agent.controllers.routes.IncomeSourceController.show().url
+      }
+    }
+    "the eligibility pages feature switch is disabled" when {
+      "the user answered 'Yes' to the other income question" should {
+        s"redirect to ${agent.controllers.routes.OtherIncomeErrorController.show().url}" in {
+          setupMockKeystore(fetchOtherIncome = Some(Yes))
+          await(TestAccountingPeriodPriorController.backUrl(subscriptionRequest)) mustBe agent.controllers.routes.OtherIncomeErrorController.show().url
+        }
+      }
+      "the user answered 'No' to the other income question" should {
+        s"redirect to ${agent.controllers.routes.OtherIncomeController.show().url}" in {
+          setupMockKeystore(fetchOtherIncome = Some(No))
+          await(TestAccountingPeriodPriorController.backUrl(subscriptionRequest)) mustBe agent.controllers.routes.OtherIncomeController.show().url
+        }
+      }
+    }
+  }
 
   "Calling the show action of the BusinessAccountingPeriodPriorController with an authorised user" should {
 
@@ -70,28 +99,6 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
       val document = Jsoup.parse(contentAsString(result))
       document.select("#back").attr("href") mustBe agent.controllers.routes.OtherIncomeController.show().url
     }
-  }
-
-  "The back url" should {
-
-    def result(choice: YesNo): Future[Result] = {
-      setupMockKeystore(
-        fetchAccountingPeriodPrior = None,
-        fetchOtherIncome = choice
-      )
-      TestAccountingPeriodPriorController.show(isEditMode = false)(subscriptionRequest)
-    }
-
-    s"When the user previously answered yes to otherIncome, it should point to '${agent.controllers.routes.OtherIncomeErrorController.show().url}'" in {
-      val document = Jsoup.parse(contentAsString(result(Yes)))
-      document.select("#back").attr("href") mustBe agent.controllers.routes.OtherIncomeErrorController.show().url
-    }
-
-    s"When the user previously answered no to otherIncome, it should point to '${agent.controllers.routes.OtherIncomeController.show().url}'" in {
-      val document = Jsoup.parse(contentAsString(result(No)))
-      document.select("#back").attr("href") mustBe agent.controllers.routes.OtherIncomeController.show().url
-    }
-
   }
 
   "Calling the submit action of the BusinessAccountingPeriodPriorController with an authorised user and valid submission" when {

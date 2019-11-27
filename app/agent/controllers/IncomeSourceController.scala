@@ -16,19 +16,20 @@
 
 package agent.controllers
 
-import javax.inject.{Inject, Singleton}
-
 import agent.auth.AuthenticatedController
 import agent.forms.IncomeSourceForm
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.services.AuthService
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.IncomeSourceType
+import incometax.subscription.models._
+import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
@@ -38,7 +39,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val keystoreService: KeystoreService,
                                        val authService: AuthService,
                                        val currentTimeService: CurrentTimeService
-                                      ) extends AuthenticatedController {
+                                      ) extends AuthenticatedController with FeatureSwitching {
 
   def view(incomeSourceForm: Form[IncomeSourceType], isEditMode: Boolean)(implicit request: Request[_]): Html =
     agent.views.html.income_source(
@@ -58,44 +59,42 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       IncomeSourceForm.incomeSourceForm.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
+        formWithErrors =>
+          Future.successful(BadRequest(view(incomeSourceForm = formWithErrors, isEditMode = isEditMode))),
         incomeSource => {
-          lazy val linearJourney: Future[Result] =
-            keystoreService.saveIncomeSource(incomeSource) map { _ =>
-              incomeSource.source match {
-                case IncomeSourceForm.option_business => business
-                case IncomeSourceForm.option_property => property
-                case IncomeSourceForm.option_both => both
-                case IncomeSourceForm.option_other => other
+          if (!isEditMode) {
+            saveIncomeSourceAndContinue(incomeSource)
+          } else {
+            keystoreService.fetchIncomeSource().flatMap { oldIncomeSource =>
+              if (oldIncomeSource.contains(incomeSource)) {
+                Future.successful(Redirect(routes.CheckYourAnswersController.show()))
+              } else {
+                saveIncomeSourceAndContinue(incomeSource)
               }
             }
-
-          if (!isEditMode)
-            linearJourney
-          else
-            (for {
-              oldIncomeSource <- keystoreService.fetchIncomeSource()
-            } yield {
-              // if what was persisted is the same as the new value then go straight back to summary
-              if (oldIncomeSource.fold(false)(i => i.source.equals(incomeSource.source)))
-                Future.successful(Redirect(agent.controllers.routes.CheckYourAnswersController.submit()))
-              else // otherwise go back to the linear journey
-                linearJourney
-            }).flatMap(x => x)
+          }
         }
       )
   }
 
-  def business(implicit request: Request[_]): Result =
-    Redirect(agent.controllers.routes.OtherIncomeController.show())
-
-  def property(implicit request: Request[_]): Result = Redirect(agent.controllers.routes.OtherIncomeController.show())
-
-  def both(implicit request: Request[_]): Result =
-    Redirect(agent.controllers.routes.OtherIncomeController.show())
-
-  def other(implicit request: Request[_]): Result =
-    Redirect(agent.controllers.routes.MainIncomeErrorController.show())
+  private def saveIncomeSourceAndContinue(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier): Future[Result] = {
+    keystoreService.saveIncomeSource(incomeSource) map { _ =>
+      incomeSource match {
+        case Business | Both if isEnabled(EligibilityPagesFeature) =>
+          Redirect(business.routes.BusinessAccountingPeriodPriorController.show())
+        case Property if isEnabled(EligibilityPagesFeature) =>
+          if (isEnabled(AgentPropertyCashOrAccruals)) {
+            Redirect(business.routes.PropertyAccountingMethodController.show())
+          } else {
+            Redirect(routes.CheckYourAnswersController.show())
+          }
+        case Business | Property | Both =>
+          Redirect(routes.OtherIncomeController.show())
+        case Other =>
+          Redirect(routes.MainIncomeErrorController.show())
+      }
+    }
+  }
 
   lazy val backUrl: String =
     agent.controllers.routes.CheckYourAnswersController.show().url
