@@ -50,7 +50,7 @@ object IntegrationTestModels {
     StoredSubscription(
       arn = testARN,
       incomeSource = Both,
-      otherIncome = false,
+      otherIncome = Some(false),
       currentPeriodIsPrior = Some(false),
       accountingPeriodStart = Some(testAccountingPeriod.startDate),
       accountingPeriodEnd = Some(testAccountingPeriod.endDate),

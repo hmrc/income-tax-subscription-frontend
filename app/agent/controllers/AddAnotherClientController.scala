@@ -17,15 +17,15 @@
 package agent.controllers
 
 import javax.inject.{Inject, Singleton}
-
 import agent.audit.Logging
 import agent.auth.{IncomeTaxAgentUser, StatelessController}
 import agent.services.KeystoreService
 import core.auth.AuthPredicate.AuthPredicate
 import core.config.BaseControllerConfig
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.services.AuthService
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 
 @Singleton
 class AddAnotherClientController @Inject()(override val baseConfig: BaseControllerConfig,
@@ -33,15 +33,23 @@ class AddAnotherClientController @Inject()(override val baseConfig: BaseControll
                                            keystore: KeystoreService,
                                            val authService: AuthService,
                                            logging: Logging
-                                          ) extends StatelessController {
+                                          ) extends StatelessController with FeatureSwitching {
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = agent.auth.AuthPredicates.defaultPredicates
+
+  private def redirectLocation: Result = {
+    if (isEnabled(EligibilityPagesFeature)) {
+      Redirect(s"${applicationConfig.incomeTaxEligibilityFrontendUrl}/client/other-income")
+    } else {
+      Redirect(agent.controllers.matching.routes.ClientDetailsController.show().url)
+    }
+  }
 
   def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user => {
       for {
         _ <- keystore.deleteAll()
-      } yield Redirect(agent.controllers.matching.routes.ClientDetailsController.show().url)
+      } yield redirectLocation
         .removingFromSession(ITSASessionKeys.JourneyStateKey)
         .removingFromSession(ITSASessionKeys.UnauthorisedAgentKey)
         .removingFromSession(ITSASessionKeys.clientData: _*)

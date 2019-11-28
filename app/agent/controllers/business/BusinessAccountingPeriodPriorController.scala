@@ -16,16 +16,16 @@
 
 package agent.controllers.business
 
-import javax.inject.{Inject, Singleton}
-
 import agent.auth.AuthenticatedController
 import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.models.{No, Yes}
 import core.services.AuthService
 import core.utils.Implicits._
+import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -38,7 +38,7 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
                                                         val messagesApi: MessagesApi,
                                                         val keystoreService: KeystoreService,
                                                         val authService: AuthService
-                                                       ) extends AuthenticatedController {
+                                                       ) extends AuthenticatedController with FeatureSwitching {
 
   def view(accountingPeriodPriorForm: Form[AccountingPeriodPriorModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] =
     backUrl.map { backUrl =>
@@ -82,9 +82,13 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
   def no(implicit request: Request[_]): Future[Result] = Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.show())
 
   def backUrl(implicit request: Request[_]): Future[String] = {
-    keystoreService.fetchOtherIncome().map {
-      case Some(Yes) => agent.controllers.routes.OtherIncomeErrorController.show().url
-      case _ => agent.controllers.routes.OtherIncomeController.show().url
+    if (isEnabled(EligibilityPagesFeature)) {
+      Future.successful(agent.controllers.routes.IncomeSourceController.show().url)
+    } else {
+      keystoreService.fetchOtherIncome().map {
+        case Some(Yes) => agent.controllers.routes.OtherIncomeErrorController.show().url
+        case _ => agent.controllers.routes.OtherIncomeController.show().url
+      }
     }
   }
 

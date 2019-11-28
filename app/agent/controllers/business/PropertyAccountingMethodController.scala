@@ -89,6 +89,7 @@ class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControlle
       keystoreService.fetchAll() map {
         case None => agent.controllers.routes.IncomeSourceController.show().url
         case Some(cacheMap) => (cacheMap.getIncomeSource(), cacheMap.getOtherIncome()) match {
+          case (Some(Property), _) if isEnabled(EligibilityPagesFeature) => agent.controllers.routes.IncomeSourceController.show().url
           case (Some(Property), Some(Yes)) => agent.controllers.routes.OtherIncomeErrorController.show().url
           case (Some(Property), Some(No)) => agent.controllers.routes.OtherIncomeController.show().url
           case (Some(Both), _) => agent.controllers.business.routes.BusinessAccountingMethodController.show().url

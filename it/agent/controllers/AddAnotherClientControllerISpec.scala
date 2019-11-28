@@ -18,14 +18,46 @@ package agent.controllers
 
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import play.api.http.Status.{NOT_FOUND, SEE_OTHER}
 
 
-class AddAnotherClientControllerISpec extends ComponentSpecBase {
+class AddAnotherClientControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EligibilityPagesFeature)
+  }
 
   "GET /add-another" when {
 
-    "the session marked the journey as complete" should {
+    "the eligibility pages feature switch is enabled" should {
+      s"clear the keystore and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
+        Given("I setup the wiremock stubs and feature switch is enabled")
+        enable(EligibilityPagesFeature)
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreDelete()
+
+        When("I call GET /add-another")
+        val res = IncomeTaxSubscriptionFrontend.getAddAnotherClient(hasSubmitted = true)
+        val expectedRedirect: String = s"$mockUrl/report-quarterly/income-and-expenses/sign-up/eligibility/client/other-income"
+
+        Then(s"The result should have a status of SEE_OTHER and redirect to '$expectedRedirect'")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(expectedRedirect)
+        )
+
+        val cookie = SessionCookieCrumbler.getSessionMap(res)
+        cookie.keys should not contain ITSASessionKeys.MTDITID
+        cookie.keys should not contain ITSASessionKeys.JourneyStateKey
+        cookie.keys should not contain ITSASessionKeys.UnauthorisedAgentKey
+
+        KeystoreStub.verifyKeyStoreDelete(Some(1))
+      }
+    }
+
+    "the eligibility pages feature switch is disabled" should {
       s"clear the keystore and ${ITSASessionKeys.MTDITID} & ${ITSASessionKeys.JourneyStateKey} session variables" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()

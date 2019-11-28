@@ -55,7 +55,7 @@ class SubscriptionStorePersistenceService @Inject()(subscriptionStoreConnector: 
       otherIncome.map {
         case Yes => true
         case No => false
-      }.get,
+      },
       accountingPeriodPrior.map {
         case AccountingPeriodPriorModel(Yes) => true
         case AccountingPeriodPriorModel(No) => false

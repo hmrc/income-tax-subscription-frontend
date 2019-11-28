@@ -22,7 +22,7 @@ import play.api.libs.json.Json
 
 case class StoredSubscription(arn: String,
                               incomeSource: IncomeSourceType,
-                              otherIncome: Boolean,
+                              otherIncome: Option[Boolean],
                               currentPeriodIsPrior: Option[Boolean] = None,
                               accountingPeriodStart: Option[DateModel] = None,
                               accountingPeriodEnd: Option[DateModel] = None,
