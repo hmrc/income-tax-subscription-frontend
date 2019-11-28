@@ -251,7 +251,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override lazy val incomeTaxEligibilityUrl: String = s"${baseUrl("income-tax-subscription-eligibility")}/income-tax-subscription-eligibility"
 
   override val incomeTaxEligibilityFrontendUrl: String = {
-    s"${baseUrl("income-tax-subscription-eligibility-frontend")}/report-quarterly/income-and-expenses/sign-up/eligibility"
+    s"${loadConfig("income-tax-subscription-eligibility-frontend.url")}/report-quarterly/income-and-expenses/sign-up/eligibility"
   }
 
   override lazy val eligibilityFeatureSwitchUrl: String = s"$incomeTaxEligibilityUrl/test-only/feature-switch"
