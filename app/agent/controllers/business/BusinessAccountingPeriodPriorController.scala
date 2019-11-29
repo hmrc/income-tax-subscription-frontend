@@ -83,7 +83,7 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
 
   def backUrl(implicit request: Request[_]): Future[String] = {
     if (isEnabled(EligibilityPagesFeature)) {
-      Future.successful(agent.controllers.routes.IncomeSourceController.show().url)
+      Future.successful(agent.controllers.business.routes.BusinessNameController.show().url)
     } else {
       keystoreService.fetchOtherIncome().map {
         case Some(Yes) => agent.controllers.routes.OtherIncomeErrorController.show().url

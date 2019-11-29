@@ -17,7 +17,7 @@
 package agent.controllers.business
 
 import _root_.agent.forms.IncomeSourceForm
-import _root_.agent.helpers.IntegrationTestConstants.{businessAccountingMethodURI, checkYourAnswersURI}
+import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
@@ -84,10 +84,10 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         When("POST /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.submitBusinessName(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of business accounting method")
+        Then("Should return a SEE_OTHER with a redirect location of business accounting period prior")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(businessAccountingMethodURI)
+          redirectURI(accountingPeriodPriorURI)
         )
       }
 

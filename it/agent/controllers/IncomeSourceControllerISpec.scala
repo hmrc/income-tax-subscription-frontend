@@ -91,10 +91,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           When(s"POST ${routes.IncomeSourceController.submit()} is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
 
-          Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+          Then(s"Should return $SEE_OTHER with a redirect location of business name")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(accountingPeriodPriorURI)
+            redirectURI(businessNameURI)
           )
         }
 
@@ -109,10 +109,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           When(s"POST ${routes.IncomeSourceController.submit()} is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
 
-          Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+          Then(s"Should return $SEE_OTHER with a redirect location of business name")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(accountingPeriodPriorURI)
+            redirectURI(businessNameURI)
           )
         }
 
@@ -174,10 +174,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           When(s"POST ${routes.IncomeSourceController.submit()} is called")
           val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
 
-          Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+          Then(s"Should return $SEE_OTHER with a redirect location of business name")
           res should have(
             httpStatus(SEE_OTHER),
-            redirectURI(accountingPeriodPriorURI)
+            redirectURI(businessNameURI)
           )
         }
 
@@ -241,10 +241,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of other income")
+        Then("Should return a SEE_OTHER with a redirect location of business name")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(otherIncomeURI)
+          redirectURI(businessNameURI)
         )
       }
 
@@ -258,10 +258,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of other income")
+        Then("Should return a SEE_OTHER with a redirect location of business name")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(otherIncomeURI)
+          redirectURI(businessNameURI)
         )
       }
 
@@ -275,10 +275,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of other income")
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(otherIncomeURI)
+          redirectURI(checkYourAnswersURI)
         )
       }
 
@@ -386,10 +386,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of income other")
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(otherIncomeURI)
+          redirectURI(checkYourAnswersURI)
         )
       }
 
@@ -405,10 +405,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of income other")
+        Then("Should return a SEE_OTHER with a redirect location of business name")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(otherIncomeURI)
+          redirectURI(businessNameURI)
         )
       }
 
@@ -424,10 +424,10 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         When("POST /income is called")
         val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of income other")
+        Then("Should return a SEE_OTHER with a redirect location of business name")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(otherIncomeURI)
+          redirectURI(businessNameURI)
         )
       }
 

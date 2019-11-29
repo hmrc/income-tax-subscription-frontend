@@ -81,6 +81,6 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
     if (isEditMode)
       agent.controllers.routes.CheckYourAnswersController.show().url
     else
-      agent.controllers.business.routes.BusinessNameController.show().url
+      agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
 
 }

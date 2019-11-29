@@ -80,16 +80,14 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
   private def saveIncomeSourceAndContinue(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier): Future[Result] = {
     keystoreService.saveIncomeSource(incomeSource) map { _ =>
       incomeSource match {
-        case Business | Both if isEnabled(EligibilityPagesFeature) =>
-          Redirect(business.routes.BusinessAccountingPeriodPriorController.show())
-        case Property if isEnabled(EligibilityPagesFeature) =>
+        case Business | Both =>
+          Redirect(business.routes.BusinessNameController.show())
+        case Property =>
           if (isEnabled(AgentPropertyCashOrAccruals)) {
             Redirect(business.routes.PropertyAccountingMethodController.show())
           } else {
             Redirect(routes.CheckYourAnswersController.show())
           }
-        case Business | Property | Both =>
-          Redirect(routes.OtherIncomeController.show())
         case Other =>
           Redirect(routes.MainIncomeErrorController.show())
       }

@@ -145,7 +145,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   "The back url" when {
     "not in edit mode" should {
       s"point to ${agent.controllers.business.routes.BusinessNameController.show().url}" in {
-        TestBusinessAccountingMethodController.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessNameController.show().url
+        TestBusinessAccountingMethodController.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
       }
     }
     "in edit mode" should {

@@ -46,6 +46,17 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
     mockCurrentTimeService
   )
 
+  "The back url for BusinessNameController" should {
+
+    "return the url for check your answers if in edit mode" in {
+      TestBusinessNameController.backUrl(true) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
+    }
+
+    "return the url for income source if not in edit mode" in {
+      TestBusinessNameController.backUrl(false) mustBe agent.controllers.routes.IncomeSourceController.show().url
+    }
+  }
+
   "Calling the showBusinessName action of the BusinessNameController with an authorised user" should {
 
     lazy val result = TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
@@ -84,12 +95,12 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
       }
 
-      s"redirect to '${agent.controllers.business.routes.BusinessAccountingMethodController.show().url}'" in {
+      s"redirect to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingMethodController.show().url)
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
@@ -138,9 +149,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
     "in edit mode" should {
       s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
         TestBusinessNameController.backUrl(
-          isEditMode = true,
-          testAccountingPeriod,
-          Business
+          isEditMode = true
         ) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
       }
     }
