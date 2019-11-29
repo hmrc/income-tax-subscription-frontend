@@ -74,12 +74,7 @@ class TermsController @Inject()(val baseConfig: BaseControllerConfig,
         case Some(Business) => agent.controllers.business.routes.BusinessAccountingMethodController.show().url
         case Some(Both | Property) if isEnabled(AgentPropertyCashOrAccruals) => agent.controllers.business.routes.PropertyAccountingMethodController.show().url
         case Some(Both) => agent.controllers.business.routes.BusinessAccountingMethodController.show().url
-        case Some(Property) =>
-          keystoreService.fetchOtherIncome() map {
-            case Some(Yes) => agent.controllers.routes.OtherIncomeErrorController.show().url
-            case Some(No) => agent.controllers.routes.OtherIncomeController.show().url
-            case _ => throw new InternalServerException(s"Internal Server Error - TermsController.backUrl, no other income answer")
-          }
+        case Some(Property) => agent.controllers.routes.IncomeSourceController.show().url
         case _ => throw new InternalServerException(s"Internal Server Error - TermsController.backUrl, no income source retrieve from Keystore")
       }
     }

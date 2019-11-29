@@ -57,7 +57,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
     "the eligibility pages feature switch is enabled" should {
       s"redirect to ${agent.controllers.routes.IncomeSourceController.show().url}" in {
         enable(EligibilityPagesFeature)
-        await(TestAccountingPeriodPriorController.backUrl(subscriptionRequest)) mustBe agent.controllers.routes.IncomeSourceController.show().url
+        await(TestAccountingPeriodPriorController.backUrl(subscriptionRequest)) mustBe agent.controllers.business.routes.BusinessNameController.show().url
       }
     }
     "the eligibility pages feature switch is disabled" when {

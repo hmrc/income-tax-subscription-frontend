@@ -106,7 +106,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
                       Redirect(agent.controllers.routes.CheckYourAnswersController.show())
                     }
                   } else {
-                    Redirect(agent.controllers.business.routes.BusinessNameController.show())
+                    Redirect(agent.controllers.business.routes.BusinessAccountingMethodController.show())
                   }
                 }
               } else {

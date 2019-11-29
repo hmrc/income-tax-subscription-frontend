@@ -117,7 +117,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
           val goodRequest = await(callShow(isEditMode = false))
 
           status(goodRequest) mustBe SEE_OTHER
-          redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.show().url)
+          redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingMethodController.show().url)
           verifyKeystore(saveAccountingPeriodDate = 1, saveTerms = 0)
         }
       }
@@ -134,7 +134,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
           val goodRequest = await(callShow(isEditMode = false))
 
           status(goodRequest) mustBe SEE_OTHER
-          redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessNameController.show().url)
+          redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingMethodController.show().url)
           verifyKeystore(saveAccountingPeriodDate = 1, saveTerms = 1)
         }
       }

@@ -133,26 +133,14 @@ class TermsControllerSpec extends AgentControllerBaseSpec
         verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 0)
       }
 
-      s"point to ${agent.controllers.routes.OtherIncomeErrorController.show().url} on the property journey if they answered yes to other incomes" in {
+      s"point to ${agent.controllers.routes.IncomeSourceController.show().url} on the property journey if they answered yes to other incomes" in {
         setupMockKeystore(
-          fetchIncomeSource = TestModels.testIncomeSourceProperty,
-          fetchOtherIncome = TestModels.testOtherIncomeYes
+          fetchIncomeSource = TestModels.testIncomeSourceProperty
         )
-        await(TestTermsController.backUrl(editMode = false)(FakeRequest())) mustBe agent.controllers.routes.OtherIncomeErrorController.show().url
-        verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
-      }
-
-      s"point to ${agent.controllers.routes.OtherIncomeController.show().url} on the property journey if they answered no to other incomes" in {
-        setupMockKeystore(
-          fetchIncomeSource = TestModels.testIncomeSourceProperty,
-          fetchOtherIncome = TestModels.testOtherIncomeNo
-        )
-        await(TestTermsController.backUrl(editMode = false)(FakeRequest())) mustBe agent.controllers.routes.OtherIncomeController.show().url
-        verifyKeystore(fetchIncomeSource = 1, fetchOtherIncome = 1)
+        await(TestTermsController.backUrl(editMode = false)(FakeRequest())) mustBe agent.controllers.routes.IncomeSourceController.show().url
+        verifyKeystore(fetchIncomeSource = 1)
       }
     }
-
   }
-
   authorisationTests()
 }

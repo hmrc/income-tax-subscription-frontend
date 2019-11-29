@@ -49,7 +49,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
       businessNameForm = businessNameForm,
       postAction = agent.controllers.business.routes.BusinessNameController.submit(editMode = isEditMode),
       isEditMode,
-      backUrl = backUrl(isEditMode, accountingPeriod, incomeSource)
+      backUrl = backUrl(isEditMode)
     )
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
@@ -80,18 +80,14 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
             if (isEditMode)
               Redirect(agent.controllers.routes.CheckYourAnswersController.show())
             else
-              Redirect(agent.controllers.business.routes.BusinessAccountingMethodController.show())
+              Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
             )
         }
       )
   }
 
-  def backUrl(isEditMode: Boolean, accountingPeriodModel: Option[AccountingPeriodModel], incomeSource: IncomeSourceType): String = {
-    (incomeSource, accountingPeriodModel) match {
-      case _ if isEditMode =>
-        agent.controllers.routes.CheckYourAnswersController.show().url
-      case _ =>
-        agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
-    }
+  def backUrl(isEditMode: Boolean): String = {
+    if (isEditMode) agent.controllers.routes.CheckYourAnswersController.show().url
+    else agent.controllers.routes.IncomeSourceController.show().url
   }
 }
