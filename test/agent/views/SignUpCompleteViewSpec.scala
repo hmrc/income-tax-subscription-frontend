@@ -66,37 +66,37 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
 
     "have a 'What happens next' section" which {
 
-      s"has the section heading '${MessageLookup.SignUpComplete.whatHappensNext.heading}'" in {
-        document.select("#whatHappensNext h2").text() mustBe MessageLookup.SignUpComplete.whatHappensNext.heading
+      s"has the section heading '${MessageLookup.SignUpComplete.whatNext.heading}'" in {
+        document.select("#whatNext h2").text() mustBe MessageLookup.SignUpComplete.whatNext.heading
       }
 
-      s"has a paragraph stating complete steps '${MessageLookup.SignUpComplete.whatHappensNext.para1}'" in {
-        document.select("#whatHappensNext p").get(0).text() mustBe MessageLookup.SignUpComplete.whatHappensNext.para1
+      s"has a paragraph stating complete steps '${MessageLookup.SignUpComplete.whatNext.para1}'" in {
+        document.select("#whatNext p").get(0).text() mustBe MessageLookup.SignUpComplete.whatNext.para1
       }
 
-      s"has an initial numeric point '${MessageLookup.SignUpComplete.whatHappensNext.number1}'" in {
-        document.select("#whatHappensNext li").get(0).text() mustBe MessageLookup.SignUpComplete.whatHappensNext.number1
-        document.select("#whatHappensNext li").get(0).select("a").attr("href") mustBe appConfig.softwareUrl
+      s"has an initial numeric point '${MessageLookup.SignUpComplete.whatNext.number1}'" in {
+        document.select("#whatNext li").get(0).text() mustBe MessageLookup.SignUpComplete.whatNext.number1
+        document.select("#whatNext li").get(0).select("a").attr("href") mustBe appConfig.softwareUrl
       }
 
-      s"has a 2nd numeric point '${MessageLookup.SignUpComplete.whatHappensNext.number2}'" in {
-        document.select("#whatHappensNext li").get(1).text() mustBe MessageLookup.SignUpComplete.whatHappensNext.number2
+      s"has a 2nd numeric point '${MessageLookup.SignUpComplete.whatNext.number2}'" in {
+        document.select("#whatNext li").get(1).text() mustBe MessageLookup.SignUpComplete.whatNext.number2
       }
 
-      s"has a 3rd numeric point '${MessageLookup.SignUpComplete.whatHappensNext.number3}'" in {
-        document.select("#whatHappensNext li").get(2).text() mustBe MessageLookup.SignUpComplete.whatHappensNext.number3
+      s"has a 3rd numeric point '${MessageLookup.SignUpComplete.whatNext.number3}'" in {
+        document.select("#whatNext li").get(2).text() mustBe MessageLookup.SignUpComplete.whatNext.number3
       }
 
-      s"has a 4th numeric point '${MessageLookup.SignUpComplete.whatHappensNext.number4}'" in {
-        document.select("#whatHappensNext li").get(3).text() mustBe MessageLookup.SignUpComplete.whatHappensNext.number4
+      s"has a 4th numeric point '${MessageLookup.SignUpComplete.whatNext.number4}'" in {
+        document.select("#whatNext li").get(3).text() mustBe MessageLookup.SignUpComplete.whatNext.number4
       }
 
-      s"has a 5th numeric point '${MessageLookup.SignUpComplete.whatHappensNext.number5}'" in {
-        document.select("#whatHappensNext li").get(4).text() mustBe MessageLookup.SignUpComplete.whatHappensNext.number5
+      s"has a 5th numeric point '${MessageLookup.SignUpComplete.whatNext.number5}'" in {
+        document.select("#whatNext li").get(4).text() mustBe MessageLookup.SignUpComplete.whatNext.number5
       }
 
-      s"has a paragraph stating Income Tax Estimate '${MessageLookup.SignUpComplete.whatHappensNext.para2}'" in {
-        document.select("#whatHappensNext p").get(1).text() mustBe MessageLookup.SignUpComplete.whatHappensNext.para2
+      s"has a paragraph stating Income Tax Estimate '${MessageLookup.SignUpComplete.whatNext.para2}'" in {
+        document.select("#whatNext p").get(1).text() mustBe MessageLookup.SignUpComplete.whatNext.para2
       }
 
     }
