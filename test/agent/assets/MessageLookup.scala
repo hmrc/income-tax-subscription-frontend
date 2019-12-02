@@ -254,19 +254,19 @@ object MessageLookup {
   }
 
   object SignUpComplete {
-    val title = "Sign up complete"
+    val title = "You have signed up your client for the Use software to send Income Tax updates pilot"
     val heading: String = title
 
-    object whatHappensNext {
-      val heading = "What happens next"
-      val para1 = "Either you or your client need to complete the steps below. If you will both use software, it is important to choose packages that can interact with each other."
+    object whatNext {
+      val heading = "What you need to do next"
+      val para1 = "Either you or your client must complete the steps below. If you both use software, it's important to choose packages that can interact with each other."
       val linkText = "Choose relevant software (opens in a new window)"
       val number1 = s"$linkText if you haven't already."
       val number2 = "Allow your software to interact with HMRC."
-      val number3 = "Add any income and expenses that your client has already received or paid out."
-      val number4 = "Continue to record your client's income and expenses using software, then send a report to HMRC at least every 3 months."
-      val number5 = "Send your client's final report by 31 January. You can add any other income sources, allowances or reliefs in this report."
-      val para2 = "After your client has sent a report they will get an Income Tax estimate. They can see what they owe for the tax year after they've sent their final report."
+      val number3 = "Add all income and expenses your client has already received or paid out from the start of their tax year into the software."
+      val number4 = "Continue to record your client's income and expenses using software and send a quarterly report to HMRC."
+      val number5 = "Send your client's final report by 31 January after the end of the tax year you're signing them up for."
+      val para2 = "After you've sent a report, your client will get an Income Tax estimate. They can see what they owe for the tax year after you’ve sent their final report."
     }
 
   }

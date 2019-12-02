@@ -125,7 +125,7 @@ business.match_tax_year.line_2.registration                     = Gallwch wneud 
 # What year to sign up
 business.what_year_to_sign_up.title.signup                      = Pa flwyddyn dreth rydych am gofrestru ar ei chyfer?
 business.what_year_to_sign_up.heading.signup                    = Pa flwyddyn dreth rydych am gofrestru ar ei chyfer?
-business.what_year_to_sign_up.line_1.signup                     = Gallwch gofrestru ar gyfer y flwyddyn hon neu’r nesaf.
+business.what_year_to_sign_up.line_1.signup                     = Gallwch gofrestru ar gyfer y flwyddyn hon neu''r nesaf.
 business.what_year_to_sign_up.example_line_1.signup             = Er enghraifft, os yw''ch cyfnod cyfrifyddu yn rhedeg o 6 Ebrill {0} i 5 Ebrill {1}, byddwch yn cofrestru ar gyfer y flwyddyn bresennol {0} i {1}.
 business.what_year_to_sign_up.example_line_2.signup             = Os yw''ch cyfnod cyfrifyddu yn rhedeg o 6 Ebrill {0} i 5 Ebrill {1}, byddwch yn cofrestru ar gyfer y flwyddyn nesaf {0} i {1}.
 business.what_year_to_sign_up.option_1.signup                   = Y flwyddyn dreth bresennol ({0} i {1})
@@ -712,16 +712,16 @@ agent.summary.income_type.cash                                        = Sail ari
 agent.summary.income_type.accruals                                    = Sail croniadau
 
 ## Sign Up Complete page ##
-agent.sign-up-complete.title                                          = Rydych wedi gorffen cofrestru
-agent.sign-up-complete.heading                                        = Rydych wedi gorffen cofrestru
-agent.sign-up-complete.whatHappensNext.heading                        = Yr hyn sy''n digwydd nesaf
-agent.sign-up-complete.whatHappensNext.para1                          = Rhaid i chi neu''ch cleient gwblhau''r camau isod. Os bydd y ddau ohonoch yn defnyddio meddalwedd, mae''n bwysig eich bod yn dewis pecynau sy''n gallu rhyngweithio gyda''i gilydd.
-agent.sign-up-complete.whatHappensNext.number1                        = <a id="accountingSoftware" href="{0}">Dewiswch feddalwedd perthnasol (yn agor ffenestr newydd)</a> os nad ydych wedi gwneud hynny eisoes.
-agent.sign-up-complete.whatHappensNext.number2                        = Caniatau i''ch meddalwedd ryngweithio â CThEM.
-agent.sign-up-complete.whatHappensNext.number3                        = Ychwanegwch unrhyw incwm y mae''ch cleient eisoes wedi''i gael neu dreuliau y mae eisoes wedi''u talu.
-agent.sign-up-complete.whatHappensNext.number4                        = Parhewch i gofnodi incwm a threuliau''ch cleient drwy ddefnyddio meddalwedd cyfrifyddu, ac anfonwch adroddiad i CThEM o leiaf unwaith bob 3 mis.
-agent.sign-up-complete.whatHappensNext.number5                        = Anfonwch adroddiad terfynol eich cleient erbyn 31 Ionawr. Gallwch ychwanegu unrhyw ffynonellau incwm, lwfansau neu ryddhad arall yn yr adroddiad hwn.
-agent.sign-up-complete.whatHappensNext.para2                          = Ar ôl i''ch cleient anfon adroddiad, bydd yn cael amcangyfrif o''i Dreth Incwm. Gall weld yr hyn sydd arno ar gyfer y flwyddyn dreth ar ôl iddo anfon yr adroddiad terfynol.
+agent.sign-up-complete.title                                          = Rydych wedi cofrestru eich cleient ar gyfer y peilot ''Defnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm''
+agent.sign-up-complete.heading                                        = Rydych wedi cofrestru eich cleient ar gyfer y peilot ''Defnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm''
+agent.sign-up-complete.whatNext.heading                               = Yr hyn y mae angen i chi ei wneud nesaf
+agent.sign-up-complete.whatNext.para1                                 = Rhaid i chi neu''ch cleient gwblhau''r camau isod. Os yw''r ddau ohonoch yn defnyddio''r feddalwedd, mae''n bwysig dewis pecynnau sydd yn gallu rhyngweithio a''i gilydd.
+agent.sign-up-complete.whatNext.number1                               = <a id="accountingSoftware" href="{0}">Dewiswch feddalwedd perthnasol (yn agor ffenestr newydd)</a> os nad ydych wedi gwneud hynny eisoes.
+agent.sign-up-complete.whatNext.number2                               = Caniatewch i''ch meddalwedd ryngweithio â CThEM.
+agent.sign-up-complete.whatNext.number3                               = Ychwanegwch holl incwm a threuliau mae eich cleient eisoes wedi''u cael neu wedi''u talu allan ers dechrau ei flwyddyn dreth i mewn i''r feddalwedd.
+agent.sign-up-complete.whatNext.number4                               = Parhewch i gofnodi incwm a threuliau''ch cleient drwy ddefnyddio meddalwedd, ac anfonwch adroddiad chwarterol i CThEM.
+agent.sign-up-complete.whatNext.number5                               = Anfonwch adroddiad terfynol eich cleient erbyn 31 Ionawr ar ôl diwedd y flwyddyn dreth yr ydych yn ei gofrestru ar ei chyfer.
+agent.sign-up-complete.whatNext.para2                                 = Wedi i chi anfon adroddiad, bydd eich cleient yn cael amcangyfrif o Dreth Incwm. Bydd yn gallu gweld yr hyn sy''n ddyledus ganddo ar gyfer y flwyddyn dreth wedi i chi anfon ei adroddiad terfynol.
 agent.sign-up-complete.add_another                                    = Cofrestru cleient arall
 
 ## Unauthorised Agent Confirmation page ##
