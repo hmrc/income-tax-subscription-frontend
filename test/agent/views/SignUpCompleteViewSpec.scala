@@ -46,7 +46,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
     "have a successful transaction confirmation banner" which {
 
       "has a turquoise background" in {
-        document.select("#confirmation-heading").hasClass("transaction-banner--complete") mustBe true
+        document.select("#confirmation-heading").hasClass("govuk-box-highlight") mustBe true
       }
 
       s"has a heading (H1)" which {
@@ -57,8 +57,8 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
           heading.text() mustBe MessageLookup.SignUpComplete.heading
         }
 
-        "has the class 'transaction-banner__heading'" in {
-          heading.hasClass("transaction-banner__heading") mustBe true
+        "has the class 'heading-large'" in {
+          heading.hasClass("heading-large") mustBe true
         }
       }
 
