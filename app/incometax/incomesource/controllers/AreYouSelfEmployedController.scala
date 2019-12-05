@@ -75,20 +75,20 @@ class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfi
             val incomeSourceType = IncomeSourceType(rentUkProperty, Some(areYouSelfEmployed))
             lazy val linearJourney: Result =
               incomeSourceType match {
-                case Business | Both if appConfig.eligibilityPagesEnabled =>
+                case Some(Business | Both) if appConfig.eligibilityPagesEnabled =>
                   Redirect(incometax.business.controllers.routes.BusinessNameController.show())
-                case Property if appConfig.eligibilityPagesEnabled => {
+                case Some(Property) if appConfig.eligibilityPagesEnabled => {
                   if (appConfig.propertyCashOrAccrualsEnabled)
                     Redirect(incometax.business.controllers.routes.PropertyAccountingMethodController.show())
                   else Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
                 }
-                case Business | Property | Both =>
+                case Some(Business | Property | Both) =>
                   Redirect(incometax.incomesource.controllers.routes.OtherIncomeController.show())
-                case Other =>
+                case _ =>
                   Redirect(incometax.incomesource.controllers.routes.CannotSignUpController.show())
               }
             cache.getIncomeSourceType() match {
-              case Some(`incomeSourceType`) if isEditMode => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.submit())
+              case `incomeSourceType` if isEditMode => Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.submit())
               case _ => linearJourney
             }
           }

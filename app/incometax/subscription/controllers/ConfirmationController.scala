@@ -25,7 +25,6 @@ import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import incometax.subscription.models.Other
 import incometax.subscription.views.html.sign_up_complete
 import incometax.unauthorisedagent.views.html.unauthorised_agent_confirmation
 import play.api.i18n.MessagesApi
@@ -57,7 +56,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
     import core.services.CacheUtil._
     keystoreService.fetchAll() map (_.getSummary()) map { summary =>
       summary.incomeSource match {
-        case Some(incomeSource) if incomeSource != Other =>
+        case Some(_) =>
           Ok(sign_up_complete(journeyDuration, summary))
         case _ =>
           throw new InternalServerException("Confirmation Controller, call to show confirmation with invalid income source")
@@ -69,7 +68,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
     import agent.services.CacheUtil._
     keystoreService.fetchAll() map (_.getSummary()) map { summary =>
       summary.incomeSource match {
-        case Some(incomeSource) if incomeSource != Other =>
+        case Some(incomeSource) =>
           Ok(unauthorised_agent_confirmation(journeyDuration, incomeSource))
         case _ =>
           throw new InternalServerException("Confirmation Controller, call to show confirmation with invalid income source")

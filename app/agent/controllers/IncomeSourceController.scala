@@ -88,8 +88,6 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
           } else {
             Redirect(routes.CheckYourAnswersController.show())
           }
-        case Other =>
-          Redirect(routes.MainIncomeErrorController.show())
       }
     }
   }

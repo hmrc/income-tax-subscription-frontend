@@ -202,18 +202,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           await(goodRequest)
           verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
         }
-
-        s"return a SEE OTHER (303) for 'Other' and goto ${agent.controllers.routes.MainIncomeErrorController.show().url}" in {
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callSubmit(Other, isEditMode = false)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe agent.controllers.routes.MainIncomeErrorController.show().url
-
-          await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
-        }
       }
 
       "it is in edit mode and user's selection has not changed" should {
@@ -245,18 +233,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
           val goodRequest = callSubmit(Both, isEditMode = true)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe agent.controllers.routes.CheckYourAnswersController.show().url
-
-          await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 0)
-        }
-
-        s"return a SEE OTHER (303) for 'Other' and goto ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
-          setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceOther)
-
-          val goodRequest = callSubmit(Other, isEditMode = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe agent.controllers.routes.CheckYourAnswersController.show().url
@@ -298,18 +274,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessNameController.show().url
-
-          await(goodRequest)
-          verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)
-        }
-
-        s"return a SEE OTHER (303) for 'Other' and goto ${agent.controllers.routes.MainIncomeErrorController.show().url}" in {
-          setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
-
-          val goodRequest = callSubmit(Other, isEditMode = true)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get mustBe agent.controllers.routes.MainIncomeErrorController.show().url
 
           await(goodRequest)
           verifyKeystore(fetchIncomeSource = 1, saveIncomeSource = 1)

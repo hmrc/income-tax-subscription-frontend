@@ -17,7 +17,7 @@
 package incometax.subscription.models
 
 import core.models.{No, Yes}
-import incometax.incomesource.models.{RentUkPropertyModel, AreYouSelfEmployedModel}
+import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
 
 sealed trait IncomeSourceType {
   val source: String
@@ -35,10 +35,6 @@ case object Both extends IncomeSourceType {
   override val source = IncomeSourceType.both
 }
 
-case object Other extends IncomeSourceType {
-  override val source = IncomeSourceType.other
-}
-
 case object Incomplete
 
 
@@ -49,13 +45,11 @@ object IncomeSourceType {
   val business = "Business"
   val property = "Property"
   val both = "Both"
-  val other = "Other"
 
   private val reader: Reads[IncomeSourceType] = __.read[String].map {
     case `business` => Business
     case `property` => Property
     case `both` => Both
-    case `other` => Other
   }
 
   private val writer: Writes[IncomeSourceType] = Writes[IncomeSourceType](incomeSourceType =>
@@ -63,7 +57,6 @@ object IncomeSourceType {
       case Business => business
       case Property => property
       case Both => both
-      case Other => other
     })
   )
 
@@ -73,11 +66,10 @@ object IncomeSourceType {
     case `business` => Business
     case `property` => Property
     case `both` => Both
-    case `other` => Other
   }
 
-  def apply(rentUkPropertyModel: RentUkPropertyModel, areYouSelfEmployedModel: Option[AreYouSelfEmployedModel]): IncomeSourceType =
-    from(rentUkPropertyModel, areYouSelfEmployedModel).get
+  def apply(rentUkPropertyModel: RentUkPropertyModel, areYouSelfEmployedModel: Option[AreYouSelfEmployedModel]): Option[IncomeSourceType] =
+    from(rentUkPropertyModel, areYouSelfEmployedModel)
 
   def from(rentUkPropertyModel: RentUkPropertyModel, areYouSelfEmployedModel: Option[AreYouSelfEmployedModel]): Option[IncomeSourceType] =
     (rentUkPropertyModel, areYouSelfEmployedModel) match {
@@ -85,7 +77,6 @@ object IncomeSourceType {
       case (RentUkPropertyModel(Yes, Some(No)), Some(AreYouSelfEmployedModel(Yes))) => Some(Both)
       case (RentUkPropertyModel(Yes, Some(No)), Some(AreYouSelfEmployedModel(No))) => Some(Property)
       case (RentUkPropertyModel(No, _), Some(AreYouSelfEmployedModel(Yes))) => Some(Business)
-      case (RentUkPropertyModel(No, _), Some(AreYouSelfEmployedModel(No))) => Some(Other)
       case _ => None
     }
 
@@ -93,7 +84,7 @@ object IncomeSourceType {
     case Business => Some(business)
     case Property => Some(property)
     case Both => Some(both)
-    case Other => Some(other)
+
   }
 
 }
