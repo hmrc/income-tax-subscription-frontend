@@ -606,6 +606,11 @@ agent.business.register_next_accounting_period.heading                 = You can
 agent.business.register_next_accounting_period.line_1                  = You can sign your client up now, but you won''t be able to send any reports until their next accounting period begins.
 agent.business.register_next_accounting_period.button                  = Continue to sign up
 
+## Match Tax Year page
+agent.business.match_tax_year.heading                                 = Does your client''s accounting period match the tax year?
+agent.business.match_tax_year.para1                                   = The tax year runs from 6 April to 5 April.
+agent.business.match_tax_year.para2                                   = Your client''s accounting period is the same unless you have previously chosen different dates.
+
 ## Business Accounting Period page
 agent.accounting_period.title                                         = What accounting period are you signing your client up for?
 agent.accounting_period.heading                                       = What accounting period are you signing your client up for?
@@ -759,6 +764,9 @@ agent.error.income_source.invalid                                     = Select a
 
 agent.error.business.sole_trader.empty                                = You must select an option to continue
 agent.error.business.sole_trader.invalid                              = You must select an option to continue
+
+agent.error.match_tax_year.empty                                      = Select yes if your client''s accounting period matches the tax year
+agent.error.match_tax_year.invalid                                    = Select yes if your client''s accounting period matches the tax year
 
 agent.error.start_date.empty                                          = Enter a start date
 agent.error.start_date.invalid_chars                                  = Enter a start date using numbers 0 to 9
