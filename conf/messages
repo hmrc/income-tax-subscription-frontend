@@ -589,7 +589,7 @@ agent.income_source.heading                                           = Select y
 agent.income_source.business                                          = Sole trader business
 agent.income_source.property                                          = Renting out a UK property
 agent.income_source.both                                              = Their sole trader business and renting out a UK property
-agent.income_source.other                                             = Other income sources
+
 
 # Property income page
 agent.property.income.title                                           = How much was your income from property this year?
@@ -830,15 +830,6 @@ agent.not-eligible.signout                                            = I don''t
 agent.no-nino.title                                                   = Your client can''t use this service yet
 agent.no-nino.heading                                                 = Your client can''t use this service yet
 agent.no-nino.line_1                                                  = You can sign up later in the year when this service is available to you.
-
-## Main income error page ##
-agent.main-income-error.title                                         = You can''t sign up your client yet
-agent.main-income-error.heading                                       = You can''t sign up your client yet
-agent.main-income-error.para1                                         = At the moment, you can only sign up if your client is one of the following:
-agent.main-income-error.para2                                         = You''ll be able to use this reporting method for your client later in the year.
-agent.main-income-error.bullet1                                       = a sole trader with income from one business
-agent.main-income-error.bullet2                                       = someone who rents out a UK property
-agent.main-income-error.bullet3                                       = a sole trader with income from one business and they rent out a UK property
 
 ## Other income error page ##
 agent.other-income-error.title                                        = You can use software to report your client''s Income Tax

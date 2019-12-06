@@ -282,23 +282,6 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
         )
       }
 
-      "select the Other income source radio button on the income source page" in {
-        val userInput = Other
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, userInput)
-
-        When("POST /income is called")
-        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of error main income")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(errorMainIncomeURI)
-        )
-      }
-
       "select no income source option on the income source page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -430,26 +413,6 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
           redirectURI(businessNameURI)
         )
       }
-
-      "simulate changing income source from business to other when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = Business
-        val userInput = Other
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(keystoreIncomeSource)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.IncomeSource, keystoreIncomeSource)
-
-        When("POST /income is called")
-        val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of error main income")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(errorMainIncomeURI)
-        )
-      }
-
     }
   }
 }

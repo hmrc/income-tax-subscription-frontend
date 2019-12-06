@@ -108,8 +108,6 @@ object TestModels extends Implicits {
 
   lazy val testIncomeSourceBusiness = Business
 
-  lazy val testIncomeSourceOther = Other
-
   lazy val testIncomeSourceProperty = Property
 
   lazy val testIncomeSourceBoth = Both

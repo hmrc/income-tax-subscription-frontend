@@ -590,7 +590,7 @@ agent.income_source.heading                                           = Dewiswch
 agent.income_source.business                                          = Busnes fel unig fasnachwr
 agent.income_source.property                                          = Gosod eiddo yn y DU
 agent.income_source.both                                              = Ei fusnes fel unig fasnachwr a gosod eiddo yn y DU
-agent.income_source.other                                             = Ffynonellau eraill o incwm
+
 
 # Property income page
 agent.property.income.title                                           = Faint oedd eich incwm o eiddo y flwyddyn hon?
@@ -830,15 +830,6 @@ agent.not-eligible.signout                                            = Dydw i d
 agent.no-nino.title                                                   = Ni all eich cleient ddefnyddio''r gwasanaeth hwn ar hyn o bryd
 agent.no-nino.heading                                                 = Ni all eich cleient ddefnyddio''r gwasanaeth hwn ar hyn o bryd
 agent.no-nino.line_1                                                  = Gallwch gofrestru nes ymlaen yn y flwyddyn pan fydd y gwasanaeth hwn ar gael i chi.
-
-## Main income error page ##
-agent.main-income-error.title                                         = Ni allwch gofrestru''ch cleient ar hyn o bryd
-agent.main-income-error.heading                                       = Ni allwch gofrestru''ch cleient ar hyn o bryd
-agent.main-income-error.para1                                         = Ar hyn o bryd, gallwch ond gofrestru os yw''ch cleient yn un o''r canlynol:
-agent.main-income-error.para2                                         = Byddwch yn gallu defnyddio''r dull hysbysu hwn ar gyfer eich cleient nes ymlaen yn y flwyddyn.
-agent.main-income-error.bullet1                                       = unig fasnachwr sydd ag incwm o un busnes
-agent.main-income-error.bullet2                                       = rhywun sy''n gosod eiddo yn y DU
-agent.main-income-error.bullet3                                       = unig fasnachwr sydd ag incwm o un busnes ac mae''n gosod eiddo yn y DU
 
 ## Other income error page ##
 agent.other-income-error.title                                        = Gallwch ddefnyddio meddalwedd i roi gwybod am Dreth Incwm eich cleient

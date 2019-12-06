@@ -29,9 +29,6 @@ POST        /terms                                  agent.controllers.TermsContr
 GET         /income-other                           agent.controllers.OtherIncomeController.show(editMode: Boolean ?= false)
 POST        /income-other                           agent.controllers.OtherIncomeController.submit(editMode: Boolean ?= false)
 
-# Main Income Error Routes
-GET         /error/main-income                      agent.controllers.MainIncomeErrorController.show
-
 # Other Income Error Routes
 GET         /error/other-income                     agent.controllers.OtherIncomeErrorController.show
 POST        /error/other-income                     agent.controllers.OtherIncomeErrorController.submit

@@ -24,7 +24,6 @@ import core.config.featureswitch.FeatureSwitching
 import core.controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
-import incometax.subscription.models.Other
 import org.jsoup.Jsoup
 import org.scalatest.Matchers._
 import play.api.Play
@@ -80,20 +79,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
       "fail if no income source is stored" in {
         mockAuthEnrolled()
         setupMockKeystore(fetchAll = TestModels.emptyCacheMap)
-        val result: Future[Result] = TestConfirmationController.show(
-          subscriptionRequest.addStartTime(startTime)
-        )
-
-        intercept[InternalServerException](await(result))
-      }
-
-      "fail if \"Other\" income source is stored" in {
-        mockAuthEnrolled()
-        setupMockKeystore(fetchAll = TestModels.testCacheMapCustom(
-          incomeSource = Some(Other),
-          areYouSelfEmployed = None,
-          rentUkProperty = None
-        ))
         val result: Future[Result] = TestConfirmationController.show(
           subscriptionRequest.addStartTime(startTime)
         )

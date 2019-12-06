@@ -28,7 +28,6 @@ object IncomeSourceForm {
   val option_business = IncomeSourceType.business
   val option_property = IncomeSourceType.property
   val option_both = IncomeSourceType.both
-  val option_other = IncomeSourceType.other
 
   val incomeSourceError: Seq[FormError] = ErrorMessageFactory.formError(incomeSource, "agent.error.income_source.invalid")
 
@@ -41,7 +40,6 @@ object IncomeSourceForm {
         case Some(`business`) => Right(Business)
         case Some(`property`) => Right(Property)
         case Some(`both`) => Right(Both)
-        case Some(`other`) => Right(Other)
         case _ => Left(incomeSourceError)
       }
     }
@@ -51,7 +49,6 @@ object IncomeSourceForm {
         case Business => business
         case Property => property
         case Both => both
-        case Other => other
       }
 
       Map(key -> stringValue)
