@@ -31,6 +31,7 @@ object IntegrationTestModels {
 
   val testStartDate = _root_.helpers.IntegrationTestModels.testStartDate
   val testEndDate = _root_.helpers.IntegrationTestModels.testEndDate
+  val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(No)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(Yes)
   val testAccountingPeriod: AccountingPeriodModel =
@@ -62,6 +63,7 @@ object IntegrationTestModels {
     keystoreData(
       incomeSource = Some(testIncomeSourceBoth),
       otherIncome = Some(testOtherIncomeNo),
+      matchTaxYear = Some(testMatchTaxYearYes),
       accountingPeriodPrior = Some(testAccountingPeriodPriorCurrent),
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
@@ -73,6 +75,7 @@ object IntegrationTestModels {
   def keystoreData(
                     incomeSource: Option[IncomeSourceType] = None,
                     otherIncome: Option[YesNo] = None,
+                    matchTaxYear: Option[MatchTaxYearModel] = None,
                     accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                     accountingPeriodDate: Option[AccountingPeriodModel] = None,
                     businessName: Option[BusinessNameModel] = None,
@@ -87,7 +90,8 @@ object IntegrationTestModels {
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       accountingMethodProperty.map(model => AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model)) ++
-      terms.map(model => Terms -> Json.toJson(model))
+      terms.map(model => Terms -> Json.toJson(model)) ++
+      matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model))
   }
 
   lazy val testIncomeSourceBusiness = Business

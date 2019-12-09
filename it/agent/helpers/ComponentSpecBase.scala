@@ -255,6 +255,8 @@ trait ComponentSpecBase extends UnitSpec
 
     def exitSurvey(origin: String): WSResponse = get(s"/exit-survey?origin=$origin")
 
+    def matchTaxYear(): WSResponse = get("/business/match-to-tax-year")
+
     def businessAccountingPeriodPrior(): WSResponse = get("/business/accounting-period-prior")
 
     def businessAccountingPeriodDates(): WSResponse = get("/business/accounting-period-dates")
@@ -303,6 +305,15 @@ trait ComponentSpecBase extends UnitSpec
         request.fold(Map.empty[String, Seq[String]])(
           model =>
             OtherIncomeForm.otherIncomeForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
+        )
+      )
+    }
+
+    def submitMatchTaxYear(inEditMode: Boolean, request: Option[MatchTaxYearModel]): WSResponse = {
+      val uri = s"/business/match-to-tax-year?editMode=$inEditMode"
+      post(uri)(
+        request.fold(Map.empty[String, Seq[String]])(
+          model => MatchTaxYearForm.matchTaxYearForm.fill(model).data.map { case (k, v) => (k, Seq(v))}
         )
       )
     }

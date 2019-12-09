@@ -607,6 +607,11 @@ agent.business.register_next_accounting_period.heading                 = Ni allw
 agent.business.register_next_accounting_period.line_1                  = Gallwch gofrestru''ch cleient nawr, ond ni fyddwch yn gallu anfon adroddiadau hyd nes i''w gyfnod cyfrifyddu nesaf ddechrau.
 agent.business.register_next_accounting_period.button                  = Parhau i gofrestru
 
+## Match Tax Year page
+agent.business.match_tax_year.heading                                 = A yw cyfnod cyfrifyddu eich cleient yn paru â''r flwyddyn dreth?
+agent.business.match_tax_year.para1                                   = Mae''r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill.
+agent.business.match_tax_year.para2                                   = Mae cyfnod cyfrifyddu eich cleient yr un peth oni bai eich bod eisoes wedi dewis dyddiadau gwahanol.
+
 ## Business Accounting Period page
 agent.accounting_period.title                                         = Ar gyfer pa gyfnod cyfrifyddu rydych yn cofrestru''ch cleient ar ei chyfer?
 agent.accounting_period.heading                                       = Ar gyfer pa gyfnod cyfrifyddu rydych yn cofrestru''ch cleient ar ei chyfer?
@@ -758,6 +763,9 @@ agent.error.income_source.invalid                                     = Dewiswch
 
 agent.error.business.sole_trader.empty                                = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 agent.error.business.sole_trader.invalid                              = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
+
+agent.error.match_tax_year.empty                                      = Dewiswch ''iawn'' os yw cyfnod cyfrifyddu eich cleient yn paru â''r flwyddyn dreth
+agent.error.match_tax_year.invalid                                    = Dewiswch ''iawn'' os yw cyfnod cyfrifyddu eich cleient yn paru â''r flwyddyn dreth
 
 agent.error.start_date.empty                                          = Nodwch ddyddiad dechrau
 agent.error.start_date.invalid_chars                                  = Nodwch ddyddiad dechrau gan ddefnyddio''r rhifau 0 i 9

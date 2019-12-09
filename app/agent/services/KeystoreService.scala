@@ -16,12 +16,11 @@
 
 package agent.services
 
-import javax.inject._
-import agent.models._
+import agent.models.{AccountingMethodPropertyModel, _}
 import core.models.YesNo
-import agent.models.AccountingMethodPropertyModel
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.IncomeSourceType
+import javax.inject._
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -55,6 +54,12 @@ class KeystoreService @Inject()(val session: SessionCache)(implicit ec: Executio
 
   def saveBusinessName(businessName: BusinessNameModel)(implicit hc: HeaderCarrier, reads: Reads[BusinessNameModel]): FC =
     save[BusinessNameModel](BusinessName, businessName)
+
+  def fetchMatchTaxYear()(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FO[MatchTaxYearModel] =
+    fetch[MatchTaxYearModel](MatchTaxYear)
+
+  def saveMatchTaxYear(accountingPeriod: MatchTaxYearModel)(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FC =
+    save[MatchTaxYearModel](MatchTaxYear, accountingPeriod)
 
   def fetchAccountingPeriodDate()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FO[AccountingPeriodModel] =
     fetch[AccountingPeriodModel](AccountingPeriodDate)

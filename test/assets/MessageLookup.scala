@@ -482,6 +482,11 @@ object MessageLookup {
 
   object Error {
 
+    object MatchTaxYear {
+      val empty = "Select yes if your client's accounting period matches the tax year"
+      val invalid = "Select yes if your client's accounting period matches the tax year"
+    }
+
     object AccountingYear {
       val empty = "You must select an option to continue"
       val invalid = "You must select an option to continue"

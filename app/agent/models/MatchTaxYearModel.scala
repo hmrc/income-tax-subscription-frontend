@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package agent.services
+package agent.models
 
-object CacheConstants {
-  val IncomeSource = "IncomeSource"
-  val PropertyIncome = "PropertyIncome"
-  val SoleTrader = "SoleTrader"
-  val AccountingPeriodPrior = "AccountingPeriodPrior"
-  val MatchTaxYear = "MatchTaxYear"
-  val RegisterNextAccountingPeriod = "RegisterNextAccountingPeriod"
-  val BusinessName = "BusinessName"
-  val AccountingPeriodDate = "AccountingPeriodDate"
-  val AccountingMethod = "AccountingMethod"
-  val AccountingMethodProperty = "PropertyAccountingMethod"
-  val Terms = "Terms"
-  val OtherIncome = "OtherIncome"
-  val MtditId = "MtditId"
+import core.models.YesNo
+import play.api.libs.json.{Json, OFormat}
+
+case class MatchTaxYearModel(matchTaxYear: YesNo)
+
+object MatchTaxYearModel {
+  implicit val format: OFormat[MatchTaxYearModel] = Json.format[MatchTaxYearModel]
 }
