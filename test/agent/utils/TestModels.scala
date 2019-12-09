@@ -20,7 +20,7 @@ import _root_.agent.services.CacheConstants
 import agent.models.AccountingPeriodPriorModel
 import core.models._
 import core.utils.Implicits
-import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel, BusinessNameModel}
+import incometax.business.models._
 import incometax.subscription.models._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
@@ -39,6 +39,7 @@ object TestModels extends Implicits {
 
   val testStartDate = core.utils.TestModels.testStartDate
   val testEndDate = core.utils.TestModels.testEndDate
+  val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(No)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(Yes)
   val testAccountingPeriod: AccountingPeriodModel =
@@ -60,6 +61,7 @@ object TestModels extends Implicits {
       incomeSource = testIncomeSourceBoth,
       otherIncome = testOtherIncomeNo,
       accountingPeriodPrior = testAccountingPeriodPriorCurrent,
+      matchTaxYear = testMatchTaxYearNo,
       accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
       accountingMethod = testAccountingMethod,
@@ -70,6 +72,7 @@ object TestModels extends Implicits {
                           incomeSource: Option[IncomeSourceType] = testIncomeSourceBoth,
                           otherIncome: Option[YesNo] = testOtherIncomeNo,
                           accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
+                          matchTaxYear: MatchTaxYearModel = testMatchTaxYearNo,
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                           businessName: Option[BusinessNameModel] = testBusinessName,
                           accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
@@ -79,6 +82,7 @@ object TestModels extends Implicits {
       incomeSource = incomeSource,
       otherIncome = otherIncome,
       accountingPeriodPrior = accountingPeriodPrior,
+      matchTaxYear = matchTaxYear,
       accountingPeriodDate = accountingPeriodDate,
       businessName = businessName,
       accountingMethod = accountingMethod,
@@ -88,6 +92,7 @@ object TestModels extends Implicits {
   def testCacheMap(incomeSource: Option[IncomeSourceType] = None,
                    otherIncome: Option[YesNo] = None,
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
+                   matchTaxYear: Option[MatchTaxYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
@@ -98,6 +103,7 @@ object TestModels extends Implicits {
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceType.format.writes(model))) ++
       otherIncome.fold(emptyMap)(model => Map(OtherIncome -> YesNo.format.writes(model))) ++
       accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
+      matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++

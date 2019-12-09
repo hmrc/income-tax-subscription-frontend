@@ -20,7 +20,7 @@ package agent.services
 import agent.models.AccountingPeriodPriorModel
 import core.config.AppConfig
 import core.models.YesNo
-import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, AccountingMethodPropertyModel, BusinessNameModel}
+import incometax.business.models._
 import incometax.subscription.models._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -37,6 +37,8 @@ object CacheUtil {
 
     def getAccountingPeriodPrior()(implicit read: Reads[AccountingPeriodPriorModel]): Option[AccountingPeriodPriorModel] = cacheMap.getEntry(AccountingPeriodPrior)
 
+    def getMatchTaxYear()(implicit read: Reads[MatchTaxYearModel]): Option[MatchTaxYearModel] = cacheMap.getEntry(MatchTaxYear)
+
     def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriodDate)
 
     def getBusinessName()(implicit read: Reads[BusinessNameModel]): Option[BusinessNameModel] = cacheMap.getEntry(BusinessName)
@@ -49,7 +51,6 @@ object CacheUtil {
 
     def getSummary()(implicit appConfig: AppConfig): AgentSummary = {
       getIncomeSource() match {
-
         case Some(Property) =>
           AgentSummary(
             incomeSource = getIncomeSource(),
@@ -57,12 +58,12 @@ object CacheUtil {
             accountingMethodProperty = getAccountingMethodProperty(),
             terms = getTerms()
           )
-
         case Some(Business) =>
           AgentSummary(
             incomeSource = getIncomeSource(),
             otherIncome = getOtherIncome(),
             accountingPeriodPrior = getAccountingPeriodPrior(),
+            matchTaxYear = getMatchTaxYear(),
             accountingPeriodDate = getAccountingPeriodDate(),
             businessName = getBusinessName(),
             accountingMethod = getAccountingMethod(),
@@ -73,6 +74,7 @@ object CacheUtil {
             incomeSource = getIncomeSource(),
             otherIncome = getOtherIncome(),
             accountingPeriodPrior = getAccountingPeriodPrior(),
+            matchTaxYear = getMatchTaxYear(),
             accountingPeriodDate = getAccountingPeriodDate(),
             businessName = getBusinessName(),
             accountingMethod = getAccountingMethod(),

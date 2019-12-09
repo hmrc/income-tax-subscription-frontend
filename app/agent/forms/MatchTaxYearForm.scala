@@ -16,9 +16,9 @@
 
 package agent.forms
 
-import agent.models.MatchTaxYearModel
 import core.forms.submapping.YesNoMapping
 import core.forms.validation.ErrorMessageFactory
+import incometax.business.models.MatchTaxYearModel
 import play.api.data.Form
 import play.api.data.Forms._
 

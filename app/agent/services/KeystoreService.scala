@@ -18,7 +18,7 @@ package agent.services
 
 import agent.models.{AccountingMethodPropertyModel, _}
 import core.models.YesNo
-import incometax.business.models.AccountingPeriodModel
+import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.models.IncomeSourceType
 import javax.inject._
 import play.api.libs.json.{Reads, Writes}

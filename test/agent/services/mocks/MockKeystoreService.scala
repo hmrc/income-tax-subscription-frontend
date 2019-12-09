@@ -20,7 +20,7 @@ import _root_.agent.services.KeystoreService
 import _root_.core.utils.MockTrait
 import agent.models._
 import core.models.YesNo
-import incometax.business.models.AccountingPeriodModel
+import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.models.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._

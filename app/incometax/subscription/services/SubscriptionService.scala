@@ -19,7 +19,7 @@ package incometax.subscription.services
 import core.audit.Logging
 import core.config.AppConfig
 import core.config.featureswitch.{FeatureSwitching, UseSubscriptionApiV2}
-import core.models.{Next, No, Yes}
+import core.models.{Next, Yes}
 import incometax.business.models.{AccountingPeriodModel, AccountingYearModel, MatchTaxYearModel}
 import incometax.subscription.connectors.{SubscriptionConnector, SubscriptionConnectorV2}
 import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
@@ -40,25 +40,18 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
 
 
   private[services] def getAccountingPeriod(incomeSourceType: IncomeSourceType,
-                                            summaryData: SummaryModel,
-                                            arn: Option[String]): Option[AccountingPeriodModel] =
-    if (arn.isEmpty) {
-      (incomeSourceType, summaryData.matchTaxYear, summaryData.selectedTaxYear) match {
-        case (Business, Some(MatchTaxYearModel(Yes)), Some(AccountingYearModel(Next)))=> Some(getNextTaxYear)
-        case (Business | Both, Some(MatchTaxYearModel(Yes)), _) => Some(getCurrentTaxYear)
-        case (Business | Both, Some(MatchTaxYearModel(No)), _) => summaryData.accountingPeriodDate
-        case _ => None
-      }
-    } else {
-      incomeSourceType match {
-        case Property => None
-        case _ => summaryData.accountingPeriodDate
-      }
+                                            summaryData: SummaryModel): Option[AccountingPeriodModel] = {
+    (incomeSourceType, summaryData.matchTaxYear, summaryData.selectedTaxYear) match {
+      case (Business, Some(MatchTaxYearModel(Yes)), Some(AccountingYearModel(Next))) => Some(getNextTaxYear)
+      case (Business | Both, Some(MatchTaxYearModel(Yes)), _) => Some(getCurrentTaxYear)
+      case (Business | Both, _, _) => summaryData.accountingPeriodDate
+      case _ => None
     }
+  }
 
   private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
     val incomeSource = summaryData.incomeSource.get
-    val accountingPeriod = getAccountingPeriod(incomeSource, summaryData, arn)
+    val accountingPeriod = getAccountingPeriod(incomeSource, summaryData)
     val (accountingPeriodStart, accountingPeriodEnd) = (accountingPeriod.map(_.startDate), accountingPeriod.map(_.endDate))
     val cashOrAccruals = summaryData.accountingMethod map (_.accountingMethod)
     val tradingName = summaryData.businessName map (_.businessName)
@@ -78,9 +71,9 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
     val businessSection = model.incomeSource.flatMap {
       case Business | Both =>
         for {
-          accountingPeriod <- getAccountingPeriod(model.incomeSource.get, model, arn )
-          accountingMethod <- model.accountingMethod map(_.accountingMethod)
-          businessName = model.businessName map(_.businessName)
+          accountingPeriod <- getAccountingPeriod(model.incomeSource.get, model)
+          accountingMethod <- model.accountingMethod map (_.accountingMethod)
+          businessName = model.businessName map (_.businessName)
         } yield BusinessIncomeModel(businessName, accountingPeriod, accountingMethod)
       case _ => None
     }

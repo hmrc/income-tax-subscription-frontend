@@ -21,8 +21,8 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
-import agent.models.MatchTaxYearModel
 import core.models.{No, Yes}
+import incometax.business.models.MatchTaxYearModel
 import play.api.http.Status._
 import play.api.i18n.Messages
 
