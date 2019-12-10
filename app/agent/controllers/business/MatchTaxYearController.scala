@@ -18,11 +18,11 @@ package agent.controllers.business
 
 import agent.auth.AuthenticatedController
 import agent.forms.MatchTaxYearForm
-import agent.models.MatchTaxYearModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.models.{No, Yes}
 import core.services.AuthService
+import incometax.business.models.MatchTaxYearModel
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.MessagesApi

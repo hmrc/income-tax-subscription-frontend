@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import agent.models.MatchTaxYearModel
 @import agent.forms.MatchTaxYearForm
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
@@ -27,6 +26,7 @@
 @import core.forms.submapping.YesNoMapping
 @import core.models.Yes
 @import core.models.No
+@import incometax.business.models.MatchTaxYearModel
 
 @(matchTaxYearForm: Form[MatchTaxYearModel], postAction: Call, backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 

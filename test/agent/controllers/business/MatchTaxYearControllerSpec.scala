@@ -18,10 +18,10 @@ package agent.controllers.business
 
 import agent.controllers.AgentControllerBaseSpec
 import agent.forms.MatchTaxYearForm
-import agent.models.MatchTaxYearModel
 import agent.services.mocks.MockKeystoreService
 import core.forms.submapping.YesNoMapping
 import core.models.{No, Yes}
+import incometax.business.models.MatchTaxYearModel
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
 

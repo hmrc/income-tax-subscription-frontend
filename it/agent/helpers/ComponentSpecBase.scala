@@ -32,7 +32,7 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import core.models.YesNo
 import helpers.UserMatchingIntegrationRequestSupport
 import helpers.servicemocks.AuditStub
-import incometax.business.models.AccountingPeriodModel
+import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.models.IncomeSourceType
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}

@@ -21,7 +21,7 @@ import core.forms.submapping.YesNoMapping
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.testutils.{DataMap, _}
 import core.models.Yes
-import agent.models.MatchTaxYearModel
+import incometax.business.models.MatchTaxYearModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
