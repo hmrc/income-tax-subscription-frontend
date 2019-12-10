@@ -715,6 +715,7 @@ agent.summary.income_type                                             = Dull cyf
 agent.summary.income_type_property                                    = Dull cyfrifyddu ar gyfer ei fusnes eiddo
 agent.summary.income_type.cash                                        = Sail arian parod
 agent.summary.income_type.accruals                                    = Sail croniadau
+agent.summary.match_tax_year                                          = Mae''r cyfnod cyfrifyddu yn paru â''r flwyddyn dreth
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                          = Rydych wedi cofrestru eich cleient ar gyfer y peilot ''Defnyddio meddalwedd i anfon diweddariadau ynghylch Treth Incwm''

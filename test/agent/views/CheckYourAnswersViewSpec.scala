@@ -18,23 +18,21 @@ package agent.views
 
 import _root_.agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 import _root_.agent.views.html.helpers.SummaryIdConstants._
-import _root_.core.utils.UnitTestTrait
+import _root_.core.utils.{TestModels, UnitTestTrait}
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
-import core.utils.TestModels._
+import core.models.{DateModel, No, YesNo}
+import core.utils.TestModels.{testAgentSummaryData,testBusinessName, testAccountingPeriod}
+import incometax.business.models.address.Address
+import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel, AccountingYearModel, BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
+import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import incometax.subscription.models.{AgentSummary, IncomeSourceType}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import core.models.{DateModel, No, YesNo}
-import incometax.business.models._
-import incometax.business.models.address.Address
-import incometax.incomesource.models.AreYouSelfEmployedModel
-import incometax.subscription.models.{IncomeSourceType, SummaryModel}
-import incometax.util.AccountingPeriodUtil._
-import org.jsoup.nodes.{Document, Element}
 
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
@@ -42,13 +40,42 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   lazy val postAction: Call = _root_.agent.controllers.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = _root_.agent.controllers.routes.TermsController.show().url
 
-  def page(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Html = _root_.agent.views.html.check_your_answers(
+  val testBusinessPhoneNumber: BusinessPhoneNumberModel = TestModels.testBusinessPhoneNumber
+  val testBusinessStartDate: BusinessStartDateModel = TestModels.testBusinessStartDate
+  val testBusinessAddress: Address = TestModels.testAddress
+  val testSelectedTaxYear: AccountingYearModel = TestModels.testSelectedTaxYearNext
+  val testAccountingMethod: AccountingMethodModel = TestModels.testAccountingMethod
+  val testAccountingPropertyModel: AccountingMethodPropertyModel = TestModels.testAccountingMethodProperty
+  val testIncomeSource: IncomeSourceType = TestModels.testIncomeSourceBoth
+  val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
+  val testAreYouSelfEmployed: AreYouSelfEmployedModel = TestModels.testAreYouSelfEmployed_yes
+  val testOtherIncome: YesNo = No
+  val testSummary = customTestSummary()
+
+  def customTestSummary(matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
+                        accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod,
+                        selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) = AgentSummary(
+    otherIncome = testOtherIncome,
+    matchTaxYear = matchTaxYear,
+    accountingPeriodDate = accountingPeriod,
+    businessName = testBusinessName,
+    businessAddress = testBusinessAddress,
+    businessStartDate = testBusinessStartDate,
+    businessPhoneNumber = testBusinessPhoneNumber,
+    selectedTaxYear = selectedTaxYear,
+    accountingMethod = testAccountingMethod,
+    accountingMethodProperty = accountingMethodProperty
+  )
+
+  def page(testSummaryModel: AgentSummary): Html = _root_.agent.views.html.check_your_answers(
     summaryModel = testAgentSummaryData,
     postAction = postAction,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def document(accountingPeriodViewType: AccountingPeriodViewType = CurrentAccountingPeriodView): Document = page(accountingPeriodViewType).doc
+  def document(testSummaryModel: AgentSummary = testSummary): Document
+    = page(testSummaryModel).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -105,6 +132,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
     }
 
+
     def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String]) = {
       val accountingPeriod = document().getElementById(sectionId)
       val question = document().getElementById(questionId(sectionId))
@@ -123,14 +151,41 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         editLink.select("span").text() shouldBe expectedQuestion
         editLink.select("span").hasClass("visuallyhidden") shouldBe true
       }
+
     }
 
-    "display the correct info for the accounting period date" in {
-      val sectionId = AccountingPeriodDateId
-      val expectedQuestion = messages.accounting_period
-      val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
-      val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
-      val expectedEditLink = _root_.agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+    "display the correct info for the accounting period date" when {
+
+      "do not display if the user chooses yes to match tax year" in {
+        val sectionId = AccountingPeriodDateId
+        val doc = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod = None))
+        doc.getElementById(sectionId) mustBe null
+
+        val doc2 = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod = Some(testAccountingPeriod)))
+        doc2.getElementById(sectionId) mustBe null
+      }
+      "the user chooses no to match tax year" in {
+        val sectionId = AccountingPeriodDateId
+        val expectedQuestion = messages.accounting_period
+        val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
+        val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
+        val expectedEditLink = _root_.agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink
+        )
+
+      }
+    }
+
+    "display the correct info for the match tax year" in {
+      val sectionId = MatchTaxYearId
+      val expectedQuestion = messages.match_tax_year
+      val expectedAnswer = MessageLookup.Business.MatchTaxYear.no
+      val expectedEditLink = _root_.agent.controllers.business.routes.MatchTaxYearController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

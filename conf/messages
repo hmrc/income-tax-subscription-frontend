@@ -698,7 +698,7 @@ agent.cannot-report-yet.heading                                       = Your cli
 agent.cannot-report-yet.para1                                         = You can still sign this client up and use software to record their income and expenses, but they won''t be able to submit a report until {0}.
 agent.cannot-report-yet.para2                                         = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
 
-## Summary page ##
+## Agent Summary page ##
 agent.summary.title                                                   = Check your answers
 agent.summary.heading                                                 = Check your answers
 agent.summary.heading_hidden                                          = before signing up
@@ -716,6 +716,7 @@ agent.summary.income_type                                             = Accounti
 agent.summary.income_type_property                                    = Accounting method for their property business
 agent.summary.income_type.cash                                        = Cash basis
 agent.summary.income_type.accruals                                    = Accruals basis
+agent.summary.match_tax_year                                          = Accounting period matches tax year
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                          = You have signed up your client for the Use software to send Income Tax updates pilot

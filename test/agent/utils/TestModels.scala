@@ -39,6 +39,7 @@ object TestModels extends Implicits {
 
   val testStartDate = core.utils.TestModels.testStartDate
   val testEndDate = core.utils.TestModels.testEndDate
+  val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(No)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(Yes)

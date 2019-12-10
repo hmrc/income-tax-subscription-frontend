@@ -225,7 +225,7 @@ object TestModels extends Implicits {
   lazy val testAgentSummaryData = AgentSummary(
     incomeSource = Some(testIncomeSourceBoth),
     otherIncome = Some(testOtherIncomeNo),
-    matchTaxYear = Some(testMatchTaxYearYes),
+    matchTaxYear = Some(testMatchTaxYearNo),
     accountingPeriodPrior = None,
     accountingPeriodDate = testAccountingPeriod,
     businessName = Some(testBusinessName),
