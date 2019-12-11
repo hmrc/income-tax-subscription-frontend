@@ -21,12 +21,17 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
 import agent.models._
+import core.config.featureswitch.{AgentTaxYear, FeatureSwitching}
 import core.models.{No, Yes}
 import play.api.http.Status._
 import play.api.i18n.Messages
 
-class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
+class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(AgentTaxYear)
+  }
   "GET /business/accounting-period-prior" when {
 
     "keystore returns all data" should {
@@ -76,6 +81,7 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodPrior, userInput)
 
         When("POST /business/accounting-period-prior is called")
@@ -88,11 +94,12 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
         )
       }
 
-      "select the No current accounting period radio button on the accounting period prior page" in {
+      "when Agent Tax year is disabled and select the No current accounting period radio button on the accounting period prior page" in {
         val userInput = AccountingPeriodPriorModel(No)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodPrior, userInput)
 
         When("POST /business/accounting-period-prior is called")
@@ -105,10 +112,30 @@ class BusinessAccountingPeriodPriorControllerISpec extends ComponentSpecBase {
         )
       }
 
+      "when Agent Tax year is enabled and select the No current accounting period radio button on the accounting period prior page" in {
+        val userInput = AccountingPeriodPriorModel(No)
+        enable(AgentTaxYear)
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodPrior, userInput)
+
+        When("POST /business/accounting-period-prior is called")
+        val res = IncomeTaxSubscriptionFrontend.submitBusinessAccountingPeriodPrior(inEditMode = false, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of Match tax year")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(matchTaxYearURI)
+        )
+      }
+
 
       "select no option on the radio buttons on the accounting period prior page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodPrior, "")
 
         When("POST /business/accounting-period-prior is called")

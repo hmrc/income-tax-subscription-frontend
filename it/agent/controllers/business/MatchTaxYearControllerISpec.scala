@@ -21,6 +21,7 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
+import agent.models.AccountingPeriodPriorModel
 import core.models.{No, Yes}
 import incometax.business.models.MatchTaxYearModel
 import play.api.http.Status._
@@ -33,12 +34,12 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
       "show the match tax year page with no radio option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        KeystoreStub.stubKeystoreData(keystoreData(accountingPeriodPrior = Some(AccountingPeriodPriorModel(No))))
 
         When(s"GET ${routes.MatchTaxYearController.show().url} is called")
         val res = IncomeTaxSubscriptionFrontend.matchTaxYear()
 
-        Then("Should return a OK with the accounting method page")
+        Then("Should return a OK with the match tax year page")
         res should have(
           httpStatus(OK),
           pageTitle(Messages("agent.business.match_tax_year.heading")),
@@ -55,7 +56,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         When(s"GET ${routes.MatchTaxYearController.show().url} is called")
         val res = IncomeTaxSubscriptionFrontend.matchTaxYear()
 
-        Then("Should return a OK with the accounting method page")
+        Then("Should return a OK with the match tax year page")
         res should have(
           httpStatus(OK),
           pageTitle(Messages("agent.business.match_tax_year.heading")),
@@ -195,6 +196,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
         s"return a $BAD_REQUEST" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(keystoreData(accountingPeriodPrior = Some(AccountingPeriodPriorModel(No))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
           val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(

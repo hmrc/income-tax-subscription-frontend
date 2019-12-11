@@ -21,7 +21,7 @@ import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{AgentTaxYear, EligibilityPagesFeature, FeatureSwitching}
 import core.models.{No, Yes, YesNo}
 import org.jsoup.Jsoup
 import play.api.http.Status
@@ -35,6 +35,7 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
   override def beforeEach(): Unit = {
     super.beforeEach()
     disable(EligibilityPagesFeature)
+    disable(AgentTaxYear)
   }
 
   override val controllerName: String = "BusinessAccountingPeriodPriorController"
@@ -109,38 +110,80 @@ class BusinessAccountingPeriodPriorControllerSpec extends AgentControllerBaseSpe
     "Not in edit mode and " when {
       def callShow(answer: YesNo): Future[Result] = callShowCore(answer, isEditMode = false)
 
-      "Option 'Yes' is selected and there were no previous entries" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = None)
-        val goodRequest = callShow(Yes)
-        status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
-      }
+      "Agent Tax Year feature switch is enabled" should {
 
-      "Option 'Yes' is selected and there is previous entry" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(Yes))
-        val goodRequest = callShow(Yes)
-        status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
-      }
+        "Option 'Yes' is selected and there were no previous entries" in {
+          setupMockKeystore(fetchAccountingPeriodPrior = None)
+          enable(AgentTaxYear)
+          val goodRequest = callShow(Yes)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+          verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
+        }
 
-      "Option 'No' is selected and there were no previous entries" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = None)
-        val goodRequest = callShow(No)
-        status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
-        await(goodRequest)
-        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
-      }
+        "Option 'Yes' is selected and there is previous entry" in {
+          setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(Yes))
+          enable(AgentTaxYear)
+          val goodRequest = callShow(Yes)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+          verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
+        }
 
-      "Option 'No' is selected and there there is previous entry" in {
-        setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(Yes))
-        val goodRequest = callShow(No)
-        status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
-        await(goodRequest)
-        verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
+        "Option 'No' is selected and there were no previous entries" in {
+          setupMockKeystore(fetchAccountingPeriodPrior = None)
+          enable(AgentTaxYear)
+          val goodRequest = callShow(No)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.MatchTaxYearController.show().url
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
+        }
+
+        "Option 'No' is selected and there there is previous entry which is different" in {
+          setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(Yes))
+          enable(AgentTaxYear)
+          val goodRequest = callShow(No)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.MatchTaxYearController.show().url
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
+        }
+      }
+      "Agent Tax Year feature switch is disabled" should {
+        "Option 'Yes' is selected and there were no previous entries" in {
+          setupMockKeystore(fetchAccountingPeriodPrior = None)
+          val goodRequest = callShow(Yes)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+          verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
+        }
+
+        "Option 'Yes' is selected and there is previous entry" in {
+          setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(Yes))
+          val goodRequest = callShow(Yes)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+          verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
+        }
+
+        "Option 'No' is selected and there were no previous entries" in {
+          setupMockKeystore(fetchAccountingPeriodPrior = None)
+          val goodRequest = callShow(No)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
+        }
+
+        "Option 'No' is selected and there there is previous entry" in {
+          setupMockKeystore(fetchAccountingPeriodPrior = AccountingPeriodPriorModel(Yes))
+          val goodRequest = callShow(No)
+          status(goodRequest) mustBe Status.SEE_OTHER
+          redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+          await(goodRequest)
+          verifyKeystore(fetchAccountingPeriodPrior = 1, saveAccountingPeriodPrior = 1)
+        }
       }
     }
 

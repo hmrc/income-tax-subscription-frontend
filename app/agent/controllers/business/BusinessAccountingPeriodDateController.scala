@@ -16,18 +16,20 @@
 
 package agent.controllers.business
 
-import javax.inject.{Inject, Singleton}
 import agent.auth.AuthenticatedController
 import agent.forms._
 import agent.models.enums._
 import agent.services.CacheUtil._
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
+import core.config.featureswitch.{AgentTaxYear, FeatureSwitching}
 import core.models.{No, Yes}
 import core.services.{AccountingPeriodService, AuthService}
 import core.utils.Implicits._
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.IncomeSourceType
+import incometax.util.{AccountingPeriodUtil, CurrentDateProvider}
+import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
@@ -35,7 +37,6 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
-import incometax.util.{AccountingPeriodUtil, CurrentDateProvider}
 
 @Singleton
 class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseControllerConfig,
@@ -44,7 +45,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
                                                        val authService: AuthService,
                                                        val accountingPeriodService: AccountingPeriodService,
                                                        val currentDateProvider: CurrentDateProvider
-                                                      ) extends AuthenticatedController {
+                                                      ) extends AuthenticatedController with FeatureSwitching {
 
   def view(form: Form[AccountingPeriodModel],
            backUrl: String, isEditMode: Boolean,
@@ -133,18 +134,24 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
 
   def backUrl(isEditMode: Boolean)(implicit request: Request[_]): Future[String] = {
 
-    if (isEditMode)
+    if (isEditMode) {
       agent.controllers.routes.CheckYourAnswersController.show().url
-    else
-      keystoreService.fetchAccountingPeriodPrior() flatMap {
-        case Some(currentPeriodPrior) => currentPeriodPrior.currentPeriodIsPrior match {
-          case Yes =>
-            agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-          case No =>
-            agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
-        }
-        case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")
+    } else {
+      if (isEnabled(AgentTaxYear)) {
+        agent.controllers.business.routes.MatchTaxYearController.show().url
       }
+      else {
+        keystoreService.fetchAccountingPeriodPrior() flatMap {
+          case Some(currentPeriodPrior) => currentPeriodPrior.currentPeriodIsPrior match {
+            case Yes =>
+              agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+            case No =>
+              agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
+          }
+          case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")
+        }
+      }
+    }
   }
-
 }
+

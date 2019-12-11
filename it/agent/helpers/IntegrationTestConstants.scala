@@ -56,6 +56,7 @@ object IntegrationTestConstants {
   val accountingPeriodPriorURI = s"$baseURI/business/accounting-period-prior"
   val registerNextAccountingPeriodURI = s"$baseURI/business/register-next-accounting-period"
   val accountingPeriodDatesURI = s"$baseURI/business/accounting-period-dates"
+  val matchTaxYearURI = s"$baseURI/business/match-to-tax-year"
   val termsURI = s"$baseURI/terms"
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"

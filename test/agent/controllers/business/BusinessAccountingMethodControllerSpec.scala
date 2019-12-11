@@ -20,12 +20,14 @@ import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
 import agent.services.mocks.MockKeystoreService
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
-import core.models.Cash
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, AgentTaxYear, EligibilityPagesFeature, FeatureSwitching}
+import core.models.{Cash, No, Yes}
+import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.models.Both
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -36,6 +38,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     super.beforeEach()
     disable(EligibilityPagesFeature)
     disable(AgentPropertyCashOrAccruals)
+    disable(AgentTaxYear)
   }
 
   override val controllerName: String = "BusinessAccountingMethod"
@@ -143,14 +146,48 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
   }
 
   "The back url" when {
-    "not in edit mode" should {
-      s"point to ${agent.controllers.business.routes.BusinessNameController.show().url}" in {
-        TestBusinessAccountingMethodController.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+    "not in edit mode" when {
+      "FS Agent Tax Year is enabled" when {
+        "the client's tax year matches the current or the next tax year" should {
+
+          s"point to ${agent.controllers.business.routes.MatchTaxYearController.show().url}" in {
+            enable(AgentTaxYear)
+            setupMockKeystore(fetchMatchTaxYear = MatchTaxYearModel(Yes))
+            await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)(subscriptionRequest)) mustBe
+              agent.controllers.business.routes.MatchTaxYearController.show().url
+          }
+        }
+
+        "the client's tax year does not match the current or the next tax year" should {
+          s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
+            enable(AgentTaxYear)
+            setupMockKeystore(fetchMatchTaxYear = MatchTaxYearModel(No))
+            await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)(subscriptionRequest)) mustBe
+              agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+          }
+        }
+
+        "there is no answer to the match tax year store in keystore" should {
+
+          "throw an exception" in {
+            enable(AgentTaxYear)
+            setupMockKeystore(fetchMatchTaxYear = None)
+            intercept[InternalServerException] {
+              await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)(subscriptionRequest))
+            }
+          }
+        }
+      }
+
+      "FS Agent Tax Year is disabled" should {
+        s"point to ${agent.controllers.business.routes.BusinessNameController.show().url}" in {
+          await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)(subscriptionRequest)) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+        }
       }
     }
     "in edit mode" should {
       s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
-        TestBusinessAccountingMethodController.backUrl(isEditMode = true) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
+        await(TestBusinessAccountingMethodController.backUrl(isEditMode = true)(subscriptionRequest)) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
       }
     }
   }

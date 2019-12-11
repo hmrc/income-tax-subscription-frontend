@@ -19,10 +19,16 @@ package agent.controllers.business
 import _root_.agent.helpers.ComponentSpecBase
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks.AuthStub
+import core.config.featureswitch.{AgentTaxYear, FeatureSwitching}
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 
-class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase {
+class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase with FeatureSwitching {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(AgentTaxYear)
+  }
 
   "GET /business/register-next-accounting-period" when {
 
@@ -46,8 +52,25 @@ class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase {
 
 
   "POST /business/register-next-accounting-period" when {
+    "FS Agent Tax Year is enabled" should {
 
-    "always" should {
+      "select the continue to sign up button" in {
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        enable(AgentTaxYear)
+
+        When("POST /business/register-next-accounting-period is called")
+        val res = IncomeTaxSubscriptionFrontend.submitRegisterNextAccountingPeriod()
+
+        Then("Should return a SEE_OTHER with a redirect location of Match Tax Year page")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(matchTaxYearURI)
+        )
+      }
+    }
+
+    "FS Agent Tax Year is disabled" should {
 
       "select the continue to sign up button" in {
         Given("I setup the Wiremock stubs")
@@ -62,7 +85,6 @@ class RegisterNextAccountingPeriodControllerISpec extends ComponentSpecBase {
           redirectURI(accountingPeriodDatesURI)
         )
       }
-
     }
   }
 }

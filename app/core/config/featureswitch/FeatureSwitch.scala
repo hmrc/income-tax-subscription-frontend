@@ -34,7 +34,8 @@ object FeatureSwitch {
     UseSubscriptionApiV2,
     PropertyCashOrAccruals,
     WhatTaxYearToSignUp,
-    AgentPropertyCashOrAccruals
+    AgentPropertyCashOrAccruals,
+    AgentTaxYear
   )
 
   def apply(str: String): FeatureSwitch =
