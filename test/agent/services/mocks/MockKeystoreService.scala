@@ -67,6 +67,7 @@ trait MockKeystoreService extends MockTrait {
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
                                          fetchMatchTaxYear: MFO[MatchTaxYearModel] = DoNotConfigure,
+                                         fetchWhatYearToSignUp: MFO[AccountingYearModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
                                          deleteAll: MF[HttpResponse] = DoNotConfigure
                                        ): Unit = {
@@ -80,6 +81,7 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
     mockFetchFromKeyStore[MatchTaxYearModel](MatchTaxYear, fetchMatchTaxYear)
+    mockFetchFromKeyStore[AccountingYearModel](WhatYearToSignUp, fetchWhatYearToSignUp)
 
     setupMockKeystoreSaveFunctions()
 
@@ -94,6 +96,8 @@ trait MockKeystoreService extends MockTrait {
                                       saveBusinessName: Option[Int] = None,
                                       fetchMatchTaxYear: Option[Int] = None,
                                       saveMatchTaxYear: Option[Int] = None,
+                                      fetchWhatYearToSignUp: Option[Int] = None,
+                                      saveWhatYearToSignUp: Option[Int] = None,
                                       fetchAccountingPeriodDate: Option[Int] = None,
                                       saveAccountingPeriodDate: Option[Int] = None,
                                       fetchAccountingMethod: Option[Int] = None,
@@ -117,6 +121,8 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(BusinessName, saveBusinessName)
     verifyKeystoreFetch(MatchTaxYear, fetchMatchTaxYear)
     verifyKeystoreSave(MatchTaxYear, saveMatchTaxYear)
+    verifyKeystoreFetch(WhatYearToSignUp, fetchWhatYearToSignUp)
+    verifyKeystoreSave(WhatYearToSignUp, saveWhatYearToSignUp)
     verifyKeystoreFetch(AccountingPeriodDate, fetchAccountingPeriodDate)
     verifyKeystoreSave(AccountingPeriodDate, saveAccountingPeriodDate)
     verifyKeystoreFetch(AccountingMethod, fetchAccountingMethod)

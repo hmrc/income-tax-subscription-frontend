@@ -612,6 +612,14 @@ agent.business.match_tax_year.heading                                 = A yw cyf
 agent.business.match_tax_year.para1                                   = Mae''r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill.
 agent.business.match_tax_year.para2                                   = Mae cyfnod cyfrifyddu eich cleient yr un peth oni bai eich bod eisoes wedi dewis dyddiadau gwahanol.
 
+## Accounting Year page
+agent.business.what_year_to_sign_up.heading                           = Pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer?
+agent.business.what_year_to_sign_up.line_1                            = Gallwch gofrestru eich cleient ar gyfer y flwyddyn bresennol neu''r flwyddyn nesaf.
+agent.business.what_year_to_sign_up.example_line_1                    = Er enghraifft, os yw cyfnod cyfrifyddu eich cleient yn rhedeg o 6 Ebrill {0} i 5 Ebrill {1}, byddwch yn cofrestru eich cleient ar gyfer y flwyddyn bresennol {0} i {1}.
+agent.business.what_year_to_sign_up.example_line_2                    = Os yw cyfnod cyfrifyddu eich cleient yn rhedeg o 6 Ebrill {0} i 5 Ebrill {1}, byddwch yn cofrestru eich cleient ar gyfer y flwyddyn nesaf {0} i {1}.
+agent.business.what_year_to_sign_up.option_1                   = Y flwyddyn dreth bresennol ({0} i {1})
+agent.business.what_year_to_sign_up.option_2                   = Y flwyddyn dreth nesaf ({0} i {1})
+
 ## Business Accounting Period page
 agent.accounting_period.title                                         = Ar gyfer pa gyfnod cyfrifyddu rydych yn cofrestru''ch cleient ar ei chyfer?
 agent.accounting_period.heading                                       = Ar gyfer pa gyfnod cyfrifyddu rydych yn cofrestru''ch cleient ar ei chyfer?
@@ -767,6 +775,9 @@ agent.error.business.sole_trader.invalid                              = Rhaid i 
 
 agent.error.match_tax_year.empty                                      = Dewiswch ''iawn'' os yw cyfnod cyfrifyddu eich cleient yn paru â''r flwyddyn dreth
 agent.error.match_tax_year.invalid                                    = Dewiswch ''iawn'' os yw cyfnod cyfrifyddu eich cleient yn paru â''r flwyddyn dreth
+
+agent.error.what-year.empty                                           = Dewiswch pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
+agent.error.what-year.invalid                                         = Dewiswch pa flwyddyn dreth yr ydych am gofrestru eich cleient ar ei chyfer
 
 agent.error.start_date.empty                                          = Nodwch ddyddiad dechrau
 agent.error.start_date.invalid_chars                                  = Nodwch ddyddiad dechrau gan ddefnyddio''r rhifau 0 i 9

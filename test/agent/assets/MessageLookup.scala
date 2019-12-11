@@ -37,6 +37,7 @@ object MessageLookup {
     val goBack = "Go back"
     val tryAgain = "Try again"
     val addAnother = "Sign up another client"
+    val back = "Back"
   }
 
   object FrontPage {
@@ -125,6 +126,15 @@ object MessageLookup {
       val para2 = "Your client's accounting period is the same unless you have previously chosen different dates."
       val yes = "Yes"
       val no = "No"
+    }
+
+    object WhatYearToSignUp {
+      val heading = "What tax year do you want to sign your client up for?"
+      val line1 = "You can sign your client up for the current year or the next year."
+      def example1(taxYearStart: String, taxYearEnd: String) = s"For example, if your client's accounting period runs from 6 April $taxYearStart to 5 April $taxYearEnd, you will sign your client up for the current year $taxYearStart to $taxYearEnd."
+      def example2(taxYearStart: String, taxYearEnd: String) = s"If your client's accounting period runs from 6 April $taxYearStart to 5 April $taxYearEnd, you will sign your client up for next year $taxYearStart to $taxYearEnd."
+      def option1(taxYearStart: String, taxYearEnd: String) = s"Current tax year ($taxYearStart to $taxYearEnd)"
+      def option2(taxYearStart: String, taxYearEnd: String) = s"Next tax year ($taxYearStart to $taxYearEnd)"
     }
   }
 
