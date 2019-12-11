@@ -21,7 +21,7 @@ import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{AgentTaxYear, EligibilityPagesFeature, FeatureSwitching}
 import core.models.{No, Yes}
 import core.services.AuthService
 import core.utils.Implicits._
@@ -53,7 +53,7 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystoreService.fetchAccountingPeriodPrior().flatMap { x =>
-        view(AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(x), isEditMode = isEditMode).flatMap(view => Ok(view))
+        view(AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(x), isEditMode = isEditMode).map(view => Ok(view))
       }
   }
 
@@ -67,11 +67,12 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
               keystoreService.saveAccountingPeriodPrior(accountingPeriodPrior) flatMap { _ =>
                 if (somePreviousAnswer.fold(false)(previousAnswer => previousAnswer.equals(accountingPeriodPrior)) && isEditMode)
                   Redirect(agent.controllers.routes.CheckYourAnswersController.show())
-                else
+                else {
                   accountingPeriodPrior.currentPeriodIsPrior match {
                     case Yes => yes
                     case No => no
                   }
+                }
               }
           }
       )
@@ -79,7 +80,10 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
 
   def yes(implicit request: Request[_]): Future[Result] = Redirect(agent.controllers.business.routes.RegisterNextAccountingPeriodController.show())
 
-  def no(implicit request: Request[_]): Future[Result] = Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.show())
+  def no(implicit request: Request[_]): Future[Result] = {
+    if (isEnabled(AgentTaxYear)) Redirect(agent.controllers.business.routes.MatchTaxYearController.show())
+    else Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.show())
+  }
 
   def backUrl(implicit request: Request[_]): Future[String] = {
     if (isEnabled(EligibilityPagesFeature)) {

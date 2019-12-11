@@ -16,11 +16,11 @@
 
 package agent.helpers.servicemocks
 
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.WiremockHelper
+import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
 import play.api.http.Status
 import play.api.libs.json.{JsValue, Json, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -50,7 +50,7 @@ object KeystoreStub extends WireMockMethods {
       .thenReturn(Status.OK, body)
   }
 
-  def stubKeystoreFailure() : Unit = {
+  def stubKeystoreFailure(): Unit = {
     when(method = GET, uri = keystoreUri)
       .thenReturn(Status.INTERNAL_SERVER_ERROR)
 

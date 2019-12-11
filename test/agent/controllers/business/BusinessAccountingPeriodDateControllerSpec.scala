@@ -22,18 +22,25 @@ import agent.forms.AccountingPeriodDateForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestConstants
 import agent.utils.TestModels._
-import core.config.featureswitch.FeatureSwitching
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, AgentTaxYear, EligibilityPagesFeature, FeatureSwitching}
 import core.models.DateModel
+import core.services.mocks.MockAccountingPeriodService
 import incometax.business.models.AccountingPeriodModel
 import incometax.util.CurrentDateProvider
 import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import core.services.mocks.MockAccountingPeriodService
 
 class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService with FeatureSwitching with MockAccountingPeriodService{
+  with MockKeystoreService with FeatureSwitching with MockAccountingPeriodService {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    disable(EligibilityPagesFeature)
+    disable(AgentPropertyCashOrAccruals)
+    disable(AgentTaxYear)
+  }
 
   override val controllerName: String = "BusinessAccountingPeriodDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -86,8 +93,8 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
     def callShow(isEditMode: Boolean, accountingPeriod: AccountingPeriodModel = testAccountingPeriodDates) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(subscriptionRequest
       .post(AccountingPeriodDateForm.accountingPeriodDateForm, accountingPeriod))
 
-    "When it is ineligible dates" should{
-      s"return a redirect status (SEE_OTHER - 303) to kickout page" in{
+    "When it is ineligible dates" should {
+      s"return a redirect status (SEE_OTHER - 303) to kickout page" in {
         setupMockKeystore(
           fetchAll = testCacheMap(
             accountingPeriodDate = Some(testAccountingPeriodDates)
@@ -193,26 +200,44 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
     }
   }
 
-  "The back url when the user is submitting details for current period" should {
-    s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}" in {
-      setupMockKeystore(fetchAccountingPeriodPrior = testAccountingPeriodPriorCurrent)
-      await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(FakeRequest())) mustBe agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
-      verifyKeystore(fetchAccountingPeriodPrior = 1)
+  "The back url when it is not in edit mode" when {
+    "FS Agent tax Year is enabled" when {
+      "the user is submitting details for tax period" should {
+        s"point to ${agent.controllers.business.routes.MatchTaxYearController.show().url}" in {
+          enable(AgentTaxYear)
+          await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(FakeRequest())) mustBe agent.controllers.business.routes.MatchTaxYearController.show().url
+        }
+      }
     }
-  }
 
-  "The back url when the user is submitting details for next period" should {
-    s"point to ${agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in {
-      setupMockKeystore(fetchAccountingPeriodPrior = testAccountingPeriodPriorNext)
-      await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(FakeRequest())) mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-      verifyKeystore(fetchAccountingPeriodPrior = 1)
-    }
-  }
-  "The back url when in edit mode" should {
-    s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
-      await(TestBusinessAccountingPeriodController.backUrl(isEditMode = true)(FakeRequest())) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
-    }
-  }
+    "FS Agent tax Year is disabled" when {
+      "the user is submitting details for tax period" when {
+        "User selected YES on the Accounting Period Prior page" should {
+          s"point to ${agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in {
+            setupMockKeystore(fetchAccountingPeriodPrior = testAccountingPeriodPriorNext)
+            await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(FakeRequest())) mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+            verifyKeystore(fetchAccountingPeriodPrior = 1)
+          }
+        }
 
-  authorisationTests()
+        "the user is submitting details for tax period" when {
+          "User selected No on the Accounting Period Prior page" should {
+            s"point to ${agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in {
+              setupMockKeystore(fetchAccountingPeriodPrior = testAccountingPeriodPriorNext)
+              await(TestBusinessAccountingPeriodController.backUrl(isEditMode = false)(FakeRequest())) mustBe agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
+              verifyKeystore(fetchAccountingPeriodPrior = 1)
+            }
+          }
+        }
+      }
+
+      "The back url when in edit mode" should {
+        s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
+          await(TestBusinessAccountingPeriodController.backUrl(isEditMode = true)(FakeRequest())) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
+        }
+      }
+
+      authorisationTests()
+    }
+  }
 }

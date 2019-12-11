@@ -16,23 +16,23 @@
 
 package agent.controllers.business
 
-import javax.inject.{Inject, Singleton}
-
 import agent.auth.AuthenticatedController
+import agent.services.KeystoreService
 import core.config.BaseControllerConfig
+import core.config.featureswitch.{AgentTaxYear, FeatureSwitching}
+import core.services.AuthService
+import core.utils.Implicits._
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import agent.services.KeystoreService
-import core.services.AuthService
-import core.utils.Implicits._
 
 @Singleton
 class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseControllerConfig,
                                                        val messagesApi: MessagesApi,
                                                        val keystoreService: KeystoreService,
                                                        val authService: AuthService
-                                                      ) extends AuthenticatedController {
+                                                      ) extends AuthenticatedController with FeatureSwitching {
 
   def view()(implicit request: Request[AnyContent]): Html =
     agent.views.html.business.register_next_accounting_period(
@@ -46,6 +46,10 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.show())
+      if (isEnabled(AgentTaxYear)) {
+        Redirect(agent.controllers.business.routes.MatchTaxYearController.show().url)
+      }
+      else
+        Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.show())
   }
 }
