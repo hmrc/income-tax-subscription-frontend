@@ -23,11 +23,10 @@ import agent.services.mocks.MockKeystoreService
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, AgentTaxYear, EligibilityPagesFeature, FeatureSwitching}
 import core.models.{Cash, No, Yes}
 import incometax.business.models.MatchTaxYearModel
-import incometax.subscription.models.Both
+import incometax.subscription.models.{Both, Business}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -59,12 +58,12 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     lazy val result = TestBusinessAccountingMethodController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
-      setupMockKeystore(fetchAccountingMethod = None)
+      setupMockKeystore(fetchAccountingMethod = None, fetchIncomeSource = Both, fetchMatchTaxYear = Some(MatchTaxYearModel(Yes)))
 
       status(result) must be(Status.OK)
 
       await(result)
-      verifyKeystore(fetchAccountingMethod = 1, saveAccountingMethod = 0)
+      verifyKeystore(fetchAccountingMethod = 1, saveAccountingMethod = 0, fetchIncomeSource = 1)
     }
   }
 
@@ -138,56 +137,64 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     lazy val badRequest = TestBusinessAccountingMethodController.submit(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
-      status(badRequest) must be(Status.BAD_REQUEST)
+      setupMockKeystore(fetchIncomeSource = Both, fetchMatchTaxYear = Some(MatchTaxYearModel(Yes)))
 
+      status(badRequest) must be(Status.BAD_REQUEST)
       await(badRequest)
-      verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 0)
+
+      verifyKeystore(fetchAccountingMethod = 0, saveAccountingMethod = 0, fetchIncomeSource = 1)
     }
   }
 
   "The back url" when {
+
+    "in edit mode" should {
+      s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
+        TestBusinessAccountingMethodController.backUrl(isEditMode = true, None, None) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
+      }
+    }
+
     "not in edit mode" when {
-      "FS Agent Tax Year is enabled" when {
-        "the client's tax year matches the current or the next tax year" should {
-
-          s"point to ${agent.controllers.business.routes.MatchTaxYearController.show().url}" in {
-            enable(AgentTaxYear)
-            setupMockKeystore(fetchMatchTaxYear = MatchTaxYearModel(Yes))
-            await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)(subscriptionRequest)) mustBe
-              agent.controllers.business.routes.MatchTaxYearController.show().url
-          }
+      "the agent tax year feature switch is disabled" should {
+        s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
+          disable(AgentTaxYear)
+          TestBusinessAccountingMethodController.backUrl(isEditMode = false, None, None) mustBe
+            agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
         }
+      }
 
-        "the client's tax year does not match the current or the next tax year" should {
+      "the agent tax year feature switch is enabled" when {
+        "match tax year was answered with No" should {
           s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
             enable(AgentTaxYear)
-            setupMockKeystore(fetchMatchTaxYear = MatchTaxYearModel(No))
-            await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)(subscriptionRequest)) mustBe
+            TestBusinessAccountingMethodController.backUrl(isEditMode = false, None, MatchTaxYearModel(No)) mustBe
               agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
           }
         }
 
-        "there is no answer to the match tax year store in keystore" should {
-
-          "throw an exception" in {
+        "income source type is both" should {
+          s"point to ${agent.controllers.business.routes.MatchTaxYearController.show().url}" in {
             enable(AgentTaxYear)
-            setupMockKeystore(fetchMatchTaxYear = None)
-            intercept[InternalServerException] {
-              await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)(subscriptionRequest))
-            }
+            TestBusinessAccountingMethodController.backUrl(isEditMode = false, Some(Both), Some(MatchTaxYearModel(Yes))) mustBe
+              agent.controllers.business.routes.MatchTaxYearController.show().url
           }
         }
-      }
 
-      "FS Agent Tax Year is disabled" should {
-        s"point to ${agent.controllers.business.routes.BusinessNameController.show().url}" in {
-          await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)(subscriptionRequest)) mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
+        "income source type is business" should {
+          s"point to ${agent.controllers.business.routes.WhatYearToSignUpController.show().url}" in {
+            enable(AgentTaxYear)
+            TestBusinessAccountingMethodController.backUrl(isEditMode = false, Some(Business), Some(MatchTaxYearModel(Yes))) mustBe
+              agent.controllers.business.routes.WhatYearToSignUpController.show().url
+          }
         }
-      }
-    }
-    "in edit mode" should {
-      s"point to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in {
-        await(TestBusinessAccountingMethodController.backUrl(isEditMode = true)(subscriptionRequest)) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
+
+        "the back url can't be determined" should {
+          s"point to ${agent.controllers.routes.IncomeSourceController.show().url}" in {
+            enable(AgentTaxYear)
+            TestBusinessAccountingMethodController.backUrl(isEditMode = false, None, None) mustBe
+              agent.controllers.routes.IncomeSourceController.show().url
+          }
+        }
       }
     }
   }
