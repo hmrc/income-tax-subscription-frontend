@@ -53,6 +53,8 @@ object TestModels extends Implicits {
   val testBusinessName = BusinessNameModel("test business")
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
+  val testSelectedTaxYearCurrent = AccountingYearModel(Current)
+  val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testTerms = true
 
   val emptyCacheMap = CacheMap("", Map())
@@ -63,6 +65,7 @@ object TestModels extends Implicits {
       otherIncome = testOtherIncomeNo,
       accountingPeriodPrior = testAccountingPeriodPriorCurrent,
       matchTaxYear = testMatchTaxYearNo,
+      selectedTaxYear = testSelectedTaxYearNext,
       accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
       accountingMethod = testAccountingMethod,
@@ -74,6 +77,7 @@ object TestModels extends Implicits {
                           otherIncome: Option[YesNo] = testOtherIncomeNo,
                           accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
                           matchTaxYear: MatchTaxYearModel = testMatchTaxYearNo,
+                          selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                           businessName: Option[BusinessNameModel] = testBusinessName,
                           accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
@@ -84,6 +88,7 @@ object TestModels extends Implicits {
       otherIncome = otherIncome,
       accountingPeriodPrior = accountingPeriodPrior,
       matchTaxYear = matchTaxYear,
+      selectedTaxYear = selectedTaxYear,
       accountingPeriodDate = accountingPeriodDate,
       businessName = businessName,
       accountingMethod = accountingMethod,
@@ -94,6 +99,7 @@ object TestModels extends Implicits {
                    otherIncome: Option[YesNo] = None,
                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
+                   selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
@@ -105,6 +111,7 @@ object TestModels extends Implicits {
       otherIncome.fold(emptyMap)(model => Map(OtherIncome -> YesNo.format.writes(model))) ++
       accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
       matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
+      selectedTaxYear.fold(emptyMap)(model => Map(WhatYearToSignUp -> AccountingYearModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++

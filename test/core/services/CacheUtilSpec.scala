@@ -63,6 +63,7 @@ class CacheUtilSpec extends UnitTestTrait
       testCacheMap.getEnteredAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingMethod() shouldBe Some(testAccountingMethod)
+      testCacheMap.getSelectedTaxYear() shouldBe Some(testSelectedTaxYearNext)
       testCacheMap.getPropertyAccountingMethod().contains(testAccountingMethodProperty) shouldBe true
       testCacheMap.getPropertyAccountingMethod() shouldBe Some(testAccountingMethodProperty)
       testCacheMap.getTerms() shouldBe Some(testTerms)
