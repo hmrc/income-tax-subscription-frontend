@@ -23,8 +23,8 @@ import agent.helpers.IntegrationTestModels.keystoreData
 import agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import agent.models.AccountingYearModel
 import core.models.{Current, Next}
-import core.services.CacheConstants
 import agent.helpers.IntegrationTestConstants._
+import agent.services.CacheConstants
 import incometax.util.AccountingPeriodUtil
 import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
 import play.api.i18n.Messages
@@ -87,7 +87,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.SelectedTaxYear, userInput)
+        KeystoreStub.stubKeystoreSave(CacheConstants.WhatYearToSignUp, userInput)
 
         When("POST /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
@@ -104,7 +104,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.SelectedTaxYear, userInput)
+        KeystoreStub.stubKeystoreSave(CacheConstants.WhatYearToSignUp, userInput)
 
         When("POST /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = false, Some(userInput))
@@ -120,7 +120,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
     "not select an option on the accounting year page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubKeystoreSave(CacheConstants.SelectedTaxYear, "")
+      KeystoreStub.stubKeystoreSave(CacheConstants.WhatYearToSignUp, "")
 
       When("POST /client/business/what-year-to-sign-up is called")
 
@@ -147,7 +147,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
         KeystoreStub.stubKeystoreData(
           keystoreData(selectedTaxYear = Some(keystoreAccountingYearCurrent))
         )
-        KeystoreStub.stubKeystoreSave(CacheConstants.SelectedTaxYear, userInput)
+        KeystoreStub.stubKeystoreSave(CacheConstants.WhatYearToSignUp, userInput)
 
         When("POST /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
@@ -172,7 +172,7 @@ class WhatYearToSignUpControllerISpec extends ComponentSpecBase {
             selectedTaxYear = Some(keystoreAccountingYearCurrent)
           )
         )
-        KeystoreStub.stubKeystoreSave(CacheConstants.SelectedTaxYear, userInput)
+        KeystoreStub.stubKeystoreSave(CacheConstants.WhatYearToSignUp, userInput)
 
         When("POST /client/business/what-year-to-sign-up is called")
         val res = IncomeTaxSubscriptionFrontend.submitAccountingYear(inEditMode = true, Some(userInput))
