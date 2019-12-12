@@ -17,6 +17,7 @@
 package agent.services
 
 import agent.models.{AccountingMethodPropertyModel, _}
+import core.config.featureswitch.WhatTaxYearToSignUp
 import core.models.YesNo
 import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.models.IncomeSourceType
@@ -60,6 +61,12 @@ class KeystoreService @Inject()(val session: SessionCache)(implicit ec: Executio
 
   def saveMatchTaxYear(accountingPeriod: MatchTaxYearModel)(implicit hc: HeaderCarrier, reads: Reads[MatchTaxYearModel]): FC =
     save[MatchTaxYearModel](MatchTaxYear, accountingPeriod)
+
+  def fetchWhatYearToSignUp()(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FO[AccountingYearModel] =
+    fetch[AccountingYearModel](WhatYearToSignUp)
+
+  def saveWhatYearToSignUp(accountingPeriod: AccountingYearModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FC =
+    save[AccountingYearModel](WhatYearToSignUp, accountingPeriod)
 
   def fetchAccountingPeriodDate()(implicit hc: HeaderCarrier, reads: Reads[AccountingPeriodModel]): FO[AccountingPeriodModel] =
     fetch[AccountingPeriodModel](AccountingPeriodDate)

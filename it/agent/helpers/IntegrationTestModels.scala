@@ -32,6 +32,8 @@ object IntegrationTestModels {
   val testStartDate = _root_.helpers.IntegrationTestModels.testStartDate
   val testEndDate = _root_.helpers.IntegrationTestModels.testEndDate
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
+  val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
+  val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
   val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(No)
   val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(Yes)
   val testAccountingPeriod: AccountingPeriodModel =
@@ -64,6 +66,7 @@ object IntegrationTestModels {
       incomeSource = Some(testIncomeSourceBoth),
       otherIncome = Some(testOtherIncomeNo),
       matchTaxYear = Some(testMatchTaxYearYes),
+      selectedTaxYear = Some(testAccountingYearCurrent),
       accountingPeriodPrior = Some(testAccountingPeriodPriorCurrent),
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
@@ -76,6 +79,7 @@ object IntegrationTestModels {
                     incomeSource: Option[IncomeSourceType] = None,
                     otherIncome: Option[YesNo] = None,
                     matchTaxYear: Option[MatchTaxYearModel] = None,
+                    selectedTaxYear: Option[AccountingYearModel] = None,
                     accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                     accountingPeriodDate: Option[AccountingPeriodModel] = None,
                     businessName: Option[BusinessNameModel] = None,
@@ -91,7 +95,8 @@ object IntegrationTestModels {
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       accountingMethodProperty.map(model => AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model)) ++
       terms.map(model => Terms -> Json.toJson(model)) ++
-      matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model))
+      matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
+      selectedTaxYear.map(model => WhatYearToSignUp -> AccountingYearModel.format.writes(model))
   }
 
   lazy val testIncomeSourceBusiness = Business

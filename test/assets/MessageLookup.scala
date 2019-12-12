@@ -492,6 +492,11 @@ object MessageLookup {
       val invalid = "You must select an option to continue"
     }
 
+    object AgentAccountingYear {
+      val empty = "Select the tax year you want to sign your client up for"
+      val invalid = "Select the tax year you want to sign your client up for"
+    }
+
     object UserDetails {
       val firstNameEmpty = "Enter your first name"
       val lastNameEmpty = "Enter your last name"

@@ -2,6 +2,10 @@
 GET         /match-to-tax-year                      agent.controllers.business.MatchTaxYearController.show(editMode: Boolean ?= false)
 POST        /match-to-tax-year                      agent.controllers.business.MatchTaxYearController.submit(editMode: Boolean ?= false)
 
+#What Tax Year To Sign Up Routes
+GET         /what-year-to-sign-up                   agent.controllers.business.WhatYearToSignUpController.show(editMode: Boolean ?= false)
+POST        /what-year-to-sign-up                   agent.controllers.business.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
+
 #Accounting Period Routes
 GET         /accounting-period-dates                agent.controllers.business.BusinessAccountingPeriodDateController.show(editMode: Boolean ?= false)
 POST        /accounting-period-dates                agent.controllers.business.BusinessAccountingPeriodDateController.submit(editMode: Boolean ?= false)
