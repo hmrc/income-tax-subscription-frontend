@@ -205,6 +205,7 @@ object MessageLookup {
     val accounting_period = s"Your client's accounting period dates"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "Business name"
+    val selected_tax_year = "Year signed-up for"
     val income_type = "Accounting method for their self-employed business"
     val income_type_property = "Accounting method for their property business"
     val other_income = "Does your client have any other sources of income?"

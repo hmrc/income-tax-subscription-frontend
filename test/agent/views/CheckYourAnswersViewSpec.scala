@@ -21,12 +21,13 @@ import _root_.agent.views.html.helpers.SummaryIdConstants._
 import _root_.core.utils.{TestModels, UnitTestTrait}
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
-import core.models.{DateModel, No, YesNo}
-import core.utils.TestModels.{testAgentSummaryData,testBusinessName, testAccountingPeriod}
+import core.models._
+import core.utils.TestModels.{testAccountingPeriod, testAgentSummaryData, testBusinessName}
 import incometax.business.models.address.Address
-import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel, AccountingYearModel, BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
+import incometax.business.models._
 import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import incometax.subscription.models.{AgentSummary, IncomeSourceType}
+import incometax.util.AccountingPeriodUtil
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
@@ -69,12 +70,12 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   )
 
   def page(testSummaryModel: AgentSummary): Html = _root_.agent.views.html.check_your_answers(
-    summaryModel = testAgentSummaryData,
+    summaryModel = testSummaryModel,
     postAction = postAction,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def document(testSummaryModel: AgentSummary = testSummary): Document
+  def document(testSummaryModel: AgentSummary = testAgentSummaryData): Document
     = page(testSummaryModel).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
@@ -133,11 +134,11 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     }
 
 
-    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String]) = {
-      val accountingPeriod = document().getElementById(sectionId)
-      val question = document().getElementById(questionId(sectionId))
-      val answer = document().getElementById(answerId(sectionId))
-      val editLink = document().getElementById(editLinkId(sectionId))
+    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String])(setupData: AgentSummary = testAgentSummaryData) = {
+      val accountingPeriod = document(setupData).getElementById(sectionId)
+      val question = document(setupData).getElementById(questionId(sectionId))
+      val answer = document(setupData).getElementById(answerId(sectionId))
+      val editLink = document(setupData).getElementById(editLinkId(sectionId))
 
       questionStyleCorrectness(question)
       answerStyleCorrectness(answer)
@@ -176,7 +177,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
           expectedQuestion = expectedQuestion,
           expectedAnswer = expectedAnswer,
           expectedEditLink = expectedEditLink
-        )
+        )()
 
       }
     }
@@ -192,7 +193,44 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink
-      )
+      )()
+    }
+
+    "display the correct info for the select tax year" when {
+
+      "selected current tax year" in {
+        val currentTaxYear: AccountingPeriodModel = AccountingPeriodUtil.getCurrentTaxYear
+
+        val sectionId = SelectedTaxYearId
+        val expectedQuestion = messages.selected_tax_year
+        val expectedAnswer = MessageLookup.Business.WhatYearToSignUp.option1(currentTaxYear.startDate.year, currentTaxYear.endDate.year)
+        val expectedEditLink = _root_.agent.controllers.business.routes.WhatYearToSignUpController.show(editMode = true).url
+
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink
+        )(setupData = customTestSummary(matchTaxYear = Some(MatchTaxYearModel(Yes)),
+          selectedTaxYear = Some(AccountingYearModel(Current))))
+      }
+
+      "selected next tax year" in {
+        val nextTaxYear = AccountingPeriodUtil.getNextTaxYear
+
+        val sectionId = SelectedTaxYearId
+        val expectedQuestion = messages.selected_tax_year
+        val expectedAnswer = MessageLookup.Business.WhatYearToSignUp.option2(nextTaxYear.startDate.year, nextTaxYear.endDate.year)
+        val expectedEditLink = _root_.agent.controllers.business.routes.WhatYearToSignUpController.show(editMode = true).url
+
+        sectionTest(
+          sectionId = sectionId,
+          expectedQuestion = expectedQuestion,
+          expectedAnswer = expectedAnswer,
+          expectedEditLink = expectedEditLink
+        )(setupData = customTestSummary(matchTaxYear = Some(MatchTaxYearModel(Yes)),
+          selectedTaxYear = Some(AccountingYearModel(Next))))
+      }
     }
 
     "display the correct info for the income source" in {
@@ -206,7 +244,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink
-      )
+      )()
     }
 
     "display the correct info for other income" in {
@@ -220,7 +258,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink
-      )
+      )()
     }
 
     "display the correct info for the business name" in {
@@ -234,7 +272,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink
-      )
+      )()
     }
 
     "display the correct info for the accounting method" in {
@@ -248,7 +286,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink
-      )
+      )()
     }
 
     "display the correct info for the property accounting method" in {
@@ -262,7 +300,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         expectedQuestion = expectedQuestion,
         expectedAnswer = expectedAnswer,
         expectedEditLink = expectedEditLink
-      )
+      )()
     }
 
   }

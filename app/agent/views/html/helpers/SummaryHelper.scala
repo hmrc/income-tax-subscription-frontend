@@ -17,10 +17,12 @@
 package agent.views.html.helpers
 
 
-import core.models.{Accruals, Cash}
-import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel}
+
+import core.models.{Accruals, Cash, Current, Next}
+import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import play.api.i18n.Messages
+import incometax.util.AccountingPeriodUtil._
 
 object SummaryHelper {
 
@@ -40,4 +42,8 @@ object SummaryHelper {
     case Both => Messages("agent.summary.income_source.both")
   }
 
+  def accountingYearText(src: AccountingYearModel)(implicit messages: Messages): String = src.accountingYear match {
+    case Current => Messages("agent.summary.selected_year.current", (getCurrentTaxEndYear -1).toString , getCurrentTaxEndYear.toString)
+    case Next => Messages("agent.summary.selected_year.next", getCurrentTaxEndYear.toString, (getCurrentTaxEndYear + 1).toString)
+  }
 }
