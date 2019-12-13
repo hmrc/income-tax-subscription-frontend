@@ -725,6 +725,9 @@ agent.summary.income_type_property                                    = Accounti
 agent.summary.income_type.cash                                        = Cash basis
 agent.summary.income_type.accruals                                    = Accruals basis
 agent.summary.match_tax_year                                          = Accounting period matches tax year
+agent.summary.selected_year                                           = Year signed-up for
+agent.summary.selected_year.current                                   = Current tax year ({0} to {1})
+agent.summary.selected_year.next                                      = Next tax year ({0} to {1})
 
 ## Sign Up Complete page ##
 agent.sign-up-complete.title                                          = You have signed up your client for the Use software to send Income Tax updates pilot

@@ -18,9 +18,9 @@
 @import incometax.business.models.address.Address
 @import incometax.incomesource.models._
 @import incometax.subscription.models.{SummaryModel, IncomeSourceType}
-@import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel, MatchTaxYearModel}
+@import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel, MatchTaxYearModel, AccountingYearModel}
 @import core.config.AppConfig
-@import core.models.No
+@import core.models.{No, Yes}
 @import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.templates.main_template
@@ -94,6 +94,14 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
+@selectedTaxYear(selectedTaxYear: AccountingYearModel) = @{
+    val rowName = SelectedTaxYearId
+    val rowQuestion = Messages("agent.summary.selected_year")
+    val rowAnswer = accountingYearText(selectedTaxYear)
+    val rowUrl = agent.controllers.business.routes.WhatYearToSignUpController.show(editMode = true).url
+    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
+}
+
 @accountingMethod(income: AccountingMethodModel) = @{
     val rowName = AccountingMethodId
     val rowQuestion = Messages("agent.summary.income_type")
@@ -122,8 +130,11 @@
         @summaryModel.incomeSource.map(incomeSource)
         @summaryModel.otherIncome.map(otherIncome)
         @summaryModel.matchTaxYear.map(matchTaxYear)
+        @if(summaryModel.matchTaxYear.exists(_.matchTaxYear == Yes)) {
+            @summaryModel.selectedTaxYear.map(selectedTaxYear)
+        }
         @if(summaryModel.matchTaxYear.exists(_.matchTaxYear == No)) {
-        @summaryModel.accountingPeriodDate.map(accountingPeriodDate)
+            @summaryModel.accountingPeriodDate.map(accountingPeriodDate)
         }
         @summaryModel.businessName.map(businessName)
         @summaryModel.accountingMethod.map(accountingMethod)
