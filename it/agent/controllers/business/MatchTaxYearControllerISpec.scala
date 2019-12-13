@@ -24,6 +24,7 @@ import _root_.agent.services.CacheConstants
 import agent.models.AccountingPeriodPriorModel
 import core.models.{No, Yes}
 import incometax.business.models.MatchTaxYearModel
+import incometax.subscription.models.IncomeSourceType
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -75,7 +76,8 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
-          KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(userInput)))
+          KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(userInput),
+            incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
           val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(
@@ -100,7 +102,8 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
-          KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(previousAnswer)))
+          KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(previousAnswer),
+            incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
           val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(
@@ -125,7 +128,8 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
-          KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(previousAnswer)))
+          KeystoreStub.stubKeystoreData(keystoreData(matchTaxYear = Some(previousAnswer),
+            incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
           val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(
@@ -151,7 +155,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
-          KeystoreStub.stubEmptyKeystore()
+          KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
           val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(
@@ -175,7 +179,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
-          KeystoreStub.stubEmptyKeystore()
+          KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(IncomeSourceType(IncomeSourceType.both))))
 
           When(s"POST ${routes.MatchTaxYearController.submit().url} is called")
           val res = IncomeTaxSubscriptionFrontend.submitMatchTaxYear(

@@ -24,6 +24,7 @@ import core.config.featureswitch.FeatureSwitching
 import core.models.{No, Yes}
 import core.services.AuthService
 import incometax.business.models.MatchTaxYearModel
+import incometax.subscription.models.Both
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -57,14 +58,22 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   private def redirectLocation(currentAnswer: MatchTaxYearModel, isEditMode: Boolean)(implicit request: Request[AnyContent]): Future[Result] = {
-    keystoreService.fetchMatchTaxYear map {
-      case Some(`currentAnswer`) if isEditMode =>
-        Redirect(agent.controllers.routes.CheckYourAnswersController.show())
-      case _ =>
-        currentAnswer.matchTaxYear match {
-          case Yes => Redirect(agent.controllers.business.routes.BusinessAccountingMethodController.show())
-          case No => Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.show())
-        }
+    for {
+      matchTaxYear <- keystoreService.fetchMatchTaxYear
+      incomeSources <- keystoreService.fetchIncomeSource
+    } yield {
+      (currentAnswer, incomeSources) match {
+        case (_, None) =>
+          Redirect(agent.controllers.routes.IncomeSourceController.show())
+        case (_, _) if isEditMode && matchTaxYear.contains(currentAnswer) =>
+          Redirect(agent.controllers.routes.CheckYourAnswersController.show())
+        case (MatchTaxYearModel(No), _) =>
+          Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(isEditMode))
+        case (_, Some(Both)) =>
+          Redirect(agent.controllers.business.routes.BusinessAccountingMethodController.show(isEditMode))
+        case _ =>
+          Redirect(agent.controllers.business.routes.WhatYearToSignUpController.show(isEditMode))
+      }
     }
   }
 

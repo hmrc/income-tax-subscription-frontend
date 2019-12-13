@@ -23,6 +23,7 @@ import agent.services.mocks.MockKeystoreService
 import core.forms.submapping.YesNoMapping
 import core.models.{No, Yes}
 import incometax.business.models.MatchTaxYearModel
+import incometax.subscription.models.IncomeSourceType
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
 
@@ -35,7 +36,9 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
   )
 
   class Test(fetchMatchTaxYear: Option[MatchTaxYearModel] = None,
-             fetchAccountingPeriodPrior: Option[AccountingPeriodPriorModel] = None) {
+             fetchAccountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
+             saveMatchTaxYear: Option[MatchTaxYearModel] = None,
+             fetchIncomeSource: Option[IncomeSourceType] = None) {
 
     val controller = new MatchTaxYearController(
       MockBaseControllerConfig,
@@ -44,8 +47,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
       mockAuthService
     )
 
-    setupMockKeystore(fetchMatchTaxYear = fetchMatchTaxYear, fetchAccountingPeriodPrior = fetchAccountingPeriodPrior)
-
+    setupMockKeystore(fetchMatchTaxYear = fetchMatchTaxYear, fetchIncomeSource = fetchIncomeSource, fetchAccountingPeriodPrior = fetchAccountingPeriodPrior)
   }
 
   "backUrl" when {
@@ -70,9 +72,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
           await(controller.backUrl(isEditMode = false)(subscriptionRequest)) mustBe
             agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
         }
-
       }
-
     }
   }
 
@@ -86,6 +86,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
         verifyKeystore(fetchMatchTaxYear = 1, fetchAccountingPeriodPrior = 1)
       }
     }
+
     "a previous answer is in keystore" should {
       s"return $OK" in new Test(fetchMatchTaxYear = Some(MatchTaxYearModel(Yes)), fetchAccountingPeriodPrior =
         Some(AccountingPeriodPriorModel(Yes))) {
@@ -101,67 +102,120 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
   "submit" when {
     "in edit mode" when {
       "the previous answer matches the current answer" should {
-        s"redirect to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in new Test(fetchMatchTaxYear = Some(MatchTaxYearModel(Yes))) {
+        s"redirect to ${agent.controllers.routes.CheckYourAnswersController.show().url}" in new Test(
+          fetchMatchTaxYear = Some(MatchTaxYearModel(Yes)),
+          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.both))) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_yes)
           val result: Result = await(controller.submit(isEditMode = true)(request))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(agent.controllers.routes.CheckYourAnswersController.show().url)
 
-          verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1)
+          verifyKeystore(fetchMatchTaxYear = 1, fetchIncomeSource = 1, saveMatchTaxYear = 1)
         }
       }
+
       s"the answer is changed to '$Yes'" should {
-        s"redirect to ${routes.BusinessAccountingMethodController.show().url}" in new Test(fetchMatchTaxYear = Some(MatchTaxYearModel(No))) {
+        s"redirect to ${routes.BusinessAccountingMethodController.show().url}" in new Test(
+          fetchMatchTaxYear = Some(MatchTaxYearModel(No)),
+          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.both))) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_yes)
           val result: Result = await(controller.submit(isEditMode = true)(request))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.BusinessAccountingMethodController.show().url)
+          redirectLocation(result) mustBe Some(routes.BusinessAccountingMethodController.show(true).url)
 
-          verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1)
+          verifyKeystore(fetchMatchTaxYear = 1, fetchIncomeSource = 1, saveMatchTaxYear = 1)
         }
       }
+
       s"the answer was changed to '$No'" should {
-        s"redirect to ${routes.BusinessAccountingPeriodDateController.show().url}" in new Test {
+        s"redirect to ${routes.BusinessAccountingPeriodDateController.show().url}" in new Test(
+          fetchMatchTaxYear = Some(MatchTaxYearModel(Yes)),
+          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.both))) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_no)
           val result: Result = await(controller.submit(isEditMode = true)(request))
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.BusinessAccountingPeriodDateController.show().url)
+          redirectLocation(result) mustBe Some(routes.BusinessAccountingPeriodDateController.show(true).url)
+
+          verifyKeystore(fetchMatchTaxYear = 1, fetchIncomeSource = 1, saveMatchTaxYear = 1)
         }
       }
     }
+
     "not in edit mode" when {
       s"the user answers '$Yes'" should {
-        s"redirect to ${routes.BusinessAccountingMethodController.show().url}" in new Test {
+        s"redirect to ${routes.BusinessAccountingMethodController.show().url} when they have selected both income sources" in new Test(
+          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.both))
+        ) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_yes)
           val result: Result = await(controller.submit(isEditMode = false)(request))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingMethodController.show().url)
 
-          verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1)
+          verifyKeystore(fetchMatchTaxYear = 1, fetchIncomeSource = 1, saveMatchTaxYear = 1)
+        }
+
+        s"redirect to ${routes.WhatYearToSignUpController.show().url} when they have selected only business income sources" in new Test(
+          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.business))
+        ) {
+          val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_yes)
+          val result: Result = await(controller.submit(isEditMode = false)(request))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.WhatYearToSignUpController.show().url)
+
+          verifyKeystore(fetchMatchTaxYear = 1, fetchIncomeSource = 1, saveMatchTaxYear = 1)
         }
       }
+
       s"the user answers '$No'" should {
-        s"redirect to ${routes.BusinessAccountingPeriodDateController.show().url}" in new Test {
+        s"redirect to ${routes.BusinessAccountingPeriodDateController.show().url} when they have selected both income sources" in new Test(
+          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.both))
+        ) {
           val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_no)
           val result: Result = await(controller.submit(isEditMode = false)(request))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(routes.BusinessAccountingPeriodDateController.show().url)
 
-          verifyKeystore(fetchMatchTaxYear = 1, saveMatchTaxYear = 1)
+          verifyKeystore(fetchMatchTaxYear = 1, fetchIncomeSource = 1, saveMatchTaxYear = 1)
+        }
+
+        s"redirect to ${routes.BusinessAccountingPeriodDateController.show().url} when they have selected only business income sources" in new Test(
+          fetchIncomeSource = Some(IncomeSourceType(IncomeSourceType.business))
+        ) {
+          val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_no)
+          val result: Result = await(controller.submit(isEditMode = false)(request))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.BusinessAccountingPeriodDateController.show().url)
+
+          verifyKeystore(fetchMatchTaxYear = 1, fetchIncomeSource = 1, saveMatchTaxYear = 1)
         }
       }
+
+      "the user does not have an income source" should {
+        s"redirect to ${agent.controllers.routes.IncomeSourceController.show().url}" in new Test {
+          val request: Request[AnyContent] = subscriptionRequest.withFormUrlEncodedBody(MatchTaxYearForm.matchTaxYear -> YesNoMapping.option_no)
+          val result: Result = await(controller.submit(isEditMode = false)(request))
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(agent.controllers.routes.IncomeSourceController.show().url)
+
+          verifyKeystore(fetchMatchTaxYear = 1, fetchIncomeSource = 1, saveMatchTaxYear = 1)
+        }
+      }
+
       "the user does not select an answer" should {
         s"return a $BAD_REQUEST" in new Test(fetchAccountingPeriodPrior = Some(AccountingPeriodPriorModel(Yes))) {
           val result: Result = await(controller.submit(isEditMode = false)(subscriptionRequest))
 
           status(result) mustBe BAD_REQUEST
 
-          verifyKeystore(fetchMatchTaxYear = 0, saveMatchTaxYear = 0, fetchAccountingPeriodPrior = 1)
+          verifyKeystore(fetchMatchTaxYear = 0, fetchIncomeSource = 0, saveMatchTaxYear = 0, fetchAccountingPeriodPrior = 1)
         }
       }
     }
