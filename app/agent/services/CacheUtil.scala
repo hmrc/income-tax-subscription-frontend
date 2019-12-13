@@ -39,6 +39,8 @@ object CacheUtil {
 
     def getMatchTaxYear()(implicit read: Reads[MatchTaxYearModel]): Option[MatchTaxYearModel] = cacheMap.getEntry(MatchTaxYear)
 
+    def getSelectedTaxYear()(implicit read: Reads[AccountingYearModel]): Option[AccountingYearModel] = cacheMap.getEntry(WhatYearToSignUp)
+
     def getAccountingPeriodDate()(implicit read: Reads[AccountingPeriodModel]): Option[AccountingPeriodModel] = cacheMap.getEntry(AccountingPeriodDate)
 
     def getBusinessName()(implicit read: Reads[BusinessNameModel]): Option[BusinessNameModel] = cacheMap.getEntry(BusinessName)
@@ -64,6 +66,7 @@ object CacheUtil {
             otherIncome = getOtherIncome(),
             accountingPeriodPrior = getAccountingPeriodPrior(),
             matchTaxYear = getMatchTaxYear(),
+            selectedTaxYear = getSelectedTaxYear(),
             accountingPeriodDate = getAccountingPeriodDate(),
             businessName = getBusinessName(),
             accountingMethod = getAccountingMethod(),

@@ -36,6 +36,7 @@ class CacheUtilSpec extends UnitTestTrait {
       emptyCacheMap.getAccountingMethodProperty() shouldBe None
       emptyCacheMap.getTerms() shouldBe None
       emptyCacheMap.getMatchTaxYear() shouldBe None
+      emptyCacheMap.getSelectedTaxYear() shouldBe None
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
@@ -48,6 +49,7 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getAccountingMethodProperty() shouldBe Some(testAccountingMethodProperty)
       testCacheMap.getTerms() shouldBe Some(testTerms)
       testCacheMap.getMatchTaxYear() shouldBe Some(testMatchTaxYearNo)
+      testCacheMap.getSelectedTaxYear() shouldBe Some(testSelectedTaxYearNext)
     }
 
     "The getSummary should populate the Summary model correctly" when {
@@ -75,6 +77,7 @@ class CacheUtilSpec extends UnitTestTrait {
           otherIncome = Some(testOtherIncomeNo),
           accountingPeriodPrior = Some(testAccountingPeriodPriorCurrent),
           matchTaxYear = Some(testMatchTaxYearNo),
+          selectedTaxYear = Some(testSelectedTaxYearNext),
           accountingPeriodDate = Some(testAccountingPeriod),
           businessName = Some(testBusinessName),
           accountingMethod = Some(testAccountingMethod),
