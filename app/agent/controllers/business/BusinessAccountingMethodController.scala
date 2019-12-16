@@ -21,7 +21,7 @@ import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, AgentTaxYear, EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.models.No
 import core.services.AuthService
 import incometax.business.models.MatchTaxYearModel
@@ -92,7 +92,6 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
 
     (incomeSourceType, matchTaxYear, isEditMode) match {
       case (_, _, true) => agent.controllers.routes.CheckYourAnswersController.show().url
-      case (_, _, _) if !isEnabled(AgentTaxYear) => agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
       case (_, Some(MatchTaxYearModel(No)), _) => agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
       case (Some(Both), _, _) => agent.controllers.business.routes.MatchTaxYearController.show().url
       case (Some(Business), _, _) => agent.controllers.business.routes.WhatYearToSignUpController.show().url

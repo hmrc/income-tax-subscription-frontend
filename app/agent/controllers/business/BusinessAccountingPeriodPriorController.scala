@@ -21,7 +21,7 @@ import agent.forms.AccountingPeriodPriorForm
 import agent.models.AccountingPeriodPriorModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{AgentTaxYear, EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.models.{No, Yes}
 import core.services.AuthService
 import core.utils.Implicits._
@@ -80,10 +80,7 @@ class BusinessAccountingPeriodPriorController @Inject()(val baseConfig: BaseCont
 
   def yes(implicit request: Request[_]): Future[Result] = Redirect(agent.controllers.business.routes.RegisterNextAccountingPeriodController.show())
 
-  def no(implicit request: Request[_]): Future[Result] = {
-    if (isEnabled(AgentTaxYear)) Redirect(agent.controllers.business.routes.MatchTaxYearController.show())
-    else Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.show())
-  }
+  def no(implicit request: Request[_]): Future[Result] = Redirect(agent.controllers.business.routes.MatchTaxYearController.show())
 
   def backUrl(implicit request: Request[_]): Future[String] = {
     if (isEnabled(EligibilityPagesFeature)) {

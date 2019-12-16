@@ -19,7 +19,6 @@ package agent.controllers.business
 import agent.auth.AuthenticatedController
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{AgentTaxYear, FeatureSwitching}
 import core.services.AuthService
 import core.utils.Implicits._
 import javax.inject.{Inject, Singleton}
@@ -32,7 +31,7 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
                                                        val messagesApi: MessagesApi,
                                                        val keystoreService: KeystoreService,
                                                        val authService: AuthService
-                                                      ) extends AuthenticatedController with FeatureSwitching {
+                                                      ) extends AuthenticatedController {
 
   def view()(implicit request: Request[AnyContent]): Html =
     agent.views.html.business.register_next_accounting_period(
@@ -46,10 +45,6 @@ class RegisterNextAccountingPeriodController @Inject()(val baseConfig: BaseContr
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      if (isEnabled(AgentTaxYear)) {
-        Redirect(agent.controllers.business.routes.MatchTaxYearController.show().url)
-      }
-      else
-        Redirect(agent.controllers.business.routes.BusinessAccountingPeriodDateController.show())
+      Redirect(agent.controllers.business.routes.MatchTaxYearController.show().url)
   }
 }

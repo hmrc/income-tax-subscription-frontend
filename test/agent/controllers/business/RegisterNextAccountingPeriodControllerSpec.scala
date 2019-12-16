@@ -18,7 +18,6 @@ package agent.controllers.business
 
 import agent.controllers.AgentControllerBaseSpec
 import agent.services.mocks.MockKeystoreService
-import core.config.featureswitch.{AgentTaxYear, FeatureSwitching}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -26,12 +25,7 @@ import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class RegisterNextAccountingPeriodControllerSpec extends AgentControllerBaseSpec with MockKeystoreService with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(AgentTaxYear)
-  }
+class RegisterNextAccountingPeriodControllerSpec extends AgentControllerBaseSpec with MockKeystoreService {
 
   override val controllerName: String = "RegisterNextAccountingPeriodController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -82,21 +76,11 @@ class RegisterNextAccountingPeriodControllerSpec extends AgentControllerBaseSpec
       "return status SEE_OTHER (303)" in {
         status(goodRequest) mustBe Status.SEE_OTHER
       }
-
-      "Agent Tax Year FS is enabled" should {
-        s"redirect to ${agent.controllers.business.routes.MatchTaxYearController.show().url}" in {
-          enable(AgentTaxYear)
-          redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.MatchTaxYearController.show().url
-        }
+      s"redirect to ${agent.controllers.business.routes.MatchTaxYearController.show().url}" in {
+        redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.MatchTaxYearController.show().url
       }
-
-      "Agent Tax Year FS is disabled" should {
-        s"redirect to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-          redirectLocation(goodRequest).get mustBe agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
-        }
-      }
-      authorisationTests()
-
     }
   }
+
+    authorisationTests()
 }

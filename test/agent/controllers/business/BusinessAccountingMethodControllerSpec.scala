@@ -20,7 +20,7 @@ import agent.controllers.AgentControllerBaseSpec
 import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
 import agent.services.mocks.MockKeystoreService
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, AgentTaxYear, EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.models.{Cash, No, Yes}
 import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.models.{Both, Business}
@@ -37,7 +37,6 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     super.beforeEach()
     disable(EligibilityPagesFeature)
     disable(AgentPropertyCashOrAccruals)
-    disable(AgentTaxYear)
   }
 
   override val controllerName: String = "BusinessAccountingMethod"
@@ -155,18 +154,9 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     }
 
     "not in edit mode" when {
-      "the agent tax year feature switch is disabled" should {
-        s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-          disable(AgentTaxYear)
-          TestBusinessAccountingMethodController.backUrl(isEditMode = false, None, None) mustBe
-            agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
-        }
-      }
-
-      "the agent tax year feature switch is enabled" when {
         "match tax year was answered with No" should {
           s"point to ${agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-            enable(AgentTaxYear)
+
             TestBusinessAccountingMethodController.backUrl(isEditMode = false, None, MatchTaxYearModel(No)) mustBe
               agent.controllers.business.routes.BusinessAccountingPeriodDateController.show().url
           }
@@ -174,7 +164,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         "income source type is both" should {
           s"point to ${agent.controllers.business.routes.MatchTaxYearController.show().url}" in {
-            enable(AgentTaxYear)
+
             TestBusinessAccountingMethodController.backUrl(isEditMode = false, Some(Both), Some(MatchTaxYearModel(Yes))) mustBe
               agent.controllers.business.routes.MatchTaxYearController.show().url
           }
@@ -182,7 +172,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         "income source type is business" should {
           s"point to ${agent.controllers.business.routes.WhatYearToSignUpController.show().url}" in {
-            enable(AgentTaxYear)
+
             TestBusinessAccountingMethodController.backUrl(isEditMode = false, Some(Business), Some(MatchTaxYearModel(Yes))) mustBe
               agent.controllers.business.routes.WhatYearToSignUpController.show().url
           }
@@ -190,12 +180,12 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
         "the back url can't be determined" should {
           s"point to ${agent.controllers.routes.IncomeSourceController.show().url}" in {
-            enable(AgentTaxYear)
+
             TestBusinessAccountingMethodController.backUrl(isEditMode = false, None, None) mustBe
               agent.controllers.routes.IncomeSourceController.show().url
           }
         }
-      }
+
     }
   }
 

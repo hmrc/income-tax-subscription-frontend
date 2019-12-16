@@ -34,8 +34,7 @@ object FeatureSwitch {
     UseSubscriptionApiV2,
     PropertyCashOrAccruals,
     WhatTaxYearToSignUp,
-    AgentPropertyCashOrAccruals,
-    AgentTaxYear
+    AgentPropertyCashOrAccruals
   )
 
   def apply(str: String): FeatureSwitch =
@@ -91,9 +90,4 @@ case object WhatTaxYearToSignUp extends FeatureSwitch {
 case object AgentPropertyCashOrAccruals extends FeatureSwitch {
   override val displayText: String = "Enable cash or accruals choice for agent property income"
   override val name: String = s"$prefix.agent-property-cash-or-accruals"
-}
-
-case object AgentTaxYear extends FeatureSwitch {
-  override val displayText: String = "Enable agent tax year pages"
-  override val name: String = s"$prefix.agent-tax-year"
 }
