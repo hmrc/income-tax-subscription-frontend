@@ -98,8 +98,6 @@ trait AppConfig extends FeatureSwitching {
 
   val eligibilityFeatureSwitchUrl: String
 
-  def getAgencyNameUrl(arn: String): String
-
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy"))
@@ -268,11 +266,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override def storeSubscriptionUrl(nino: String): String =
     s"$subscriptionStore/income-tax-subscription-store/client-subscription-data/$nino"
-
-  lazy val agentServicesAccount = baseUrl("agent-services-account")
-
-  override def getAgencyNameUrl(arn: String): String =
-    s"$agentServicesAccount/agent-services-account/client/agency-name/$arn"
 
   override def languageTranslationEnabled: Boolean = isEnabled(featureswitch.WelshLanguageFeature)
 

@@ -95,8 +95,6 @@ trait MockConfig extends AppConfig {
 
   override def storeSubscriptionUrl(nino: String): String = ""
 
-  override def getAgencyNameUrl(arn: String): String = s"/agent-services-account/client/agency-name/$arn"
-
   override val languageTranslationEnabled: Boolean = false
 
   override val betaFeedbackUrl: String = "/feedback"
