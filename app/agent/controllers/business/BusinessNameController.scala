@@ -16,21 +16,20 @@
 
 package agent.controllers.business
 
-import javax.inject.{Inject, Singleton}
-
 import agent.auth.AuthenticatedController
 import agent.forms.BusinessNameForm
 import agent.models.BusinessNameModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.services.AuthService
-import incometax.business.models.AccountingPeriodModel
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.{Both, Business, IncomeSourceType}
+import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+
+import scala.concurrent.Future
 
 @Singleton
 class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
@@ -40,29 +39,22 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        currentTimeService: CurrentTimeService
                                       ) extends AuthenticatedController {
 
-  def view(businessNameForm: Form[BusinessNameModel],
-           isEditMode: Boolean,
-           accountingPeriod: Option[AccountingPeriodModel],
-           incomeSource: IncomeSourceType
-          )(implicit request: Request[_]): Html =
+  def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     agent.views.html.business.business_name(
       businessNameForm = businessNameForm,
       postAction = agent.controllers.business.routes.BusinessNameController.submit(editMode = isEditMode),
       isEditMode,
       backUrl = backUrl(isEditMode)
     )
+  }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         businessName <- keystoreService.fetchBusinessName()
-        accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
-        incomeSourceType <- keystoreService.fetchIncomeSource() map (source => IncomeSourceType(source.get.source))
       } yield Ok(view(
         BusinessNameForm.businessNameForm.form.fill(businessName),
-        isEditMode = isEditMode,
-        accountingPeriod,
-        incomeSourceType
+        isEditMode = isEditMode
       ))
   }
 
@@ -70,17 +62,13 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
     implicit user =>
 
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
-        formWithErrors =>
-          for{
-            accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
-            incomeSourceType <- keystoreService.fetchIncomeSource() map (source => IncomeSourceType(source.get.source))
-          } yield BadRequest(view(formWithErrors, isEditMode = isEditMode, accountingPeriod, incomeSourceType)),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         businessName => {
           keystoreService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
               Redirect(agent.controllers.routes.CheckYourAnswersController.show())
             else
-              Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+              Redirect(agent.controllers.business.routes.MatchTaxYearController.show())
             )
         }
       )

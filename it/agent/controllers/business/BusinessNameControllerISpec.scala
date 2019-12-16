@@ -87,7 +87,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
         Then("Should return a SEE_OTHER with a redirect location of business accounting period prior")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(accountingPeriodPriorURI)
+          redirectURI(matchTaxYearURI)
         )
       }
 

@@ -29,7 +29,6 @@ import incometax.business.models.AccountingPeriodModel
 import incometax.util.CurrentDateProvider
 import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent}
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
@@ -58,30 +57,16 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
     DateProvider
   )
 
-  "show" when {
-    "it is not the current period" should {
-      "return the correct view" in {
-        setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = testAccountingPeriodPriorCurrent)
-        lazy val result = await(TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest))
+  "show" should {
+    "return the correct view" in {
+      setupMockKeystore(fetchAccountingPeriodDate = None)
+      lazy val result = await(TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest))
 
-        status(result) mustBe OK
-        verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 0)
+      status(result) mustBe OK
+      verifyKeystore(fetchAccountingPeriodDate = 1)
 
-        val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading
-      }
-    }
-    "it is the current period" should {
-      "return the correct view" in {
-        setupMockKeystore(fetchAccountingPeriodDate = None, fetchAccountingPeriodPrior = testAccountingPeriodPriorNext)
-        lazy val result = await(TestBusinessAccountingPeriodController.show(isEditMode = false)(subscriptionRequest))
-
-        status(result) mustBe OK
-        verifyKeystore(fetchAccountingPeriodDate = 1, saveAccountingPeriodDate = 0, fetchAccountingPeriodPrior = 1)
-
-        val document = Jsoup.parse(contentAsString(result))
-        document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading
-      }
+      val document = Jsoup.parse(contentAsString(result))
+      document.select("h1").text mustBe MessageLookup.AccountingPeriod.heading
     }
   }
 
