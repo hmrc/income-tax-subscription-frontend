@@ -18,7 +18,6 @@ package agent.views.business
 
 import agent.assets.MessageLookup.{AccountingPeriod => messages, Base => common}
 import agent.forms.AccountingPeriodDateForm
-import agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView, NextAccountingPeriodView}
 import core.views.ViewSpecTrait
 import incometax.util.AccountingPeriodUtil
 import play.api.i18n.Messages.Implicits._
@@ -31,73 +30,52 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
   val action = ViewSpecTrait.testCall
   val taxEndYear = AccountingPeriodUtil.getCurrentTaxYear.taxEndYear
 
-  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean, addFormErrors: Boolean): Html = agent.views.html.business.accounting_period_date(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): Html = agent.views.html.business.accounting_period_date(
     accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
-    viewType = viewType,
     isEditMode = isEditMode,
     taxEndYear = taxEndYear
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(prefix: String, suffix: Option[String] = None, viewType: AccountingPeriodViewType, isEditMode: Boolean) = TestView(
-    name = s"$prefix Business Accounting Period Date View${suffix.fold("")(x => x)}",
+  def documentCore(suffix: Option[String] = None, isEditMode: Boolean): TestView = TestView(
+    name = s"Business Accounting Period Date View${suffix.fold("")(x => x)}",
     title = messages.title,
-    heading = (isEditMode, viewType) match {
-      case (true, _) => messages.heading
-      case (_, CurrentAccountingPeriodView) => messages.heading
-      case (_, NextAccountingPeriodView) => messages.heading
-    },
-    page = page(viewType = viewType, isEditMode = isEditMode, addFormErrors = false)
+    heading = messages.heading,
+    page = page(isEditMode = isEditMode, addFormErrors = false)
   )
 
   "The Business Accounting Period Date view" should {
-    Seq(CurrentAccountingPeriodView, NextAccountingPeriodView).foreach {
-      viewType =>
 
-        val prefix = s"When the viewtype=$viewType"
+    val testPage = documentCore(
+      isEditMode = false
+    )
 
-        val testPage = documentCore(
-          prefix = prefix,
-          viewType = viewType,
-          isEditMode = false
-        )
+    testPage.mustHaveBackLinkTo(backUrl)
 
-        testPage.mustHaveBackLinkTo(backUrl)
+    val form = testPage.getForm(s"Business Accounting Period Date form")(actionCall = action)
 
-        val form = testPage.getForm(s"$prefix Business Accounting Period Date form")(actionCall = action)
+    form.mustHaveDateField(
+      id = "startDate",
+      legend = common.startDate,
+      exampleDate = messages.exampleStartDate(taxEndYear - 1)
+    )
 
-        form.mustHaveDateField(
-          id = "startDate",
-          legend = common.startDate,
-          exampleDate =
-            viewType match {
-              case CurrentAccountingPeriodView => messages.exampleStartDate(taxEndYear - 1)
-              case _ => messages.exampleStartDate(taxEndYear)
-            }
-        )
+    form.mustHaveDateField(
+      id = "endDate",
+      legend = common.endDate,
+      exampleDate = messages.exampleEndDate(taxEndYear)
+    )
 
-        form.mustHaveDateField(
-          id = "endDate",
-          legend = common.endDate,
-          exampleDate =
-            viewType match {
-              case CurrentAccountingPeriodView => messages.exampleEndDate(taxEndYear)
-              case _ => messages.exampleEndDate(taxEndYear + 1)
-            }
-        )
+    val editModePage = documentCore(
+      suffix = " and it is in edit mode",
+      isEditMode = true
+    )
 
-        val editModePage = documentCore(
-          prefix = prefix,
-          suffix = " and it is in edit mode",
-          viewType = viewType,
-          isEditMode = true
-        )
+    editModePage.mustHavePara(messages.line1)
 
-        editModePage.mustHavePara(messages.line1)
+    editModePage.mustHaveUpdateButton()
 
-        editModePage.mustHaveUpdateButton()
-    }
   }
 
   "Append Error to the page title if the form has error" should {
@@ -106,7 +84,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
       name = s"Business Accounting Period Date View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
-      page = page(viewType = CurrentAccountingPeriodView, isEditMode = false, addFormErrors = true)
+      page = page(isEditMode = false, addFormErrors = true)
     )
 
     val testPage = documentCore()

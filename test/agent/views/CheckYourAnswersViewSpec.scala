@@ -16,15 +16,14 @@
 
 package agent.views
 
-import _root_.agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 import _root_.agent.views.html.helpers.SummaryIdConstants._
 import _root_.core.utils.{TestModels, UnitTestTrait}
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
 import core.models._
 import core.utils.TestModels.{testAccountingPeriod, testAgentSummaryData, testBusinessName}
-import incometax.business.models.address.Address
 import incometax.business.models._
+import incometax.business.models.address.Address
 import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import incometax.subscription.models.{AgentSummary, IncomeSourceType}
 import incometax.util.AccountingPeriodUtil
@@ -76,7 +75,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   )(FakeRequest(), applicationMessages, appConfig)
 
   def document(testSummaryModel: AgentSummary = testAgentSummaryData): Document
-    = page(testSummaryModel).doc
+  = page(testSummaryModel).doc
 
   val questionId: String => String = (sectionId: String) => s"$sectionId-question"
   val answerId: String => String = (sectionId: String) => s"$sectionId-answer"
@@ -107,11 +106,11 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     }
 
     s"have the heading (H1) '${messages.heading}'" in {
-      document().select("h1").text() must include (messages.heading)
+      document().select("h1").text() must include(messages.heading)
     }
 
     s"have visually hidden text as part of the (H1) '${messages.heading_hidden}'" in {
-      document().select("h1 span").text() must include (messages.heading_hidden)
+      document().select("h1 span").text() must include(messages.heading_hidden)
     }
 
     s"have the secondary heading (H2) '${messages.h2}'" in {
@@ -148,7 +147,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       answer.text() shouldBe expectedAnswer
       if (expectedEditLink.nonEmpty) {
         editLink.attr("href") shouldBe expectedEditLink.get
-        editLink.text() should include (MessageLookup.Base.change)
+        editLink.text() should include(MessageLookup.Base.change)
         editLink.select("span").text() shouldBe expectedQuestion
         editLink.select("span").hasClass("visuallyhidden") shouldBe true
       }

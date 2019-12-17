@@ -84,27 +84,19 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
       )
 
     "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
+
+      s"redirect to '${agent.controllers.business.routes.MatchTaxYearController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
 
         val goodRequest = callShow(isEditMode = false)
 
-        status(goodRequest) must be(Status.SEE_OTHER)
+        status(goodRequest) mustBe SEE_OTHER
+        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.MatchTaxYearController.show().url)
 
         await(goodRequest)
         verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
       }
 
-      s"redirect to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}'" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = false)
-
-        redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchBusinessName = 0, saveBusinessName = 1)
-      }
     }
 
     "When it is in edit mode" should {

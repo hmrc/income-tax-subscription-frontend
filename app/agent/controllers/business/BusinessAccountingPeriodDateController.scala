@@ -18,11 +18,9 @@ package agent.controllers.business
 
 import agent.auth.AuthenticatedController
 import agent.forms._
-import agent.models.enums._
 import agent.services.CacheUtil._
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.models.{No, Yes}
 import core.services.{AccountingPeriodService, AuthService}
 import core.utils.Implicits._
 import incometax.business.models.AccountingPeriodModel
@@ -33,7 +31,6 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import uk.gov.hmrc.http.InternalServerException
 
 import scala.concurrent.Future
 
@@ -46,92 +43,67 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
                                                        val currentDateProvider: CurrentDateProvider
                                                       ) extends AuthenticatedController {
 
-  def view(form: Form[AccountingPeriodModel],
-           backUrl: String, isEditMode: Boolean,
-           viewType: AccountingPeriodViewType
-          )(implicit request: Request[_]): Html =
+  def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html = {
     agent.views.html.business.accounting_period_date(
       form,
       agent.controllers.business.routes.BusinessAccountingPeriodDateController.submit(editMode = isEditMode),
       isEditMode,
       backUrl,
-      viewType,
       AccountingPeriodUtil.getCurrentTaxYear.taxEndYear
     )
+  }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         accountingPeriod <- keystoreService.fetchAccountingPeriodDate()
-        viewType <- whichView
       } yield
         Ok(view(
           AccountingPeriodDateForm.accountingPeriodDateForm.fill(accountingPeriod),
           backUrl = backUrl(isEditMode),
-          isEditMode = isEditMode,
-          viewType = viewType
+          isEditMode = isEditMode
         ))
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => {
-      whichView.flatMap {
-        viewType =>
-          AccountingPeriodDateForm.accountingPeriodDateForm.bindFromRequest().fold(
-            formWithErrors => BadRequest(view(
-              form = formWithErrors,
-              backUrl = backUrl(isEditMode),
-              isEditMode = isEditMode,
-              viewType = viewType
-            )),
-            accountingPeriod =>
-              if (accountingPeriodService.checkEligibleAccountingPeriod(accountingPeriod.startDate.toLocalDate, accountingPeriod.endDate.toLocalDate)) {
-                for {
-                  cache <- keystoreService.fetchAll() map (_.get)
-                  optOldAccountingPeriodDates = cache.getAccountingPeriodDate()
-                  _ = cache.getIncomeSource() map (source => IncomeSourceType(source.source))
-                  _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
-                  taxYearChanged = optOldAccountingPeriodDates match {
-                    case Some(oldAccountingPeriod) => (oldAccountingPeriod.taxEndYear != accountingPeriod.taxEndYear)
-                    case None => true
-                  }
-                  _ <- if (taxYearChanged) keystoreService.saveTerms(terms = false)
-                  else Future.successful(Unit)
-                } yield {
-                  if (isEditMode) {
-                    if (taxYearChanged) {
-                      Redirect(agent.controllers.routes.TermsController.show(editMode = true))
-                    } else {
-                      Redirect(agent.controllers.routes.CheckYourAnswersController.show())
-                    }
-                  } else {
-                    Redirect(agent.controllers.business.routes.BusinessAccountingMethodController.show())
-                  }
+    implicit user =>
+      AccountingPeriodDateForm.accountingPeriodDateForm.bindFromRequest().fold(
+        formWithErrors => BadRequest(view(
+          form = formWithErrors,
+          backUrl = backUrl(isEditMode),
+          isEditMode = isEditMode
+        )),
+        accountingPeriod =>
+          if (accountingPeriodService.checkEligibleAccountingPeriod(accountingPeriod.startDate.toLocalDate, accountingPeriod.endDate.toLocalDate)) {
+            for {
+              cache <- keystoreService.fetchAll() map (_.get)
+              optOldAccountingPeriodDates = cache.getAccountingPeriodDate()
+              _ = cache.getIncomeSource() map (source => IncomeSourceType(source.source))
+              _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
+              taxYearChanged = optOldAccountingPeriodDates match {
+                case Some(oldAccountingPeriod) => (oldAccountingPeriod.taxEndYear != accountingPeriod.taxEndYear)
+                case None => true
+              }
+              _ <- if (taxYearChanged) keystoreService.saveTerms(terms = false)
+              else Future.successful(Unit)
+            } yield {
+              if (isEditMode) {
+                if (taxYearChanged) {
+                  Redirect(agent.controllers.routes.TermsController.show(editMode = true))
+                } else {
+                  Redirect(agent.controllers.routes.CheckYourAnswersController.show())
                 }
               } else {
-                Redirect(agent.controllers.eligibility.routes.NotEligibleForIncomeTaxController.show())
+                Redirect(agent.controllers.business.routes.BusinessAccountingMethodController.show())
               }
-          )
-      }
-    }
-  }
-
-  def whichView(implicit request: Request[_]): Future[AccountingPeriodViewType] = {
-
-    keystoreService.fetchAccountingPeriodPrior().flatMap {
-      case Some(currentPeriodPrior) =>
-        currentPeriodPrior.currentPeriodIsPrior match {
-          case Yes =>
-            NextAccountingPeriodView
-          case No =>
-            CurrentAccountingPeriodView
-        }
-      case _ => new InternalServerException(s"Internal Server Error - No Accounting Period Prior answer retrieved from keystore")
-    }
+            }
+          } else {
+            Redirect(agent.controllers.eligibility.routes.NotEligibleForIncomeTaxController.show())
+          }
+      )
   }
 
   def backUrl(isEditMode: Boolean): String = {
-
     if (isEditMode) {
       agent.controllers.routes.CheckYourAnswersController.show().url
     } else {

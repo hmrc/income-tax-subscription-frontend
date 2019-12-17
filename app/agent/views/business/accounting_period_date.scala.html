@@ -19,11 +19,10 @@
 @import agent.forms.AccountingPeriodDateForm._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
-@import agent.models.enums.{AccountingPeriodViewType, CurrentAccountingPeriodView}
 
 @import core.views.html.helpers._
 
-@(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, isEditMode: Boolean, backUrl: String, viewType: AccountingPeriodViewType, taxEndYear: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, isEditMode: Boolean, backUrl: String, taxEndYear: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @currentApStartYear(year: Int) = @{
   (year - 1).toString
@@ -49,24 +48,14 @@
             field = accountingPeriodForm(startDate),
             label = messages("agent.base.startDate"),
             parentForm = accountingPeriodForm,
-            hintText =
-                    if(viewType == CurrentAccountingPeriodView) {
-                        messages("agent.accounting_period.exampleStartDate.current", currentApStartYear(taxEndYear))
-                    } else {
-                        messages("agent.accounting_period.exampleStartDate.next", taxEndYear.toString)
-                    }
+            hintText = messages("agent.accounting_period.exampleStartDate.current", currentApStartYear(taxEndYear))
         )
 
         @dateHelper(
             field = accountingPeriodForm(endDate),
             label = messages("agent.base.endDate"),
             parentForm = accountingPeriodForm,
-            hintText =
-                    if(viewType == CurrentAccountingPeriodView) {
-                        messages("agent.accounting_period.exampleEndDate.current", taxEndYear.toString)
-                    } else {
-                        messages("agent.accounting_period.exampleEndDate.next", nextApEndYear(taxEndYear))
-                    }
+            hintText = messages("agent.accounting_period.exampleEndDate.current", taxEndYear.toString)
         )
 
         @if(isEditMode) {

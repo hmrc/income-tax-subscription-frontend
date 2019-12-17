@@ -53,25 +53,12 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
   "backUrl" when {
     "in edit mode" should {
       s"return ${agent.controllers.routes.CheckYourAnswersController.show().url}" in new Test {
-        await(controller.backUrl(isEditMode = true)(subscriptionRequest)) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
+        controller.backUrl(isEditMode = true) mustBe agent.controllers.routes.CheckYourAnswersController.show().url
       }
     }
     "not in edit mode" when {
-      "user selected YES on the AccountingPeriodPrior page" should {
-        s"return ${agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url}" in new Test(
-          fetchAccountingPeriodPrior = Some(AccountingPeriodPriorModel(Yes))
-        ) {
-          await(controller.backUrl(isEditMode = false)(subscriptionRequest)) mustBe
-            agent.controllers.business.routes.RegisterNextAccountingPeriodController.show().url
-        }
-      }
-      "user selected No on the AccountingPeriodPrior page" should {
-        s"return ${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}" in new Test(
-          fetchAccountingPeriodPrior = Some(AccountingPeriodPriorModel(No))
-        ) {
-          await(controller.backUrl(isEditMode = false)(subscriptionRequest)) mustBe
-            agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url
-        }
+      s"return ${agent.controllers.business.routes.BusinessNameController.show().url}" in new Test {
+        controller.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessNameController.show().url
       }
     }
   }
@@ -83,7 +70,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
 
         status(result) mustBe OK
 
-        verifyKeystore(fetchMatchTaxYear = 1, fetchAccountingPeriodPrior = 1)
+        verifyKeystore(fetchMatchTaxYear = 1)
       }
     }
 
@@ -94,7 +81,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
 
         status(result) mustBe OK
 
-        verifyKeystore(fetchMatchTaxYear = 1, fetchAccountingPeriodPrior = 1)
+        verifyKeystore(fetchMatchTaxYear = 1)
       }
     }
   }
@@ -215,7 +202,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
 
           status(result) mustBe BAD_REQUEST
 
-          verifyKeystore(fetchMatchTaxYear = 0, fetchIncomeSource = 0, saveMatchTaxYear = 0, fetchAccountingPeriodPrior = 1)
+          verifyKeystore(fetchMatchTaxYear = 0, fetchIncomeSource = 0, saveMatchTaxYear = 0)
         }
       }
     }
