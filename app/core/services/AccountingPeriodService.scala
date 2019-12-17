@@ -17,21 +17,24 @@
 package core.services
 
 import java.time.LocalDate
-import java.time.Month.{APRIL, MARCH}
+import java.time.Month.APRIL
 
 import incometax.util.AccountingPeriodUtil._
 import incometax.util.{AccountingPeriodUtil, CurrentDateProvider}
 import javax.inject.{Inject, Singleton}
 
-import Ordering.Implicits._
+import scala.Ordering.Implicits._
 
 @Singleton
 class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider) {
 
-  def checkEligibleAccountingPeriod(startDate: LocalDate, endDate: LocalDate): Boolean = {
+  def checkEligibleAccountingPeriod(startDate: LocalDate, endDate: LocalDate, hasPropertyType: Boolean): Boolean = {
     val taxYear = AccountingPeriodUtil.getTaxEndYear(endDate)
 
-    val isEligibleTaxYear = taxYear == currentTaxYear || taxYear == currentTaxYear + 1
+    val isEligibleTaxYear = {
+      if (hasPropertyType) taxYear == currentTaxYear
+      else taxYear == currentTaxYear || taxYear == currentTaxYear + 1
+    }
 
     val isEligibleStartDate = if (endDate.getDayOfMonth == 5 && endDate.getMonth == APRIL) {
       val minimumStartDate = LocalDate.of(endDate.getYear - 1, APRIL, 1)
