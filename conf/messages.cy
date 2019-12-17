@@ -136,22 +136,6 @@ business.start_date.title                                        = Dyddiad dechr
 business.start_date.heading                                      = Pryd y dechreuodd eich busnes fasnachu?
 business.start_date.exampleStartDate                             = Er enghraifft, 1 4 2018
 
-# Current Financial Period Prior page
-business.current_financial_period_prior.title                   = Cyfnod cyfrifyddu''r busnes
-business.current_financial_period_prior.heading                 = A ddechreuodd eich cyfnod cyfrifyddu presennol cyn 6 Ebrill 2017?
-business.current_financial_period_prior.accordion               = Beth yw cyfnod cyfrifyddu?
-business.current_financial_period_prior.accordion.line1         = Dyma''r cyfnod y mae''ch cofnodion incwm a threuliau diweddaraf yn ei gwmpasu ar gyfer Hunanasesiad.
-business.current_financial_period_prior.accordion.line2         = Fel arfer, 6 Ebrill yw''ch dyddiad dechrau (yr un peth â''r flwyddyn dreth), oni bai eich bod wedi dewis dyddiad gwahanol wrth gofrestru ar gyfer Hunanasesiad.
-business.current_financial_period_prior.yes                     = Iawn
-business.current_financial_period_prior.no                      = Na
-
-# Current Financial Period Prior page
-business.register_next_accounting_period.title                   = Ni allwch ddefnyddio meddalwedd i roi gwybod am eich incwm ar hyn o bryd
-business.register_next_accounting_period.heading                 = Ni allwch ddefnyddio meddalwedd i roi gwybod am eich incwm ar hyn o bryd
-business.register_next_accounting_period.line_1                  = I roi gwybod am eich incwm ar gyfer eich cyfnod cyfrifyddu presennol, rhaid i chi gyflwyno Ffurflen Dreth Hunanasesiad.
-business.register_next_accounting_period.line_2                  = Gallwch gofrestru nawr, a defnyddio meddalwedd i gofnodi''ch incwm a''ch treuliau, ond ni fyddwch yn gallu cyflwyno adroddiad tan eich cyfnod cyfrifyddu nesaf.
-business.register_next_accounting_period.continue                = Parhau i gofrestru
-
 ## Business Accounting Period page
 accounting_period.title                                         = Cyfnod cyfrifyddu''r busnes
 accounting_period.heading                                       = Newidiwch ddyddiadau''ch cyfnod cyfrifyddu
@@ -321,12 +305,6 @@ error.date.invalid                                              = Rhaid i chi no
 
 error.business.match_tax_year.empty                             = Dewiswch ''iawn'' os yw''ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill
 error.business.match_tax_year.invalid                           = Dewiswch ''iawn'' os yw''ch cyfnod cyfrifyddu o 6 Ebrill i 5 Ebrill
-
-error.business.current_financial_period_prior.empty             = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.business.current_financial_period_prior.invalid           = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-
-error.business.register_next_accounting_period.empty            = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.business.register_next_accounting_period.invalid          = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
 error.business_accounting_period.minStartDate                   = Mae''n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
 error.business_accounting_period.maxEndDate                     = Rhaid i chi nodi dyddiad dod i ben nad yw''n fwy na 24 mis ar ôl eich dyddiad dechrau
@@ -597,16 +575,6 @@ agent.property.income.title                                           = Faint oe
 agent.property.income.heading                                         = Faint oedd eich incwm o eiddo y flwyddyn hon?
 agent.property.income.line_1                                          = Dyma''r swm a wnaethoch cyn didynnu unrhyw dreuliau caniataol.
 
-# Current Financial Period Prior page
-agent.business.current_financial_period_prior.title                   = Cyfnod cyfrifyddu''r busnes
-agent.business.current_financial_period_prior.heading                 = A ddechreuodd cyfnod cyfrifyddu presennol eich cleient cyn 6 Ebrill 2017?
-
-# Current Financial Period Prior page
-agent.business.register_next_accounting_period.title                   = Ni allwch anfon adroddiadau chwarterol ar hyn o bryd
-agent.business.register_next_accounting_period.heading                 = Ni allwch anfon adroddiadau chwarterol ar hyn o bryd
-agent.business.register_next_accounting_period.line_1                  = Gallwch gofrestru''ch cleient nawr, ond ni fyddwch yn gallu anfon adroddiadau hyd nes i''w gyfnod cyfrifyddu nesaf ddechrau.
-agent.business.register_next_accounting_period.button                  = Parhau i gofrestru
-
 ## Match Tax Year page
 agent.business.match_tax_year.heading                                 = A yw cyfnod cyfrifyddu eich cleient yn paru â''r flwyddyn dreth?
 agent.business.match_tax_year.para1                                   = Mae''r flwyddyn dreth yn rhedeg o 6 Ebrill i 5 Ebrill.
@@ -792,12 +760,6 @@ agent.error.end_date.invalid_chars                                    = Nodwch d
 agent.error.end_date.invalid                                          = Nodwch ddyddiad dod i ben go iawn
 agent.error.end_date_violation                                        = Nodwch ddyddiad dod i ben sydd ar ôl y dyddiad dechrau
 agent.error.end_date_past                                             = Nodwch ddyddiad dod i ben, sef dyddiad heddiw neu ddyddiad yn y dyfodol
-
-agent.error.business.current_financial_period_prior.empty             = Dewiswch ''Iawn'' os yw ei gyfnod cyfrifyddu wedi dechrau cyn 6 Ebrill 2017
-agent.error.business.current_financial_period_prior.invalid           = Dewiswch ''Iawn'' os yw ei gyfnod cyfrifyddu wedi dechrau cyn 6 Ebrill 2017
-
-agent.error.business.register_next_accounting_period.empty            = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-agent.error.business.register_next_accounting_period.invalid          = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
 agent.error.business_accounting_period.minStartDate                   = Mae''n rhaid i ddyddiad dechrau eich cyfnod cyfrifyddu fod yn y dyfodol.
 agent.error.business_accounting_period.maxEndDate                     = Nodwch ddyddiad dod i ben sy''n llai na 24 mis ar ôl eich dyddiad dechrau

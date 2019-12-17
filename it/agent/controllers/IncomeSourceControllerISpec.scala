@@ -130,7 +130,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             When(s"POST ${routes.IncomeSourceController.submit()} is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
 
-            Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+            Then(s"Should return $SEE_OTHER with a redirect location of match tax year")
             res should have(
               httpStatus(SEE_OTHER),
               redirectURI(propertyAccountingMethodURI)
@@ -148,7 +148,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             When(s"POST ${routes.IncomeSourceController.submit()} is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = false, Some(userInput))
 
-            Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+            Then(s"Should return $SEE_OTHER with a redirect location of match tax year")
             res should have(
               httpStatus(SEE_OTHER),
               redirectURI(checkYourAnswersURI)
@@ -197,7 +197,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             When(s"POST ${routes.IncomeSourceController.submit()} is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
 
-            Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+            Then(s"Should return $SEE_OTHER with a redirect location of match tax year")
             res should have(
               httpStatus(SEE_OTHER),
               redirectURI(propertyAccountingMethodURI)
@@ -217,7 +217,7 @@ class IncomeSourceControllerISpec extends ComponentSpecBase with FeatureSwitchin
             When(s"POST ${routes.IncomeSourceController.submit()} is called")
             val res = IncomeTaxSubscriptionFrontend.submitIncome(inEditMode = true, Some(userInput))
 
-            Then(s"Should return $SEE_OTHER with a redirect location of business accounting period prior")
+            Then(s"Should return $SEE_OTHER with a redirect location of match tax year")
             res should have(
               httpStatus(SEE_OTHER),
               redirectURI(checkYourAnswersURI)

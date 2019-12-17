@@ -44,7 +44,6 @@ class CacheUtilSpec extends UnitTestTrait {
       testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
-      testCacheMap.getAccountingPeriodPrior() shouldBe Some(testAccountingPeriodPriorCurrent)
       testCacheMap.getAccountingMethod() shouldBe Some(testAccountingMethod)
       testCacheMap.getAccountingMethodProperty() shouldBe Some(testAccountingMethodProperty)
       testCacheMap.getTerms() shouldBe Some(testTerms)
@@ -59,7 +58,6 @@ class CacheUtilSpec extends UnitTestTrait {
         ).getSummary() shouldBe AgentSummary(
           incomeSource = Some(testIncomeSourceProperty),
           otherIncome = Some(testOtherIncomeNo),
-          accountingPeriodPrior = None,
           matchTaxYear = None,
           accountingPeriodDate = None,
           businessName = None,
@@ -75,7 +73,6 @@ class CacheUtilSpec extends UnitTestTrait {
         ).getSummary() shouldBe AgentSummary(
           incomeSource = Some(testIncomeSourceBusiness),
           otherIncome = Some(testOtherIncomeNo),
-          accountingPeriodPrior = Some(testAccountingPeriodPriorCurrent),
           matchTaxYear = Some(testMatchTaxYearNo),
           selectedTaxYear = Some(testSelectedTaxYearNext),
           accountingPeriodDate = Some(testAccountingPeriod),
@@ -93,7 +90,6 @@ class CacheUtilSpec extends UnitTestTrait {
           AgentSummary(
             incomeSource = testIncomeSourceBoth,
             otherIncome = testOtherIncomeNo,
-            accountingPeriodPrior = testAccountingPeriodPriorCurrent,
             matchTaxYear = testMatchTaxYearNo,
             accountingPeriodDate = testAccountingPeriod,
             businessName = testBusinessName,

@@ -16,7 +16,6 @@
 
 package agent.forms.validation.testutils
 
-import agent.forms.AccountingPeriodPriorForm
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil.constraint
 import play.api.data.validation.{Constraint, Invalid}
@@ -41,8 +40,6 @@ object DataMap {
   val emptyDate: String => DataMap = (prefix: String) => date(prefix)("", "", "")
 
   def busName(name: String): DataMap = Map(businessName -> name)
-
-  def accountingPeriodPrior(currentPeriodIsPrior: String): DataMap = Map(AccountingPeriodPriorForm.accountingPeriodPrior -> currentPeriodIsPrior)
 
   def accountingMethod(iType: String): DataMap = Map(AccountingMethodForm.accountingMethod -> iType)
 

@@ -53,8 +53,6 @@ object IntegrationTestConstants {
   val propertyAccountingMethodURI = s"$baseURI/business/accounting-method-property"
   val errorMainIncomeURI = s"$baseURI/error/main-income"
   val errorOtherIncomeURI = s"$baseURI/error/other-income"
-  val accountingPeriodPriorURI = s"$baseURI/business/accounting-period-prior"
-  val registerNextAccountingPeriodURI = s"$baseURI/business/register-next-accounting-period"
   val accountingPeriodDatesURI = s"$baseURI/business/accounting-period-dates"
   val matchTaxYearURI = s"$baseURI/business/match-to-tax-year"
   val termsURI = s"$baseURI/terms"

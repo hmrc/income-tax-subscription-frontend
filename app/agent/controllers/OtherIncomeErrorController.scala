@@ -46,7 +46,7 @@ class OtherIncomeErrorController @Inject()(implicit val baseConfig: BaseControll
     implicit user =>
       keystoreService.fetchIncomeSource() map {
         case Some(Business | Both) =>
-          Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+          Redirect(agent.controllers.business.routes.MatchTaxYearController.show())
         case Some(Property) =>
           if (isEnabled(AgentPropertyCashOrAccruals)) {
             Redirect(agent.controllers.business.routes.PropertyAccountingMethodController.show())

@@ -16,8 +16,6 @@
 
 package agent.services
 
-
-import agent.models.AccountingPeriodPriorModel
 import core.config.AppConfig
 import core.models.YesNo
 import incometax.business.models._
@@ -34,8 +32,6 @@ object CacheUtil {
     def getIncomeSource()(implicit read: Reads[IncomeSourceType]): Option[IncomeSourceType] = cacheMap.getEntry(IncomeSource)
 
     def getOtherIncome()(implicit read: Reads[YesNo]): Option[YesNo] = cacheMap.getEntry(OtherIncome)
-
-    def getAccountingPeriodPrior()(implicit read: Reads[AccountingPeriodPriorModel]): Option[AccountingPeriodPriorModel] = cacheMap.getEntry(AccountingPeriodPrior)
 
     def getMatchTaxYear()(implicit read: Reads[MatchTaxYearModel]): Option[MatchTaxYearModel] = cacheMap.getEntry(MatchTaxYear)
 
@@ -64,7 +60,6 @@ object CacheUtil {
           AgentSummary(
             incomeSource = getIncomeSource(),
             otherIncome = getOtherIncome(),
-            accountingPeriodPrior = getAccountingPeriodPrior(),
             matchTaxYear = getMatchTaxYear(),
             selectedTaxYear = getSelectedTaxYear(),
             accountingPeriodDate = getAccountingPeriodDate(),
@@ -76,7 +71,6 @@ object CacheUtil {
           AgentSummary(
             incomeSource = getIncomeSource(),
             otherIncome = getOtherIncome(),
-            accountingPeriodPrior = getAccountingPeriodPrior(),
             matchTaxYear = getMatchTaxYear(),
             accountingPeriodDate = getAccountingPeriodDate(),
             businessName = getBusinessName(),

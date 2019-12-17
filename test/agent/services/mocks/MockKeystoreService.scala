@@ -65,7 +65,6 @@ trait MockKeystoreService extends MockTrait {
                                          fetchTerms: MFO[Boolean] = DoNotConfigure,
                                          fetchOtherIncome: MFO[YesNo] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
-                                         fetchAccountingPeriodPrior: MFO[AccountingPeriodPriorModel] = DoNotConfigure,
                                          fetchMatchTaxYear: MFO[MatchTaxYearModel] = DoNotConfigure,
                                          fetchWhatYearToSignUp: MFO[AccountingYearModel] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
@@ -79,7 +78,6 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[Boolean](Terms, fetchTerms)
     mockFetchFromKeyStore[YesNo](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
-    mockFetchFromKeyStore[AccountingPeriodPriorModel](AccountingPeriodPrior, fetchAccountingPeriodPrior)
     mockFetchFromKeyStore[MatchTaxYearModel](MatchTaxYear, fetchMatchTaxYear)
     mockFetchFromKeyStore[AccountingYearModel](WhatYearToSignUp, fetchWhatYearToSignUp)
 
@@ -110,8 +108,6 @@ trait MockKeystoreService extends MockTrait {
                                       saveOtherIncome: Option[Int] = None,
                                       fetchSubscriptionId: Option[Int] = None,
                                       saveSubscriptionId: Option[Int] = None,
-                                      fetchAccountingPeriodPrior: Option[Int] = None,
-                                      saveAccountingPeriodPrior: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
                                       deleteAll: Option[Int] = None
                                     ): Unit = {
@@ -135,8 +131,6 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(OtherIncome, saveOtherIncome)
     verifyKeystoreFetch(MtditId, fetchSubscriptionId)
     verifyKeystoreSave(MtditId, saveSubscriptionId)
-    verifyKeystoreFetch(AccountingPeriodPrior, fetchAccountingPeriodPrior)
-    verifyKeystoreSave(AccountingPeriodPrior, saveAccountingPeriodPrior)
 
     fetchAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).fetch()(ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext]))
     deleteAll ifDefinedThen (count => verify(MockKeystoreService.session, times(count)).remove()(ArgumentMatchers.any(), ArgumentMatchers.any[ExecutionContext]))

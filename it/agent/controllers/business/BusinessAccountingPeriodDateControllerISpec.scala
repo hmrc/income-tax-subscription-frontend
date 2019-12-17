@@ -38,7 +38,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
   "GET /business/accounting-period-dates" when {
 
     "keystore returns all data" should {
-      "show the current accounting period dates page with date values entered" in {
+      "show accounting period dates page with date values entered" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
@@ -58,80 +58,16 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
     }
 
     "keystore returns no data" should {
-      "show the current accounting period dates page without date values entered" in {
+      "show accounting period dates page without date values entered" in {
         val keystoreIncomeSource = Both
         val keystoreIncomeOther = No
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(
           keystoreData(
             incomeSource = Some(keystoreIncomeSource),
-            otherIncome = Some(keystoreIncomeOther),
-            accountingPeriodPrior = Some(keystoreAccountingPeriodPrior)
-          )
-        )
-
-        When("GET /business/accounting-period-dates is called")
-        val res = IncomeTaxSubscriptionFrontend.businessAccountingPeriodDates()
-
-        Then("Should return a OK with the accounting period dates page")
-        res should have(
-          httpStatus(OK),
-          pageTitle(Messages("agent.accounting_period.title")),
-          mainHeading(Messages("agent.accounting_period.heading")),
-          dateField("startDate", DateModel("", "", "")),
-          dateField("endDate", DateModel("", "", ""))
-        )
-      }
-    }
-
-    "keystore returns all data" should {
-      "show the future accounting period dates page with date values entered" in {
-        val keystoreIncomeSource = Both
-        val keystoreIncomeOther = No
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(Yes)
-        val keystoreAccountingPeriodDates: AccountingPeriodModel = IntegrationTestModels.testAccountingPeriod
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
-            otherIncome = Some(keystoreIncomeOther),
-            accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
-            accountingPeriodDate = Some(keystoreAccountingPeriodDates)
-          )
-        )
-
-        When("GET /business/accounting-period-dates is called")
-        val res = IncomeTaxSubscriptionFrontend.businessAccountingPeriodDates()
-
-        Then("Should return a OK with the accounting period dates page")
-        res should have(
-          httpStatus(OK),
-          pageTitle(Messages("agent.accounting_period.title")),
-          mainHeading(Messages("agent.accounting_period.heading")),
-          dateField("startDate", testAccountingPeriod.startDate),
-          dateField("endDate", testAccountingPeriod.endDate)
-        )
-      }
-    }
-
-    "keystore returns no data" should {
-      "show the future accounting period dates page without date values entered" in {
-        val keystoreIncomeSource = Both
-        val keystoreIncomeOther = No
-        val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(Yes)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
-            otherIncome = Some(keystoreIncomeOther),
-            accountingPeriodPrior = Some(keystoreAccountingPeriodPrior)
+            otherIncome = Some(keystoreIncomeOther)
           )
         )
 
@@ -153,7 +89,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
 
   "POST /business/accounting-period-dates" when {
-    val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
     "ineligible dates" should {
       "redirect to Kickout page when the date range is incorrect" in {
         val userInput: AccountingPeriodModel = AccountingPeriodModel(testStartDate, testEndDate.plusDays(10))
@@ -216,9 +151,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
       "enter no accounting period dates on the accounting period page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(accountingPeriodPrior = Some(keystoreAccountingPeriodPrior))
-        )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, "")
 
         When("POST /business/accounting-period-dates is called")
@@ -236,9 +168,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(accountingPeriodPrior = Some(keystoreAccountingPeriodPrior))
-        )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")
@@ -258,7 +187,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         "The new accounting period ends in the same tax year" in {
           val keystoreIncomeSource = Business
           val keystoreIncomeOther = No
-          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
           val startCurrenttestYear = LocalDate.now.plusYears(1).getYear
           val endCurrenttestYear = startCurrenttestYear + 1
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "04", startCurrenttestYear.toString), DateModel("04", "04", endCurrenttestYear.toString))
@@ -270,7 +198,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
             keystoreData(
               incomeSource = Some(keystoreIncomeSource),
               otherIncome = Some(keystoreIncomeOther),
-              accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates)
             )
           )
@@ -289,7 +216,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         "The new accounting period ends in a different tax year" in {
           val keystoreIncomeSource = Business
           val keystoreIncomeOther = No
-          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
           val startCurrenttestYear = LocalDate.now.getYear
           val endCurrenttestYear = startCurrenttestYear + 1
           val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "04", startCurrenttestYear.toString), DateModel("05", "04", endCurrenttestYear.toString))
@@ -301,7 +227,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
             keystoreData(
               incomeSource = Some(keystoreIncomeSource),
               otherIncome = Some(keystoreIncomeOther),
-              accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates)
             )
           )

@@ -70,14 +70,14 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
     def callSubmit: Future[Result] = TestOtherIncomeErrorController.submit(subscriptionRequest
       .post(OtherIncomeForm.otherIncomeForm, No))
 
-    s"redirect to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the business journey" in {
+    s"redirect to '${agent.controllers.business.routes.MatchTaxYearController.show().url}' on the business journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBusiness)
 
       val goodRequest = callSubmit
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
+      redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.MatchTaxYearController.show().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)
@@ -125,14 +125,14 @@ class OtherIncomeErrorControllerSpec extends AgentControllerBaseSpec with MockKe
       disable(EligibilityPagesFeature)
     }
 
-    s"redirect to '${agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url}' on the both journey" in {
+    s"redirect to '${agent.controllers.business.routes.MatchTaxYearController.show().url}' on the both journey" in {
 
       setupMockKeystore(fetchIncomeSource = TestModels.testIncomeSourceBoth)
 
       val goodRequest = callSubmit
 
       status(goodRequest) must be(Status.SEE_OTHER)
-      redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show().url)
+      redirectLocation(goodRequest) mustBe Some(agent.controllers.business.routes.MatchTaxYearController.show().url)
 
       await(goodRequest)
       verifyKeystore(fetchIncomeSource = 1)

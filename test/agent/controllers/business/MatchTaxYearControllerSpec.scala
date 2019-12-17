@@ -18,7 +18,6 @@ package agent.controllers.business
 
 import agent.controllers.AgentControllerBaseSpec
 import agent.forms.MatchTaxYearForm
-import agent.models.AccountingPeriodPriorModel
 import agent.services.mocks.MockKeystoreService
 import core.forms.submapping.YesNoMapping
 import core.models.{No, Yes}
@@ -36,7 +35,6 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
   )
 
   class Test(fetchMatchTaxYear: Option[MatchTaxYearModel] = None,
-             fetchAccountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
              saveMatchTaxYear: Option[MatchTaxYearModel] = None,
              fetchIncomeSource: Option[IncomeSourceType] = None) {
 
@@ -47,7 +45,7 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
       mockAuthService
     )
 
-    setupMockKeystore(fetchMatchTaxYear = fetchMatchTaxYear, fetchIncomeSource = fetchIncomeSource, fetchAccountingPeriodPrior = fetchAccountingPeriodPrior)
+    setupMockKeystore(fetchMatchTaxYear = fetchMatchTaxYear, fetchIncomeSource = fetchIncomeSource)
   }
 
   "backUrl" when {
@@ -59,29 +57,6 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
     "not in edit mode" when {
       s"return ${agent.controllers.business.routes.BusinessNameController.show().url}" in new Test {
         controller.backUrl(isEditMode = false) mustBe agent.controllers.business.routes.BusinessNameController.show().url
-      }
-    }
-  }
-
-  "show" when {
-    "no previous answer is in keystore" should {
-      s"return $OK" in new Test(fetchAccountingPeriodPrior = Some(AccountingPeriodPriorModel(Yes))) {
-        val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
-
-        status(result) mustBe OK
-
-        verifyKeystore(fetchMatchTaxYear = 1)
-      }
-    }
-
-    "a previous answer is in keystore" should {
-      s"return $OK" in new Test(fetchMatchTaxYear = Some(MatchTaxYearModel(Yes)), fetchAccountingPeriodPrior =
-        Some(AccountingPeriodPriorModel(Yes))) {
-        val result: Result = await(controller.show(isEditMode = false)(subscriptionRequest))
-
-        status(result) mustBe OK
-
-        verifyKeystore(fetchMatchTaxYear = 1)
       }
     }
   }
@@ -193,16 +168,6 @@ class MatchTaxYearControllerSpec extends AgentControllerBaseSpec with MockKeysto
           redirectLocation(result) mustBe Some(agent.controllers.routes.IncomeSourceController.show().url)
 
           verifyKeystore(fetchMatchTaxYear = 1, fetchIncomeSource = 1, saveMatchTaxYear = 1)
-        }
-      }
-
-      "the user does not select an answer" should {
-        s"return a $BAD_REQUEST" in new Test(fetchAccountingPeriodPrior = Some(AccountingPeriodPriorModel(Yes))) {
-          val result: Result = await(controller.submit(isEditMode = false)(subscriptionRequest))
-
-          status(result) mustBe BAD_REQUEST
-
-          verifyKeystore(fetchMatchTaxYear = 0, fetchIncomeSource = 0, saveMatchTaxYear = 0)
         }
       }
     }

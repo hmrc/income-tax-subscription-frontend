@@ -183,7 +183,6 @@ object IntegrationTestModels {
     arn = testArn,
     incomeSource = Both,
     otherIncome = Some(false),
-    currentPeriodIsPrior = Some(true),
     accountingPeriodStart = Some(testAccountingPeriod.startDate),
     accountingPeriodEnd = Some(testAccountingPeriod.endDate),
     tradingName = Some(testBusinessName.businessName),

@@ -145,10 +145,10 @@ class OtherIncomeControllerISpec extends ComponentSpecBase with FeatureSwitching
         When("POST /income-other is called")
         val res = IncomeTaxSubscriptionFrontend.submitOtherIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of accounting period prior")
+        Then("Should return a SEE_OTHER with a redirect location of match tax year")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(accountingPeriodPriorURI)
+          redirectURI(matchTaxYearURI)
         )
       }
 
@@ -164,10 +164,10 @@ class OtherIncomeControllerISpec extends ComponentSpecBase with FeatureSwitching
         When("POST /income-other is called")
         val res = IncomeTaxSubscriptionFrontend.submitOtherIncome(inEditMode = false, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of accounting period prior")
+        Then("Should return a SEE_OTHER with a redirect location of match tax year")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(accountingPeriodPriorURI)
+          redirectURI(matchTaxYearURI)
         )
       }
 

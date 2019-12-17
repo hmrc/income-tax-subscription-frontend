@@ -30,7 +30,6 @@ class SubscriptionStorePersistenceServiceSpec extends UnitTestTrait with TestSub
     testCacheMap(
       incomeSource = testIncomeSourceProperty,
       otherIncome = testOtherIncomeYes,
-      accountingPeriodPrior = None,
       accountingPeriodDate = None,
       businessName = None,
       accountingMethod = None
@@ -58,7 +57,6 @@ class SubscriptionStorePersistenceServiceSpec extends UnitTestTrait with TestSub
           testCacheMap(
             incomeSource = testIncomeSourceBusiness,
             otherIncome = testOtherIncomeNo,
-            accountingPeriodPrior = testAccountingPeriodPriorCurrent,
             accountingPeriodDate = testAccountingPeriod,
             businessName = testBusinessName,
             accountingMethod = testAccountingMethod
@@ -69,7 +67,6 @@ class SubscriptionStorePersistenceServiceSpec extends UnitTestTrait with TestSub
         arn = testARN,
         incomeSource = IncomeSourceType(testIncomeSourceBusiness.source),
         otherIncome = false,
-        currentPeriodIsPrior = false,
         accountingPeriodStart = testStartDate,
         accountingPeriodEnd = testEndDate,
         tradingName = testBusinessName.businessName,
@@ -85,7 +82,6 @@ class SubscriptionStorePersistenceServiceSpec extends UnitTestTrait with TestSub
           testCacheMap(
             incomeSource = testIncomeSourceBoth,
             otherIncome = testOtherIncomeNo,
-            accountingPeriodPrior = testAccountingPeriodPriorNext,
             accountingPeriodDate = testAccountingPeriod,
             businessName = testBusinessName,
             accountingMethod = testAccountingMethod
@@ -96,7 +92,6 @@ class SubscriptionStorePersistenceServiceSpec extends UnitTestTrait with TestSub
         arn = testARN,
         incomeSource = IncomeSourceType(testIncomeSourceBoth.source),
         otherIncome = false,
-        currentPeriodIsPrior = true,
         accountingPeriodStart = testStartDate,
         accountingPeriodEnd = testEndDate,
         tradingName = testBusinessName.businessName,

@@ -137,22 +137,6 @@ business.start_date.title                                        = Business star
 business.start_date.heading                                      = When did your business start trading?
 business.start_date.exampleStartDate                             = For example, 1 4 2018
 
-# Current Financial Period Prior page
-business.current_financial_period_prior.title                   = Business accounting period
-business.current_financial_period_prior.heading                 = Did your current accounting period start before 6 April 2017?
-business.current_financial_period_prior.accordion               = What''s an accounting period?
-business.current_financial_period_prior.accordion.line1         = This is the period that your latest income and expense records cover for Self Assessment.
-business.current_financial_period_prior.accordion.line2         = Your start date is usually 6 April (the same as the tax year), unless you selected a different date when you registered for Self Assessment.
-business.current_financial_period_prior.yes                     = Yes
-business.current_financial_period_prior.no                      = No
-
-# Current Financial Period Prior page
-business.register_next_accounting_period.title                   = You can''t use software to report your income yet
-business.register_next_accounting_period.heading                 = You can''t use software to report your income yet
-business.register_next_accounting_period.line_1                  = To report your income for your current accounting period, you''ll have to submit a Self Assessment tax return.
-business.register_next_accounting_period.line_2                  = You can sign up now and use software to record your income and expenses, but you won''t be able to submit a report until your next accounting period.
-business.register_next_accounting_period.continue                = Continue to sign up
-
 ## Business Accounting Period page
 accounting_period.title                                         = Business accounting period
 accounting_period.heading                                       = Change your accounting period dates
@@ -322,12 +306,6 @@ error.date.invalid                                              = You must enter
 
 error.business.match_tax_year.empty                             = Select yes if your accounting period is from 6 April to 5 April
 error.business.match_tax_year.invalid                           = Select yes if your accounting period is from 6 April to 5 April
-
-error.business.current_financial_period_prior.empty             = You must select an option to continue
-error.business.current_financial_period_prior.invalid           = You must select an option to continue
-
-error.business.register_next_accounting_period.empty            = You must select an option to continue
-error.business.register_next_accounting_period.invalid          = You must select an option to continue
 
 error.business_accounting_period.minStartDate                   = The start date of your accounting period must be in the future.
 
@@ -596,16 +574,6 @@ agent.property.income.title                                           = How much
 agent.property.income.heading                                         = How much was your income from property this year?
 agent.property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
 
-# Current Financial Period Prior page
-agent.business.current_financial_period_prior.title                   = Business accounting period
-agent.business.current_financial_period_prior.heading                 = Did your client''s current accounting period start before 6 April 2017?
-
-# Current Financial Period Prior page
-agent.business.register_next_accounting_period.title                   = You can''t send quarterly reports yet
-agent.business.register_next_accounting_period.heading                 = You can''t send quarterly reports yet
-agent.business.register_next_accounting_period.line_1                  = You can sign your client up now, but you won''t be able to send any reports until their next accounting period begins.
-agent.business.register_next_accounting_period.button                  = Continue to sign up
-
 ## Match Tax Year page
 agent.business.match_tax_year.heading                                 = Does your client''s accounting period match the tax year?
 agent.business.match_tax_year.para1                                   = The tax year runs from 6 April to 5 April.
@@ -793,11 +761,6 @@ agent.error.end_date.invalid                                          = Enter a 
 agent.error.end_date_violation                                        = Enter an end date that''s after the start date
 agent.error.end_date_past                                             = Enter an end date that''s the present date or a future date
 
-agent.error.business.current_financial_period_prior.empty             = Select yes if their accounting period started before 6 April 2017
-agent.error.business.current_financial_period_prior.invalid           = Select yes if their accounting period started before 6 April 2017
-
-agent.error.business.register_next_accounting_period.empty            = You must select an option to continue
-agent.error.business.register_next_accounting_period.invalid          = You must select an option to continue
 
 agent.error.business_accounting_period.minStartDate                   = The start date of your accounting period must be in the future.
 agent.error.business_accounting_period.maxEndDate                     = Enter an end date that''s less than 24 months after your start date

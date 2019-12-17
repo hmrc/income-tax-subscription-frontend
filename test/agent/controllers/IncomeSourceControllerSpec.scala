@@ -72,7 +72,7 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
     )
 
     "the eligibility pages feature switch is enabled" should {
-      s"redirect to ${business.routes.BusinessAccountingPeriodPriorController.show().url}" when {
+      s"redirect to ${business.routes.MatchTaxYearController.show().url}" when {
         "not in edit mode" when {
           "the income source is business" in {
             enable(EligibilityPagesFeature)

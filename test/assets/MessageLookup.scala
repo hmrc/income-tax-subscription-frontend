@@ -137,25 +137,6 @@ object MessageLookup {
 
     }
 
-    object AccountingPeriodPrior {
-      val title = "Business accounting period"
-      val heading: String = "Did your current accounting period start before 6 April 2017?"
-      val accordion = "What's an accounting period?"
-      val accordion_line1 = "This is the period that your latest income and expense records cover for Self Assessment."
-      val accordion_line2 = "Your start date is usually 6 April (the same as the tax year), unless you selected a different date when you registered for Self Assessment."
-      val yes = "Yes"
-      val no = "No"
-    }
-
-    object RegisterNextAccountingPeriod {
-      val title = "You can't use software to report your income yet"
-      val heading = title
-      val line_1 = "To report your income for your current accounting period, you'll have to submit a Self Assessment tax return."
-      val line_2 = "You can sign up now and use software to record your income and expenses, but you won't be able to submit a report until your next accounting period."
-      val button = "Continue to sign up"
-      val signOut = "Sign out"
-    }
-
   }
 
   object BusinessStartDate {
@@ -531,16 +512,6 @@ object MessageLookup {
       object MatchTaxYear {
         val empty = "Select yes if your accounting period is from 6 April to 5 April"
         val invalid = "Select yes if your accounting period is from 6 April to 5 April"
-      }
-
-      object AccountingPeriodPrior {
-        val empty = "You must select an option to continue"
-        val invalid = "You must select an option to continue"
-      }
-
-      object RegisterNextAccountingPeriod {
-        val empty = "You must select an option to continue"
-        val invalid = "You must select an option to continue"
       }
 
     }

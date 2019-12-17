@@ -17,8 +17,6 @@
 package incometax.unauthorisedagent.services
 
 import javax.inject.{Inject, Singleton}
-
-import agent.models.AccountingPeriodPriorModel
 import agent.services.CacheUtil._
 import agent.services.KeystoreService
 import core.config.AppConfig
@@ -45,7 +43,6 @@ class SubscriptionStorePersistenceService @Inject()(subscriptionStoreConnector: 
       cache = optCache.get
       incomeSource = cache.getIncomeSource
       otherIncome = cache.getOtherIncome()
-      accountingPeriodPrior = cache.getAccountingPeriodPrior()
       accountingPeriodDates = cache.getAccountingPeriodDate()
       businessName = cache.getBusinessName()
       accountingMethod = cache.getAccountingMethod()
@@ -55,10 +52,6 @@ class SubscriptionStorePersistenceService @Inject()(subscriptionStoreConnector: 
       otherIncome.map {
         case Yes => true
         case No => false
-      },
-      accountingPeriodPrior.map {
-        case AccountingPeriodPriorModel(Yes) => true
-        case AccountingPeriodPriorModel(No) => false
       },
       accountingPeriodDates.map(_.startDate),
       accountingPeriodDates.map(_.endDate),

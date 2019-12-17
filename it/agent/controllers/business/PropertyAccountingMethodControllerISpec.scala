@@ -171,7 +171,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         "changing to the Accruals radio button on the accounting method page" in {
           val keystoreIncomeSource = Both
           val keystoreIncomeOther = No
-          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
           val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
           val keystoreAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
           val userInput = AccountingMethodPropertyModel(Accruals)
@@ -182,7 +181,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
             keystoreData(
               incomeSource = Some(keystoreIncomeSource),
               otherIncome = Some(keystoreIncomeOther),
-              accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates),
               accountingMethodProperty = Some(keystoreAccountingMethodProperty)
             )
@@ -202,7 +200,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         "simulate not changing Property Accounting Method when calling page from Check Your Answers" in {
           val keystoreIncomeSource = Both
           val keystoreIncomeOther = No
-          val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
           val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
           val keystoreAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
           val userInput = AccountingMethodPropertyModel(Cash)
@@ -213,7 +210,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
             keystoreData(
               incomeSource = Some(keystoreIncomeSource),
               otherIncome = Some(keystoreIncomeOther),
-              accountingPeriodPrior = Some(keystoreAccountingPeriodPrior),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates),
               accountingMethodProperty = Some(keystoreAccountingMethodProperty)
             )

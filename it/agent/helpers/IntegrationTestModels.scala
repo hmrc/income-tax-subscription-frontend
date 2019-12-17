@@ -34,8 +34,6 @@ object IntegrationTestModels {
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
   val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
-  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(No)
-  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(Yes)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
@@ -54,7 +52,6 @@ object IntegrationTestModels {
       arn = testARN,
       incomeSource = Both,
       otherIncome = Some(false),
-      currentPeriodIsPrior = Some(false),
       accountingPeriodStart = Some(testAccountingPeriod.startDate),
       accountingPeriodEnd = Some(testAccountingPeriod.endDate),
       tradingName = Some(testBusinessName.businessName),
@@ -67,7 +64,6 @@ object IntegrationTestModels {
       otherIncome = Some(testOtherIncomeNo),
       matchTaxYear = Some(testMatchTaxYearYes),
       selectedTaxYear = Some(testAccountingYearCurrent),
-      accountingPeriodPrior = Some(testAccountingPeriodPriorCurrent),
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
@@ -80,7 +76,6 @@ object IntegrationTestModels {
                     otherIncome: Option[YesNo] = None,
                     matchTaxYear: Option[MatchTaxYearModel] = None,
                     selectedTaxYear: Option[AccountingYearModel] = None,
-                    accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                     accountingPeriodDate: Option[AccountingPeriodModel] = None,
                     businessName: Option[BusinessNameModel] = None,
                     accountingMethod: Option[AccountingMethodModel] = None,
@@ -89,7 +84,6 @@ object IntegrationTestModels {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
       otherIncome.map(model => OtherIncome -> YesNo.format.writes(model)) ++
-      accountingPeriodPrior.map(model => AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++

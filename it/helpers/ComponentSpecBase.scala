@@ -256,8 +256,6 @@ trait ComponentSpecBase extends UnitSpec
         ))
     }
 
-    def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
-
     def submitMaintenance(): WSResponse = post("/error/maintenance")(Map.empty)
 
     def claimSubscription(): WSResponse = {

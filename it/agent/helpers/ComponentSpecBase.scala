@@ -263,8 +263,6 @@ trait ComponentSpecBase extends UnitSpec
 
     def businessAccountingPeriodDates(): WSResponse = get("/business/accounting-period-dates")
 
-    def registerNextAccountingPeriod(): WSResponse = get("/business/register-next-accounting-period")
-
     def businessAccountingMethod(): WSResponse = get("/business/accounting-method")
 
     def propertyAccountingMethod(): WSResponse = get("/business/accounting-method-property")
@@ -276,18 +274,6 @@ trait ComponentSpecBase extends UnitSpec
         get("/add-another", Map(ITSASessionKeys.MTDITID -> testMTDID, ITSASessionKeys.UnauthorisedAgentKey -> false.toString))
       else
         get("/add-another")
-
-    def submitRegisterNextAccountingPeriod(): WSResponse = post("/business/register-next-accounting-period")(Map.empty)
-
-    def submitBusinessAccountingPeriodPrior(inEditMode: Boolean, request: Option[AccountingPeriodPriorModel]): WSResponse = {
-      val uri = s"/business/accounting-period-prior?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            AccountingPeriodPriorForm.accountingPeriodPriorForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def submitIncome(inEditMode: Boolean, request: Option[IncomeSourceType]): WSResponse = {
       val uri = s"/income?editMode=$inEditMode"
