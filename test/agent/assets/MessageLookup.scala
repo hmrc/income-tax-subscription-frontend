@@ -106,20 +106,6 @@ object MessageLookup {
       val no = "No - I am a different type of business"
     }
 
-    object AccountingPeriodPrior {
-      val title = "Business accounting period"
-      val heading: String = "Did your client's current accounting period start before 6 April 2017?"
-      val yes = "Yes"
-      val no = "No"
-    }
-
-    object RegisterNextAccountingPeriod {
-      val title = "You can't send quarterly reports yet"
-      val heading = title
-      val line_1 = "You can sign your client up now, but you won't be able to send any reports until their next accounting period begins."
-      val button = "Continue to sign up"
-    }
-
     object MatchTaxYear {
       val heading = "Does your client's accounting period match the tax year?"
       val para1 = "The tax year runs from 6 April to 5 April."
@@ -201,7 +187,6 @@ object MessageLookup {
       val both = "Sole trader business and property"
     }
 
-    val accounting_period_prior = "Did your current accounting period start before 1 April 2017?"
     val accounting_period = s"Your client's accounting period dates"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "Business name"
@@ -319,16 +304,6 @@ object MessageLookup {
     object BackToPreferences {
       val empty = "You must select an option to continue"
     }
-
-    object Business {
-
-      object AccountingPeriodPrior {
-        val empty = "Select yes if their accounting period started before 6 April 2017"
-        val invalid = "Select yes if their accounting period started before 6 April 2017"
-      }
-
-    }
-
 
     object StartDate {
       val empty = "Enter a start date"

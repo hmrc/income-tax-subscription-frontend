@@ -22,14 +22,5 @@ POST        /accounting-method                      agent.controllers.business.B
 GET         /accounting-method-property             agent.controllers.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
 POST        /accounting-method-property            agent.controllers.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
 
-
-#Current Financial Period Prior Routes
-GET         /accounting-period-prior                agent.controllers.business.BusinessAccountingPeriodPriorController.show(editMode: Boolean ?= false)
-POST        /accounting-period-prior                agent.controllers.business.BusinessAccountingPeriodPriorController.submit(editMode: Boolean ?= false)
-
-#Register Next Accounting Period Routes
-GET         /register-next-accounting-period        agent.controllers.business.RegisterNextAccountingPeriodController.show
-POST        /register-next-accounting-period        agent.controllers.business.RegisterNextAccountingPeriodController.submit
-
 #Language
 GET         /language/:lang                         core.controllers.language.LanguageSwitchController.switchToLanguage(lang: String)

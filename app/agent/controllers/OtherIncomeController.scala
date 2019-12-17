@@ -85,7 +85,7 @@ class OtherIncomeController @Inject()(val baseConfig: BaseControllerConfig,
       case No =>
         optIncomeSource match {
           case Some(Business | Both) =>
-            Redirect(agent.controllers.business.routes.BusinessAccountingPeriodPriorController.show())
+            Redirect(agent.controllers.business.routes.MatchTaxYearController.show())
           case Some(Property) =>
             if (isEnabled(AgentPropertyCashOrAccruals)) {
               Redirect(agent.controllers.business.routes.PropertyAccountingMethodController.show())

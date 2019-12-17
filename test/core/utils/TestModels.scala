@@ -19,8 +19,6 @@ package core.utils
 
 import java.time.LocalDate
 
-import agent.models.AccountingPeriodPriorModel
-import agent.services.CacheConstants.AccountingPeriodPrior
 import core.models._
 import core.services.CacheConstants
 import core.utils.TestConstants._
@@ -48,8 +46,6 @@ object TestModels extends Implicits {
 
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)
-  val testAccountingPeriodPriorCurrent: AccountingPeriodPriorModel = AccountingPeriodPriorModel(No)
-  val testAccountingPeriodPriorNext: AccountingPeriodPriorModel = AccountingPeriodPriorModel(Yes)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
 
@@ -79,7 +75,6 @@ object TestModels extends Implicits {
       areYouSelfEmployed = testAreYouSelfEmployed_yes,
       otherIncome = testOtherIncomeNo,
       matchTaxYear = testMatchTaxYearNo,
-      accountingPeriodPrior = testAccountingPeriodPriorCurrent,
       accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
       businessPhoneNumber = testBusinessPhoneNumber,
@@ -97,7 +92,6 @@ object TestModels extends Implicits {
                           areYouSelfEmployed: Option[AreYouSelfEmployedModel] = testAreYouSelfEmployed_yes,
                           otherIncome: Option[YesNo] = testOtherIncomeNo,
                           matchTaxYear: Option[MatchTaxYearModel] = testMatchTaxYearNo,
-                          accountingPeriodPrior: Option[AccountingPeriodPriorModel] = testAccountingPeriodPriorCurrent,
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                           businessName: Option[BusinessNameModel] = testBusinessName,
                           businessPhoneNumber: Option[BusinessPhoneNumberModel] = testBusinessPhoneNumber,
@@ -128,7 +122,6 @@ object TestModels extends Implicits {
                    areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
                    otherIncome: Option[YesNo] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
-                   accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
@@ -144,7 +137,6 @@ object TestModels extends Implicits {
       rentUkProperty.fold(emptyMap)(model => Map(RentUkProperty -> RentUkPropertyModel.format.writes(model))) ++
       areYouSelfEmployed.fold(emptyMap)(model => Map(AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model))) ++
       otherIncome.fold(emptyMap)(model => Map(OtherIncome -> YesNo.format.writes(model))) ++
-      accountingPeriodPrior.fold(emptyMap)(model => Map(AccountingPeriodPrior -> AccountingPeriodPriorModel.format.writes(model))) ++
       matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
@@ -226,7 +218,6 @@ object TestModels extends Implicits {
     incomeSource = Some(testIncomeSourceBoth),
     otherIncome = Some(testOtherIncomeNo),
     matchTaxYear = Some(testMatchTaxYearNo),
-    accountingPeriodPrior = None,
     accountingPeriodDate = testAccountingPeriod,
     businessName = Some(testBusinessName),
     accountingMethod = Some(testAccountingMethod),
@@ -238,7 +229,6 @@ object TestModels extends Implicits {
     arn = testArn,
     incomeSource = Both,
     otherIncome = false,
-    currentPeriodIsPrior = Some(true),
     accountingPeriodStart = Some(testAccountingPeriod.startDate),
     accountingPeriodEnd = Some(testAccountingPeriod.endDate),
     tradingName = Some(testBusinessName.businessName),

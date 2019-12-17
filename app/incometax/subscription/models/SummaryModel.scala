@@ -16,7 +16,6 @@
 
 package incometax.subscription.models
 
-import agent.models.AccountingPeriodPriorModel
 import core.models.YesNo
 import incometax.business.models._
 import incometax.business.models.address.Address
@@ -29,8 +28,6 @@ sealed trait SummaryModel {
   def otherIncome: Option[YesNo]
 
   def matchTaxYear: Option[MatchTaxYearModel]
-
-  def accountingPeriodPrior: Option[AccountingPeriodPriorModel]
 
   def accountingPeriodDate: Option[AccountingPeriodModel]
 
@@ -56,7 +53,6 @@ case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
                              areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
                              otherIncome: Option[YesNo] = None,
                              matchTaxYear: Option[MatchTaxYearModel] = None,
-                             accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                              accountingPeriodDate: Option[AccountingPeriodModel] = None,
                              businessName: Option[BusinessNameModel] = None,
                              businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
@@ -76,7 +72,6 @@ case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
 case class AgentSummary(incomeSource: Option[IncomeSourceType] = None,
                         otherIncome: Option[YesNo] = None,
                         matchTaxYear: Option[MatchTaxYearModel] = None,
-                        accountingPeriodPrior: Option[AccountingPeriodPriorModel] = None,
                         accountingPeriodDate: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,
                         businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,

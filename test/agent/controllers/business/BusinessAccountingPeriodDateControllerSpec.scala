@@ -85,8 +85,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
           fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
           fetchAll = testCacheMap(
             accountingPeriodDate = Some(testAccountingPeriodDates)
-          ),
-          fetchAccountingPeriodPrior = testAccountingPeriodPriorCurrent
+          )
         )
         mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), false)(false)
 
@@ -104,8 +103,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
             fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
             fetchAll = testCacheMap(
               accountingPeriodDate = Some(testAccountingPeriodDates)
-            ),
-            fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
+            )
           )
           setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates)
           mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), false)(true)
@@ -123,8 +121,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
             fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
             fetchAll = testCacheMap(
               accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
-            ),
-            fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
+            )
           )
           mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), false)(true)
 
@@ -143,8 +140,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
             fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
             fetchAll = testCacheMap(
               accountingPeriodDate = Some(testAccountingPeriodDates)
-            ),
-            fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
+            )
           )
           mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), false)(true)
 
@@ -162,8 +158,8 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
             setupMockKeystore(
               fetchIncomeSource = TestModels.testIncomeSourceBusiness,
               fetchAll = testCacheMap(
-                accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)),
-              fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
+                accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
+              )
             )
             mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), false)(true)
 
@@ -184,7 +180,7 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
 
     "return a bad request status (400)" in {
       // required for backurl
-      setupMockKeystore(fetchIncomeSource = testIncomeSourceBusiness, fetchAccountingPeriodPrior = testAccountingPeriodPriorCurrent)
+      setupMockKeystore(fetchIncomeSource = testIncomeSourceBusiness)
 
       status(badrequest) mustBe BAD_REQUEST
       verifyKeystore(fetchAccountingPeriodDate = 0, saveAccountingPeriodDate = 0)

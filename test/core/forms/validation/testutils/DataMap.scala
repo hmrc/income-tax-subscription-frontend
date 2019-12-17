@@ -16,7 +16,7 @@
 
 package core.forms.validation.testutils
 
-import agent.forms.{AccountingPeriodPriorForm, IncomeSourceForm}
+import agent.forms.IncomeSourceForm
 import incometax.incomesource.forms.{AreYouSelfEmployedForm, RentUkPropertyForm}
 import core.forms.validation.ErrorMessageFactory
 import core.forms.validation.utils.ConstraintUtil.constraint
@@ -49,8 +49,6 @@ object DataMap {
   def busPhoneNumber(number: String): DataMap = Map(phoneNumber -> number)
 
   def matchTaxYear(iType: String): DataMap = Map(MatchTaxYearForm.matchTaxYear -> iType)
-
-  def accountingPeriodPrior(currentPeriodIsPrior: String): DataMap = Map(AccountingPeriodPriorForm.accountingPeriodPrior -> currentPeriodIsPrior)
 
   def accountingMethod(iType: String): DataMap = Map(AccountingMethodForm.accountingMethod -> iType)
 

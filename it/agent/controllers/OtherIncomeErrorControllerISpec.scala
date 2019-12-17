@@ -71,10 +71,10 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase with FeatureSwit
         When("POST /error/other-income is called")
         val res = IncomeTaxSubscriptionFrontend.submitOtherIncomeError()
 
-        Then("Should return a SEE_OTHER with a redirect location of accounting period prior")
+        Then("Should return a SEE_OTHER with a redirect location of match tax year")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(accountingPeriodPriorURI)
+          redirectURI(matchTaxYearURI)
         )
       }
 
@@ -94,10 +94,10 @@ class OtherIncomeErrorControllerISpec extends ComponentSpecBase with FeatureSwit
         When("POST /error/other-income is called")
         val res = IncomeTaxSubscriptionFrontend.submitOtherIncomeError()
 
-        Then("Should return a SEE_OTHER with a redirect location of accounting period prior")
+        Then("Should return a SEE_OTHER with a redirect location of match tax year")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(accountingPeriodPriorURI)
+          redirectURI(matchTaxYearURI)
         )
       }
 
