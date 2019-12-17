@@ -24,12 +24,14 @@ import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
 import _root_.agent.services.CacheConstants
 import agent.models._
+import agent.services.CacheConstants.IncomeSource
 import core.config.featureswitch.FeatureSwitching
 import core.models.{DateModel, No, Yes}
 import incometax.business.models.AccountingPeriodModel
-import incometax.subscription.models.Both
+import incometax.subscription.models._
 import play.api.http.Status._
 import play.api.i18n.Messages
+import play.api.libs.json.Json
 
 class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
@@ -153,7 +155,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
   "POST /business/accounting-period-dates" when {
     val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
     "ineligible dates" should {
-      "redirect to Kickout page" in {
+      "redirect to Kickout page when the date range is incorrect" in {
         val userInput: AccountingPeriodModel = AccountingPeriodModel(testStartDate, testEndDate.plusDays(10))
 
 
@@ -171,6 +173,25 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           redirectURI(ineligibleURI)
         )
       }
+
+      "redirect to the kickout page when a user with property income sources attempts to submit for the following tax year" in {
+          val userInput: AccountingPeriodModel = AccountingPeriodModel(testStartDate.plusYears(1), testEndDate.plusYears(1))
+
+
+          Given("I setup the Wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreData(fullKeystoreData)
+          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+
+          When("POST /business/accounting-period-dates is called")
+          val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = false, Some(userInput))
+
+          Then("Should return a SEE_OTHER with a redirect location of cannot-use-service-yet")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(ineligibleURI)
+          )
+      }
     }
     "not in edit mode" should {
 
@@ -179,7 +200,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(fullKeystoreData)
+        KeystoreStub.stubKeystoreData(fullKeystoreData.updated(IncomeSource, Json.toJson(Business)))
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
 
         When("POST /business/accounting-period-dates is called")
@@ -235,7 +256,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
 
       "simulate changing accounting period dates when calling page from Check Your Answers" when {
         "The new accounting period ends in the same tax year" in {
-          val keystoreIncomeSource = Both
+          val keystoreIncomeSource = Business
           val keystoreIncomeOther = No
           val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
           val startCurrenttestYear = LocalDate.now.plusYears(1).getYear
@@ -266,7 +287,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         }
 
         "The new accounting period ends in a different tax year" in {
-          val keystoreIncomeSource = Both
+          val keystoreIncomeSource = Business
           val keystoreIncomeOther = No
           val keystoreAccountingPeriodPrior = AccountingPeriodPriorModel(No)
           val startCurrenttestYear = LocalDate.now.getYear

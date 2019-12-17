@@ -19,6 +19,7 @@ package incometax.business.controllers
 import javax.inject.{Inject, Singleton}
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
+import core.models.{No, Yes}
 import core.services.{AccountingPeriodService, AuthService, KeystoreService}
 import incometax.business.forms.AccountingPeriodDateForm
 import incometax.business.models.AccountingPeriodModel
@@ -28,6 +29,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import core.services.CacheUtil._
+import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.CurrentTimeService
 import incometax.subscription.models.{Both, IncomeSourceType}
 
@@ -74,25 +76,28 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
           editMatch = editMatch
         ))),
         accountingPeriod => {
-          if(accountingPeriodService.checkEligibleAccountingPeriod(
-            accountingPeriod.startDate.toLocalDate,
-            accountingPeriod.endDate.toLocalDate)) {
+          keystoreService.fetchRentUkProperty() flatMap { ukProperty =>
+            if (accountingPeriodService.checkEligibleAccountingPeriod(
+              accountingPeriod.startDate.toLocalDate,
+              accountingPeriod.endDate.toLocalDate,
+              ukProperty.exists(_.rentUkProperty == Yes))) {
 
-            for {
-              cache <- keystoreService.fetchAll()
-              optOldAccountingPeriodDates = cache.getAccountingPeriodDate()
-              _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
-              enteredTaxEndYear = accountingPeriod.taxEndYear
-              _ <- optOldAccountingPeriodDates match {
-                case Some(oldAccountingPeriodDates) if oldAccountingPeriodDates.taxEndYear != enteredTaxEndYear =>
-                  keystoreService.saveTerms(terms = false)
-                case _ => Future.successful(Unit)
-              }
-            } yield
-              if (isEditMode) Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
-              else Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
-          } else {
-            Future.successful(Redirect(incometax.eligibility.controllers.routes.NotEligibleForIncomeTaxController.show()))
+              for {
+                cache <- keystoreService.fetchAll()
+                optOldAccountingPeriodDates = cache.getAccountingPeriodDate()
+                _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
+                enteredTaxEndYear = accountingPeriod.taxEndYear
+                _ <- optOldAccountingPeriodDates match {
+                  case Some(oldAccountingPeriodDates) if oldAccountingPeriodDates.taxEndYear != enteredTaxEndYear =>
+                    keystoreService.saveTerms(terms = false)
+                  case _ => Future.successful(Unit)
+                }
+              } yield
+                if (isEditMode) Redirect(incometax.subscription.controllers.routes.CheckYourAnswersController.show())
+                else Redirect(incometax.business.controllers.routes.BusinessAccountingMethodController.show())
+            } else {
+              Future.successful(Redirect(incometax.eligibility.controllers.routes.NotEligibleForIncomeTaxController.show()))
+            }
           }
         }
       )

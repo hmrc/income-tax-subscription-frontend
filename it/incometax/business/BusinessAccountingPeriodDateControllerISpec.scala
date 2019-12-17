@@ -156,6 +156,41 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         )
       }
 
+      "enter accounting period after current tax year on the accounting period page with property income sources" in {
+        val keystoreIncomeOther = No
+        val keystoreMatchTaxYear = testMatchTaxYearNo
+        val start = LocalDate.now
+        val end = LocalDate.now.plusYears(1).minusDays(1)
+
+        val testAccountingPeriodDates = AccountingPeriodModel(
+          DateModel.dateConvert(start),
+          DateModel.dateConvert(end)
+        )
+        val userInput: AccountingPeriodModel = testAccountingPeriodDates
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            rentUkProperty = Some(testRentUkProperty_property_and_other),
+            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
+            otherIncome = Some(keystoreIncomeOther),
+            matchTaxYear = Some(keystoreMatchTaxYear),
+            accountingPeriodDate = Some(testAccountingPeriodDates)
+          )
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingPeriodDate, userInput)
+
+        When("POST /business/accounting-period-dates is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingPeriodDates(inEditMode = true, Some(userInput))
+
+        Then("Should return a SEE_OTHER with a redirect location of cannot use service yet")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(notEligibleURI)
+        )
+      }
+
 
       "enter no accounting period dates on the accounting period page" in {
         Given("I setup the Wiremock stubs")
@@ -215,7 +250,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(
             keystoreData(
-              rentUkProperty = Some(testRentUkProperty_property_and_other),
+              rentUkProperty = Some(testRentUkProperty_no_property),
               areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
               otherIncome = Some(keystoreIncomeOther),
               matchTaxYear = Some(keystoreMatchTaxYear),

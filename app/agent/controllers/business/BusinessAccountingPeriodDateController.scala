@@ -24,7 +24,7 @@ import core.config.BaseControllerConfig
 import core.services.{AccountingPeriodService, AuthService}
 import core.utils.Implicits._
 import incometax.business.models.AccountingPeriodModel
-import incometax.subscription.models.IncomeSourceType
+import incometax.subscription.models.{Both, IncomeSourceType}
 import incometax.util.{AccountingPeriodUtil, CurrentDateProvider}
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
@@ -74,31 +74,34 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
           isEditMode = isEditMode
         )),
         accountingPeriod =>
-          if (accountingPeriodService.checkEligibleAccountingPeriod(accountingPeriod.startDate.toLocalDate, accountingPeriod.endDate.toLocalDate)) {
-            for {
-              cache <- keystoreService.fetchAll() map (_.get)
-              optOldAccountingPeriodDates = cache.getAccountingPeriodDate()
-              _ = cache.getIncomeSource() map (source => IncomeSourceType(source.source))
-              _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
-              taxYearChanged = optOldAccountingPeriodDates match {
-                case Some(oldAccountingPeriod) => (oldAccountingPeriod.taxEndYear != accountingPeriod.taxEndYear)
-                case None => true
-              }
-              _ <- if (taxYearChanged) keystoreService.saveTerms(terms = false)
-              else Future.successful(Unit)
-            } yield {
-              if (isEditMode) {
-                if (taxYearChanged) {
-                  Redirect(agent.controllers.routes.TermsController.show(editMode = true))
-                } else {
-                  Redirect(agent.controllers.routes.CheckYourAnswersController.show())
+          keystoreService.fetchIncomeSource() flatMap { incomeSources =>
+            if (accountingPeriodService.checkEligibleAccountingPeriod(accountingPeriod.startDate.toLocalDate,
+              accountingPeriod.endDate.toLocalDate, incomeSources.contains(Both))) {
+              for {
+                cache <- keystoreService.fetchAll() map (_.get)
+                optOldAccountingPeriodDates = cache.getAccountingPeriodDate()
+                _ = cache.getIncomeSource() map (source => IncomeSourceType(source.source))
+                _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
+                taxYearChanged = optOldAccountingPeriodDates match {
+                  case Some(oldAccountingPeriod) => oldAccountingPeriod.taxEndYear != accountingPeriod.taxEndYear
+                  case None => true
                 }
-              } else {
-                Redirect(agent.controllers.business.routes.BusinessAccountingMethodController.show())
+                _ <- if (taxYearChanged) keystoreService.saveTerms(terms = false)
+                else Future.successful(Unit)
+              } yield {
+                if (isEditMode) {
+                  if (taxYearChanged) {
+                    Redirect(agent.controllers.routes.TermsController.show(editMode = true))
+                  } else {
+                    Redirect(agent.controllers.routes.CheckYourAnswersController.show())
+                  }
+                } else {
+                  Redirect(agent.controllers.business.routes.BusinessAccountingMethodController.show())
+                }
               }
+            } else {
+              Redirect(agent.controllers.eligibility.routes.NotEligibleForIncomeTaxController.show())
             }
-          } else {
-            Redirect(agent.controllers.eligibility.routes.NotEligibleForIncomeTaxController.show())
           }
       )
   }

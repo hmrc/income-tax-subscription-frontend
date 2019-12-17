@@ -19,16 +19,16 @@ package core.services.mocks
 import java.time.LocalDate
 
 import core.services.AccountingPeriodService
+import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
-import org.mockito.Mockito._
 
 trait MockAccountingPeriodService extends BeforeAndAfterEach with MockitoSugar {
   self: Suite =>
 
   val mockAccountingPeriodService: AccountingPeriodService = mock[AccountingPeriodService]
 
-  def mockCheckEligibleAccountingPeriod(startDate: LocalDate, endDate: LocalDate)(eligible: Boolean): Unit =
-    when(mockAccountingPeriodService.checkEligibleAccountingPeriod(startDate, endDate)).thenReturn(eligible)
+  def mockCheckEligibleAccountingPeriod(startDate: LocalDate, endDate: LocalDate, hasPropertyIncomeSource: Boolean)(eligible: Boolean): Unit =
+    when(mockAccountingPeriodService.checkEligibleAccountingPeriod(startDate, endDate, hasPropertyIncomeSource)).thenReturn(eligible)
 
 }

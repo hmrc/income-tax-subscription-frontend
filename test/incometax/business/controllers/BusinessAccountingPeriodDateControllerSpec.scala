@@ -98,12 +98,12 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             )
 
             setupMockKeystore(
+              fetchRentUkProperty = TestModels.testRentUkProperty_no_property,
               fetchAll = testCacheMapCustom(
-                incomeSource = TestModels.testIncomeSourceBusiness,
                 accountingPeriodDate = testAccountingPeriodDates)
             )
 
-            mockCheckEligibleAccountingPeriod(start, end)(true)
+            mockCheckEligibleAccountingPeriod(start, end, false)(true)
 
             val goodRequest = callSubmit(isEditMode = false, testAccountingPeriodDates)
             status(goodRequest) must be(SEE_OTHER)
@@ -125,7 +125,13 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
               DateModel.dateConvert(end)
             )
 
-            mockCheckEligibleAccountingPeriod(start, end)(false)
+            setupMockKeystore(
+              fetchRentUkProperty = TestModels.testRentUkProperty_no_property,
+              fetchAll = testCacheMapCustom(
+                accountingPeriodDate = testAccountingPeriodDates)
+            )
+
+            mockCheckEligibleAccountingPeriod(start, end, false)(false)
 
             val goodRequest = callSubmit(isEditMode = false, testAccountingPeriodDates)
 
@@ -147,11 +153,11 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             DateModel.dateConvert(end)
           )
 
-          mockCheckEligibleAccountingPeriod(start, end)(true)
+          mockCheckEligibleAccountingPeriod(start, end, false)(true)
 
           setupMockKeystore(
+            fetchRentUkProperty = TestModels.testRentUkProperty_no_property,
             fetchAll = testCacheMapCustom(
-              incomeSource = TestModels.testIncomeSourceBusiness,
               accountingPeriodDate = testAccountingPeriodDates)
           )
 

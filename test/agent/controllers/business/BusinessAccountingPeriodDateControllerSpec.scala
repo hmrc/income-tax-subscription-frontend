@@ -25,7 +25,9 @@ import agent.utils.TestModels._
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.models.DateModel
 import core.services.mocks.MockAccountingPeriodService
+import core.utils.TestModels
 import incometax.business.models.AccountingPeriodModel
+import incometax.subscription.models.IncomeSourceType
 import incometax.util.CurrentDateProvider
 import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent}
@@ -80,12 +82,13 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
     "When it is ineligible dates" should {
       s"return a redirect status (SEE_OTHER - 303) to kickout page" in {
         setupMockKeystore(
+          fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
           fetchAll = testCacheMap(
             accountingPeriodDate = Some(testAccountingPeriodDates)
           ),
           fetchAccountingPeriodPrior = testAccountingPeriodPriorCurrent
         )
-        mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1))(false)
+        mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), false)(false)
 
         val goodRequest = callShow(isEditMode = false)
 
@@ -93,17 +96,19 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
         redirectLocation(goodRequest) mustBe Some(agent.controllers.eligibility.routes.NotEligibleForIncomeTaxController.show().url)
       }
     }
+
     "When it is not in edit mode and is eligible" when {
       "the tax year remained the same" should {
         s"return a redirect status (SEE_OTHER - 303) but do not update terms" in {
           setupMockKeystore(
+            fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
             fetchAll = testCacheMap(
               accountingPeriodDate = Some(testAccountingPeriodDates)
             ),
             fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
           )
           setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates)
-          mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1))(true)
+          mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), false)(true)
 
           val goodRequest = await(callShow(isEditMode = false))
 
@@ -115,12 +120,13 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
       "the tax year changed" should {
         s"return a redirect status (SEE_OTHER - 303) and update terms" in {
           setupMockKeystore(
+            fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
             fetchAll = testCacheMap(
               accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
             ),
             fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
           )
-          mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1))(true)
+          mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), false)(true)
 
           val goodRequest = await(callShow(isEditMode = false))
 
@@ -134,12 +140,13 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
       "tax year remains the same" should {
         "return a redirect status (SEE_OTHER - 303)" in {
           setupMockKeystore(
+            fetchIncomeSource = Some(TestModels.testIncomeSourceBusiness),
             fetchAll = testCacheMap(
               accountingPeriodDate = Some(testAccountingPeriodDates)
             ),
             fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
           )
-          mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1))(true)
+          mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), false)(true)
 
 
           val goodRequest = await(callShow(isEditMode = true))
@@ -153,12 +160,12 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
         "the client can report" should {
           "return a redirect status (SEE_OTHER - 303)" in {
             setupMockKeystore(
+              fetchIncomeSource = TestModels.testIncomeSourceBusiness,
               fetchAll = testCacheMap(
-                accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
-              ),
+                accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)),
               fetchAccountingPeriodPrior = testAccountingPeriodPriorNext
             )
-            mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1))(true)
+            mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), false)(true)
 
 
             val goodRequest = await(callShow(isEditMode = true))
