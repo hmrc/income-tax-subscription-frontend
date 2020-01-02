@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,10 +40,10 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
     testNino,
     testDob)
 
-  lazy val postAction: Call = usermatching.controllers.routes.ConfirmUserController.submit()
+  lazy val postAction: Call = controllers.usermatching.routes.ConfirmUserController.submit()
   lazy val backUrl: String = "testBackUrl"
 
-  val expectedEditLink = usermatching.controllers.routes.UserDetailsController.show(editMode = true).url
+  val expectedEditLink = controllers.usermatching.routes.UserDetailsController.show(editMode = true).url
 
   def page(): Html = usermatching.views.html.check_your_user_details(
     userDetailsModel = testUserDetails,

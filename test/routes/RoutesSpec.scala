@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Timeout routes
   "The URL for the timeout.show action" should {
     s"be equal to $contextRoute/session-timeout" in {
-      core.controllers.routes.SessionTimeoutController.show().url must be(s"$contextRoute/session-timeout")
+      controllers.routes.SessionTimeoutController.show().url must be(s"$contextRoute/session-timeout")
     }
   }
 
   "The URL for the SummaryController.show action" should {
     s"be equal to $contextRoute/check-your-answers" in {
-      incometax.subscription.controllers.routes.CheckYourAnswersController.show().url must be(s"$contextRoute/check-your-answers")
+      controllers.individual.subscription.routes.CheckYourAnswersController.show().url must be(s"$contextRoute/check-your-answers")
     }
   }
 
@@ -39,26 +39,26 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Summary routes
   "The URL for the SummaryController.submit action" should {
     s"be equal to $contextRoute/check-your-answers" in {
-      incometax.subscription.controllers.routes.CheckYourAnswersController.submit().url must be(s"$contextRoute/check-your-answers")
+      controllers.individual.subscription.routes.CheckYourAnswersController.submit().url must be(s"$contextRoute/check-your-answers")
     }
   }
 
   "The URL for the ConfirmationController.show action" should {
     s"be equal to $contextRoute/confirmation" in {
-      incometax.subscription.controllers.routes.ConfirmationController.show().url must be(s"$contextRoute/confirmation")
+      controllers.individual.subscription.routes.ConfirmationController.show().url must be(s"$contextRoute/confirmation")
     }
   }
 
   // Terms and Conditions routes
   "The URL for the Terms.show action" should {
     s"be equal to $contextRoute/terms" in {
-      incometax.subscription.controllers.routes.TermsController.show().url must be(s"$contextRoute/terms")
+      controllers.individual.subscription.routes.TermsController.show().url must be(s"$contextRoute/terms")
     }
   }
 
   "The URL for the Terms.submit() action" should {
     s"be equal to $contextRoute/terms" in {
-      incometax.subscription.controllers.routes.TermsController.submit().url must be(s"$contextRoute/terms")
+      controllers.individual.subscription.routes.TermsController.submit().url must be(s"$contextRoute/terms")
     }
   }
 
@@ -66,7 +66,7 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Cannot sign up routes
   "The URL for the CannotSignUp.show() action" should {
     s"be equal to $contextRoute/error/cannot-sign-up" in {
-      incometax.incomesource.controllers.routes.CannotSignUpController.show().url must be(s"$contextRoute/error/cannot-sign-up")
+      controllers.individual.incomesource.routes.CannotSignUpController.show().url must be(s"$contextRoute/error/cannot-sign-up")
     }
   }
 

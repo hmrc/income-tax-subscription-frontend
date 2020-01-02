@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,10 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
         clientMatchingService.matchUser(cd)
           .collect {
             case Right(Some(matchedClient)) =>
-              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = true), agent.controllers.matching.routes.ConfirmClientController.submit().url)
+              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = true), controllers.agent.matching.routes.ConfirmClientController.submit().url)
               Right(ApprovedAgent(matchedClient.nino, matchedClient.saUtr))
             case Right(None) =>
-              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = false), agent.controllers.matching.routes.ConfirmClientController.submit().url)
+              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = false), controllers.agent.matching.routes.ConfirmClientController.submit().url)
               Left(NoClientMatched)
           }
           .recoverWith { case _ => Left(UnexpectedFailure) }

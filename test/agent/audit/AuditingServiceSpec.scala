@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,9 +49,9 @@ class AuditingServiceSpec extends MockTrait with BeforeAndAfterEach {
       "extract the data and pass it into the AuditConnector" in {
         val testModel = ClientMatchingAuditModel(testARN, testClientDetails, isSuccess = true)
 
-        val expectedData = toDataEvent(testAppName, testModel, agent.controllers.matching.routes.ConfirmClientController.submit().url)
+        val expectedData = toDataEvent(testAppName, testModel, controllers.agent.matching.routes.ConfirmClientController.submit().url)
 
-        testAuditingService.audit(testModel, agent.controllers.matching.routes.ConfirmClientController.submit().url)
+        testAuditingService.audit(testModel, controllers.agent.matching.routes.ConfirmClientController.submit().url)
 
         verify(mockAuditConnector)
           .sendEvent(

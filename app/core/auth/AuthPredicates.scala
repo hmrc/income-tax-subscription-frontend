@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ trait AuthPredicates extends Results {
 
   val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
 
-  lazy val alreadyEnrolled: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.show())
+  lazy val alreadyEnrolled: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show())
 
   val mtdidPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
@@ -48,11 +48,11 @@ trait AuthPredicates extends Results {
     if (user.mtdItsaRef.nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.failed(new NotFoundException("AuthPredicates.enrolledPredicate")))
 
-  lazy val homeRoute = Redirect(usermatching.controllers.routes.HomeController.index())
+  lazy val homeRoute = Redirect(controllers.usermatching.routes.HomeController.index())
 
-  lazy val cannotUseServiceRoute = Redirect(incometax.incomesource.controllers.routes.CannotUseServiceController.show())
+  lazy val cannotUseServiceRoute = Redirect(controllers.individual.incomesource.routes.CannotUseServiceController.show())
 
-  lazy val timeoutRoute = Redirect(core.controllers.routes.SessionTimeoutController.show())
+  lazy val timeoutRoute = Redirect(controllers.routes.SessionTimeoutController.show())
 
   val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {
@@ -60,7 +60,7 @@ trait AuthPredicates extends Results {
     }
     else Right(AuthPredicateSuccess)
 
-  lazy val wrongAffinity: Result = Redirect(usermatching.controllers.routes.AffinityGroupErrorController.show())
+  lazy val wrongAffinity: Result = Redirect(controllers.usermatching.routes.AffinityGroupErrorController.show())
 
   val affinityPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     user.affinityGroup match {
@@ -96,7 +96,7 @@ trait AuthPredicates extends Results {
     if (!user.isAssistant) Right(AuthPredicateSuccess)
     else Left(Future.successful(cannotUseServiceRoute))
 
-  lazy val goToIv = Redirect(identityverification.controllers.routes.IdentityVerificationController.gotoIV())
+  lazy val goToIv = Redirect(controllers.individual.routes.IdentityVerificationController.gotoIV())
 
   val ivPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.isInState(Registration) && user.confidenceLevel < ConfidenceLevel.L200) Left(Future.successful(goToIv))
@@ -130,24 +130,24 @@ trait AuthPredicates extends Results {
 object AuthPredicates extends Results {
   val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
 
-  lazy val userMatching: Result = Redirect(usermatching.controllers.routes.UserDetailsController.show())
+  lazy val userMatching: Result = Redirect(controllers.usermatching.routes.UserDetailsController.show())
 
   val ninoPredicate: AuthPredicate[IncomeTaxSAUser] = implicit request => user =>
     if (user.nino.isDefined) Right(AuthPredicateSuccess)
     else if (user.utr.isDefined) Left(Future.successful(homeRoute))
     else Left(Future.successful(userMatching withJourneyState UserMatching))
 
-  lazy val alreadyEnrolledRoute: Result = Redirect(incometax.subscription.controllers.routes.AlreadyEnrolledController.show())
+  lazy val alreadyEnrolledRoute: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show())
 
   lazy val notEnrolledPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (user.mtdItsaRef.isEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(alreadyEnrolledRoute))
 
-  lazy val homeRoute = Redirect(usermatching.controllers.routes.HomeController.index())
+  lazy val homeRoute = Redirect(controllers.usermatching.routes.HomeController.index())
 
-  lazy val timeoutRoute = Redirect(core.controllers.routes.SessionTimeoutController.show())
+  lazy val timeoutRoute = Redirect(controllers.routes.SessionTimeoutController.show())
 
-  lazy val wrongAffinity: Result = Redirect(usermatching.controllers.routes.AffinityGroupErrorController.show())
+  lazy val wrongAffinity: Result = Redirect(controllers.usermatching.routes.AffinityGroupErrorController.show())
 
   val timeoutPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.get(lastRequestTimestamp).nonEmpty && request.session.get(authToken).isEmpty) {

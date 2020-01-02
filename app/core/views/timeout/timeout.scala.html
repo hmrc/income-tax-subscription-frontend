@@ -1,5 +1,5 @@
 @*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,6 @@
 @main_template(title = Messages("timeout.title"), showSignOutLink = false) {
 
 <h1>@Messages("timeout.title")</h1>
-<p>@Html(Messages("timeout.returnToHome", usermatching.controllers.routes.HomeController.index().url))</p>
+<p>@Html(Messages("timeout.returnToHome", controllers.usermatching.routes.HomeController.index().url))</p>
 
 }

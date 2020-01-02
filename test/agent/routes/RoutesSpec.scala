@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,13 +25,13 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Timeout routes
   "The URL for the timeout.show action" should {
     s"be equal to $contextRoute/session-timeout" in {
-      agent.controllers.routes.SessionTimeoutController.show().url must be (s"$contextRoute/session-timeout")
+      controllers.agent.routes.SessionTimeoutController.show().url must be (s"$contextRoute/session-timeout")
     }
   }
 
   "The URL for the SummaryController.show action" should {
     s"be equal to $contextRoute/check-your-answers" in {
-      agent.controllers.routes.CheckYourAnswersController.show().url must be (s"$contextRoute/check-your-answers")
+      controllers.agent.routes.CheckYourAnswersController.show().url must be (s"$contextRoute/check-your-answers")
     }
   }
 
@@ -39,26 +39,26 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Summary routes
   "The URL for the SummaryController.submit action" should {
     s"be equal to $contextRoute/check-your-answers" in {
-      agent.controllers.routes.CheckYourAnswersController.submit().url must be (s"$contextRoute/check-your-answers")
+      controllers.agent.routes.CheckYourAnswersController.submit().url must be (s"$contextRoute/check-your-answers")
     }
   }
 
   "The URL for the ConfirmationController.show action" should {
     s"be equal to $contextRoute/confirmation" in {
-      agent.controllers.routes.ConfirmationController.show().url must be (s"$contextRoute/confirmation")
+      controllers.agent.routes.ConfirmationController.show().url must be (s"$contextRoute/confirmation")
     }
   }
 
   // Terms and Conditions routes
   "The URL for the Terms.show action" should {
     s"be equal to $contextRoute/terms" in {
-      agent.controllers.routes.TermsController.show().url must be (s"$contextRoute/terms")
+      controllers.agent.routes.TermsController.show().url must be (s"$contextRoute/terms")
     }
   }
 
   "The URL for the Terms.submit() action" should {
     s"be equal to $contextRoute/terms" in {
-      agent.controllers.routes.TermsController.submit().url must be (s"$contextRoute/terms")
+      controllers.agent.routes.TermsController.submit().url must be (s"$contextRoute/terms")
     }
   }
 
@@ -66,7 +66,7 @@ class RoutesSpec extends PlaySpec with OneAppPerTest {
   // Agent not authorised Confirmation routes
   "The URL for the unauthorised Sign up complete.show action" should {
     s"be equal to $contextRoute/send-client-link" in {
-      agent.controllers.routes.UnauthorisedAgentConfirmationController.show().url must be (s"$contextRoute/send-client-link")
+      controllers.agent.routes.UnauthorisedAgentConfirmationController.show().url must be (s"$contextRoute/send-client-link")
     }
   }
 

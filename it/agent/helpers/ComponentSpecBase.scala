@@ -19,7 +19,6 @@ package agent.helpers
 import java.util.UUID
 
 import _root_.agent.auth.{AgentJourneyState, AgentSignUp, AgentUserMatching}
-import _root_.agent.controllers.ITSASessionKeys
 import _root_.agent.forms._
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.SessionCookieBaker._
@@ -29,6 +28,7 @@ import agent.common.Constants
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
+import controllers.agent.ITSASessionKeys
 import core.models.YesNo
 import helpers.UserMatchingIntegrationRequestSupport
 import helpers.servicemocks.AuditStub

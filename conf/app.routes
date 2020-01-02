@@ -2,106 +2,145 @@
 GET         /assets/*file                 controllers.Assets.at(path="/public", file)
 
 # Home controller
-GET         /                             usermatching.controllers.HomeController.home
-GET         /index                        usermatching.controllers.HomeController.index
+GET         /                             controllers.usermatching.HomeController.home
+GET         /index                        controllers.usermatching.HomeController.index
 
 # SignOut Controller
-GET         /logout                       core.controllers.SignOutController.signOut(origin: String)
+GET         /logout                       controllers.SignOutController.signOut(origin: String)
 
 # Preferences routes
-GET         /preferences                  digitalcontact.controllers.PreferencesController.checkPreferences
-GET         /callback                     digitalcontact.controllers.PreferencesController.callback
-GET         /paperless-error              digitalcontact.controllers.PreferencesController.show
-POST        /paperless-error              digitalcontact.controllers.PreferencesController.submit
+GET         /preferences                  controllers.individual.PreferencesController.checkPreferences
+GET         /callback                     controllers.individual.PreferencesController.callback
+GET         /paperless-error              controllers.individual.PreferencesController.show
+POST        /paperless-error              controllers.individual.PreferencesController.submit
 
 # Rent Uk Property Routes
-GET         /rent-uk-property             incometax.incomesource.controllers.RentUkPropertyController.show(editMode: Boolean ?= false)
-POST        /rent-uk-property             incometax.incomesource.controllers.RentUkPropertyController.submit(editMode: Boolean ?= false)
+GET         /rent-uk-property             controllers.individual.incomesource.RentUkPropertyController.show(editMode: Boolean ?= false)
+POST        /rent-uk-property             controllers.individual.incomesource.RentUkPropertyController.submit(editMode: Boolean ?= false)
 
 # Are you self-employed Routes
-GET         /are-you-self-employed        incometax.incomesource.controllers.AreYouSelfEmployedController.show(editMode: Boolean ?= false)
-POST        /are-you-self-employed        incometax.incomesource.controllers.AreYouSelfEmployedController.submit(editMode: Boolean ?= false)
+GET         /are-you-self-employed        controllers.individual.incomesource.AreYouSelfEmployedController.show(editMode: Boolean ?= false)
+POST        /are-you-self-employed        controllers.individual.incomesource.AreYouSelfEmployedController.submit(editMode: Boolean ?= false)
 
 # Summary Routes
-GET         /check-your-answers           incometax.subscription.controllers.CheckYourAnswersController.show
-POST        /check-your-answers           incometax.subscription.controllers.CheckYourAnswersController.submit
+GET         /check-your-answers           controllers.individual.subscription.CheckYourAnswersController.show
+POST        /check-your-answers           controllers.individual.subscription.CheckYourAnswersController.submit
 
 # Confirmation Routes
-GET         /confirmation                 incometax.subscription.controllers.ConfirmationController.show
+GET         /confirmation                 controllers.individual.subscription.ConfirmationController.show
 
 # Session Timeout Route
-GET         /session-timeout              core.controllers.SessionTimeoutController.show
+GET         /session-timeout              controllers.SessionTimeoutController.show
 
 
 # Terms Routes
-GET         /terms                        incometax.subscription.controllers.TermsController.show(editMode: Boolean ?= false)
-POST        /terms                        incometax.subscription.controllers.TermsController.submit()
+GET         /terms                        controllers.individual.subscription.TermsController.show(editMode: Boolean ?= false)
+POST        /terms                        controllers.individual.subscription.TermsController.submit()
 
 # Other Income Sources Routes
-GET         /income-other                 incometax.incomesource.controllers.OtherIncomeController.show(editMode: Boolean ?= false)
-POST        /income-other                 incometax.incomesource.controllers.OtherIncomeController.submit(editMode: Boolean ?= false)
+GET         /income-other                 controllers.individual.incomesource.OtherIncomeController.show(editMode: Boolean ?= false)
+POST        /income-other                 controllers.individual.incomesource.OtherIncomeController.submit(editMode: Boolean ?= false)
 
 # Already enrolled
-GET         /already-enrolled             incometax.subscription.controllers.AlreadyEnrolledController.show
+GET         /already-enrolled             controllers.individual.subscription.AlreadyEnrolledController.show
 
 # No NINO Routes
-GET         /register-for-SA              usermatching.controllers.NoSAController.show
+GET         /register-for-SA              controllers.usermatching.NoSAController.show
 
 # Other Income Error Routes
-GET         /other-income-in-final-report incometax.incomesource.controllers.OtherIncomeErrorController.show
-POST        /other-income-in-final-report incometax.incomesource.controllers.OtherIncomeErrorController.submit
+GET         /other-income-in-final-report controllers.individual.incomesource.OtherIncomeErrorController.show
+POST        /other-income-in-final-report controllers.individual.incomesource.OtherIncomeErrorController.submit
 
 # Affinity Group Error
-GET         /error/affinity-group         usermatching.controllers.AffinityGroupErrorController.show
+GET         /error/affinity-group         controllers.usermatching.AffinityGroupErrorController.show
 
 # IV Error
-GET         /error/iv-failed              identityverification.controllers.IdentityVerificationController.ivFailed
+GET         /error/iv-failed              controllers.individual.IdentityVerificationController.ivFailed
 
 # Exit Survey
-GET         /exit-survey                  incometax.subscription.controllers.ExitSurveyController.show(origin: String)
-POST        /exit-survey                  incometax.subscription.controllers.ExitSurveyController.submit
+GET         /exit-survey                  controllers.individual.subscription.ExitSurveyController.show(origin: String)
+POST        /exit-survey                  controllers.individual.subscription.ExitSurveyController.submit
 
-GET         /feedback-submitted           incometax.subscription.controllers.ExitSurveyThankYouController.show
+GET         /feedback-submitted           controllers.individual.subscription.ExitSurveyThankYouController.show
 
 # Claim Subscription
-GET         /claim-subscription           incometax.subscription.controllers.ClaimSubscriptionController.claim
+GET         /claim-subscription           controllers.individual.subscription.ClaimSubscriptionController.claim
 
 # IV
-GET         /iv                           identityverification.controllers.IdentityVerificationController.gotoIV
+GET         /iv                           controllers.individual.IdentityVerificationController.gotoIV
 
 # User Matching
-GET         /user-details                 usermatching.controllers.UserDetailsController.show(editMode: Boolean ?= false)
-POST        /user-details                 usermatching.controllers.UserDetailsController.submit(editMode: Boolean ?= false)
+GET         /user-details                 controllers.usermatching.UserDetailsController.show(editMode: Boolean ?= false)
+POST        /user-details                 controllers.usermatching.UserDetailsController.submit(editMode: Boolean ?= false)
 
 # User Lockout
-GET         /error/lockout                usermatching.controllers.UserDetailsLockoutController.show
+GET         /error/lockout                controllers.usermatching.UserDetailsLockoutController.show
 
 # Confirm User
-GET         /confirm-user                 usermatching.controllers.ConfirmUserController.show()
-POST        /confirm-user                 usermatching.controllers.ConfirmUserController.submit()
+GET         /confirm-user                 controllers.usermatching.ConfirmUserController.show()
+POST        /confirm-user                 controllers.usermatching.ConfirmUserController.submit()
 
 # User Details Error
-GET         /error/user-details           usermatching.controllers.UserDetailsErrorController.show()
-POST        /error/user-details           usermatching.controllers.UserDetailsErrorController.submit()
+GET         /error/user-details           controllers.usermatching.UserDetailsErrorController.show()
+POST        /error/user-details           controllers.usermatching.UserDetailsErrorController.submit()
 
 # Authorise agent
-GET         /authorise-agent              incometax.unauthorisedagent.controllers.AuthoriseAgentController.show()
-POST        /authorise-agent              incometax.unauthorisedagent.controllers.AuthoriseAgentController.submit()
+GET         /authorise-agent              controllers.unauthorisedagent.AuthoriseAgentController.show()
+POST        /authorise-agent              controllers.unauthorisedagent.AuthoriseAgentController.submit()
 
 #Agent not authorised
-GET         /agent-not-authorised         incometax.unauthorisedagent.controllers.AgentNotAuthorisedController.show()
+GET         /agent-not-authorised         controllers.unauthorisedagent.AgentNotAuthorisedController.show()
 
 # Confirm agent subscription
-GET         /subscribe-unauthorised       incometax.unauthorisedagent.controllers.UnauthorisedSubscriptionController.subscribeUnauthorised()
+GET         /subscribe-unauthorised       controllers.unauthorisedagent.UnauthorisedSubscriptionController.subscribeUnauthorised()
 
 # Cannot Sign Up Routes
-GET         /error/cannot-sign-up         incometax.incomesource.controllers.CannotSignUpController.show()
+GET         /error/cannot-sign-up         controllers.individual.incomesource.CannotSignUpController.show()
 
 # Cannot Use Service
-GET         /error/cannot-use-service     incometax.incomesource.controllers.CannotUseServiceController.show()
+GET         /error/cannot-use-service     controllers.individual.incomesource.CannotUseServiceController.show()
 
 # Cannot use service because not eligible
-GET         /cannot-use-service-yet       incometax.eligibility.controllers.NotEligibleForIncomeTaxController.show()
+GET         /cannot-use-service-yet       controllers.individual.eligibility.NotEligibleForIncomeTaxController.show()
 
 #Language
-GET         /language/:lang               core.controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang               controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
+
+################## Business Routes
+
+#Match tax year Routes
+GET         /business/match-to-tax-year                      controllers.individual.business.MatchTaxYearController.show(editMode: Boolean ?= false)
+POST        /business/match-to-tax-year                      controllers.individual.business.MatchTaxYearController.submit(editMode: Boolean ?= false)
+
+#What Tax Year To Sign Up Routes
+GET         /business/what-year-to-sign-up                   controllers.individual.business.WhatYearToSignUpController.show(editMode: Boolean ?= false)
+POST        /business/what-year-to-sign-up                   controllers.individual.business.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
+
+#Accounting Period Routes
+GET         /business/accounting-period-dates                controllers.individual.business.BusinessAccountingPeriodDateController.show(editMode: Boolean ?= false, editMatch: Boolean?= false)
+POST        /business/accounting-period-dates                controllers.individual.business.BusinessAccountingPeriodDateController.submit(editMode: Boolean ?= false, editMatch: Boolean?= false)
+
+#Business Name Routes
+GET         /business/name                                   controllers.individual.business.BusinessNameController.show(editMode: Boolean ?= false)
+POST        /business/name                                   controllers.individual.business.BusinessNameController.submit(editMode: Boolean ?= false)
+
+#Phone Number Routes
+GET         /business/phone-number                           controllers.individual.business.BusinessPhoneNumberController.show(editMode: Boolean ?= false)
+POST        /business/phone-number                           controllers.individual.business.BusinessPhoneNumberController.submit(editMode: Boolean ?= false)
+
+#Start Date Routes
+GET         /business/start-date                             controllers.individual.business.BusinessStartDateController.show(editMode: Boolean ?= false)
+POST        /business/start-date                             controllers.individual.business.BusinessStartDateController.submit(editMode: Boolean ?= false)
+
+#Income Type Routes
+GET         /business/accounting-method                      controllers.individual.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/accounting-method                      controllers.individual.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
+
+GET         /business/accounting-method-property             controllers.individual.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/accounting-method-property             controllers.individual.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)
+
+GET         /business/address                                controllers.individual.business.BusinessAddressController.show(editMode: Boolean ?= false)
+POST        /business/address                                controllers.individual.business.BusinessAddressController.submit(editMode: Boolean ?= false)
+GET         /business/address/init                           controllers.individual.business.BusinessAddressController.init(editMode: Boolean ?= false)
+GET         /business/address/callback                       controllers.individual.business.BusinessAddressController.callBack(editMode: Boolean = false, id: String)
+GET         /business/address/callback/edit                  controllers.individual.business.BusinessAddressController.callBack(editMode: Boolean = true, id: String)
