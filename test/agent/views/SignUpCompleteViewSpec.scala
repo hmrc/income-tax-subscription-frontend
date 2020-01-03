@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ class SignUpCompleteViewSpec extends UnitTestTrait {
 
   lazy val page = agent.views.html.sign_up_complete(
     summary = testAgentSummaryData,
-    postAction = agent.controllers.routes.AddAnotherClientController.addAnother(),
+    postAction = controllers.agent.routes.AddAnotherClientController.addAnother(),
     signOutAction = action
   )(FakeRequest(), applicationMessages, appConfig)
   lazy val document = Jsoup.parse(page.body)

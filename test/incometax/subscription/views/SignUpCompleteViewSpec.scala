@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package incometax.subscription.views
 
 import assets.MessageLookup
 import assets.MessageLookup.SignUpComplete
-import core.controllers.SignOutController
+import controllers.SignOutController
 import core.models.DateModel
 import core.utils.TestModels.{testAreYouSelfEmployed_no, testSummaryData}
 import core.views.ViewSpecTrait

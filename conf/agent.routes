@@ -1,85 +1,111 @@
 # Home controller
-GET         /                                       agent.controllers.HomeController.home
-GET         /index                                  agent.controllers.HomeController.index
+GET         /                                       controllers.agent.HomeController.home
+GET         /index                                  controllers.agent.HomeController.index
 
 # Income Source Routes
-GET         /income                                 agent.controllers.IncomeSourceController.show(editMode: Boolean ?= false)
-POST        /income                                 agent.controllers.IncomeSourceController.submit(editMode: Boolean ?= false)
+GET         /income                                 controllers.agent.IncomeSourceController.show(editMode: Boolean ?= false)
+POST        /income                                 controllers.agent.IncomeSourceController.submit(editMode: Boolean ?= false)
 
 # Summary Routes
-GET         /check-your-answers                     agent.controllers.CheckYourAnswersController.show
-POST        /check-your-answers                     agent.controllers.CheckYourAnswersController.submit
+GET         /check-your-answers                     controllers.agent.CheckYourAnswersController.show
+POST        /check-your-answers                     controllers.agent.CheckYourAnswersController.submit
 
 # Confirmation Routes
-GET         /confirmation                           agent.controllers.ConfirmationController.show
+GET         /confirmation                           controllers.agent.ConfirmationController.show
 
 # Session Timeout Route
-GET         /session-timeout                        agent.controllers.SessionTimeoutController.show
+GET         /session-timeout                        controllers.agent.SessionTimeoutController.show
 
 # Feedback Routes
-GET         /feedback                               agent.controllers.FeedbackController.show
-POST        /feedback                               agent.controllers.FeedbackController.submit
-GET         /thankyou                               agent.controllers.FeedbackController.thankyou
+GET         /feedback                               controllers.agent.FeedbackController.show
+POST        /feedback                               controllers.agent.FeedbackController.submit
+GET         /thankyou                               controllers.agent.FeedbackController.thankyou
 
 # Terms Routes
-GET         /terms                                  agent.controllers.TermsController.show(editMode: Boolean ?= false)
-POST        /terms                                  agent.controllers.TermsController.submit()
+GET         /terms                                  controllers.agent.TermsController.show(editMode: Boolean ?= false)
+POST        /terms                                  controllers.agent.TermsController.submit()
 
 # Other Income Sources Routes
-GET         /income-other                           agent.controllers.OtherIncomeController.show(editMode: Boolean ?= false)
-POST        /income-other                           agent.controllers.OtherIncomeController.submit(editMode: Boolean ?= false)
+GET         /income-other                           controllers.agent.OtherIncomeController.show(editMode: Boolean ?= false)
+POST        /income-other                           controllers.agent.OtherIncomeController.submit(editMode: Boolean ?= false)
 
 # Other Income Error Routes
-GET         /error/other-income                     agent.controllers.OtherIncomeErrorController.show
-POST        /error/other-income                     agent.controllers.OtherIncomeErrorController.submit
+GET         /error/other-income                     controllers.agent.OtherIncomeErrorController.show
+POST        /error/other-income                     controllers.agent.OtherIncomeErrorController.submit
 
 #
-GET         /error/client-already-subscribed        agent.controllers.ClientAlreadySubscribedController.show
-POST        /error/client-already-subscribed        agent.controllers.ClientAlreadySubscribedController.submit
+GET         /error/client-already-subscribed        controllers.agent.ClientAlreadySubscribedController.show
+POST        /error/client-already-subscribed        controllers.agent.ClientAlreadySubscribedController.submit
 
 # Home controller
-GET         /not-enrolled-agent-services            agent.controllers.NotEnrolledAgentServicesController.show
+GET         /not-enrolled-agent-services            controllers.agent.NotEnrolledAgentServicesController.show
 
 # Client Matching
-GET         /client-details                         agent.controllers.matching.ClientDetailsController.show(editMode: Boolean ?= false)
-POST        /client-details                         agent.controllers.matching.ClientDetailsController.submit(editMode: Boolean ?= false)
+GET         /client-details                         controllers.agent.matching.ClientDetailsController.show(editMode: Boolean ?= false)
+POST        /client-details                         controllers.agent.matching.ClientDetailsController.submit(editMode: Boolean ?= false)
 
 # Check your client's details
-GET         /confirm-client                         agent.controllers.matching.ConfirmClientController.show
-POST        /confirm-client                         agent.controllers.matching.ConfirmClientController.submit
+GET         /confirm-client                         controllers.agent.matching.ConfirmClientController.show
+POST        /confirm-client                         controllers.agent.matching.ConfirmClientController.submit
 
 # Client not matched routes
-GET         /error/client-details                   agent.controllers.matching.ClientDetailsErrorController.show
-POST        /error/client-details                   agent.controllers.matching.ClientDetailsErrorController.submit
+GET         /error/client-details                   controllers.agent.matching.ClientDetailsErrorController.show
+POST        /error/client-details                   controllers.agent.matching.ClientDetailsErrorController.submit
 
 # Client Lockout
-GET         /error/lockout                          agent.controllers.matching.ClientDetailsLockoutController.show
+GET         /error/lockout                          controllers.agent.matching.ClientDetailsLockoutController.show
 
 #
-GET         /error/no-client-relationship           agent.controllers.NoClientRelationshipController.show
-POST        /error/no-client-relationship           agent.controllers.NoClientRelationshipController.submit
+GET         /error/no-client-relationship           controllers.agent.NoClientRelationshipController.show
+POST        /error/no-client-relationship           controllers.agent.NoClientRelationshipController.submit
 
 # add another client
-GET         /add-another                            agent.controllers.AddAnotherClientController.addAnother()
+GET         /add-another                            controllers.agent.AddAnotherClientController.addAnother()
 
 # Exit Survey
-GET         /exit-survey                            agent.controllers.ExitSurveyController.show(origin: String)
-POST        /exit-survey                            agent.controllers.ExitSurveyController.submit
+GET         /exit-survey                            controllers.agent.ExitSurveyController.show(origin: String)
+POST        /exit-survey                            controllers.agent.ExitSurveyController.submit
 
-GET         /feedback-submitted                     agent.controllers.ThankYouController.show
+GET         /feedback-submitted                     controllers.agent.ThankYouController.show
 
 # No NINO Routes
-GET         /register-for-SA                        agent.controllers.matching.NoSAController.show
+GET         /register-for-SA                        controllers.agent.matching.NoSAController.show
 
 # Agent not Authorised
-GET         /error/not-authorised                   agent.controllers.AgentNotAuthorisedController.show
-POST        /error/not-authorised                   agent.controllers.AgentNotAuthorisedController.submit
+GET         /error/not-authorised                   controllers.agent.AgentNotAuthorisedController.show
+POST        /error/not-authorised                   controllers.agent.AgentNotAuthorisedController.submit
 
 # Agent not authorised Confirmation
-GET         /send-client-link                       agent.controllers.UnauthorisedAgentConfirmationController.show
+GET         /send-client-link                       controllers.agent.UnauthorisedAgentConfirmationController.show
 
 # Cannot use service because not eligible
-GET         /cannot-use-service-yet                 agent.controllers.eligibility.NotEligibleForIncomeTaxController.show()
+GET         /cannot-use-service-yet                 controllers.agent.eligibility.NotEligibleForIncomeTaxController.show()
 
 #Language
-GET         /language/:lang                         core.controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang                         controllers.language.LanguageSwitchController.switchToLanguage(lang: String)
+
+######################### Business Routes
+
+# Match Tax Year Routes
+GET         /business/match-to-tax-year                      controllers.agent.business.MatchTaxYearController.show(editMode: Boolean ?= false)
+POST        /business/match-to-tax-year                      controllers.agent.business.MatchTaxYearController.submit(editMode: Boolean ?= false)
+
+#What Tax Year To Sign Up Routes
+GET         /business/what-year-to-sign-up                   controllers.agent.business.WhatYearToSignUpController.show(editMode: Boolean ?= false)
+POST        /business/what-year-to-sign-up                   controllers.agent.business.WhatYearToSignUpController.submit(editMode: Boolean ?= false)
+
+#Accounting Period Routes
+GET         /business/accounting-period-dates                controllers.agent.business.BusinessAccountingPeriodDateController.show(editMode: Boolean ?= false)
+POST        /business/accounting-period-dates                controllers.agent.business.BusinessAccountingPeriodDateController.submit(editMode: Boolean ?= false)
+
+#Name Routes
+GET         /business/name                                   controllers.agent.business.BusinessNameController.show(editMode: Boolean ?= false)
+POST        /business/name                                   controllers.agent.business.BusinessNameController.submit(editMode: Boolean ?= false)
+
+#Business Income Type Routes
+GET         /business/accounting-method                      controllers.agent.business.BusinessAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/accounting-method                      controllers.agent.business.BusinessAccountingMethodController.submit(editMode: Boolean ?= false)
+
+#Property Income Type Routes
+GET         /business/accounting-method-property             controllers.agent.business.PropertyAccountingMethodController.show(editMode: Boolean ?= false)
+POST        /business/accounting-method-property             controllers.agent.business.PropertyAccountingMethodController.submit(editMode: Boolean ?= false)

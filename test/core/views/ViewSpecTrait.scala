@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package core.views
 
 import assets.MessageLookup
 import assets.MessageLookup.{Base => common}
-import core.controllers.SignOutController
+import controllers.SignOutController
 import core.forms.validation.models.{SummaryError, TargetIds}
 import core.utils.UnitTestTrait
 import org.jsoup.Jsoup
@@ -407,7 +407,7 @@ trait ViewSpecTrait extends UnitTestTrait {
         val signOut = document.getElementById("logOutNavHref")
         if (signOut == null) fail("Signout link was not located in the banner\nIf this is the expected behaviour then please set 'signOutInBanner' to true when creating the TestView object")
         signOut.text() mustBe common.signOut
-        signOut.attr("href") must startWith(core.controllers.SignOutController.signOut("").url)
+        signOut.attr("href") must startWith(controllers.SignOutController.signOut("").url)
       }
     } else {
       s"$name must not have a sign out link in the banner" in {

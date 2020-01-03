@@ -1,5 +1,5 @@
 @*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
 @(summaryModel: SummaryModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @import SummaryIdConstants._
-@import agent.views.html.helpers.SummaryHelper._
+@import _root_.agent.views.html.helpers.SummaryHelper._
 
 @summaryRow(field: String, question: String, answer: String, changeUrl: Option[String] = None, enableHtml: Boolean = false) = {
     <div class="tabular-data__entry divider--top--thick" id="@field-row">
@@ -57,7 +57,7 @@
     val rowName = IncomeSourceId
     val rowQuestion = Messages("agent.summary.income_source")
     val rowAnswer = incomeSourceText(source)
-    val rowUrl = agent.controllers.routes.IncomeSourceController.show(editMode = true).url
+    val rowUrl = controllers.agent.routes.IncomeSourceController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -65,7 +65,7 @@
     val rowName = OtherIncomeId
     val rowQuestion = Messages("agent.summary.other_income")
     val rowAnswer = source.toMessageString
-    val rowUrl = agent.controllers.routes.OtherIncomeController.show(editMode = true).url
+    val rowUrl = controllers.agent.routes.OtherIncomeController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -74,7 +74,7 @@
     val rowQuestion = Messages("agent.summary.accounting_period")
     val periodInMonth = period.startDate.diffInMonth(period.endDate)
     val rowAnswer = Messages("base.date-to-date", period.startDate.toCheckYourAnswersDateFormat, period.endDate.toCheckYourAnswersDateFormat)
-    val rowUrl = agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+    val rowUrl = controllers.agent.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
@@ -82,7 +82,7 @@
     val rowName = MatchTaxYearId
     val rowQuestion = Messages("agent.summary.match_tax_year")
     val rowAnswer = taxYear.matchTaxYear.toMessageString
-    val rowUrl = agent.controllers.business.routes.MatchTaxYearController.show(editMode = true).url
+    val rowUrl = controllers.agent.business.routes.MatchTaxYearController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
@@ -90,7 +90,7 @@
     val rowName = BusinessNameId
     val rowQuestion = Messages("agent.summary.business_name")
     val rowAnswer = name.businessName
-    val rowUrl = agent.controllers.business.routes.BusinessNameController.show(editMode = true).url
+    val rowUrl = controllers.agent.business.routes.BusinessNameController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -98,7 +98,7 @@
     val rowName = SelectedTaxYearId
     val rowQuestion = Messages("agent.summary.selected_year")
     val rowAnswer = accountingYearText(selectedTaxYear)
-    val rowUrl = agent.controllers.business.routes.WhatYearToSignUpController.show(editMode = true).url
+    val rowUrl = controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl, enableHtml = true)
 }
 
@@ -106,7 +106,7 @@
     val rowName = AccountingMethodId
     val rowQuestion = Messages("agent.summary.income_type")
     val rowAnswer = accountingMethodText(income)
-    val rowUrl = agent.controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
+    val rowUrl = controllers.agent.business.routes.BusinessAccountingMethodController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -114,7 +114,7 @@
     val rowName = AccountingMethodPropertyId
     val rowQuestion = messages("agent.summary.income_type_property")
     val rowAnswer = accountingMethodText(income)
-    val rowUrl = agent.controllers.business.routes.PropertyAccountingMethodController.show(editMode = true).url
+    val rowUrl = controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

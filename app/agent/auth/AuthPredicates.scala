@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import agent.auth.AgentJourneyState._
 import cats.implicits._
 import agent.common.Constants.agentServiceEnrolmentName
-import agent.controllers.ITSASessionKeys
+import controllers.agent.ITSASessionKeys
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.http.NotFoundException
 
@@ -31,15 +31,15 @@ object AuthPredicates extends Results {
 
   val emptyPredicate: AuthPredicate[IncomeTaxAgentUser] = _ => _ => Right(AuthPredicateSuccess)
 
-  lazy val noArnRoute: Result = Redirect(agent.controllers.routes.NotEnrolledAgentServicesController.show())
+  lazy val noArnRoute: Result = Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show())
 
-  lazy val confirmationRoute: Result = Redirect(agent.controllers.routes.ConfirmationController.show())
+  lazy val confirmationRoute: Result = Redirect(controllers.agent.routes.ConfirmationController.show())
 
-  lazy val unauthorisedAgentConfirmationRoute: Result = Redirect(agent.controllers.routes.UnauthorisedAgentConfirmationController.show())
+  lazy val unauthorisedAgentConfirmationRoute: Result = Redirect(controllers.agent.routes.UnauthorisedAgentConfirmationController.show())
 
-  lazy val timeoutRoute = Redirect(agent.controllers.routes.SessionTimeoutController.show())
+  lazy val timeoutRoute = Redirect(controllers.agent.routes.SessionTimeoutController.show())
 
-  lazy val homeRoute = Redirect(agent.controllers.routes.HomeController.index())
+  lazy val homeRoute = Redirect(controllers.agent.routes.HomeController.index())
 
 
   val notSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>

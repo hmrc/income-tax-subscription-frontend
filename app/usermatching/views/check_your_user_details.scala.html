@@ -1,5 +1,5 @@
 @*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 @import core.config.AppConfig
 @import core.views.html.helpers._
 @import core.views.html.helpers.ConfirmUserIdConstants._
-@import usermatching.models.UserDetailsModel
+@import _root_.usermatching.models.UserDetailsModel
 @import core.views.html.templates.main_template
 
 @(userDetailsModel: UserDetailsModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -46,7 +46,7 @@
     val rowName = FirstNameId
     val rowQuestion = Messages("user-details.summary.first_name")
     val rowAnswer = userDetailsModel.firstName
-    val rowUrl = usermatching.controllers.routes.UserDetailsController.show(editMode = true).url
+    val rowUrl = controllers.usermatching.routes.UserDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -54,7 +54,7 @@
     val rowName = LastNameId
     val rowQuestion = Messages("user-details.summary.last_name")
     val rowAnswer = userDetailsModel.lastName
-    val rowUrl = usermatching.controllers.routes.UserDetailsController.show(editMode = true).url
+    val rowUrl = controllers.usermatching.routes.UserDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -62,7 +62,7 @@
     val rowName = NinoId
     val rowQuestion = Messages("user-details.summary.nino")
     val rowAnswer = userDetailsModel.ninoInDisplayFormat
-    val rowUrl = usermatching.controllers.routes.UserDetailsController.show(editMode = true).url
+    val rowUrl = controllers.usermatching.routes.UserDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -70,7 +70,7 @@
     val rowName = DobId
     val rowQuestion = Messages("user-details.summary.dob")
     val rowAnswer = userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat
-    val rowUrl = usermatching.controllers.routes.UserDetailsController.show(editMode = true).url
+    val rowUrl = controllers.usermatching.routes.UserDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

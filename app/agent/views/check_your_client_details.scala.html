@@ -1,5 +1,5 @@
 @*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,7 @@
 @import core.views.html.helpers._
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
-
-@import usermatching.models.UserDetailsModel
+@import _root_.usermatching.models.UserDetailsModel
 @(userDetailsModel: UserDetailsModel, postAction: Call, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @import _root_.agent.views.html.helpers.ConfirmClientIdConstants._
 
@@ -45,7 +44,7 @@
     val rowName = FirstNameId
     val rowQuestion = Messages("agent.client-details.summary.first_name")
     val rowAnswer = userDetailsModel.firstName
-    val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+    val rowUrl = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -53,7 +52,7 @@
     val rowName = LastNameId
     val rowQuestion = Messages("agent.client-details.summary.last_name")
     val rowAnswer = userDetailsModel.lastName
-    val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+    val rowUrl = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -61,7 +60,7 @@
     val rowName = NinoId
     val rowQuestion = Messages("agent.client-details.summary.nino")
     val rowAnswer = userDetailsModel.ninoInDisplayFormat
-    val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+    val rowUrl = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
@@ -69,7 +68,7 @@
     val rowName = DobId
     val rowQuestion = Messages("agent.client-details.summary.dob")
     val rowAnswer = userDetailsModel.dateOfBirth.toCheckYourAnswersDateFormat
-    val rowUrl = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+    val rowUrl = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 

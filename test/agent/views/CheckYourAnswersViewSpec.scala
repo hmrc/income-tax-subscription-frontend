@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,8 +37,8 @@ import play.twirl.api.Html
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
 
-  lazy val postAction: Call = _root_.agent.controllers.routes.CheckYourAnswersController.submit()
-  lazy val backUrl: String = _root_.agent.controllers.routes.TermsController.show().url
+  lazy val postAction: Call = _root_.controllers.agent.routes.CheckYourAnswersController.submit()
+  lazy val backUrl: String = _root_.controllers.agent.routes.TermsController.show().url
 
   val testBusinessPhoneNumber: BusinessPhoneNumberModel = TestModels.testBusinessPhoneNumber
   val testBusinessStartDate: BusinessStartDateModel = TestModels.testBusinessStartDate
@@ -169,7 +169,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         val expectedQuestion = messages.accounting_period
         val periodInMonth = testAccountingPeriod.startDate.diffInMonth(testAccountingPeriod.endDate)
         val expectedAnswer = s"${testAccountingPeriod.startDate.toOutputDateFormat} to ${testAccountingPeriod.endDate.toOutputDateFormat}"
-        val expectedEditLink = _root_.agent.controllers.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
+        val expectedEditLink = _root_.controllers.agent.business.routes.BusinessAccountingPeriodDateController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
@@ -185,7 +185,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = MatchTaxYearId
       val expectedQuestion = messages.match_tax_year
       val expectedAnswer = MessageLookup.Business.MatchTaxYear.no
-      val expectedEditLink = _root_.agent.controllers.business.routes.MatchTaxYearController.show(editMode = true).url
+      val expectedEditLink = _root_.controllers.agent.business.routes.MatchTaxYearController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -203,7 +203,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         val sectionId = SelectedTaxYearId
         val expectedQuestion = messages.selected_tax_year
         val expectedAnswer = MessageLookup.Business.WhatYearToSignUp.option1(currentTaxYear.startDate.year, currentTaxYear.endDate.year)
-        val expectedEditLink = _root_.agent.controllers.business.routes.WhatYearToSignUpController.show(editMode = true).url
+        val expectedEditLink = _root_.controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
@@ -220,7 +220,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
         val sectionId = SelectedTaxYearId
         val expectedQuestion = messages.selected_tax_year
         val expectedAnswer = MessageLookup.Business.WhatYearToSignUp.option2(nextTaxYear.startDate.year, nextTaxYear.endDate.year)
-        val expectedEditLink = _root_.agent.controllers.business.routes.WhatYearToSignUpController.show(editMode = true).url
+        val expectedEditLink = _root_.controllers.agent.business.routes.WhatYearToSignUpController.show(editMode = true).url
 
         sectionTest(
           sectionId = sectionId,
@@ -236,7 +236,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = IncomeSourceId
       val expectedQuestion = messages.income_source
       val expectedAnswer = MessageLookup.Summary.IncomeSource.both
-      val expectedEditLink = _root_.agent.controllers.routes.IncomeSourceController.show(editMode = true).url
+      val expectedEditLink = _root_.controllers.agent.routes.IncomeSourceController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -250,7 +250,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = OtherIncomeId
       val expectedQuestion = messages.other_income
       val expectedAnswer = MessageLookup.OtherIncome.no
-      val expectedEditLink = _root_.agent.controllers.routes.OtherIncomeController.show(editMode = true).url
+      val expectedEditLink = _root_.controllers.agent.routes.OtherIncomeController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -264,7 +264,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = BusinessNameId
       val expectedQuestion = messages.business_name
       val expectedAnswer = testBusinessName.businessName
-      val expectedEditLink = _root_.agent.controllers.business.routes.BusinessNameController.show(editMode = true).url
+      val expectedEditLink = _root_.controllers.agent.business.routes.BusinessNameController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -278,7 +278,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = AccountingMethodId
       val expectedQuestion = messages.income_type
       val expectedAnswer = messages.AccountingMethod.cash
-      val expectedEditLink = _root_.agent.controllers.business.routes.BusinessAccountingMethodController.show(editMode = true).url
+      val expectedEditLink = _root_.controllers.agent.business.routes.BusinessAccountingMethodController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -292,7 +292,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val sectionId = AccountingMethodPropertyId
       val expectedQuestion = messages.income_type_property
       val expectedAnswer = messages.AccountingMethodProperty.cash
-      val expectedEditLink = _root_.agent.controllers.business.routes.PropertyAccountingMethodController.show(editMode = true).url
+      val expectedEditLink = _root_.controllers.agent.business.routes.PropertyAccountingMethodController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
     testNino,
     testDob)
 
-  lazy val postAction: Call = agent.controllers.matching.routes.ConfirmClientController.submit()
+  lazy val postAction: Call = controllers.agent.matching.routes.ConfirmClientController.submit()
   lazy val backUrl: String = "testBackUrl"
 
   def page(): Html = agent.views.html.check_your_client_details(
@@ -131,7 +131,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val sectionId = FirstNameId
       val expectedQuestion = messages.firstName
       val expectedAnswer = testFirstName
-      val expectedEditLink = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+      val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -145,7 +145,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val sectionId = LastNameId
       val expectedQuestion = messages.lastName
       val expectedAnswer = testLastName
-      val expectedEditLink = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+      val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -159,7 +159,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val sectionId = NinoId
       val expectedQuestion = messages.nino
       val expectedAnswer = testNino.toNinoDisplayFormat
-      val expectedEditLink = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+      val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,
@@ -173,7 +173,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
       val sectionId = DobId
       val expectedQuestion = messages.dob
       val expectedAnswer = testDob.toCheckYourAnswersDateFormat
-      val expectedEditLink = agent.controllers.matching.routes.ClientDetailsController.show(editMode = true).url
+      val expectedEditLink = controllers.agent.matching.routes.ClientDetailsController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

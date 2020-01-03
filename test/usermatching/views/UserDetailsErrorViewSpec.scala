@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package usermatching.views
 
 import assets.MessageLookup.{Base => commonMessages, UserDetailsError => messages}
-import core.controllers.SignOutController.signOut
+import controllers.SignOutController.signOut
 import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 
