@@ -110,6 +110,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
+          KeystoreStub.stubEmptyKeystore()
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
           When("POST /business/accounting-method is called")
@@ -128,6 +129,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
+          KeystoreStub.stubEmptyKeystore()
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
           When("POST /business/accounting-method is called")
@@ -144,6 +146,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       "not select an option on the accounting method page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "")
 
         When("POST /business/accounting-method is called")
@@ -224,6 +227,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
+          KeystoreStub.stubEmptyKeystore()
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
           When("POST /business/accounting-method is called")
@@ -241,6 +245,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
           Given("I setup the Wiremock stubs")
           AuthStub.stubAuthSuccess()
+          KeystoreStub.stubEmptyKeystore()
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
           When("POST /business/accounting-method is called")
@@ -257,6 +262,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       "not select an option on the accounting method page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "")
 
         When("POST /business/accounting-method is called")
