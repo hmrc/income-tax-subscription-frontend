@@ -53,6 +53,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubEmptyKeystore()
+        UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
 
         When("I call POST /confirm-user")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmUser(storedUserDetails = None)

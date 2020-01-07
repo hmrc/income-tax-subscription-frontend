@@ -90,7 +90,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubKeystoreFailure()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
@@ -109,7 +109,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubKeystoreFailure()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, BAD_REQUEST)
@@ -128,7 +128,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubKeystoreFailure()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, FORBIDDEN)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
@@ -147,7 +147,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubKeystoreFailure()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
@@ -166,7 +166,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubKeystoreFailure()
         SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
@@ -199,7 +199,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
     "return an INTERNAL_SERVER_ERROR when the backend service returns a NOT_FOUND" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystore()
+      KeystoreStub.stubKeystoreFailure()
       SubscriptionStub.stubCreateSubscriptionNotFound(checkYourAnswersURI)
 
       When("POST /check-your-answers is called")

@@ -38,6 +38,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubFullKeystore()
+        UserLockoutStub.stubUserIsNotLocked(testARN)
+        AuthenticatorStub.stubMatchFailure()
         // n.b. failure is expected as the additional methods are not mocked
 
         When("I call POST /confirm-client")
@@ -56,6 +58,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubEmptyKeystore()
+        UserLockoutStub.stubUserIsNotLocked(testARN)
+        AuthenticatorStub.stubMatchNotFound()
 
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient(storedUserDetails = None)
@@ -126,6 +130,8 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
         SubscriptionStub.stubGetSubscriptionFound()
+        UserLockoutStub.stubUserIsNotLocked(testARN)
+
 
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -149,6 +155,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = false)
           SubscriptionStub.stubGetNoSubscription()
+          UserLockoutStub.stubUserIsNotLocked(testARN)
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -173,6 +180,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           AuthenticatorStub.stubMatchFound(testNino, Some(testUtr))
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = false)
           SubscriptionStub.stubGetNoSubscription()
+          UserLockoutStub.stubUserIsNotLocked(testARN)
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -197,6 +205,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
         AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
         AuthenticatorStub.stubMatchFound(testNino, None)
         SubscriptionStub.stubGetNoSubscription()
+        UserLockoutStub.stubUserIsNotLocked(testARN)
 
         When("I call POST /confirm-client")
         val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -227,6 +236,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SubscriptionStub.stubGetNoSubscription()
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
           EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
+          UserLockoutStub.stubUserIsNotLocked(testARN)
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()
@@ -255,6 +265,7 @@ class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIn
           SubscriptionStub.stubGetNoSubscription()
           AgentServicesStub.stubClientRelationship(testARN, testNino, exists = true)
           EligibilityStub.stubEligibilityResponse(testUtr)(response = false)
+          UserLockoutStub.stubUserIsNotLocked(testARN)
 
           When("I call POST /confirm-client")
           val res = IncomeTaxSubscriptionFrontend.submitConfirmClient()

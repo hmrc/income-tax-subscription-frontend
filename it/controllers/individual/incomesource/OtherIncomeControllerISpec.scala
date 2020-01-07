@@ -75,6 +75,7 @@ class OtherIncomeControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(testIncomeSourceBoth)))
         KeystoreStub.stubKeystoreSave(CacheConstants.OtherIncome, userInput)
 
         When("POST /income-other is called")
