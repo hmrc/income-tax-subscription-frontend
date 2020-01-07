@@ -46,7 +46,6 @@ class PreferencesControllerSpec extends ControllerBaseSpec
     messagesApi,
     mockPreferencesService,
     mockAuthService,
-    MockKeystoreService,
     mockPaperlessPreferenceTokenService
   )
 
