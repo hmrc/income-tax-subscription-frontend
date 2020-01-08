@@ -25,6 +25,7 @@ import play.api.i18n.Messages
 import play.api.libs.ws.WSResponse
 import usermatching.models.UserDetailsModel
 
+
 class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
 
   "GET /client-details" when {
@@ -88,6 +89,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubEmptyKeystore()
+        AgentLockoutStub.stubAgentIsNotLocked(testARN)
 
         When("I call POST /client-details")
         val res = IncomeTaxSubscriptionFrontend.submitClientDetails(newSubmission = None, storedSubmission = None)
@@ -108,6 +110,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
+        AgentLockoutStub.stubAgentIsNotLocked(testARN)
         KeystoreStub.stubEmptyKeystore()
 
         When("I call POST /client-details")
@@ -128,6 +131,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
       "redirects to confirm client but do not modify the keystore" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
+        AgentLockoutStub.stubAgentIsNotLocked(testARN)
         val clientDetails: UserDetailsModel = IntegrationTestModels.testClientDetails
 
         When("I call POST /client-details")
@@ -149,6 +153,7 @@ class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIn
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         val clientDetails = IntegrationTestModels.testClientDetails
+        AgentLockoutStub.stubAgentIsNotLocked(testARN)
         KeystoreStub.stubKeystoreDelete()
 
         When("I call POST /client-details")

@@ -34,6 +34,7 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubEmptyKeystore()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
       PreferencesStub.newStubPaperlessActivated()
 
@@ -51,6 +52,7 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubEmptyKeystore()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
       PreferencesStub.newStubPaperlessInactiveWithUri()
 
@@ -68,6 +70,7 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubEmptyKeystore()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
       PreferencesStub.newStubPaperlessPreconditionFail()
 
@@ -85,6 +88,7 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubEmptyKeystore()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
       PreferencesStub.newStubPaperlessError()
 
@@ -101,6 +105,7 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      KeystoreStub.stubEmptyKeystore()
       KeystoreStub.stubKeystoreData(Map(PaperlessPreferenceToken -> JsString(testPaperlessPreferenceToken)))
       PreferencesStub.newStubPaperlessActivated()
 
@@ -122,6 +127,7 @@ class PreferencesControllerISpec extends ComponentSpecBase with FeatureSwitching
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
       PreferencesTokenStub.stubStoreNinoSuccess()
+      KeystoreStub.stubEmptyKeystore()
       KeystoreStub.stubKeystoreSave(PaperlessPreferenceToken)
       PreferencesStub.newStubPaperlessInactiveWithUri()
 

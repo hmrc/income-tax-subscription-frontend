@@ -36,7 +36,6 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
                                       val messagesApi: MessagesApi,
                                       val preferencesService: PreferencesService,
                                       val authService: AuthService,
-                                      keystoreService: KeystoreService,
                                       paperlessPreferenceTokenService: PaperlessPreferenceTokenService
                                      ) extends StatelessController {
 

@@ -155,6 +155,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       "not select an option on the Property Accounting Method page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, "")
 
         When("POST /business/accounting-method-property is called")

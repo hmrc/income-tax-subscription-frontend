@@ -34,6 +34,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase {
       "show the match tax year page with no radio option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
 
         When(s"GET ${routes.MatchTaxYearController.show().url} is called")
         val res = IncomeTaxSubscriptionFrontend.matchTaxYear()

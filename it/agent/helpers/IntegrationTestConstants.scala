@@ -17,7 +17,7 @@
 package agent.helpers
 
 import java.util.UUID
-
+import java.net.URLEncoder
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 
@@ -32,6 +32,7 @@ object IntegrationTestConstants {
   val userId = "/auth/oid/1234567890"
   val dateOfBirth = _root_.helpers.IntegrationTestConstants.dateOfBirth
   lazy val testARN = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
+  val testUserIdEncoded = URLEncoder.encode(userId, "UTF-8")
 
   val baseURI = "/report-quarterly/income-and-expenses/sign-up/client"
   val indexURI = s"$baseURI/index"

@@ -92,6 +92,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       "do not enter business name" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, "")
 
         When("POST /business/name is called")
@@ -109,6 +110,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.BusinessName, userInput)
 
         When("POST /business/name is called")

@@ -79,6 +79,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
 
         When("POST /business/accounting-method-property is called")
@@ -96,6 +97,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystore()
         KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
 
         When("POST /business/accounting-method-property is called")
@@ -112,6 +114,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
     "not select an option on the property accounting method page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
+      KeystoreStub.stubEmptyKeystore()
       KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, "")
 
       When("POST /business/accounting-method-property is called")
