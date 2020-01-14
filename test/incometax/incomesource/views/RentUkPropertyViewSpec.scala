@@ -17,9 +17,9 @@
 package incometax.incomesource.views
 
 import assets.MessageLookup.{RentUkProperty => messages}
-import core.forms.submapping.YesNoMapping
+import forms.submapping.YesNoMapping
 import core.views.ViewSpecTrait
-import incometax.incomesource.forms.RentUkPropertyForm
+import forms.individual.incomesource.RentUkPropertyForm
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest

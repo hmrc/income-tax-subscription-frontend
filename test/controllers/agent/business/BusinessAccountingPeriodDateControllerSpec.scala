@@ -17,7 +17,6 @@
 package controllers.agent.business
 
 import agent.assets.MessageLookup
-import agent.forms.AccountingPeriodDateForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestConstants
 import agent.utils.TestModels._
@@ -26,6 +25,7 @@ import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesF
 import core.models.DateModel
 import core.services.mocks.MockAccountingPeriodService
 import core.utils.TestModels
+import forms.agent.AccountingPeriodDateForm
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.IncomeSourceType
 import incometax.util.CurrentDateProvider

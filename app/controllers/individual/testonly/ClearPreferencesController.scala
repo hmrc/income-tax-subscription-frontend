@@ -20,13 +20,13 @@ import core.auth.StatelessController
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import digitalcontact.connectors.PreferenceFrontendConnector
+import forms.testonly.ClearPreferencesForm
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, Request, Result}
 import play.twirl.api.Html
 import testonly.connectors.ClearPreferencesConnector
-import testonly.forms.ClearPreferencesForm
 import testonly.models.preferences.{ClearPreferencesModel, ClearPreferencesResult, Cleared, NoPreferences}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient

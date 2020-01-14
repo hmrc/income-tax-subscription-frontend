@@ -19,7 +19,7 @@ package controllers.individual.business
 import core.auth.RegistrationController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import incometax.business.forms.BusinessPhoneNumberForm
+import forms.individual.business.BusinessPhoneNumberForm
 import incometax.business.models.BusinessPhoneNumberModel
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form

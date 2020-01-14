@@ -17,11 +17,11 @@
 package controllers.agent
 
 import agent.audit.Logging
-import agent.forms.OtherIncomeForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.models.{No, Yes}
+import forms.agent.OtherIncomeForm
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models._
 import play.api.http.Status

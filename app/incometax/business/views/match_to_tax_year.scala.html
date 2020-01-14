@@ -18,11 +18,11 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.views.html.helpers._
 @import core.config.AppConfig
-@import incometax.business.forms.MatchTaxYearForm
+@import forms.individual.business.MatchTaxYearForm
 @import incometax.business.models.MatchTaxYearModel
 @import core.views.html.templates.main_template
 @import core.models.{Yes, No}
-@import core.forms.submapping.YesNoMapping
+@import forms.submapping.YesNoMapping
 
 @(matchTaxYearForm: Form[MatchTaxYearModel], postAction: Call, isRegistration: Boolean,  backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 

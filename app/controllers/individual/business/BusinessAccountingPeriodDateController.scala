@@ -21,7 +21,7 @@ import core.config.BaseControllerConfig
 import core.models.Yes
 import core.services.CacheUtil._
 import core.services.{AccountingPeriodService, AuthService, KeystoreService}
-import incometax.business.forms.AccountingPeriodDateForm
+import forms.individual.business.AccountingPeriodDateForm
 import incometax.business.models.AccountingPeriodModel
 import incometax.business.models.enums._
 import incometax.incomesource.services.CurrentTimeService

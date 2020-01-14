@@ -17,7 +17,6 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import agent.forms.AccountingMethodPropertyForm
 import agent.models.AccountingMethodPropertyModel
 import agent.services.CacheUtil.CacheMapUtil
 import agent.services.KeystoreService
@@ -25,6 +24,7 @@ import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import core.config.{AppConfig, BaseControllerConfig}
 import core.models.{No, Yes}
 import core.services.AuthService
+import forms.agent.AccountingMethodPropertyForm
 import incometax.incomesource.services.CurrentTimeService
 import incometax.subscription.models.{Both, Property}
 import javax.inject.{Inject, Singleton}

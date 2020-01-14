@@ -20,7 +20,7 @@ import core.auth.SignUpController
 import core.config.{AppConfig, BaseControllerConfig}
 import core.models.{No, Yes}
 import core.services.{AuthService, KeystoreService}
-import incometax.incomesource.forms.RentUkPropertyForm._
+import forms.individual.incomesource.RentUkPropertyForm._
 import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}

@@ -26,7 +26,7 @@ import core.models.DateModel
 import core.services.mocks.{MockAccountingPeriodService, MockKeystoreService}
 import core.utils.TestModels
 import core.utils.TestModels.testCacheMapCustom
-import incometax.business.forms.AccountingPeriodDateForm
+import forms.individual.business.AccountingPeriodDateForm
 import incometax.business.models.AccountingPeriodModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import org.jsoup.Jsoup

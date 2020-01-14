@@ -20,7 +20,7 @@ import core.auth.AuthenticatedController
 import core.auth.JourneyState._
 import core.config.BaseControllerConfig
 import core.services.AuthService
-import incometax.unauthorisedagent.forms.ConfirmAgentForm
+import forms.unauthorisedagent.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form

@@ -22,7 +22,7 @@ import core.config.featureswitch.FeatureSwitching
 import core.models.No
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
-import incometax.incomesource.forms.OtherIncomeForm
+import forms.individual.incomesource.OtherIncomeForm
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

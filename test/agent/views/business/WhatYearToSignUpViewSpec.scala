@@ -17,8 +17,8 @@
 package agent.views.business
 
 import agent.assets.MessageLookup
-import agent.forms.AccountingYearForm
 import core.views.ViewSpecTrait
+import forms.agent.AccountingYearForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements

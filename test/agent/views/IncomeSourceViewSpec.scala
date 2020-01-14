@@ -17,8 +17,8 @@
 package agent.views
 
 import agent.assets.MessageLookup.{IncomeSource => messages}
-import agent.forms.IncomeSourceForm
 import core.views.ViewSpecTrait
+import forms.agent.IncomeSourceForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 

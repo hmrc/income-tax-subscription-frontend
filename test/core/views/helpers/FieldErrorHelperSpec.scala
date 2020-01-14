@@ -16,10 +16,10 @@
 
 package core.views.helpers
 
-import core.forms.validation.ErrorMessageFactory
-import core.forms.validation.models.FieldError
-import core.forms.validation.testutils.DataMap
-import core.forms.validation.utils.MappingUtil._
+import forms.validation.ErrorMessageFactory
+import forms.validation.models.FieldError
+import forms.validation.testutils.DataMap.DataMap
+import forms.validation.utils.MappingUtil._
 import org.scalatest.Matchers._
 import play.api.data.Forms.mapping
 import play.api.data.validation.Invalid

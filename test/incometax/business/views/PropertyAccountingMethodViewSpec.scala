@@ -18,7 +18,7 @@ package incometax.business.views
 
 import assets.MessageLookup.{Base => common, PropertyAccountingMethod => messages}
 import core.views.ViewSpecTrait
-import incometax.business.forms.AccountingMethodPropertyForm
+import forms.individual.business.AccountingMethodPropertyForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements

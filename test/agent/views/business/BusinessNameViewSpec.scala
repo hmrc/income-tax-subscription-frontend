@@ -17,8 +17,8 @@
 package agent.views.business
 
 import agent.assets.MessageLookup.{BusinessName => messages}
-import agent.forms.BusinessNameForm
 import core.views.ViewSpecTrait
+import forms.agent.BusinessNameForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 

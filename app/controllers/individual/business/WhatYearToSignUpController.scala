@@ -19,7 +19,7 @@ package controllers.individual.business
 import core.auth.SignUpController
 import core.config.{AppConfig, BaseControllerConfig}
 import core.services.{AccountingPeriodService, AuthService, KeystoreService}
-import incometax.business.forms.AccountingYearForm
+import forms.individual.business.AccountingYearForm
 import incometax.business.models.AccountingYearModel
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form

@@ -17,11 +17,11 @@
 package controllers.agent.matching
 
 import agent.assets.MessageLookup.{ClientDetails => messages}
-import agent.forms.ClientDetailsForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestConstants
 import controllers.agent.AgentControllerBaseSpec
 import core.models.DateModel
+import forms.agent.ClientDetailsForm
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Request}

@@ -18,9 +18,9 @@ package incometax.business.views
 
 import assets.MessageLookup.Business.{MatchTaxYear => messages}
 import assets.MessageLookup.{Base => common}
-import core.forms.submapping.YesNoMapping
+import forms.submapping.YesNoMapping
 import core.views.ViewSpecTrait
-import incometax.business.forms.MatchTaxYearForm
+import forms.individual.business.MatchTaxYearForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 

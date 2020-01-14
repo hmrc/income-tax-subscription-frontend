@@ -19,7 +19,7 @@ package agent.helpers
 import java.util.UUID
 
 import _root_.agent.auth.{AgentJourneyState, AgentSignUp, AgentUserMatching}
-import _root_.agent.forms._
+import _root_.forms.agent._
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.SessionCookieBaker._
 import _root_.agent.helpers.servicemocks.WireMockMethods
@@ -30,6 +30,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import controllers.agent.ITSASessionKeys
 import core.models.YesNo
+import forms.agent.{AccountingMethodForm, AccountingMethodPropertyForm, AccountingPeriodDateForm, AccountingYearForm, BusinessNameForm, ClientDetailsForm, IncomeSourceForm, MatchTaxYearForm, OtherIncomeForm}
 import helpers.UserMatchingIntegrationRequestSupport
 import helpers.servicemocks.AuditStub
 import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}

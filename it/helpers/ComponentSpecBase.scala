@@ -23,14 +23,17 @@ import core.auth.{JourneyState, Registration, SignUp, UserMatching}
 import core.config.AppConfig
 import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import core.models.YesNo
+import forms.individual.business.{AccountingMethodForm, AccountingMethodPropertyForm, AccountingPeriodDateForm, AccountingYearForm, BusinessNameForm, BusinessPhoneNumberForm, BusinessStartDateForm, MatchTaxYearForm}
+import forms.individual.incomesource.{AreYouSelfEmployedForm, OtherIncomeForm, RentUkPropertyForm}
+import forms.unauthorisedagent.ConfirmAgentForm
+import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import incometax.business.forms._
+import forms.individual.business._
 import incometax.business.models._
-import incometax.incomesource.forms.{AreYouSelfEmployedForm, OtherIncomeForm, RentUkPropertyForm}
+import forms.individual.incomesource.{AreYouSelfEmployedForm, OtherIncomeForm, RentUkPropertyForm}
 import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
-import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
@@ -43,7 +46,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.play.test.UnitSpec
-import usermatching.forms.UserDetailsForm
 import usermatching.models.UserDetailsModel
 import usermatching.userjourneys.ConfirmAgentSubscription
 

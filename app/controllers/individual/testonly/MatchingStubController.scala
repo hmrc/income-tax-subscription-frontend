@@ -18,13 +18,13 @@ package controllers.individual.testonly
 
 import core.config.AppConfig
 import core.utils.Implicits._
+import forms.testonly.UserToStubForm
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, Request}
 import play.twirl.api.Html
 import testonly.connectors.{MatchingStubConnector, UserData}
-import testonly.forms.UserToStubForm
 import testonly.models.UserToStubModel
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController

@@ -16,8 +16,8 @@
 
 package core.views.helpers
 
-import core.forms.validation.testutils.DataMap
-import core.forms.validation.utils.MappingUtil._
+import forms.validation.testutils.DataMap.DataMap
+import forms.validation.utils.MappingUtil._
 import core.views.html.helpers
 import org.scalatest.Matchers._
 import play.api.data.Forms._

@@ -20,6 +20,7 @@ import core.config.AppConfig
 import core.models.{Cash, DateModel}
 import core.services.AuthService
 import core.utils.Implicits._
+import forms.testonly.UnauthorisedAgentSubmissionForm
 import incometax.subscription.models._
 import incometax.unauthorisedagent.connectors.SubscriptionStoreConnector
 import incometax.unauthorisedagent.models.{StoreSubscriptionSuccess, StoredSubscription}
@@ -28,7 +29,6 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, Request}
 import play.twirl.api.Html
-import testonly.forms.UnauthorisedAgentSubmissionForm
 import testonly.models.UnauthorisedAgentSubmissionModel
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 

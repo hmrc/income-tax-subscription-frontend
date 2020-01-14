@@ -19,7 +19,7 @@
 
 @(field: Field, parentForm: Option[Form[_]] = None)(implicit messages: Messages)
 
-    @import core.forms.validation.ErrorMessageHelper._
+    @import forms.validation.ErrorMessageHelper._
 
     @error = @{
         getFieldError(field, parentForm)

@@ -19,7 +19,7 @@ package controllers.individual.subscription
 import core.audit.Logging
 import core.config.AppConfig
 import core.utils.Implicits._
-import incometax.subscription.forms.ExitSurveyForm
+import forms.individual.subscription.ExitSurveyForm
 import incometax.subscription.models.ExitSurveyModel
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form

@@ -17,8 +17,8 @@
 package core.views.helpers
 
 import assets.MessageLookup
-import core.forms.submapping.DateMapping._
-import core.forms.validation.testutils.DataMap
+import forms.submapping.DateMapping._
+import forms.validation.testutils.DataMap.DataMap
 import core.models.DateModel
 import core.utils.UnitTestTrait
 import core.views.html.helpers

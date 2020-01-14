@@ -21,7 +21,7 @@ import core.config.BaseControllerConfig
 import core.models.{No, Yes}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
-import incometax.business.forms.MatchTaxYearForm
+import forms.individual.business.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
 import incometax.incomesource.services.CurrentTimeService
 import incometax.subscription.models.Business

@@ -21,7 +21,7 @@ import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
 import core.models.{No, Yes, YesNo}
 import core.services.mocks.MockKeystoreService
-import incometax.incomesource.forms.RentUkPropertyForm
+import forms.individual.incomesource.RentUkPropertyForm
 import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import play.api.http.Status

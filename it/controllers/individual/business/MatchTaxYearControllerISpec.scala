@@ -19,11 +19,11 @@ package controllers.individual.business
 import core.config.featureswitch.{FeatureSwitching, WhatTaxYearToSignUp}
 import core.models.{No, Yes}
 import core.services.CacheConstants
+import forms.individual.business.MatchTaxYearForm
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import incometax.business.forms.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
 import play.api.http.Status._
 import play.api.i18n.Messages

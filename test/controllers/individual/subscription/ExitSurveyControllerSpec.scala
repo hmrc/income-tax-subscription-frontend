@@ -19,7 +19,7 @@ package controllers.individual.subscription
 import assets.MessageLookup
 import controllers.ControllerBaseSpec
 import core.audit.Logging
-import incometax.subscription.forms.ExitSurveyForm
+import forms.individual.subscription.ExitSurveyForm
 import incometax.subscription.models.ExitSurveyModel
 import org.jsoup.Jsoup
 import play.api.http.Status

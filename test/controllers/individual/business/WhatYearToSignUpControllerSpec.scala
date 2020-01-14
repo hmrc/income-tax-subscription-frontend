@@ -21,8 +21,8 @@ import core.config.MockConfig
 import core.config.featureswitch._
 import core.models.Current
 import core.services.mocks.{MockAccountingPeriodService, MockKeystoreService}
+import forms.individual.business.AccountingYearForm
 import incometax._
-import incometax.business.forms.AccountingYearForm
 import incometax.business.models.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

@@ -18,7 +18,7 @@ package incometax.business.views
 
 import assets.MessageLookup.{Base => common, WhatYearToSignUp => messages}
 import core.views.ViewSpecTrait
-import incometax.business.forms.AccountingYearForm
+import forms.individual.business.AccountingYearForm
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements

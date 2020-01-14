@@ -20,7 +20,7 @@ import core.auth.SignUpController
 import core.config.{AppConfig, BaseControllerConfig}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
-import incometax.incomesource.forms.AreYouSelfEmployedForm
+import forms.individual.incomesource.AreYouSelfEmployedForm
 import incometax.incomesource.models.AreYouSelfEmployedModel
 import incometax.incomesource.services.CurrentTimeService
 import incometax.subscription.models._

@@ -7,12 +7,12 @@ import core.Constants
 import core.Constants.GovernmentGateway._
 import core.models._
 import core.services.CacheConstants
+import forms.unauthorisedagent.ConfirmAgentForm
 import helpers.IntegrationTestConstants._
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.models._
 import incometax.subscription.models._
-import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.{ConfirmAgentModel, StoredSubscription}
 import incometax.util.AccountingPeriodUtil
 import play.api.libs.json.{JsValue, Json}
