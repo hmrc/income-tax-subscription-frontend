@@ -23,7 +23,7 @@ import core.models.{No, Yes}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
 import core.utils.TestModels._
-import incometax.incomesource.forms.OtherIncomeForm
+import forms.individual.incomesource.OtherIncomeForm
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models.{Both, Property}
 import play.api.http.Status

@@ -18,11 +18,11 @@ package controllers.individual.testonly
 
 import core.config.AppConfig
 import core.services.AuthService
+import forms.testonly.UpdateEnrolmentsForm
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import testonly.connectors.EnrolmentStoreStubConnector
-import testonly.forms.UpdateEnrolmentsForm
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrievals}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 

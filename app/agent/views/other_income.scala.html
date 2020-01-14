@@ -18,9 +18,9 @@
 @import core.views.html.helpers._
 @import core.models.{YesNo, Yes, No}
 @import core.config.AppConfig
-@import _root_.agent.forms.OtherIncomeForm
-@import _root_.agent.forms.IncomeSourceForm.option_property
-@import core.forms.submapping.YesNoMapping
+@import _root_.forms.agent.OtherIncomeForm
+@import _root_.forms.agent.IncomeSourceForm.option_property
+@import forms.submapping.YesNoMapping
 
 @(otherIncomeForm: Form[YesNo], incomeSource:String, postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 

@@ -16,13 +16,13 @@
 
 package core.views.helpers
 
-import core.forms.validation.testutils.DataMap
+import forms.validation.testutils.DataMap.DataMap
 import org.scalatest.Matchers._
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages.Implicits.applicationMessages
 import core.utils.UnitTestTrait
-import core.forms.validation.utils.MappingUtil._
+import forms.validation.utils.MappingUtil._
 import core.views.html.helpers
 
 class CheckboxHelperSpec extends UnitTestTrait {

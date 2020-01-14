@@ -21,8 +21,8 @@ import core.ITSASessionKeys
 import core.config.featureswitch.{FeatureSwitching, UnauthorisedAgentFeature}
 import core.services.mocks.{MockAuthService, MockKeystoreService}
 import core.utils.TestConstants._
+import forms.unauthorisedagent.ConfirmAgentForm
 import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
-import incometax.unauthorisedagent.forms.ConfirmAgentForm
 import incometax.unauthorisedagent.models.ConfirmAgentModel
 import incometax.unauthorisedagent.services.mocks.MockSubscriptionStoreRetrievalService
 import org.jsoup.Jsoup

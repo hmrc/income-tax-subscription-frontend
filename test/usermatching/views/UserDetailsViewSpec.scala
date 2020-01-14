@@ -18,9 +18,9 @@ package usermatching.views
 
 import assets.MessageLookup.{Base => common, UserDetails => messages}
 import core.views.ViewSpecTrait
+import forms.usermatching.UserDetailsForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
-import usermatching.forms.UserDetailsForm
 
 class UserDetailsViewSpec extends ViewSpecTrait {
 

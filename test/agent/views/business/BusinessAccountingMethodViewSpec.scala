@@ -17,9 +17,9 @@
 package agent.views.business
 
 import agent.assets.MessageLookup.{AccountingMethod => messages}
-import agent.forms.AccountingMethodForm
-import core.forms.submapping.AccountingMethodMapping
+import forms.submapping.AccountingMethodMapping
 import core.views.ViewSpecTrait
+import forms.agent.AccountingMethodForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 

@@ -19,7 +19,7 @@ package controllers.individual.business
 import core.auth.RegistrationController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import incometax.business.forms.BusinessStartDateForm
+import forms.individual.business.BusinessStartDateForm
 import incometax.business.models.BusinessStartDateModel
 import javax.inject.Inject
 import play.api.data.Form

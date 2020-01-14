@@ -16,12 +16,12 @@
 
 package controllers.agent.business
 
-import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
 import agent.services.mocks.MockKeystoreService
 import controllers.agent.AgentControllerBaseSpec
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.models.{Cash, No, Yes}
+import forms.agent.AccountingMethodForm
 import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.models.{Both, Business}
 import play.api.http.Status

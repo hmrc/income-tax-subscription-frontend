@@ -18,13 +18,13 @@ package agent.testonly.forms
 
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 
-import _root_.core.forms.prevalidation.PreprocessedForm
-import _root_.core.forms.submapping.DateMapping.dateMapping
-import _root_.core.forms.validation.Constraints._
-import _root_.core.forms.validation.utils.ConstraintUtil._
-import _root_.core.forms.validation.utils.MappingUtil._
+import forms.prevalidation.PreprocessedForm
+import forms.submapping.DateMapping.dateMapping
+import forms.validation.Constraints._
+import forms.validation.utils.ConstraintUtil._
+import forms.validation.utils.MappingUtil._
 import _root_.agent.testonly.models.ClientToStubModel
-import core.forms.validation.ErrorMessageFactory
+import forms.validation.ErrorMessageFactory
 import core.models.DateModel
 import play.api.data.Form
 import play.api.data.Forms._
@@ -87,8 +87,8 @@ object ClientToStubForm {
     )(ClientToStubModel.apply)(ClientToStubModel.unapply)
   )
 
-  import core.forms.prevalidation.CaseOption._
-  import core.forms.prevalidation.TrimOption._
+  import forms.prevalidation.CaseOption._
+  import forms.prevalidation.TrimOption._
 
   val clientToStubForm = PreprocessedForm(
     validation = clientDetailsValidationForm,

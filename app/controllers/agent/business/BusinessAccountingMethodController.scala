@@ -17,13 +17,13 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import agent.forms.AccountingMethodForm
 import agent.models.AccountingMethodModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.models.No
 import core.services.AuthService
+import forms.agent.AccountingMethodForm
 import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.models.{Both, Business, IncomeSourceType}
 import javax.inject.{Inject, Singleton}

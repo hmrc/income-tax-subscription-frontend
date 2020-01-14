@@ -17,9 +17,9 @@
 package incometax.business.views
 
 import assets.MessageLookup.{AccountingMethod => messages}
-import core.forms.submapping.AccountingMethodMapping
+import forms.submapping.AccountingMethodMapping
 import core.views.ViewSpecTrait
-import incometax.business.forms.AccountingMethodForm
+import forms.individual.business.AccountingMethodForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 

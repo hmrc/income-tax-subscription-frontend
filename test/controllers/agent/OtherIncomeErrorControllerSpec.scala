@@ -17,11 +17,11 @@
 package controllers.agent
 
 import agent.audit.Logging
-import agent.forms.OtherIncomeForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.models.No
+import forms.agent.OtherIncomeForm
 import incometax.subscription.models.Property
 import org.jsoup.Jsoup
 import play.api.http.Status

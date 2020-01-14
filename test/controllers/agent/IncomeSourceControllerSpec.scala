@@ -16,10 +16,10 @@
 
 package controllers.agent
 
-import agent.forms.IncomeSourceForm
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
+import forms.agent.IncomeSourceForm
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models._
 import play.api.http.Status

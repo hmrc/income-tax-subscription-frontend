@@ -22,7 +22,7 @@ import core.config.featureswitch._
 import core.models.{Cash, DateModel, No}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
-import incometax.business.forms.AccountingMethodForm
+import forms.individual.business.AccountingMethodForm
 import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, MatchTaxYearModel}
 import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService

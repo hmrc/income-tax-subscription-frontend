@@ -22,7 +22,7 @@ import core.config.BaseControllerConfig
 import core.models.{No, Yes, YesNo}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
-import incometax.incomesource.forms.OtherIncomeForm
+import forms.individual.incomesource.OtherIncomeForm
 import incometax.incomesource.services.CurrentTimeService
 import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import javax.inject.{Inject, Singleton}

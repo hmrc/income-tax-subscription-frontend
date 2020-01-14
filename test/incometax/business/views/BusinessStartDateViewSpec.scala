@@ -18,7 +18,7 @@ package incometax.business.views
 
 import assets.MessageLookup.{Base => common, BusinessStartDate => messages}
 import core.views.ViewSpecTrait
-import incometax.business.forms.BusinessStartDateForm
+import forms.individual.business.BusinessStartDateForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 

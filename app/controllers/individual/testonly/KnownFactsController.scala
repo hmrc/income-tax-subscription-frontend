@@ -26,7 +26,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-import testonly.forms.KnownFactsForm._
+import forms.testonly.KnownFactsForm._
 import testonly.models.KnownFactsModel
 
 import scala.concurrent.Future
@@ -52,7 +52,7 @@ class KnownFactsController @Inject()(val baseConfig: BaseControllerConfig,
       knownFactsForm.form.bindFromRequest.fold(
         formWithErrors => Future.successful(BadRequest(view(form = formWithErrors))),
         knownFacts => {
-          import core.forms.prevalidation.trimAllFunc
+          import forms.prevalidation.trimAllFunc
           val nino = trimAllFunc(knownFacts.nino).toUpperCase()
           val mtdid = trimAllFunc(knownFacts.mtditid).toUpperCase()
 

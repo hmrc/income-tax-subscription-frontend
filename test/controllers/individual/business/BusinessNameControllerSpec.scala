@@ -20,7 +20,7 @@ import controllers.ControllerBaseSpec
 import core.models.{No, Yes, YesNo}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels
-import incometax.business.forms.BusinessNameForm
+import forms.individual.business.BusinessNameForm
 import incometax.business.models.BusinessNameModel
 import org.jsoup.Jsoup
 import play.api.http.Status

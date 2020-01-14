@@ -22,8 +22,8 @@ import core.config.featureswitch._
 import core.models.Cash
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
+import forms.individual.business.AccountingMethodPropertyForm
 import incometax._
-import incometax.business.forms.AccountingMethodPropertyForm
 import incometax.business.models.AccountingMethodPropertyModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import play.api.http.Status

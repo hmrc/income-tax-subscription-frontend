@@ -22,7 +22,7 @@
         cols: Option[Int] = Some(45),
         rows: Option[Int] = Some(5)
 )(implicit messages: Messages)
-@import core.forms.validation.ErrorMessageHelper._
+@import forms.validation.ErrorMessageHelper._
 
 @hasError = @{
     val fieldError = getFieldError(field, parentForm)

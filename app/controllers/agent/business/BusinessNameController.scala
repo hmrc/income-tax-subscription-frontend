@@ -17,11 +17,11 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import agent.forms.BusinessNameForm
 import agent.models.BusinessNameModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.services.AuthService
+import forms.agent.BusinessNameForm
 import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form

@@ -17,9 +17,9 @@
 package agent.views
 
 import agent.assets.MessageLookup.{OtherIncome => messages}
-import agent.forms.{IncomeSourceForm, OtherIncomeForm}
-import core.forms.submapping.YesNoMapping
+import forms.submapping.YesNoMapping
 import core.views.ViewSpecTrait
+import forms.agent.{IncomeSourceForm, OtherIncomeForm}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 

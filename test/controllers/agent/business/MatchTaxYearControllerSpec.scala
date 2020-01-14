@@ -16,11 +16,11 @@
 
 package controllers.agent.business
 
-import agent.forms.MatchTaxYearForm
 import agent.services.mocks.MockKeystoreService
 import controllers.agent.AgentControllerBaseSpec
-import core.forms.submapping.YesNoMapping
+import forms.submapping.YesNoMapping
 import core.models.{No, Yes}
+import forms.agent.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.models.IncomeSourceType
 import play.api.mvc.{Action, AnyContent, Request, Result}

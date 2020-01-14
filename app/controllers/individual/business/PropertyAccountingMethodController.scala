@@ -21,7 +21,7 @@ import core.config.{AppConfig, BaseControllerConfig}
 import core.models.{No, Yes}
 import core.services.CacheUtil.CacheMapUtil
 import core.services.{AuthService, KeystoreService}
-import incometax.business.forms.AccountingMethodPropertyForm
+import forms.individual.business.AccountingMethodPropertyForm
 import incometax.business.models.AccountingMethodPropertyModel
 import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import incometax.incomesource.services.CurrentTimeService

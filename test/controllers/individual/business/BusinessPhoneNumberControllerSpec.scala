@@ -22,7 +22,7 @@ import core.auth.Registration
 import core.config.MockConfig
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants._
-import incometax.business.forms.BusinessPhoneNumberForm
+import forms.individual.business.BusinessPhoneNumberForm
 import incometax.business.models.BusinessPhoneNumberModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

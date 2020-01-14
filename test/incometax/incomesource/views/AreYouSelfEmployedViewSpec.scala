@@ -17,9 +17,9 @@
 package incometax.incomesource.views
 
 import assets.MessageLookup.{AreYouSelfEmployed => messages, Base => coomon}
-import core.forms.submapping.YesNoMapping
+import forms.submapping.YesNoMapping
 import core.views.ViewSpecTrait
-import incometax.incomesource.forms.AreYouSelfEmployedForm
+import forms.individual.incomesource.AreYouSelfEmployedForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 

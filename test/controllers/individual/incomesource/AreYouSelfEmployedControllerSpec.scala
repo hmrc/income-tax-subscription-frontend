@@ -21,7 +21,7 @@ import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
-import incometax.incomesource.forms.AreYouSelfEmployedForm
+import forms.individual.incomesource.AreYouSelfEmployedForm
 import incometax.incomesource.models.AreYouSelfEmployedModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import play.api.http.Status

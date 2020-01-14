@@ -18,10 +18,10 @@
 @import core.views.html.helpers._
 @import core.config.AppConfig
 @import incometax.incomesource.models._
-@import incometax.incomesource.forms.AreYouSelfEmployedForm
+@import forms.individual.incomesource.AreYouSelfEmployedForm
 @import core.views.html.templates.main_template
 @import core.models.{Yes, No}
-@import core.forms.submapping.YesNoMapping
+@import forms.submapping.YesNoMapping
 
 @(areYouSelfEmployedForm: Form[AreYouSelfEmployedModel], postAction: Call, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 

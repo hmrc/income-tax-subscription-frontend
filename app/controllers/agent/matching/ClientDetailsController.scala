@@ -17,12 +17,12 @@
 package controllers.agent.matching
 
 import javax.inject.{Inject, Singleton}
-
 import agent.auth.{IncomeTaxAgentUser, UserMatchingController}
-import agent.forms._
+import forms.agent._
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.services.AuthService
+import forms.agent.ClientDetailsForm
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}

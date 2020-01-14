@@ -16,7 +16,7 @@
 
 @import play.api.data.Form
 @import play.api.data.Field
-@import core.forms.submapping.DateMapping._
+@import forms.submapping.DateMapping._
 
 @(field: Field,
         label: Option[String] = None,
@@ -24,7 +24,7 @@
         parentForm: Option[Form[_]] = None
 )(implicit messages: Messages)
 
-@import core.forms.validation.ErrorMessageHelper._
+@import forms.validation.ErrorMessageHelper._
 @import uk.gov.hmrc.play.language.LanguageUtils.Welsh
 
 @hasError = @{

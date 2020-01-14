@@ -17,8 +17,8 @@
 package agent.views.business
 
 import agent.assets.MessageLookup.{AccountingPeriod => messages, Base => common}
-import agent.forms.AccountingPeriodDateForm
 import core.views.ViewSpecTrait
+import forms.agent.AccountingPeriodDateForm
 import incometax.util.AccountingPeriodUtil
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest

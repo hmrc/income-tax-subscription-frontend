@@ -17,12 +17,12 @@
 package controllers.agent
 
 import agent.auth.AuthenticatedController
-import agent.forms.IncomeSourceForm
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
 import core.services.AuthService
 import core.utils.Implicits._
+import forms.agent.IncomeSourceForm
 import incometax.subscription.models.{Both, Business, Property}
 import incometax.util.AccountingPeriodUtil
 import javax.inject.{Inject, Singleton}

@@ -22,7 +22,7 @@ import core.config.featureswitch._
 import core.models.{No, Yes, YesNo}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
-import incometax.business.forms.MatchTaxYearForm
+import forms.individual.business.MatchTaxYearForm
 import incometax.business.models.MatchTaxYearModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import org.jsoup.Jsoup
