@@ -19,10 +19,8 @@ package incometax.subscription.services
 import cats.data.EitherT
 import cats.implicits._
 import core.connectors.models.ConnectorError
-import incometax.subscription.models.{EnrolFailure, SubscriptionSuccess, SummaryModel}
+import incometax.subscription.models.{SubscriptionSuccess, SummaryModel}
 import javax.inject.{Inject, Singleton}
-
-import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,14 +32,12 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
                                                 )(implicit ec: ExecutionContext) {
 
   def createSubscription(nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
-    createSubscriptionCore(nino, summaryModel, None)
+    createSubscriptionCore(nino, summaryModel)
 
-  def createSubscriptionFromUnauthorisedAgent(unauthorisedAgentArn: String, nino: String, summaryModel: SummaryModel)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] =
-    createSubscriptionCore(nino, summaryModel, Some(unauthorisedAgentArn))
-
-  private[services] def createSubscriptionCore(nino: String, summaryModel: SummaryModel, unauthorisedAgentArn: Option[String])(implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
+  private[services] def createSubscriptionCore(nino: String, summaryModel: SummaryModel)
+                                              (implicit hc: HeaderCarrier): Future[Either[ConnectorError, SubscriptionSuccess]] = {
     val res = for {
-      subscriptionResponse <- EitherT(subscriptionService.submitSubscription(nino, summaryModel, unauthorisedAgentArn))
+      subscriptionResponse <- EitherT(subscriptionService.submitSubscription(nino, summaryModel, arn = None))
       mtditId = subscriptionResponse.mtditId
       _ <- EitherT(knownFactsService.addKnownFacts(mtditId, nino))
       _ <- EitherT(enrolAndRefresh(mtditId, nino))
@@ -56,7 +52,6 @@ class SubscriptionOrchestrationService @Inject()(subscriptionService: Subscripti
     } yield mtditId
 
     res.value
-
   }
 
 }

@@ -17,11 +17,11 @@
 package agent.auth
 
 import _root_.uk.gov.hmrc.http.SessionKeys._
-import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import agent.auth.AgentJourneyState._
-import cats.implicits._
 import agent.common.Constants.agentServiceEnrolmentName
+import cats.implicits._
 import controllers.agent.ITSASessionKeys
+import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.http.NotFoundException
 
@@ -29,22 +29,16 @@ import scala.concurrent.Future
 
 object AuthPredicates extends Results {
 
-  val emptyPredicate: AuthPredicate[IncomeTaxAgentUser] = _ => _ => Right(AuthPredicateSuccess)
-
   lazy val noArnRoute: Result = Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show())
 
   lazy val confirmationRoute: Result = Redirect(controllers.agent.routes.ConfirmationController.show())
-
-  lazy val unauthorisedAgentConfirmationRoute: Result = Redirect(controllers.agent.routes.UnauthorisedAgentConfirmationController.show())
 
   lazy val timeoutRoute = Redirect(controllers.agent.routes.SessionTimeoutController.show())
 
   lazy val homeRoute = Redirect(controllers.agent.routes.HomeController.index())
 
-
   val notSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>
     if (request.session.get(ITSASessionKeys.MTDITID).isEmpty) Right(AuthPredicateSuccess)
-    else if (request.isUnauthorisedAgent) Left(Future.successful(unauthorisedAgentConfirmationRoute))
     else Left(Future.successful(confirmationRoute))
 
   val hasSubmitted: AuthPredicate[IncomeTaxAgentUser] = request => user =>
@@ -77,27 +71,13 @@ object AuthPredicates extends Results {
     if (user.enrolments.getEnrolment(agentServiceEnrolmentName).nonEmpty) Right(AuthPredicateSuccess)
     else Left(Future.successful(noArnRoute))
 
-  val unauthorisedAgentPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
-    if (request.session.isUnauthorisedAgent) Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
-
-  val isNotUnauthorisedAgentPredicate: AuthPredicate[IncomeTaxAgentUser] = request => user =>
-    if (!request.session.isUnauthorisedAgent) Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
-
   val defaultPredicates = timeoutPredicate |+| arnPredicate
 
   val homePredicates = defaultPredicates |+| notSubmitted
 
-  val userMatchingPredicates = homePredicates |+| userMatchingJourneyPredicate |+| isNotUnauthorisedAgentPredicate
-
-  val unauthorisedUserMatchingPredicates = defaultPredicates |+| unauthorisedAgentPredicate
-
-  val userMatchedPredicates = homePredicates |+| userMatchedJourneyPredicate
+  val userMatchingPredicates = homePredicates |+| userMatchingJourneyPredicate
 
   val subscriptionPredicates = homePredicates |+| signUpJourneyPredicate
 
-  val registrationPredicates = homePredicates |+| registrationJourneyPredicate
-
-  val confirmationPredicates = defaultPredicates |+| hasSubmitted |+| isNotUnauthorisedAgentPredicate
+  val confirmationPredicates = defaultPredicates |+| hasSubmitted
 }

@@ -24,7 +24,6 @@ import agent.utils.TestModels
 import agent.utils.TestModels.testCacheMap
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import incometax.subscription.models.{Both, Business, Property}
-import incometax.unauthorisedagent.services.mocks.MockSubscriptionStorePersistenceService
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
@@ -37,7 +36,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService
   with MockClientRelationshipService
   with MockSubscriptionOrchestrationService
-  with MockSubscriptionStorePersistenceService
   with FeatureSwitching {
 
   override def beforeEach(): Unit = {
@@ -58,7 +56,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
     MockKeystoreService,
     subscriptionService = mockSubscriptionOrchestrationService,
     clientRelationshipService = mockClientRelationshipService,
-    mockSubscriptionStorePersistenceService,
     mockAuthService,
     app.injector.instanceOf[Logging]
   )
@@ -238,39 +235,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           ex.message mustBe "Failed to create client relationship"
           verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
         }
-      }
-    }
-
-    "The agent is not authorised" when {
-      lazy val newTestNino = new Generator().nextNino.nino
-
-      lazy val unauthorisedAgentRequest = subscriptionRequest
-        .addingToSession(ITSASessionKeys.ArnKey -> testARN, ITSASessionKeys.NINO -> newTestNino)
-        .addingToSession(ITSASessionKeys.UnauthorisedAgentKey -> true.toString)
-
-      "There are both a matched nino and terms in keystore" should {
-        "send the data to the subscription store service and if successful redirect to the send client link page" in {
-          setupMockKeystore(fetchAll = testSummary)
-          mockStoredSubscriptionSuccess(testARN, newTestNino)
-
-          lazy val fresult = call(unauthorisedAgentRequest)
-
-          status(fresult) must be(Status.SEE_OTHER)
-          val result = await(fresult)
-
-          redirectLocation(fresult) mustBe Some(controllers.agent.routes.UnauthorisedAgentConfirmationController.show().url)
-
-          result.session(unauthorisedAgentRequest).get(ITSASessionKeys.MTDITID) mustBe defined
-        }
-      }
-
-      "send the data to the subscription store service and if unsuccessful throw internal server exception" in {
-        setupMockKeystore(fetchAll = testSummary)
-        mockStoredSubscriptionFailure(testARN, newTestNino)
-
-        lazy val result = call(unauthorisedAgentRequest)
-
-        intercept[InternalServerException](await(result))
       }
     }
   }

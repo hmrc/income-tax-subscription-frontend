@@ -84,16 +84,6 @@ POST        /confirm-user                 controllers.usermatching.ConfirmUserCo
 GET         /error/user-details           controllers.usermatching.UserDetailsErrorController.show()
 POST        /error/user-details           controllers.usermatching.UserDetailsErrorController.submit()
 
-# Authorise agent
-GET         /authorise-agent              controllers.unauthorisedagent.AuthoriseAgentController.show()
-POST        /authorise-agent              controllers.unauthorisedagent.AuthoriseAgentController.submit()
-
-#Agent not authorised
-GET         /agent-not-authorised         controllers.unauthorisedagent.AgentNotAuthorisedController.show()
-
-# Confirm agent subscription
-GET         /subscribe-unauthorised       controllers.unauthorisedagent.UnauthorisedSubscriptionController.subscribeUnauthorised()
-
 # Cannot Sign Up Routes
 GET         /error/cannot-sign-up         controllers.individual.incomesource.CannotSignUpController.show()
 

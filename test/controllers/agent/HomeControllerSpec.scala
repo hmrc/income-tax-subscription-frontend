@@ -152,38 +152,6 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
       }
     }
 
-    "journey state is user matched" when {
-      "the agent is unauthorised" should {
-        lazy val request = unauthorisedUserMatchedRequest
-
-        def result = testHomeController(showGuidance = false).index()(request)
-
-        s"redirect user to ${controllers.agent.routes.IncomeSourceController.show().url}" in {
-          status(result) must be(Status.SEE_OTHER)
-
-          redirectLocation(result).get mustBe controllers.agent.routes.IncomeSourceController.show().url
-
-          await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentSignUp.name)
-        }
-      }
-    }
-
-    "journey state is user matching" when {
-      "the agent is unauthorised" should {
-        lazy val request = unauthorisedUserMatchingRequest
-
-        def result = testHomeController(showGuidance = false).index()(request)
-
-        s"redirect user to ${controllers.agent.routes.AgentNotAuthorisedController.show().url}" in {
-          status(result) must be(Status.SEE_OTHER)
-
-          redirectLocation(result).get mustBe controllers.agent.routes.AgentNotAuthorisedController.show().url
-
-          await(result).session(request).get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
-        }
-      }
-    }
-
     "the user has an mtd flag" when {
       "the agent is authorised" should {
         lazy val request = subscriptionRequest.withSession(ITSASessionKeys.MTDITID -> "any")
@@ -194,18 +162,6 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
           status(result) must be(Status.SEE_OTHER)
 
           redirectLocation(result).get mustBe controllers.agent.routes.ConfirmationController.show().url
-        }
-      }
-
-      "the agent is unauthorised" should {
-        lazy val request = subscriptionRequest.withSession(ITSASessionKeys.MTDITID -> "any", ITSASessionKeys.UnauthorisedAgentKey -> true.toString)
-
-        def result = testHomeController(showGuidance = false).index()(request)
-
-        s"redirect user to ${controllers.agent.routes.UnauthorisedAgentConfirmationController.show().url}" in {
-          status(result) must be(Status.SEE_OTHER)
-
-          redirectLocation(result).get mustBe controllers.agent.routes.UnauthorisedAgentConfirmationController.show().url
         }
       }
     }

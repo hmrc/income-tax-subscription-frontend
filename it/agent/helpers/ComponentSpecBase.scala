@@ -19,18 +19,16 @@ package agent.helpers
 import java.util.UUID
 
 import _root_.agent.auth.{AgentJourneyState, AgentSignUp, AgentUserMatching}
-import _root_.forms.agent._
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.SessionCookieBaker._
 import _root_.agent.helpers.servicemocks.WireMockMethods
 import _root_.agent.models._
-import agent.common.Constants
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import controllers.agent.ITSASessionKeys
 import core.models.YesNo
-import forms.agent.{AccountingMethodForm, AccountingMethodPropertyForm, AccountingPeriodDateForm, AccountingYearForm, BusinessNameForm, ClientDetailsForm, IncomeSourceForm, MatchTaxYearForm, OtherIncomeForm}
+import forms.agent._
 import helpers.UserMatchingIntegrationRequestSupport
 import helpers.servicemocks.AuditStub
 import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
@@ -97,8 +95,6 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.agent-microservice.port" -> mockPort,
     "microservice.services.tax-enrolments.host" -> mockHost,
     "microservice.services.tax-enrolments.port" -> mockPort,
-    "microservice.services.income-tax-subscription-store.host" -> mockHost,
-    "microservice.services.income-tax-subscription-store.port" -> mockPort,
     "microservice.services.income-tax-subscription-eligibility.host" -> mockHost,
     "microservice.services.income-tax-subscription-eligibility.port" -> mockPort,
     "microservice.services.feature-switch.show-guidance" -> "true",
@@ -191,10 +187,6 @@ trait ComponentSpecBase extends UnitSpec
       else
         get("/confirmation")
 
-    def showUnauthorisedAgentConfirmation(): WSResponse = get("/send-client-link",
-      Map(ITSASessionKeys.UnauthorisedAgentKey -> true.toString,
-        ITSASessionKeys.MTDITID -> Constants.unauthorisedAgentMtdValue)
-    )
 
     def thankYou(): WSResponse = get("/thankyou")
 
@@ -208,13 +200,6 @@ trait ComponentSpecBase extends UnitSpec
 
     def noClientRelationship(): WSResponse = get("/error/no-client-relationship", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
-    def agentNotAuthorised(): WSResponse = get("/error/not-authorised",
-      Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name,
-        ITSASessionKeys.UnauthorisedAgentKey -> true.toString)
-    )
-
-    def submitAgentNotAuthorised(): WSResponse = post("/error/not-authorised", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
-
     def clientAlreadySubscribed(): WSResponse = get("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))
 
     def submitClientAlreadySubscribed(): WSResponse = post("/error/client-already-subscribed", Map(ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name))(Map.empty)
@@ -226,16 +211,13 @@ trait ComponentSpecBase extends UnitSpec
       ITSASessionKeys.UTR -> testUtr
     ))
 
-    def submitCheckYourAnswers(isAgentUnauthorised: Boolean = false): WSResponse = post("/check-your-answers", {
-      val default = Map(
+    def submitCheckYourAnswers(): WSResponse = post("/check-your-answers",
+      Map(
         ITSASessionKeys.ArnKey -> testARN,
         ITSASessionKeys.JourneyStateKey -> AgentSignUp.name,
         ITSASessionKeys.NINO -> testNino,
         ITSASessionKeys.UTR -> testUtr
       )
-      if (isAgentUnauthorised) default + (ITSASessionKeys.UnauthorisedAgentKey -> true.toString)
-      else default
-    }
     )(Map.empty)
 
     def submitConfirmClient(previouslyFailedAttempts: Int = 0,
@@ -272,7 +254,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def getAddAnotherClient(hasSubmitted: Boolean): WSResponse =
       if (hasSubmitted)
-        get("/add-another", Map(ITSASessionKeys.MTDITID -> testMTDID, ITSASessionKeys.UnauthorisedAgentKey -> false.toString))
+        get("/add-another", Map(ITSASessionKeys.MTDITID -> testMTDID))
       else
         get("/add-another")
 
@@ -302,7 +284,7 @@ trait ComponentSpecBase extends UnitSpec
       val uri = s"/business/match-to-tax-year?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
-          model => MatchTaxYearForm.matchTaxYearForm.fill(model).data.map { case (k, v) => (k, Seq(v))}
+          model => MatchTaxYearForm.matchTaxYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }
@@ -311,7 +293,7 @@ trait ComponentSpecBase extends UnitSpec
       val uri = s"/business/what-year-to-sign-up?editMode=$inEditMode"
       post(uri)(
         request.fold(Map.empty[String, Seq[String]])(
-          model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v))}
+          model => AccountingYearForm.accountingYearForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
         )
       )
     }

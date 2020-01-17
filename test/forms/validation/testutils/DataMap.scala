@@ -22,7 +22,6 @@ import forms.individual.business.BusinessPhoneNumberForm._
 import forms.individual.business.{AccountingMethodForm, AccountingYearForm, MatchTaxYearForm}
 import forms.individual.incomesource.{AreYouSelfEmployedForm, OtherIncomeForm, RentUkPropertyForm}
 import forms.submapping.DateMapping._
-import forms.unauthorisedagent.ConfirmAgentForm
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import play.api.data.validation._
@@ -62,8 +61,6 @@ object DataMap {
     def areYouSelfEmployed(iType: String): DataMap = Map(AreYouSelfEmployedForm.choice -> iType)
 
     def otherIncome(iType: String): DataMap = Map(OtherIncomeForm.choice -> iType)
-
-    def confirmAgent(iType: String): DataMap = Map(ConfirmAgentForm.choice -> iType)
 
     val alwaysFailInvalid: Invalid = ErrorMessageFactory.error("always fail")
 

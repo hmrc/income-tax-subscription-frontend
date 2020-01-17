@@ -17,7 +17,6 @@
 package assets
 
 import core.models.DateModel
-import incometax.business.models.AccountingPeriodModel
 
 object MessageLookup {
 
@@ -326,6 +325,7 @@ object MessageLookup {
 
     object SelectedTaxYear {
       def current(staringYear: Int, endYear: Int) = s"Current tax year ($staringYear to $endYear)"
+
       def next(staringYear: Int, endYear: Int) = s"Next tax year ($staringYear to $endYear)"
     }
 
@@ -399,28 +399,6 @@ object MessageLookup {
       val bul1 = "accounting software"
       val bul2 = "business tax account"
       val para4 = "It may take a few hours for them all to appear."
-    }
-
-    object Unauthorised {
-      val title = "Sign up complete"
-      val heading = "Sign up complete"
-      val signOut = "Sign out"
-
-      object whatHappensNext {
-        val heading = "What happens next"
-        val para1 = "Either you or your agent need to complete the steps below."
-        val para2 = "It's important to choose a software package that can interact with your agent's."
-        val list1 = "Choose accounting software if you haven't already."
-        val list2 = "Sign in to the software with your Government Gateway details and authorise it to interact with HMRC."
-        val list3 = "Add any income and expenses that you've already received or paid out."
-        val list4 = "Record your future income and expenses using the software, then send HMRC a report at least every quarter."
-        val list5 = "Add any other income sources in your final report, you need to send this report by 31 January."
-        val para3 = "After you've sent a report you'll get an Income Tax estimate. You can view your estimate and report deadlines in your:"
-        val bul1 = "accounting software"
-        val bul2 = "business tax account"
-        val para4 = "It may take a few hours for them all to appear."
-      }
-
     }
 
   }
@@ -710,27 +688,6 @@ object MessageLookup {
     val hmrcLink = "HM Revenue and Customs (opens in new window)"
     val line_2 = s"If you can't confirm your identity and you have a query you can contact $hmrcLink to get help."
     val tryAgainLink = "Try to confirm your identity again."
-  }
-
-  object UnauthorisedAgent {
-
-    object AgentNotAuthorised {
-      def title = s"You have not authorised your agent"
-
-      def heading = title
-
-      val line_1 = "We've deleted any information they've asked to submit for you."
-    }
-
-    object AuthoriseAgent {
-      def title = s"Do you authorise your agent to use software to report your Income Tax?"
-
-      def heading = s"Do you authorise your agent to use software to report your Income Tax?"
-
-      val yes = "Yes"
-      val no = "No"
-    }
-
   }
 
   object CannotSignUp {

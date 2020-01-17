@@ -26,7 +26,6 @@ import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.models._
 import incometax.subscription.models._
-import incometax.unauthorisedagent.models.StoredSubscription
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -223,16 +222,6 @@ object TestModels extends Implicits {
     accountingMethod = Some(testAccountingMethod),
     accountingMethodProperty = Some(testAccountingMethodProperty),
     terms = Some(true)
-  )
-
-  lazy val testStoredSubscription = StoredSubscription(
-    arn = testArn,
-    incomeSource = Both,
-    otherIncome = false,
-    accountingPeriodStart = Some(testAccountingPeriod.startDate),
-    accountingPeriodEnd = Some(testAccountingPeriod.endDate),
-    tradingName = Some(testBusinessName.businessName),
-    cashOrAccruals = Some(testAccountingMethod.accountingMethod)
   )
 
 }

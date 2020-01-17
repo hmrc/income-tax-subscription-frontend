@@ -25,9 +25,9 @@ import controllers.ControllerBaseTrait
 import core.utils.JsonUtils
 import org.mockito.Mockito
 import play.api.data.Form
-import play.api.test.Helpers._
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 
 
@@ -62,7 +62,7 @@ trait AgentControllerBaseSpec extends ControllerBaseTrait with MockAgentAuthServ
     implicit def post[T](form: Form[T], data: T): FakeRequest[AnyContentAsFormUrlEncoded] =
       fakeRequest.post(form.fill(data))
 
-    implicit def postInvalid[T,I](form: Form[T], data: I): FakeRequest[AnyContentAsFormUrlEncoded] =
+    implicit def postInvalid[T, I](form: Form[T], data: I): FakeRequest[AnyContentAsFormUrlEncoded] =
       fakeRequest.withFormUrlEncodedBody(form.mapping.key -> data.toString)
 
     implicit def post[T](form: Form[T]): FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -94,15 +94,13 @@ trait AgentControllerBaseSpec extends ControllerBaseTrait with MockAgentAuthServ
   lazy val unauthorisedUserMatchedRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatched.name,
     ITSASessionKeys.NINO -> TestConstants.testNino,
-    ITSASessionKeys.UTR -> TestConstants.testUtr,
-    ITSASessionKeys.UnauthorisedAgentKey -> false.toString
+    ITSASessionKeys.UTR -> TestConstants.testUtr
   )
 
   lazy val unauthorisedUserMatchingRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> AgentUserMatching.name,
     ITSASessionKeys.NINO -> TestConstants.testNino,
-    ITSASessionKeys.UTR -> TestConstants.testUtr,
-    ITSASessionKeys.UnauthorisedAgentKey -> true.toString
+    ITSASessionKeys.UTR -> TestConstants.testUtr
   )
 
 

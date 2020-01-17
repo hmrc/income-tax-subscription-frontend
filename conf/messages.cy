@@ -656,11 +656,6 @@ agent.no-client-relationship.title                                    = Nid ydyc
 agent.no-client-relationship.heading                                  = Nid ydych wedi''ch awdurdodi ar gyfer y cleient hwn
 agent.no-client-relationship.para1                                    = I anfon adroddiadau chwarterol, rhaid i''ch cleient eich awdurdodi chi fel ei asiant.
 
-## Agent not authorised page ##
-agent.not-authorised-error.title                                      = Nid ydych wedi''ch awdurdodi ar gyfer y cleient hwn
-agent.not-authorised-error.heading                                    = Nid ydych wedi''ch awdurdodi ar gyfer y cleient hwn
-agent.not-authorised-error.para1                                      = Mae dal yn bosibl i chi gofrestru''ch cleient, ond byddwn yn cadw''i wybodaeth hyd nes ei fod wedi''ch awdurdodi fel ei asiant.
-
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                                = Ni allwch ddefnyddio meddalwedd i roi gwybod am incwm eich cleient o eiddo ar hyn o bryd
 agent.cannot-report-property-yet.heading                              = Ni allwch ddefnyddio meddalwedd i roi gwybod am incwm eich cleient o eiddo ar hyn o bryd
@@ -709,28 +704,6 @@ agent.sign-up-complete.whatNext.number4                               = Parhewch
 agent.sign-up-complete.whatNext.number5                               = Anfonwch adroddiad terfynol eich cleient erbyn 31 Ionawr ar ôl diwedd y flwyddyn dreth yr ydych yn ei gofrestru ar ei chyfer.
 agent.sign-up-complete.whatNext.para2                                 = Wedi i chi anfon adroddiad, bydd eich cleient yn cael amcangyfrif o Dreth Incwm. Bydd yn gallu gweld yr hyn sy''n ddyledus ganddo ar gyfer y flwyddyn dreth wedi i chi anfon ei adroddiad terfynol.
 agent.sign-up-complete.add_another                                    = Cofrestru cleient arall
-
-## Unauthorised Agent Confirmation page ##
-agent.confirmation.unauthorised.title                                 = Anfon cysylltiad at y cleient
-agent.confirmation.unauthorised.heading                               = Anfonwch y cysylltiad hwn at eich cleient
-agent.confirmation.unauthorised.url                                   = www.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up/
-
-agent.confirmation.unauthorised.whatHappensNext.heading               = Yr hyn sy''n digwydd nesaf
-agent.confirmation.unauthorised.whatHappensNext.para1                 = Rhaid i chi anfon y cysylltiad hwn at eich cleient er mwyn iddo''ch awdurdodi chi fel ei asiant. Rhaid iddo wneud hyn cyn pen 10 diwrnod. Bydd yn dal angen i chi wneud y canlynol:
-agent.confirmation.unauthorised.whatHappensNext.bullet1               = <a id="accountingSoftware" href="{0}">Dewis meddalwedd cyfrifyddu</a> os nad ydych wedi gwneud hynny eisoes.
-agent.confirmation.unauthorised.whatHappensNext.bullet2               = Mewngofnodwch i''r meddalwedd gyda''ch manylion Porth y Llywodraeth a''i awdurdodi i ryngweithio â CThEM.
-agent.confirmation.unauthorised.whatHappensNext.para2                 = Os na fydd eich cleient yn eich awdurdodi cyn pen 10 diwrnod, rhaid i chi ei wahodd eto.
-
-
-agent.confirmation.unauthorised.whenAuthorised.heading                = Ar ôl i chi gael eich awdurdodi
-agent.confirmation.unauthorised.whenAuthorised.para1                  = Rhaid i chi neu''ch cleient gwblhau''r camau isod.
-agent.confirmation.unauthorised.whenAuthorised.number1                = Ychwanegwch unrhyw incwm y mae''ch cleient eisoes wedi''i gael neu dreuliau y mae eisoes wedi''u talu
-agent.confirmation.unauthorised.whenAuthorised.number2                = Cofnodwch ei incwm a''i dreuliau yn y dyfodol gan ddefnyddio''r meddalwedd, yna anfonwch adroddiad i CThEM bob chwarter, o leiaf
-agent.confirmation.unauthorised.whenAuthorised.number3                = Ychwanegwch unrhyw ffynonellau eraill o incwm fel rhan o adroddiad terfynol eich cleient - rhaid iddo anfon yr adroddiad hwn erbyn 31 Ionawr
-
-
-agent.confirmation.unauthorised.add_another                           = Cofrestru cleient arall
-
 
 ## Errors ##
 agent.error.back_to_preferences.empty                                 = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
@@ -854,7 +827,7 @@ agent.client_details.formhint.1.line_1                                = Er enghr
 agent.client-details.formhint.2                                       = Er enghraifft, 10 12 1990
 
 ## Exit survey
-agent.exit-survey.title                                               = Rhoi adborth
+agent.exit-survey.title                                               = Rhoi adborths
 agent.exit-survey.heading                                             = Rhoi adborth
 
 agent.exit-survey.q1                                                  = At ei gilydd, sut oeddech yn teimlo am y gwasanaeth a gawsoch heddiw?
@@ -880,29 +853,6 @@ agent.thank-you.go_to_gov                                             = Ewch i d
 agent.no-sa.title                                                     = Nid yw''ch cleient wedi cofrestru ar gyfer Hunanasesiad
 agent.no-sa.heading                                                   = Nid yw''ch cleient wedi cofrestru ar gyfer Hunanasesiad
 agent.no-sa.line_1                                                    = I ddefnyddio''r gwasanaeth hwn, rhaid i''ch cleient <a id="sa-signup" href="{0}">gofrestru ar gyfer Hunanasesiad</a>.
-
-authorise-agent.title                                                 = Ydych chi''n awdurdodi''ch asiant i ddefnyddio meddalwedd i roi gwybod am eich Treth Incwm?
-authorise-agent.heading                                               = Ydych chi''n awdurdodi''ch asiant i ddefnyddio meddalwedd i roi gwybod am eich Treth Incwm?
-
-agent-not-authorised.title                                            = Nid ydych wedi awdurdodi''ch asiant
-agent-not-authorised.heading                                          = Nid ydych wedi awdurdodi''ch asiant
-agent-not-authorised.line_1                                           = Rydym wedi dileu unrhyw wybodaeth y mae wedi gofyn i''w chyflwyno ar eich cyfer.
-
-## Unauthorised Agent Confirmation page ##
-confirmation.unauthorised.title                                       = Rydych wedi gorffen cofrestru
-confirmation.unauthorised.heading                                     = Rydych wedi gorffen cofrestru
-confirmation.unauthorised.whatHappensNext.heading                     = Yr hyn sy''n digwydd nesaf
-confirmation.unauthorised.whatHappensNext.para1                       = Rhaid i naill chi neu''ch asiant gwblhau''r camau isod.
-confirmation.unauthorised.whatHappensNext.para2                       = Mae''n bwysig i ddefnyddio pecyn meddalwedd a all ryngweithio ag un eich asiant.
-confirmation.unauthorised.whatHappensNext.list1                       = Dewiswch feddalwedd cyfrifyddu os nad ydych wedi gwneud hynny eisoes.
-confirmation.unauthorised.whatHappensNext.list2                       = Mewngofnodwch i''r meddalwedd gyda''ch manylion Porth y Llywodraeth a''i awdurdodi i ryngweithio â CThEM.
-confirmation.unauthorised.whatHappensNext.list3                       = Ychwanegwch unrhyw incwm yr ydych eisoes wedi''i gael neu dreuliau yr ydych eisoes wedi''u talu.
-confirmation.unauthorised.whatHappensNext.list4                       = Cofnodwch eich incwm a''ch treuliau yn y dyfodol gan ddefnyddio''r meddalwedd, yna anfonwch adroddiad i CThEM bob chwarter, o leiaf.
-confirmation.unauthorised.whatHappensNext.list5                       = Ychwanegwch unrhyw ffynonellau eraill o incwm fel rhan o''ch adroddiad terfynol - rhaid i chi anfon yr adroddiad hwn erbyn 31 Ionawr.
-confirmation.unauthorised.whatHappensNext.para3                       = Ar ôl i chi anfon adroddiad, byddwch yn cael amcangyfrif o''ch Treth Incwm. Gallwch weld eich amcangyfrif a dyddiadau cau''ch adroddiadau yn eich:
-confirmation.unauthorised.whatHappensNext.bullet1                     = meddalwedd cyfrifyddu
-confirmation.unauthorised.whatHappensNext.bullet2                     = <a id="bta" href="{0}">cyfrif treth busnes</a>
-confirmation.unauthorised.whatHappensNext.para4                       = Gall gymryd rhai oriau cyn eu bod i gyd i''w gweld.
 
 # Not eligible for income tax
 not_eligible_for_income_tax.title                                      = Ni allwch ddefnyddio''r gwasanaeth hwn eto

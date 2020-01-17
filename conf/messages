@@ -657,11 +657,6 @@ agent.no-client-relationship.title                                    = You''re 
 agent.no-client-relationship.heading                                  = You''re not authorised for this client
 agent.no-client-relationship.para1                                    = To send quarterly reports, your client must authorise you as their agent.
 
-## Agent not authorised page ##
-agent.not-authorised-error.title                                      = You''re not authorised for this client
-agent.not-authorised-error.heading                                    = You''re not authorised for this client
-agent.not-authorised-error.para1                                      = You can still sign up your client, but we''ll hold their information until they''ve authorised you as their agent.
-
 ## Client cannot report property page ##
 agent.cannot-report-property-yet.title                                = You can''t use software to report your client''s property income yet
 agent.cannot-report-property-yet.heading                              = You can''t use software to report your client''s property income yet
@@ -709,28 +704,6 @@ agent.sign-up-complete.whatNext.number4                               = Continue
 agent.sign-up-complete.whatNext.number5                               = Send your client''s final report by 31 January after the end of the tax year you''re signing them up for.
 agent.sign-up-complete.whatNext.para2                                 = After you''ve sent a report, your client will get an Income Tax estimate. They can see what they owe for the tax year after you’ve sent their final report.
 agent.sign-up-complete.add_another                                    = Sign up another client
-
-## Unauthorised Agent Confirmation page ##
-agent.confirmation.unauthorised.title                                 = Send client link
-agent.confirmation.unauthorised.heading                               = Send your client this link
-agent.confirmation.unauthorised.url                                   = www.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up/
-
-agent.confirmation.unauthorised.whatHappensNext.heading               = What happens next
-agent.confirmation.unauthorised.whatHappensNext.para1                 = You must send your client this link for them to authorise you as their agent. They must do this within 10 days. You still need to:
-agent.confirmation.unauthorised.whatHappensNext.bullet1               = <a id="accountingSoftware" href="{0}">Choose accounting software</a> if you haven''t already.
-agent.confirmation.unauthorised.whatHappensNext.bullet2               = Sign in to the software with your Government Gateway details and authorise it to interact with HMRC.
-agent.confirmation.unauthorised.whatHappensNext.para2                 = If your client doesn''t authorise you within 10 days, you''ll need to invite them again.
-
-
-agent.confirmation.unauthorised.whenAuthorised.heading                = When you''re authorised
-agent.confirmation.unauthorised.whenAuthorised.para1                  = Either you or your client need to complete the steps below.
-agent.confirmation.unauthorised.whenAuthorised.number1                = Add any income and expenses that your client has already received or paid out
-agent.confirmation.unauthorised.whenAuthorised.number2                = Record their future income and expenses using the software, then send HMRC a report at least every quarter
-agent.confirmation.unauthorised.whenAuthorised.number3                = Add any other income sources in your client''s final report, they need to send this report by 31 January
-
-
-agent.confirmation.unauthorised.add_another                           = Sign up another client
-
 
 ## Errors ##
 agent.error.back_to_preferences.empty                                 = You must select an option to continue
@@ -880,29 +853,6 @@ agent.thank-you.go_to_gov                                             = Go to th
 agent.no-sa.title                                                     = Your client is not registered for Self Assessment
 agent.no-sa.heading                                                   = Your client is not registered for Self Assessment
 agent.no-sa.line_1                                                    = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
-
-authorise-agent.title                                                 = Do you authorise your agent to use software to report your Income Tax?
-authorise-agent.heading                                               = Do you authorise your agent to use software to report your Income Tax?
-
-agent-not-authorised.title                                            = You have not authorised your agent
-agent-not-authorised.heading                                          = You have not authorised your agent
-agent-not-authorised.line_1                                           = We''ve deleted any information they''ve asked to submit for you.
-
-## Unauthorised Agent Confirmation page ##
-confirmation.unauthorised.title                                       = Sign up complete
-confirmation.unauthorised.heading                                     = Sign up complete
-confirmation.unauthorised.whatHappensNext.heading                     = What happens next
-confirmation.unauthorised.whatHappensNext.para1                       = Either you or your agent need to complete the steps below.
-confirmation.unauthorised.whatHappensNext.para2                       = It''s important to choose a software package that can interact with your agent''s.
-confirmation.unauthorised.whatHappensNext.list1                       = Choose accounting software if you haven''t already.
-confirmation.unauthorised.whatHappensNext.list2                       = Sign in to the software with your Government Gateway details and authorise it to interact with HMRC.
-confirmation.unauthorised.whatHappensNext.list3                       = Add any income and expenses that you''ve already received or paid out.
-confirmation.unauthorised.whatHappensNext.list4                       = Record your future income and expenses using the software, then send HMRC a report at least every quarter.
-confirmation.unauthorised.whatHappensNext.list5                       = Add any other income sources in your final report, you need to send this report by 31 January.
-confirmation.unauthorised.whatHappensNext.para3                       = After you''ve sent a report you''ll get an Income Tax estimate. You can view your estimate and report deadlines in your:
-confirmation.unauthorised.whatHappensNext.bullet1                     = accounting software
-confirmation.unauthorised.whatHappensNext.bullet2                     = <a id="bta" href="{0}">business tax account</a>
-confirmation.unauthorised.whatHappensNext.para4                       = It may take a few hours for them all to appear.
 
 # unplanned outage page
 unplanned_outage.title                                                 = Sorry, there is a problem with the service

@@ -62,16 +62,6 @@ class PreferencesControllerSpec extends ControllerBaseSpec
       redirectLocation(result).get must be(controllers.individual.incomesource.routes.RentUkPropertyController.show().url)
     }
 
-    "Redirect to Create subscription controller if paperless is activated and in ConfirmAgentSubscription journey" in {
-      mockStoreNinoSuccess(testNino)
-      mockCheckPaperlessActivated(testToken)
-
-      lazy val res = TestPreferencesController.checkPreferences(confirmAgentSubscriptionRequest)
-      status(res) must be(Status.SEE_OTHER)
-      redirectLocation(res).get must be(controllers.unauthorisedagent.routes.UnauthorisedSubscriptionController.subscribeUnauthorised().url)
-    }
-
-
     "Redirect to returned preferences service if paperless was previously unspecified" in {
       mockStoreNinoSuccess(testNino)
       mockCheckPaperlessUnset(testToken, testUrl)
@@ -94,15 +84,6 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
       status(result) must be(Status.SEE_OTHER)
       redirectLocation(result).get must be(controllers.individual.incomesource.routes.RentUkPropertyController.show().url)
-    }
-
-    "Redirect to Create Subscription controller if paperless is activated and in ConfirmAgentSubscription journey" in {
-      mockStoreNinoSuccess(testNino)
-      mockCheckPaperlessActivated(testToken)
-
-      lazy val res = TestPreferencesController.callback(confirmAgentSubscriptionRequest)
-      status(res) must be(Status.SEE_OTHER)
-      redirectLocation(res).get must be(controllers.unauthorisedagent.routes.UnauthorisedSubscriptionController.subscribeUnauthorised().url)
     }
 
     "Redirect to the preferences error page if paperless preferences was not selected" in {

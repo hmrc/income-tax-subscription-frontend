@@ -83,11 +83,6 @@ trait AuthPredicates extends Results {
       Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
 
-  val unauthorisedAgentSignUpJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
-    if (request.session.isInState(ConfirmAgentSubscription))
-      Right(AuthPredicateSuccess)
-    else Left(Future.successful(homeRoute))
-
   val userMatchingJourneyPredicate: AuthPredicate[IncomeTaxSAUser] = request => user =>
     if (request.session.isInState(UserMatching)) Right(AuthPredicateSuccess)
     else Left(Future.successful(homeRoute))
@@ -117,11 +112,6 @@ trait AuthPredicates extends Results {
   val registrationPredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+| registrationJourneyPredicate |+| ivPredicate
 
   val enrolledPredicates = administratorRolePredicate |+| timeoutPredicate |+| enrolledPredicate
-
-  val unauthorisedAgentPredicates = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+|
-    unauthorisedAgentSignUpJourneyPredicate |+| ivPredicate
-
-  val unauthorisedAgentSubscriptionPredicates = unauthorisedAgentPredicates |+| confirmedAgentPredicate
 
   val preferencesPredicate = administratorRolePredicate |+| defaultPredicates |+| mtdidPredicate |+| preferencesJourneyPredicate |+| ivPredicate
 

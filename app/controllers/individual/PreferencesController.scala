@@ -19,7 +19,7 @@ package controllers.individual
 import core.ITSASessionKeys
 import core.auth.StatelessController
 import core.config.BaseControllerConfig
-import core.services.{AuthService, KeystoreService}
+import core.services.AuthService
 import digitalcontact.models.{Activated, Unset}
 import digitalcontact.services.{PaperlessPreferenceTokenService, PreferencesService}
 import javax.inject.{Inject, Singleton}
@@ -27,7 +27,6 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
-import usermatching.userjourneys.ConfirmAgentSubscription
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -47,21 +46,13 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
     )
   }
 
-  private def goToNext(implicit request: Request[AnyContent]) =
-    if (request.isInState(ConfirmAgentSubscription))
-      Redirect(controllers.unauthorisedagent.routes.UnauthorisedSubscriptionController.subscribeUnauthorised())
-    else {
-      Redirect(controllers.individual.incomesource.routes.RentUkPropertyController.show())
-    }
-
-
   def checkPreferences: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         token <- paperlessPreferenceTokenService.storeNino(user.nino.get)
         res <- preferencesService.checkPaperless(token)
       } yield res match {
-        case Right(Activated) => goToNext
+        case Right(Activated) => Redirect(controllers.individual.incomesource.routes.RentUkPropertyController.show())
         case Right(Unset(url)) => Redirect(url)
         case _ => throw new InternalServerException("Could not get paperless preferences")
       }
@@ -72,7 +63,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
       paperlessPreferenceTokenService.storeNino(user.nino.get) flatMap {
         token =>
           preferencesService.checkPaperless(token).map {
-            case Right(Activated) => goToNext
+            case Right(Activated) => Redirect(controllers.individual.incomesource.routes.RentUkPropertyController.show())
             case Right(Unset(url)) => Redirect(controllers.individual.routes.PreferencesController.show())
               .addingToSession(ITSASessionKeys.PreferencesRedirectUrl -> url)
             case _ => throw new InternalServerException("Could not get paperless preferences")

@@ -7,13 +7,11 @@ import core.Constants
 import core.Constants.GovernmentGateway._
 import core.models._
 import core.services.CacheConstants
-import forms.unauthorisedagent.ConfirmAgentForm
 import helpers.IntegrationTestConstants._
 import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.models._
 import incometax.subscription.models._
-import incometax.unauthorisedagent.models.{ConfirmAgentModel, StoredSubscription}
 import incometax.util.AccountingPeriodUtil
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
@@ -179,17 +177,4 @@ object IntegrationTestModels {
 
   lazy val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMTDID)
 
-  val testStoredSubscription = StoredSubscription(
-    arn = testArn,
-    incomeSource = Both,
-    otherIncome = Some(false),
-    accountingPeriodStart = Some(testAccountingPeriod.startDate),
-    accountingPeriodEnd = Some(testAccountingPeriod.endDate),
-    tradingName = Some(testBusinessName.businessName),
-    cashOrAccruals = Some(testAccountingMethod.accountingMethod),
-    cashOrAccrualsProperty = Some(testAccountingMethodProperty.propertyAccountingMethod)
-  )
-
-  val testConfirmAgentYes = ConfirmAgentModel(ConfirmAgentForm.option_yes)
-  val testConfirmAgentNo = ConfirmAgentModel(ConfirmAgentForm.option_no)
 }

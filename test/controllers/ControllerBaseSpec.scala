@@ -74,17 +74,6 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
     ITSASessionKeys.JourneyStateKey -> UserMatching.name
   )
 
-  lazy val userMatchedRequestNoUtr = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> UserMatched.name,
-    ITSASessionKeys.NINO -> TestConstants.testNino
-  )
-
-  lazy val userMatchedRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> UserMatched.name,
-    ITSASessionKeys.NINO -> TestConstants.testNino,
-    ITSASessionKeys.UTR -> TestConstants.testUtr
-  )
-
   lazy val subscriptionRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> SignUp.name,
     ITSASessionKeys.NINO -> TestConstants.testNino,
@@ -94,12 +83,6 @@ trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {
   lazy val registrationRequest = FakeRequest().withSession(
     ITSASessionKeys.JourneyStateKey -> Registration.name,
     ITSASessionKeys.NINO -> TestConstants.testNino
-  )
-
-  lazy val confirmAgentSubscriptionRequest = FakeRequest().withSession(
-    ITSASessionKeys.JourneyStateKey -> ConfirmAgentSubscription.name,
-    ITSASessionKeys.NINO -> TestConstants.testNino,
-    ITSASessionKeys.AgentReferenceNumber -> TestConstants.testArn
   )
 
 }

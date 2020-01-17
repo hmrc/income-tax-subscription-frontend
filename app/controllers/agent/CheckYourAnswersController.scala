@@ -17,15 +17,12 @@
 package controllers.agent
 
 import agent.audit.Logging
-import agent.auth.AgentJourneyState._
 import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
-import agent.common.Constants
 import agent.services.{ClientRelationshipService, KeystoreService, SubscriptionOrchestrationService}
 import core.config.BaseControllerConfig
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
 import core.services.AuthService
 import incometax.subscription.models.{Both, Business, IncomeSourceType, SubscriptionSuccess}
-import incometax.unauthorisedagent.services.SubscriptionStorePersistenceService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -40,7 +37,6 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val keystoreService: KeystoreService,
                                            val subscriptionService: SubscriptionOrchestrationService,
                                            val clientRelationshipService: ClientRelationshipService,
-                                           val subscriptionStorePersistenceService: SubscriptionStorePersistenceService,
                                            val authService: AuthService,
                                            logging: Logging
                                           ) extends AuthenticatedController with FeatureSwitching {
@@ -121,29 +117,13 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     } yield Redirect(controllers.agent.routes.ConfirmationController.show()).addingToSession(ITSASessionKeys.MTDITID -> mtditid)
   }
 
-  private def submitForUnauthorisedAgent(arn: String, nino: String
-                                        )(implicit user: IncomeTaxAgentUser, request: Request[AnyContent], cache: CacheMap
-                                        ): Future[Result] =
-    subscriptionStorePersistenceService.storeSubscription(arn, nino) flatMap {
-      case Right(_) =>
-        Future.successful(
-          Redirect(controllers.agent.routes.UnauthorisedAgentConfirmationController.show())
-            // n.b. we're only using this flag to safeguard the reset of the journey so that the user can't go back to them
-            .addingToSession(ITSASessionKeys.MTDITID -> Constants.unauthorisedAgentMtdValue)
-        )
-      case Left(err) => error("Error calling income-tax-subscription-store: " + err)
-    }
-
   val submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       implicit cache =>
         // Will fail if there is no NINO
         val nino = user.clientNino.get
         // Will fail if there is no ARN in session
-        val arn = user.arn.get
-
-        if (request.isUnauthorisedAgent) submitForUnauthorisedAgent(arn, nino)
-        else submitForAuthorisedAgent(arn, nino)
+        submitForAuthorisedAgent(user.arn.get, nino)
 
   }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any keystore cached data")
 

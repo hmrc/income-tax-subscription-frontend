@@ -16,16 +16,16 @@
 
 package controllers.agent.matching
 
-import javax.inject.{Inject, Singleton}
 import agent.auth.AgentJourneyState._
 import agent.auth._
-import controllers.agent.ITSASessionKeys.FailedClientMatching
 import agent.services._
 import controllers.agent.ITSASessionKeys
+import controllers.agent.ITSASessionKeys.FailedClientMatching
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import incometax.eligibility.httpparsers.{Eligible, Ineligible}
 import incometax.eligibility.services.GetEligibilityStatusService
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.twirl.api.Html
@@ -104,15 +104,9 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
               .removingFromSession(FailedClientMatching)
           )
           case Right(unapprovedAgent@UnApprovedAgent(clientNino, clientUtr)) =>
-            if (applicationConfig.unauthorisedAgentEnabled) {
-              successful(matched(unapprovedAgent,
-                controllers.agent.routes.AgentNotAuthorisedController.show(), AgentUserMatching)
-                .setUnauthorisedAgent(isUnauthorised = true))
-            } else {
-              successful(
-                Redirect(controllers.agent.routes.NoClientRelationshipController.show())
-                  .removingFromSession(FailedClientMatching))
-            }
+            successful(
+              Redirect(controllers.agent.routes.NoClientRelationshipController.show())
+                .removingFromSession(FailedClientMatching))
           case Right(ApprovedAgent(nino, Some(utr))) =>
             eligibilityService.getEligibilityStatus(utr) map {
               case Right(Eligible) =>
@@ -137,18 +131,6 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
               .clearUserDetails)
         }
       }
-  }
-
-  private def matched(qualifiedAgent: QualifiedAgent, call: Call, journeyState: AgentJourneyState)(implicit req: Request[_]): Result = {
-    val resultWithoutUTR = Redirect(call)
-      .withJourneyState(journeyState)
-      .removingFromSession(FailedClientMatching)
-      .addingToSession(ITSASessionKeys.NINO -> qualifiedAgent.clientNino)
-
-    qualifiedAgent.clientUtr match {
-      case Some(utr) => resultWithoutUTR.addingToSession(ITSASessionKeys.UTR -> utr)
-      case _ => resultWithoutUTR.removingFromSession(ITSASessionKeys.UTR)
-    }
   }
 
   lazy val backUrl: String = routes.ClientDetailsController.show().url
