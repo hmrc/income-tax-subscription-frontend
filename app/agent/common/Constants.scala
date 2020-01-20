@@ -22,6 +22,4 @@ object Constants {
   val mtdItsaEnrolmentIdentifierKey = "MTDITID"
   val agentServiceIdentifierKey = "AgentReferenceNumber"
   val ninoIdentifierKey = "NINO"
-
-  val unauthorisedAgentMtdValue ="unauthorised"
 }

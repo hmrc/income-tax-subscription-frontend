@@ -71,13 +71,6 @@ GET         /feedback-submitted                     controllers.agent.ThankYouCo
 # No NINO Routes
 GET         /register-for-SA                        controllers.agent.matching.NoSAController.show
 
-# Agent not Authorised
-GET         /error/not-authorised                   controllers.agent.AgentNotAuthorisedController.show
-POST        /error/not-authorised                   controllers.agent.AgentNotAuthorisedController.submit
-
-# Agent not authorised Confirmation
-GET         /send-client-link                       controllers.agent.UnauthorisedAgentConfirmationController.show
-
 # Cannot use service because not eligible
 GET         /cannot-use-service-yet                 controllers.agent.eligibility.NotEligibleForIncomeTaxController.show()
 

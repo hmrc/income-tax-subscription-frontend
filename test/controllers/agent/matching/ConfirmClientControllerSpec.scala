@@ -16,8 +16,7 @@
 
 package controllers.agent.matching
 
-import agent.auth.{AgentUserMatched, AgentUserMatching}
-import controllers.agent.ITSASessionKeys
+import agent.auth.AgentUserMatched
 import agent.services._
 import agent.services.mocks.{MockAgentQualificationService, MockKeystoreService}
 import agent.utils.{TestConstants, TestModels}
@@ -50,9 +49,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   lazy val mockAgentQualificationService: AgentQualificationService = mock[AgentQualificationService]
 
   private def createTestConfirmClientController(enableMatchingFeature: Boolean = false) = new ConfirmClientController(
-    mockBaseControllerConfig(new MockConfig {
-      override val unauthorisedAgentEnabled = enableMatchingFeature
-    }),
+    mockBaseControllerConfig(new MockConfig {}),
     messagesApi,
     mockAgentQualificationService,
     mockAuthService,
@@ -61,7 +58,6 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
   )
 
   lazy val TestConfirmClientController = createTestConfirmClientController()
-  lazy val TestConfirmClientControllerWithUnauthorisedAgent = createTestConfirmClientController(true)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -165,34 +161,14 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
     }
 
     "AgentQualificationService returned UnQualifiedAgent" should {
-      s"redirect user to ${controllers.agent.routes.AgentNotAuthorisedController.show().url}" when {
-        "the unauthorised agent journey is enabled" in {
-          mockOrchestrateAgentQualificationSuccess(arn, nino, utr, false)
-          setupMockNotLockedOut(arn)
+      s"redirect user to ${controllers.agent.routes.NoClientRelationshipController.show().url}" in {
+        mockOrchestrateAgentQualificationSuccess(arn, nino, utr, false)
+        setupMockNotLockedOut(arn)
 
-          val result = TestConfirmClientControllerWithUnauthorisedAgent.submit()(request)
+        val result = callSubmit()
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.AgentNotAuthorisedController.show().url)
-
-          val session = await(result).session(request)
-
-          session.get(ITSASessionKeys.JourneyStateKey) mustBe Some(AgentUserMatching.name)
-          session.get(ITSASessionKeys.NINO) mustBe Some(nino)
-          session.get(ITSASessionKeys.UTR) mustBe Some(utr)
-          session.get(ITSASessionKeys.UnauthorisedAgentKey) mustBe Some("true")
-        }
-      }
-      s"redirect user to ${controllers.agent.routes.ClientAlreadySubscribedController.show().url}" when {
-        "the unauthorised agent journey is disabled" in {
-          mockOrchestrateAgentQualificationSuccess(arn, nino, utr, false)
-          setupMockNotLockedOut(arn)
-
-          val result = callSubmit()
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.NoClientRelationshipController.show().url)
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.agent.routes.NoClientRelationshipController.show().url)
       }
     }
 

@@ -117,18 +117,25 @@ object MessageLookup {
     object WhatYearToSignUp {
       val heading = "What tax year do you want to sign your client up for?"
       val line1 = "You can sign your client up for the current year or the next year."
+
       def example1(taxYearStart: String, taxYearEnd: String) = s"For example, if your client's accounting period runs from 6 April $taxYearStart to 5 April $taxYearEnd, you will sign your client up for the current year $taxYearStart to $taxYearEnd."
+
       def example2(taxYearStart: String, taxYearEnd: String) = s"If your client's accounting period runs from 6 April $taxYearStart to 5 April $taxYearEnd, you will sign your client up for next year $taxYearStart to $taxYearEnd."
+
       def option1(taxYearStart: String, taxYearEnd: String) = s"Current tax year ($taxYearStart to $taxYearEnd)"
+
       def option2(taxYearStart: String, taxYearEnd: String) = s"Next tax year ($taxYearStart to $taxYearEnd)"
     }
+
   }
 
   object AccountingPeriod {
     val title = "What accounting period are you signing your client up for?"
     val heading = "What accounting period are you signing your client up for?"
     val line1 = "For example, if your accounting period is 1 August 2019 to 31 July 2020, you will be signing up for the 2020 to 2021 tax year."
+
     def exampleStartDate(year: Int): String = s"For example, 1 4 ${year.toString}"
+
     def exampleEndDate(year: Int): String = s"For example, 31 3 ${year.toString}"
   }
 
@@ -271,30 +278,6 @@ object MessageLookup {
       val number4 = "Continue to record your client's income and expenses using software and send a quarterly report to HMRC."
       val number5 = "Send your client's final report by 31 January after the end of the tax year you're signing them up for."
       val para2 = "After you've sent a report, your client will get an Income Tax estimate. They can see what they owe for the tax year after you’ve sent their final report."
-    }
-
-  }
-
-  object UnauthorisedAgentConfirmation {
-    val title = "Send client link"
-    val heading = "Send your client this link"
-    val url = "www.tax.service.gov.uk/report-quarterly/income-and-expenses/sign-up/"
-
-    object whatHappensNext {
-      val heading = "What happens next"
-      val para1 = "You must send your client this link for them to authorise you as their agent. They must do this within 10 days. You still need to:"
-      val bullet1 = "Choose accounting software if you haven't already."
-      val bullet2 = "Sign in to the software with your Government Gateway details and authorise it to interact with HMRC."
-      val para2 = "If your client doesn't authorise you within 10 days, you'll need to invite them again."
-    }
-
-    object whenAuthorised {
-      val heading = "When you're authorised"
-      val linkText = "business tax account"
-      val para1 = "Either you or your client need to complete the steps below."
-      val number1 = "Add any income and expenses that your client has already received or paid out"
-      val number2 = "Record their future income and expenses using the software, then send HMRC a report at least every quarter"
-      val number3 = "Add any other income sources in your client's final report, they need to send this report by 31 January"
     }
 
   }

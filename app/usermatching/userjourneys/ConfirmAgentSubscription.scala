@@ -21,12 +21,12 @@ import core.auth.AuthPredicate._
 import core.auth.AuthPredicates._
 import core.auth.{IncomeTaxSAUser, JourneyState, UserJourney}
 import core.config.AppConfig
-import core.config.featureswitch.UnauthorisedAgentFeature
+import core.config.featureswitch.FeatureSwitch
 
 object ConfirmAgentSubscription extends UserJourney[IncomeTaxSAUser] with JourneyState {
   override val name: String = "confirmAgentSubscription"
 
-  override val featureSwitch = Some(UnauthorisedAgentFeature)
+  override val featureSwitch: Option[FeatureSwitch] = None
 
   override def authPredicates(implicit appConfig: AppConfig): AuthPredicate[IncomeTaxSAUser] =
     defaultPredicates |+| journeyStatePredicate |+| notEnrolledPredicate

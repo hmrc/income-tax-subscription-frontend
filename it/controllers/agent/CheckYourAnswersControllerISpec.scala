@@ -17,13 +17,13 @@
 package controllers.agent
 
 import _root_.agent.helpers.IntegrationTestConstants._
-import _root_.agent.helpers.IntegrationTestModels.{fullKeystoreData, testStoredSubscription}
+import _root_.agent.helpers.IntegrationTestModels.fullKeystoreData
 import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import _root_.agent.services.CacheConstants._
 import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
 import helpers.IntegrationTestModels.testEnrolmentKey
-import helpers.servicemocks.{SubscriptionStoreStub, SubscriptionStub, TaxEnrolmentsStub}
+import helpers.servicemocks.{SubscriptionStub, TaxEnrolmentsStub}
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -33,7 +33,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
     super.beforeEach()
     disable(EligibilityPagesFeature)
   }
-
 
 
   "GET /check-your-answers" when {
@@ -137,25 +136,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         }
       }
 
-      "agent is unauthorised" should {
-        "call subscription on the back end service and redirect to confirmation page" in {
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
-          SubscriptionStoreStub.stubSuccessfulStore(testStoredSubscription)
-
-          When("I call POST /check-your-answers")
-          val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(isAgentUnauthorised = true)
-
-          Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(unauthorisedAgentConfirmationURI)
-          )
-        }
-      }
-
-
       "keystore does not return the terms field" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
@@ -168,23 +148,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(termsURI)
-        )
-      }
-
-      "keystore does not return the terms field and the eligibility pages feature switch is on" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(fullKeystoreData - Terms)
-        SubscriptionStoreStub.stubSuccessfulStore(testStoredSubscription)
-        enable(EligibilityPagesFeature)
-
-        When("POST /check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers(isAgentUnauthorised = true)
-
-        Then("The result should have a status of SEE_OTHER and redirect to the confirmation page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(unauthorisedAgentConfirmationURI)
         )
       }
     }

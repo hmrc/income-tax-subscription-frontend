@@ -55,20 +55,6 @@ class ConfirmationControllerSpec extends AgentControllerBaseSpec
       }
     }
 
-    "submitted is not in session but user is also marked as unauthorised" should {
-      "return SEE OTHER" in {
-        setupMockKeystore(fetchAll = testCacheMap)
-
-        val result = TestConfirmationController.show(
-          subscriptionRequest
-            .addingToSession(ITSASessionKeys.MTDITID -> "any",
-              ITSASessionKeys.UnauthorisedAgentKey -> true.toString)
-        )
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(controllers.agent.routes.HomeController.index().url)
-      }
-    }
-
     "submitted is in session" should {
       "return OK" in {
         setupMockKeystore(fetchAll = testCacheMap)

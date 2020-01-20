@@ -17,6 +17,7 @@
 package controllers.agent
 
 object ITSASessionKeys {
+
   val ArnKey = "ARN"
   val MTDITID = "MTDIT-ID"
   val RequestURI = "Request-URI"
@@ -24,7 +25,7 @@ object ITSASessionKeys {
   val JourneyStateKey = "Journey-State"
   val NINO = "NINO"
   val UTR = "UTR"
-  val UnauthorisedAgentKey = "Authorised-Agent"
 
   val clientData = Seq(MTDITID, NINO, UTR)
+
 }

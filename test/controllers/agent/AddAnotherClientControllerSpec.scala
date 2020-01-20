@@ -47,7 +47,7 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
 
   "AddAnotherClientController.addAnother" when {
 
-    lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue", ITSASessionKeys.UnauthorisedAgentKey -> "anyValue")
+    lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue")
 
     def call = TestAddAnotherClientController.addAnother()(request)
 
@@ -65,7 +65,6 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
 
         result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
         result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
-        result.session(request).get(ITSASessionKeys.UnauthorisedAgentKey) mustBe None
         result.session(request).get(ITSASessionKeys.UTR) mustBe None
         result.session(request).get(ITSASessionKeys.NINO) mustBe None
 
@@ -86,7 +85,6 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
 
         result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
         result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
-        result.session(request).get(ITSASessionKeys.UnauthorisedAgentKey) mustBe None
         result.session(request).get(ITSASessionKeys.UTR) mustBe None
         result.session(request).get(ITSASessionKeys.NINO) mustBe None
 

@@ -16,8 +16,8 @@
 
 package core.config
 
-import javax.inject.{Inject, Singleton}
 import core.config.featureswitch.FeatureSwitching
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment}
@@ -70,8 +70,6 @@ trait AppConfig extends FeatureSwitching {
 
   def enableRegistration: Boolean
 
-  def unauthorisedAgentEnabled: Boolean
-
   def eligibilityPagesEnabled: Boolean
 
   def propertyCashOrAccrualsEnabled: Boolean
@@ -81,8 +79,6 @@ trait AppConfig extends FeatureSwitching {
   def upsertEnrolmentUrl(enrolmentKey: String): String
 
   def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String
-
-  def storeSubscriptionUrl(nino: String): String
 
   val addressLookupFrontendURL: String
   val signUpToSaLink: String
@@ -229,8 +225,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override def enableRegistration: Boolean = isEnabled(featureswitch.RegistrationFeature)
 
-  override def unauthorisedAgentEnabled: Boolean = isEnabled(featureswitch.UnauthorisedAgentFeature)
-
   override def eligibilityPagesEnabled: Boolean = isEnabled(featureswitch.EligibilityPagesFeature)
 
   override def propertyCashOrAccrualsEnabled: Boolean = isEnabled(featureswitch.PropertyCashOrAccruals)
@@ -261,11 +255,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String =
     s"$taxEnrolments/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey"
-
-  lazy val subscriptionStore = baseUrl("income-tax-subscription-store")
-
-  override def storeSubscriptionUrl(nino: String): String =
-    s"$subscriptionStore/income-tax-subscription-store/client-subscription-data/$nino"
 
   override def languageTranslationEnabled: Boolean = isEnabled(featureswitch.WelshLanguageFeature)
 

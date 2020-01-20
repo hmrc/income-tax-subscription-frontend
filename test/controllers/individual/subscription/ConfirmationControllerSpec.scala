@@ -62,7 +62,7 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
 
   "ConfirmationController" when {
     val startTime: LocalDateTime = LocalDateTime.now()
-    "the user is not in the unauthorised agent journey state" should {
+    "the user is in confirmation journey state" should {
       "get the ID from keystore if the user is enrolled" in {
         mockAuthEnrolled()
         setupMockKeystore(fetchAll = TestModels.testCacheMap)
@@ -91,26 +91,6 @@ class ConfirmationControllerSpec extends ControllerBaseSpec
         val result = TestConfirmationController.show(subscriptionRequest)
 
         intercept[NotFoundException](await(result)).message shouldBe "AuthPredicates.enrolledPredicate"
-      }
-    }
-
-    "the user is in the unauthorised agent journey state" should {
-      "return OK with the confirm subscription request view" in {
-        mockAuthEnrolled()
-        setupMockKeystore(
-          fetchAll = TestModels.testCacheMapCustom(
-            rentUkProperty = None,
-            areYouSelfEmployed = None
-          )
-        )
-        val result: Future[Result] = TestConfirmationController.show(
-          confirmAgentSubscriptionRequest
-            .addStartTime(startTime)
-        )
-
-        status(result) shouldBe OK
-
-        Jsoup.parse(contentAsString(result)).title shouldBe Messages("confirmation.unauthorised.title")
       }
     }
 

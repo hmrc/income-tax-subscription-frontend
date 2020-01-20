@@ -23,11 +23,9 @@ import core.auth.Registration
 import core.config.MockConfig
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants
-import core.utils.TestConstants._
 import incometax.eligibility.httpparsers.{Eligible, Ineligible}
 import incometax.eligibility.services.mocks.MockGetEligibilityStatusService
 import incometax.subscription.services.mocks.MockSubscriptionService
-import incometax.unauthorisedagent.services.mocks.MockSubscriptionStoreRetrievalService
 import org.mockito.Mockito.reset
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
@@ -42,7 +40,6 @@ class HomeControllerSpec extends ControllerBaseSpec
   with MockSubscriptionService
   with MockKeystoreService
   with MockCitizenDetailsService
-  with MockSubscriptionStoreRetrievalService
   with MockGetEligibilityStatusService {
 
   override val controllerName: String = "HomeControllerSpec"
@@ -67,7 +64,6 @@ class HomeControllerSpec extends ControllerBaseSpec
     MockKeystoreService,
     mockAuthService,
     mockCitizenDetailsService,
-    mockSubscriptionStoreRetrievalService,
     mockGetEligibilityStatusService,
     app.injector.instanceOf[Logging]
   )
@@ -113,7 +109,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                 mockNinoAndUtrRetrieval()
                 mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
                 setupMockGetSubscriptionNotFound(testNino)
-                mockRetrieveSubscriptionData(testNino)(successfulSubscriptionNotFound)
                 mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
 
                 val result = await(TestHomeController().index(fakeRequest))
@@ -127,7 +122,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                 mockNinoRetrieval()
                 mockResolveIdentifiers(Some(testNino), None)(Some(testNino), Some(testUtr))
                 setupMockGetSubscriptionNotFound(testNino)
-                mockRetrieveSubscriptionData(testNino)(successfulSubscriptionNotFound)
                 mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
 
                 val result = await(TestHomeController().index(fakeRequest))
@@ -145,7 +139,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                     mockResolveIdentifiers(Some(testNino), None)(Some(testNino), None)
                     setupMockGetSubscriptionNotFound(testNino)
                     mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
-                    mockRetrieveSubscriptionData(testNino)(successfulSubscriptionNotFound)
 
                     val result = TestHomeController(registrationFeature = true).index()(registrationRequest)
 
@@ -160,7 +153,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                     mockResolveIdentifiers(Some(testNino), None)(Some(testNino), None)
                     setupMockGetSubscriptionNotFound(testNino)
                     mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
-                    mockRetrieveSubscriptionData(testNino)(successfulSubscriptionNotFound)
 
                     val result = TestHomeController(registrationFeature = false).index()(registrationRequest)
 
@@ -171,21 +163,6 @@ class HomeControllerSpec extends ControllerBaseSpec
                   }
                 }
               }
-            }
-          }
-          "the user's unauthorised agent has already started the subscription journey" should {
-            "redirect to the confirm agent subscription page" in {
-              mockNinoAndUtrRetrieval()
-              mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
-              setupMockGetSubscriptionNotFound(testNino)
-              mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
-              mockRetrieveSubscriptionData(testNino)(successfulStoredSubscriptionFound)
-
-              val result = TestHomeController().index(fakeRequest)
-
-              status(result) must be(Status.SEE_OTHER)
-              redirectLocation(result).get mustBe controllers.unauthorisedagent.routes.AuthoriseAgentController.show().url
-              session(result).get(ITSASessionKeys.AgentReferenceNumber) must contain(testArn)
             }
           }
         }
@@ -231,28 +208,12 @@ class HomeControllerSpec extends ControllerBaseSpec
       }
       "the user does not already have an MTDIT subscription on ETMP" when {
         "the user is eligible" when {
-          "the user's unauthorised agent has already started the subscription journey" should {
-            "redirect to the confirm agent subscription page" in {
-              mockUtrRetrieval()
-              mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
-              setupMockGetSubscriptionNotFound(testNino)
-              mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
-              mockRetrieveSubscriptionData(testNino)(successfulStoredSubscriptionFound)
-
-              val result = TestHomeController().index(fakeRequest)
-
-              status(result) must be(Status.SEE_OTHER)
-              redirectLocation(result).get mustBe controllers.unauthorisedagent.routes.AuthoriseAgentController.show().url
-              session(result).get(ITSASessionKeys.AgentReferenceNumber) must contain(testArn)
-            }
-          }
           "the user does not have a current unauthorised subscription journey" when {
             "redirect to the sign up journey" in {
               mockUtrRetrieval()
               mockResolveIdentifiers(None, Some(testUtr))(Some(testNino), Some(testUtr))
               setupMockGetSubscriptionNotFound(testNino)
               mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
-              mockRetrieveSubscriptionData(testNino)(successfulSubscriptionNotFound)
 
               val result = await(TestHomeController().index(fakeRequest))
               status(result) must be(Status.SEE_OTHER)

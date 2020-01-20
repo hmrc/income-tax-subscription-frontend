@@ -13,11 +13,6 @@ GET         /report-quarterly/income-and-expenses/sign-up/test-only/stub-user   
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                              controllers.individual.testonly.MatchingStubController.submit
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts                        controllers.individual.testonly.KnownFactsController.show
 
-GET         /report-quarterly/income-and-expenses/sign-up/test-only/unauthorised-agent-submission          controllers.individual.testonly.UnauthorisedAgentSubmissionController.show
-
-# NOCSRF
-POST        /report-quarterly/income-and-expenses/sign-up/test-only/unauthorised-agent-submission          controllers.individual.testonly.UnauthorisedAgentSubmissionController.submit
-
 # NOCSRF
 POST        /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts                        controllers.individual.testonly.KnownFactsController.submit
 GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences                      controllers.individual.testonly.ClearPreferencesController.clear
@@ -42,11 +37,6 @@ GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/stub-
 POST        /report-quarterly/income-and-expenses/sign-up/client/test-only/stub-client                     controllers.agent.testonly.MatchingStubController.submit
 GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-user                      controllers.agent.testonly.ResetUserController.resetUser
 GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-lockout                   controllers.agent.testonly.ResetAgentLockoutController.resetLockout
-
-
-GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/client-subscription-data        controllers.agent.testonly.ClientSubscriptionDataController.show
-# NOCSRF
-POST        /report-quarterly/income-and-expenses/sign-up/client/test-only/client-subscription-data        controllers.agent.testonly.ClientSubscriptionDataController.submit
 
 # Add all the application routes to the prod.routes file
 ->          /                                                                                              prod.Routes

@@ -23,18 +23,14 @@ import core.auth.{JourneyState, Registration, SignUp, UserMatching}
 import core.config.AppConfig
 import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import core.models.YesNo
-import forms.individual.business.{AccountingMethodForm, AccountingMethodPropertyForm, AccountingPeriodDateForm, AccountingYearForm, BusinessNameForm, BusinessPhoneNumberForm, BusinessStartDateForm, MatchTaxYearForm}
+import forms.individual.business._
 import forms.individual.incomesource.{AreYouSelfEmployedForm, OtherIncomeForm, RentUkPropertyForm}
-import forms.unauthorisedagent.ConfirmAgentForm
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import forms.individual.business._
 import incometax.business.models._
-import forms.individual.incomesource.{AreYouSelfEmployedForm, OtherIncomeForm, RentUkPropertyForm}
 import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
-import incometax.unauthorisedagent.models.ConfirmAgentModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -47,7 +43,6 @@ import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.play.test.UnitSpec
 import usermatching.models.UserDetailsModel
-import usermatching.userjourneys.ConfirmAgentSubscription
 
 trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite
@@ -87,8 +82,6 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.address-lookup-frontend.port" -> mockPort,
     "microservice.services.tax-enrolments.host" -> mockHost,
     "microservice.services.tax-enrolments.port" -> mockPort,
-    "microservice.services.income-tax-subscription-store.host" -> mockHost,
-    "microservice.services.income-tax-subscription-store.port" -> mockPort,
     "microservice.services.income-tax-subscription-eligibility.host" -> mockHost,
     "microservice.services.income-tax-subscription-eligibility.port" -> mockPort
   )
@@ -375,51 +368,6 @@ trait ComponentSpecBase extends UnitSpec
 
     def showAffinityGroupError(): WSResponse = get("/error/affinity-group")
 
-
-    def confirmAgent(): WSResponse = get(
-      "/confirm-agent",
-      Map(
-        JourneyStateKey -> ConfirmAgentSubscription.name,
-        AgentReferenceNumber -> IntegrationTestConstants.testArn
-      )
-    )
-
-    def submitConfirmAgent(model: ConfirmAgentModel): WSResponse = post(
-      "/confirm-agent",
-      Map(
-        JourneyStateKey -> ConfirmAgentSubscription.name,
-        AgentReferenceNumber -> IntegrationTestConstants.testArn
-      ))(ConfirmAgentForm.confirmAgentForm.fill(model).data.map { case (k, v) => (k, Seq(v)) })
-
-    def authoriseAgent(): WSResponse = get(
-      "/authorise-agent",
-      Map(
-        JourneyStateKey -> ConfirmAgentSubscription.name,
-        AgentReferenceNumber -> IntegrationTestConstants.testArn
-      )
-    )
-
-    def submitAuthoriseAgent(model: ConfirmAgentModel): WSResponse = post(
-      "/authorise-agent",
-      Map(
-        JourneyStateKey -> ConfirmAgentSubscription.name,
-        AgentReferenceNumber -> IntegrationTestConstants.testArn
-      ))(ConfirmAgentForm.confirmAgentForm.fill(model).data.map { case (k, v) => (k, Seq(v)) })
-
-    def agentNotAuthorised(): WSResponse = get(
-      "/agent-not-authorised",
-      Map(
-        JourneyStateKey -> ConfirmAgentSubscription.name
-      )
-    )
-
-    def subscribeUnauthorised: WSResponse = get(
-      "/subscribe-unauthorised",
-      Map(
-        AgentReferenceNumber -> testArn,
-        JourneyStateKey -> ConfirmAgentSubscription.name,
-        ConfirmedAgent -> true.toString
-      ))
   }
 
   def toFormData[T](form: Form[T], data: T): Map[String, Seq[String]] =

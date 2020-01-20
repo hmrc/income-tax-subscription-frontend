@@ -28,13 +28,11 @@ import incometax.eligibility.httpparsers.{Eligible, Ineligible}
 import incometax.eligibility.services.GetEligibilityStatusService
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionService
-import incometax.unauthorisedagent.services.SubscriptionStoreRetrievalService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.{CitizenDetailsService, OptionalIdentifiers}
-import usermatching.userjourneys.ConfirmAgentSubscription
 
 import scala.concurrent.Future
 
@@ -45,7 +43,6 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                keystoreService: KeystoreService,
                                val authService: AuthService,
                                citizenDetailsService: CitizenDetailsService,
-                               subscriptionStoreService: SubscriptionStoreRetrievalService,
                                getEligibilityStatusService: GetEligibilityStatusService,
                                logging: Logging
                               ) extends StatelessController {
@@ -70,14 +67,9 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
               case None =>
                 getEligibilityStatusService.getEligibilityStatus(utr) flatMap {
                   case Right(Eligible) =>
-                    subscriptionStoreService.retrieveSubscriptionData(nino) flatMap {
-                      case Some(storedSubscription) =>
-                        goToAuthoriseAgent(timestamp, storedSubscription.arn)
-                      case None =>
-                        goToSignUp(timestamp)
-                          .addingToSession(UTR -> utr)
-                          .addingToSession(NINO -> nino)
-                    }
+                    goToSignUp(timestamp)
+                      .addingToSession(UTR -> utr)
+                      .addingToSession(NINO -> nino)
                   case Right(Ineligible) =>
                     Redirect(eligibilityRoutes.NotEligibleForIncomeTaxController.show())
                   case Left(_) => throw new InternalServerException(s"[HomeController] [index] Could not retrieve eligibility status")
@@ -90,18 +82,9 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
         }
     }
 
-  private def goToAuthoriseAgent(timestamp: String, arn: String)(implicit request: Request[AnyContent]): Future[Result] =
-    Redirect(controllers.unauthorisedagent.routes.AuthoriseAgentController.show())
-      .addingToSession(AgentReferenceNumber -> arn)
-      .addingToSession(StartTime -> timestamp)
-      .withJourneyState(ConfirmAgentSubscription)
-
   lazy val goToPreferences = Redirect(controllers.individual.routes.PreferencesController.checkPreferences())
 
   lazy val goToUserMatching = Redirect(controllers.usermatching.routes.UserDetailsController.show())
-
-  private def resolveUtr(user: IncomeTaxSAUser, nino: String)(implicit request: Request[AnyContent]): Future[Option[String]] =
-    user.utr.fold(citizenDetailsService.lookupUtr(nino))(Future.successful(_))
 
   private def getSubscription(nino: String)(implicit request: Request[AnyContent]): Future[Option[SubscriptionSuccess]] =
     subscriptionService.getSubscription(nino) map {

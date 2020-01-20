@@ -65,8 +65,6 @@ trait MockConfig extends AppConfig {
 
   override val enableRegistration: Boolean = false
 
-  override def unauthorisedAgentEnabled: Boolean = false
-
   override val eligibilityPagesEnabled: Boolean = false
 
   override val propertyCashOrAccrualsEnabled : Boolean = false
@@ -92,8 +90,6 @@ trait MockConfig extends AppConfig {
   override def upsertEnrolmentUrl(enrolmentKey: String): String = "tax-enrolments/"
 
   override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = "tax-enrolments/"
-
-  override def storeSubscriptionUrl(nino: String): String = ""
 
   override val languageTranslationEnabled: Boolean = false
 

@@ -16,13 +16,11 @@
 
 package agent.helpers
 
-import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.models._
 import _root_.agent.services.CacheConstants
 import core.models._
 import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.models._
-import incometax.unauthorisedagent.models.StoredSubscription
 import play.api.libs.json.{JsValue, Json}
 
 object IntegrationTestModels {
@@ -46,17 +44,6 @@ object IntegrationTestModels {
   val testPropertyAccountingMethod = AccountingMethodPropertyModel(Cash)
   val testTerms = true
 
-  //n.b. this must match the data in fullKeystoreData
-  val testStoredSubscription =
-    StoredSubscription(
-      arn = testARN,
-      incomeSource = Both,
-      otherIncome = Some(false),
-      accountingPeriodStart = Some(testAccountingPeriod.startDate),
-      accountingPeriodEnd = Some(testAccountingPeriod.endDate),
-      tradingName = Some(testBusinessName.businessName),
-      cashOrAccruals = Some(testAccountingMethod.accountingMethod)
-    )
 
   val fullKeystoreData: Map[String, JsValue] =
     keystoreData(
