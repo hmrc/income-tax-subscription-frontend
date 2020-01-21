@@ -22,9 +22,8 @@ import core.ITSASessionKeys._
 import core.auth.{JourneyState, Registration, SignUp, UserMatching}
 import core.config.AppConfig
 import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
-import core.models.YesNo
 import forms.individual.business._
-import forms.individual.incomesource.{AreYouSelfEmployedForm, OtherIncomeForm, RentUkPropertyForm}
+import forms.individual.incomesource.{AreYouSelfEmployedForm, RentUkPropertyForm}
 import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.SessionCookieBaker._
@@ -153,10 +152,6 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
-    def otherIncome(): WSResponse = get("/income-other")
-
-    def otherIncomeError(): WSResponse = get("/other-income-in-final-report")
-
     def cannotSignUp(): WSResponse = get("/error/cannot-sign-up")
 
     def cannotUseService(): WSResponse = get("/error/cannot-use-service")
@@ -169,8 +164,6 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitCannotReportYet(editMode: Boolean): WSResponse =
       post(s"/error/cannot-report-yet${if (editMode) "?editMode=true" else ""}")(Map.empty)
-
-    def terms(): WSResponse = get("/terms")
 
     def sessionTimeout(): WSResponse = get("/session-timeout")
 
@@ -190,14 +183,10 @@ trait ComponentSpecBase extends UnitSpec
 
     def submitMainIncomeError(): WSResponse = post("/error/main-income")(Map.empty)
 
-    def submitOtherIncomeError(): WSResponse = post("/other-income-in-final-report")(Map.empty)
-
     def submitPaperlessError(sessionKeys: Map[String, String] = Map.empty): WSResponse = post(
       uri = "/paperless-error",
       additionalCookies = sessionKeys
     )(Map.empty)
-
-    def submitTerms(): WSResponse = post("/terms")(Map.empty)
 
     def submitExitSurvey(): WSResponse = post("/exit-survey")(Map.empty)
 
@@ -269,16 +258,6 @@ trait ComponentSpecBase extends UnitSpec
     }
 
     def confirmation(): WSResponse = get("/confirmation")
-
-    def submitOtherIncome(inEditMode: Boolean, request: Option[YesNo]): WSResponse = {
-      val uri = s"/income-other?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            OtherIncomeForm.otherIncomeForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def submitAccountingPeriodDates(inEditMode: Boolean, request: Option[AccountingPeriodModel]): WSResponse = {
       val uri = s"/business/accounting-period-dates?editMode=$inEditMode"

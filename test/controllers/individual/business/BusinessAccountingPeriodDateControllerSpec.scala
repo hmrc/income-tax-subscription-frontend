@@ -98,9 +98,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             )
 
             setupMockKeystore(
-              fetchRentUkProperty = TestModels.testRentUkProperty_no_property,
-              fetchAll = testCacheMapCustom(
-                accountingPeriodDate = testAccountingPeriodDates)
+              fetchRentUkProperty = TestModels.testRentUkProperty_no_property
             )
 
             mockCheckEligibleAccountingPeriod(start, end, false)(true)
@@ -111,7 +109,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.BusinessAccountingMethodController.show().url)
 
             await(goodRequest)
-            verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
+            verifyKeystore(fetchRentUkProperty = 1, saveAccountingPeriodDate = 1)
           }
         }
 
@@ -126,9 +124,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             )
 
             setupMockKeystore(
-              fetchRentUkProperty = TestModels.testRentUkProperty_no_property,
-              fetchAll = testCacheMapCustom(
-                accountingPeriodDate = testAccountingPeriodDates)
+              fetchRentUkProperty = TestModels.testRentUkProperty_no_property
             )
 
             mockCheckEligibleAccountingPeriod(start, end, false)(false)
@@ -139,6 +135,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             redirectLocation(goodRequest) mustBe Some(controllers.individual.eligibility.routes.NotEligibleForIncomeTaxController.show().url)
 
             await(goodRequest)
+            verifyKeystore(fetchRentUkProperty = 1)
           }
         }
       }
@@ -167,7 +164,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
           await(goodRequest)
 
           redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
-          verifyKeystore(fetchAll = 1, saveAccountingPeriodDate = 1, saveTerms = 0)
+          verifyKeystore(saveAccountingPeriodDate = 1)
         }
       }
     }

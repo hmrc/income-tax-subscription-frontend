@@ -73,15 +73,13 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
           keystoreService.saveAccountingMethod(accountingMethod) flatMap { _ =>
             if (isEditMode) {
               Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
-            } else if (appConfig.eligibilityPagesEnabled) {
+            } else {
               keystoreService.fetchRentUkProperty() map {
                 case Some(RentUkPropertyModel(Yes, _)) if appConfig.propertyCashOrAccrualsEnabled =>
                   Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case _ =>
                   Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
               }
-            } else {
-              Future.successful(Redirect(controllers.individual.subscription.routes.TermsController.show()))
             }
           }
         }
@@ -95,7 +93,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
       keystoreService.fetchAll() map { cacheMap =>
         (cacheMap.getIncomeSourceType(), cacheMap.getMatchTaxYear()) match {
           case (_, Some(MatchTaxYearModel(No))) =>
-          controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
+            controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
           case (Some(Business), _) if appConfig.whatTaxYearToSignUpEnabled =>
             controllers.individual.business.routes.WhatYearToSignUpController.show().url
           case (_, Some(MatchTaxYearModel(Yes))) =>

@@ -47,24 +47,20 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
 
 
   def backUrl(incomeSource: IncomeSourceType): String = {
-    if (appConfig.eligibilityPagesEnabled) {
-      if(appConfig.propertyCashOrAccrualsEnabled) {
-        incomeSource match {
-          case Property | Both =>
-            controllers.individual.business.routes.PropertyAccountingMethodController.show().url
-          case Business =>
-            controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-        }
-      } else {
-        incomeSource match {
-          case Business | Both =>
-            controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-          case Property =>
-            controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
-        }
+    if (appConfig.propertyCashOrAccrualsEnabled) {
+      incomeSource match {
+        case Property | Both =>
+          controllers.individual.business.routes.PropertyAccountingMethodController.show().url
+        case Business =>
+          controllers.individual.business.routes.BusinessAccountingMethodController.show().url
       }
     } else {
-      controllers.individual.subscription.routes.TermsController.show().url
+      incomeSource match {
+        case Business | Both =>
+          controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+        case Property =>
+          controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
+      }
     }
   }
 
@@ -100,34 +96,16 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     Authenticated.async { implicit request =>
       implicit user =>
         keystoreService.fetchAll().flatMap { cache =>
-          if (appConfig.eligibilityPagesEnabled) {
-            val isProperty = cache.getIncomeSourceType().contains(Property)
-            if (isProperty)
-              processFunc(user)(request)(cache)
-            else
-              (cache.getMatchTaxYear(), cache.getEnteredAccountingPeriodDate()) match {
-                case (Some(MatchTaxYearModel(Yes)), _) | (Some(MatchTaxYearModel(No)), Some(_)) =>
-                  processFunc(user)(request)(cache)
-                case (Some(MatchTaxYearModel(No)), _) =>
-                  Future.successful(Redirect(controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
-              }
-          } else {
-            cache.getTerms match {
-              case Some(true) =>
-                val isProperty = cache.getIncomeSourceType().contains(Property)
-                if (isProperty)
-                  processFunc(user)(request)(cache)
-                else
-                  (cache.getMatchTaxYear(), cache.getEnteredAccountingPeriodDate()) match {
-                    case (Some(MatchTaxYearModel(Yes)), _) | (Some(MatchTaxYearModel(No)), Some(_)) =>
-                      processFunc(user)(request)(cache)
-                    case (Some(MatchTaxYearModel(No)), _) =>
-                      Future.successful(Redirect(controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
-                  }
-              case Some(false) => Future.successful(Redirect(controllers.individual.subscription.routes.TermsController.show(editMode = true)))
-              case _ => Future.successful(Redirect(controllers.individual.subscription.routes.TermsController.show()))
+          val isProperty = cache.getIncomeSourceType().contains(Property)
+          if (isProperty)
+            processFunc(user)(request)(cache)
+          else
+            (cache.getMatchTaxYear(), cache.getEnteredAccountingPeriodDate()) match {
+              case (Some(MatchTaxYearModel(Yes)), _) | (Some(MatchTaxYearModel(No)), Some(_)) =>
+                processFunc(user)(request)(cache)
+              case (Some(MatchTaxYearModel(No)), _) =>
+                Future.successful(Redirect(controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
             }
-          }
         }
     }
 

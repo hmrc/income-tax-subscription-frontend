@@ -125,18 +125,6 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def saveSelectedTaxYear(selectedTaxYear: AccountingYearModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FC =
     save[AccountingYearModel](SelectedTaxYear, selectedTaxYear)
 
-  def fetchTerms()(implicit hc: HeaderCarrier, reads: Reads[Boolean]): FO[Boolean] =
-    fetch[Boolean](Terms)
-
-  def saveTerms(terms: Boolean)(implicit hc: HeaderCarrier, reads: Reads[Boolean]): FC =
-    save[Boolean](Terms, terms)
-
-  def fetchOtherIncome()(implicit hc: HeaderCarrier, reads: Reads[YesNo]): FO[YesNo] =
-    fetch[YesNo](OtherIncome)
-
-  def saveOtherIncome(otherIncome: YesNo)(implicit hc: HeaderCarrier, reads: Reads[YesNo]): FC =
-    save[YesNo](OtherIncome, otherIncome)
-
   def fetchSubscriptionId()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = fetch[String](MtditId)
 
   def saveSubscriptionId(mtditId: String)(implicit hc: HeaderCarrier, reads: Reads[String]): FC = save[String](MtditId, mtditId)

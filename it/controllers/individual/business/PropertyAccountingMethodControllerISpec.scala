@@ -16,14 +16,13 @@
 
 package controllers.individual.business
 
-import core.models.{Accruals, Cash, No}
+import core.models.{Accruals, Cash}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{keystoreData, testAccountingMethodProperty}
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import incometax.business.models.AccountingMethodPropertyModel
-import incometax.subscription.models.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
 
@@ -72,43 +71,40 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
 
   "POST /report-quarterly/income-and-expenses/sign-up/business/accounting-method-property" when {
 
-    "not in edit mode" should {
+    "select the Cash radio button on the property accounting method page" in {
+      val userInput = AccountingMethodPropertyModel(Cash)
 
-      "select the Cash radio button on the property accounting method page" in {
-        val userInput = AccountingMethodPropertyModel(Cash)
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      KeystoreStub.stubFullKeystore()
+      KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
-        KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
+      When("POST /business/accounting-method-property is called")
+      val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
-        When("POST /business/accounting-method-property is called")
-        val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
+      Then("Should return a SEE_OTHER with a redirect location of check your answers")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(checkYourAnswersURI)
+      )
+    }
 
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
-      }
+    "select the Accruals radio button on the accounting method page" in {
+      val userInput = AccountingMethodPropertyModel(Accruals)
 
-      "select the Accruals radio button on the accounting method page" in {
-        val userInput = AccountingMethodPropertyModel(Accruals)
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      KeystoreStub.stubFullKeystore()
+      KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
-        KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
+      When("POST /business/accounting-method-property is called")
+      val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
-        When("POST /business/accounting-method-property is called")
-        val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
-      }
+      Then("Should return a SEE_OTHER with a redirect location of check your answers")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(checkYourAnswersURI)
+      )
     }
 
     "not select an option on the property accounting method page" in {
@@ -126,64 +122,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
         httpStatus(BAD_REQUEST),
         errorDisplayed()
       )
-    }
-
-    "in edit mode" should {
-
-      "changing to the Accruals radio button on the accounting method page" in {
-        val keystoreIncomeSource = Both
-        val keystoreIncomeOther = No
-        val keystorePropertyAccountingMethod = AccountingMethodPropertyModel(Cash)
-        val userInput = AccountingMethodPropertyModel(Accruals)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
-            otherIncome = Some(keystoreIncomeOther),
-            propertyAccountingMethod = Some(keystorePropertyAccountingMethod)
-          )
-        )
-        KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
-
-        When("POST /business/accounting-method-property is called")
-        val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of check your answers page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
-      }
-
-      "simulate not changing property accounting method when calling page from Check Your Answers" in {
-        val keystoreIncomeSource = Both
-        val keystoreIncomeOther = No
-        val keystorePropertyAccountingMethod = AccountingMethodPropertyModel(Cash)
-        val userInput = AccountingMethodPropertyModel(Accruals)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(
-          keystoreData(
-            incomeSource = Some(keystoreIncomeSource),
-            otherIncome = Some(keystoreIncomeOther),
-            propertyAccountingMethod = Some(keystorePropertyAccountingMethod)
-          )
-        )
-        KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
-
-        When("POST /business/accounting-method-property is called")
-        val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
-      }
-
     }
   }
 }

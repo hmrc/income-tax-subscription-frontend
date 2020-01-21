@@ -17,15 +17,12 @@
 package controllers.individual.business
 
 import controllers.ControllerBaseSpec
-import core.models.{No, Yes, YesNo}
 import core.services.mocks.MockKeystoreService
-import core.utils.TestModels
 import forms.individual.business.BusinessNameForm
 import incometax.business.models.BusinessNameModel
-import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
-import play.api.test.Helpers.{contentAsString, _}
+import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
@@ -45,17 +42,13 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     mockAuthService
   )
 
-  // answer to other income is only significant for testing the backurl.
-  val defaultOtherIncomeAnswer: YesNo = TestModels.testOtherIncomeNo
-
   "Calling the show action of the BusinessNameController with an authorised user" should {
 
     lazy val result = TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
 
     "return ok (200)" in {
       setupMockKeystore(
-        fetchBusinessName = None,
-        fetchOtherIncome = defaultOtherIncomeAnswer
+        fetchBusinessName = None
       )
 
       status(result) must be(Status.OK)
@@ -144,8 +137,6 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     lazy val badRequest = TestBusinessNameController.submit(isEditMode = false)(subscriptionRequest)
 
     "return a bad request status (400)" in {
-      setupMockKeystore(fetchOtherIncome = defaultOtherIncomeAnswer)
-
       status(badRequest) must be(Status.BAD_REQUEST)
 
       await(badRequest)
@@ -153,35 +144,16 @@ class BusinessNameControllerSpec extends ControllerBaseSpec
     }
   }
 
-
-  "The back url not in edit mode" should {
-
-    def result(choice: YesNo): Future[Result] = {
-      setupMockKeystore(
-        fetchBusinessName = None,
-        fetchOtherIncome = choice
-      )
-      TestBusinessNameController.show(isEditMode = false)(subscriptionRequest)
+  "The back url" when {
+    "in edit mode" should {
+      s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
+        TestBusinessNameController.backUrl(isEditMode = true) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+      }
     }
-
-    s"When the user previously answered yes to otherIncome, it should point to '${controllers.individual.incomesource.routes.OtherIncomeErrorController.show().url}'" in {
-      val document = Jsoup.parse(contentAsString(result(Yes)))
-      document.select("#back").attr("href") mustBe controllers.individual.incomesource.routes.OtherIncomeErrorController.show().url
-    }
-
-    s"When the user previously answered no to otherIncome, it should point to '${controllers.individual.incomesource.routes.OtherIncomeController.show().url}'" in {
-      val document = Jsoup.parse(contentAsString(result(No)))
-      document.select("#back").attr("href") mustBe controllers.individual.incomesource.routes.OtherIncomeController.show().url
-    }
-  }
-
-  "The back url in edit mode" should {
-    s"point to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url} on other income page" in {
-      def backUrl = TestBusinessNameController.backUrl(isEditMode = true)(subscriptionRequest)
-
-      val callBack = backUrl
-
-      await(callBack) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+    "not in edit mode" should {
+      s"redirect to ${controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url}" in {
+        TestBusinessNameController.backUrl(isEditMode = false) mustBe controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
+      }
     }
   }
 

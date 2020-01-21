@@ -159,7 +159,7 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
         await(goodRequest)
-        verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1, saveTerms = 0)
+        verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1)
       }
     }
 
@@ -173,7 +173,7 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit(Yes)
           status(goodRequest) mustBe Status.SEE_OTHER
           redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-          verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1, saveTerms = 0)
+          verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1)
         }
       }
 
@@ -184,7 +184,7 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit(Yes)
           status(goodRequest) mustBe Status.SEE_OTHER
           redirectLocation(goodRequest).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-          verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1, saveTerms = 1)
+          verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1)
         }
       }
 
@@ -196,7 +196,7 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url
         await(goodRequest)
-        verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1, saveTerms = 1)
+        verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1)
       }
 
       "if the answer is not changed then do not update terms" in {
@@ -206,7 +206,7 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
         status(goodRequest) mustBe Status.SEE_OTHER
         redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url
         await(goodRequest)
-        verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1, saveTerms = 0)
+        verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1)
       }
 
     }

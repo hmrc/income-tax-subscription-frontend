@@ -19,9 +19,7 @@ package controllers.agent.business
 import agent.models.AccountingMethodPropertyModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels._
-import controllers.ControllerBaseSpec
 import controllers.agent.AgentControllerBaseSpec
-import core.config.MockConfig
 import core.config.featureswitch._
 import core.models.Cash
 import forms.agent.AccountingMethodPropertyForm
@@ -36,11 +34,6 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockCurrentTimeService
   with FeatureSwitching {
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(EligibilityPagesFeature)
-  }
-
   override val controllerName: String = "PropertyAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
     "show" -> TestPropertyAccountingMethodController.show(isEditMode = false),
@@ -51,20 +44,10 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService,
-    MockConfig,
-    mockCurrentTimeService
+    mockAuthService
   )
 
   def propertyOnlyIncomeSourceType: CacheMap = testCacheMap(incomeSource = Some(testIncomeSourceProperty))
-
-  def propertyOtherIncomeYes: CacheMap = testCacheMap(
-    incomeSource = Some(testIncomeSourceProperty), otherIncome = Some(testOtherIncomeYes)
-  )
-
-  def propertyOtherIncomeNo: CacheMap = testCacheMap(
-    incomeSource = Some(testIncomeSourceProperty), otherIncome = Some(testOtherIncomeNo)
-  )
 
   def bothPropertyAndBusinessIncomeSource: CacheMap = testCacheMap(
     incomeSource = Some(testIncomeSourceBoth)
@@ -113,54 +96,26 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
     )
 
     "When it is not in edit mode" when {
-      "FeatureSwitch EligibilityPagesFeature is enabled" should {
-        "turn a redirect status (SEE_OTHER - 303)" in {
-          setupMockKeystoreSaveFunctions()
-          enable(EligibilityPagesFeature)
+      "turn a redirect status (SEE_OTHER - 303)" in {
+        setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callShow(isEditMode = false)
+        val goodRequest = callShow(isEditMode = false)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
+        status(goodRequest) must be(Status.SEE_OTHER)
 
-          await(goodRequest)
-          verifyKeystore(fetchAll = 0, savePropertyAccountingMethod = 1)
-        }
-
-        "redirect to CheckYourAnswer page" in {
-          setupMockKeystoreSaveFunctions()
-          enable(EligibilityPagesFeature)
-
-          val goodRequest = callShow(isEditMode = false)
-
-          redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
-
-          await(goodRequest)
-          verifyKeystore(fetchAll = 0, savePropertyAccountingMethod = 1)
-        }
+        await(goodRequest)
+        verifyKeystore(fetchAll = 0, savePropertyAccountingMethod = 1)
       }
 
-      "FeatureSwitch EligibilityPagesFeature is disabled" should {
-        "turn a redirect status (SEE_OTHER - 303)" in {
-          setupMockKeystoreSaveFunctions()
+      "redirect to CheckYourAnswer page" in {
+        setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callShow(isEditMode = false)
+        val goodRequest = callShow(isEditMode = false)
 
-          status(goodRequest) must be(Status.SEE_OTHER)
+        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
 
-          await(goodRequest)
-          verifyKeystore(fetchAll = 0, savePropertyAccountingMethod = 1)
-        }
-
-        "redirect to Terms page" in {
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callShow(isEditMode = false)
-
-          redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TermsController.show().url)
-
-          await(goodRequest)
-          verifyKeystore(fetchAll = 0, savePropertyAccountingMethod = 1)
-        }
+        await(goodRequest)
+        verifyKeystore(fetchAll = 0, savePropertyAccountingMethod = 1)
       }
     }
 
@@ -204,27 +159,10 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "The back url is not in edit mode" when {
 
-      "the user has rental property and the eligibility pages feature switch is enabled" should {
+      "the user has rental property" should {
         s"return ${controllers.agent.routes.IncomeSourceController.show().url}" in {
-          enable(EligibilityPagesFeature)
-          setupMockKeystore(fetchAll = propertyOtherIncomeYes)
+          setupMockKeystore(fetchAll = propertyOnlyIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe controllers.agent.routes.IncomeSourceController.show().url
-        }
-      }
-
-      "the user has rental property and has other income source" should {
-        "redirect to Other Income Error page" in {
-          setupMockKeystore(fetchAll = propertyOtherIncomeYes)
-          await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
-            controllers.agent.routes.OtherIncomeErrorController.show().url
-        }
-      }
-
-      "the user has rental property and has no other income source" should {
-        "redirect to Income Other Page" in {
-          setupMockKeystore(fetchAll = propertyOtherIncomeNo)
-          await(TestPropertyAccountingMethodController.backUrl(isEditMode = false)) mustBe
-            controllers.agent.routes.OtherIncomeController.show().url
         }
       }
 
@@ -239,7 +177,7 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
     "The back url is in edit mode" when {
       "the user click back url" should {
         "redirect to Check Your Answer page" in {
-          setupMockKeystore(fetchAll = propertyOtherIncomeNo)
+          setupMockKeystore(fetchAll = propertyOnlyIncomeSourceType)
           await(TestPropertyAccountingMethodController.backUrl(isEditMode = true)) mustBe
             controllers.agent.routes.CheckYourAnswersController.show().url
         }

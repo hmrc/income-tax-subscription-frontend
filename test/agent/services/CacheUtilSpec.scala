@@ -29,24 +29,20 @@ class CacheUtilSpec extends UnitTestTrait {
 
     "In the respective get calls, return None if they are not in the cachemap" in {
       emptyCacheMap.getIncomeSource() shouldBe None
-      emptyCacheMap.getOtherIncome() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
       emptyCacheMap.getAccountingPeriodDate() shouldBe None
       emptyCacheMap.getAccountingMethod() shouldBe None
       emptyCacheMap.getAccountingMethodProperty() shouldBe None
-      emptyCacheMap.getTerms() shouldBe None
       emptyCacheMap.getMatchTaxYear() shouldBe None
       emptyCacheMap.getSelectedTaxYear() shouldBe None
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
       testCacheMap.getIncomeSource() shouldBe Some(testIncomeSourceBoth)
-      testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
       testCacheMap.getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
       testCacheMap.getAccountingMethod() shouldBe Some(testAccountingMethod)
       testCacheMap.getAccountingMethodProperty() shouldBe Some(testAccountingMethodProperty)
-      testCacheMap.getTerms() shouldBe Some(testTerms)
       testCacheMap.getMatchTaxYear() shouldBe Some(testMatchTaxYearNo)
       testCacheMap.getSelectedTaxYear() shouldBe Some(testSelectedTaxYearNext)
     }
@@ -57,13 +53,11 @@ class CacheUtilSpec extends UnitTestTrait {
           incomeSource = Some(testIncomeSourceProperty)
         ).getSummary() shouldBe AgentSummary(
           incomeSource = Some(testIncomeSourceProperty),
-          otherIncome = Some(testOtherIncomeNo),
           matchTaxYear = None,
           accountingPeriodDate = None,
           businessName = None,
           accountingMethod = None,
-          accountingMethodProperty = Some(testAccountingMethodProperty),
-          terms = Some(testTerms)
+          accountingMethodProperty = Some(testAccountingMethodProperty)
         )
       }
 
@@ -72,14 +66,12 @@ class CacheUtilSpec extends UnitTestTrait {
           incomeSource = Some(testIncomeSourceBusiness)
         ).getSummary() shouldBe AgentSummary(
           incomeSource = Some(testIncomeSourceBusiness),
-          otherIncome = Some(testOtherIncomeNo),
           matchTaxYear = Some(testMatchTaxYearNo),
           selectedTaxYear = Some(testSelectedTaxYearNext),
           accountingPeriodDate = Some(testAccountingPeriod),
           businessName = Some(testBusinessName),
           accountingMethod = Some(testAccountingMethod),
-          accountingMethodProperty = None,
-          terms = Some(testTerms)
+          accountingMethodProperty = None
         )
       }
 
@@ -89,13 +81,11 @@ class CacheUtilSpec extends UnitTestTrait {
         ).getSummary() shouldBe
           AgentSummary(
             incomeSource = testIncomeSourceBoth,
-            otherIncome = testOtherIncomeNo,
             matchTaxYear = testMatchTaxYearNo,
             accountingPeriodDate = testAccountingPeriod,
             businessName = testBusinessName,
             accountingMethod = testAccountingMethod,
-            accountingMethodProperty = testAccountingMethodProperty,
-            terms = testTerms
+            accountingMethodProperty = testAccountingMethodProperty
           )
       }
 

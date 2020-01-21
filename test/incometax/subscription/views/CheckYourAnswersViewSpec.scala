@@ -46,7 +46,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testIncomeSource: IncomeSourceType = TestModels.testIncomeSourceBoth
   val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
   val testAreYouSelfEmployed: AreYouSelfEmployedModel = TestModels.testAreYouSelfEmployed_yes
-  val testOtherIncome: YesNo = No
   val testSummary = customTestSummary()
 
   def customTestSummary(rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty,
@@ -56,7 +55,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) = IndividualSummary(
     rentUkProperty = rentUkProperty,
     areYouSelfEmployed = testAreYouSelfEmployed,
-    otherIncome = testOtherIncome,
     matchTaxYear = matchTaxYear,
     accountingPeriodDate = accountingPeriod,
     businessName = testBusinessName,
@@ -69,7 +67,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   )
 
   lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit()
-  lazy val backUrl: String = controllers.individual.subscription.routes.TermsController.show().url
+  lazy val backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show().url
 
   def page(isRegistration: Boolean, testSummaryModel: IndividualSummary): Html =
     incometax.subscription.views.html.check_your_answers(
@@ -274,21 +272,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_property_only))
 
       doc.getElementById(sectionId) mustBe null
-    }
-
-
-    "display the correct info for other income" in {
-      val sectionId = OtherIncomeId
-      val expectedQuestion = messages.other_income
-      val expectedAnswer = MessageLookup.OtherIncome.no
-      val expectedEditLink = controllers.individual.incomesource.routes.OtherIncomeController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )
     }
 
     "display the correct info for the business name" in {

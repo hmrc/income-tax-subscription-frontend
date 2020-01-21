@@ -21,7 +21,7 @@ import core.models._
 import core.utils.Implicits
 import incometax.business.models._
 import incometax.subscription.models._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import usermatching.models.UserDetailsModel
@@ -36,8 +36,8 @@ object TestModels extends Implicits {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate = core.utils.TestModels.testStartDate
-  val testEndDate = core.utils.TestModels.testEndDate
+  val testStartDate: DateModel = core.utils.TestModels.testStartDate
+  val testEndDate: DateModel = core.utils.TestModels.testEndDate
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)
   val testAccountingPeriod: AccountingPeriodModel =
@@ -52,75 +52,60 @@ object TestModels extends Implicits {
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
   val testSelectedTaxYearCurrent = AccountingYearModel(Current)
   val testSelectedTaxYearNext = AccountingYearModel(Next)
-  val testTerms = true
 
   val emptyCacheMap = CacheMap("", Map())
 
   val testCacheMap: CacheMap =
     testCacheMap(
       incomeSource = testIncomeSourceBoth,
-      otherIncome = testOtherIncomeNo,
       matchTaxYear = testMatchTaxYearNo,
       selectedTaxYear = testSelectedTaxYearNext,
       accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
       accountingMethod = testAccountingMethod,
-      accountingMethodProperty = testAccountingMethodProperty,
-      terms = testTerms)
+      accountingMethodProperty = testAccountingMethodProperty)
 
   def testCacheMapCustom(
                           incomeSource: Option[IncomeSourceType] = testIncomeSourceBoth,
-                          otherIncome: Option[YesNo] = testOtherIncomeNo,
                           matchTaxYear: MatchTaxYearModel = testMatchTaxYearNo,
                           selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                           businessName: Option[BusinessNameModel] = testBusinessName,
                           accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
-                          accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty,
-                          terms: Option[Boolean] = testTerms): CacheMap =
+                          accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
-      otherIncome = otherIncome,
       matchTaxYear = matchTaxYear,
       selectedTaxYear = selectedTaxYear,
       accountingPeriodDate = accountingPeriodDate,
       businessName = businessName,
       accountingMethod = accountingMethod,
-      accountingMethodProperty = accountingMethodProperty,
-      terms = terms)
+      accountingMethodProperty = accountingMethodProperty)
 
   def testCacheMap(incomeSource: Option[IncomeSourceType] = None,
-                   otherIncome: Option[YesNo] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
-                   accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                   terms: Option[Boolean] = None): CacheMap = {
+                   accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceType.format.writes(model))) ++
-      otherIncome.fold(emptyMap)(model => Map(OtherIncome -> YesNo.format.writes(model))) ++
       matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
       selectedTaxYear.fold(emptyMap)(model => Map(WhatYearToSignUp -> AccountingYearModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
-      accountingMethodProperty.fold(emptyMap)(model => Map(AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model))) ++
-      terms.fold(emptyMap)(model => Map(Terms -> Json.toJson(model)))
+      accountingMethodProperty.fold(emptyMap)(model => Map(AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model)))
     CacheMap("", map)
   }
 
-  lazy val testIncomeSourceBusiness = Business
+  lazy val testIncomeSourceBusiness: IncomeSourceType = Business
 
-  lazy val testIncomeSourceProperty = Property
+  lazy val testIncomeSourceProperty: IncomeSourceType = Property
 
-  lazy val testIncomeSourceBoth = Both
-
-  lazy val testOtherIncomeNo = No
-
-  lazy val testOtherIncomeYes = Yes
+  lazy val testIncomeSourceBoth: IncomeSourceType = Both
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
   // TODO change when consolidating models

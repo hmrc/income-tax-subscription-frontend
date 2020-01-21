@@ -16,7 +16,6 @@
 
 package incometax.subscription.models
 
-import core.models.YesNo
 import incometax.business.models._
 import incometax.business.models.address.Address
 import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
@@ -24,8 +23,6 @@ import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyMod
 
 sealed trait SummaryModel {
   def incomeSource: Option[IncomeSourceType]
-
-  def otherIncome: Option[YesNo]
 
   def matchTaxYear: Option[MatchTaxYearModel]
 
@@ -45,13 +42,11 @@ sealed trait SummaryModel {
 
   def accountingMethodProperty: Option[AccountingMethodPropertyModel]
 
-  def terms: Option[Boolean]
 }
 
 
 case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
                              areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
-                             otherIncome: Option[YesNo] = None,
                              matchTaxYear: Option[MatchTaxYearModel] = None,
                              accountingPeriodDate: Option[AccountingPeriodModel] = None,
                              businessName: Option[BusinessNameModel] = None,
@@ -60,8 +55,7 @@ case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
                              businessStartDate: Option[BusinessStartDateModel] = None,
                              selectedTaxYear: Option[AccountingYearModel] = None,
                              accountingMethod: Option[AccountingMethodModel] = None,
-                             accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                             terms: Option[Boolean] = None) extends SummaryModel {
+                             accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) extends SummaryModel {
 
   def incomeSource: Option[IncomeSourceType] =
     rentUkProperty.flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, areYouSelfEmployed))
@@ -70,7 +64,6 @@ case class IndividualSummary(rentUkProperty: Option[RentUkPropertyModel] = None,
 
 
 case class AgentSummary(incomeSource: Option[IncomeSourceType] = None,
-                        otherIncome: Option[YesNo] = None,
                         matchTaxYear: Option[MatchTaxYearModel] = None,
                         accountingPeriodDate: Option[AccountingPeriodModel] = None,
                         businessName: Option[BusinessNameModel] = None,
@@ -79,5 +72,4 @@ case class AgentSummary(incomeSource: Option[IncomeSourceType] = None,
                         businessStartDate: Option[BusinessStartDateModel] = None,
                         selectedTaxYear: Option[AccountingYearModel] = None,
                         accountingMethod: Option[AccountingMethodModel] = None,
-                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                        terms: Option[Boolean] = None) extends SummaryModel
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) extends SummaryModel

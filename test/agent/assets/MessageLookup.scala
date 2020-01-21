@@ -82,7 +82,6 @@ object MessageLookup {
     val business = "Sole trader business"
     val property = "Renting out a UK property"
     val both = "Their sole trader business and renting out a UK property"
-    val other = "Other income sources"
   }
 
   object Property {
@@ -165,22 +164,6 @@ object MessageLookup {
     val accruals = "Accruals basis"
   }
 
-  object Terms {
-    val title = "Terms of participation"
-    val heading: String = title
-    val line_1 = "By taking part in this trial, you agree that either you or your client will:"
-    val point_1 = "use relevant software to record your client's income and expenses"
-    val point_2 = "submit a report at least once every 3 months from the start of your client's accounting period"
-
-    def point_3(taxStartYear: Int, taxEndYear: Int, taxDueYear: Int) = s"send their final report for the $taxStartYear to $taxEndYear tax year by 31 January $taxDueYear"
-
-    val point_4 = "declare any other income sources and reliefs"
-    val point_5 = "tell HMRC if your client stops trading or starts a new business"
-    val point_6 = "tell HMRC if you want to leave this trial"
-    val line_2 = "These terms are not contractual and your client can stop taking part in this trial at any time."
-    val button = "Accept and continue"
-  }
-
   object Summary {
     val title = "Check your answers"
     val heading: String = title
@@ -200,7 +183,6 @@ object MessageLookup {
     val selected_tax_year = "Year signed-up for"
     val income_type = "Accounting method for their self-employed business"
     val income_type_property = "Accounting method for their property business"
-    val other_income = "Does your client have any other sources of income?"
     val match_tax_year = "Accounting period matches tax year"
 
     object AccountingMethod {
@@ -214,8 +196,6 @@ object MessageLookup {
     }
 
     val contact_email = "Do you want to receive electronic communications from HMRC?"
-    val terms = "Terms of participation"
-    val terms_agreed = "I agree"
     val confirm_and_sign_up = "Confirm and sign up"
   }
 
@@ -336,18 +316,9 @@ object MessageLookup {
       val invalid = "You must select an option to continue"
     }
 
-    object OtherIncome {
-      val empty = "Select yes if your client has other income sources"
-      val invalid = "Select yes if your client has other income sources"
-    }
-
     object IncomeSource {
       val empty = "Select an income type"
       val invalid = "Select an income type"
-    }
-
-    object Terms {
-      val empty = "You must accept the terms of participation to continue"
     }
 
     object ClientDetails {
@@ -398,30 +369,6 @@ object MessageLookup {
     val bullet1 = "a sole trader with income from one business"
     val bullet2 = "someone who rents out a UK property"
     val bullet3 = "a sole trader with income from one business and they rent out a UK property"
-  }
-
-  object OtherIncomeError {
-    val title = "You can use software to report your client's Income Tax"
-    val heading: String = title
-    val para1 = "You only need to send quarterly reports on your client's income from either:"
-    val para2 = "You can tell us about your client's other income sources in their final summary report. Your client needs to submit this report by 31 January."
-    val bullet1 = "their sole trader business"
-    val bullet2 = "renting out a UK property"
-    val bullet3 = "their sole trader business and renting out a UK property"
-  }
-
-  object OtherIncome {
-    val title = "Does your client have any other sources of income?"
-    val heading = "Does your client have any other sources of income?"
-    val para1 = "This could include:"
-    val bullet1Default = "employment that isn't their sole trader business"
-    val bullet1Property = "employment"
-    val bullet2 = "UK pensions or annuities"
-    val bullet3 = "taxable state benefits"
-    val bullet4 = "employment or investments from outside the UK"
-    val bullet5 = "capital gains"
-    val yes = "Yes"
-    val no = "No"
   }
 
   object ClientCannotReportYet {

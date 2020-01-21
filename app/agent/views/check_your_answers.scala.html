@@ -61,14 +61,6 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@otherIncome(source: YesNo) = @{
-    val rowName = OtherIncomeId
-    val rowQuestion = Messages("agent.summary.other_income")
-    val rowAnswer = source.toMessageString
-    val rowUrl = controllers.agent.routes.OtherIncomeController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
-}
-
 @accountingPeriodDate(period: AccountingPeriodModel) = @{
     val rowName = AccountingPeriodDateId
     val rowQuestion = Messages("agent.summary.accounting_period")
@@ -128,7 +120,6 @@
 
     <div class="form-group">
         @summaryModel.incomeSource.map(incomeSource)
-        @summaryModel.otherIncome.map(otherIncome)
         @summaryModel.matchTaxYear.map(matchTaxYear)
         @if(summaryModel.matchTaxYear.exists(_.matchTaxYear == Yes)) {
             @summaryModel.selectedTaxYear.map(selectedTaxYear)

@@ -64,7 +64,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           keystoreData(
             rentUkProperty = Some(testRentUkProperty_property_and_other),
             areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
-            otherIncome = Some(keystoreIncomeOther),
             matchTaxYear = Some(keystoreMatchTaxYear)
           )
         )
@@ -173,7 +172,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
           keystoreData(
             rentUkProperty = Some(testRentUkProperty_property_and_other),
             areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
-            otherIncome = Some(keystoreIncomeOther),
             matchTaxYear = Some(keystoreMatchTaxYear),
             accountingPeriodDate = Some(testAccountingPeriodDates)
           )
@@ -251,7 +249,6 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
             keystoreData(
               rentUkProperty = Some(testRentUkProperty_no_property),
               areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
-              otherIncome = Some(keystoreIncomeOther),
               matchTaxYear = Some(keystoreMatchTaxYear),
               accountingPeriodDate = Some(testAccountingPeriodDates)
             )

@@ -18,7 +18,7 @@ package controllers.individual.incomesource
 
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
-import core.config.featureswitch.FeatureSwitching
+import core.config.featureswitch.{FeatureSwitching, PropertyCashOrAccruals}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.incomesource.AreYouSelfEmployedForm
@@ -31,16 +31,20 @@ import play.api.test.Helpers.{await, status, _}
 import scala.concurrent.Future
 
 class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
-
   with MockKeystoreService
   with FeatureSwitching
   with MockConfig
   with MockCurrentTimeService {
 
+  override def beforeEach(): Unit = {
+    disable(PropertyCashOrAccruals)
+    super.beforeEach()
+  }
+
   override val controllerName: String = "AreYouSelfEmployedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
-  object TestAreYouSelfEmployedController$$ extends AreYouSelfEmployedController(
+  object TestAreYouSelfEmployedController extends AreYouSelfEmployedController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
@@ -51,7 +55,7 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
 
   "Calling the show action of the AreYouSelfEmployed controller with an authorised user" when {
 
-    def call = TestAreYouSelfEmployedController$$.show(isEditMode = true)(subscriptionRequest)
+    def call: Future[Result] = TestAreYouSelfEmployedController.show(isEditMode = true)(subscriptionRequest)
 
     "There are no rentUkProperty data" should {
       "return ok (200)" in {
@@ -100,201 +104,103 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submit action of the AreYouSelfEmployed controller with an authorised user" when {
-    def call(areYouSelfEmployed: AreYouSelfEmployedModel, isEditMode: Boolean) =
-      TestAreYouSelfEmployedController$$.submit(isEditMode = isEditMode)(subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm, areYouSelfEmployed))
+
+    def submit(areYouSelfEmployed: AreYouSelfEmployedModel, isEditMode: Boolean): Future[Result] =
+      TestAreYouSelfEmployedController.submit(isEditMode = isEditMode)(subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm, areYouSelfEmployed))
 
     "invalid submission" should {
       "return bad request (400)" in {
-        status(TestAreYouSelfEmployedController$$.submit(isEditMode = true)(subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm))) mustBe BAD_REQUEST
+        status(TestAreYouSelfEmployedController.submit(isEditMode = true)(subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm))) mustBe BAD_REQUEST
       }
     }
 
-    "not in editMode" when {
-      def submit(areYouSelfEmployed: AreYouSelfEmployedModel = testAreYouSelfEmployed_yes) = call(areYouSelfEmployed, isEditMode = false)
+    "not in edit mode" when {
+      "the user rents out a uk property and is self employed" should {
+        s"redirect to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
+          setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other)))
 
+          val result = submit(testAreYouSelfEmployed_yes, isEditMode = false)
 
-      "a property only submission" when {
-        "redirect to correctly" in {
-          setupMockKeystore(fetchAll =
-            testCacheMapCustom(
-              rentUkProperty = testRentUkProperty_property_and_other
-            )
-          )
-          val result = submit(testAreYouSelfEmployed_no)
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.individual.incomesource.routes.OtherIncomeController.show().url
+          redirectLocation(result) mustBe Some(controllers.individual.business.routes.BusinessNameController.show().url)
         }
       }
 
-      "a business only submission" should {
-        "redirect to correctly" in {
-          setupMockKeystore(fetchAll =
-            testCacheMapCustom(
-              rentUkProperty = testRentUkProperty_no_property
-            )
-          )
-          val result = submit(testAreYouSelfEmployed_yes)
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.individual.incomesource.routes.OtherIncomeController.show().url
-        }
-      }
+      "the user rents out a uk property and is not self employed" when {
+        "the property cash accruals feature switch is enabled" should {
+          s"redirect to ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url}" in {
+            enable(PropertyCashOrAccruals)
+            setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other)))
 
-      "a business and property submission" should {
-        "redirect to correctly" in {
-          setupMockKeystore(fetchAll =
-            testCacheMapCustom(
-              rentUkProperty = testRentUkProperty_property_and_other
-            )
-          )
-          val result = submit(testAreYouSelfEmployed_yes)
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.individual.incomesource.routes.OtherIncomeController.show().url
-        }
-      }
+            val result = submit(testAreYouSelfEmployed_no, isEditMode = false)
 
-      "user not qualified submission" should {
-        "redirect to correctly" in {
-          setupMockKeystore(fetchAll =
-            testCacheMapCustom(
-              rentUkProperty = testRentUkProperty_no_property
-            )
-          )
-          val result = submit(testAreYouSelfEmployed_no)
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.individual.incomesource.routes.CannotSignUpController.show().url
-        }
-      }
-    }
-
-
-    "in editMode" when {
-      def submit(areYouSelfEmployed: AreYouSelfEmployedModel = testAreYouSelfEmployed_yes) = call(areYouSelfEmployed, isEditMode = true)
-
-      "the user kept their answer the same" should {
-        "return to check your answers" in {
-          setupMockKeystore(fetchAll =
-            testCacheMapCustom(
-              rentUkProperty = testRentUkProperty_property_and_other,
-              areYouSelfEmployed = testAreYouSelfEmployed_no
-            )
-          )
-          val result = submit(testAreYouSelfEmployed_no)
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-        }
-      }
-
-      "the user changed their answer and" when {
-        "a change to property only submission and" when {
-          "redirect to correctly" in {
-            setupMockKeystore(fetchAll =
-              testCacheMapCustom(
-                rentUkProperty = testRentUkProperty_property_and_other,
-                areYouSelfEmployed = testAreYouSelfEmployed_yes
-              )
-            )
-            val result = submit(testAreYouSelfEmployed_no)
             status(result) mustBe SEE_OTHER
-            redirectLocation(result).get mustBe controllers.individual.incomesource.routes.OtherIncomeController.show().url
+            redirectLocation(result) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
           }
         }
+        "the property cash accruals feature switch is disabled" should {
+          s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
+            setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other)))
 
-        "a change to business only submission" should {
-          "redirect to correctly" in {
-            setupMockKeystore(fetchAll =
-              testCacheMapCustom(
-                rentUkProperty = testRentUkProperty_property_and_other,
-                areYouSelfEmployed = testAreYouSelfEmployed_no
-              )
-            )
-            val result = submit(testAreYouSelfEmployed_yes)
+            val result = submit(testAreYouSelfEmployed_no, isEditMode = false)
+
             status(result) mustBe SEE_OTHER
-            redirectLocation(result).get mustBe controllers.individual.incomesource.routes.OtherIncomeController.show().url
+            redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
           }
         }
+      }
 
-        "a change to business and property submission" should {
-          "redirect to correctly" in {
-            setupMockKeystore(fetchAll =
-              testCacheMapCustom(
-                rentUkProperty = testRentUkProperty_property_and_other,
-                areYouSelfEmployed = testAreYouSelfEmployed_no
-              )
-            )
-            val result = submit(testAreYouSelfEmployed_yes)
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result).get mustBe controllers.individual.incomesource.routes.OtherIncomeController.show().url
-          }
+      "the user does not rent out a uk property and is self employed" should {
+        s"redirect to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
+          setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_no_property)))
+
+          val result = submit(testAreYouSelfEmployed_yes, isEditMode = false)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.business.routes.BusinessNameController.show().url)
         }
+      }
 
+      "the user does not rent out a uk property and is not self employed" should {
+        s"redirect to ${controllers.individual.incomesource.routes.CannotSignUpController.show().url}" in {
+          setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_no_property)))
+
+          val result = submit(testAreYouSelfEmployed_no, isEditMode = false)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(controllers.individual.incomesource.routes.CannotSignUpController.show().url)
+        }
       }
     }
 
-    "the eligibility pages feature switch is enabled" should {
+    "in edit mode" when {
+      "the user keeps their answer the same" should {
+        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
+          setupMockKeystore(fetchAll = testCacheMap(
+            rentUkProperty = Some(testRentUkProperty_no_property),
+            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes)
+          ))
 
-      object TestAreYouSelfEmployedController extends AreYouSelfEmployedController(
-        MockBaseControllerConfig,
-        messagesApi,
-        MockKeystoreService,
-        mockAuthService,
-        new MockConfig {
-          override val eligibilityPagesEnabled: Boolean = true
-        },
-        mockCurrentTimeService
-      )
+          val result = submit(testAreYouSelfEmployed_yes, isEditMode = true)
 
-      def call(areYouSelfEmployed: AreYouSelfEmployedModel, isEditMode: Boolean): Future[Result] =
-        TestAreYouSelfEmployedController.submit(isEditMode = isEditMode)(subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm, areYouSelfEmployed))
-
-      def submit(areYouSelfEmployed: AreYouSelfEmployedModel, isEditMode: Boolean = false): Future[Result] = call(areYouSelfEmployed, isEditMode = isEditMode)
-
-
-      "redirect to the check your answers page" when {
-        "the user has chosen property only" in {
-          setupMockKeystore(fetchAll =
-            testCacheMapCustom(
-              rentUkProperty = testRentUkProperty_property_and_other
-            )
-          )
-          val result = submit(testAreYouSelfEmployed_no)
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+          redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
         }
+      }
+      "the user changes their answer" should {
+        "redirect to the relevant location" in {
+          setupMockKeystore(fetchAll = testCacheMap(
+            rentUkProperty = Some(testRentUkProperty_no_property),
+            areYouSelfEmployed = Some(testAreYouSelfEmployed_yes)
+          ))
 
-        "the user has chosen business only" in {
-          setupMockKeystore(fetchAll =
-            testCacheMapCustom(
-              rentUkProperty = testRentUkProperty_no_property
-            )
-          )
-          val result = submit(testAreYouSelfEmployed_yes)
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
-        }
+          val result = submit(testAreYouSelfEmployed_no, isEditMode = true)
 
-        "the user has chosen business and property" in {
-          setupMockKeystore(fetchAll =
-            testCacheMapCustom(
-              rentUkProperty = testRentUkProperty_property_and_other
-            )
-          )
-          val result = submit(testAreYouSelfEmployed_yes)
           status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.individual.business.routes.BusinessNameController.show().url
-        }
-
-        "the user does not qualify" in {
-          setupMockKeystore(fetchAll =
-            testCacheMapCustom(
-              rentUkProperty = testRentUkProperty_no_property
-            )
-          )
-          val result = submit(testAreYouSelfEmployed_no)
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe controllers.individual.incomesource.routes.CannotSignUpController.show().url
+          redirectLocation(result) mustBe Some(controllers.individual.incomesource.routes.CannotSignUpController.show().url)
         }
       }
     }
+
   }
-
 }

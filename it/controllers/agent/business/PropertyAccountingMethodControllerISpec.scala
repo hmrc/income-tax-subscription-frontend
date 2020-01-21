@@ -22,7 +22,7 @@ import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
 import agent.models._
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.FeatureSwitching
 import core.models.{Accruals, Cash, No}
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.Both
@@ -30,11 +30,6 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(EligibilityPagesFeature)
-  }
 
   "GET /business/accounting-method-property" when {
     "keystore returns all data" should {
@@ -77,79 +72,39 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
   }
 
   "POST /business/accounting-method-property" when {
-    "not in edit mode"  should {
-      "the eligibility pages feature switch is enabled"should {
-        "select the Cash radio button on the Property Accounting Method page" in {
-          val userInput = AccountingMethodPropertyModel(Cash)
-          enable(EligibilityPagesFeature)
+    "not in edit mode" should {
+      "select the Cash radio button on the Property Accounting Method page" in {
+        val userInput = AccountingMethodPropertyModel(Cash)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, userInput)
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, userInput)
 
-          When("POST /business/accounting-method-property is called")
-          val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
+        When("POST /business/accounting-method-property is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of Check Your Answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
-
-        "select the Accruals radio button on the Property Accounting Method page" in {
-          enable(EligibilityPagesFeature)
-          val userInput = AccountingMethodPropertyModel(Accruals)
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, userInput)
-
-          When("POST /business/accounting-method-property is called")
-          val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of Check Your Answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
+        Then("Should return a SEE_OTHER with a redirect location of Check Your Answers")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
+        )
       }
 
-      "the eligibility pages feature switch is disabled"should {
-        "select the Cash radio button on the Property Accounting Method page" in {
-          val userInput = AccountingMethodPropertyModel(Cash)
+      "select the Accruals radio button on the Property Accounting Method page" in {
+        val userInput = AccountingMethodPropertyModel(Accruals)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, userInput)
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, userInput)
 
-          When("POST /business/accounting-method-property is called")
-          val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
+        When("POST /business/accounting-method-property is called")
+        val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of Terms page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(termsURI)
-          )
-        }
-
-        "select the Accruals radio button on the Property Accounting Method page" in {
-          val userInput = AccountingMethodPropertyModel(Accruals)
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethodProperty, userInput)
-
-          When("POST /business/accounting-method-property is called")
-          val res = IncomeTaxSubscriptionFrontend.submitPropertyAccountingMethod(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of Terms page")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(termsURI)
-          )
-        }
+        Then("Should return a SEE_OTHER with a redirect location of Check Your Answers")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
+        )
       }
 
       "not select an option on the Property Accounting Method page" in {
@@ -171,7 +126,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       "in edit mode" should {
         "changing to the Accruals radio button on the accounting method page" in {
           val keystoreIncomeSource = Both
-          val keystoreIncomeOther = No
           val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
           val keystoreAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
           val userInput = AccountingMethodPropertyModel(Accruals)
@@ -181,7 +135,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           KeystoreStub.stubKeystoreData(
             keystoreData(
               incomeSource = Some(keystoreIncomeSource),
-              otherIncome = Some(keystoreIncomeOther),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates),
               accountingMethodProperty = Some(keystoreAccountingMethodProperty)
             )
@@ -200,7 +153,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
         "simulate not changing Property Accounting Method when calling page from Check Your Answers" in {
           val keystoreIncomeSource = Both
-          val keystoreIncomeOther = No
           val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
           val keystoreAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
           val userInput = AccountingMethodPropertyModel(Cash)
@@ -210,7 +162,6 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           KeystoreStub.stubKeystoreData(
             keystoreData(
               incomeSource = Some(keystoreIncomeSource),
-              otherIncome = Some(keystoreIncomeOther),
               accountingPeriodDate = Some(keystoreAccountingPeriodDates),
               accountingMethodProperty = Some(keystoreAccountingMethodProperty)
             )

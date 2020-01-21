@@ -18,7 +18,7 @@ package controllers.agent
 
 import agent.audit.Logging
 import agent.services.mocks.MockKeystoreService
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
@@ -26,11 +26,6 @@ import uk.gov.hmrc.http.HttpResponse
 
 class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(EligibilityPagesFeature)
-  }
 
   override val controllerName: String = "addAnotherClientController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -45,53 +40,29 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     app.injector.instanceOf[Logging]
   )
 
-  "AddAnotherClientController.addAnother" when {
+  "AddAnotherClientController.addAnother" should {
 
     lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue")
 
     def call = TestAddAnotherClientController.addAnother()(request)
 
-    "eligibility feature switch is enabled" should {
 
-      "redirect to the agent eligibility frontend terms page, clearing keystore and session values" in {
-        enable(EligibilityPagesFeature)
+    "redirect to the agent eligibility frontend terms page, clearing keystore and session values" in {
+      setupMockKeystore(deleteAll = HttpResponse(OK))
 
-        setupMockKeystore(deleteAll = HttpResponse(OK))
+      val result: Result = await(call)
 
-        val result: Result = await(call)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(s"${MockBaseControllerConfig.applicationConfig.incomeTaxEligibilityFrontendUrl}/client/other-income")
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(s"${MockBaseControllerConfig.applicationConfig.incomeTaxEligibilityFrontendUrl}/client/other-income")
+      result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
+      result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
+      result.session(request).get(ITSASessionKeys.UTR) mustBe None
+      result.session(request).get(ITSASessionKeys.NINO) mustBe None
 
-        result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
-        result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
-        result.session(request).get(ITSASessionKeys.UTR) mustBe None
-        result.session(request).get(ITSASessionKeys.NINO) mustBe None
-
-        verifyKeystore(deleteAll = 1)
-      }
-
+      verifyKeystore(deleteAll = 1)
     }
 
-    "eligibility feature switch is disabled" should {
-
-      s"redirect to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in {
-        setupMockKeystore(deleteAll = HttpResponse(OK))
-
-        val result: Result = await(call)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsController.show().url)
-
-        result.session(request).get(ITSASessionKeys.MTDITID) mustBe None
-        result.session(request).get(ITSASessionKeys.JourneyStateKey) mustBe None
-        result.session(request).get(ITSASessionKeys.UTR) mustBe None
-        result.session(request).get(ITSASessionKeys.NINO) mustBe None
-
-        verifyKeystore(deleteAll = 1)
-      }
-
-    }
 
   }
 

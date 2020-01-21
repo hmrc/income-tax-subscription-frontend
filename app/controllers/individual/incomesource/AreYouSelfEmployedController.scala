@@ -17,6 +17,7 @@
 package controllers.individual.incomesource
 
 import core.auth.SignUpController
+import core.config.featureswitch.{FeatureSwitching, PropertyCashOrAccruals}
 import core.config.{AppConfig, BaseControllerConfig}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
@@ -39,7 +40,7 @@ class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfi
                                              val authService: AuthService,
                                              val appConfig: AppConfig,
                                              val currentTimeService: CurrentTimeService
-                                            ) extends SignUpController {
+                                            ) extends SignUpController with FeatureSwitching {
 
   def view(areYouSelfEmployedForm: Form[AreYouSelfEmployedModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     incometax.incomesource.views.html.are_you_selfemployed(
@@ -75,15 +76,14 @@ class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfi
             val incomeSourceType = IncomeSourceType(rentUkProperty, Some(areYouSelfEmployed))
             lazy val linearJourney: Result =
               incomeSourceType match {
-                case Some(Business | Both) if appConfig.eligibilityPagesEnabled =>
+                case Some(Business | Both) =>
                   Redirect(controllers.individual.business.routes.BusinessNameController.show())
-                case Some(Property) if appConfig.eligibilityPagesEnabled => {
-                  if (appConfig.propertyCashOrAccrualsEnabled)
+                case Some(Property) =>
+                  if (isEnabled(PropertyCashOrAccruals)) {
                     Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
-                  else Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-                }
-                case Some(Business | Property | Both) =>
-                  Redirect(controllers.individual.incomesource.routes.OtherIncomeController.show())
+                  } else {
+                    Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+                  }
                 case _ =>
                   Redirect(controllers.individual.incomesource.routes.CannotSignUpController.show())
               }

@@ -26,7 +26,7 @@ import incometax.business.models._
 import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.models._
 import incometax.subscription.models._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
 import usermatching.models.{UserDetailsModel, UserMatchSuccessResponseModel}
@@ -63,7 +63,6 @@ object TestModels extends Implicits {
   val testSelectedTaxYearNext = AccountingYearModel(Next)
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
-  val testTerms = true
 
   val emptyCacheMap = CacheMap("", Map())
 
@@ -72,7 +71,6 @@ object TestModels extends Implicits {
       incomeSource = testIncomeSourceBoth,
       rentUkProperty = testRentUkProperty_property_and_other,
       areYouSelfEmployed = testAreYouSelfEmployed_yes,
-      otherIncome = testOtherIncomeNo,
       matchTaxYear = testMatchTaxYearNo,
       accountingPeriodDate = testAccountingPeriod,
       businessName = testBusinessName,
@@ -81,15 +79,13 @@ object TestModels extends Implicits {
       businessStartDate = testBusinessStartDate,
       selectedTaxYear = testSelectedTaxYearNext,
       accountingMethod = testAccountingMethod,
-      accountingMethodProperty = testAccountingMethodProperty,
-      terms = testTerms
+      accountingMethodProperty = testAccountingMethodProperty
     )
 
   def testCacheMapCustom(
                           incomeSource: Option[IncomeSourceType] = testIncomeSourceBoth,
                           rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty_property_and_other,
                           areYouSelfEmployed: Option[AreYouSelfEmployedModel] = testAreYouSelfEmployed_yes,
-                          otherIncome: Option[YesNo] = testOtherIncomeNo,
                           matchTaxYear: Option[MatchTaxYearModel] = testMatchTaxYearNo,
                           accountingPeriodDate: Option[AccountingPeriodModel] = testAccountingPeriod,
                           businessName: Option[BusinessNameModel] = testBusinessName,
@@ -98,13 +94,11 @@ object TestModels extends Implicits {
                           businessStartDate: Option[BusinessStartDateModel] = testBusinessStartDate,
                           selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYearNext,
                           accountingMethod: Option[AccountingMethodModel] = testAccountingMethod,
-                          accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty,
-                          terms: Option[Boolean] = testTerms): CacheMap =
+                          accountingMethodProperty: Option[AccountingMethodPropertyModel] = testAccountingMethodProperty): CacheMap =
     testCacheMap(
       incomeSource = incomeSource,
       rentUkProperty = rentUkProperty,
       areYouSelfEmployed = areYouSelfEmployed,
-      otherIncome = otherIncome,
       matchTaxYear = matchTaxYear,
       accountingPeriodDate = accountingPeriodDate,
       businessName = businessName,
@@ -113,13 +107,11 @@ object TestModels extends Implicits {
       businessStartDate = businessStartDate,
       selectedTaxYear = selectedTaxYear,
       accountingMethod = accountingMethod,
-      accountingMethodProperty = accountingMethodProperty,
-      terms = terms)
+      accountingMethodProperty = accountingMethodProperty)
 
   def testCacheMap(incomeSource: Option[IncomeSourceType] = None,
                    rentUkProperty: Option[RentUkPropertyModel] = None,
                    areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
-                   otherIncome: Option[YesNo] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
                    businessName: Option[BusinessNameModel] = None,
@@ -128,14 +120,12 @@ object TestModels extends Implicits {
                    businessStartDate: Option[BusinessStartDateModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
-                   accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                   terms: Option[Boolean] = None): CacheMap = {
+                   accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): CacheMap = {
     val emptyMap = Map[String, JsValue]()
     val map: Map[String, JsValue] = Map[String, JsValue]() ++
       incomeSource.fold(emptyMap)(model => Map(IncomeSource -> IncomeSourceType.format.writes(model))) ++
       rentUkProperty.fold(emptyMap)(model => Map(RentUkProperty -> RentUkPropertyModel.format.writes(model))) ++
       areYouSelfEmployed.fold(emptyMap)(model => Map(AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model))) ++
-      otherIncome.fold(emptyMap)(model => Map(OtherIncome -> YesNo.format.writes(model))) ++
       matchTaxYear.fold(emptyMap)(model => Map(MatchTaxYear -> MatchTaxYearModel.format.writes(model))) ++
       accountingPeriodDate.fold(emptyMap)(model => Map(AccountingPeriodDate -> AccountingPeriodModel.format.writes(model))) ++
       businessName.fold(emptyMap)(model => Map(BusinessName -> BusinessNameModel.format.writes(model))) ++
@@ -144,16 +134,15 @@ object TestModels extends Implicits {
       businessStartDate.fold(emptyMap)(model => Map(BusinessStartDate -> BusinessStartDateModel.format.writes(model))) ++
       selectedTaxYear.fold(emptyMap)(model => Map(SelectedTaxYear -> AccountingYearModel.format.writes(model))) ++
       accountingMethod.fold(emptyMap)(model => Map(AccountingMethod -> AccountingMethodModel.format.writes(model))) ++
-      accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))) ++
-      terms.fold(emptyMap)(model => Map(Terms -> Json.toJson(model)))
+      accountingMethodProperty.fold(emptyMap)(model => Map(PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)))
     CacheMap("", map)
   }
 
-  lazy val testIncomeSourceBusiness = Business
+  lazy val testIncomeSourceBusiness: IncomeSourceType = Business
 
-  lazy val testIncomeSourceProperty = Property
+  lazy val testIncomeSourceProperty: IncomeSourceType = Property
 
-  lazy val testIncomeSourceBoth = Both
+  lazy val testIncomeSourceBoth: IncomeSourceType = Both
 
   lazy val testRentUkProperty_no_property = RentUkPropertyModel(No, None)
   lazy val testRentUkProperty_property_only = RentUkPropertyModel(Yes, Yes)
@@ -161,10 +150,6 @@ object TestModels extends Implicits {
 
   lazy val testAreYouSelfEmployed_yes = AreYouSelfEmployedModel(Yes)
   lazy val testAreYouSelfEmployed_no = AreYouSelfEmployedModel(No)
-
-  lazy val testOtherIncomeNo = No
-
-  lazy val testOtherIncomeYes = Yes
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, TestConstants.testNino, testStartDate)
 
@@ -174,7 +159,6 @@ object TestModels extends Implicits {
 
   lazy val testSummaryDataProperty = IndividualSummary(
     rentUkProperty = testRentUkProperty_property_only,
-    otherIncome = testOtherIncomeNo,
     matchTaxYear = testMatchTaxYearNo,
     accountingPeriodDate = testAccountingPeriod,
     businessName = testBusinessName,
@@ -184,7 +168,6 @@ object TestModels extends Implicits {
   lazy val testSummaryDataBusinessMatchTaxYear = IndividualSummary(
     rentUkProperty = testRentUkProperty_no_property,
     areYouSelfEmployed = testAreYouSelfEmployed_yes,
-    otherIncome = testOtherIncomeNo,
     matchTaxYear = testMatchTaxYearYes,
     businessName = testBusinessName,
     selectedTaxYear = testSelectedTaxYearCurrent,
@@ -194,7 +177,6 @@ object TestModels extends Implicits {
   lazy val testSummaryDataBusiness = IndividualSummary(
     rentUkProperty = testRentUkProperty_no_property,
     areYouSelfEmployed = testAreYouSelfEmployed_yes,
-    otherIncome = testOtherIncomeNo,
     matchTaxYear = testMatchTaxYearNo,
     accountingPeriodDate = testAccountingPeriod,
     businessName = testBusinessName,
@@ -205,7 +187,6 @@ object TestModels extends Implicits {
   lazy val testSummaryData = IndividualSummary(
     rentUkProperty = testRentUkProperty_property_and_other,
     areYouSelfEmployed = testAreYouSelfEmployed_yes,
-    otherIncome = testOtherIncomeNo,
     matchTaxYear = testMatchTaxYearNo,
     accountingPeriodDate = testAccountingPeriod,
     businessName = testBusinessName,
@@ -215,13 +196,11 @@ object TestModels extends Implicits {
 
   lazy val testAgentSummaryData = AgentSummary(
     incomeSource = Some(testIncomeSourceBoth),
-    otherIncome = Some(testOtherIncomeNo),
     matchTaxYear = Some(testMatchTaxYearNo),
     accountingPeriodDate = testAccountingPeriod,
     businessName = Some(testBusinessName),
     accountingMethod = Some(testAccountingMethod),
-    accountingMethodProperty = Some(testAccountingMethodProperty),
-    terms = Some(true)
+    accountingMethodProperty = Some(testAccountingMethodProperty)
   )
 
 }

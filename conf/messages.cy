@@ -187,20 +187,6 @@ business.name.registration.line_1                               = Os nad oes enw
 business.phone_number.title                                     = Rhif ffôn y busnes
 business.phone_number.heading                                   = Beth yw rhif ffôn eich busnes?
 
-## Terms and Conditions Messages
-terms.title                                                     = Telerau cyfranogi
-terms.heading                                                   = Telerau cyfranogi
-terms.line_1                                                    = Drwy gymryd rhan yn y prawf hwn, rydych yn cytuno i''r canlynol:
-terms.bullet_1                                                  = defnyddio meddalwedd perthnasol i gofnodi''ch incwm a''ch treuliau
-terms.bullet_2                                                  = cyflwyno adroddiad o leiaf unwaith bob 3 mis o ddechrau''ch cyfnod cyfrifyddu
-terms.bullet_3                                                  = anfon eich adroddiad terfynol ar gyfer blwyddyn dreth {0} i {1} erbyn 31 Ionawr {2}
-terms.bullet_4                                                  = datgan unrhyw ffynonellau eraill o incwm a rhyddhad
-terms.bullet_5                                                  = awdurdodi unrhyw drydydd parti yr ydych yn ei ddefnyddio (fel eich cyfrifydd) a bod yn gyfrifol am unrhyw wybodaeth y mae''n ei rhoi i CThEM ar eich rhan
-terms.bullet_6                                                  = rhoi gwybod i CThEM os ydych am roi''r gorau i fasnachu neu ddechrau busnes newydd
-terms.bullet_7                                                  = rhoi gwybod i CThEM os ydych am adael y prawf hwn
-terms.line_2                                                    = Nid yw''r telerau hyn yn gontractiol, a gallwch roi''r gorau i gymryd rhan yn y prawf ar unrhyw adeg.
-terms.button                                                    = Derbyn a mynd yn eich blaen
-
 ## Contact Email Address page ##
 contact_email.title                                             = Nodwch eich cyfeiriad e-bost
 contact_email.heading                                           = Nodwch eich cyfeiriad e-bost
@@ -238,7 +224,6 @@ summary.are_you_selfemployed                                    = Rydych yn huna
 summary.income_source.business                                  = Busnes fel unig fasnachwr
 summary.income_source.property                                  = Eiddo
 summary.income_source.both                                      = Busnes fel unig fasnachwr ac eiddo
-summary.other_income                                            = Oes gennych chi ffynonellau eraill o incwm?
 summary.match_tax_year                                          = Mae''ch cyfnod cyfrifyddu yn paru â''r flwyddyn dreth
 summary.accounting_period                                       = Dyddiadau''ch cyfnod cyfrifyddu
 summary.accounting_period.registration                          = Pryd y mae''ch cyfnod cyfrifyddu presennol?
@@ -249,8 +234,6 @@ summary.business_start_date                                     = Pryd y dechreu
 summary.income_type                                             = Eich dull cyfrifyddu ar gyfer eich busnes hunangyflogedig
 summary.income_type.cash                                        = Sail arian parod
 summary.income_type.accruals                                    = Sail croniadau
-summary.terms                                                   = Telerau cyfranogi
-summary.terms.agreed                                            = Rwy''n cytuno
 summary.accounting_method_property                              = Eich dull cyfrifyddu ar gyfer eich incwm eiddo
 summary.selected_year                                           = Y flwyddyn cofrestrwyd ar ei chyfer
 summary.selected_year.current                                   = Y flwyddyn dreth bresennol ({0} i {1})
@@ -353,9 +336,6 @@ error.end_date_past                                             = Nodwch ddyddia
 error.not-eligible.empty                                        = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 error.not-eligible.invalid                                      = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
-error.other-income.empty                                        = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-error.other-income.invalid                                      = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
-
 error.rent-uk-property.empty                                    = Dewiswch ''Iawn'' os ydych yn gosod eiddo yn y DU
 error.rent-uk-property.invalid                                  = Dewiswch ''Iawn'' os ydych yn gosod eiddo yn y DU
 error.rent-uk-property.only-source-empty                        = Dewiswch ''Iawn'' os mai dyma''ch unig ffynhonnell o incwm hunangyflogedig
@@ -408,25 +388,6 @@ user-details.summary.dob                                        = Dyddiad geni
 no-sa.title                                                     = Rhaid i chi gofrestru ar gyfer Hunanasesiad
 no-sa.heading                                                   = Rhaid i chi gofrestru ar gyfer Hunanasesiad
 no-sa.line_1                                                    = Cyn y gallwch gofrestru i ddefnyddio meddalwedd i roi gwybod am eich Treth Incwm, rhaid i chi <a id="sa-signup" href="{0}">gofrestru ar gyfer Hunanasesiad</a>.
-
-## Other income error page ##
-other-income-error.title                                        = Rhoi gwybod i ni am eich ffynonellau eraill o incwm yn eich adroddiad terfynol
-other-income-error.heading                                      = Rhoi gwybod i ni am eich ffynonellau eraill o incwm yn eich adroddiad terfynol
-other-income-error.para1                                        = Mae ond yn rhaid i chi anfon adroddiadau chwarterol ar incwm rydych yn ei ennill drwy naill ai:
-other-income-error.bullet1                                      = gweithio i chi''ch hun
-other-income-error.bullet2                                      = gosod eiddo yn y DU
-other-income-error.bullet3                                      = gweithio i chi''ch hun a gosod eiddo yn y DU
-other-income-error.para2                                        = Rhaid i chi gyflwyno''ch adroddiad terfynol erbyn 31 Ionawr.
-
-## Other sources of income page ##
-income-other.title                                              = Oes gennych chi ffynonellau eraill o incwm?
-income-other.heading                                            = Oes gennych chi ffynonellau eraill o incwm?
-income-other.para1                                              = Gallai hyn gynnwys:
-income-other.bullet1                                            = cyflogaeth, nad eich busnes fel unig fasnachwr mohoni
-income-other.bullet2                                            = pensiynau neu flwydd-daliadau''r DU
-income-other.bullet3                                            = budd-daliadau trethadwy''r Wladwriaeth
-income-other.bullet4                                            = cyflogaeth neu fuddsoddiadau y tu allan i''r DU
-income-other.bullet5                                            = enillion cyfalaf
 
 ## cannot report before 6 April 2018 page ##
 cannot-report-yet.title                                        = Ni allwch ddefnyddio meddalwedd i roi gwybod am eich Treth Incwm ar hyn o bryd
@@ -620,19 +581,6 @@ agent.business.name.title                                             = Enw''r b
 agent.business.name.heading                                           = Beth yw enw busnes eich cleient?
 agent.business.name.line_1                                            = Dyma enw''r busnes a ddefnyddiodd i gofrestru ar gyfer Hunanasesiad. Os nad oes enw ar ei fusnes, nodwch enw''ch cleient.
 
-## Terms and Conditions Messages
-agent.terms.title                                                     = Telerau cyfranogi
-agent.terms.heading                                                   = Telerau cyfranogi
-agent.terms.line_1                                                    = Drwy gymryd rhan yn y prawf hwn, rydych yn cytuno y byddwch chi neu''ch cleient yn gwneud y canlynol:
-agent.terms.point_1                                                   = defnyddio meddalwedd perthnasol i gofnodi incwm a threuliau''ch cleient
-agent.terms.point_2                                                   = cyflwyno adroddiad o leiaf unwaith bob 3 mis o ddechrau cyfnod cyfrifyddu''ch cleient
-agent.terms.point_3                                                   = anfon ei adroddiad terfynol ar gyfer blwyddyn dreth {0} i {1} erbyn 31 Ionawr {2}
-agent.terms.point_4                                                   = datgan unrhyw ffynonellau eraill o incwm a rhyddhad
-agent.terms.point_5                                                   = rhoi gwybod i CThEM os yw''ch cleient yn rhoi''r gorau i fasnachu neu''n dechrau busnes newydd
-agent.terms.point_6                                                   = rhoi gwybod i CThEM os ydych am adael y prawf hwn
-agent.terms.line_2                                                    = Nid yw''r telerau hyn yn gontractiol, a gall eich cleient roi''r gorau i gymryd rhan yn y prawf hwn ar unrhyw adeg.
-agent.terms.button                                                    = Derbyn a mynd yn eich blaen
-
 ## Contact Email Address page ##
 agent.contact_email.title                                             = Nodwch eich cyfeiriad e-bost
 agent.contact_email.heading                                           = Nodwch eich cyfeiriad e-bost
@@ -679,7 +627,6 @@ agent.summary.income_source                                           = Math o i
 agent.summary.income_source.business                                  = Busnes fel unig fasnachwr
 agent.summary.income_source.property                                  = Eiddo
 agent.summary.income_source.both                                      = Busnes fel unig fasnachwr ac eiddo
-agent.summary.other_income                                            = A oes gan eich cleient ffynonellau eraill o incwm?
 agent.summary.accounting_period                                       = Dyddiadau cyfnod cyfrifyddu''ch cleient
 agent.summary.business_name                                           = Beth yw enw busnes eich cleient?
 agent.summary.income_type                                             = Dull cyfrifyddu ar gyfer ei fusnes hunangyflogedig
@@ -754,11 +701,6 @@ agent.error.accounting-method-property.invalid                        = Dewiswch
 agent.error.not-eligible.empty                                        = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 agent.error.not-eligible.invalid                                      = Rhaid i chi ddewis opsiwn i fynd yn eich blaen
 
-agent.error.other-income.empty                                        = Dewiswch ''Iawn'' os oes gan eich cleient ffynonellau eraill o incwm
-agent.error.other-income.invalid                                      = Dewiswch ''Iawn'' os oes gan eich cleient ffynonellau eraill o incwm
-
-agent.error.terms.empty                                               = Rhaid i chi dderbyn y telerau cyfranogi i fynd yn eich blaen
-
 agent.error.client_details.first_name.empty                           = Nodwch enw cyntaf eich cleient
 agent.error.client_details.last_name.empty                            = Nodwch enw olaf eich cleient
 agent.error.client_details.first_name.invalid                         = Nodwch enw cyntaf dilys
@@ -789,26 +731,6 @@ agent.not-eligible.signout                                            = Dydw i d
 agent.no-nino.title                                                   = Ni all eich cleient ddefnyddio''r gwasanaeth hwn ar hyn o bryd
 agent.no-nino.heading                                                 = Ni all eich cleient ddefnyddio''r gwasanaeth hwn ar hyn o bryd
 agent.no-nino.line_1                                                  = Gallwch gofrestru nes ymlaen yn y flwyddyn pan fydd y gwasanaeth hwn ar gael i chi.
-
-## Other income error page ##
-agent.other-income-error.title                                        = Gallwch ddefnyddio meddalwedd i roi gwybod am Dreth Incwm eich cleient
-agent.other-income-error.heading                                      = Gallwch ddefnyddio meddalwedd i roi gwybod am Dreth Incwm eich cleient
-agent.other-income-error.para1                                        = Mae ond yn rhaid i chi anfon adroddiadau chwarterol ar incwm y mae''ch cleient yn ei ennill naill ai drwy:
-agent.other-income-error.bullet1                                      = ei fusnes fel unig fasnachwr
-agent.other-income-error.bullet2                                      = gosod eiddo yn y DU
-agent.other-income-error.bullet3                                      = ei fusnes fel unig fasnachwr a gosod eiddo yn y DU
-agent.other-income-error.para2                                        = Gallwch roi gwybod i ni am ffynonellau eraill eich cleient o incwm yn ei adroddiad cryno terfynol - rhaid i''ch cleient gyflwyno''r adroddiad hwn erbyn 31 Ionawr.
-
-## Other sources of income page ##
-agent.income-other.title                                              = A oes gan eich cleient ffynonellau eraill o incwm?
-agent.income-other.heading                                            = A oes gan eich cleient ffynonellau eraill o incwm?
-agent.income-other.para1                                              = Gallai hyn gynnwys:
-agent.income-other.bullet1Property                                    = cyflogaeth
-agent.income-other.bullet1Default                                     = cyflogaeth nad yw''n fusnes fel unig fasnachwr
-agent.income-other.bullet2                                            = pensiynau neu flwydd-daliadau''r DU
-agent.income-other.bullet3                                            = budd-daliadau trethadwy''r Wladwriaeth
-agent.income-other.bullet4                                            = cyflogaeth neu fuddsoddiadau y tu allan i''r DU
-agent.income-other.bullet5                                            = enillion cyfalaf
 
 ## Not Enrolled to Agent Services
 agent.not_enrolled_agent_services.title                               = Ni allwch ddefnyddio''r gwasanaeth hwn ar hyn o bryd

@@ -26,7 +26,6 @@ import helpers.servicemocks._
 import play.api.http.Status._
 import play.api.i18n.Messages
 
-
 class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwitching {
   "GET /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
     "keystore returns all data" should {
@@ -45,22 +44,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         )
       }
     }
-
-    "keystore does not return the terms field" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      KeystoreStub.stubKeystoreData(fullKeystoreData - Terms)
-
-      When("GET /check-your-answers is called")
-      val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
-
-      Then("Should return a SEE_OTHER with a redirect location of terms")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(termsURI)
-      )
-    }
-
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
@@ -179,21 +162,6 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
           httpStatus(INTERNAL_SERVER_ERROR)
         )
       }
-    }
-
-    "keystore does not return the terms field" in {
-      Given("I setup the Wiremock stubs")
-      AuthStub.stubAuthSuccess()
-      KeystoreStub.stubKeystoreData(fullKeystoreData - Terms)
-
-      When("POST /check-your-answers is called")
-      val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-      Then("Should return a SEE_OTHER with a redirect location of terms")
-      res should have(
-        httpStatus(SEE_OTHER),
-        redirectURI(termsURI)
-      )
     }
 
     "return an INTERNAL_SERVER_ERROR when the backend service returns a NOT_FOUND" in {

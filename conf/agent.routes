@@ -21,18 +21,6 @@ GET         /feedback                               controllers.agent.FeedbackCo
 POST        /feedback                               controllers.agent.FeedbackController.submit
 GET         /thankyou                               controllers.agent.FeedbackController.thankyou
 
-# Terms Routes
-GET         /terms                                  controllers.agent.TermsController.show(editMode: Boolean ?= false)
-POST        /terms                                  controllers.agent.TermsController.submit()
-
-# Other Income Sources Routes
-GET         /income-other                           controllers.agent.OtherIncomeController.show(editMode: Boolean ?= false)
-POST        /income-other                           controllers.agent.OtherIncomeController.submit(editMode: Boolean ?= false)
-
-# Other Income Error Routes
-GET         /error/other-income                     controllers.agent.OtherIncomeErrorController.show
-POST        /error/other-income                     controllers.agent.OtherIncomeErrorController.submit
-
 #
 GET         /error/client-already-subscribed        controllers.agent.ClientAlreadySubscribedController.show
 POST        /error/client-already-subscribed        controllers.agent.ClientAlreadySubscribedController.submit

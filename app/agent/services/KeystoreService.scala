@@ -17,8 +17,6 @@
 package agent.services
 
 import agent.models.{AccountingMethodPropertyModel, _}
-import core.config.featureswitch.WhatTaxYearToSignUp
-import core.models.YesNo
 import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.models.IncomeSourceType
 import javax.inject._
@@ -85,18 +83,6 @@ class KeystoreService @Inject()(val session: SessionCache)(implicit ec: Executio
 
   def saveAccountingMethodProperty(accountingMethod: AccountingMethodPropertyModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodPropertyModel]): FC =
     save[AccountingMethodPropertyModel](AccountingMethodProperty, accountingMethod)
-
-  def fetchTerms()(implicit hc: HeaderCarrier, reads: Reads[Boolean]): FO[Boolean] =
-    fetch[Boolean](Terms)
-
-  def saveTerms(terms: Boolean)(implicit hc: HeaderCarrier, reads: Reads[Boolean]): FC =
-    save[Boolean](Terms, terms)
-
-  def fetchOtherIncome()(implicit hc: HeaderCarrier, reads: Reads[YesNo]): FO[YesNo] =
-    fetch[YesNo](OtherIncome)
-
-  def saveOtherIncome(otherIncome: YesNo)(implicit hc: HeaderCarrier, reads: Reads[YesNo]): FC =
-    save[YesNo](OtherIncome, otherIncome)
 
   def fetchSubscriptionId()(implicit hc: HeaderCarrier, reads: Reads[String]): FO[String] = fetch[String](MtditId)
 

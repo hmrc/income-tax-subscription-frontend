@@ -17,7 +17,7 @@
 package core.services
 
 import core.config.AppConfig
-import core.models.{No, Yes, YesNo}
+import core.models.{No, Yes}
 import core.services.CacheConstants._
 import incometax.business.models._
 import incometax.business.models.address.Address
@@ -38,8 +38,6 @@ object CacheUtil {
     def getIncomeSourceType()(implicit read: Reads[IncomeSourceType], readR: Reads[RentUkPropertyModel],
                               readW: Reads[AreYouSelfEmployedModel]): Option[IncomeSourceType] =
       getRentUkProperty().flatMap(rentUkProperty => IncomeSourceType.from(rentUkProperty, getAreYouSelfEmployed()))
-
-    def getOtherIncome()(implicit read: Reads[YesNo]): Option[YesNo] = cacheMap.getEntry(OtherIncome)
 
     def getMatchTaxYear()(implicit read: Reads[MatchTaxYearModel]): Option[MatchTaxYearModel] = cacheMap.getEntry(MatchTaxYear)
 
@@ -66,23 +64,18 @@ object CacheUtil {
 
     def getPropertyAccountingMethod()(implicit read: Reads[AccountingMethodPropertyModel]): Option[AccountingMethodPropertyModel] = cacheMap.getEntry(PropertyAccountingMethod)
 
-    def getTerms()(implicit read: Reads[Boolean]): Option[Boolean] = cacheMap.getEntry(Terms)
-
     def getSummary()(implicit appConfig: AppConfig): IndividualSummary =
       getIncomeSourceType() match {
         case Some(Property) =>
           IndividualSummary(
             rentUkProperty = getRentUkProperty(),
             areYouSelfEmployed = getAreYouSelfEmployed(),
-            otherIncome = getOtherIncome(),
-            accountingMethodProperty = getPropertyAccountingMethod(),
-            terms = getTerms()
+            accountingMethodProperty = getPropertyAccountingMethod()
           )
         case Some(Business) =>
           IndividualSummary(
             rentUkProperty = getRentUkProperty(),
             areYouSelfEmployed = getAreYouSelfEmployed(),
-            otherIncome = getOtherIncome(),
             matchTaxYear = getMatchTaxYear(),
             accountingPeriodDate = getEnteredAccountingPeriodDate(),
             businessName = getBusinessName(),
@@ -90,14 +83,12 @@ object CacheUtil {
             businessAddress = getBusinessAddress(),
             businessStartDate = getBusinessStartDate(),
             selectedTaxYear = getSelectedTaxYear(),
-            accountingMethod = getAccountingMethod(),
-            terms = getTerms()
+            accountingMethod = getAccountingMethod()
           )
         case Some(_) =>
           IndividualSummary(
             rentUkProperty = getRentUkProperty(),
             areYouSelfEmployed = getAreYouSelfEmployed(),
-            otherIncome = getOtherIncome(),
             matchTaxYear = getMatchTaxYear(),
             accountingPeriodDate = getEnteredAccountingPeriodDate(),
             businessName = getBusinessName(),
@@ -105,8 +96,7 @@ object CacheUtil {
             businessAddress = getBusinessAddress(),
             businessStartDate = getBusinessStartDate(),
             accountingMethod = getAccountingMethod(),
-            accountingMethodProperty = getPropertyAccountingMethod(),
-            terms = getTerms()
+            accountingMethodProperty = getPropertyAccountingMethod()
           )
         case _ => IndividualSummary()
       }

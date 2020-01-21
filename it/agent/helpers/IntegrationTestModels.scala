@@ -21,7 +21,7 @@ import _root_.agent.services.CacheConstants
 import core.models._
 import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.models._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 
 object IntegrationTestModels {
 
@@ -42,40 +42,32 @@ object IntegrationTestModels {
   val testBusinessName = BusinessNameModel("test business")
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testPropertyAccountingMethod = AccountingMethodPropertyModel(Cash)
-  val testTerms = true
-
 
   val fullKeystoreData: Map[String, JsValue] =
     keystoreData(
       incomeSource = Some(testIncomeSourceBoth),
-      otherIncome = Some(testOtherIncomeNo),
       matchTaxYear = Some(testMatchTaxYearYes),
       selectedTaxYear = Some(testAccountingYearCurrent),
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       accountingMethod = Some(testAccountingMethod),
-      accountingMethodProperty = Some(testPropertyAccountingMethod),
-      terms = Some(testTerms)
+      accountingMethodProperty = Some(testPropertyAccountingMethod)
     )
 
   def keystoreData(
                     incomeSource: Option[IncomeSourceType] = None,
-                    otherIncome: Option[YesNo] = None,
                     matchTaxYear: Option[MatchTaxYearModel] = None,
                     selectedTaxYear: Option[AccountingYearModel] = None,
                     accountingPeriodDate: Option[AccountingPeriodModel] = None,
                     businessName: Option[BusinessNameModel] = None,
                     accountingMethod: Option[AccountingMethodModel] = None,
-                    accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                    terms: Option[Boolean] = None): Map[String, JsValue] = {
+                    accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
-      otherIncome.map(model => OtherIncome -> YesNo.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       accountingMethodProperty.map(model => AccountingMethodProperty -> AccountingMethodPropertyModel.format.writes(model)) ++
-      terms.map(model => Terms -> Json.toJson(model)) ++
       matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       selectedTaxYear.map(model => WhatYearToSignUp -> AccountingYearModel.format.writes(model))
   }
@@ -85,10 +77,6 @@ object IntegrationTestModels {
   lazy val testIncomeSourceProperty = Property
 
   lazy val testIncomeSourceBoth = Both
-
-  lazy val testOtherIncomeNo = No
-
-  lazy val testOtherIncomeYes = Yes
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
   lazy val testClientDetails = _root_.helpers.IntegrationTestModels.testUserDetails

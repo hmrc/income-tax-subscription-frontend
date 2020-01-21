@@ -29,7 +29,6 @@ object FeatureSwitch {
   val switches: Set[FeatureSwitch]  = Set(
     RegistrationFeature,
     WelshLanguageFeature,
-    EligibilityPagesFeature,
     UseSubscriptionApiV2,
     PropertyCashOrAccruals,
     WhatTaxYearToSignUp,
@@ -54,11 +53,6 @@ case object RegistrationFeature extends FeatureSwitch {
 case object WelshLanguageFeature extends FeatureSwitch {
   override val name = s"$prefix.welsh-translation"
   override val displayText = "Enable welsh language"
-}
-
-case object EligibilityPagesFeature extends FeatureSwitch {
-  override val name = s"$prefix.eligibility-pages"
-  override val displayText = "Remove terms and do you have other income pages from end of flow"
 }
 
 case object UnplannedShutter extends FeatureSwitch {

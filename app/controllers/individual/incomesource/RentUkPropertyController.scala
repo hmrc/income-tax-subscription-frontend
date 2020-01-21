@@ -42,20 +42,19 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchRentUkProperty() map {
-        case Some(rentUkPropertyModel) => Ok(view(rentUkPropertyForm =
-          rentUkPropertyForm.fill(rentUkPropertyModel), isEditMode = isEditMode))
-        case None => Ok(view(rentUkPropertyForm = rentUkPropertyForm, isEditMode = isEditMode))
+      keystoreService.fetchRentUkProperty() map { rentUkProperty =>
+        Ok(view(rentUkPropertyForm = rentUkPropertyForm.fill(rentUkProperty), isEditMode = isEditMode))
       }
   }
 
-  def view(rentUkPropertyForm: Form[RentUkPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
+  def view(rentUkPropertyForm: Form[RentUkPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     incometax.incomesource.views.html.rent_uk_property(
       rentUkPropertyForm = rentUkPropertyForm,
       postAction = controllers.individual.incomesource.routes.RentUkPropertyController.submit(editMode = isEditMode),
       isEditMode = isEditMode,
       backUrl = backUrl
     )
+  }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -67,36 +66,28 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
           ))),
         data => {
           lazy val linearJourney: Future[Result] =
-            keystoreService.saveRentUkProperty(data) flatMap { _ =>
+            keystoreService.saveRentUkProperty(data) map { _ =>
               (data.rentUkProperty, data.onlySourceOfSelfEmployedIncome) match {
                 case (No, _) =>
-                  Future.successful(Redirect(controllers.individual.incomesource.routes.AreYouSelfEmployedController.show()))
+                  Redirect(controllers.individual.incomesource.routes.AreYouSelfEmployedController.show())
                 case (Yes, Some(No)) =>
-                  Future.successful(Redirect(controllers.individual.incomesource.routes.AreYouSelfEmployedController.show()))
-                case (Yes, Some(Yes)) if appConfig.eligibilityPagesEnabled =>
-                  if(appConfig.propertyCashOrAccrualsEnabled) {
-                    Future.successful(Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show()))
-                  } else {
-                    Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
-                  }
+                  Redirect(controllers.individual.incomesource.routes.AreYouSelfEmployedController.show())
                 case _ =>
-                  Future.successful(Redirect(controllers.individual.incomesource.routes.OtherIncomeController.show()))
+                  if (appConfig.propertyCashOrAccrualsEnabled) {
+                    Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
+                  } else {
+                    Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+                  }
               }
             }
-
-          if (!isEditMode)
+          if (!isEditMode) {
             linearJourney
-          else
-            (for {
-              rentUkPropertyModel <- keystoreService.fetchRentUkProperty()
-            } yield {
-              // if what was persisted is the same as the new value then go straight back to summary
-              if (rentUkPropertyModel.fold(false)(i => i.rentUkProperty.equals(data.rentUkProperty)
-                && i.onlySourceOfSelfEmployedIncome.equals(data.onlySourceOfSelfEmployedIncome)))
-                Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.submit()))
-              else // otherwise go back to the linear journey
-                linearJourney
-            }).flatMap(x => x)
+          } else {
+            keystoreService.fetchRentUkProperty() flatMap {
+              case Some(`data`) => Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.submit()))
+              case _ => linearJourney
+            }
+          }
         }
       )
   }

@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
-import core.models.Yes
 import core.services.{AuthService, KeystoreService}
 import forms.individual.business.BusinessNameForm
 import incometax.business.models.BusinessNameModel
@@ -37,30 +36,27 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        val authService: AuthService
                                       ) extends SignUpController {
 
-  def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Future[Html] =
-    backUrl(isEditMode).map { backUrl =>
-      incometax.business.views.html.business_name(
-        businessNameForm = businessNameForm,
-        postAction = controllers.individual.business.routes.BusinessNameController.submit(editMode = isEditMode),
-        isRegistration = request.isInState(Registration),
-        isEditMode,
-        backUrl = backUrl
-      )
-    }
+  def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html = {
+    incometax.business.views.html.business_name(
+      businessNameForm = businessNameForm,
+      postAction = controllers.individual.business.routes.BusinessNameController.submit(editMode = isEditMode),
+      isRegistration = request.isInState(Registration),
+      isEditMode,
+      backUrl = backUrl(isEditMode)
+    )
+  }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       for {
         businessName <- keystoreService.fetchBusinessName()
-        view <- view(BusinessNameForm.businessNameForm.form.fill(businessName), isEditMode = isEditMode)
-      } yield Ok(view)
+      } yield Ok(view(BusinessNameForm.businessNameForm.form.fill(businessName), isEditMode = isEditMode))
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       BusinessNameForm.businessNameForm.bindFromRequest.fold(
-        formWithErrors =>
-          view(formWithErrors, isEditMode = isEditMode).map(BadRequest(_)),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, isEditMode = isEditMode))),
         businessName =>
           keystoreService.saveBusinessName(businessName) map (_ =>
             if (isEditMode)
@@ -73,18 +69,11 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  def backUrl(isEditMode: Boolean)(implicit request: Request[_]): Future[String] = {
-    if (isEditMode)
-      Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
-    else if (applicationConfig.eligibilityPagesEnabled) {
-      Future.successful(controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url)
+  def backUrl(isEditMode: Boolean): String = {
+    if (isEditMode) {
+      controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     } else {
-      keystoreService.fetchOtherIncome().map {
-        case Some(Yes) =>
-          controllers.individual.incomesource.routes.OtherIncomeErrorController.show().url
-        case _ =>
-          controllers.individual.incomesource.routes.OtherIncomeController.show().url
-      }
+      controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
     }
   }
 

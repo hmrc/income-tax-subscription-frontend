@@ -19,13 +19,11 @@ package controllers.individual.business
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.models.Yes
-import core.services.CacheUtil._
 import core.services.{AccountingPeriodService, AuthService, KeystoreService}
 import forms.individual.business.AccountingPeriodDateForm
 import incometax.business.models.AccountingPeriodModel
 import incometax.business.models.enums._
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.{Both, IncomeSourceType}
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -79,21 +77,15 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
             if (accountingPeriodService.checkEligibleAccountingPeriod(
               accountingPeriod.startDate.toLocalDate,
               accountingPeriod.endDate.toLocalDate,
-              ukProperty.exists(_.rentUkProperty == Yes))) {
-
-              for {
-                cache <- keystoreService.fetchAll()
-                optOldAccountingPeriodDates = cache.getAccountingPeriodDate()
-                _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
-                enteredTaxEndYear = accountingPeriod.taxEndYear
-                _ <- optOldAccountingPeriodDates match {
-                  case Some(oldAccountingPeriodDates) if oldAccountingPeriodDates.taxEndYear != enteredTaxEndYear =>
-                    keystoreService.saveTerms(terms = false)
-                  case _ => Future.successful(Unit)
+              ukProperty.exists(_.rentUkProperty == Yes)
+            )) {
+              keystoreService.saveAccountingPeriodDate(accountingPeriod) map { _ =>
+                if (isEditMode) {
+                  Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
+                } else {
+                  Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show())
                 }
-              } yield
-                if (isEditMode) Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-                else Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show())
+              }
             } else {
               Future.successful(Redirect(controllers.individual.eligibility.routes.NotEligibleForIncomeTaxController.show()))
             }
@@ -102,23 +94,19 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
       )
   }
 
-  private def hasBothIncomeSources(incomeSourceType: IncomeSourceType): Boolean =
-    incomeSourceType match {
-      case Both => true
-      case _ => false
-    }
-
-
   def whichView(implicit request: Request[_]): AccountingPeriodViewType =
     if (request.isInState(Registration)) RegistrationAccountingPeriodView
     else SignUpAccountingPeriodView
 
   def backUrl(isEditMode: Boolean, editMatch: Boolean)(implicit request: Request[_]): String =
     if (isEditMode) {
-      if (editMatch) controllers.individual.business.routes.MatchTaxYearController.show(editMode = isEditMode).url
-      else controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-    }
-    else
+      if (editMatch) {
+        controllers.individual.business.routes.MatchTaxYearController.show(editMode = isEditMode).url
+      } else {
+        controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+      }
+    } else {
       controllers.individual.business.routes.MatchTaxYearController.show(editMode = isEditMode).url
+    }
 
 }

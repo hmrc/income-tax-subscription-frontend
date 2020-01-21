@@ -16,12 +16,11 @@
 
 package core.services.mocks
 
-import core.models.YesNo
 import core.services.KeystoreService
 import core.utils.MockTrait
 import incometax.business.models._
 import incometax.business.models.address.Address
-import incometax.incomesource.models.{RentUkPropertyModel, AreYouSelfEmployedModel}
+import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import incometax.subscription.models.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -70,8 +69,6 @@ trait MockKeystoreService extends MockTrait {
                                          fetchPropertyAccountingMethod: MFO[AccountingMethodPropertyModel] = DoNotConfigure,
                                          fetchAccountingMethod: MFO[AccountingMethodModel] = DoNotConfigure,
                                          fetchSelectedTaxYear: MFO[AccountingYearModel] = DoNotConfigure,
-                                         fetchTerms: MFO[Boolean] = DoNotConfigure,
-                                         fetchOtherIncome: MFO[YesNo] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchPaperlessPreferenceToken: MFO[String] = DoNotConfigure,
                                          fetchAll: MFO[CacheMap] = DoNotConfigure,
@@ -89,8 +86,6 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
     mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
     mockFetchFromKeyStore[AccountingMethodPropertyModel](PropertyAccountingMethod, fetchPropertyAccountingMethod)
-    mockFetchFromKeyStore[Boolean](Terms, fetchTerms)
-    mockFetchFromKeyStore[YesNo](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[String](PaperlessPreferenceToken, fetchPaperlessPreferenceToken)
 
@@ -125,10 +120,6 @@ trait MockKeystoreService extends MockTrait {
                                       saveAccountingMethod: Option[Int] = None,
                                       fetchPropertyAccountingMethod: Option[Int] = None,
                                       savePropertyAccountingMethod: Option[Int] = None,
-                                      fetchTerms: Option[Int] = None,
-                                      saveTerms: Option[Int] = None,
-                                      fetchOtherIncome: Option[Int] = None,
-                                      saveOtherIncome: Option[Int] = None,
                                       fetchSubscriptionId: Option[Int] = None,
                                       saveSubscriptionId: Option[Int] = None,
                                       fetchPaperlessPreferenceToken: Option[Int] = None,
@@ -160,10 +151,6 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(AccountingMethod, saveAccountingMethod)
     verifyKeystoreFetch(PropertyAccountingMethod, fetchPropertyAccountingMethod)
     verifyKeystoreSave(PropertyAccountingMethod, savePropertyAccountingMethod)
-    verifyKeystoreFetch(Terms, fetchTerms)
-    verifyKeystoreSave(Terms, saveTerms)
-    verifyKeystoreFetch(OtherIncome, fetchOtherIncome)
-    verifyKeystoreSave(OtherIncome, saveOtherIncome)
     verifyKeystoreFetch(MtditId, fetchSubscriptionId)
     verifyKeystoreSave(MtditId, saveSubscriptionId)
     verifyKeystoreFetch(PaperlessPreferenceToken, fetchPaperlessPreferenceToken)

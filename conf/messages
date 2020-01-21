@@ -188,20 +188,6 @@ business.name.registration.line_1                               = If your busine
 business.phone_number.title                                     = Business phone number
 business.phone_number.heading                                   = What''s your business telephone number?
 
-## Terms and Conditions Messages
-terms.title                                                     = Terms of participation
-terms.heading                                                   = Terms of participation
-terms.line_1                                                    = By taking part in this trial, you agree to:
-terms.bullet_1                                                  = use relevant software to record your income and expenses
-terms.bullet_2                                                  = submit a report at least once every 3 months from the start of your accounting period
-terms.bullet_3                                                  = send your final report for the {0} to {1} tax year by 31 January {2}
-terms.bullet_4                                                  = declare any other income sources and reliefs
-terms.bullet_5                                                  = authorise any third party you use (such as your accountant) and have responsibility for any information they give to HMRC on your behalf
-terms.bullet_6                                                  = tell HMRC if you want to stop trading or start a new business
-terms.bullet_7                                                  = tell HMRC if you want to leave this trial
-terms.line_2                                                    = These terms aren''t contractual and you can stop taking part in the trial at any time.
-terms.button                                                    = Accept and continue
-
 ## Contact Email Address page ##
 contact_email.title                                             = Enter your email address
 contact_email.heading                                           = Enter your email address
@@ -239,7 +225,6 @@ summary.are_you_selfemployed                                    = You''re self-e
 summary.income_source.business                                  = Sole trader business
 summary.income_source.property                                  = Property
 summary.income_source.both                                      = Sole trader business and property
-summary.other_income                                            = Do you have any other sources of income?
 summary.match_tax_year                                          = Your accounting period matches the tax year
 summary.accounting_period                                       = Your accounting period dates
 summary.accounting_period.registration                          = When''s your current accounting period?
@@ -250,8 +235,6 @@ summary.business_start_date                                     = When did your 
 summary.income_type                                             = Your accounting method for your self-employed business
 summary.income_type.cash                                        = Cash basis
 summary.income_type.accruals                                    = Accruals basis
-summary.terms                                                   = Terms of participation
-summary.terms.agreed                                            = I agree
 summary.accounting_method_property                              = Your accounting method for your property income
 summary.selected_year                                           = Year signed-up for
 summary.selected_year.current                                   = Current tax year ({0} to {1})
@@ -352,9 +335,6 @@ error.end_date.invalid                                          = Enter a real e
 error.not-eligible.empty                                        = You must select an option to continue
 error.not-eligible.invalid                                      = You must select an option to continue
 
-error.other-income.empty                                        = You must select an option to continue
-error.other-income.invalid                                      = You must select an option to continue
-
 error.rent-uk-property.empty                                    = Select yes if you rent out a UK property
 error.rent-uk-property.invalid                                  = Select yes if you rent out a UK property
 error.rent-uk-property.only-source-empty                        = Select yes if this is your only source of self-employed income
@@ -407,25 +387,6 @@ user-details.summary.dob                                        = Date of birth
 no-sa.title                                                     = You need to register for Self Assessment
 no-sa.heading                                                   = You need to register for Self Assessment
 no-sa.line_1                                                    = Before you can sign up to use software to report your Income Tax, you need to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
-
-## Other income error page ##
-other-income-error.title                                        = Tell us about your other income sources in your final report
-other-income-error.heading                                      = Tell us about your other income sources in your final report
-other-income-error.para1                                        = You only need to send quarterly reports on income you earn from either:
-other-income-error.bullet1                                      = working for yourself
-other-income-error.bullet2                                      = renting out a UK property
-other-income-error.bullet3                                      = working for yourself and renting out a UK property
-other-income-error.para2                                        = You need to submit your final report by 31 January.
-
-## Other sources of income page ##
-income-other.title                                              = Do you have any other sources of income?
-income-other.heading                                            = Do you have any other sources of income?
-income-other.para1                                              = This could include:
-income-other.bullet1                                            = employment that isn''t your sole trader business
-income-other.bullet2                                            = UK pensions or annuities
-income-other.bullet3                                            = taxable state benefits
-income-other.bullet4                                            = employment or investments from outside the UK
-income-other.bullet5                                            = capital gains
 
 ## cannot report before 6 April 2018 page ##
 cannot-report-yet.title                                        = You can''t use software to report your Income Tax yet
@@ -621,19 +582,6 @@ agent.business.name.title                                             = Business
 agent.business.name.heading                                           = What''s the name of your client''s business?
 agent.business.name.line_1                                            = This is the business name they used to register for Self Assessment. If their business doesn''t have a name, enter your client''s name.
 
-## Terms and Conditions Messages
-agent.terms.title                                                     = Terms of participation
-agent.terms.heading                                                   = Terms of participation
-agent.terms.line_1                                                    = By taking part in this trial, you agree that either you or your client will:
-agent.terms.point_1                                                   = use relevant software to record your client''s income and expenses
-agent.terms.point_2                                                   = submit a report at least once every 3 months from the start of your client''s accounting period
-agent.terms.point_3                                                   = send their final report for the {0} to {1} tax year by 31 January {2}
-agent.terms.point_4                                                   = declare any other income sources and reliefs
-agent.terms.point_5                                                   = tell HMRC if your client stops trading or starts a new business
-agent.terms.point_6                                                   = tell HMRC if you want to leave this trial
-agent.terms.line_2                                                    = These terms are not contractual and your client can stop taking part in this trial at any time.
-agent.terms.button                                                    = Accept and continue
-
 ## Contact Email Address page ##
 agent.contact_email.title                                             = Enter your email address
 agent.contact_email.heading                                           = Enter your email address
@@ -680,7 +628,6 @@ agent.summary.income_source                                           = Client''
 agent.summary.income_source.business                                  = Sole trader business
 agent.summary.income_source.property                                  = Property
 agent.summary.income_source.both                                      = Sole trader business and property
-agent.summary.other_income                                            = Does your client have any other sources of income?
 agent.summary.accounting_period                                       = Your client''s accounting period dates
 agent.summary.business_name                                           = Business name
 agent.summary.income_type                                             = Accounting method for their self-employed business
@@ -754,11 +701,6 @@ agent.error.accounting-method-property.invalid                        = Select h
 agent.error.not-eligible.empty                                        = You must select an option to continue
 agent.error.not-eligible.invalid                                      = You must select an option to continue
 
-agent.error.other-income.empty                                        = Select yes if your client has other income sources
-agent.error.other-income.invalid                                      = Select yes if your client has other income sources
-
-agent.error.terms.empty                                               = You must accept the terms of participation to continue
-
 agent.error.client_details.first_name.empty                           = Enter your client''s first name
 agent.error.client_details.last_name.empty                            = Enter your client''s last name
 agent.error.client_details.first_name.invalid                         = Enter a valid first name
@@ -789,26 +731,6 @@ agent.not-eligible.signout                                            = I don''t
 agent.no-nino.title                                                   = Your client can''t use this service yet
 agent.no-nino.heading                                                 = Your client can''t use this service yet
 agent.no-nino.line_1                                                  = You can sign up later in the year when this service is available to you.
-
-## Other income error page ##
-agent.other-income-error.title                                        = You can use software to report your client''s Income Tax
-agent.other-income-error.heading                                      = You can use software to report your client''s Income Tax
-agent.other-income-error.para1                                        = You only need to send quarterly reports on your client''s income from either:
-agent.other-income-error.bullet1                                      = their sole trader business
-agent.other-income-error.bullet2                                      = renting out a UK property
-agent.other-income-error.bullet3                                      = their sole trader business and renting out a UK property
-agent.other-income-error.para2                                        = You can tell us about your client''s other income sources in their final summary report. Your client needs to submit this report by 31 January.
-
-## Other sources of income page ##
-agent.income-other.title                                              = Does your client have any other sources of income?
-agent.income-other.heading                                            = Does your client have any other sources of income?
-agent.income-other.para1                                              = This could include:
-agent.income-other.bullet1Property                                    = employment
-agent.income-other.bullet1Default                                     = employment that isn''t their sole trader business
-agent.income-other.bullet2                                            = UK pensions or annuities
-agent.income-other.bullet3                                            = taxable state benefits
-agent.income-other.bullet4                                            = employment or investments from outside the UK
-agent.income-other.bullet5                                            = capital gains
 
 ## Not Enrolled to Agent Services
 agent.not_enrolled_agent_services.title                               = You can''t use this service yet
