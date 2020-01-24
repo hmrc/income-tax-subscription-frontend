@@ -19,9 +19,11 @@ package controllers.agent.business
 import agent.auth.AuthenticatedController
 import agent.models.AccountingMethodModel
 import agent.services.KeystoreService
+import controllers.utils.AgentAnswers._
+import controllers.utils.AgentRequireAnswer
 import core.config.BaseControllerConfig
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
-import core.models.No
+import core.models.{No, Yes}
 import core.services.AuthService
 import forms.agent.AccountingMethodForm
 import incometax.business.models.MatchTaxYearModel
@@ -29,6 +31,7 @@ import incometax.subscription.models.{Both, Business, IncomeSourceType}
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
+import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 
@@ -38,63 +41,61 @@ import scala.concurrent.Future
 class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
-                                                   val authService: AuthService
-                                                  ) extends AuthenticatedController with FeatureSwitching {
+                                                   val authService: AuthService) extends AuthenticatedController with FeatureSwitching with AgentRequireAnswer {
 
-  def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
-    for {
-      incomeSource <- keystoreService.fetchIncomeSource()
-      matchTaxYear <- keystoreService.fetchMatchTaxYear()
-    } yield {
-      agent.views.html.business.accounting_method(
-        accountingMethodForm = accountingMethodForm,
-        postAction = controllers.agent.business.routes.BusinessAccountingMethodController.submit(editMode = isEditMode),
-        isEditMode,
-        backUrl = backUrl(isEditMode, incomeSource, matchTaxYear)
-      )
-    }
+  def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean, backUrl: String)(implicit request: Request[_]): Html = {
+    agent.views.html.business.accounting_method(
+      accountingMethodForm = accountingMethodForm,
+      postAction = controllers.agent.business.routes.BusinessAccountingMethodController.submit(editMode = isEditMode),
+      isEditMode = isEditMode,
+      backUrl = backUrl
+    )
   }
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      for {
-        accountingMethod <- keystoreService.fetchAccountingMethod()
-        view <- view(accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(accountingMethod), isEditMode = isEditMode)
-      } yield {
-        Ok(view)
+      require(optAccountingMethodAnswer and incomeSourceTypeAnswer and matchTaxYearAnswer) { case optAccountingMethod ~ incomeSourceType ~ matchTaxYear =>
+        Future.successful(Ok(view(
+          accountingMethodForm = AccountingMethodForm.accountingMethodForm.fill(optAccountingMethod),
+          isEditMode = isEditMode,
+          backUrl = backUrl(isEditMode, incomeSourceType, matchTaxYear)
+        )))
       }
   }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      AccountingMethodForm.accountingMethodForm.bindFromRequest.fold(
-        formWithErrors => view(accountingMethodForm = formWithErrors, isEditMode = isEditMode).map(BadRequest(_)),
-        accountingMethod => {
-          for {
-            _ <- keystoreService.saveAccountingMethod(accountingMethod)
-            incomeSource <- keystoreService.fetchIncomeSource()
-          } yield {
-            if (isEditMode) {
-              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
-            } else if (isEnabled(AgentPropertyCashOrAccruals) && incomeSource.contains(Both)) {
-              Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
-            } else {
-              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+      require(incomeSourceTypeAnswer and matchTaxYearAnswer) { case incomeSourceType ~ matchTaxYear =>
+        AccountingMethodForm.accountingMethodForm.bindFromRequest.fold(
+          formWithErrors => Future.successful(BadRequest(view(
+            accountingMethodForm = formWithErrors,
+            isEditMode = isEditMode,
+            backUrl = backUrl(isEditMode, incomeSourceType, matchTaxYear)
+          ))),
+          accountingMethod => {
+            keystoreService.saveAccountingMethod(accountingMethod) map { _ =>
+              if (isEditMode) {
+                Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+              } else if (isEnabled(AgentPropertyCashOrAccruals) && incomeSourceType == Both) {
+                Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
+              } else {
+                Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+              }
             }
           }
-        }
-      )
+        )
+      }
   }
 
-  def backUrl(isEditMode: Boolean, incomeSourceType: Option[IncomeSourceType], matchTaxYear: Option[MatchTaxYearModel]): String = {
-
-    (incomeSourceType, matchTaxYear, isEditMode) match {
-      case (_, _, true) => controllers.agent.routes.CheckYourAnswersController.show().url
-      case (_, Some(MatchTaxYearModel(No)), _) => controllers.agent.business.routes.BusinessAccountingPeriodDateController.show().url
-      case (Some(Both), _, _) => controllers.agent.business.routes.MatchTaxYearController.show().url
-      case (Some(Business), _, _) => controllers.agent.business.routes.WhatYearToSignUpController.show().url
-      case _ => controllers.agent.routes.IncomeSourceController.show().url
+  def backUrl(isEditMode: Boolean, incomeSourceType: IncomeSourceType, matchTaxYear: MatchTaxYearModel): String = {
+    if (isEditMode) {
+      controllers.agent.routes.CheckYourAnswersController.show().url
+    } else {
+      (matchTaxYear.matchTaxYear, incomeSourceType) match {
+        case (No, _) => controllers.agent.business.routes.BusinessAccountingPeriodDateController.show().url
+        case (Yes, Business) => controllers.agent.business.routes.WhatYearToSignUpController.show().url
+        case _ => controllers.agent.business.routes.MatchTaxYearController.show().url
+      }
     }
-
   }
 }
