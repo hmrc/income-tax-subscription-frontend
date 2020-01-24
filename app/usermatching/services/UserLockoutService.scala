@@ -17,14 +17,14 @@
 package usermatching.services
 
 import java.net.URLEncoder
-import javax.inject.{Inject, Singleton}
 
+import connectors.usermatching.UserLockoutConnector
+import javax.inject.{Inject, Singleton}
 import core.audit.Logging
 import core.config.AppConfig
 import core.services.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
-import usermatching.connectors.UserLockoutConnector
-import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
+import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import usermatching.models.{LockedOut, LockoutStatus, LockoutStatusFailure, NotLockedOut}
 
 import scala.concurrent.{ExecutionContext, Future}

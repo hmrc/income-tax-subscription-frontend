@@ -16,14 +16,14 @@
 
 package incometax.subscription.services
 
+import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
+import connectors.individual.subscription.{SubscriptionConnector, SubscriptionConnectorV2}
 import core.audit.Logging
 import core.config.AppConfig
 import core.config.featureswitch.{FeatureSwitching, UseSubscriptionApiV2}
 import core.models.{Next, Yes}
 import incometax.business.models.{AccountingPeriodModel, AccountingYearModel, MatchTaxYearModel}
-import incometax.subscription.connectors.{SubscriptionConnector, SubscriptionConnectorV2}
-import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
-import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import incometax.subscription.models._
 import incometax.util.AccountingPeriodUtil._
 import javax.inject.{Inject, Singleton}

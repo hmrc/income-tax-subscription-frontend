@@ -16,19 +16,19 @@
 
 package incometax.subscription.services.mocks
 
+import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
+import connectors.individual.subscription.mocks.{MockSubscriptionConnector, MockSubscriptionConnectorV2}
 import core.audit.Logging
 import core.config.MockConfig
-import incometax.subscription.connectors.mocks.{MockSubscriptionConnector, MockSubscriptionConnectorV2}
-import incometax.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
-import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
+import core.utils.MockTrait
+import core.utils.TestConstants._
 import incometax.subscription.models.{SubscriptionFailureResponse, SubscriptionSuccess, SummaryModel}
 import incometax.subscription.services.SubscriptionService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
 import uk.gov.hmrc.http.HeaderCarrier
-import core.utils.MockTrait
-import core.utils.TestConstants._
 
 import scala.concurrent.Future
 

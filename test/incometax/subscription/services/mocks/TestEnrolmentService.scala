@@ -16,12 +16,12 @@
 
 package incometax.subscription.services.mocks
 
+import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
 import core.Constants.GovernmentGateway.{ggServiceName, _}
 import core.config.MockConfig
 import core.connectors.mocks.MockAuth
 import core.utils.MockTrait
 import core.utils.TestConstants._
-import incometax.subscription.connectors.mocks.MockTaxEnrolmentsConnector
 import incometax.subscription.models.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import incometax.subscription.services.EnrolmentService
 import org.mockito.ArgumentMatchers

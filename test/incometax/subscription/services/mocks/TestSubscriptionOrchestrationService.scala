@@ -19,7 +19,7 @@ package incometax.subscription.services.mocks
 import core.connectors.models.ConnectorError
 import core.utils.MockTrait
 import core.utils.TestConstants._
-import incometax.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
+import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import incometax.subscription.models.SummaryModel
 import incometax.subscription.services.SubscriptionOrchestrationService
 import org.mockito.ArgumentMatchers

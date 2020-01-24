@@ -16,10 +16,10 @@
 
 package incometax.business.services.mocks
 
+import connectors.individual.business.mocks.MockAddressLookupConnector
 import core.utils.MockTrait
 import core.utils.TestConstants.testException
 import core.utils.TestModels.testReturnedAddress
-import incometax.business.connectors.mocks.MockAddressLookupConnector
 import incometax.business.models.address.{Country, _}
 import incometax.business.services.AddressLookupService
 import org.mockito.ArgumentMatchers

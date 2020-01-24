@@ -16,9 +16,9 @@
 
 package incometax.eligibility.services
 
+import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import core.utils.HttpResult.HttpConnectorError
 import core.utils.TestConstants.testUtr
-import incometax.eligibility.httpparsers.{Eligible, Ineligible}
 import incometax.eligibility.services.mocks.TestGetEligibilityStatusService
 import play.api.libs.json.JsError
 import play.api.test.Helpers._

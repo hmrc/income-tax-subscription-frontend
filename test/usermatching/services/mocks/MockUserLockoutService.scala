@@ -25,8 +25,8 @@ import org.mockito.Mockito._
 import play.api.http.Status
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import usermatching.connectors.mocks.MockUserLockoutConnector
-import usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
+import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
+import connectors.usermatching.mocks.MockUserLockoutConnector
 import usermatching.models.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import usermatching.services.{LockoutUpdate, UserLockoutService}
 import usermatching.utils.UserMatchingTestSupport

@@ -16,8 +16,8 @@
 
 package digitalcontact.services
 
+import connectors.PreferenceFrontendConnector
 import javax.inject.{Inject, Singleton}
-import digitalcontact.connectors.PreferenceFrontendConnector
 import digitalcontact.models.{PaperlessPreferenceError, PaperlessState}
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Request}

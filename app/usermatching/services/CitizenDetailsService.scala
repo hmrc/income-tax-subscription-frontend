@@ -16,12 +16,12 @@
 
 package usermatching.services
 
+import connectors.usermatching.CitizenDetailsConnector
 import core.auth.IncomeTaxSAUser
 import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import usermatching.connectors.CitizenDetailsConnector
 import usermatching.models.CitizenDetailsSuccess
 
 import scala.concurrent.{ExecutionContext, Future}

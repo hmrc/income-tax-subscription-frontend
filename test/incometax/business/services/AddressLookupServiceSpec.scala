@@ -17,7 +17,7 @@
 package incometax.business.services
 
 import core.utils.TestModels._
-import incometax.business.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
+import connectors.individual.business.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
 import incometax.business.models.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, UnexpectedStatusReturned}
 import incometax.business.services.mocks.TestAddressLookupService
 import org.scalatest.concurrent.ScalaFutures

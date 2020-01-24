@@ -16,8 +16,8 @@
 
 package digitalcontact.services.mocks
 
+import connectors.individual.mocks.MockPaperlessPreferenceTokenConnector
 import core.services.mocks.MockKeystoreService
-import digitalcontact.connectors.mocks.MockPaperlessPreferenceTokenConnector
 import digitalcontact.services.PaperlessPreferenceTokenService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._

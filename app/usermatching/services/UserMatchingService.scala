@@ -16,12 +16,11 @@
 
 package usermatching.services
 
+import connectors.usermatching.AuthenticatorConnector
 import javax.inject.{Inject, Singleton}
-
 import core.config.AppConfig
 import uk.gov.hmrc.http.HeaderCarrier
-import usermatching.connectors.AuthenticatorConnector
-import usermatching.httpparsers.MatchUserHttpParser.MatchUserResponse
+import connectors.usermatching.httpparsers.MatchUserHttpParser.MatchUserResponse
 import usermatching.models.UserDetailsModel
 
 import scala.concurrent.Future

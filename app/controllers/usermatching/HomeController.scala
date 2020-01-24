@@ -16,6 +16,7 @@
 
 package controllers.usermatching
 
+import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.individual.eligibility.{routes => eligibilityRoutes}
 import core.ITSASessionKeys._
 import core.audit.Logging
@@ -24,7 +25,6 @@ import core.auth._
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import core.utils.Implicits._
-import incometax.eligibility.httpparsers.{Eligible, Ineligible}
 import incometax.eligibility.services.GetEligibilityStatusService
 import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionService

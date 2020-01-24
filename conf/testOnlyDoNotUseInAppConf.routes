@@ -7,39 +7,39 @@
 # !!!WARNING!!! Every route defined in this file MUST be prefixed with "/test-only/". This is because NGINX is blocking every uri containing the string "test-only" in production.
 # Failing to follow this rule may result in test routes deployed in production.
 
-GET         /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                              controllers.individual.testonly.MatchingStubController.show
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                              testonly.controllers.individual.MatchingStubController.show
 
 # NOCSRF
-POST        /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                              controllers.individual.testonly.MatchingStubController.submit
-GET         /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts                        controllers.individual.testonly.KnownFactsController.show
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/stub-user                              testonly.controllers.individual.MatchingStubController.submit
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts                        testonly.controllers.individual.KnownFactsController.show
 
 # NOCSRF
-POST        /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts                        controllers.individual.testonly.KnownFactsController.submit
-GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences                      controllers.individual.testonly.ClearPreferencesController.clear
-GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences-for                  controllers.individual.testonly.ClearPreferencesController.show
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/add-known-facts                        testonly.controllers.individual.KnownFactsController.submit
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences                      testonly.controllers.individual.ClearPreferencesController.clear
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences-for                  testonly.controllers.individual.ClearPreferencesController.show
 # NOCSRF
-POST        /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences-for                  controllers.individual.testonly.ClearPreferencesController.submit
-GET         /report-quarterly/income-and-expenses/sign-up/test-only/auth-update                            controllers.individual.testonly.AuthUpdateController.update
-GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-lockout                          controllers.individual.testonly.ResetUserLockoutController.resetLockout
-GET         /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch                         controllers.individual.testonly.FeatureSwitchController.show
-
-# NOCSRF
-POST        /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch                         controllers.individual.testonly.FeatureSwitchController.submit
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/clear-preferences-for                  testonly.controllers.individual.ClearPreferencesController.submit
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/auth-update                            testonly.controllers.individual.AuthUpdateController.update
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/reset-lockout                          testonly.controllers.individual.ResetUserLockoutController.resetLockout
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch                         testonly.controllers.FeatureSwitchController.show
 
 # NOCSRF
-POST        /report-quarterly/income-and-expenses/sign-up/test-only/preferences-token                      controllers.individual.testonly.PreferenceTokenController.addToken()
-
-
-
-GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/stub-client                     controllers.agent.testonly.MatchingStubController.show
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/feature-switch                         testonly.controllers.FeatureSwitchController.submit
 
 # NOCSRF
-POST        /report-quarterly/income-and-expenses/sign-up/client/test-only/stub-client                     controllers.agent.testonly.MatchingStubController.submit
-GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-user                      controllers.agent.testonly.ResetUserController.resetUser
-GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-lockout                   controllers.agent.testonly.ResetAgentLockoutController.resetLockout
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/preferences-token                      testonly.controllers.individual.PreferenceTokenController.addToken()
+
+
+
+GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/stub-client                     testonly.controllers.agent.MatchingStubController.show
+
+# NOCSRF
+POST        /report-quarterly/income-and-expenses/sign-up/client/test-only/stub-client                     testonly.controllers.agent.MatchingStubController.submit
+GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-user                      testonly.controllers.agent.ResetUserController.resetUser
+GET         /report-quarterly/income-and-expenses/sign-up/client/test-only/reset-lockout                   testonly.controllers.agent.ResetAgentLockoutController.resetLockout
 
 # Add all the application routes to the prod.routes file
 ->          /                                                                                              prod.Routes
 
-GET         /report-quarterly/income-and-expenses/sign-up/test-only/update-enrolments                      controllers.individual.testonly.UpdateEnrolmentsController.show
-POST        /report-quarterly/income-and-expenses/sign-up/test-only/update-enrolments                      controllers.individual.testonly.UpdateEnrolmentsController.submit
+GET         /report-quarterly/income-and-expenses/sign-up/test-only/update-enrolments                      testonly.controllers.UpdateEnrolmentsController.show
+POST        /report-quarterly/income-and-expenses/sign-up/test-only/update-enrolments                      testonly.controllers.UpdateEnrolmentsController.submit

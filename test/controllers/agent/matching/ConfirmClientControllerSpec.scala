@@ -20,9 +20,9 @@ import agent.auth.AgentUserMatched
 import agent.services._
 import agent.services.mocks.{MockAgentQualificationService, MockKeystoreService}
 import agent.utils.{TestConstants, TestModels}
+import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.agent.{AgentControllerBaseSpec, ITSASessionKeys}
 import core.config.MockConfig
-import incometax.eligibility.httpparsers.{Eligible, Ineligible}
 import incometax.eligibility.services.mocks.MockGetEligibilityStatusService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._

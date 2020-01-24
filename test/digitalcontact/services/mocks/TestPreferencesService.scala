@@ -16,7 +16,7 @@
 
 package digitalcontact.services.mocks
 
-import digitalcontact.connectors.mocks.MockPreferenceFrontendConnector
+import connectors.individual.mocks.MockPreferenceFrontendConnector
 import digitalcontact.models.{Activated, PaperlessPreferenceError, PaperlessState, Unset}
 import digitalcontact.services.PreferencesService
 import org.mockito.ArgumentMatchers

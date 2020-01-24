@@ -16,10 +16,10 @@
 
 package incometax.subscription.services
 
+import connectors.individual.subscription.TaxEnrolmentsConnector
 import core.Constants
 import core.Constants.GovernmentGateway._
 import core.config.AppConfig
-import incometax.subscription.connectors.TaxEnrolmentsConnector
 import incometax.subscription.models._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
