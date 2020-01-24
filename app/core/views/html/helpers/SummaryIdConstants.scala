@@ -23,7 +23,6 @@ object SummaryIdConstants {
   val RentUkPropertyId = "rentUkProperty"
   val AreYouSelfEmployedId = "AreYouSelfEmployed"
   val OnlySourceOfIncomeId = "onlySourceOfIncome"
-  val OtherIncomeId = "otherIncome"
   val MatchTaxYearId = "matchTaxYear"
   val AccountingPeriodDateId = "accountingPeriodDate"
   val BusinessNameId = "businessName"
@@ -33,6 +32,5 @@ object SummaryIdConstants {
   val SelectedTaxYearId = "selectedTaxYear"
   val AccountingMethodId = "accountingMethod"
   val AccountingMethodPropertyId = "accountingMethodProperty"
-  val TermsId = "terms"
 
 }

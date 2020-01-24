@@ -17,7 +17,6 @@
 package agent.services
 
 import core.config.AppConfig
-import core.models.YesNo
 import incometax.business.models._
 import incometax.subscription.models._
 import play.api.libs.json.Reads
@@ -31,8 +30,6 @@ object CacheUtil {
 
     def getIncomeSource()(implicit read: Reads[IncomeSourceType]): Option[IncomeSourceType] = cacheMap.getEntry(IncomeSource)
 
-    def getOtherIncome()(implicit read: Reads[YesNo]): Option[YesNo] = cacheMap.getEntry(OtherIncome)
-
     def getMatchTaxYear()(implicit read: Reads[MatchTaxYearModel]): Option[MatchTaxYearModel] = cacheMap.getEntry(MatchTaxYear)
 
     def getSelectedTaxYear()(implicit read: Reads[AccountingYearModel]): Option[AccountingYearModel] = cacheMap.getEntry(WhatYearToSignUp)
@@ -45,38 +42,30 @@ object CacheUtil {
 
     def getAccountingMethodProperty()(implicit read: Reads[AccountingMethodPropertyModel]): Option[AccountingMethodPropertyModel] = cacheMap.getEntry(AccountingMethodProperty)
 
-    def getTerms()(implicit read: Reads[Boolean]): Option[Boolean] = cacheMap.getEntry(Terms)
-
     def getSummary()(implicit appConfig: AppConfig): AgentSummary = {
       getIncomeSource() match {
         case Some(Property) =>
           AgentSummary(
             incomeSource = getIncomeSource(),
-            otherIncome = getOtherIncome(),
-            accountingMethodProperty = getAccountingMethodProperty(),
-            terms = getTerms()
+            accountingMethodProperty = getAccountingMethodProperty()
           )
         case Some(Business) =>
           AgentSummary(
             incomeSource = getIncomeSource(),
-            otherIncome = getOtherIncome(),
             matchTaxYear = getMatchTaxYear(),
             selectedTaxYear = getSelectedTaxYear(),
             accountingPeriodDate = getAccountingPeriodDate(),
             businessName = getBusinessName(),
-            accountingMethod = getAccountingMethod(),
-            terms = getTerms()
+            accountingMethod = getAccountingMethod()
           )
         case Some(Both) =>
           AgentSummary(
             incomeSource = getIncomeSource(),
-            otherIncome = getOtherIncome(),
             matchTaxYear = getMatchTaxYear(),
             accountingPeriodDate = getAccountingPeriodDate(),
             businessName = getBusinessName(),
             accountingMethod = getAccountingMethod(),
-            accountingMethodProperty = getAccountingMethodProperty(),
-            terms = getTerms()
+            accountingMethodProperty = getAccountingMethodProperty()
           )
         case _ => AgentSummary()
       }

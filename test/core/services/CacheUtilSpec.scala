@@ -36,7 +36,6 @@ class CacheUtilSpec extends UnitTestTrait
       emptyCacheMap.getRentUkProperty() shouldBe None
       emptyCacheMap.getAreYouSelfEmployed() shouldBe None
       emptyCacheMap.getIncomeSourceType() shouldBe None
-      emptyCacheMap.getOtherIncome() shouldBe None
       emptyCacheMap.getBusinessName() shouldBe None
       emptyCacheMap.getBusinessPhoneNumber() shouldBe None
       emptyCacheMap.getBusinessAddress() shouldBe None
@@ -47,14 +46,12 @@ class CacheUtilSpec extends UnitTestTrait
       emptyCacheMap.getSelectedTaxYear() shouldBe None
       emptyCacheMap.getAccountingMethod() shouldBe None
       emptyCacheMap.getPropertyAccountingMethod() shouldBe None
-      emptyCacheMap.getTerms() shouldBe None
     }
 
     "In the respective get calls, return the models if they are in the cachemap" in {
       testCacheMap.getRentUkProperty() shouldBe Some(testRentUkProperty_property_and_other)
       testCacheMap.getAreYouSelfEmployed() shouldBe Some(testAreYouSelfEmployed_yes)
       testCacheMap.getIncomeSourceType() shouldBe Some(Both)
-      testCacheMap.getOtherIncome() shouldBe Some(testOtherIncomeNo)
       testCacheMap.getBusinessName() shouldBe Some(testBusinessName)
       testCacheMap.getBusinessPhoneNumber() shouldBe Some(testBusinessPhoneNumber)
       testCacheMap.getBusinessAddress() shouldBe Some(testAddress)
@@ -66,7 +63,6 @@ class CacheUtilSpec extends UnitTestTrait
       testCacheMap.getSelectedTaxYear() shouldBe Some(testSelectedTaxYearNext)
       testCacheMap.getPropertyAccountingMethod().contains(testAccountingMethodProperty) shouldBe true
       testCacheMap.getPropertyAccountingMethod() shouldBe Some(testAccountingMethodProperty)
-      testCacheMap.getTerms() shouldBe Some(testTerms)
     }
 
     "getAccountingPeriodDate" when {
@@ -108,9 +104,7 @@ class CacheUtilSpec extends UnitTestTrait
           IndividualSummary(
             rentUkProperty = testRentUkProperty_property_only,
             areYouSelfEmployed = None,
-            otherIncome = testOtherIncomeNo,
-            accountingMethodProperty = testAccountingMethodProperty,
-            terms = testTerms
+            accountingMethodProperty = testAccountingMethodProperty
           )
       }
       "income source is just business" in {
@@ -118,7 +112,6 @@ class CacheUtilSpec extends UnitTestTrait
           IndividualSummary(
             rentUkProperty = testRentUkProperty_no_property,
             areYouSelfEmployed = testAreYouSelfEmployed_yes,
-            otherIncome = testOtherIncomeNo,
             matchTaxYear = testMatchTaxYearNo,
             accountingPeriodDate = testAccountingPeriod,
             businessName = testBusinessName,
@@ -126,8 +119,7 @@ class CacheUtilSpec extends UnitTestTrait
             businessAddress = testAddress,
             businessStartDate = testBusinessStartDate,
             selectedTaxYear = testSelectedTaxYearNext,
-            accountingMethod = testAccountingMethod,
-            terms = testTerms
+            accountingMethod = testAccountingMethod
           )
       }
       "income source is both property and business" in {
@@ -135,7 +127,6 @@ class CacheUtilSpec extends UnitTestTrait
           IndividualSummary(
             rentUkProperty = testRentUkProperty_property_and_other,
             areYouSelfEmployed = testAreYouSelfEmployed_yes,
-            otherIncome = testOtherIncomeNo,
             matchTaxYear = testMatchTaxYearNo,
             accountingPeriodDate = testAccountingPeriod,
             businessName = testBusinessName,
@@ -143,8 +134,7 @@ class CacheUtilSpec extends UnitTestTrait
             businessAddress = testAddress,
             businessStartDate = testBusinessStartDate,
             accountingMethod = testAccountingMethod,
-            accountingMethodProperty = testAccountingMethodProperty,
-            terms = testTerms
+            accountingMethodProperty = testAccountingMethodProperty
           )
       }
       "income source is neither property or business" in {

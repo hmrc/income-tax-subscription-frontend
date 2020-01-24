@@ -19,7 +19,7 @@ package controllers.agent.business
 import agent.models.AccountingMethodModel
 import agent.services.mocks.MockKeystoreService
 import controllers.agent.AgentControllerBaseSpec
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
 import core.models.{Cash, No, Yes}
 import forms.agent.AccountingMethodForm
 import incometax.business.models.MatchTaxYearModel
@@ -35,7 +35,6 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(EligibilityPagesFeature)
     disable(AgentPropertyCashOrAccruals)
   }
 
@@ -88,23 +87,9 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
         }
       }
 
-      s"redirect to '${controllers.agent.routes.TermsController.show().url}'" in {
+      s"redirect to '${controllers.agent.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
         setupMockKeystore(fetchIncomeSource = Both)
-
-        val goodRequest = callSubmit(isEditMode = false)
-
-        status(goodRequest) mustBe SEE_OTHER
-        redirectLocation(goodRequest) mustBe Some(controllers.agent.routes.TermsController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchIncomeSource = 1, saveAccountingMethod = 1)
-      }
-
-      s"redirect to '${controllers.agent.routes.CheckYourAnswersController.show().url}' when the eligibility pages feature switch is on" in {
-        setupMockKeystoreSaveFunctions()
-        setupMockKeystore(fetchIncomeSource = Both)
-        enable(EligibilityPagesFeature)
 
         val goodRequest = callSubmit(isEditMode = false)
 
@@ -154,37 +139,33 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
     }
 
     "not in edit mode" when {
-        "match tax year was answered with No" should {
-          s"point to ${controllers.agent.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-
-            TestBusinessAccountingMethodController.backUrl(isEditMode = false, None, MatchTaxYearModel(No)) mustBe
-              controllers.agent.business.routes.BusinessAccountingPeriodDateController.show().url
-          }
+      "match tax year was answered with No" should {
+        s"point to ${controllers.agent.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
+          TestBusinessAccountingMethodController.backUrl(isEditMode = false, None, MatchTaxYearModel(No)) mustBe
+            controllers.agent.business.routes.BusinessAccountingPeriodDateController.show().url
         }
+      }
 
-        "income source type is both" should {
-          s"point to ${controllers.agent.business.routes.MatchTaxYearController.show().url}" in {
-
-            TestBusinessAccountingMethodController.backUrl(isEditMode = false, Some(Both), Some(MatchTaxYearModel(Yes))) mustBe
-              controllers.agent.business.routes.MatchTaxYearController.show().url
-          }
+      "income source type is both" should {
+        s"point to ${controllers.agent.business.routes.MatchTaxYearController.show().url}" in {
+          TestBusinessAccountingMethodController.backUrl(isEditMode = false, Some(Both), Some(MatchTaxYearModel(Yes))) mustBe
+            controllers.agent.business.routes.MatchTaxYearController.show().url
         }
+      }
 
-        "income source type is business" should {
-          s"point to ${controllers.agent.business.routes.WhatYearToSignUpController.show().url}" in {
-
-            TestBusinessAccountingMethodController.backUrl(isEditMode = false, Some(Business), Some(MatchTaxYearModel(Yes))) mustBe
-              controllers.agent.business.routes.WhatYearToSignUpController.show().url
-          }
+      "income source type is business" should {
+        s"point to ${controllers.agent.business.routes.WhatYearToSignUpController.show().url}" in {
+          TestBusinessAccountingMethodController.backUrl(isEditMode = false, Some(Business), Some(MatchTaxYearModel(Yes))) mustBe
+            controllers.agent.business.routes.WhatYearToSignUpController.show().url
         }
+      }
 
-        "the back url can't be determined" should {
-          s"point to ${controllers.agent.routes.IncomeSourceController.show().url}" in {
-
-            TestBusinessAccountingMethodController.backUrl(isEditMode = false, None, None) mustBe
-              controllers.agent.routes.IncomeSourceController.show().url
-          }
+      "the back url can't be determined" should {
+        s"point to ${controllers.agent.routes.IncomeSourceController.show().url}" in {
+          TestBusinessAccountingMethodController.backUrl(isEditMode = false, None, None) mustBe
+            controllers.agent.routes.IncomeSourceController.show().url
         }
+      }
 
     }
   }

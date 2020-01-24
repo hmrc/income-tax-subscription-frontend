@@ -32,24 +32,11 @@ GET         /confirmation                 controllers.individual.subscription.Co
 # Session Timeout Route
 GET         /session-timeout              controllers.SessionTimeoutController.show
 
-
-# Terms Routes
-GET         /terms                        controllers.individual.subscription.TermsController.show(editMode: Boolean ?= false)
-POST        /terms                        controllers.individual.subscription.TermsController.submit()
-
-# Other Income Sources Routes
-GET         /income-other                 controllers.individual.incomesource.OtherIncomeController.show(editMode: Boolean ?= false)
-POST        /income-other                 controllers.individual.incomesource.OtherIncomeController.submit(editMode: Boolean ?= false)
-
 # Already enrolled
 GET         /already-enrolled             controllers.individual.subscription.AlreadyEnrolledController.show
 
 # No NINO Routes
 GET         /register-for-SA              controllers.usermatching.NoSAController.show
-
-# Other Income Error Routes
-GET         /other-income-in-final-report controllers.individual.incomesource.OtherIncomeErrorController.show
-POST        /other-income-in-final-report controllers.individual.incomesource.OtherIncomeErrorController.submit
 
 # Affinity Group Error
 GET         /error/affinity-group         controllers.usermatching.AffinityGroupErrorController.show

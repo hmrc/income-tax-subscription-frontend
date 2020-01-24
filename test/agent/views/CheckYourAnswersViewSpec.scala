@@ -38,7 +38,7 @@ import play.twirl.api.Html
 class CheckYourAnswersViewSpec extends UnitTestTrait {
 
   lazy val postAction: Call = _root_.controllers.agent.routes.CheckYourAnswersController.submit()
-  lazy val backUrl: String = _root_.controllers.agent.routes.TermsController.show().url
+  lazy val backUrl: String = _root_.controllers.agent.routes.IncomeSourceController.show().url
 
   val testBusinessPhoneNumber: BusinessPhoneNumberModel = TestModels.testBusinessPhoneNumber
   val testBusinessStartDate: BusinessStartDateModel = TestModels.testBusinessStartDate
@@ -49,14 +49,12 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testIncomeSource: IncomeSourceType = TestModels.testIncomeSourceBoth
   val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
   val testAreYouSelfEmployed: AreYouSelfEmployedModel = TestModels.testAreYouSelfEmployed_yes
-  val testOtherIncome: YesNo = No
   val testSummary = customTestSummary()
 
   def customTestSummary(matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
                         accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod,
                         selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
                         accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) = AgentSummary(
-    otherIncome = testOtherIncome,
     matchTaxYear = matchTaxYear,
     accountingPeriodDate = accountingPeriod,
     businessName = testBusinessName,
@@ -237,20 +235,6 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       val expectedQuestion = messages.income_source
       val expectedAnswer = MessageLookup.Summary.IncomeSource.both
       val expectedEditLink = _root_.controllers.agent.routes.IncomeSourceController.show(editMode = true).url
-
-      sectionTest(
-        sectionId = sectionId,
-        expectedQuestion = expectedQuestion,
-        expectedAnswer = expectedAnswer,
-        expectedEditLink = expectedEditLink
-      )()
-    }
-
-    "display the correct info for other income" in {
-      val sectionId = OtherIncomeId
-      val expectedQuestion = messages.other_income
-      val expectedAnswer = MessageLookup.OtherIncome.no
-      val expectedEditLink = _root_.controllers.agent.routes.OtherIncomeController.show(editMode = true).url
 
       sectionTest(
         sectionId = sectionId,

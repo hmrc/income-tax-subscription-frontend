@@ -19,7 +19,6 @@ package agent.services.mocks
 import _root_.agent.services.KeystoreService
 import _root_.core.utils.MockTrait
 import agent.models._
-import core.models.YesNo
 import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.models.IncomeSourceType
 import org.mockito.ArgumentMatchers
@@ -62,8 +61,6 @@ trait MockKeystoreService extends MockTrait {
                                          fetchAccountingPeriodDate: MFO[AccountingPeriodModel] = DoNotConfigure,
                                          fetchAccountingMethod: MFO[AccountingMethodModel] = DoNotConfigure,
                                          fetchPropertyAccountingMethod: MFO[AccountingMethodPropertyModel] = DoNotConfigure,
-                                         fetchTerms: MFO[Boolean] = DoNotConfigure,
-                                         fetchOtherIncome: MFO[YesNo] = DoNotConfigure,
                                          fetchSubscriptionId: MFO[String] = DoNotConfigure,
                                          fetchMatchTaxYear: MFO[MatchTaxYearModel] = DoNotConfigure,
                                          fetchWhatYearToSignUp: MFO[AccountingYearModel] = DoNotConfigure,
@@ -75,8 +72,6 @@ trait MockKeystoreService extends MockTrait {
     mockFetchFromKeyStore[AccountingPeriodModel](AccountingPeriodDate, fetchAccountingPeriodDate)
     mockFetchFromKeyStore[AccountingMethodModel](AccountingMethod, fetchAccountingMethod)
     mockFetchFromKeyStore[AccountingMethodPropertyModel](AccountingMethodProperty, fetchPropertyAccountingMethod)
-    mockFetchFromKeyStore[Boolean](Terms, fetchTerms)
-    mockFetchFromKeyStore[YesNo](OtherIncome, fetchOtherIncome)
     mockFetchFromKeyStore[String](MtditId, fetchSubscriptionId)
     mockFetchFromKeyStore[MatchTaxYearModel](MatchTaxYear, fetchMatchTaxYear)
     mockFetchFromKeyStore[AccountingYearModel](WhatYearToSignUp, fetchWhatYearToSignUp)
@@ -102,10 +97,6 @@ trait MockKeystoreService extends MockTrait {
                                       saveAccountingMethod: Option[Int] = None,
                                       fetchPropertyAccountingMethod: Option[Int] = None,
                                       savePropertyAccountingMethod: Option[Int] = None,
-                                      fetchTerms: Option[Int] = None,
-                                      saveTerms: Option[Int] = None,
-                                      fetchOtherIncome: Option[Int] = None,
-                                      saveOtherIncome: Option[Int] = None,
                                       fetchSubscriptionId: Option[Int] = None,
                                       saveSubscriptionId: Option[Int] = None,
                                       fetchAll: Option[Int] = None,
@@ -125,10 +116,6 @@ trait MockKeystoreService extends MockTrait {
     verifyKeystoreSave(AccountingMethod, saveAccountingMethod)
     verifyKeystoreFetch(AccountingMethodProperty, fetchPropertyAccountingMethod)
     verifyKeystoreSave(AccountingMethodProperty, savePropertyAccountingMethod)
-    verifyKeystoreFetch(Terms, fetchTerms)
-    verifyKeystoreSave(Terms, saveTerms)
-    verifyKeystoreFetch(OtherIncome, fetchOtherIncome)
-    verifyKeystoreSave(OtherIncome, saveOtherIncome)
     verifyKeystoreFetch(MtditId, fetchSubscriptionId)
     verifyKeystoreSave(MtditId, saveSubscriptionId)
 

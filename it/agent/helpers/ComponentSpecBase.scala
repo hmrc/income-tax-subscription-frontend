@@ -156,15 +156,7 @@ trait ComponentSpecBase extends UnitSpec
 
     def income(): WSResponse = get("/income")
 
-    def otherIncome(): WSResponse = get("/income-other")
-
     def mainIncomeError(): WSResponse = get("/error/main-income")
-
-    def submitOtherIncomeError(): WSResponse = post("/error/other-income")(Map.empty)
-
-    def otherIncomeError(): WSResponse = get("/error/other-income")
-
-    def terms(): WSResponse = get("/terms")
 
     def sessionTimeout(): WSResponse = get("/session-timeout")
 
@@ -232,8 +224,6 @@ trait ComponentSpecBase extends UnitSpec
       )(Map.empty)
     }
 
-    def submitTerms(): WSResponse = post("/terms")(Map.empty)
-
     def submitExitSurvey(): WSResponse = post("/exit-survey")(Map.empty)
 
     def exitSurvey(origin: String): WSResponse = get(s"/exit-survey?origin=$origin")
@@ -269,16 +259,6 @@ trait ComponentSpecBase extends UnitSpec
     }
 
     def confirmation(): WSResponse = get("/confirmation")
-
-    def submitOtherIncome(inEditMode: Boolean, request: Option[YesNo]): WSResponse = {
-      val uri = s"/income-other?editMode=$inEditMode"
-      post(uri)(
-        request.fold(Map.empty[String, Seq[String]])(
-          model =>
-            OtherIncomeForm.otherIncomeForm.fill(model).data.map { case (k, v) => (k, Seq(v)) }
-        )
-      )
-    }
 
     def submitMatchTaxYear(inEditMode: Boolean, request: Option[MatchTaxYearModel]): WSResponse = {
       val uri = s"/business/match-to-tax-year?editMode=$inEditMode"

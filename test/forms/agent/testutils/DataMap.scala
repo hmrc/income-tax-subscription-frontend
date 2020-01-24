@@ -17,7 +17,6 @@
 package forms.agent.testutils
 
 import forms.agent.BusinessNameForm.businessName
-import forms.agent.OtherIncomeForm.choice
 import forms.agent.{AccountingMethodForm, IncomeSourceForm}
 import forms.submapping.DateMapping._
 import forms.validation.ErrorMessageFactory
@@ -26,7 +25,6 @@ import play.api.data.validation.{Constraint, Invalid}
 
 
 object DataMap {
-
 
 
   type DataMap = Map[String, String]
@@ -45,8 +43,6 @@ object DataMap {
   def accountingMethod(iType: String): DataMap = Map(AccountingMethodForm.accountingMethod -> iType)
 
   def incomeSource(iType: String): DataMap = Map(IncomeSourceForm.incomeSource -> iType)
-
-  def otherIncomeChoice(iType: String): DataMap = Map(choice -> iType)
 
   val alwaysFailInvalid: Invalid = ErrorMessageFactory.error("always fail")
 

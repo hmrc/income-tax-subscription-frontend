@@ -17,7 +17,6 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import forms.agent._
 import agent.services.CacheUtil._
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
@@ -32,8 +31,6 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
-
-import scala.concurrent.Future
 
 @Singleton
 class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseControllerConfig,
@@ -80,22 +77,11 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
               accountingPeriod.endDate.toLocalDate, incomeSources.contains(Both))) {
               for {
                 cache <- keystoreService.fetchAll() map (_.get)
-                optOldAccountingPeriodDates = cache.getAccountingPeriodDate()
                 _ = cache.getIncomeSource() map (source => IncomeSourceType(source.source))
                 _ <- keystoreService.saveAccountingPeriodDate(accountingPeriod)
-                taxYearChanged = optOldAccountingPeriodDates match {
-                  case Some(oldAccountingPeriod) => oldAccountingPeriod.taxEndYear != accountingPeriod.taxEndYear
-                  case None => true
-                }
-                _ <- if (taxYearChanged) keystoreService.saveTerms(terms = false)
-                else Future.successful(Unit)
               } yield {
                 if (isEditMode) {
-                  if (taxYearChanged) {
-                    Redirect(controllers.agent.routes.TermsController.show(editMode = true))
-                  } else {
-                    Redirect(controllers.agent.routes.CheckYourAnswersController.show())
-                  }
+                  Redirect(controllers.agent.routes.CheckYourAnswersController.show())
                 } else {
                   Redirect(controllers.agent.business.routes.BusinessAccountingMethodController.show())
                 }

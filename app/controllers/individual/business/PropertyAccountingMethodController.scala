@@ -36,11 +36,11 @@ import scala.concurrent.Future
 
 @Singleton
 class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
-                                                           val messagesApi: MessagesApi,
-                                                           val keystoreService: KeystoreService,
-                                                           val authService: AuthService,
-                                                           val appConfig: AppConfig,
-                                                           val currentTimeService: CurrentTimeService
+                                                   val messagesApi: MessagesApi,
+                                                   val keystoreService: KeystoreService,
+                                                   val authService: AuthService,
+                                                   val appConfig: AppConfig,
+                                                   val currentTimeService: CurrentTimeService
                                                   ) extends SignUpController {
 
   def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
@@ -57,11 +57,13 @@ class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControlle
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      keystoreService.fetchAccountingMethodProperty() flatMap { accountingMethodProperty
-      => view(accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm
-        .fill(accountingMethodProperty), isEditMode = isEditMode).map(view => Ok(view))
-        }
+      keystoreService.fetchAccountingMethodProperty() flatMap { accountingMethodProperty =>
+        view(
+          accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.fill(accountingMethodProperty),
+          isEditMode = isEditMode
+        ).map(view => Ok(view))
       }
+  }
 
   def submit(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -80,21 +82,18 @@ class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControlle
     if (isEditMode)
       Future.successful(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
     else {
-      keystoreService.fetchAll() map {
-        cacheMap =>
-          (cacheMap.getRentUkProperty(), cacheMap.getAreYouSelfEmployed())
+      keystoreService.fetchAll() map { cacheMap =>
+        (cacheMap.getRentUkProperty(), cacheMap.getAreYouSelfEmployed()) match {
+          case (Some(RentUkPropertyModel(Yes, Some(Yes))), _) =>
+            controllers.individual.incomesource.routes.RentUkPropertyController.show().url
+          case (_, Some(AreYouSelfEmployedModel(Yes))) =>
+            controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+          case (_, Some(AreYouSelfEmployedModel(No))) =>
+            controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
+          case _ =>
+            controllers.individual.incomesource.routes.RentUkPropertyController.show().url
 
-          match {
-            case (Some(RentUkPropertyModel(Yes, Some(Yes))), _) =>
-              controllers.individual.incomesource.routes.RentUkPropertyController.show().url
-            case (_, Some(AreYouSelfEmployedModel(Yes))) =>
-              controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-            case (_, Some(AreYouSelfEmployedModel(No))) =>
-              controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
-            case _ =>
-              controllers.individual.incomesource.routes.RentUkPropertyController.show().url
-
-          }
+        }
       }
     }
 

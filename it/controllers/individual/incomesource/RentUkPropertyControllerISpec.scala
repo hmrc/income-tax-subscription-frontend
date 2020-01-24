@@ -16,7 +16,7 @@
 
 package controllers.individual.incomesource
 
-import core.config.featureswitch.EligibilityPagesFeature
+import core.config.featureswitch.PropertyCashOrAccruals
 import core.models.{No, Yes}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
@@ -28,6 +28,11 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 class RentUkPropertyControllerISpec extends ComponentSpecBase {
+
+  override def beforeEach(): Unit = {
+    disable(PropertyCashOrAccruals)
+    super.beforeEach()
+  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/rent-uk-property" when {
 
@@ -72,196 +77,109 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
   }
 
   "POST /report-quarterly/income-and-expenses/sign-up/rent-uk-property" when {
+    "not in edit mode" when {
+      "the user rents a uk property and has other income" in {
+        val userInput: RentUkPropertyModel = RentUkPropertyModel(Yes, Some(No))
 
-    "not in edit mode" should {
-      "select the No rent uk property radio button on the rent uk property page" in {
-        val userInput = RentUkPropertyModel(No, None)
-
-        Given("I setup the Wiremock stubs")
+        Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
 
         When("POST /rent-uk-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
 
-
-        Then("Should return a SEE_OTHER with a redirect location of are you self-employed")
+        Then(s"Should return $SEE_OTHER with a redirect location of are you self employed")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(areYouSelfEmployedURI)
         )
       }
+      "the user rents a uk property and doesn't have other income" when {
+        "the property cash accruals feature switch is enabled" in {
+          val userInput: RentUkPropertyModel = RentUkPropertyModel(Yes, Some(Yes))
 
-      "select the Yes rent uk property radio button and No to only income source on the rent uk property page" in {
-        val userInput = RentUkPropertyModel(Yes, Some(No))
+          Given("I setup the wiremock stubs and feature switch")
+          enable(PropertyCashOrAccruals)
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
 
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
+          When("POST /rent-uk-property is called")
+          val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
 
-        When("POST /rent-uk-property is called")
-        val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of are you self-employed")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(areYouSelfEmployedURI)
-        )
-      }
-
-      "select the Yes rent uk property radio button and Yes to only income source on the rent uk property page" in {
-        val userInput = RentUkPropertyModel(Yes, Some(Yes))
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
-
-        When("POST /rent-uk-property is called")
-        val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
-
-        Then("Should return a SEE_OTHER and redirect to the other income page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(otherIncomeURI)
-        )
-      }
-
-      "select the Yes rent uk property radio button and Yes to only income source on the rent uk property page" should {
-        "redirect to the check your answers page" when {
-          "the eligibility pages feature switch is enabled" in {
-            enable(EligibilityPagesFeature)
-            val userInput = RentUkPropertyModel(Yes, Some(Yes))
-
-            Given("I setup the Wiremock stubs")
-            AuthStub.stubAuthSuccess()
-            KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
-
-            When("POST /rent-uk-property is called")
-            val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
-
-            Then("Should return a SEE_OTHER and redirect to the check you answers page")
-            res should have(
-              httpStatus(SEE_OTHER),
-              redirectURI(checkYourAnswersURI)
-            )
-          }
+          Then(s"Should return $SEE_OTHER with a redirect location of property accounting method")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(accountingMethodPropertyURI)
+          )
         }
+        "the property cash accruals feature switch is disabled" in {
+          val userInput: RentUkPropertyModel = RentUkPropertyModel(Yes, Some(Yes))
+
+          Given("I setup the wiremock stubs")
+          AuthStub.stubAuthSuccess()
+          KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
+
+          When("POST /rent-uk-property is called")
+          val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
+
+          Then(s"Should return $SEE_OTHER with a redirect location of check your answers")
+          res should have(
+            httpStatus(SEE_OTHER),
+            redirectURI(checkYourAnswersURI)
+          )
+        }
+      }
+      "the user does not rent a uk property" in {
+        val userInput: RentUkPropertyModel = RentUkPropertyModel(No, None)
+
+        Given("I setup the wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
+
+        When("POST /rent-uk-property is called")
+        val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
+
+        Then(s"Should return $SEE_OTHER with a redirect location of are you self employed")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(areYouSelfEmployedURI)
+        )
       }
     }
 
-    "when in edit mode" should {
+    "in edit mode" when {
+      "the user selects a different answer" in {
+        val userInput: RentUkPropertyModel = RentUkPropertyModel(Yes, Some(No))
 
-      "simulate not changing rent uk property from No when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(No, None)
-        val userInput = RentUkPropertyModel(No, None)
-
-        Given("I setup the Wiremock stubs")
+        Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(keystoreRentUkProperty)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, keystoreRentUkProperty)
+        KeystoreStub.stubKeystoreData(keystoreDataV2(rentUkProperty = Some(RentUkPropertyModel(No, None))))
+        KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
 
         When("POST /rent-uk-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
-      }
-
-      "simulate not changing rent uk property from Yes and only income source from No when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(Yes, Some(No))
-        val userInput = RentUkPropertyModel(Yes, Some(No))
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(keystoreRentUkProperty)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, keystoreRentUkProperty)
-
-        When("POST /rent-uk-property is called")
-        val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
-      }
-
-      "simulate not changing rent uk property from Yes and only income source from Yes when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(Yes, Some(Yes))
-        val userInput = RentUkPropertyModel(Yes, Some(Yes))
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(keystoreRentUkProperty)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, keystoreRentUkProperty)
-
-        When("POST /rent-uk-property is called")
-        val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
-        )
-      }
-
-      "simulate changing rent uk property from No when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(No, None)
-        val userInput = RentUkPropertyModel(Yes, Some(No))
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(keystoreRentUkProperty)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, keystoreRentUkProperty)
-
-        When("POST /rent-uk-property is called")
-        val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of are you self-employed")
+        Then(s"Should return $SEE_OTHER with a redirect location of are you self employed")
         res should have(
           httpStatus(SEE_OTHER),
           redirectURI(areYouSelfEmployedURI)
         )
       }
+      "the user selects the same answer" in {
+        val userInput: RentUkPropertyModel = RentUkPropertyModel(Yes, Some(Yes))
 
-      "simulate changing rent uk property from Yes and only income source from No when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(Yes, Some(No))
-        val userInput = RentUkPropertyModel(No, None)
-
-        Given("I setup the Wiremock stubs")
+        Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(keystoreRentUkProperty)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, keystoreRentUkProperty)
+        KeystoreStub.stubKeystoreData(keystoreDataV2(rentUkProperty = Some(userInput)))
+        KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
 
         When("POST /rent-uk-property is called")
         val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = true, Some(userInput))
 
-        Then("Should return a SEE_OTHER with a redirect location of are you self-employed")
+        Then(s"Should return $SEE_OTHER with a redirect location of check your answers")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(areYouSelfEmployedURI)
-        )
-      }
-
-      "simulate changing rent uk property from Yes and only income source from Yes when calling page from Check Your Answers" in {
-        val keystoreRentUkProperty = RentUkPropertyModel(Yes, Some(Yes))
-        val userInput = RentUkPropertyModel(No, None)
-
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(keystoreRentUkProperty)))
-        KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, keystoreRentUkProperty)
-
-        When("POST /rent-uk-property is called")
-        val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = true, Some(userInput))
-
-        Then("Should return a SEE_OTHER with a redirect location of check your answers")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(areYouSelfEmployedURI)
+          redirectURI(checkYourAnswersURI)
         )
       }
     }

@@ -70,8 +70,6 @@ trait AppConfig extends FeatureSwitching {
 
   def enableRegistration: Boolean
 
-  def eligibilityPagesEnabled: Boolean
-
   def propertyCashOrAccrualsEnabled: Boolean
 
   def storeNinoUrl(token: String): String
@@ -224,8 +222,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override lazy val authenticatorUrl: String = baseUrl("authenticator")
 
   override def enableRegistration: Boolean = isEnabled(featureswitch.RegistrationFeature)
-
-  override def eligibilityPagesEnabled: Boolean = isEnabled(featureswitch.EligibilityPagesFeature)
 
   override def propertyCashOrAccrualsEnabled: Boolean = isEnabled(featureswitch.PropertyCashOrAccruals)
 

@@ -20,7 +20,7 @@ import agent.audit.Logging
 import agent.auth.{AuthenticatedController, IncomeTaxAgentUser}
 import agent.services.{ClientRelationshipService, KeystoreService, SubscriptionOrchestrationService}
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
 import core.services.AuthService
 import incometax.subscription.models.{Both, Business, IncomeSourceType, SubscriptionSuccess}
 import javax.inject.{Inject, Singleton}
@@ -49,16 +49,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
       implicit user =>
         if (user.clientNino.isDefined) {
           keystoreService.fetchAll().flatMap {
-            case Some(cache) =>
-              if (isEnabled(EligibilityPagesFeature))
-                processFunc(user)(request)(cache)
-              else {
-                cache.getTerms() match {
-                  case Some(true) => processFunc(user)(request)(cache)
-                  case Some(false) => Future.successful(Redirect(controllers.agent.routes.TermsController.show(editMode = true)))
-                  case _ => Future.successful(Redirect(controllers.agent.routes.TermsController.show()))
-                }
-              }
+            case Some(cache) => processFunc(user)(request)(cache)
             case _ => error(noCacheMapErrMessage)
           }
         } else {
@@ -67,26 +58,22 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     }
 
   def backUrl(incomeSource: Option[IncomeSourceType])(implicit request: Request[_]): String = {
-    if (isEnabled(EligibilityPagesFeature)) {
-      if (isEnabled(AgentPropertyCashOrAccruals)) {
-        incomeSource match {
-          case Some(Business) =>
-            controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-          case Some(_) =>
-            controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-          case None => throw new InternalServerException("User is missing income source type in keystore")
-        }
-      } else {
-        incomeSource match {
-          case Some(Business) | Some(Both) =>
-            controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-          case Some(_) =>
-            controllers.agent.routes.IncomeSourceController.show().url
-          case None => throw new InternalServerException("User is missing income source type in keystore")
-        }
+    if (isEnabled(AgentPropertyCashOrAccruals)) {
+      incomeSource match {
+        case Some(Business) =>
+          controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+        case Some(_) =>
+          controllers.agent.business.routes.PropertyAccountingMethodController.show().url
+        case None => throw new InternalServerException("User is missing income source type in keystore")
       }
     } else {
-      controllers.agent.routes.TermsController.show().url
+      incomeSource match {
+        case Some(Business) | Some(Both) =>
+          controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+        case Some(_) =>
+          controllers.agent.routes.IncomeSourceController.show().url
+        case None => throw new InternalServerException("User is missing income source type in keystore")
+      }
     }
   }
 

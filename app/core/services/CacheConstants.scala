@@ -32,8 +32,6 @@ object CacheConstants {
   val SelectedTaxYear = "SelectedTaxYear"
   val AccountingMethod = "AccountingMethod"
   val PropertyAccountingMethod = "PropertyAccountingMethod"
-  val Terms = "Terms"
-  val OtherIncome = "OtherIncome"
   val MtditId = "MtditId"
   val PaperlessPreferenceToken = "PaperlessPreferenceKey"
 }

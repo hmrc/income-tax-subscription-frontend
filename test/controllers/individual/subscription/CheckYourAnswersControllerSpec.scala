@@ -52,18 +52,6 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     app.injector.instanceOf[Logging]
   )
 
-  object TestCheckYourAnswersControllerFsEnabled extends CheckYourAnswersController(
-    MockBaseControllerConfig,
-    messagesApi,
-    MockKeystoreService,
-    subscriptionService = mockSubscriptionOrchestrationService,
-    mockAuthService,
-    new MockConfig {
-      override val eligibilityPagesEnabled: Boolean = true
-    },
-    app.injector.instanceOf[Logging]
-  )
-
   "Calling the show action of the CheckYourAnswersController with an authorised user" when {
 
     def result = TestCheckYourAnswersController.show(subscriptionRequest)
@@ -71,9 +59,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     "return ok (200) for business journey" in {
       val testBusinessCacheMap = testCacheMapCustom(
         rentUkProperty = testRentUkProperty_no_property,
-        areYouSelfEmployed = testAreYouSelfEmployed_yes,
-        otherIncome = testOtherIncomeNo,
-        terms = testTerms
+        areYouSelfEmployed = testAreYouSelfEmployed_yes
       )
       setupMockKeystore(fetchAll = testBusinessCacheMap)
 
@@ -83,9 +69,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     "return ok (200) for property only journey)" in {
       val testPropertyCacheMap = testCacheMap(
         rentUkProperty = testRentUkProperty_property_only,
-        areYouSelfEmployed = None,
-        otherIncome = testOtherIncomeNo,
-        terms = testTerms
+        areYouSelfEmployed = None
       )
       setupMockKeystore(fetchAll = testPropertyCacheMap)
 
@@ -95,9 +79,7 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     "return ok (200) for property and other income but no sole trader journey" in {
       val testPropertyCacheMap = testCacheMap(
         rentUkProperty = testRentUkProperty_property_and_other,
-        areYouSelfEmployed = testAreYouSelfEmployed_no,
-        otherIncome = testOtherIncomeNo,
-        terms = testTerms
+        areYouSelfEmployed = testAreYouSelfEmployed_no
       )
       setupMockKeystore(fetchAll = testPropertyCacheMap)
 
@@ -160,66 +142,19 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
         verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
       }
     }
-
-    "When the terms have not been agreed" should {
-
-      "redirect back to Terms if there is no terms in keystore" in {
-        setupMockKeystore(fetchAll = testCacheMapCustom(terms = None))
-
-        val result = call
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain(controllers.individual.subscription.routes.TermsController.show().url)
-        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
-      }
-
-      "redirect back to Terms if there is terms is set to false in keystore" in {
-        setupMockKeystore(fetchAll = testCacheMapCustom(terms = Some(false)))
-
-        val result = call
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) must contain(controllers.individual.subscription.routes.TermsController.show(editMode = true).url)
-        verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
-      }
-
-      "successfully submit when the Eligibility Pages feature switch is enabled" should {
-        lazy val result = TestCheckYourAnswersControllerFsEnabled.submit(request)
-
-        "return a redirect status (SEE_OTHER - 303)" in {
-          setupMockKeystore(fetchAll = testCacheMapCustom(terms = None))
-          mockCreateSubscriptionSuccess(testNino, testCacheMapCustom(terms = None).getSummary())
-          status(result) must be(Status.SEE_OTHER)
-          await(result)
-          verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
-        }
-
-        s"redirect to '${controllers.individual.subscription.routes.ConfirmationController.show().url}'" in {
-          redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.ConfirmationController.show().url)
-        }
-      }
-    }
   }
 
   "The back url" when {
-    "The Eligibility Pages feature switch is disabled" should {
-      s"point to the ${controllers.individual.subscription.routes.TermsController.show().url} when the Eligibility Pages feature switch is off" in {
-        TestCheckYourAnswersController.backUrl(incomeSource = Business) mustBe controllers.individual.subscription.routes.TermsController.show().url
-      }
+    s"point to the ${controllers.individual.business.routes.BusinessAccountingMethodController.show().url} when the income source is Business" in {
+      TestCheckYourAnswersController.backUrl(incomeSource = Business) mustBe controllers.individual.business.routes.BusinessAccountingMethodController.show().url
     }
 
-    "The Eligibility Pages feature switch is enabled" should {
-      s"point to the ${controllers.individual.business.routes.BusinessAccountingMethodController.show().url} when the income source is Business" in {
-        TestCheckYourAnswersControllerFsEnabled.backUrl(incomeSource = Business) mustBe controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-      }
+    s"point to the ${controllers.individual.business.routes.BusinessAccountingMethodController.show().url} when the income source is Both" in {
+      TestCheckYourAnswersController.backUrl(incomeSource = Both) mustBe controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+    }
 
-      s"point to the ${controllers.individual.business.routes.BusinessAccountingMethodController.show().url} when the income source is Both" in {
-        TestCheckYourAnswersControllerFsEnabled.backUrl(incomeSource = Both) mustBe controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-      }
-
-      s"point to the ${controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url} when the income source is Property" in {
-        TestCheckYourAnswersControllerFsEnabled.backUrl(incomeSource = Property) mustBe controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
-      }
+    s"point to the ${controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url} when the income source is Property" in {
+      TestCheckYourAnswersController.backUrl(incomeSource = Property) mustBe controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
     }
   }
 

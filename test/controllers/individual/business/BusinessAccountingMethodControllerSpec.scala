@@ -28,8 +28,10 @@ import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models.{Both, Business, IncomeSourceType}
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
@@ -74,7 +76,9 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   val taxYear2019AccountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2017"), DateModel("5", "4", "2019"))
 
   def matchTaxYearCacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
+
   def matchTaxYearYesIncomeSourceBoth(incomeSourceType: IncomeSourceType = Both) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
+
   def matchTaxYearNoIncomeSourceBoth(incomeSourceType: IncomeSourceType = Both) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, incomeSourceType = incomeSourceType)
 
   def taxYear2018CacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2018AccountingPeriod, incomeSourceType = incomeSourceType)
@@ -101,38 +105,17 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the BusinessAccountingMethod with an authorised user and valid submission" should {
 
-    def callShow(isEditMode: Boolean) = TestBusinessAccountingMethodController.submit(isEditMode = isEditMode)(subscriptionRequest
+    def callSubmit(isEditMode: Boolean): Future[Result] = TestBusinessAccountingMethodController.submit(isEditMode = isEditMode)(subscriptionRequest
       .post(AccountingMethodForm.accountingMethodForm, AccountingMethodModel(Cash)))
 
     "When it is not in edit mode" should {
-      "return a redirect status (SEE_OTHER - 303)" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = false)
-
-        status(goodRequest) must be(Status.SEE_OTHER)
-
-        await(goodRequest)
-        verifyKeystore(fetchAll = 0, saveAccountingMethod = 1)
-      }
-
-      s"redirect to '${controllers.individual.subscription.routes.TermsController.show().url}' when the Eligibility Pages feature switch is disabled" in {
-        setupMockKeystoreSaveFunctions()
-
-        val goodRequest = callShow(isEditMode = false)
-
-        redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.TermsController.show().url)
-
-        await(goodRequest)
-        verifyKeystore(fetchAll = 0, saveAccountingMethod = 1)
-      }
-
-      s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}' when the Eligibility Pages feature switch is enabled" in {
+      s"redirect to '${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}'" in {
         setupMockKeystoreSaveFunctions()
         setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
 
-        val goodRequest = callShow(isEditMode = true)
+        val goodRequest = callSubmit(isEditMode = true)
 
+        status(goodRequest) must be(Status.SEE_OTHER)
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 
         await(goodRequest)
@@ -146,7 +129,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         setupMockKeystoreSaveFunctions()
         setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
 
-        val goodRequest = callShow(isEditMode = true)
+        val goodRequest = callSubmit(isEditMode = true)
 
         status(goodRequest) must be(Status.SEE_OTHER)
 
@@ -158,7 +141,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
         setupMockKeystoreSaveFunctions()
         setupMockKeystore(fetchRentUkProperty = RentUkPropertyModel(No, None))
 
-        val goodRequest = callShow(isEditMode = true)
+        val goodRequest = callSubmit(isEditMode = true)
 
         redirectLocation(goodRequest) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
 

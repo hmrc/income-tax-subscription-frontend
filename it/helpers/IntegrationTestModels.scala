@@ -13,7 +13,7 @@ import incometax.business.models.address.{Address, Country, ReturnedAddress}
 import incometax.incomesource.models._
 import incometax.subscription.models._
 import incometax.util.AccountingPeriodUtil
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import usermatching.models.UserDetailsModel
 
@@ -47,8 +47,6 @@ object IntegrationTestModels {
   val testAccountingMethod = AccountingMethodModel(Cash)
   val testAccountingMethodProperty = AccountingMethodPropertyModel(Cash)
 
-  val testTerms = true
-
   val testBusinessStartDate = BusinessStartDateModel(testStartDate)
 
   lazy val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
@@ -58,7 +56,6 @@ object IntegrationTestModels {
       incomeSource = Some(Both),
       rentUkProperty = Some(testRentUkProperty_property_and_other),
       areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
-      otherIncome = Some(testOtherIncomeNo),
       matchTaxYear = Some(testMatchTaxYearNo),
       selectedTaxYear = Some(testAccountingYearCurrent),
       accountingPeriodDate = Some(testAccountingPeriod),
@@ -66,8 +63,7 @@ object IntegrationTestModels {
       businessPhoneNumber = Some(testBusinessPhoneNumber),
       businessAddress = Some(testAddress),
       accountingMethod = Some(testAccountingMethod),
-      propertyAccountingMethod = Some(testAccountingMethodProperty),
-      terms = Some(testTerms)
+      propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
 
   lazy val fullKeystoreDataBothV2: Map[String, JsValue] =
@@ -75,15 +71,13 @@ object IntegrationTestModels {
       incomeSource = Some(Both),
       rentUkProperty = Some(testRentUkProperty_property_and_other),
       areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
-      otherIncome = Some(testOtherIncomeNo),
       matchTaxYear = Some(testMatchTaxYearNo),
       accountingPeriodDate = Some(testAccountingPeriod),
       businessName = Some(testBusinessName),
       businessPhoneNumber = Some(testBusinessPhoneNumber),
       businessAddress = Some(testAddress),
       accountingMethod = Some(testAccountingMethod),
-      accountingMethodProperty = Some(testAccountingMethodProperty),
-      terms = Some(testTerms)
+      accountingMethodProperty = Some(testAccountingMethodProperty)
     )
 
   lazy val fullKeystoreDataPropertyV2: Map[String, JsValue] =
@@ -91,16 +85,13 @@ object IntegrationTestModels {
       incomeSource = Some(Property),
       rentUkProperty = Some(testRentUkProperty_property_only),
       areYouSelfEmployed = Some(testAreYouSelfEmployed_no),
-      otherIncome = Some(testOtherIncomeNo),
-      accountingMethodProperty = Some(testAccountingMethodProperty),
-      terms = Some(testTerms)
+      accountingMethodProperty = Some(testAccountingMethodProperty)
     )
 
 
   def keystoreData(incomeSource: Option[IncomeSourceType] = None,
                    rentUkProperty: Option[RentUkPropertyModel] = None,
                    areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
-                   otherIncome: Option[YesNo] = None,
                    matchTaxYear: Option[MatchTaxYearModel] = None,
                    selectedTaxYear: Option[AccountingYearModel] = None,
                    accountingPeriodDate: Option[AccountingPeriodModel] = None,
@@ -108,13 +99,12 @@ object IntegrationTestModels {
                    businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
                    businessAddress: Option[Address] = None,
                    accountingMethod: Option[AccountingMethodModel] = None,
-                   propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None,
-                   terms: Option[Boolean] = None): Map[String, JsValue] = {
+                   propertyAccountingMethod: Option[AccountingMethodPropertyModel] = None
+                  ): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
       rentUkProperty.map(model => RentUkProperty -> RentUkPropertyModel.format.writes(model)) ++
-      areYouSelfEmployed.map(model => AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model)) ++ //
-      otherIncome.map(model => OtherIncome -> YesNo.format.writes(model)) ++
+      areYouSelfEmployed.map(model => AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model)) ++
       matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       selectedTaxYear.map(model => SelectedTaxYear -> AccountingYearModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
@@ -122,14 +112,12 @@ object IntegrationTestModels {
       businessPhoneNumber.map(model => BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model)) ++
       businessAddress.map(model => BusinessAddress -> Address.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      propertyAccountingMethod.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model)) ++
-      terms.map(model => Terms -> Json.toJson(model))
+      propertyAccountingMethod.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))
   }
 
   def keystoreDataV2(incomeSource: Option[IncomeSourceType] = None,
                      rentUkProperty: Option[RentUkPropertyModel] = None,
                      areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
-                     otherIncome: Option[YesNo] = None,
                      matchTaxYear: Option[MatchTaxYearModel] = None,
                      accountingYear: Option[AccountingYearModel] = None,
                      accountingPeriodDate: Option[AccountingPeriodModel] = None,
@@ -137,20 +125,17 @@ object IntegrationTestModels {
                      businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
                      businessAddress: Option[Address] = None,
                      accountingMethod: Option[AccountingMethodModel] = None,
-                     accountingMethodProperty: Option[AccountingMethodPropertyModel] = None,
-                     terms: Option[Boolean] = None): Map[String, JsValue] = {
+                     accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): Map[String, JsValue] = {
     Map.empty[String, JsValue] ++
       incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
       rentUkProperty.map(model => RentUkProperty -> RentUkPropertyModel.format.writes(model)) ++
-      areYouSelfEmployed.map(model => AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model)) ++ //
-      otherIncome.map(model => OtherIncome -> YesNo.format.writes(model)) ++
+      areYouSelfEmployed.map(model => AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model)) ++
       matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
       accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
       businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
       businessPhoneNumber.map(model => BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model)) ++
       businessAddress.map(model => BusinessAddress -> Address.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      terms.map(model => Terms -> Json.toJson(model)) ++
       accountingMethodProperty.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))
   }
 
@@ -166,10 +151,6 @@ object IntegrationTestModels {
 
   lazy val testAreYouSelfEmployed_yes = AreYouSelfEmployedModel(Yes)
   lazy val testAreYouSelfEmployed_no = AreYouSelfEmployedModel(No)
-
-  lazy val testOtherIncomeNo = No
-
-  lazy val testOtherIncomeYes = Yes
 
   lazy val testUserDetails = UserDetailsModel(testFirstName, testLastName, testNino, testStartDate)
 

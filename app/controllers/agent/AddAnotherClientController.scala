@@ -21,11 +21,11 @@ import agent.auth.{IncomeTaxAgentUser, StatelessController}
 import agent.services.KeystoreService
 import core.auth.AuthPredicate.AuthPredicate
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.FeatureSwitching
 import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent}
 
 @Singleton
 class AddAnotherClientController @Inject()(override val baseConfig: BaseControllerConfig,
@@ -37,26 +37,13 @@ class AddAnotherClientController @Inject()(override val baseConfig: BaseControll
 
   override val statelessDefaultPredicate: AuthPredicate[IncomeTaxAgentUser] = agent.auth.AuthPredicates.defaultPredicates
 
-  private def redirectLocation: Result = {
-    if (isEnabled(EligibilityPagesFeature)) {
-      Redirect(s"${applicationConfig.incomeTaxEligibilityFrontendUrl}/client/other-income")
-    } else {
-      Redirect(controllers.agent.matching.routes.ClientDetailsController.show().url)
-    }
-  }
-
   def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
-    implicit user => {
-      for {
-        _ <- keystore.deleteAll()
-      } yield redirectLocation
-        .removingFromSession(ITSASessionKeys.JourneyStateKey)
-        .removingFromSession(ITSASessionKeys.clientData: _*)
-    }.recover {
-      case e =>
-        logging.warn("AddAnotherClientController.addAnother encountered error: " + e)
-        throw e
-    }
+    implicit user =>
+      keystore.deleteAll() map { _ =>
+        Redirect(s"${applicationConfig.incomeTaxEligibilityFrontendUrl}/client/other-income")
+          .removingFromSession(ITSASessionKeys.JourneyStateKey)
+          .removingFromSession(ITSASessionKeys.clientData: _*)
+      }
   }
 
 }

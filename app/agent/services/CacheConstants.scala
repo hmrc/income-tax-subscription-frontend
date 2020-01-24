@@ -26,7 +26,5 @@ object CacheConstants {
   val AccountingPeriodDate = "AccountingPeriodDate"
   val AccountingMethod = "AccountingMethod"
   val AccountingMethodProperty = "PropertyAccountingMethod"
-  val Terms = "Terms"
-  val OtherIncome = "OtherIncome"
   val MtditId = "MtditId"
 }

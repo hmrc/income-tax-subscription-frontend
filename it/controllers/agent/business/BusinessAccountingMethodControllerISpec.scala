@@ -22,7 +22,7 @@ import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
 import agent.models._
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
 import core.models.{Accruals, Cash, No}
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models.Both
@@ -33,7 +33,6 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(EligibilityPagesFeature)
     disable(AgentPropertyCashOrAccruals)
   }
 
@@ -102,237 +101,115 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         }
       }
     }
-    "the eligibility pages feature switch is enabled" should {
-      "not in edit mode" should {
-        "select the Cash radio button on the accounting method page" in {
-          val userInput = AccountingMethodModel(Cash)
-          enable(EligibilityPagesFeature)
+    "not in edit mode" should {
+      "select the Cash radio button on the accounting method page" in {
+        val userInput = AccountingMethodModel(Cash)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubEmptyKeystore()
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
-
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
-
-        "select the Accruals radio button on the accounting method page" in {
-          enable(EligibilityPagesFeature)
-          val userInput = AccountingMethodModel(Accruals)
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubEmptyKeystore()
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
-
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
-      }
-
-      "not select an option on the accounting method page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubEmptyKeystore()
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "")
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
         When("POST /business/accounting-method is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, None)
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
-        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
-          httpStatus(BAD_REQUEST),
-          errorDisplayed()
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
         )
       }
 
-      "in edit mode" should {
-        "changing to the Accruals radio button on the accounting method page" in {
-          val keystoreIncomeSource = Both
-          val keystoreIncomeOther = No
-          val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
-          val keystoreAccountingMethod = AccountingMethodModel(Cash)
-          val userInput = AccountingMethodModel(Accruals)
+      "select the Accruals radio button on the accounting method page" in {
+        val userInput = AccountingMethodModel(Accruals)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(
-            keystoreData(
-              incomeSource = Some(keystoreIncomeSource),
-              otherIncome = Some(keystoreIncomeOther),
-              accountingPeriodDate = Some(keystoreAccountingPeriodDates),
-              accountingMethod = Some(keystoreAccountingMethod)
-            )
-          )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubEmptyKeystore()
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
+        When("POST /business/accounting-method is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
-
-        "simulate not changing accounting method when calling page from Check Your Answers" in {
-          val keystoreIncomeSource = Both
-          val keystoreIncomeOther = No
-          val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
-          val keystoreAccountingMethod = AccountingMethodModel(Cash)
-          val userInput = AccountingMethodModel(Accruals)
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(
-            keystoreData(
-              incomeSource = Some(keystoreIncomeSource),
-              otherIncome = Some(keystoreIncomeOther),
-              accountingPeriodDate = Some(keystoreAccountingPeriodDates),
-              accountingMethod = Some(keystoreAccountingMethod)
-            )
-          )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
-
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
+        )
       }
     }
 
-    "the eligibility pages feature switch is disabled" should {
-      "not in edit mode" should {
-        "select the Cash radio button on the accounting method page" in {
-          val userInput = AccountingMethodModel(Cash)
+    "not select an option on the accounting method page" in {
+      Given("I setup the Wiremock stubs")
+      AuthStub.stubAuthSuccess()
+      KeystoreStub.stubEmptyKeystore()
+      KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "")
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubEmptyKeystore()
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
+      When("POST /business/accounting-method is called")
+      val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, None)
 
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
+      Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+      res should have(
+        httpStatus(BAD_REQUEST),
+        errorDisplayed()
+      )
+    }
 
-          Then("Should return a SEE_OTHER with a redirect location of terms")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(termsURI)
-          )
-        }
+    "in edit mode" should {
+      "changing to the Accruals radio button on the accounting method page" in {
+        val keystoreIncomeSource = Both
+        val keystoreIncomeOther = No
+        val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
+        val keystoreAccountingMethod = AccountingMethodModel(Cash)
+        val userInput = AccountingMethodModel(Accruals)
 
-        "select the Accruals radio button on the accounting method page" in {
-          val userInput = AccountingMethodModel(Accruals)
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubEmptyKeystore()
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
-
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of terms")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(termsURI)
-          )
-        }
-      }
-
-      "not select an option on the accounting method page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
-        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "")
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            incomeSource = Some(keystoreIncomeSource),
+            accountingPeriodDate = Some(keystoreAccountingPeriodDates),
+            accountingMethod = Some(keystoreAccountingMethod)
+          )
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
         When("POST /business/accounting-method is called")
-        val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, None)
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
 
-        Then("Should return a BAD_REQUEST and display an error box on screen without redirecting")
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
-          httpStatus(BAD_REQUEST),
-          errorDisplayed()
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
         )
       }
 
-      "in edit mode" should {
-        "changing to the Accruals radio button on the accounting method page" in {
-          val keystoreIncomeSource = Both
-          val keystoreIncomeOther = No
-          val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
-          val keystoreAccountingMethod = AccountingMethodModel(Cash)
-          val userInput = AccountingMethodModel(Accruals)
+      "simulate not changing accounting method when calling page from Check Your Answers" in {
+        val keystoreIncomeSource = Both
+        val keystoreIncomeOther = No
+        val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
+        val keystoreAccountingMethod = AccountingMethodModel(Cash)
+        val userInput = AccountingMethodModel(Accruals)
 
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(
-            keystoreData(
-              incomeSource = Some(keystoreIncomeSource),
-              otherIncome = Some(keystoreIncomeOther),
-              accountingPeriodDate = Some(keystoreAccountingPeriodDates),
-              accountingMethod = Some(keystoreAccountingMethod)
-            )
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubKeystoreData(
+          keystoreData(
+            incomeSource = Some(keystoreIncomeSource),
+            accountingPeriodDate = Some(keystoreAccountingPeriodDates),
+            accountingMethod = Some(keystoreAccountingMethod)
           )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
+        )
+        KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
+        When("POST /business/accounting-method is called")
+        val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
 
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
-
-        "simulate not changing accounting method when calling page from Check Your Answers" in {
-          val keystoreIncomeSource = Both
-          val keystoreIncomeOther = No
-          val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
-          val keystoreAccountingMethod = AccountingMethodModel(Cash)
-          val userInput = AccountingMethodModel(Accruals)
-
-          Given("I setup the Wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(
-            keystoreData(
-              incomeSource = Some(keystoreIncomeSource),
-              otherIncome = Some(keystoreIncomeOther),
-              accountingPeriodDate = Some(keystoreAccountingPeriodDates),
-              accountingMethod = Some(keystoreAccountingMethod)
-            )
-          )
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
-
-          When("POST /business/accounting-method is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = true, Some(userInput))
-
-          Then("Should return a SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
+        Then("Should return a SEE_OTHER with a redirect location of check your answers")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(checkYourAnswersURI)
+        )
       }
     }
   }

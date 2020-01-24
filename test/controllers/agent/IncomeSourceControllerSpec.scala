@@ -18,7 +18,7 @@ package controllers.agent
 
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
 import forms.agent.IncomeSourceForm
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import incometax.subscription.models._
@@ -33,7 +33,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    disable(EligibilityPagesFeature)
     disable(AgentPropertyCashOrAccruals)
   }
 
@@ -75,7 +74,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
       s"redirect to ${business.routes.MatchTaxYearController.show().url}" when {
         "not in edit mode" when {
           "the income source is business" in {
-            enable(EligibilityPagesFeature)
             setupMockKeystoreSaveFunctions()
 
             val result = await(callSubmit(Business, isEditMode = false))
@@ -86,7 +84,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
             verifyKeystore(fetchIncomeSource = 0, saveIncomeSource = 1)
           }
           "the income source is both" in {
-            enable(EligibilityPagesFeature)
             setupMockKeystoreSaveFunctions()
 
             val result = await(callSubmit(Both, isEditMode = false))
@@ -99,7 +96,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         }
         "in edit mode" when {
           "income source has changed" in {
-            enable(EligibilityPagesFeature)
             setupMockKeystoreSaveFunctions()
             setupMockKeystore(fetchIncomeSource = Business)
 
@@ -116,7 +112,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         "agent property cash or accruals feature switch is enabled" when {
           "not in edit mode" when {
             "income source is property" in {
-              enable(EligibilityPagesFeature)
               enable(AgentPropertyCashOrAccruals)
 
               setupMockKeystoreSaveFunctions()
@@ -129,7 +124,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           }
           "in edit mode" when {
             "income source has changed to property" in {
-              enable(EligibilityPagesFeature)
               enable(AgentPropertyCashOrAccruals)
 
               setupMockKeystoreSaveFunctions()
@@ -147,8 +141,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
         "agent property cash or accruals feature switch is disabled" when {
           "not in edit mode" when {
             "income source is property" in {
-              enable(EligibilityPagesFeature)
-
               setupMockKeystoreSaveFunctions()
 
               val result = await(callSubmit(Property, isEditMode = false))
@@ -159,8 +151,6 @@ class IncomeSourceControllerSpec extends AgentControllerBaseSpec
           }
           "in edit mode" when {
             "income source has changed to property" in {
-              enable(EligibilityPagesFeature)
-
               setupMockKeystoreSaveFunctions()
               setupMockKeystore(fetchIncomeSource = Business)
 

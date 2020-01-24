@@ -272,23 +272,6 @@ object MessageLookup {
     val radioAccrualsDetail = "You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called traditional accounting."
   }
 
-  object Terms {
-    val title = "Terms of participation"
-    val heading: String = title
-    val line_1 = "By taking part in this trial, you agree to:"
-    val bullet_1 = "use relevant software to record your income and expenses"
-    val bullet_2 = "submit a report at least once every 3 months from the start of your accounting period"
-
-    def bullet_3(taxStartYear: Int, taxEndYear: Int, taxDueYear: Int) = s"send your final report for the $taxStartYear to $taxEndYear tax year by 31 January $taxDueYear"
-
-    val bullet_4 = "declare any other income sources and reliefs"
-    val bullet_5 = "authorise any third party you use (such as your accountant) and have responsibility for any information they give to HMRC on your behalf"
-    val bullet_6 = "tell HMRC if you want to stop trading or start a new business"
-    val bullet_7 = "tell HMRC if you want to leave this trial"
-    val line_2 = "These terms aren't contractual and you can stop taking part in the trial at any time."
-    val button = "Accept and continue"
-  }
-
   object Summary {
     val title = "Check your answers"
     val heading: String = title
@@ -316,7 +299,6 @@ object MessageLookup {
     val business_start_date = "When did your business start trading?"
     val selected_tax_year = "Year signed-up for"
     val income_type = "Your accounting method for your self-employed business"
-    val other_income = "Do you have any other sources of income?"
 
     object AccountingMethod {
       val cash = "Cash basis"
@@ -556,11 +538,6 @@ object MessageLookup {
       val invalid = "You must select an option to continue"
     }
 
-    object OtherIncome {
-      val empty = "You must select an option to continue"
-      val invalid = "You must select an option to continue"
-    }
-
     object IncomeSource {
       val empty = "You must select an option to continue"
       val invalid = "You must select an option to continue"
@@ -576,10 +553,6 @@ object MessageLookup {
       val invalidRentUkProperty = "Select yes if you rent out a UK property"
       val emptyOnlyIncomeSource = "Select yes if this is your only source of self-employed income"
       val invalidOnlyIncomeSource = "Select yes if this is your only source of self-employed income"
-    }
-
-    object Terms {
-      val empty = "You must accept the terms of participation to continue"
     }
 
     object ExitSurvey {
@@ -627,29 +600,6 @@ object MessageLookup {
     val bullet1 = "a sole trader with income from one business"
     val bullet2 = "someone who rents out a UK property"
     val bullet3 = "a sole trader with income from one business and you rent out a UK property"
-  }
-
-  object OtherIncomeError {
-    val title = "Tell us about your other income sources in your final report"
-    val heading: String = title
-    val para1 = "You only need to send quarterly reports on income you earn from either:"
-    val bullet1 = "working for yourself"
-    val bullet2 = "renting out a UK property"
-    val bullet3 = "working for yourself and renting out a UK property"
-    val para2 = "You need to submit your final report by 31 January."
-  }
-
-  object OtherIncome {
-    val title = "Do you have any other sources of income?"
-    val heading = "Do you have any other sources of income?"
-    val para1 = "This could include:"
-    val bullet1 = "employment that isn't your sole trader business"
-    val bullet2 = "UK pensions or annuities"
-    val bullet3 = "taxable state benefits"
-    val bullet4 = "employment or investments from outside the UK"
-    val bullet5 = "capital gains"
-    val yes = "Yes"
-    val no = "No"
   }
 
   object ExitSurvey {

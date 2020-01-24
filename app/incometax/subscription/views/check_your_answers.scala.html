@@ -86,14 +86,6 @@
     summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
 }
 
-@otherIncome(source: YesNo) = @{
-    val rowName = OtherIncomeId
-    val rowQuestion = Messages("summary.other_income")
-    val rowAnswer = source.toMessageString
-    val rowUrl = controllers.individual.incomesource.routes.OtherIncomeController.show(editMode = true).url
-    summaryRow(rowName, rowQuestion, rowAnswer, rowUrl)
-}
-
 @businessName(name: BusinessNameModel) = @{
     val rowName = BusinessNameId
     val rowQuestion = Messages("summary.business_name")
@@ -184,11 +176,6 @@
         @summaryModel.rentUkProperty.map(onlySourceOfIncome)
         @if(summaryModel.rentUkProperty.exists(_.needSecondPage)) {
             @summaryModel.areYouSelfEmployed.map(AreYouSelfEmployed)
-        }
-        @if(appConfig.eligibilityPagesEnabled) {
-            @Html("")
-        } else {
-            @summaryModel.otherIncome.map(otherIncome)
         }
         @summaryModel.businessName.map(businessName)
         @summaryModel.businessPhoneNumber.map(businessPhoneNumber)

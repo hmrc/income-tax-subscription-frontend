@@ -20,12 +20,10 @@ import agent.auth.AuthenticatedController
 import agent.models.AccountingMethodPropertyModel
 import agent.services.CacheUtil.CacheMapUtil
 import agent.services.KeystoreService
-import core.config.featureswitch.{EligibilityPagesFeature, FeatureSwitching}
-import core.config.{AppConfig, BaseControllerConfig}
-import core.models.{No, Yes}
+import core.config.BaseControllerConfig
+import core.config.featureswitch.FeatureSwitching
 import core.services.AuthService
 import forms.agent.AccountingMethodPropertyForm
-import incometax.incomesource.services.CurrentTimeService
 import incometax.subscription.models.{Both, Property}
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
@@ -40,9 +38,7 @@ import scala.concurrent.Future
 class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
-                                                   val authService: AuthService,
-                                                   val appConfig: AppConfig,
-                                                   val currentTimeService: CurrentTimeService
+                                                   val authService: AuthService
                                                   ) extends AuthenticatedController with FeatureSwitching {
 
   def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
@@ -72,11 +68,7 @@ class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControlle
           view(accountingMethodPropertyForm = formWithErrors, isEditMode = isEditMode).map(view => BadRequest(view)),
         accountingMethodProperty => {
           keystoreService.saveAccountingMethodProperty(accountingMethodProperty) map { _ =>
-            if (isEditMode || isEnabled(EligibilityPagesFeature)) {
-              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
-            } else {
-              Redirect(controllers.agent.routes.TermsController.show())
-            }
+            Redirect(controllers.agent.routes.CheckYourAnswersController.show())
           }
         }
       )
@@ -88,11 +80,9 @@ class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControlle
     else {
       keystoreService.fetchAll() map {
         case None => controllers.agent.routes.IncomeSourceController.show().url
-        case Some(cacheMap) => (cacheMap.getIncomeSource(), cacheMap.getOtherIncome()) match {
-          case (Some(Property), _) if isEnabled(EligibilityPagesFeature) => controllers.agent.routes.IncomeSourceController.show().url
-          case (Some(Property), Some(Yes)) => controllers.agent.routes.OtherIncomeErrorController.show().url
-          case (Some(Property), Some(No)) => controllers.agent.routes.OtherIncomeController.show().url
-          case (Some(Both), _) => controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+        case Some(cacheMap) => cacheMap.getIncomeSource() match {
+          case Some(Property) => controllers.agent.routes.IncomeSourceController.show().url
+          case Some(Both) => controllers.agent.business.routes.BusinessAccountingMethodController.show().url
           case _ => controllers.agent.routes.IncomeSourceController.show().url
         }
       }

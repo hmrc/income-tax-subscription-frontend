@@ -37,13 +37,12 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
   with MockConfig
   with FeatureSwitching {
 
-  class TestRentUkPropertyController(eligibilityPagesFeature: Boolean = false, propertyCashOrAccrualsFeature: Boolean = false) extends RentUkPropertyController(
+  class TestRentUkPropertyController(propertyCashOrAccrualsFeature: Boolean = false) extends RentUkPropertyController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
     mockAuthService,
     new MockConfig {
-      override val eligibilityPagesEnabled: Boolean = eligibilityPagesFeature
       override val propertyCashOrAccrualsEnabled: Boolean = propertyCashOrAccrualsFeature
     },
     mockCurrentTimeService
@@ -87,10 +86,9 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
     def callSubmit(
                     option: (YesNo, Option[YesNo]),
                     isEditMode: Boolean,
-                    eligibilityPagesFeature: Boolean = false,
                     propertyCashOrAccrualsFeature: Boolean = false
                   ): Future[Result] = {
-      new TestRentUkPropertyController(eligibilityPagesFeature, propertyCashOrAccrualsFeature).submit(isEditMode = isEditMode)(
+      new TestRentUkPropertyController(propertyCashOrAccrualsFeature).submit(isEditMode = isEditMode)(
         subscriptionRequest.post(RentUkPropertyForm.rentUkPropertyForm, RentUkPropertyModel(option._1, option._2))
       )
     }
@@ -122,24 +120,10 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
 
 
       s"return a SEE_OTHER (303) when answering 'Yes' to rent uk property and then 'Yes' to only income source" when {
-        "both eligibility pages and property cash or accruals feature switch are disabled" in {
-
+        "property cash or accruals feature switch is enabled" in {
           setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callSubmit((Yes, Yes), isEditMode = false)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get must be(controllers.individual.incomesource.routes.OtherIncomeController.show().url)
-
-          await(goodRequest)
-          verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
-        }
-      }
-      s"return a SEE_OTHER (303) when answering 'Yes' to rent uk property and then 'Yes' to only income source" when {
-        "both eligibility pages and property cash or accruals feature switch are enabled" in {
-          setupMockKeystoreSaveFunctions()
-
-          val goodRequest = callSubmit((Yes, Yes), isEditMode = false, eligibilityPagesFeature = true, propertyCashOrAccrualsFeature = true)
+          val goodRequest = callSubmit((Yes, Yes), isEditMode = false, propertyCashOrAccrualsFeature = true)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
@@ -150,10 +134,10 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
       }
 
       s"return a SEE_OTHER (303) when answering 'Yes' to rent uk property and then 'Yes' to only income source" when {
-        "eligibility pages feature switch is enabled but property cash or accruals feature switch is disabled" in {
+        "property cash or accruals feature switch is disabled" in {
           setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callSubmit((Yes, Yes), isEditMode = false, eligibilityPagesFeature = true)
+          val goodRequest = callSubmit((Yes, Yes), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
           redirectLocation(goodRequest).get must be(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
@@ -201,9 +185,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
         messagesApi,
         MockKeystoreService,
         mockAuthService,
-        new MockConfig {
-          override val eligibilityPagesEnabled = true
-        },
+        MockConfig,
         mockCurrentTimeService
       )
 

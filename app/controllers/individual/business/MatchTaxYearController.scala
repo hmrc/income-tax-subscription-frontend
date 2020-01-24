@@ -64,9 +64,6 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
         matchTaxYear => {
           for {
             cacheMap <- keystoreService.fetchAll()
-            oldAnswer = cacheMap.getMatchTaxYear()
-            changedAnswer = oldAnswer.fold(false)(_ != matchTaxYear)
-            _ <- if (changedAnswer) keystoreService.saveTerms(terms = false) else Future.successful(Unit)
             _ <- keystoreService.saveMatchTaxYear(matchTaxYear)
           } yield (isEditMode, matchTaxYear.matchTaxYear, cacheMap.getIncomeSourceType()) match {
             case (false, Yes, Some(Business)) if applicationConfig.whatTaxYearToSignUpEnabled =>

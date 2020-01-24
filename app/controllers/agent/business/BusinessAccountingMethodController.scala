@@ -20,7 +20,7 @@ import agent.auth.AuthenticatedController
 import agent.models.AccountingMethodModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, EligibilityPagesFeature, FeatureSwitching}
+import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
 import core.models.No
 import core.services.AuthService
 import forms.agent.AccountingMethodForm
@@ -78,10 +78,8 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
               Redirect(controllers.agent.routes.CheckYourAnswersController.show())
             } else if (isEnabled(AgentPropertyCashOrAccruals) && incomeSource.contains(Both)) {
               Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
-            } else if (isEnabled(EligibilityPagesFeature)) {
-              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
             } else {
-              Redirect(controllers.agent.routes.TermsController.show())
+              Redirect(controllers.agent.routes.CheckYourAnswersController.show())
             }
           }
         }
