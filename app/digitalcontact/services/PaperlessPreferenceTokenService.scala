@@ -17,10 +17,10 @@
 package digitalcontact.services
 
 import java.util.UUID
-import javax.inject.Inject
 
+import connectors.PaperlessPreferenceTokenConnector
+import javax.inject.Inject
 import core.services.KeystoreService
-import digitalcontact.connectors.PaperlessPreferenceTokenConnector
 import digitalcontact.models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 

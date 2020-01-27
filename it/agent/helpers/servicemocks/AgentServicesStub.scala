@@ -16,7 +16,7 @@
 
 package agent.helpers.servicemocks
 
-import _root_.agent.connectors.AgentServicesConnector
+import connectors.agent.AgentServicesConnector
 import play.api.http.Status
 
 

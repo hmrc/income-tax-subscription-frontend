@@ -16,13 +16,13 @@
 
 package usermatching.services.mocks
 
+import connectors.usermatching.mocks.MockAuthenticatiorConnector
 import core.utils.MockTrait
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
-import usermatching.connectors.mocks.MockAuthenticatiorConnector
 import usermatching.models.{UserDetailsModel, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import usermatching.services.UserMatchingService
 import usermatching.utils.UserMatchingTestSupport

@@ -16,13 +16,13 @@
 
 package usermatching.services.mocks
 
+import connectors.usermatching.mocks.MockCitizenDetailsConnector
 import core.utils.MockTrait
 import core.utils.TestConstants._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.HeaderCarrier
-import usermatching.connectors.mocks.MockCitizenDetailsConnector
 import usermatching.services.{CitizenDetailsService, OptionalIdentifiers}
 
 import scala.concurrent.Future

@@ -16,9 +16,8 @@
 
 package agent.services
 
+import connectors.agent.AgentServicesConnector
 import javax.inject.{Inject, Singleton}
-
-import agent.connectors.AgentServicesConnector
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier

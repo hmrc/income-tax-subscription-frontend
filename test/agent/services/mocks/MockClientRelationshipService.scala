@@ -16,10 +16,10 @@
 
 package agent.services.mocks
 
-import agent.connectors.mocks.MockAgentServicesConnector
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import agent.services.ClientRelationshipService
+import connectors.agent.mocks.MockAgentServicesConnector
 import uk.gov.hmrc.http.HeaderCarrier
 import core.utils.MockTrait
 

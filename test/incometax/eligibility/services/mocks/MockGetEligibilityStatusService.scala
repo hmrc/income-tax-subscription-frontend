@@ -16,10 +16,10 @@
 
 package incometax.eligibility.services.mocks
 
+import connectors.individual.eligibility.httpparsers.EligibilityStatus
+import connectors.individual.eligibility.mocks.MockGetEligibilityStatusConnector
 import core.utils.HttpResult.HttpResult
 import core.utils.MockTrait
-import incometax.eligibility.connectors.mocks.MockGetEligibilityStatusConnector
-import incometax.eligibility.httpparsers.EligibilityStatus
 import incometax.eligibility.services.GetEligibilityStatusService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._

@@ -16,6 +16,7 @@
 
 package controllers.usermatching
 
+import connectors.individual.eligibility.httpparsers.{Eligible, Ineligible}
 import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
 import core.audit.Logging
@@ -23,7 +24,6 @@ import core.auth.Registration
 import core.config.MockConfig
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants
-import incometax.eligibility.httpparsers.{Eligible, Ineligible}
 import incometax.eligibility.services.mocks.MockGetEligibilityStatusService
 import incometax.subscription.services.mocks.MockSubscriptionService
 import org.mockito.Mockito.reset

@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
 import core.Constants._
 import core.config.AppConfig
-import digitalcontact.httpparsers.PaperlessPreferenceHttpParser._
+import connectors.PaperlessPreferenceHttpParser._
 import helpers.IntegrationTestConstants._
 import play.api.http.Status
 import play.api.i18n.Messages

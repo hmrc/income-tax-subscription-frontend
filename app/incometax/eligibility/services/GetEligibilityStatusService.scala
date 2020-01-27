@@ -16,9 +16,9 @@
 
 package incometax.eligibility.services
 
+import connectors.individual.eligibility.GetEligibilityStatusConnector
+import connectors.individual.eligibility.httpparsers.EligibilityStatus
 import core.utils.HttpResult.HttpResult
-import incometax.eligibility.connectors.GetEligibilityStatusConnector
-import incometax.eligibility.httpparsers.EligibilityStatus
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 

@@ -16,11 +16,11 @@
 
 package incometax.subscription.services.mocks
 
+import connectors.individual.subscription.mocks.MockTaxEnrolmentsConnector
 import core.Constants.GovernmentGateway._
 import core.config.MockConfig
 import core.utils.MockTrait
 import core.utils.TestConstants._
-import incometax.subscription.connectors.mocks.MockTaxEnrolmentsConnector
 import incometax.subscription.models.{KnownFactsFailure, KnownFactsRequest, KnownFactsSuccess, TypeValuePair}
 import incometax.subscription.services.KnownFactsService
 import org.mockito.ArgumentMatchers
