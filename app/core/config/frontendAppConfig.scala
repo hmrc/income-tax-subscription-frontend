@@ -25,8 +25,6 @@ import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig extends FeatureSwitching {
 
-  val analyticsToken: String
-  val analyticsHost: String
   val contactFormServiceIdentifier: String
   val contactFrontendPartialBaseUrl: String
   val reportAProblemPartialUrl: String
@@ -146,10 +144,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   // Agent Services Account link
   override lazy val agentAccountUrl = loadConfig(s"agent-account.url")
-
-  //GA Config
-  override lazy val analyticsToken = loadConfig(s"google-analytics.token")
-  override lazy val analyticsHost = loadConfig(s"google-analytics.host")
 
   //Contact Frontend Config
   protected lazy val contactFrontendService = baseUrl("contact-frontend")

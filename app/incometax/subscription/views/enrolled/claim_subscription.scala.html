@@ -22,10 +22,7 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@scripts = {
-<script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
-}
-@main_template(title = Messages("claim-subscription.title"), scriptElem = scripts) {
+@main_template(title = Messages("claim-subscription.title")) {
 
     <div class="form-group">
         <section id="confirmation-heading" class="transaction-banner--complete">

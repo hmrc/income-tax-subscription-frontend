@@ -32,10 +32,7 @@
     }
 }
 
-@scripts = {
-    <script type="text/javascript" src="@routes.Assets.at("javascripts/ga-bta.js")"></script>
-}
-@main_template(title = Messages("sign-up-complete.title"), scriptElem = scripts) {
+@main_template(title = Messages("sign-up-complete.title")) {
 
     @dataHelper("rent-uk-property", summary.rentUkProperty.map(_.rentUkProperty.toString))
     @dataHelper("only-source-of-self-employed-income", summary.rentUkProperty.flatMap(_.onlySourceOfSelfEmployedIncome.toString))
