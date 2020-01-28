@@ -75,9 +75,9 @@
     }
 
     @bodyEnd = {
-    @uiLayouts.footer(
-        analyticsToken = Some(appConfig.analyticsToken),
-        analyticsHost = appConfig.analyticsHost,
+        @uiLayouts.footer(
+        analyticsToken = None,
+        analyticsHost = "",
         ssoUrl = None,
         scriptElem = scriptElem,
         gaCalls = None)

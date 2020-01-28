@@ -19,8 +19,6 @@ package core.config
 import play.api.mvc.Call
 
 trait MockConfig extends AppConfig {
-  override val analyticsToken: String = ""
-  override val analyticsHost: String = ""
   override val reportAProblemPartialUrl: String = ""
   override val reportAProblemNonJSUrl: String = ""
   override val ggSignInContinueUrl: String = "/income-tax-subscription-frontend"
