@@ -40,6 +40,8 @@ object CacheUtil {
 
     def getAccountingMethod()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
 
+    def agentGetAccountingMethod()(implicit read: Reads[agent.models.AccountingMethodModel]): Option[agent.models.AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
+
     def getAccountingMethodProperty()(implicit read: Reads[AccountingMethodPropertyModel]): Option[AccountingMethodPropertyModel] = cacheMap.getEntry(AccountingMethodProperty)
 
     def getSummary()(implicit appConfig: AppConfig): AgentSummary = {

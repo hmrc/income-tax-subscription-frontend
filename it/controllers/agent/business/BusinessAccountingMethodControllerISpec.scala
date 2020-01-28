@@ -23,8 +23,8 @@ import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
 import agent.models._
 import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
-import core.models.{Accruals, Cash, No}
-import incometax.business.models.AccountingPeriodModel
+import core.models.{Accruals, Cash, No, Yes}
+import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.models.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
@@ -61,7 +61,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
       "show the accounting method page without an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
 
         When("GET /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
@@ -86,7 +86,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
-          KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both)))
+          KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
 
           When("POST /business/accounting-method is called")
           val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, Some(userInput))
@@ -107,7 +107,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
         When("POST /business/accounting-method is called")
@@ -125,7 +125,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubEmptyKeystore()
+        KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
 
         When("POST /business/accounting-method is called")
@@ -142,7 +142,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
     "not select an option on the accounting method page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubEmptyKeystore()
+      KeystoreStub.stubKeystoreData(keystoreData(incomeSource = Some(Both), matchTaxYear = Some(MatchTaxYearModel(Yes))))
       KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, "")
 
       When("POST /business/accounting-method is called")
@@ -158,7 +158,6 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
     "in edit mode" should {
       "changing to the Accruals radio button on the accounting method page" in {
         val keystoreIncomeSource = Both
-        val keystoreIncomeOther = No
         val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
         val keystoreAccountingMethod = AccountingMethodModel(Cash)
         val userInput = AccountingMethodModel(Accruals)
@@ -169,7 +168,8 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           keystoreData(
             incomeSource = Some(keystoreIncomeSource),
             accountingPeriodDate = Some(keystoreAccountingPeriodDates),
-            accountingMethod = Some(keystoreAccountingMethod)
+            accountingMethod = Some(keystoreAccountingMethod),
+            matchTaxYear = Some(MatchTaxYearModel(Yes))
           )
         )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
@@ -186,7 +186,6 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
 
       "simulate not changing accounting method when calling page from Check Your Answers" in {
         val keystoreIncomeSource = Both
-        val keystoreIncomeOther = No
         val keystoreAccountingPeriodDates: AccountingPeriodModel = testAccountingPeriod
         val keystoreAccountingMethod = AccountingMethodModel(Cash)
         val userInput = AccountingMethodModel(Accruals)
@@ -197,7 +196,8 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
           keystoreData(
             incomeSource = Some(keystoreIncomeSource),
             accountingPeriodDate = Some(keystoreAccountingPeriodDates),
-            accountingMethod = Some(keystoreAccountingMethod)
+            accountingMethod = Some(keystoreAccountingMethod),
+            matchTaxYear = Some(MatchTaxYearModel(Yes))
           )
         )
         KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod, userInput)
