@@ -66,7 +66,7 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
             cacheMap <- keystoreService.fetchAll()
             _ <- keystoreService.saveMatchTaxYear(matchTaxYear)
           } yield (isEditMode, matchTaxYear.matchTaxYear, cacheMap.getIncomeSourceType()) match {
-            case (false, Yes, Some(Business)) if applicationConfig.whatTaxYearToSignUpEnabled =>
+            case (false, Yes, Some(Business)) =>
               Redirect(controllers.individual.business.routes.WhatYearToSignUpController.show())
             case (false, Yes, _) =>
               Redirect(controllers.individual.business.routes.BusinessAccountingMethodController.show())

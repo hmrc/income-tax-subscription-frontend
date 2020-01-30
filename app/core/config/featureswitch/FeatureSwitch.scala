@@ -31,7 +31,6 @@ object FeatureSwitch {
     WelshLanguageFeature,
     UseSubscriptionApiV2,
     PropertyCashOrAccruals,
-    WhatTaxYearToSignUp,
     AgentPropertyCashOrAccruals
   )
 
@@ -68,11 +67,6 @@ case object UseSubscriptionApiV2 extends FeatureSwitch {
 case object PropertyCashOrAccruals extends FeatureSwitch {
   override val displayText: String = "Enable cash or accruals choice for property income"
   override val name: String = s"$prefix.property-cash-or-accruals"
-}
-
-case object WhatTaxYearToSignUp extends FeatureSwitch {
-  override val displayText: String = "Enable what tax year do you want to sign up for"
-  override val name: String = s"$prefix.what-tax-year-to-sign-up"
 }
 
 case object AgentPropertyCashOrAccruals extends FeatureSwitch {
