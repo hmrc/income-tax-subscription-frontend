@@ -19,7 +19,7 @@ package connectors.individual.subscription
 import core.config.AppConfig
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser._
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser._
-import incometax.subscription.models.SubscriptionRequestV2
+import incometax.subscription.models.SubscriptionRequest
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -37,10 +37,10 @@ class SubscriptionConnector @Inject()(val appConfig: AppConfig,
     http.GET[GetSubscriptionResponse](subscriptionUrl(nino))
   }
 
-  def subscriptionUrlV2(nino: String): String = s"${appConfig.subscriptionUrlV2}/$nino"
+  def subscriptionUrlPost(nino: String): String = s"${appConfig.subscriptionUrlPost}/$nino"
 
-  def subscribe(request: SubscriptionRequestV2)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] =
-    http.POST[SubscriptionRequestV2, SubscriptionResponse](subscriptionUrlV2(request.nino), request)
+  def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] =
+    http.POST[SubscriptionRequest, SubscriptionResponse](subscriptionUrlPost(request.nino), request)
 
 }
 

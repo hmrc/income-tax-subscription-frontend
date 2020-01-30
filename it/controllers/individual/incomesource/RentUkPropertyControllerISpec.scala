@@ -40,7 +40,7 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
       "show the rent uk property page with the options selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothV2()
+        KeystoreStub.stubFullKeystoreBothPost()
 
         When("GET /rent-uk-property is called")
         val res = IncomeTaxSubscriptionFrontend.rentUkProperty()

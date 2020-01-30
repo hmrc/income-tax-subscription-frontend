@@ -71,14 +71,14 @@ object TestConstants {
     knownFacts = List(testMTDID, testNino)
   )
 
-  val testSubmissionRequest = SubscriptionRequestV2(
+  val testSubmissionRequest = SubscriptionRequest(
     nino = TestConstants.testNino,
     arn = None,
     businessIncome = Some(BusinessIncomeModel(Some(testBusinessName.businessName),testAccountingPeriod, Cash)),
     propertyIncome = Some(PropertyIncomeModel(Some(Cash)))
   )
 
-  val testAdjustedSubmissionRequest = SubscriptionRequestV2(
+  val testAdjustedSubmissionRequest = SubscriptionRequest(
     nino = TestConstants.testNino,
     arn = None,
     businessIncome = Some(BusinessIncomeModel(Some(testBusinessName.businessName),adjustedTestAccountingPeriod, Cash)),

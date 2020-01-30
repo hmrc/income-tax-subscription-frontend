@@ -39,7 +39,7 @@ class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureS
       "show the business phone number page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothV2()
+        KeystoreStub.stubFullKeystoreBothPost()
 
         When("GET /business/phone-number is called")
         val res = IncomeTaxSubscriptionFrontend.businessPhoneNumber()

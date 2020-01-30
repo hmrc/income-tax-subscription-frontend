@@ -51,7 +51,7 @@ object IntegrationTestModels {
 
   lazy val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
 
-  lazy val fullKeystoreDataBothV2: Map[String, JsValue] =
+  lazy val fullKeystoreDataBothPost: Map[String, JsValue] =
     keystoreData(
       incomeSource = Some(Both),
       rentUkProperty = Some(testRentUkProperty_property_and_other),
@@ -66,7 +66,7 @@ object IntegrationTestModels {
       propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
 
-  lazy val fullKeystoreDataPropertyV2: Map[String, JsValue] =
+  lazy val fullKeystoreDataPropertyPost: Map[String, JsValue] =
     keystoreData(
       incomeSource = Some(Property),
       rentUkProperty = Some(testRentUkProperty_property_only),

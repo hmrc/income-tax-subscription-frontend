@@ -36,7 +36,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "show the match tax year page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothV2()
+        KeystoreStub.stubFullKeystoreBothPost()
 
         When("GET /business/match-to-tax-year is called")
         val res = IncomeTaxSubscriptionFrontend.matchTaxYear()

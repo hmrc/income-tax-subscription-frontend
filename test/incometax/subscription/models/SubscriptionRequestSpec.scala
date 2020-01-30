@@ -25,7 +25,7 @@ class SubscriptionRequestSpec extends UnitSpec {
 
   "FERequest" should {
     "Provide the correct reader for FERequest" in {
-      val feRequest = SubscriptionRequestV2(
+      val feRequest = SubscriptionRequest(
         nino = TestConstants.testNino,
         arn = None,
         businessIncome = None,
@@ -33,11 +33,11 @@ class SubscriptionRequestSpec extends UnitSpec {
       )
 
       val request: JsValue = Json.toJson(feRequest)
-      val expected = Json.fromJson[SubscriptionRequestV2](
+      val expected = Json.fromJson[SubscriptionRequest](
         s"""{"nino" : "${TestConstants.testNino}",
            | "isAgent" : false,
            | "incomeSource":"${IncomeSourceType.business}"}""".stripMargin).get
-      val actual = Json.fromJson[SubscriptionRequestV2](request).get
+      val actual = Json.fromJson[SubscriptionRequest](request).get
       actual shouldBe expected
     }
   }

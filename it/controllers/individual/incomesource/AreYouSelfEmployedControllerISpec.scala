@@ -42,7 +42,7 @@ class AreYouSelfEmployedControllerISpec extends ComponentSpecBase {
       "show the income source page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothV2()
+        KeystoreStub.stubFullKeystoreBothPost()
 
         When("GET /income is called")
         val res = IncomeTaxSubscriptionFrontend.areYouSelfEmployed()

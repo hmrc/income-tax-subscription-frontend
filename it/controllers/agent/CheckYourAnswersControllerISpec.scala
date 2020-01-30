@@ -53,7 +53,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubFullKeystore()
-          SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
+          SubscriptionStub.stubSuccessfulPostSubscription(checkYourAnswersURI)
           TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
           KeystoreStub.stubPutMtditId()
 

@@ -41,7 +41,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       "show the accounting method page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothV2()
+        KeystoreStub.stubFullKeystoreBothPost()
 
         When("GET /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
@@ -82,7 +82,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
     "the user does not select an answer" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystoreBothV2()
+      KeystoreStub.stubFullKeystoreBothPost()
 
       When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, request = None)

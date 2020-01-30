@@ -20,7 +20,7 @@ import core.models.AccountingMethod
 import incometax.business.models.AccountingPeriodModel
 import play.api.libs.json.{Json, OFormat}
 
-case class SubscriptionRequestV2(nino: String,
+case class SubscriptionRequest(nino: String,
                                  arn: Option[String],
                                  businessIncome: Option[BusinessIncomeModel],
                                  propertyIncome: Option[PropertyIncomeModel]) {
@@ -34,8 +34,8 @@ case class BusinessIncomeModel(tradingName: Option[String],
 
 case class PropertyIncomeModel(accountingMethod: Option[AccountingMethod])
 
-object SubscriptionRequestV2 {
-  implicit val format: OFormat[SubscriptionRequestV2] = Json.format[SubscriptionRequestV2]
+object SubscriptionRequest {
+  implicit val format: OFormat[SubscriptionRequest] = Json.format[SubscriptionRequest]
 }
 
 object BusinessIncomeModel {

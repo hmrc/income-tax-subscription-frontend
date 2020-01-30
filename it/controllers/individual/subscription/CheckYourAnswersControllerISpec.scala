@@ -29,7 +29,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothV2()
+        KeystoreStub.stubFullKeystoreBothPost()
 
         When("GET /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
@@ -50,8 +50,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothV2()
-        SubscriptionStub.stubSuccessfulSubscriptionV2WithBoth(checkYourAnswersURI)
+        KeystoreStub.stubFullKeystoreBothPost()
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         KeystoreStub.stubPutMtditId()
@@ -71,8 +71,8 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystorePropertyV2()
-        SubscriptionStub.stubSuccessfulSubscriptionV2WithProperty(checkYourAnswersURI)
+        KeystoreStub.stubFullKeystorePropertyPost()
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithProperty(checkYourAnswersURI)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         KeystoreStub.stubPutMtditId()
@@ -94,7 +94,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
-        SubscriptionStub.stubSuccessfulSubscriptionV2WithBoth(checkYourAnswersURI)
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
 
@@ -113,7 +113,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
-        SubscriptionStub.stubSuccessfulSubscriptionV2WithProperty(checkYourAnswersURI)
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithProperty(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, BAD_REQUEST)
 
@@ -132,7 +132,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
-        SubscriptionStub.stubSuccessfulSubscriptionV2WithBoth(checkYourAnswersURI)
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, FORBIDDEN)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
 
@@ -151,7 +151,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
-        SubscriptionStub.stubSuccessfulSubscriptionV2WithBoth(checkYourAnswersURI)
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
 
@@ -170,7 +170,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
-        SubscriptionStub.stubSuccessfulSubscriptionV2WithBoth(checkYourAnswersURI)
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
 

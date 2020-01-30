@@ -25,23 +25,23 @@ import play.api.libs.json.Json
 
 object SubscriptionStub extends WireMockMethods {
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"
-  def subscriptionURIV2(nino: String): String = s"/income-tax-subscription/subscription-v2/$nino"
+  def subscriptionURIPost(nino: String): String = s"/income-tax-subscription/subscription-v2/$nino"
 
-  def stubSuccessfulSubscription(callingPageUri: String): Unit = {
-    when(method = POST, uri = subscriptionURIV2(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri))
+  def stubSuccessfulPostSubscription(callingPageUri: String): Unit = {
+    when(method = POST, uri = subscriptionURIPost(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri))
       .thenReturn(Status.OK, successfulSubscriptionResponse)
   }
 
-  def stubSuccessfulSubscriptionV2WithBoth(callingPageUri: String): Unit = {
+  def stubSuccessfulSubscriptionPostWithBoth(callingPageUri: String): Unit = {
     val nino = testNino
-    when(method = POST, uri = subscriptionURIV2(nino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri),
+    when(method = POST, uri = subscriptionURIPost(nino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri),
       body = successfulSubscriptionWithBodyBoth(nino = nino))
     .thenReturn(Status.OK, successfulSubscriptionResponse)
   }
 
-  def stubSuccessfulSubscriptionV2WithProperty(callingPageUri: String): Unit = {
+  def stubSuccessfulSubscriptionPostWithProperty(callingPageUri: String): Unit = {
     val nino = testNino
-    when(method = POST, uri = subscriptionURIV2(nino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri),
+    when(method = POST, uri = subscriptionURIPost(nino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri),
       body = successfulSubscriptionWithBodyProperty(nino = nino))
       .thenReturn(Status.OK, successfulSubscriptionResponse)
   }

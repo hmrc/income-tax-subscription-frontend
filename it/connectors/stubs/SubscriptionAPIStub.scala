@@ -3,11 +3,11 @@ package connectors.stubs
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import helpers.servicemocks.WireMockMethods
-import incometax.subscription.models.SubscriptionRequestV2
+import incometax.subscription.models.SubscriptionRequest
 import play.api.libs.json.{JsValue, Json}
 import helpers.IntegrationTestConstants.testMTDID
 
-object SubscriptionAPIV2Stub extends WireMockMethods {
+object SubscriptionAPIStub extends WireMockMethods {
 
   private def uri(nino: String): String = s"/income-tax-subscription/subscription-v2/$nino"
 
@@ -21,7 +21,7 @@ object SubscriptionAPIV2Stub extends WireMockMethods {
     )
   }
 
-  def stubSubscription(request: SubscriptionRequestV2)(responseCode: Int, response: JsValue = Json.obj("mtditId" -> testMTDID)): StubMapping = {
+  def stubPostSubscription(request: SubscriptionRequest)(responseCode: Int, response: JsValue = Json.obj("mtditId" -> testMTDID)): StubMapping = {
     when (
       method = POST,
       uri = uri(request.nino),

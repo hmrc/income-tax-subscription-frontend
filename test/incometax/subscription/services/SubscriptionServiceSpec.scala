@@ -34,10 +34,10 @@ class SubscriptionServiceSpec extends TestSubscriptionService
   val testNino: String = TestConstants.testNino
 
 
-  "subscriptionService.buildRequestV2" should {
+  "subscriptionService.buildRequestPost" should {
     "convert the user's data into the correct format when they own a property and self employed" in {
       val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequestV2(nino, testSummaryData, None)
+      val request = TestSubscriptionService.buildRequestPost(nino, testSummaryData, None)
 
       request.nino mustBe nino
       request.businessIncome.get.accountingPeriod.startDate mustBe testAccountingPeriod.startDate
@@ -50,7 +50,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
     "convert the user's data into the correct format when they own a property" in {
       val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequestV2(nino, testSummaryDataProperty, None)
+      val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataProperty, None)
 
       request.nino mustBe nino
       request.businessIncome.isDefined mustBe false
@@ -60,7 +60,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
     "convert the user's data into the correct format when they are self employed" in {
       val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequestV2(nino, testSummaryDataBusiness, None)
+      val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataBusiness, None)
 
       request.nino mustBe nino
       request.businessIncome.get.accountingPeriod.startDate mustBe testAccountingPeriod.startDate
@@ -73,7 +73,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
     "convert the user's data into the correct format when they are self employed and they are signing up in next Tax year" in {
       val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequestV2(nino, testSummaryDataBusinessMatchTaxYear.copy(selectedTaxYear = Some(testSelectedTaxYearNext)), None)
+      val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataBusinessMatchTaxYear.copy(selectedTaxYear = Some(testSelectedTaxYearNext)), None)
 
       val expectedTaxYear = AccountingPeriodUtil.getNextTaxYear
 

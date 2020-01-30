@@ -18,7 +18,7 @@ package incometax.subscription.services
 
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import connectors.individual.subscription.{SubscriptionConnector, SubscriptionConnectorV2}
+import connectors.individual.subscription.SubscriptionConnector
 import core.audit.Logging
 import core.config.AppConfig
 import core.config.featureswitch.FeatureSwitching
@@ -48,7 +48,7 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
     }
   }
 
-  private[services] def buildRequestV2(nino: String, model: SummaryModel, arn: Option[String]): SubscriptionRequestV2 = {
+  private[services] def buildRequestPost(nino: String, model: SummaryModel, arn: Option[String]): SubscriptionRequest = {
     val businessSection = model.incomeSource.flatMap {
       case Business | Both =>
         for {
@@ -66,7 +66,7 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
     }
 
 
-    SubscriptionRequestV2(nino, arn, businessSection, propertySection)
+    SubscriptionRequest(nino, arn, businessSection, propertySection)
   }
 
   def submitSubscription(nino: String,
@@ -74,9 +74,9 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
                          arn: Option[String]
                         )(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
 
-      val requestV2 = buildRequestV2(nino, summaryData, arn)
-      logging.debug(s"Submitting subscription with request: $requestV2")
-      subscriptionConnector.subscribe(requestV2)
+      val requestPost = buildRequestPost(nino, summaryData, arn)
+      logging.debug(s"Submitting subscription with request: $requestPost")
+      subscriptionConnector.subscribe(requestPost)
   }
 
   def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] = {
