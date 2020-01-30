@@ -36,7 +36,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
       "show the match tax year page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubFullKeystoreBothV2()
 
         When("GET /business/match-to-tax-year is called")
         val res = IncomeTaxSubscriptionFrontend.matchTaxYear()
@@ -80,7 +80,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreData(
-          keystoreDataV2(rentUkProperty = Some(testRentUkProperty_no_property), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
+          keystoreData(rentUkProperty = Some(testRentUkProperty_no_property), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
         )
         KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
 
@@ -105,7 +105,7 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
         AuthStub.stubAuthSuccess()
 
         KeystoreStub.stubKeystoreData(
-          keystoreDataV2(rentUkProperty = Some(testRentUkProperty_no_property), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
+          keystoreData(rentUkProperty = Some(testRentUkProperty_no_property), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
         )
         KeystoreStub.stubKeystoreSave(CacheConstants.MatchTaxYear, userInput)
 

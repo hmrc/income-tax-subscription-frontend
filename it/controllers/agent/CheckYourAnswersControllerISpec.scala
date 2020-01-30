@@ -19,13 +19,12 @@ package controllers.agent
 import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
-import core.config.featureswitch.FeatureSwitching
 import helpers.IntegrationTestModels.testEnrolmentKey
 import helpers.servicemocks.{SubscriptionStub, TaxEnrolmentsStub}
 import play.api.http.Status._
 import play.api.i18n.Messages
 
-class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class CheckYourAnswersControllerISpec extends ComponentSpecBase {
 
   "GET /check-your-answers" when {
     "keystore returns all data" should {

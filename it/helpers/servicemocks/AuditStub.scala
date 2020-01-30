@@ -12,7 +12,7 @@ object AuditStub extends WireMockMethods {
       .thenReturn(status = 200, body = """{"x":2}""")
   }
 
-  def verifyAudit()(implicit hc: HeaderCarrier): Unit = {
+  def verifyAudit(): Unit = {
     //We cannot verify content of audit body without string matching/regex
     //It is tested in more detail at unit level
     verify(method = POST, uri = "/write/audit")

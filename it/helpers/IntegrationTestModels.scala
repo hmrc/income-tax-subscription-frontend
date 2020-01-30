@@ -51,7 +51,7 @@ object IntegrationTestModels {
 
   lazy val testAddress = Address(Some(List("line1", "line2")), Some("zz111zz"), Some(Country("GB", "United Kingdom")))
 
-  lazy val fullKeystoreData: Map[String, JsValue] =
+  lazy val fullKeystoreDataBothV2: Map[String, JsValue] =
     keystoreData(
       incomeSource = Some(Both),
       rentUkProperty = Some(testRentUkProperty_property_and_other),
@@ -66,26 +66,12 @@ object IntegrationTestModels {
       propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
 
-  lazy val fullKeystoreDataBothV2: Map[String, JsValue] =
-    keystoreDataV2(
-      incomeSource = Some(Both),
-      rentUkProperty = Some(testRentUkProperty_property_and_other),
-      areYouSelfEmployed = Some(testAreYouSelfEmployed_yes),
-      matchTaxYear = Some(testMatchTaxYearNo),
-      accountingPeriodDate = Some(testAccountingPeriod),
-      businessName = Some(testBusinessName),
-      businessPhoneNumber = Some(testBusinessPhoneNumber),
-      businessAddress = Some(testAddress),
-      accountingMethod = Some(testAccountingMethod),
-      accountingMethodProperty = Some(testAccountingMethodProperty)
-    )
-
   lazy val fullKeystoreDataPropertyV2: Map[String, JsValue] =
-    keystoreDataV2(
+    keystoreData(
       incomeSource = Some(Property),
       rentUkProperty = Some(testRentUkProperty_property_only),
       areYouSelfEmployed = Some(testAreYouSelfEmployed_no),
-      accountingMethodProperty = Some(testAccountingMethodProperty)
+      propertyAccountingMethod = Some(testAccountingMethodProperty)
     )
 
 
@@ -113,30 +99,6 @@ object IntegrationTestModels {
       businessAddress.map(model => BusinessAddress -> Address.format.writes(model)) ++
       accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
       propertyAccountingMethod.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))
-  }
-
-  def keystoreDataV2(incomeSource: Option[IncomeSourceType] = None,
-                     rentUkProperty: Option[RentUkPropertyModel] = None,
-                     areYouSelfEmployed: Option[AreYouSelfEmployedModel] = None,
-                     matchTaxYear: Option[MatchTaxYearModel] = None,
-                     accountingYear: Option[AccountingYearModel] = None,
-                     accountingPeriodDate: Option[AccountingPeriodModel] = None,
-                     businessName: Option[BusinessNameModel] = None,
-                     businessPhoneNumber: Option[BusinessPhoneNumberModel] = None,
-                     businessAddress: Option[Address] = None,
-                     accountingMethod: Option[AccountingMethodModel] = None,
-                     accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): Map[String, JsValue] = {
-    Map.empty[String, JsValue] ++
-      incomeSource.map(model => IncomeSource -> IncomeSourceType.format.writes(model)) ++
-      rentUkProperty.map(model => RentUkProperty -> RentUkPropertyModel.format.writes(model)) ++
-      areYouSelfEmployed.map(model => AreYouSelfEmployed -> AreYouSelfEmployedModel.format.writes(model)) ++
-      matchTaxYear.map(model => MatchTaxYear -> MatchTaxYearModel.format.writes(model)) ++
-      accountingPeriodDate.map(model => AccountingPeriodDate -> AccountingPeriodModel.format.writes(model)) ++
-      businessName.map(model => BusinessName -> BusinessNameModel.format.writes(model)) ++
-      businessPhoneNumber.map(model => BusinessPhoneNumber -> BusinessPhoneNumberModel.format.writes(model)) ++
-      businessAddress.map(model => BusinessAddress -> Address.format.writes(model)) ++
-      accountingMethod.map(model => AccountingMethod -> AccountingMethodModel.format.writes(model)) ++
-      accountingMethodProperty.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))
   }
 
   lazy val testIncomeSourceBusiness = Business

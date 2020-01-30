@@ -37,7 +37,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
       "show the accounting period dates page with date values entered" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubFullKeystoreBothV2
 
         When("GET /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingPeriodDates()

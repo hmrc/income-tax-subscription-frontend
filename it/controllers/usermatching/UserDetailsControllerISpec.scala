@@ -31,7 +31,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
     def fixture(agentLocked: Boolean): WSResponse = {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystore()
+      KeystoreStub.stubFullKeystoreBothV2()
 
       if (agentLocked) UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
       else UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
@@ -70,7 +70,7 @@ class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching
     "the user is locked out" should {
       "show the user lock out page" in {
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubFullKeystoreBothV2()
         UserLockoutStub.stubUserIsLocked(testUserIdEncoded)
 
         val res = IncomeTaxSubscriptionFrontend.submitUserDetails(newSubmission = None, storedSubmission = None)

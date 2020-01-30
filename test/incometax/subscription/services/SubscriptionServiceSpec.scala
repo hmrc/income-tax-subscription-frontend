@@ -16,8 +16,7 @@
 
 package incometax.subscription.services
 
-import core.config.featureswitch.{FeatureSwitching, UseSubscriptionApiV2}
-import core.models.{Cash, Next, No}
+import core.models.Cash
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.{TestConstants, TestModels}
@@ -30,55 +29,10 @@ import play.api.test.Helpers._
 
 
 class SubscriptionServiceSpec extends TestSubscriptionService
-  with EitherValues
-  with FeatureSwitching {
+  with EitherValues {
 
   val testNino: String = TestConstants.testNino
 
-  "SubscriptionService.buildRequest" should {
-    "convert the user's data into the correct FERequest format" in {
-      // a freshly generated nino is used to ensure it is not simply pulling the test nino from somewhere else
-      val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
-      request.nino mustBe nino
-      request.accountingPeriodStart.get mustBe testSummaryData.accountingPeriodDate.get.startDate
-      request.accountingPeriodEnd.get mustBe testSummaryData.accountingPeriodDate.get.endDate
-      request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
-      request.incomeSource mustBe Both
-      request.isAgent mustBe false
-      request.tradingName.get mustBe testSummaryData.businessName.get.businessName
-    }
-
-    "use the current tax year and ignore the accounting period dates if match tax year is answered yes" in {
-      val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequest(nino, testSummaryData.copy(matchTaxYear = testMatchTaxYearYes), None)
-      request.nino mustBe nino
-      request.accountingPeriodStart.get must not be testSummaryData.accountingPeriodDate.get.startDate
-      request.accountingPeriodStart.get mustBe AccountingPeriodUtil.getCurrentTaxYearStartDate
-      request.accountingPeriodEnd.get must not be testSummaryData.accountingPeriodDate.get.endDate
-      request.accountingPeriodEnd.get mustBe AccountingPeriodUtil.getCurrentTaxYearEndDate
-      request.cashOrAccruals.get mustBe testSummaryData.accountingMethod.get.accountingMethod
-      request.incomeSource mustBe Both
-      request.isAgent mustBe false
-      request.tradingName.get mustBe testSummaryData.businessName.get.businessName
-    }
-
-    "property requests should copy None into start and end dates" in {
-      val nino = TestModels.newNino
-      val testSummaryData = IndividualSummary(
-        rentUkProperty = testRentUkProperty_property_only,
-        areYouSelfEmployed = None
-      )
-      val request = TestSubscriptionService.buildRequest(nino, testSummaryData, None)
-      request.nino mustBe nino
-      request.accountingPeriodStart mustBe None
-      request.accountingPeriodEnd mustBe None
-      request.cashOrAccruals mustBe None
-      request.incomeSource mustBe Property
-      request.isAgent mustBe false
-      request.tradingName mustBe None
-    }
-  }
 
   "subscriptionService.buildRequestV2" should {
     "convert the user's data into the correct format when they own a property and self employed" in {
@@ -134,9 +88,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
     }
   }
 
-  "SubscriptionService.submitSubscription" when {
-    "the UseSubscriptionApiV2 feature switch is enabled" should {
-      enable(UseSubscriptionApiV2)
+  "SubscriptionService.submitSubscription" should {
 
       def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData, arn = None))
 
@@ -159,32 +111,6 @@ class SubscriptionServiceSpec extends TestSubscriptionService
         setupMockSubscribeException(testSubmissionRequest)
         intercept[Exception](call) shouldBe testException
       }
-    }
-    "the UseSubscriptionApiV2 feature switch is disabled" should {
-      disable(UseSubscriptionApiV2)
-
-      def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData, arn = None))
-
-      "return the safeId when the subscription is successful" in {
-        setupMockSubscribeSuccess(testSubmissionRequest)
-        call.right.value shouldBe SubscriptionSuccess(testMTDID)
-      }
-
-      "return the error if subscription fails on bad request" in {
-        setupMockSubscribeFailure(testSubmissionRequest)
-        call.left.value shouldBe SubscriptionFailureResponse(BAD_REQUEST)
-      }
-
-      "return the error if subscription fails on bad formatting" in {
-        setupMockSubscribeBadFormatting(testSubmissionRequest)
-        call.left.value shouldBe BadlyFormattedSubscriptionResponse
-      }
-
-      "return the error if subscription throws an exception" in {
-        setupMockSubscribeException(testSubmissionRequest)
-        intercept[Exception](call) shouldBe testException
-      }
-    }
   }
 
   "SubscriptionService.getSubscription" should {

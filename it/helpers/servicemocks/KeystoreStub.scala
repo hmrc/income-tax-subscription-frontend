@@ -34,12 +34,10 @@ object KeystoreStub extends WireMockMethods {
     val id = "MtditId"
 
     when(method = PUT, uri = putUri(id))
-      .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreData + (id -> Json.toJson(testMTDID))))
+      .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreDataBothV2 + (id -> Json.toJson(testMTDID))))
   }
 
   def putUri(key: String) = s"$keystoreUri/data/$key"
-
-  def stubFullKeystore(): Unit = stubKeystoreData(fullKeystoreData)
 
   def stubFullKeystoreBothV2(): Unit = stubKeystoreData(fullKeystoreDataBothV2)
   def stubFullKeystorePropertyV2(): Unit = stubKeystoreData(fullKeystoreDataPropertyV2)
@@ -65,12 +63,12 @@ object KeystoreStub extends WireMockMethods {
 
   def stubKeystoreSave[T](id: String, body: T)(implicit writer: Writes[T]): Unit = {
     when(method = PUT, uri = putUri(id))
-      .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreData + (id -> Json.toJson(body))))
+      .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreDataBothV2 + (id -> Json.toJson(body))))
   }
 
   def stubKeystoreSave(id: String): Unit = {
     when(method = PUT, uri = putUri(id))
-      .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreData))
+      .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreDataBothV2))
   }
 
   def verifyKeyStoreDelete(count: Option[Int] = None): Unit = {

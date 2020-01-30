@@ -18,7 +18,7 @@ package incometax.subscription.services.mocks
 
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import connectors.individual.subscription.mocks.{MockSubscriptionConnector, MockSubscriptionConnectorV2}
+import connectors.individual.subscription.mocks.MockSubscriptionConnector
 import core.audit.Logging
 import core.config.MockConfig
 import core.utils.MockTrait
@@ -74,13 +74,12 @@ trait MockSubscriptionService extends MockTrait {
     mockGetSubscription(nino)(Future.failed(testException))
 }
 
-trait TestSubscriptionService extends MockSubscriptionConnector with MockSubscriptionConnectorV2 {
+trait TestSubscriptionService extends MockSubscriptionConnector {
 
   object TestSubscriptionService extends SubscriptionService(
     applicationConfig = MockConfig,
     logging = app.injector.instanceOf[Logging],
-    subscriptionConnector = mockSubscriptionConnector,
-    subscriptionConnectorV2 = mockSubscriptionConnectorV2
+    subscriptionConnector = mockSubscriptionConnector
   )
 
 }

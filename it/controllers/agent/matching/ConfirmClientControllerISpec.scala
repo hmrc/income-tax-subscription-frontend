@@ -21,15 +21,14 @@ import _root_.agent.helpers.IntegrationTestConstants._
 import _root_.agent.helpers.servicemocks._
 import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import controllers.agent.ITSASessionKeys
-import core.config.featureswitch.FeatureSwitching
 import helpers.UserMatchingIntegrationResultSupport
 import helpers.servicemocks.{AuthStub => _, KeystoreStub => _, _}
+
 import play.api.http.Status._
 
 
-class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport with FeatureSwitching {
+class ConfirmClientControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {
 
-  import IncomeTaxSubscriptionFrontend._
 
   "POST /confirm-client" when {
 

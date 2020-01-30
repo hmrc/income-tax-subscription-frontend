@@ -16,14 +16,14 @@
 
 package connectors.individual.subscription.mocks
 
-import connectors.individual.subscription.SubscriptionConnector
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.individual.subscription.{SubscriptionConnector, SubscriptionConnectorV2}
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import core.config.AppConfig
 import core.connectors.mocks.MockHttp
 import core.utils.MockTrait
 import core.utils.TestConstants._
-import incometax.subscription.models.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
+import incometax.subscription.models.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionRequestV2, SubscriptionSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status.{BAD_REQUEST, OK}
@@ -35,21 +35,25 @@ import scala.concurrent.Future
 trait MockSubscriptionConnector extends MockTrait {
   val mockSubscriptionConnector = mock[SubscriptionConnector]
 
-  private def setupMockSubscribe(request: SubscriptionRequest)(result: Future[SubscriptionResponse]): Unit =
+  private def setupMockSubscribe(request: SubscriptionRequestV2)(result: Future[SubscriptionResponse]): Unit =
     when(mockSubscriptionConnector.subscribe(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(result)
 
-  def setupMockSubscribeSuccess(request: SubscriptionRequest): Unit =
+  def setupMockSubscribeSuccess(request: SubscriptionRequestV2): Unit =
     setupMockSubscribe(request)(Future.successful(Right(SubscriptionSuccess(testMTDID))))
 
-  def setupMockSubscribeFailure(request: SubscriptionRequest): Unit =
+  def setupMockSubscribeFailure(request: SubscriptionRequestV2): Unit =
     setupMockSubscribe(request)(Future.successful(Left(SubscriptionFailureResponse(BAD_REQUEST))))
 
-  def setupMockSubscribeBadFormatting(request: SubscriptionRequest): Unit =
+  def setupMockSubscribeBadFormatting(request: SubscriptionRequestV2): Unit =
     setupMockSubscribe(request)(Future.successful(Left(BadlyFormattedSubscriptionResponse)))
 
-  def setupMockSubscribeException(request: SubscriptionRequest): Unit =
+  def setupMockSubscribeException(request: SubscriptionRequestV2): Unit =
     setupMockSubscribe(request)(Future.failed(testException))
+
+  def setupMockSubscriptionV2(request: SubscriptionRequestV2)(result: Future[SubscriptionResponse]): Unit =
+    when(mockSubscriptionConnector.subscribe(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(result)
 
 
   private def setupMockGetSubscription(nino: String)(result: Future[GetSubscriptionResponse]): Unit =
@@ -76,17 +80,17 @@ trait TestSubscriptionConnector extends MockHttp {
     mockHttp
   )
 
-  def setupMockSubscribe(request: SubscriptionRequest)(status: Int, response: JsValue): Unit =
-    setupMockHttpPost[SubscriptionRequest](
+  def setupMockSubscribe(request: SubscriptionRequestV2)(status: Int, response: JsValue): Unit =
+    setupMockHttpPost[SubscriptionRequestV2](
       url = Some(TestSubscriptionConnector.subscriptionUrl("")),
       body = Some(request)
     )(status, response)
 
-  def setupMockSubscribeSuccess(request: SubscriptionRequest): Unit = setupMockSubscribe(request)(OK, Json.toJson(SubscriptionSuccess(testMTDID)))
+  def setupMockSubscribeSuccess(request: SubscriptionRequestV2): Unit = setupMockSubscribe(request)(OK, Json.toJson(SubscriptionSuccess(testMTDID)))
 
-  def setupMockSubscribeEmptyBody(request: SubscriptionRequest): Unit = setupMockSubscribe(request)(OK, Json.obj())
+  def setupMockSubscribeEmptyBody(request: SubscriptionRequestV2): Unit = setupMockSubscribe(request)(OK, Json.obj())
 
-  def setupMockSubscribeBadRequest(request: SubscriptionRequest): Unit = setupMockSubscribe(request)(BAD_REQUEST, Json.obj())
+  def setupMockSubscribeBadRequest(request: SubscriptionRequestV2): Unit = setupMockSubscribe(request)(BAD_REQUEST, Json.obj())
 
   def setupMockGetSubscription(nino: String)(status: Int, response: JsValue): Unit =
     setupMockHttpGet(

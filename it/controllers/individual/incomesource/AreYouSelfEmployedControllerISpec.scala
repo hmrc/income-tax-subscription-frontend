@@ -42,7 +42,7 @@ class AreYouSelfEmployedControllerISpec extends ComponentSpecBase {
       "show the income source page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubFullKeystoreBothV2()
 
         When("GET /income is called")
         val res = IncomeTaxSubscriptionFrontend.areYouSelfEmployed()
@@ -207,7 +207,7 @@ class AreYouSelfEmployedControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreDataV2(rentUkProperty = Some(testRentUkProperty_property_and_other), areYouSelfEmployed = Some(testAreYouSelfEmployed_no)))
+        KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(testRentUkProperty_property_and_other), areYouSelfEmployed = Some(testAreYouSelfEmployed_no)))
         KeystoreStub.stubKeystoreSave(CacheConstants.AreYouSelfEmployed)
 
         When("POST /are you self-employed is called")
@@ -225,7 +225,7 @@ class AreYouSelfEmployedControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreDataV2(rentUkProperty = Some(testRentUkProperty_property_and_other), areYouSelfEmployed = Some(userInput)))
+        KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(testRentUkProperty_property_and_other), areYouSelfEmployed = Some(userInput)))
         KeystoreStub.stubKeystoreSave(CacheConstants.AreYouSelfEmployed)
 
         When("POST /are you self-employed is called")

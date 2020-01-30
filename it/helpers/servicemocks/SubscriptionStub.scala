@@ -28,7 +28,7 @@ object SubscriptionStub extends WireMockMethods {
   def subscriptionURIV2(nino: String): String = s"/income-tax-subscription/subscription-v2/$nino"
 
   def stubSuccessfulSubscription(callingPageUri: String): Unit = {
-    when(method = POST, uri = subscriptionURI(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri))
+    when(method = POST, uri = subscriptionURIV2(testNino), headers = Map(ITSASessionKeys.RequestURI -> callingPageUri))
       .thenReturn(Status.OK, successfulSubscriptionResponse)
   }
 

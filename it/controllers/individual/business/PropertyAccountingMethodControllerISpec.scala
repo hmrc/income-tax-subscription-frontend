@@ -34,7 +34,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
       "show the accounting method page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubFullKeystoreBothV2()
         When("GET /business/accounting-method-property is called")
         val res = IncomeTaxSubscriptionFrontend.propertyAccountingMethod()
 
@@ -76,7 +76,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystore()
+      KeystoreStub.stubFullKeystoreBothV2()
       KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
 
       When("POST /business/accounting-method-property is called")
@@ -94,7 +94,7 @@ class PropertyAccountingMethodControllerISpec extends ComponentSpecBase {
 
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystore()
+      KeystoreStub.stubFullKeystoreBothV2()
       KeystoreStub.stubKeystoreSave(CacheConstants.PropertyAccountingMethod, userInput)
 
       When("POST /business/accounting-method-property is called")

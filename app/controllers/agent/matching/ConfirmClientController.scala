@@ -83,7 +83,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
       case Right(LockoutUpdate(_: LockedOut, _)) =>
         successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show())
           .removingFromSession(FailedClientMatching).clearUserDetails)
-      case Left(failure) => failed(new InternalServerException("ConfirmClientControllerr.lockUser: " + failure))
+      case Left(failure) => failed(new InternalServerException("ConfirmClientController.lockUser: " + failure))
     }
   }
 

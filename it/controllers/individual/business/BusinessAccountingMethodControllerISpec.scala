@@ -41,7 +41,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
       "show the accounting method page with an option selected" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubFullKeystoreBothV2()
 
         When("GET /business/accounting-method is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingMethod()
@@ -82,7 +82,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
     "the user does not select an answer" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubFullKeystore()
+      KeystoreStub.stubFullKeystoreBothV2()
 
       When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
       val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, request = None)
@@ -99,8 +99,9 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         s"redirect to ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url}" in {
           val userInput: AccountingMethodModel = AccountingMethodModel(Cash)
 
-          Given("I setup the wiremock stubs and feature switches")
           enable(PropertyCashOrAccruals)
+
+          Given("I setup the wiremock stubs and feature switches")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(RentUkPropertyModel(Yes, Some(Yes)))))
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod)
@@ -138,8 +139,9 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
         s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
           val userInput: AccountingMethodModel = AccountingMethodModel(Cash)
 
-          Given("I setup the wiremock stubs and feature switches")
           enable(PropertyCashOrAccruals)
+
+          Given("I setup the wiremock stubs and feature switches")
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(RentUkPropertyModel(No, Some(Yes)))))
           KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod)
