@@ -46,9 +46,7 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
 
   object TestBusinessAccountingMethodController extends BusinessAccountingMethodController(
     mockBaseControllerConfig(
-      new MockConfig {
-        override val whatTaxYearToSignUpEnabled = false
-      }),
+      new MockConfig {}),
     messagesApi,
     MockKeystoreService,
     mockAuthService,
@@ -166,57 +164,38 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   }
 
   "The back url not in edit mode" when {
-    "feature switch WhatYearToSignUp is enabled" when {
-      "income source type is business" should {
-        object TestBusinessAccountingMethodController2 extends BusinessAccountingMethodController(
-          mockBaseControllerConfig(
-            new MockConfig {
-              override val whatTaxYearToSignUpEnabled = true
-            }),
-          messagesApi,
-          MockKeystoreService,
-          mockAuthService,
-          mockCurrentTimeService
-        )
+    "income source type is business" should {
+      object TestBusinessAccountingMethodController2 extends BusinessAccountingMethodController(
+        mockBaseControllerConfig(
+          new MockConfig {}),
+        messagesApi,
+        MockKeystoreService,
+        mockAuthService,
+        mockCurrentTimeService
+      )
+      s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
+        setupMockKeystore(fetchAll = matchTaxYearCacheMap())
+        await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+      }
+
+      "income source type is not business and match tax year is answered with no" should {
+        s"point to ${controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
+          setupMockKeystore(fetchAll = matchTaxYearNoIncomeSourceBoth())
+          await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
+        }
+      }
+
+      "income source type is not business and match tax year is answered with yes" should {
         s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-          setupMockKeystore(fetchAll = matchTaxYearCacheMap())
-          await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
-        }
-
-        "income source type is not business and match tax year is answered with no" should {
-          s"point to ${controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-            setupMockKeystore(fetchAll = matchTaxYearNoIncomeSourceBoth())
-            await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
-          }
-        }
-
-        "income source type is not business and match tax year is answered with yes" should {
-          s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-            setupMockKeystore(fetchAll = matchTaxYearYesIncomeSourceBoth())
-            await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe controllers.individual.business.routes.MatchTaxYearController.show().url
-          }
+          setupMockKeystore(fetchAll = matchTaxYearYesIncomeSourceBoth())
+          await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe controllers.individual.business.routes.MatchTaxYearController.show().url
         }
       }
-      "feature switch WhatYearToSignUp is disabled" when {
-        "income source type is not business and match tax year is answered with no" should {
-          s"point to ${controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
-            setupMockKeystore(fetchAll = matchTaxYearNoIncomeSourceBoth())
-            await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
-          }
-        }
+    }
 
-        "income source type is not business and match tax year is answered with yes" should {
-          s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
-            setupMockKeystore(fetchAll = matchTaxYearYesIncomeSourceBoth())
-            await(TestBusinessAccountingMethodController.backUrl(isEditMode = false)) mustBe controllers.individual.business.routes.MatchTaxYearController.show().url
-          }
-        }
-      }
-
-      "The back url in edit mode" should {
-        s"point to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-          await(TestBusinessAccountingMethodController.backUrl(isEditMode = true)) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-        }
+    "The back url in edit mode" should {
+      s"point to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
+        await(TestBusinessAccountingMethodController.backUrl(isEditMode = true)) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
       }
     }
   }

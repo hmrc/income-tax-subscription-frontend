@@ -51,16 +51,6 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
     mockCurrentTimeService
   )
 
-  object TestMatchTaxYearControllerFSOn extends MatchTaxYearController(
-    mockBaseControllerConfig(new MockConfig {
-      override val whatTaxYearToSignUpEnabled: Boolean = true
-    }),
-    messagesApi,
-    MockKeystoreService,
-    mockAuthService,
-    mockCurrentTimeService
-  )
-
   override def beforeEach(): Unit = {
     super.beforeEach()
   }
@@ -109,43 +99,31 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
   "Calling the submit action of the MatchTaxYearController with an authorised user and valid submission" when {
 
-    def callSubmitCore(answer: YesNo, isEditMode: Boolean, whatTaxYearFs: Boolean = false): Future[Result] = {
-      if (whatTaxYearFs) {
-        TestMatchTaxYearControllerFSOn.submit(isEditMode)(subscriptionRequest.post(MatchTaxYearForm.matchTaxYearForm, MatchTaxYearModel(answer)))
-      } else {
+    def callSubmitCore(answer: YesNo, isEditMode: Boolean): Future[Result] = {
         TestMatchTaxYearController.submit(isEditMode)(subscriptionRequest.post(MatchTaxYearForm.matchTaxYearForm, MatchTaxYearModel(answer)))
-      }
     }
 
     "Not in edit mode and " when {
 
-      def callSubmit(answer: YesNo, featureSwitch: Boolean = false): Future[Result] = callSubmitCore(answer, isEditMode = false, whatTaxYearFs = featureSwitch)
+      def callSubmit(answer: YesNo): Future[Result] = callSubmitCore(answer, isEditMode = false)
 
       "Option 'Yes' is selected" when {
-        "the what tax year to sign up feature switch is disabled" in {
-          setupMockKeystore(fetchAll = None)
-
-          val goodRequest = callSubmit(Yes)
-          status(goodRequest) mustBe Status.SEE_OTHER
-          redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-          verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1)
-        }
-        "the what tax year to sign up feature switch is enabled and the the user is business only" in {
+        "the the user is business only" in {
           setupMockKeystore(
             fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_no_property), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
           )
 
-          val goodRequest = callSubmit(Yes, featureSwitch = true)
+          val goodRequest = callSubmit(Yes)
           status(goodRequest) mustBe Status.SEE_OTHER
           redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.WhatYearToSignUpController.show().url)
           verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1)
         }
-        "the what tax year to sign up feature switch is enabled and the user has business and property income" in {
+        "the user has business and property income" in {
           setupMockKeystore(
             fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other), areYouSelfEmployed = Some(testAreYouSelfEmployed_yes))
           )
 
-          val goodRequest = callSubmit(Yes, featureSwitch = true)
+          val goodRequest = callSubmit(Yes)
           status(goodRequest) mustBe Status.SEE_OTHER
           redirectLocation(goodRequest) mustBe Some(controllers.individual.business.routes.BusinessAccountingMethodController.show().url)
           verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1)

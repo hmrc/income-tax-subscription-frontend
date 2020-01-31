@@ -63,9 +63,6 @@ trait AppConfig extends FeatureSwitching {
   val matchingAttempts: Int
   val matchingLockOutSeconds: Int
 
-
-  def whatTaxYearToSignUpEnabled: Boolean
-
   def enableRegistration: Boolean
 
   def propertyCashOrAccrualsEnabled: Boolean
@@ -218,8 +215,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override def enableRegistration: Boolean = isEnabled(featureswitch.RegistrationFeature)
 
   override def propertyCashOrAccrualsEnabled: Boolean = isEnabled(featureswitch.PropertyCashOrAccruals)
-
-  override def whatTaxYearToSignUpEnabled: Boolean = isEnabled(featureswitch.WhatTaxYearToSignUp)
 
   override lazy val addressLookupFrontendURL: String = baseUrl("address-lookup-frontend")
 
