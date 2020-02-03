@@ -27,8 +27,9 @@ class SubscriptionRequestSpec extends UnitSpec {
     "Provide the correct reader for FERequest" in {
       val feRequest = SubscriptionRequest(
         nino = TestConstants.testNino,
-        incomeSource = Business,
-        arn = None
+        arn = None,
+        businessIncome = None,
+        propertyIncome = None
       )
 
       val request: JsValue = Json.toJson(feRequest)

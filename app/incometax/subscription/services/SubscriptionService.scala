@@ -18,10 +18,10 @@ package incometax.subscription.services
 
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import connectors.individual.subscription.{SubscriptionConnector, SubscriptionConnectorV2}
+import connectors.individual.subscription.SubscriptionConnector
 import core.audit.Logging
 import core.config.AppConfig
-import core.config.featureswitch.{FeatureSwitching, UseSubscriptionApiV2}
+import core.config.featureswitch.FeatureSwitching
 import core.models.{Next, Yes}
 import incometax.business.models.{AccountingPeriodModel, AccountingYearModel, MatchTaxYearModel}
 import incometax.subscription.models._
@@ -34,8 +34,7 @@ import scala.concurrent.Future
 @Singleton
 class SubscriptionService @Inject()(applicationConfig: AppConfig,
                                     logging: Logging,
-                                    subscriptionConnector: SubscriptionConnector,
-                                    subscriptionConnectorV2: SubscriptionConnectorV2
+                                    subscriptionConnector: SubscriptionConnector
                                    ) extends FeatureSwitching {
 
 
@@ -49,25 +48,7 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
     }
   }
 
-  private[services] def buildRequest(nino: String, summaryData: SummaryModel, arn: Option[String]): SubscriptionRequest = {
-    val incomeSource = summaryData.incomeSource.get
-    val accountingPeriod = getAccountingPeriod(incomeSource, summaryData)
-    val (accountingPeriodStart, accountingPeriodEnd) = (accountingPeriod.map(_.startDate), accountingPeriod.map(_.endDate))
-    val cashOrAccruals = summaryData.accountingMethod map (_.accountingMethod)
-    val tradingName = summaryData.businessName map (_.businessName)
-
-    SubscriptionRequest(
-      nino = nino,
-      arn = arn,
-      incomeSource = incomeSource,
-      accountingPeriodStart = accountingPeriodStart,
-      accountingPeriodEnd = accountingPeriodEnd,
-      cashOrAccruals = cashOrAccruals,
-      tradingName = tradingName
-    )
-  }
-
-  private[services] def buildRequestV2(nino: String, model: SummaryModel, arn: Option[String]): SubscriptionRequestV2 = {
+  private[services] def buildRequestPost(nino: String, model: SummaryModel, arn: Option[String]): SubscriptionRequest = {
     val businessSection = model.incomeSource.flatMap {
       case Business | Both =>
         for {
@@ -85,7 +66,7 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
     }
 
 
-    SubscriptionRequestV2(nino, arn, businessSection, propertySection)
+    SubscriptionRequest(nino, arn, businessSection, propertySection)
   }
 
   def submitSubscription(nino: String,
@@ -93,16 +74,9 @@ class SubscriptionService @Inject()(applicationConfig: AppConfig,
                          arn: Option[String]
                         )(implicit hc: HeaderCarrier): Future[SubscriptionResponse] = {
 
-    if (isEnabled(UseSubscriptionApiV2)) {
-      val requestV2 = buildRequestV2(nino, summaryData, arn)
-      logging.debug(s"Submitting subscription with request: $requestV2")
-      subscriptionConnectorV2.subscribe(requestV2)
-    }
-    else {
-      val request = buildRequest(nino, summaryData, arn)
-      logging.debug(s"Submitting subscription with request: $request")
-      subscriptionConnector.subscribe(request)
-    }
+      val requestPost = buildRequestPost(nino, summaryData, arn)
+      logging.debug(s"Submitting subscription with request: $requestPost")
+      subscriptionConnector.subscribe(requestPost)
   }
 
   def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] = {

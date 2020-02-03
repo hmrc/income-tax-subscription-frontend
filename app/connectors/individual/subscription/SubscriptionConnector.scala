@@ -23,8 +23,8 @@ import incometax.subscription.models.SubscriptionRequest
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
@@ -33,11 +33,15 @@ class SubscriptionConnector @Inject()(val appConfig: AppConfig,
 
   def subscriptionUrl(nino: String): String = appConfig.subscriptionUrl + SubscriptionConnector.subscriptionUri(nino)
 
-  def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] =
-    http.POST[SubscriptionRequest, SubscriptionResponse](subscriptionUrl(request.nino), request)
-
-  def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] =
+  def getSubscription(nino: String)(implicit hc: HeaderCarrier): Future[GetSubscriptionResponse] = {
     http.GET[GetSubscriptionResponse](subscriptionUrl(nino))
+  }
+
+  def subscriptionUrlPost(nino: String): String = s"${appConfig.subscriptionUrlPost}/$nino"
+
+  def subscribe(request: SubscriptionRequest)(implicit hc: HeaderCarrier): Future[SubscriptionResponse] =
+    http.POST[SubscriptionRequest, SubscriptionResponse](subscriptionUrlPost(request.nino), request)
+
 }
 
 object SubscriptionConnector {

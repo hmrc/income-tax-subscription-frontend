@@ -16,14 +16,14 @@
 
 package connectors.individual.subscription.mocks
 
-import connectors.individual.subscription.SubscriptionConnector
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.individual.subscription.SubscriptionConnector
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import core.config.AppConfig
 import core.connectors.mocks.MockHttp
 import core.utils.MockTrait
 import core.utils.TestConstants._
-import incometax.subscription.models.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionRequest, SubscriptionSuccess}
+import incometax.subscription.models._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status.{BAD_REQUEST, OK}
@@ -50,6 +50,10 @@ trait MockSubscriptionConnector extends MockTrait {
 
   def setupMockSubscribeException(request: SubscriptionRequest): Unit =
     setupMockSubscribe(request)(Future.failed(testException))
+
+  def setupMockSubscriptionPost(request: SubscriptionRequest)(result: Future[SubscriptionResponse]): Unit =
+    when(mockSubscriptionConnector.subscribe(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier]))
+      .thenReturn(result)
 
 
   private def setupMockGetSubscription(nino: String)(result: Future[GetSubscriptionResponse]): Unit =

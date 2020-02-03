@@ -16,9 +16,6 @@
 
 package controllers.individual.subscription
 
-import core.config.featureswitch
-import core.config.featureswitch.FeatureSwitching
-import core.services.CacheConstants._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
@@ -26,13 +23,13 @@ import helpers.servicemocks._
 import play.api.http.Status._
 import play.api.i18n.Messages
 
-class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwitching {
+class CheckYourAnswersControllerISpec extends ComponentSpecBase {
   "GET /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
     "keystore returns all data" should {
       "show the check your answers page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubFullKeystoreBothPost()
 
         When("GET /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.checkYourAnswers()
@@ -48,18 +45,41 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
 
   "POST /report-quarterly/income-and-expenses/sign-up/check-your-answers" when {
 
-    "keystore returns all data" should {
-      "show the check your answers page" in {
+    " call the enrolment store successfully" should {
+      "successfully send the correct details to the backend for a user with business and property income" in {
+
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+        KeystoreStub.stubFullKeystoreBothPost()
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         KeystoreStub.stubPutMtditId()
 
         When("POST /check-your-answers is called")
         val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
+
+        Then("Should return a SEE_OTHER with a redirect location of confirmation")
+        res should have(
+          httpStatus(SEE_OTHER),
+          redirectURI(confirmationURI)
+        )
+      }
+
+      "successfully send the correct details to the backend for a user with property income" in {
+
+        Given("I setup the Wiremock stubs")
+        AuthStub.stubAuthSuccess()
+        KeystoreStub.stubFullKeystorePropertyPost()
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithProperty(checkYourAnswersURI)
+        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
+        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
+        KeystoreStub.stubPutMtditId()
+
+        When("POST /check-your-answers is called")
+        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
+
 
         Then("Should return a SEE_OTHER with a redirect location of confirmation")
         res should have(
@@ -74,7 +94,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
-        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
 
@@ -93,7 +113,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
-        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithProperty(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, BAD_REQUEST)
 
@@ -112,7 +132,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
-        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, FORBIDDEN)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
 
@@ -131,7 +151,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
-        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, BAD_REQUEST)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
 
@@ -150,7 +170,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
         KeystoreStub.stubKeystoreFailure()
-        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
+        SubscriptionStub.stubSuccessfulSubscriptionPostWithBoth(checkYourAnswersURI)
         TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, INTERNAL_SERVER_ERROR)
         TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
 
@@ -179,66 +199,7 @@ class CheckYourAnswersControllerISpec extends ComponentSpecBase with FeatureSwit
       )
     }
 
-    "call the enrolment store when the feature switch is on" should {
-      "show the check your answers page" in {
-        Given("I setup the Wiremock stubs")
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
-        SubscriptionStub.stubSuccessfulSubscription(checkYourAnswersURI)
-        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
-        KeystoreStub.stubPutMtditId()
 
-        When("POST /check-your-answers is called")
-        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-        Then("Should return a SEE_OTHER with a redirect location of confirmation")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(confirmationURI)
-        )
-      }
-    }
-
-    "the new api feature switch is on" should {
-      "successfully send the correct details to the backend for a user with business and property income" in {
-
-        enable(featureswitch.UseSubscriptionApiV2)
-
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothV2()
-        SubscriptionStub.stubSuccessfulSubscriptionV2WithBoth(checkYourAnswersURI)
-        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
-        KeystoreStub.stubPutMtditId()
-
-        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(confirmationURI)
-        )
-      }
-
-      "successfully send the correct details to the backend for a user with property income" in {
-
-        enable(featureswitch.UseSubscriptionApiV2)
-
-        AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystorePropertyV2()
-        SubscriptionStub.stubSuccessfulSubscriptionV2WithProperty(checkYourAnswersURI)
-        TaxEnrolmentsStub.stubUpsertEnrolmentResult(testEnrolmentKey.asString, NO_CONTENT)
-        TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
-        KeystoreStub.stubPutMtditId()
-
-        val res = IncomeTaxSubscriptionFrontend.submitCheckYourAnswers()
-
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(confirmationURI)
-        )
-      }
-    }
   }
 
 }

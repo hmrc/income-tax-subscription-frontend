@@ -20,6 +20,7 @@ import java.net.URLEncoder
 import java.time.OffsetDateTime
 import java.util.UUID
 
+import assets.MessageLookup.AccountingMethod
 import core.Constants.GovernmentGateway._
 import core.Constants._
 import core.models.{Cash, DateModel}
@@ -72,22 +73,17 @@ object TestConstants {
 
   val testSubmissionRequest = SubscriptionRequest(
     nino = TestConstants.testNino,
-    incomeSource = Both,
-    accountingPeriodStart = Some(testAccountingPeriod.startDate),
-    accountingPeriodEnd = Some(testAccountingPeriod.endDate),
-    cashOrAccruals = Some(Cash),
-    tradingName = testBusinessName.businessName,
-    arn = None
+    arn = None,
+    businessIncome = Some(BusinessIncomeModel(Some(testBusinessName.businessName),testAccountingPeriod, Cash)),
+    propertyIncome = Some(PropertyIncomeModel(Some(Cash)))
   )
 
   val testAdjustedSubmissionRequest = SubscriptionRequest(
     nino = TestConstants.testNino,
-    incomeSource = Both,
-    accountingPeriodStart = Some(testAccountingPeriod.adjustedTaxYear.startDate),
-    accountingPeriodEnd = Some(testAccountingPeriod.adjustedTaxYear.endDate),
-    cashOrAccruals = Some(Cash),
-    tradingName = testBusinessName.businessName,
-    arn = None
+    arn = None,
+    businessIncome = Some(BusinessIncomeModel(Some(testBusinessName.businessName),adjustedTestAccountingPeriod, Cash)),
+    propertyIncome = Some(PropertyIncomeModel(Some(Cash)))
+
   )
 
 

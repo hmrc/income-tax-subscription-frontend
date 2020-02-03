@@ -47,6 +47,8 @@ object TestModels extends Implicits {
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)
   val testAccountingPeriod: AccountingPeriodModel =
     testAccountingPeriod(testStartDate, testEndDate)
+  val adjustedTestAccountingPeriod: AccountingPeriodModel =
+    testAccountingPeriod(testStartDate, testEndDate.plusDays(1))
 
   val testAccountingPeriodMatched = AccountingPeriodModel(testStartDate, DateModel("05", "04", "2018"))
 

@@ -1,25 +1,25 @@
 
 package connectors
 
-import connectors.individual.subscription.SubscriptionConnectorV2
+import connectors.individual.subscription.SubscriptionConnector
 import core.models.{Cash, DateModel}
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testMTDID, testNino}
 import incometax.business.models.AccountingPeriodModel
 import incometax.subscription.models._
-import connectors.stubs.SubscriptionAPIV2Stub._
+import connectors.stubs.SubscriptionAPIStub._
 import org.scalatest.Matchers
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
-class SubscriptionConnectorV2ISpec extends ComponentSpecBase with Matchers {
+class SubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
 
   implicit val hc = HeaderCarrier()
 
-  val TestSubscriptionConnector = app.injector.instanceOf[SubscriptionConnectorV2]
+  val TestSubscriptionConnector = app.injector.instanceOf[SubscriptionConnector]
 
-  val testSubscriptionRequestV2 = SubscriptionRequestV2(
+  val testSubscriptionRequest = SubscriptionRequest(
     nino = testNino,
     arn = None,
     businessIncome = None,
@@ -42,23 +42,23 @@ class SubscriptionConnectorV2ISpec extends ComponentSpecBase with Matchers {
   "subscription" should {
     "return SubscriptionSuccess if successful" when {
       "neither business or property income sections are defined" in {
-        stubSubscription(testSubscriptionRequestV2)(OK)
+        stubPostSubscription(testSubscriptionRequest)(OK)
 
-        val res = TestSubscriptionConnector.subscribe(testSubscriptionRequestV2)
+        val res = TestSubscriptionConnector.subscribe(testSubscriptionRequest)
 
         await(res) shouldBe Right(SubscriptionSuccess(testMTDID))
       }
       "business income is defined but property income isn't defined" in {
-        val testSubscriptionWithBusiness = testSubscriptionRequestV2.copy(businessIncome = Some(testBusinessIncome))
-        stubSubscription(testSubscriptionWithBusiness)(OK)
+        val testSubscriptionWithBusiness = testSubscriptionRequest.copy(businessIncome = Some(testBusinessIncome))
+        stubPostSubscription(testSubscriptionWithBusiness)(OK)
 
         val res = TestSubscriptionConnector.subscribe(testSubscriptionWithBusiness)
 
         await(res) shouldBe Right(SubscriptionSuccess(testMTDID))
       }
       "property income is defined but business income isn't defined" in {
-        val testSubscriptionWithProperty = testSubscriptionRequestV2.copy(propertyIncome = Some(testPropertyIncome))
-        stubSubscription(testSubscriptionWithProperty)(OK)
+        val testSubscriptionWithProperty = testSubscriptionRequest.copy(propertyIncome = Some(testPropertyIncome))
+        stubPostSubscription(testSubscriptionWithProperty)(OK)
 
         val res = TestSubscriptionConnector.subscribe(testSubscriptionWithProperty)
 
@@ -66,16 +66,16 @@ class SubscriptionConnectorV2ISpec extends ComponentSpecBase with Matchers {
       }
     }
     "return BadlyFormattedSubscriptionResponse when the request is malformed" in {
-      stubSubscription(testSubscriptionRequestV2)(OK, Json.obj("not" -> "correct"))
+      stubPostSubscription(testSubscriptionRequest)(OK, Json.obj("not" -> "correct"))
 
-      val res = TestSubscriptionConnector.subscribe(testSubscriptionRequestV2)
+      val res = TestSubscriptionConnector.subscribe(testSubscriptionRequest)
 
       await(res) shouldBe Left(BadlyFormattedSubscriptionResponse)
     }
     "return SubscriptionFailureResponse if the request fails" in {
-      stubSubscription(testSubscriptionRequestV2)(INTERNAL_SERVER_ERROR)
+      stubPostSubscription(testSubscriptionRequest)(INTERNAL_SERVER_ERROR)
 
-      val res = TestSubscriptionConnector.subscribe(testSubscriptionRequestV2)
+      val res = TestSubscriptionConnector.subscribe(testSubscriptionRequest)
 
       await(res) shouldBe Left(SubscriptionFailureResponse(INTERNAL_SERVER_ERROR))
     }

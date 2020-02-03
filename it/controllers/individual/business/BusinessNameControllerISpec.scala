@@ -34,7 +34,7 @@ class BusinessNameControllerISpec extends ComponentSpecBase {
       "show the business name page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubFullKeystoreBothPost()
 
         When("GET /business/name is called")
         val res = IncomeTaxSubscriptionFrontend.businessName()

@@ -16,19 +16,32 @@
 
 package incometax.subscription.models
 
-import core.models.{AccountingMethod, DateModel}
-import play.api.libs.json.Json
+import core.models.AccountingMethod
+import incometax.business.models.AccountingPeriodModel
+import play.api.libs.json.{Json, OFormat}
 
 case class SubscriptionRequest(nino: String,
-                               incomeSource: IncomeSourceType,
-                               isAgent: Boolean = false,
-                               arn: Option[String],
-                               accountingPeriodStart: Option[DateModel] = None,
-                               accountingPeriodEnd: Option[DateModel] = None,
-                               tradingName: Option[String] = None,
-                               cashOrAccruals: Option[AccountingMethod] = None)
+                                 arn: Option[String],
+                                 businessIncome: Option[BusinessIncomeModel],
+                                 propertyIncome: Option[PropertyIncomeModel]) {
 
-object SubscriptionRequest {
-  implicit val format = Json.format[SubscriptionRequest]
+  val isAgent: Boolean = arn.isDefined
 }
 
+case class BusinessIncomeModel(tradingName: Option[String],
+                               accountingPeriod: AccountingPeriodModel,
+                               accountingMethod: AccountingMethod)
+
+case class PropertyIncomeModel(accountingMethod: Option[AccountingMethod])
+
+object SubscriptionRequest {
+  implicit val format: OFormat[SubscriptionRequest] = Json.format[SubscriptionRequest]
+}
+
+object BusinessIncomeModel {
+  implicit val format: OFormat[BusinessIncomeModel] = Json.format[BusinessIncomeModel]
+}
+
+object PropertyIncomeModel {
+  implicit val format: OFormat[PropertyIncomeModel] = Json.format[PropertyIncomeModel]
+}

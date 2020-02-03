@@ -54,7 +54,7 @@ class BusinessAddressControllerISpec extends ComponentSpecBase with FeatureSwitc
       "show the business address page" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubFullKeystoreBothPost()
 
         When("GET /business/address is called")
         val res = IncomeTaxSubscriptionFrontend.businessAddress(Registration)

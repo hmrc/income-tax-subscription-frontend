@@ -32,7 +32,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
       "show error page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubFullKeystoreBothPost()
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
         AuthenticatorStub.stubMatchFailure()
         // n.b. failure is expected as the additional methods are not mocked
@@ -71,7 +71,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
         "redirect the user to user details error page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
+          KeystoreStub.stubFullKeystoreBothPost()
           UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
           AuthenticatorStub.stubMatchNotFound()
 
@@ -93,7 +93,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
         "redirect the user to agent locked out page" in {
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
-          KeystoreStub.stubFullKeystore()
+          KeystoreStub.stubFullKeystoreBothPost()
           KeystoreStub.stubKeystoreDelete()
           UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
           UserLockoutStub.stubLockAgent(testUserIdEncoded)
@@ -120,7 +120,7 @@ class ConfirmUserControllerISpec extends ComponentSpecBase with FeatureSwitching
       "redirect to income source page" in {
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystore()
+        KeystoreStub.stubFullKeystoreBothPost()
         AuthenticatorStub.stubMatchFound(testNino)
         UserLockoutStub.stubUserIsNotLocked(testUserIdEncoded)
         SubscriptionStub.stubGetNoSubscription()
