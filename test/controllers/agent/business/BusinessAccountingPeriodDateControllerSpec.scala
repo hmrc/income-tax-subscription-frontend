@@ -21,7 +21,6 @@ import agent.services.mocks.MockKeystoreService
 import agent.utils.TestConstants
 import agent.utils.TestModels._
 import controllers.agent.AgentControllerBaseSpec
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
 import core.models.DateModel
 import core.services.mocks.MockAccountingPeriodService
 import core.utils.TestModels
@@ -33,12 +32,7 @@ import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._
 
 class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService with FeatureSwitching with MockAccountingPeriodService {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(AgentPropertyCashOrAccruals)
-  }
+  with MockKeystoreService with MockAccountingPeriodService {
 
   override val controllerName: String = "BusinessAccountingPeriodDateController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(

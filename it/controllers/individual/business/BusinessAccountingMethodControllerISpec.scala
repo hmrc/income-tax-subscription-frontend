@@ -16,7 +16,6 @@
 
 package controllers.individual.business
 
-import core.config.featureswitch.PropertyCashOrAccruals
 import core.models.{Accruals, Cash, No, Yes}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
@@ -29,11 +28,6 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    disable(PropertyCashOrAccruals)
-    super.beforeEach()
-  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/accounting-method" when {
 
@@ -95,11 +89,9 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
     }
 
     "not in edit mode" when {
-      "the user rents a uk property and the property cash accruals feature switch is enabled" should {
+      "the user rents a uk property " should {
         s"redirect to ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url}" in {
           val userInput: AccountingMethodModel = AccountingMethodModel(Cash)
-
-          enable(PropertyCashOrAccruals)
 
           Given("I setup the wiremock stubs and feature switches")
           AuthStub.stubAuthSuccess()
@@ -116,30 +108,9 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
           )
         }
       }
-      "the user rents a uk property and the property cash accruals feature switch is disabled" should {
-        s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-          val userInput: AccountingMethodModel = AccountingMethodModel(Accruals)
-
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(RentUkPropertyModel(Yes, Some(Yes)))))
-          KeystoreStub.stubKeystoreSave(CacheConstants.AccountingMethod)
-
-          When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
-          val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, request = Some(userInput))
-
-          Then(s"Should return a $SEE_OTHER with a redirect location of ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
-      }
-      "the user does not rent a uk property and the property cash accruals feature switch is enabled" should {
+      "the user does not rent a uk property " should {
         s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
           val userInput: AccountingMethodModel = AccountingMethodModel(Cash)
-
-          enable(PropertyCashOrAccruals)
 
           Given("I setup the wiremock stubs and feature switches")
           AuthStub.stubAuthSuccess()

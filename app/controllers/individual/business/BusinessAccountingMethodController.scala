@@ -75,7 +75,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
               Future.successful(Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show()))
             } else {
               keystoreService.fetchRentUkProperty() map {
-                case Some(RentUkPropertyModel(Yes, _)) if appConfig.propertyCashOrAccrualsEnabled =>
+                case Some(RentUkPropertyModel(Yes, _)) =>
                   Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case _ =>
                   Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())

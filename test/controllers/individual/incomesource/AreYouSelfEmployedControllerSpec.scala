@@ -18,7 +18,7 @@ package controllers.individual.incomesource
 
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
-import core.config.featureswitch.{FeatureSwitching, PropertyCashOrAccruals}
+import core.config.featureswitch.FeatureSwitching
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.incomesource.AreYouSelfEmployedForm
@@ -35,11 +35,6 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
   with FeatureSwitching
   with MockConfig
   with MockCurrentTimeService {
-
-  override def beforeEach(): Unit = {
-    disable(PropertyCashOrAccruals)
-    super.beforeEach()
-  }
 
   override val controllerName: String = "AreYouSelfEmployedController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
@@ -127,9 +122,8 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
       }
 
       "the user rents out a uk property and is not self employed" when {
-        "the property cash accruals feature switch is enabled" should {
+
           s"redirect to ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url}" in {
-            enable(PropertyCashOrAccruals)
             setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other)))
 
             val result = submit(testAreYouSelfEmployed_no, isEditMode = false)
@@ -137,17 +131,6 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
           }
-        }
-        "the property cash accruals feature switch is disabled" should {
-          s"redirect to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-            setupMockKeystore(fetchAll = testCacheMap(rentUkProperty = Some(testRentUkProperty_property_and_other)))
-
-            val result = submit(testAreYouSelfEmployed_no, isEditMode = false)
-
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
-          }
-        }
       }
 
       "the user does not rent out a uk property and is self employed" should {

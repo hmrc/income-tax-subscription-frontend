@@ -22,7 +22,7 @@ import agent.services.KeystoreService
 import controllers.utils.AgentAnswers._
 import controllers.utils.AgentRequireAnswer
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
+import core.config.featureswitch.FeatureSwitching
 import core.models.{No, Yes}
 import core.services.AuthService
 import forms.agent.AccountingMethodForm
@@ -74,12 +74,10 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
           ))),
           accountingMethod => {
             keystoreService.saveAccountingMethod(accountingMethod) map { _ =>
-              if (isEditMode) {
+              if (isEditMode || incomeSourceType != Both) {
                 Redirect(controllers.agent.routes.CheckYourAnswersController.show())
-              } else if (isEnabled(AgentPropertyCashOrAccruals) && incomeSourceType == Both) {
-                Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
               } else {
-                Redirect(controllers.agent.routes.CheckYourAnswersController.show())
+                Redirect(controllers.agent.business.routes.PropertyAccountingMethodController.show())
               }
             }
           }

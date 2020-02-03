@@ -20,22 +20,15 @@ import agent.models.AccountingMethodModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels.testCacheMap
 import controllers.agent.AgentControllerBaseSpec
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
 import core.models.{Cash, No, Yes}
 import forms.agent.AccountingMethodForm
 import incometax.business.models.MatchTaxYearModel
 import incometax.subscription.models.{Both, Business}
-import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 
 class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
-  with MockKeystoreService with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(AgentPropertyCashOrAccruals)
-  }
+  with MockKeystoreService {
 
   override val controllerName: String = "BusinessAccountingMethod"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -114,8 +107,7 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
     "not in edit mode" should {
       s"redirect to ${routes.PropertyAccountingMethodController.show().url}" when {
-        "the property cash/accruals feature switch is enabled and the user has both business and property income" in new Test {
-          enable(AgentPropertyCashOrAccruals)
+        "the user has both business and property income" in new Test {
           setupMockKeystoreSaveFunctions()
           setupMockKeystore(
             fetchAll = testCacheMap(
@@ -136,27 +128,8 @@ class BusinessAccountingMethodControllerSpec extends AgentControllerBaseSpec
       }
 
       s"redirect to '${controllers.agent.routes.CheckYourAnswersController.show().url}'" when {
-        "the property cash/accruals feature switch is disabled and the user has both business and property income" in new Test {
-          setupMockKeystoreSaveFunctions()
-          setupMockKeystore(
-            fetchAll = testCacheMap(
-              incomeSource = Some(Both),
-              matchTaxYear = Some(MatchTaxYearModel(Yes))
-            )
-          )
 
-          val result: Result = await(controller.submit(isEditMode = false)(subscriptionRequest.post(
-            AccountingMethodForm.accountingMethodForm, AccountingMethodModel(Cash)
-          )))
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.agent.routes.CheckYourAnswersController.show().url)
-
-          verifyKeystore(fetchAll = 1, saveAccountingMethod = 1)
-        }
-
-        "the property cash/accruals feature switch is enabled and the user has business only income" in new Test {
-          enable(AgentPropertyCashOrAccruals)
+        "the user has business only income" in new Test {
           setupMockKeystoreSaveFunctions()
           setupMockKeystore(
             fetchAll = testCacheMap(
