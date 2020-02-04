@@ -22,19 +22,14 @@ import _root_.agent.helpers.IntegrationTestModels._
 import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
 import _root_.agent.services.CacheConstants
 import agent.models._
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
-import core.models.{Accruals, Cash, No, Yes}
+import core.config.featureswitch.FeatureSwitching
+import core.models.{Accruals, Cash, Yes}
 import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
 import incometax.subscription.models.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
 
 class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(AgentPropertyCashOrAccruals)
-  }
 
   "GET /business/accounting-method" when {
     "keystore returns all data" should {
@@ -77,11 +72,10 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
   }
 
   "POST /business/accounting-method" when {
-    "the property cash accruals feature switch is enabled and the user is in the both flow" when {
+    "the user is in the both flow" when {
       "an option is selected on the accounting method page" should {
         "redirect the user to the property accounting method page" in {
           val userInput = AccountingMethodModel(Cash)
-          enable(AgentPropertyCashOrAccruals)
 
           Given("I setup the wiremock stubs")
           AuthStub.stubAuthSuccess()
@@ -116,7 +110,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
+          redirectURI(propertyAccountingMethodURI)
         )
       }
 
@@ -134,7 +128,7 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase with Fea
         Then("Should return a SEE_OTHER with a redirect location of check your answers")
         res should have(
           httpStatus(SEE_OTHER),
-          redirectURI(checkYourAnswersURI)
+          redirectURI(propertyAccountingMethodURI)
         )
       }
     }

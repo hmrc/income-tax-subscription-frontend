@@ -16,7 +16,6 @@
 
 package controllers.individual.incomesource
 
-import core.config.featureswitch.PropertyCashOrAccruals
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -27,11 +26,6 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 class AreYouSelfEmployedControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    disable(PropertyCashOrAccruals)
-    super.beforeEach()
-  }
 
   def setRentUkPropertyInKeystore(rentUkProperty: Option[RentUkPropertyModel]): Unit =
     KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = rentUkProperty))
@@ -128,12 +122,10 @@ class AreYouSelfEmployedControllerISpec extends ComponentSpecBase {
           redirectURI(businessNameURI)
         )
       }
-      "the user rents a uk property and they select they are not self employed" when {
-        "the property cash accruals feature switch is enabled" in {
+      "the user rents a uk property and they select they are not self employed" in {
           val userInput = testAreYouSelfEmployed_no
 
           Given("I setup the wiremock stubs and feature switch")
-          enable(PropertyCashOrAccruals)
           AuthStub.stubAuthSuccess()
           setRentUkPropertyInKeystore(Some(testRentUkProperty_property_and_other))
           KeystoreStub.stubKeystoreSave(CacheConstants.AreYouSelfEmployed)
@@ -146,24 +138,6 @@ class AreYouSelfEmployedControllerISpec extends ComponentSpecBase {
             httpStatus(SEE_OTHER),
             redirectURI(accountingMethodPropertyURI)
           )
-        }
-        "the property cash accruals feature switch is disabled" in {
-          val userInput = testAreYouSelfEmployed_no
-
-          Given("I setup the wiremock stubs and feature switch")
-          AuthStub.stubAuthSuccess()
-          setRentUkPropertyInKeystore(Some(testRentUkProperty_property_and_other))
-          KeystoreStub.stubKeystoreSave(CacheConstants.AreYouSelfEmployed)
-
-          When("POST /are you self-employed is called")
-          val res = IncomeTaxSubscriptionFrontend.submitAreYouSelfEmployed(inEditMode = false, Some(userInput))
-
-          Then(s"return a $SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
       }
       "the user does not rent a uk property and they select they are self employed" in {
         val userInput = testAreYouSelfEmployed_yes

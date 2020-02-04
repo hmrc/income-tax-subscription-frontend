@@ -73,11 +73,7 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                 case (Yes, Some(No)) =>
                   Redirect(controllers.individual.incomesource.routes.AreYouSelfEmployedController.show())
                 case _ =>
-                  if (appConfig.propertyCashOrAccrualsEnabled) {
                     Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
-                  } else {
-                    Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-                  }
               }
             }
           if (!isEditMode) {

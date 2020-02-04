@@ -16,7 +16,6 @@
 
 package controllers.individual.incomesource
 
-import core.config.featureswitch.PropertyCashOrAccruals
 import core.models.{No, Yes}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
@@ -28,11 +27,6 @@ import play.api.http.Status._
 import play.api.i18n.Messages
 
 class RentUkPropertyControllerISpec extends ComponentSpecBase {
-
-  override def beforeEach(): Unit = {
-    disable(PropertyCashOrAccruals)
-    super.beforeEach()
-  }
 
   "GET /report-quarterly/income-and-expenses/sign-up/rent-uk-property" when {
 
@@ -94,12 +88,10 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
           redirectURI(areYouSelfEmployedURI)
         )
       }
-      "the user rents a uk property and doesn't have other income" when {
-        "the property cash accruals feature switch is enabled" in {
+      "the user rents a uk property and doesn't have other income" in {
           val userInput: RentUkPropertyModel = RentUkPropertyModel(Yes, Some(Yes))
 
           Given("I setup the wiremock stubs and feature switch")
-          enable(PropertyCashOrAccruals)
           AuthStub.stubAuthSuccess()
           KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
 
@@ -111,23 +103,6 @@ class RentUkPropertyControllerISpec extends ComponentSpecBase {
             httpStatus(SEE_OTHER),
             redirectURI(accountingMethodPropertyURI)
           )
-        }
-        "the property cash accruals feature switch is disabled" in {
-          val userInput: RentUkPropertyModel = RentUkPropertyModel(Yes, Some(Yes))
-
-          Given("I setup the wiremock stubs")
-          AuthStub.stubAuthSuccess()
-          KeystoreStub.stubKeystoreSave(CacheConstants.RentUkProperty, userInput)
-
-          When("POST /rent-uk-property is called")
-          val res = IncomeTaxSubscriptionFrontend.submitRentUkProperty(inEditMode = false, Some(userInput))
-
-          Then(s"Should return $SEE_OTHER with a redirect location of check your answers")
-          res should have(
-            httpStatus(SEE_OTHER),
-            redirectURI(checkYourAnswersURI)
-          )
-        }
       }
       "the user does not rent a uk property" in {
         val userInput: RentUkPropertyModel = RentUkPropertyModel(No, None)

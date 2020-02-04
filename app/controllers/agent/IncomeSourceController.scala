@@ -19,7 +19,7 @@ package controllers.agent
 import agent.auth.AuthenticatedController
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
+import core.config.featureswitch.FeatureSwitching
 import core.services.AuthService
 import forms.agent.IncomeSourceForm
 import incometax.incomesource.services.CurrentTimeService
@@ -83,11 +83,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
         case Business | Both =>
           Redirect(business.routes.BusinessNameController.show())
         case Property =>
-          if (isEnabled(AgentPropertyCashOrAccruals)) {
-            Redirect(business.routes.PropertyAccountingMethodController.show())
-          } else {
-            Redirect(routes.CheckYourAnswersController.show())
-          }
+          Redirect(business.routes.PropertyAccountingMethodController.show())
       }
     }
   }

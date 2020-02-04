@@ -17,7 +17,6 @@
 package controllers.individual.incomesource
 
 import core.auth.SignUpController
-import core.config.featureswitch.{FeatureSwitching, PropertyCashOrAccruals}
 import core.config.{AppConfig, BaseControllerConfig}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
@@ -40,7 +39,7 @@ class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfi
                                              val authService: AuthService,
                                              val appConfig: AppConfig,
                                              val currentTimeService: CurrentTimeService
-                                            ) extends SignUpController with FeatureSwitching {
+                                            ) extends SignUpController {
 
   def view(areYouSelfEmployedForm: Form[AreYouSelfEmployedModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     incometax.incomesource.views.html.are_you_selfemployed(
@@ -79,11 +78,7 @@ class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfi
                 case Some(Business | Both) =>
                   Redirect(controllers.individual.business.routes.BusinessNameController.show())
                 case Some(Property) =>
-                  if (isEnabled(PropertyCashOrAccruals)) {
                     Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
-                  } else {
-                    Redirect(controllers.individual.subscription.routes.CheckYourAnswersController.show())
-                  }
                 case _ =>
                   Redirect(controllers.individual.incomesource.routes.CannotSignUpController.show())
               }

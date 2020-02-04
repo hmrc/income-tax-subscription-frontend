@@ -149,12 +149,12 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
       TestCheckYourAnswersController.backUrl(incomeSource = Business) mustBe controllers.individual.business.routes.BusinessAccountingMethodController.show().url
     }
 
-    s"point to the ${controllers.individual.business.routes.BusinessAccountingMethodController.show().url} when the income source is Both" in {
-      TestCheckYourAnswersController.backUrl(incomeSource = Both) mustBe controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+    s"point to the ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url} when the income source is Both" in {
+      TestCheckYourAnswersController.backUrl(incomeSource = Both) mustBe controllers.individual.business.routes.PropertyAccountingMethodController.show().url
     }
 
-    s"point to the ${controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url} when the income source is Property" in {
-      TestCheckYourAnswersController.backUrl(incomeSource = Property) mustBe controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
+    s"point to the ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url} when the income source is Property" in {
+      TestCheckYourAnswersController.backUrl(incomeSource = Property) mustBe controllers.individual.business.routes.PropertyAccountingMethodController.show().url
     }
   }
 

@@ -47,21 +47,12 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
 
 
   def backUrl(incomeSource: IncomeSourceType): String = {
-    if (appConfig.propertyCashOrAccrualsEnabled) {
       incomeSource match {
         case Property | Both =>
           controllers.individual.business.routes.PropertyAccountingMethodController.show().url
         case Business =>
           controllers.individual.business.routes.BusinessAccountingMethodController.show().url
       }
-    } else {
-      incomeSource match {
-        case Business | Both =>
-          controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-        case Property =>
-          controllers.individual.incomesource.routes.AreYouSelfEmployedController.show().url
-      }
-    }
   }
 
   val show = journeySafeGuard { implicit user =>

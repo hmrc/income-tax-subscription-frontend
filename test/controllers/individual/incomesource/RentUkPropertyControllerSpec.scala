@@ -37,14 +37,12 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
   with MockConfig
   with FeatureSwitching {
 
-  class TestRentUkPropertyController(propertyCashOrAccrualsFeature: Boolean = false) extends RentUkPropertyController(
+  class TestRentUkPropertyController extends RentUkPropertyController(
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
     mockAuthService,
-    new MockConfig {
-      override val propertyCashOrAccrualsEnabled: Boolean = propertyCashOrAccrualsFeature
-    },
+    MockConfig,
     mockCurrentTimeService
   )
 
@@ -85,10 +83,9 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
 
     def callSubmit(
                     option: (YesNo, Option[YesNo]),
-                    isEditMode: Boolean,
-                    propertyCashOrAccrualsFeature: Boolean = false
+                    isEditMode: Boolean
                   ): Future[Result] = {
-      new TestRentUkPropertyController(propertyCashOrAccrualsFeature).submit(isEditMode = isEditMode)(
+      new TestRentUkPropertyController().submit(isEditMode = isEditMode)(
         subscriptionRequest.post(RentUkPropertyForm.rentUkPropertyForm, RentUkPropertyModel(option._1, option._2))
       )
     }
@@ -123,24 +120,10 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
         "property cash or accruals feature switch is enabled" in {
           setupMockKeystoreSaveFunctions()
 
-          val goodRequest = callSubmit((Yes, Yes), isEditMode = false, propertyCashOrAccrualsFeature = true)
-
-          status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
-
-          await(goodRequest)
-          verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
-        }
-      }
-
-      s"return a SEE_OTHER (303) when answering 'Yes' to rent uk property and then 'Yes' to only income source" when {
-        "property cash or accruals feature switch is disabled" in {
-          setupMockKeystoreSaveFunctions()
-
           val goodRequest = callSubmit((Yes, Yes), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get must be(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
           await(goodRequest)
           verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)
@@ -229,7 +212,7 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
           val goodRequest = callSubmit((Yes, Yes), isEditMode = false)
 
           status(goodRequest) must be(Status.SEE_OTHER)
-          redirectLocation(goodRequest).get must be(controllers.individual.subscription.routes.CheckYourAnswersController.show().url)
+          redirectLocation(goodRequest).get must be(controllers.individual.business.routes.PropertyAccountingMethodController.show().url)
 
           await(goodRequest)
           verifyKeystore(fetchRentUkProperty = 0, saveRentUkProperty = 1)

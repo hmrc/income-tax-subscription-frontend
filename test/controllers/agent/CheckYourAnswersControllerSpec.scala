@@ -22,7 +22,6 @@ import agent.services.mocks._
 import agent.utils.TestConstants.{testNino, _}
 import agent.utils.TestModels
 import agent.utils.TestModels.testCacheMap
-import core.config.featureswitch.{AgentPropertyCashOrAccruals, FeatureSwitching}
 import incometax.subscription.models.{Both, Business, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -35,13 +34,7 @@ import scala.concurrent.Future
 class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService
   with MockClientRelationshipService
-  with MockSubscriptionOrchestrationService
-  with FeatureSwitching {
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    disable(AgentPropertyCashOrAccruals)
-  }
+  with MockSubscriptionOrchestrationService{
 
   override val controllerName: String = "CheckYourAnswersController"
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
@@ -157,29 +150,22 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
   "The back url" should {
     s"point to ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url}" when {
-      "the property cash/accruals feature switch is enabled" when {
         "on the property only journey" in {
-          enable(AgentPropertyCashOrAccruals)
           TestCheckYourAnswersController.backUrl(Some(Property))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
         }
         "on the property and business journey" in {
-          enable(AgentPropertyCashOrAccruals)
           TestCheckYourAnswersController.backUrl(Some(Both))(fakeRequest) mustBe business.routes.PropertyAccountingMethodController.show().url
         }
-      }
     }
 
     s"point to ${controllers.agent.business.routes.BusinessAccountingMethodController.show().url}" when {
-      "on the business journey" in {
+      "on the business only journey" in {
         TestCheckYourAnswersController.backUrl(Some(Business))(fakeRequest) mustBe controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-      }
-      "on the both journey" in {
-        TestCheckYourAnswersController.backUrl(Some(Both))(fakeRequest) mustBe controllers.agent.business.routes.BusinessAccountingMethodController.show().url
       }
     }
 
-    s"point to ${controllers.agent.routes.IncomeSourceController.show().url} on the property journey" in {
-      TestCheckYourAnswersController.backUrl(Some(Property))(fakeRequest) mustBe controllers.agent.routes.IncomeSourceController.show().url
+    s"point to ${controllers.agent.business.routes.PropertyAccountingMethodController.show().url} on the property journey" in {
+      TestCheckYourAnswersController.backUrl(Some(Property))(fakeRequest) mustBe controllers.agent.business.routes.PropertyAccountingMethodController.show().url
     }
 
   }
