@@ -97,13 +97,12 @@
     }
 
     @mainContentHeader = {
-    @if(appConfig.languageTranslationEnabled) {
         @views.html.language_selection(
             appConfig.languageMap,
             appConfig.routeToSwitchLanguage,
             customClass = None
         )
-    }
+
     @if(contentHeader.isDefined) {
         @uiLayouts.main_content_header(contentHeader = contentHeader.get)
     }

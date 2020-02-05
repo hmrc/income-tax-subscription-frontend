@@ -17,9 +17,7 @@
 package controllers.language
 
 import javax.inject.{Inject, Singleton}
-
 import core.config.FrontendAppConfig
-import core.config.featureswitch.{FeatureSwitching, WelshLanguageFeature}
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, Controller}
 import uk.gov.hmrc.play.language.LanguageUtils
@@ -36,14 +34,10 @@ class LanguageSwitchController @Inject()(val appConfig: FrontendAppConfig,
   def languageMap: Map[String, Lang] = appConfig.languageMap
 
   def switchToLanguage(language: String): Action[AnyContent] = Action { implicit request =>
-    val enabled = isWelshEnabled
-    val lang =
-      if (enabled) languageMap.getOrElse(language, LanguageUtils.getCurrentLang)
-      else Lang("en")
+    val lang = languageMap.getOrElse(language, LanguageUtils.getCurrentLang)
+
     val redirectURL = request.headers.get(REFERER).getOrElse(fallbackURL)
 
     Redirect(redirectURL).withLang(Lang.apply(lang.code))
   }
-
-  private def isWelshEnabled = appConfig.languageTranslationEnabled
 }
