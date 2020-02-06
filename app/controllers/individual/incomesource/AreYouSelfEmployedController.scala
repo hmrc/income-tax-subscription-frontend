@@ -42,7 +42,7 @@ class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfi
                                             ) extends SignUpController {
 
   def view(areYouSelfEmployedForm: Form[AreYouSelfEmployedModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    incometax.incomesource.views.html.are_you_selfemployed(
+    views.html.individual.incometax.incomesource.are_you_selfemployed(
       areYouSelfEmployedForm = areYouSelfEmployedForm,
       postAction = controllers.individual.incomesource.routes.AreYouSelfEmployedController.submit(editMode = isEditMode),
       isEditMode = isEditMode,

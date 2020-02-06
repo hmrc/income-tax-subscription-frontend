@@ -41,7 +41,7 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
   override val statelessDefaultPredicate = preferencesPredicate
 
   def view()(implicit request: Request[AnyContent]): Html = {
-    digitalcontact.views.html.continue_registration(
+    views.html.individual.continue_registration(
       postAction = controllers.individual.routes.PreferencesController.submit()
     )
   }

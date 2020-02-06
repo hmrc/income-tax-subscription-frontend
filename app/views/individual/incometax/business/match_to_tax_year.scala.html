@@ -1,0 +1,69 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import play.api.data.Form
+@import uk.gov.hmrc.play.views.html.helpers.form
+@import views.html.helpers._
+@import views.individual.helpers._
+@import core.config.AppConfig
+@import forms.individual.business.MatchTaxYearForm
+@import incometax.business.models.MatchTaxYearModel
+@import views.html.templates.main_template
+@import core.models.{Yes, No}
+@import forms.submapping.YesNoMapping
+@import views.helpers.RadioOption
+
+@(matchTaxYearForm: Form[MatchTaxYearModel], postAction: Call, isRegistration: Boolean,  backUrl: String, isEditMode: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@question=@{if(isRegistration){Messages("business.match_tax_year.heading.registration")} else {Messages("business.match_tax_year.heading.signup")}}
+@pageTitle = @{if(isRegistration){Messages("business.match_tax_year.title.registration")} else {Messages("business.match_tax_year.title.signup")}}
+
+@main_template(title = pageTitle, form = matchTaxYearForm) {
+
+    @back_link(backUrl)
+
+    @summaryErrorHelper(matchTaxYearForm)
+
+    <h1 class="heading-large">@question</h1>
+    @if(isRegistration){
+        <p>@Messages("business.match_tax_year.line_1.registration")</p>
+        <p>@Messages("business.match_tax_year.line_2.registration")</p>
+    }else {
+        <p>@Messages("business.match_tax_year.line_1.signup")</p>
+    }
+
+    @form(action = postAction) {
+
+        @radioHelper(
+            field = matchTaxYearForm(MatchTaxYearForm.matchTaxYear),
+            legend = question,
+            options = Seq(
+                RadioOption(YesNoMapping.option_yes, Yes.toMessageString),
+                RadioOption(YesNoMapping.option_no, No.toMessageString)
+            ),
+            parentForm = matchTaxYearForm,
+            inline = true
+        )
+
+        @if(isEditMode) {
+            @continueButton(Messages("base.update"))
+        } else {
+            @continueButton()
+        }
+
+    }
+
+}

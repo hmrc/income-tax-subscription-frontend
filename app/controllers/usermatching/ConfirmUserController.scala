@@ -42,7 +42,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
                                      ) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
-    usermatching.views.html.check_your_user_details(
+    views.html.individual.usermatching.check_your_user_details(
       userDetailsModel,
       controllers.usermatching.routes.ConfirmUserController.submit(),
       backUrl

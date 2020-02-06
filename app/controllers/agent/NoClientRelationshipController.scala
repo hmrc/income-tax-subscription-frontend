@@ -35,7 +35,7 @@ class NoClientRelationshipController @Inject()(val baseConfig: BaseControllerCon
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Ok(agent.views.html.no_client_relationship(postAction = controllers.agent.routes.NoClientRelationshipController.submit())))
+      Future.successful(Ok(views.html.agent.no_client_relationship(postAction = controllers.agent.routes.NoClientRelationshipController.submit())))
   }
 
   val submit: Action[AnyContent] = Authenticated.async { implicit request =>

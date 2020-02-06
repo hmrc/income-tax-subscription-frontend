@@ -69,7 +69,7 @@ class UserDetailsLockoutController @Inject()(val baseConfig: BaseControllerConfi
     implicit user =>
       handleLockOut {
         val duration = Duration.ofSeconds(baseConfig.applicationConfig.matchingLockOutSeconds)
-        Future.successful(Ok(usermatching.views.html.user_details_lockout(durationText(duration))))
+        Future.successful(Ok(views.html.individual.usermatching.user_details_lockout(durationText(duration))))
       }
   }
 

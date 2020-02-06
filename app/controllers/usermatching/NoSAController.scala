@@ -28,7 +28,7 @@ class NoSAController @Inject()(implicit val applicationConfig: AppConfig,
                               ) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action {
-    implicit request => Ok(usermatching.views.html.no_sa())
+    implicit request => Ok(views.html.individual.usermatching.no_sa())
   }
 
 }

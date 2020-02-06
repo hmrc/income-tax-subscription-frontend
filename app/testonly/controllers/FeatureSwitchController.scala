@@ -27,6 +27,7 @@ import play.api.mvc.{Action, Request}
 import play.twirl.api.Html
 import testonly.connectors.{BackendFeatureSwitchConnector, EligibilityFeatureSwitchConnector}
 import testonly.models.FeatureSwitchSetting
+import testonly.views.html.feature_switch
 
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future
@@ -43,7 +44,7 @@ class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
                    eligibilityFeatureSwitches: Map[String, Boolean]
                   )(implicit request: Request[_]): Html =
 
-    testonly.views.html.feature_switch(
+    feature_switch(
       switchNames = switchNames,
       backendFeatureSwitches = backendFeatureSwitches,
       eligibilityFeatureSwitches = eligibilityFeatureSwitches,

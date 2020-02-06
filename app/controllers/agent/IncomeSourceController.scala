@@ -42,7 +42,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                       ) extends AuthenticatedController with FeatureSwitching {
 
   def view(incomeSourceForm: Form[IncomeSourceType], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    agent.views.html.income_source(
+    views.html.agent.income_source(
       incomeSourceForm = incomeSourceForm,
       postAction = controllers.agent.routes.IncomeSourceController.submit(editMode = isEditMode),
       isEditMode = isEditMode,

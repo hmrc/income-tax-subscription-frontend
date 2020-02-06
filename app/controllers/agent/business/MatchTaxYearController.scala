@@ -40,7 +40,7 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
                                       (implicit val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
 
   private def view(matchTaxYearForm: Form[MatchTaxYearModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html = {
-    agent.views.html.business.match_to_tax_year(
+    views.html.agent.business.match_to_tax_year(
       matchTaxYearForm,
       controllers.agent.business.routes.MatchTaxYearController.submit(isEditMode),
       backUrl(isEditMode),

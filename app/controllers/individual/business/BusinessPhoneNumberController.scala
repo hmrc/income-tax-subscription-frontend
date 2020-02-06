@@ -37,7 +37,7 @@ class BusinessPhoneNumberController @Inject()(val baseConfig: BaseControllerConf
                                              ) extends RegistrationController {
 
   def view(businessPhoneNumberForm: Form[BusinessPhoneNumberModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    incometax.business.views.html.business_phone_number(
+    views.html.individual.incometax.business.business_phone_number(
       businessPhoneNumberForm = businessPhoneNumberForm,
       postAction = controllers.individual.business.routes.BusinessPhoneNumberController.submit(editMode = isEditMode),
       isEditMode,

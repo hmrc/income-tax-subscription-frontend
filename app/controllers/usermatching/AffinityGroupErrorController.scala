@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import usermatching.views.html._
+import views.html.agent.agent_affinity_group_error
 
 @Singleton
 class AffinityGroupErrorController @Inject()(implicit val applicationConfig: AppConfig,
@@ -29,7 +29,7 @@ class AffinityGroupErrorController @Inject()(implicit val applicationConfig: App
                                             ) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action { implicit request =>
-    Ok(usermatching.views.html.agent_affinity_group_error())
+    Ok(views.html.agent.agent_affinity_group_error())
   }
 
 }

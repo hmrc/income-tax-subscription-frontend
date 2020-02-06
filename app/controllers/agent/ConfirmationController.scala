@@ -20,7 +20,7 @@ import agent.audit.Logging
 import agent.auth.PostSubmissionController
 import agent.services.CacheUtil._
 import agent.services.KeystoreService
-import agent.views.html.sign_up_complete
+import views.html.agent.sign_up_complete
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import javax.inject.{Inject, Singleton}

@@ -54,5 +54,5 @@ class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig
     keystoreService.fetchSubscriptionId() map (_.toRight(left = KeystoreMissingError(MtditId)))
 
   private def confirmationPage(id: String)(implicit request: Request[AnyContent]) =
-    incometax.subscription.views.html.enrolled.claim_subscription()
+    views.html.individual.incometax.subscription.enrolled.claim_subscription()
 }

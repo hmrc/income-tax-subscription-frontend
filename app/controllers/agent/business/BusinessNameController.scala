@@ -40,7 +40,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                       ) extends AuthenticatedController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
-    agent.views.html.business.business_name(
+    views.html.agent.business.business_name(
       businessNameForm = businessNameForm,
       postAction = controllers.agent.business.routes.BusinessNameController.submit(editMode = isEditMode),
       isEditMode,

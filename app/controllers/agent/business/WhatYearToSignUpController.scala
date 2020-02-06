@@ -46,7 +46,7 @@ class WhatYearToSignUpController @Inject()(val baseConfig: BaseControllerConfig,
       controllers.agent.business.routes.MatchTaxYearController.show().url
 
   def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
-    agent.views.html.business.what_year_to_sign_up(
+    views.html.agent.business.what_year_to_sign_up(
       accountingYearForm = accountingYearForm,
       postAction = controllers.agent.business.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
       backUrl = backUrl(isEditMode),

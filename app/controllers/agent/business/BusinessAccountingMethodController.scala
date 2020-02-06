@@ -44,7 +44,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
                                                    val authService: AuthService) extends AuthenticatedController with FeatureSwitching with AgentRequireAnswer {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean, backUrl: String)(implicit request: Request[_]): Html = {
-    agent.views.html.business.accounting_method(
+    views.html.agent.business.accounting_method(
       accountingMethodForm = accountingMethodForm,
       postAction = controllers.agent.business.routes.BusinessAccountingMethodController.submit(editMode = isEditMode),
       isEditMode = isEditMode,

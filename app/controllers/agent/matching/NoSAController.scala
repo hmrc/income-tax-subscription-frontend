@@ -31,7 +31,7 @@ class NoSAController @Inject()(implicit val applicationConfig: AppConfig,
                               ) extends FrontendController with I18nSupport {
 
   val show: Action[AnyContent] = Action.async {
-    implicit request => Future.successful(Ok(agent.views.html.no_sa()))
+    implicit request => Future.successful(Ok(views.html.agent.no_sa()))
   }
 
 }

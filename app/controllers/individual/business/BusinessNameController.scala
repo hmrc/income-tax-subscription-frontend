@@ -37,7 +37,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                       ) extends SignUpController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html = {
-    incometax.business.views.html.business_name(
+    views.html.individual.incometax.business.business_name(
       businessNameForm = businessNameForm,
       postAction = controllers.individual.business.routes.BusinessNameController.submit(editMode = isEditMode),
       isRegistration = request.isInState(Registration),

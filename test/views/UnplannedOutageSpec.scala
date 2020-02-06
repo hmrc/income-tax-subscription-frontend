@@ -17,7 +17,6 @@
 package views
 
 import assets.MessageLookup.{UnplannedOutage => messages}
-import core.views.ViewSpecTrait
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 

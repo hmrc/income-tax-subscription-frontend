@@ -42,7 +42,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
                                                       ) extends AuthenticatedController {
 
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html = {
-    agent.views.html.business.accounting_period_date(
+    views.html.agent.business.accounting_period_date(
       form,
       controllers.agent.business.routes.BusinessAccountingPeriodDateController.submit(editMode = isEditMode),
       isEditMode,

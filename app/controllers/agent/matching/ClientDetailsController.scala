@@ -42,7 +42,7 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
                                        ) extends UserMatchingController {
 
   def view(clientDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    agent.views.html.client_details(
+    views.html.agent.client_details(
       clientDetailsForm,
       controllers.agent.matching.routes.ClientDetailsController.submit(editMode = isEditMode),
       isEditMode

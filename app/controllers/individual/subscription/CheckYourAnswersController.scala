@@ -59,7 +59,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     implicit request =>
       cache =>
         Future.successful(
-          Ok(incometax.subscription.views.html.check_your_answers(
+          Ok(views.html.individual.incometax.subscription.check_your_answers(
             cache.getSummary(),
             isRegistration = request.isInState(Registration),
             controllers.individual.subscription.routes.CheckYourAnswersController.submit(),

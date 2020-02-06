@@ -24,7 +24,7 @@ import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import incometax.subscription.views.html.sign_up_complete
+import views.html.individual.incometax.subscription.sign_up_complete
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}

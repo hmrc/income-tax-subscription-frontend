@@ -28,6 +28,7 @@ import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import testonly.form.individual.KnownFactsForm._
 import testonly.models.KnownFactsModel
+import testonly.views.html.individual.add_known_facts
 
 import scala.concurrent.Future
 
@@ -39,31 +40,31 @@ class KnownFactsController @Inject()(val baseConfig: BaseControllerConfig,
                                     ) extends SignUpController {
 
   def view(form: Form[KnownFactsModel])(implicit request: Request[_]): Html =
-    testonly.views.html.individual.add_known_facts(
+    add_known_facts(
       knownFactsForm = form,
       postAction = testonly.controllers.individual.routes.KnownFactsController.submit
     )
 
   def show: Action[AnyContent] = Action { implicit request =>
-      Ok(view(knownFactsForm.form))
+    Ok(view(knownFactsForm.form))
   }
 
   def submit: Action[AnyContent] = Action.async { implicit request =>
-      knownFactsForm.form.bindFromRequest.fold(
-        formWithErrors => Future.successful(BadRequest(view(form = formWithErrors))),
-        knownFacts => {
-          import forms.prevalidation.trimAllFunc
-          val nino = trimAllFunc(knownFacts.nino).toUpperCase()
-          val mtdid = trimAllFunc(knownFacts.mtditid).toUpperCase()
+    knownFactsForm.form.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(view(form = formWithErrors))),
+      knownFacts => {
+        import forms.prevalidation.trimAllFunc
+        val nino = trimAllFunc(knownFacts.nino).toUpperCase()
+        val mtdid = trimAllFunc(knownFacts.mtditid).toUpperCase()
 
-          knownFactsService.addKnownFacts(mtdid, nino).map {
-            case Right(_) => Ok(s"known facts added: nino=$nino mtdid=$mtdid")
-          }.recoverWith {
-            case e =>
-              Future.successful(Ok("add known facts failed: " + e))
-          }
+        knownFactsService.addKnownFacts(mtdid, nino).map {
+          case Right(_) => Ok(s"known facts added: nino=$nino mtdid=$mtdid")
+        }.recoverWith {
+          case e =>
+            Future.successful(Ok("add known facts failed: " + e))
         }
-      )
+      }
+    )
 
   }
 

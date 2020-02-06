@@ -1,0 +1,90 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import core.config.AppConfig
+@import views.html.helpers._
+@import views.html.templates.main_template
+@import views.individual.helpers._
+@import forms.individual.business.AccountingPeriodDateForm._
+@import incometax.business.models.AccountingPeriodModel
+@import incometax.business.models.enums.{AccountingPeriodViewType, RegistrationAccountingPeriodView, SignUpAccountingPeriodView}
+@import play.api.data.Form
+@import uk.gov.hmrc.play.views.html.helpers.form
+
+@(accountingPeriodForm: Form[AccountingPeriodModel], postAction: Call, viewType: AccountingPeriodViewType, isEditMode: Boolean, backUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@main_template(title = Messages("accounting_period.title"), form = accountingPeriodForm) {
+
+    @back_link(backUrl)
+
+    @summaryErrorHelper(accountingPeriodForm)
+
+    <h1 class="heading-large">
+    @if(isEditMode) {
+        @Messages("accounting_period.heading")
+    } else {
+        @viewType match {
+            case SignUpAccountingPeriodView => {
+                @Messages("accounting_period.heading.signup")
+            }
+            case RegistrationAccountingPeriodView => {
+                @Messages("accounting_period.heading.registration")
+            }
+        }
+    }
+    </h1>
+
+    <div class="form-group">
+        <p>@viewType match {
+            case SignUpAccountingPeriodView => {@Messages("accounting_period.line_1.signup")}
+            case RegistrationAccountingPeriodView => {@Messages("accounting_period.line_1.registration")}
+        }</p>
+    </div>
+
+    @form(action = postAction) {
+
+        @dateHelper(
+            field = accountingPeriodForm(startDate),
+            label = Messages("base.startDate"),
+            parentForm = accountingPeriodForm,
+            hintText = viewType match {
+                case SignUpAccountingPeriodView =>
+                    Messages("accounting_period.exampleStartDate.signup")
+                case RegistrationAccountingPeriodView =>
+                    Messages("accounting_period.exampleStartDate.registration")
+            }
+        )
+
+        @dateHelper(
+            field = accountingPeriodForm(endDate),
+            label = Messages("base.endDate"),
+            parentForm = accountingPeriodForm,
+            hintText = viewType match {
+                case SignUpAccountingPeriodView =>
+                    Messages("accounting_period.exampleEndDate.signup")
+                case RegistrationAccountingPeriodView =>
+                    Messages("accounting_period.exampleEndDate.registration")
+            }
+        )
+
+        @if(isEditMode) {
+            @continueButton(Messages("base.update"))
+        } else {
+            @continueButton()
+        }
+
+    }
+}

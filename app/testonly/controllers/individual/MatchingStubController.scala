@@ -26,6 +26,7 @@ import play.twirl.api.Html
 import testonly.connectors.individual.{MatchingStubConnector, UserData}
 import testonly.form.individual.UserToStubForm
 import testonly.models.UserToStubModel
+import testonly.views.html.individual.stub_user
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -38,7 +39,7 @@ class MatchingStubController @Inject()(implicit val applicationConfig: AppConfig
                                       ) extends FrontendController with I18nSupport {
 
   def view(clientToStubForm: Form[UserToStubModel])(implicit request: Request[_]): Html =
-    testonly.views.html.individual.stub_user(
+   stub_user(
       clientToStubForm,
       routes.MatchingStubController.submit()
     )

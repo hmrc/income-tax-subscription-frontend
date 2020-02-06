@@ -39,7 +39,7 @@ class WhatYearToSignUpController @Inject()(val baseConfig: BaseControllerConfig,
                                           ) extends SignUpController {
 
   def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
-    incometax.business.views.html.what_year_to_sign_up(
+    views.html.individual.incometax.business.what_year_to_sign_up(
       accountingYearForm = accountingYearForm,
       postAction = controllers.individual.business.routes.WhatYearToSignUpController.submit(editMode = isEditMode),
       backUrl = backUrl(isEditMode),
