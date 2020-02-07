@@ -83,8 +83,6 @@ trait MockConfig extends AppConfig {
 
   override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String = "tax-enrolments/"
 
-  override val languageTranslationEnabled: Boolean = false
-
   override val betaFeedbackUrl: String = "/feedback"
 
   override val betaFeedbackUnauthenticatedUrl: String = "/feedback"

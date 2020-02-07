@@ -91,8 +91,6 @@ trait AppConfig extends FeatureSwitching {
 
   def routeToSwitchLanguage = (lang: String) => controllers.language.routes.LanguageSwitchController.switchToLanguage(lang)
 
-  def languageTranslationEnabled: Boolean
-
   def betaFeedbackUrl: String
 
   def betaFeedbackUnauthenticatedUrl: String
@@ -236,8 +234,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String =
     s"$taxEnrolments/tax-enrolments/groups/$groupId/enrolments/$enrolmentKey"
-
-  override def languageTranslationEnabled: Boolean = isEnabled(featureswitch.WelshLanguageFeature)
 
   override lazy val betaFeedbackUrl: String =
     s"$contactFrontendService/contact/beta-feedback?service=$contactFormServiceIdentifier"

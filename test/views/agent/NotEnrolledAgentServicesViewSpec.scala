@@ -37,7 +37,7 @@ class NotEnrolledAgentServicesViewSpec extends ViewSpecTrait {
 
     testPage.mustHavePara(messages.para1)
 
-    val paragraph1 = testPage.selectHead("paragraph 1", "p")
+    val paragraph1 = testPage.selectHead("return content body", ".content__body").selectHead("paragraph 1", "p")
     paragraph1.mustHaveALink(messages.linkText, appConfig.agentServicesUrl)
 
     testPage.mustHaveSignOutButton(commonMessages.signOut, request.path)
