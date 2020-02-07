@@ -32,7 +32,7 @@ class UserDetailsErrorController @Inject()(val baseConfig: BaseControllerConfig,
 
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Ok(usermatching.views.html.user_details_error(
+      Ok(views.html.individual.usermatching.user_details_error(
         postAction = controllers.usermatching.routes.UserDetailsErrorController.submit()
       ))
   }

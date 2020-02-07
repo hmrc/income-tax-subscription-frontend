@@ -50,7 +50,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
     for {
       back <- backUrl(isEditMode)
     } yield
-      incometax.business.views.html.accounting_method(
+      views.html.individual.incometax.business.accounting_method(
         accountingMethodForm = accountingMethodForm,
         postAction = controllers.individual.business.routes.BusinessAccountingMethodController.submit(editMode = isEditMode),
         isEditMode,

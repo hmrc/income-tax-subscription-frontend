@@ -37,7 +37,7 @@ class BusinessStartDateController @Inject()(val baseConfig: BaseControllerConfig
                                            ) extends RegistrationController {
 
   def view(businessStartDateForm: Form[BusinessStartDateModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html =
-    incometax.business.views.html.business_start_date(
+    views.html.individual.incometax.business.business_start_date(
       businessStartDateForm = businessStartDateForm,
       postAction = controllers.individual.business.routes.BusinessStartDateController.submit(editMode = isEditMode),
       isEditMode,

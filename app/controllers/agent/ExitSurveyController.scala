@@ -38,7 +38,7 @@ class ExitSurveyController @Inject()(val logging: Logging,
                                     ) extends FrontendController with I18nSupport {
 
   def view(exitSurveyForm: Form[ExitSurveyModel])(implicit request: Request[_]): Html =
-    agent.views.html.exit_survey(
+    views.html.agent.exit_survey(
       exitSurveyForm = exitSurveyForm,
       routes.ExitSurveyController.submit()
     )

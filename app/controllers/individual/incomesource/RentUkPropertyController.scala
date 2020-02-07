@@ -48,7 +48,7 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   def view(rentUkPropertyForm: Form[RentUkPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
-    incometax.incomesource.views.html.rent_uk_property(
+    views.html.individual.incometax.incomesource.rent_uk_property(
       rentUkPropertyForm = rentUkPropertyForm,
       postAction = controllers.individual.incomesource.routes.RentUkPropertyController.submit(editMode = isEditMode),
       isEditMode = isEditMode,

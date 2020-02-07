@@ -24,6 +24,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import testonly.connectors.EnrolmentStoreStubConnector
 import testonly.form.UpdateEnrolmentsForm
+import testonly.views.html.individual.update_enrolments
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrievals}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
@@ -41,7 +42,7 @@ class UpdateEnrolmentsController @Inject()(implicit val applicationConfig: AppCo
   def show: Action[AnyContent] = Action.async(implicit req =>
     authorised().retrieve(Retrievals.credentials) {
       case Credentials(credId, _) =>
-        Future.successful(Ok(_root_.testonly.views.html.update_enrolments(
+        Future.successful(Ok(update_enrolments(
           UpdateEnrolmentsForm.updateEnrolmentsForm.fill(credId),
           testonly.controllers.routes.UpdateEnrolmentsController.submit()
         )))
@@ -52,7 +53,7 @@ class UpdateEnrolmentsController @Inject()(implicit val applicationConfig: AppCo
   def submit: Action[AnyContent] = Action.async(implicit req =>
     UpdateEnrolmentsForm.updateEnrolmentsForm.bindFromRequest.fold(
       formWithErrors =>
-        Future.successful(BadRequest(_root_.testonly.views.html.update_enrolments(
+        Future.successful(BadRequest(update_enrolments(
           formWithErrors,
           testonly.controllers.routes.UpdateEnrolmentsController.submit()
         ))),

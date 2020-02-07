@@ -18,8 +18,9 @@
 @import uk.gov.hmrc.play.views.html.helpers.form
 @import core.config.AppConfig
 @import java.time.format.{DateTimeFormatter, ResolverStyle}
-@import core.views.html.templates.main_template
-@import core.views.html.helpers._
+@import views.html.templates.main_template
+@import views.html.helpers._
+@import views.individual.helpers._
 
 @(userToStubModel: UserToStubModel)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 

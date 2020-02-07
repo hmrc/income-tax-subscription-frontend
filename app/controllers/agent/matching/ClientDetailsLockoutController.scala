@@ -69,7 +69,7 @@ class ClientDetailsLockoutController @Inject()(val baseConfig: BaseControllerCon
     implicit user =>
       handleLockOut {
         val duration = Duration.ofSeconds(baseConfig.applicationConfig.matchingLockOutSeconds)
-        Ok(agent.views.html.client_details_lockout(durationText(duration)))
+        Ok(views.html.agent.client_details_lockout(durationText(duration)))
       }
   }
 

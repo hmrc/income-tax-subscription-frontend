@@ -29,7 +29,7 @@ class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
                                          ) extends PostSubmissionController {
 
   val show = Authenticated { implicit request =>
-    user => Ok(incometax.subscription.views.html.enrolled.already_enrolled())
+    user => Ok(views.html.individual.incometax.subscription.enrolled.already_enrolled())
   }
 
 }

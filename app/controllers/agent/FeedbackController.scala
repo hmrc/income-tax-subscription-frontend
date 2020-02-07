@@ -18,7 +18,7 @@ package controllers.agent
 
 import java.net.URLEncoder
 
-import agent.views.html.feedback.feedback_thankyou
+import views.html.agent.feedback.feedback_thankyou
 import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
@@ -76,8 +76,8 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
   def show: Action[AnyContent] = UnauthorisedAction {
     implicit request =>
       (request.session.get(REFERER), request.headers.get(REFERER)) match {
-        case (None, Some(ref)) => Ok(agent.views.html.feedback.feedback(feedbackFormPartialUrl, None)).withSession(request.session + (REFERER -> ref))
-        case _ => Ok(agent.views.html.feedback.feedback(feedbackFormPartialUrl, None))
+        case (None, Some(ref)) => Ok(views.html.agent.feedback.feedback(feedbackFormPartialUrl, None)).withSession(request.session + (REFERER -> ref))
+        case _ => Ok(views.html.agent.feedback.feedback(feedbackFormPartialUrl, None))
       }
   }
 
@@ -88,7 +88,7 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
           resp =>
             resp.status match {
               case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))
-              case HttpStatus.BAD_REQUEST => BadRequest(agent.views.html.feedback.feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
+              case HttpStatus.BAD_REQUEST => BadRequest(views.html.agent.feedback.feedback(feedbackFormPartialUrl, Some(Html(resp.body))))
               case status => Logger.error(s"Unexpected status code from feedback form: $status")
                 throw new InternalServerException("feedback controller, submit call failed")
             }

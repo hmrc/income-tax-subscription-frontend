@@ -47,7 +47,7 @@ class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControlle
     for {
       back <- backUrl(isEditMode)
     } yield
-      incometax.business.views.html.property_accounting_method(
+      views.html.individual.incometax.business.property_accounting_method(
         accountingMethodForm = accountingMethodPropertyForm,
         postAction = controllers.individual.business.routes.PropertyAccountingMethodController.submit(editMode = isEditMode),
         isEditMode,

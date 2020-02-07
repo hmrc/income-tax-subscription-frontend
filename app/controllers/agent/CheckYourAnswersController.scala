@@ -74,7 +74,7 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
           incomeSource <- keystoreService.fetchIncomeSource()
           backLinkUrl = backUrl(incomeSource)
         } yield
-          Ok(agent.views.html.check_your_answers(
+          Ok(views.html.agent.check_your_answers(
             cache.getSummary,
             controllers.agent.routes.CheckYourAnswersController.submit(),
             backUrl = backLinkUrl

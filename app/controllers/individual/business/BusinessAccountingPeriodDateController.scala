@@ -42,7 +42,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
                                                       ) extends SignUpController {
 
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, editMatch: Boolean)(implicit request: Request[_]): Html =
-    incometax.business.views.html.accounting_period_date(
+    views.html.individual.incometax.business.accounting_period_date(
       accountingPeriodForm = form,
       postAction = controllers.individual.business.routes.BusinessAccountingPeriodDateController.submit(editMode = isEditMode, editMatch = editMatch),
       viewType = whichView,

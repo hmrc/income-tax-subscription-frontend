@@ -26,8 +26,10 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, Request}
 import play.twirl.api.Html
+import testonly.views.html.agent.{show_stubbed_details, stub_client}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+
 
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 
@@ -40,7 +42,7 @@ class MatchingStubController @Inject()(val baseConfig: BaseControllerConfig,
   implicit lazy val appConfig: AppConfig = baseConfig.applicationConfig
 
   def view(clientToStubForm: Form[ClientToStubModel])(implicit request: Request[_]): Html =
-    testonly.views.html.agent.stub_client(
+    stub_client(
       clientToStubForm,
       testonly.controllers.agent.routes.MatchingStubController.submit()
     )
@@ -54,7 +56,7 @@ class MatchingStubController @Inject()(val baseConfig: BaseControllerConfig,
       formWithErrors => BadRequest(view(formWithErrors)),
       clientDetails =>
         matchingStubConnector.newUser(clientDetails) map {
-          case true => Ok(testonly.views.html.agent.show_stubbed_details(clientDetails))
+          case true => Ok(show_stubbed_details(clientDetails))
           case _ => throw new InternalServerException("calls to matching-stub failed")
         }
     )

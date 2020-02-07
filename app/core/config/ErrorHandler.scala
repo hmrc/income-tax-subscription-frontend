@@ -18,7 +18,7 @@ package core.config
 
 import javax.inject.Inject
 
-import core.views.html.templates.error_template
+import views.html.templates.error_template
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}

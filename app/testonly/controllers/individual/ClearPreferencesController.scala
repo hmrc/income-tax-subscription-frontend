@@ -28,8 +28,10 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, Request, Result}
 import play.twirl.api.Html
 import testonly.models.preferences.{ClearPreferencesModel, ClearPreferencesResult, Cleared, NoPreferences}
+import testonly.views.html.individual.clear_preferences
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
+
 
 import scala.concurrent.Future
 
@@ -63,7 +65,7 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
 
 
   private def showView(form: Form[ClearPreferencesModel])(implicit request: Request[_]): Html =
-    testonly.views.html.individual.clear_preferences(
+    clear_preferences(
       clearPreferencesForm = form,
       postAction = testonly.controllers.individual.routes.ClearPreferencesController.submit()
     )

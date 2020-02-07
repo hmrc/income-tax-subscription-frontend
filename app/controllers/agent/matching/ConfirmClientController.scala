@@ -48,7 +48,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                                        ) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
-    agent.views.html.check_your_client_details(
+    views.html.agent.check_your_client_details(
       userDetailsModel,
       routes.ConfirmClientController.submit(),
       backUrl

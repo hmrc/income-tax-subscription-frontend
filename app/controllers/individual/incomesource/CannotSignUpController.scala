@@ -36,7 +36,7 @@ class CannotSignUpController @Inject()(val baseConfig: BaseControllerConfig,
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Ok(incometax.incomesource.views.html.cannot_sign_up(
+      Future.successful(Ok(views.html.individual.incometax.incomesource.cannot_sign_up(
         postAction = controllers.individual.incomesource.routes.CannotSignUpController.show(),
         backUrl
       )))

@@ -42,7 +42,7 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
                                       ) extends SignUpController {
 
   def view(matchTaxYearForm: Form[MatchTaxYearModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html =
-    incometax.business.views.html.match_to_tax_year(
+    views.html.individual.incometax.business.match_to_tax_year(
       matchTaxYearForm = matchTaxYearForm,
       postAction = controllers.individual.business.routes.MatchTaxYearController.submit(editMode = isEditMode),
       isRegistration = request.isInState(Registration),

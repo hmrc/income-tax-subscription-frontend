@@ -108,7 +108,7 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
   }
 
   def view(address: Address, backUrl: String, isEditMode: Boolean)(implicit request: Request[_]): Html =
-    incometax.business.views.html.edit_business_address(
+    views.html.individual.incometax.business.edit_business_address(
       address,
       controllers.individual.business.routes.BusinessAddressController.submit(editMode = isEditMode),
       backUrl,

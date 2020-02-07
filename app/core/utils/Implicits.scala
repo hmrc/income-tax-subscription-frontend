@@ -19,7 +19,7 @@ package core.utils
 import scala.concurrent.Future
 
 
-trait Implicits {
+trait   Implicits {
 
   implicit def optionWrapperUtil[T, S <: T](data: S): Option[T] = Some(data)
 

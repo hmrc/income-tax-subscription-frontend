@@ -33,7 +33,7 @@ class ClientAlreadySubscribedController @Inject()(val baseConfig: BaseController
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
-      Future.successful(Ok(agent.views.html.client_already_subscribed(
+      Future.successful(Ok(views.html.agent.client_already_subscribed(
         postAction = controllers.agent.routes.ClientAlreadySubscribedController.submit()
       )))
   }

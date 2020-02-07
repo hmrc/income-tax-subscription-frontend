@@ -48,7 +48,7 @@ class IdentityVerificationController @Inject()(override val baseConfig: BaseCont
   }
 
   def ivFailed: Action[AnyContent] = Action { implicit request =>
-    Ok(identityverification.views.html.iv_failed(controllers.individual.routes.IdentityVerificationController.gotoIV().url))
+    Ok(views.html.individual.iv_failed(controllers.individual.routes.IdentityVerificationController.gotoIV().url))
   }
 }
 

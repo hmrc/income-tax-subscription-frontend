@@ -40,7 +40,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
                                      ) extends UserMatchingController {
 
   def view(userDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
-    usermatching.views.html.user_details(
+    views.html.individual.usermatching.user_details(
       userDetailsForm,
       controllers.usermatching.routes.UserDetailsController.submit(editMode = isEditMode),
       isEditMode
