@@ -33,50 +33,30 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
   override val controllerName: String = "HomeControllerSpec"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "index" -> testHomeController(showGuidance = false).index()
+    "index" -> testHomeController().index()
   )
 
-  def mockBaseControllerConfig(showStartPage: Boolean): BaseControllerConfig = {
-    val mockConfig = new MockConfig {
-      override val showGuidance: Boolean = showStartPage
-    }
-    mockBaseControllerConfig(mockConfig)
+  def mockBaseControllerConfig(): BaseControllerConfig = {
+    mockBaseControllerConfig(MockConfig)
   }
 
-  private def testHomeController(showGuidance: Boolean) = new HomeController(
-    mockBaseControllerConfig(showGuidance),
+  private def testHomeController() = new HomeController(
+    mockBaseControllerConfig(),
     messagesApi,
     mockAuthService,
     app.injector.instanceOf[Logging]
   )
 
   "Calling the home action of the Home controller with an authorised user" should {
+    lazy val result = testHomeController().home()(FakeRequest())
 
-    "If the start page (showGuidance) is enabled" should {
-
-      lazy val result = testHomeController(showGuidance = true).home()(FakeRequest())
-
-      "Return status OK (200)" in {
-        status(result) must be(Status.OK)
-      }
-
-      "Should have the page title" in {
-        Jsoup.parse(contentAsString(result)).title mustBe FrontPage.title
-      }
+    "Return status Redirect (303)" in {
+      status(result) must be(Status.SEE_OTHER)
     }
 
-    "If the start page (showGuidance) is disabled" should {
-      lazy val result = testHomeController(showGuidance = false).home()(FakeRequest())
-
-      "Return status SEE_OTHER (303) redirect" in {
-        status(result) must be(Status.SEE_OTHER)
-      }
-
-      "Redirect to the 'Index' page" in {
-        redirectLocation(result).get mustBe controllers.agent.routes.HomeController.index().url
-      }
+    "Should have the redirect location to the index route" in {
+      redirectLocation(result) mustBe Some(controllers.agent.routes.HomeController.index().url)
     }
-
   }
 
   "Calling the index action of the HomeController with an authorised user" when {
@@ -84,7 +64,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
     "there is no journey state in session" should {
       lazy val request = FakeRequest()
 
-      def result = testHomeController(showGuidance = false).index()(request)
+      def result = testHomeController().index()(request)
 
       s"if the user has arn redirect to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in {
         reset(mockAuthService)
@@ -111,7 +91,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
     "journey state is user matching" should {
       lazy val request = userMatchingRequest
 
-      def result = testHomeController(showGuidance = false).index()(request)
+      def result = testHomeController().index()(request)
 
       s"redirect user to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in {
         status(result) must be(Status.SEE_OTHER)
@@ -126,7 +106,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
       "the user has a UTR" should {
         lazy val request = userMatchedRequest
 
-        def result = testHomeController(showGuidance = false).index()(request)
+        def result = testHomeController().index()(request)
 
         s"redirect user to ${controllers.agent.routes.IncomeSourceController.show().url}" in {
           status(result) must be(Status.SEE_OTHER)
@@ -140,7 +120,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
       "the user does not have a UTR" should {
         lazy val request = userMatchedRequestNoUtr
 
-        def result = testHomeController(showGuidance = false).index()(request)
+        def result = testHomeController().index()(request)
 
         s"redirect user to ${controllers.agent.matching.routes.NoSAController.show().url}" in {
           status(result) must be(Status.SEE_OTHER)
@@ -156,7 +136,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
       "the agent is authorised" should {
         lazy val request = subscriptionRequest.withSession(ITSASessionKeys.MTDITID -> "any")
 
-        def result = testHomeController(showGuidance = false).index()(request)
+        def result = testHomeController().index()(request)
 
         s"redirect user to ${controllers.agent.routes.ConfirmationController.show().url}" in {
           status(result) must be(Status.SEE_OTHER)

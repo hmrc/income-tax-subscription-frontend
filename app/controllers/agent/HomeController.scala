@@ -36,13 +36,8 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                logging: Logging
                               ) extends StatelessController {
 
-  lazy val showGuidance: Boolean = baseConfig.applicationConfig.showGuidance
-
   def home: Action[AnyContent] = Action.async { implicit request =>
-    showGuidance match {
-      case true => Ok(views.html.agent.agent_frontpage(controllers.agent.routes.HomeController.index()))
-      case _ => Redirect(controllers.agent.routes.HomeController.index())
-    }
+      Redirect(controllers.agent.routes.HomeController.index())
   }
 
   def index: Action[AnyContent] = Authenticated.async { implicit request =>

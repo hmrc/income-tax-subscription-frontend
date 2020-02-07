@@ -45,7 +45,7 @@ class HomeControllerSpec extends ControllerBaseSpec
   override val controllerName: String = "HomeControllerSpec"
 
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map(
-    "index" -> TestHomeController(showStartPage = false).index()
+    "index" -> testHomeController(showStartPage = false).index()
   )
 
   override def beforeEach(): Unit = {
@@ -54,9 +54,8 @@ class HomeControllerSpec extends ControllerBaseSpec
     mockNinoRetrieval()
   }
 
-  def TestHomeController(showStartPage: Boolean = true, registrationFeature: Boolean = false): HomeController = new HomeController(
+  def testHomeController(showStartPage: Boolean = true, registrationFeature: Boolean = false): HomeController = new HomeController(
     mockBaseControllerConfig(new MockConfig {
-      override val showGuidance: Boolean = showStartPage
       override val enableRegistration: Boolean = registrationFeature
     }),
     messagesApi,
@@ -73,7 +72,7 @@ class HomeControllerSpec extends ControllerBaseSpec
 
   "Calling the home action of the Home controller with an authorised user" when {
     "there is no start page" should {
-      lazy val result = TestHomeController(showStartPage = false).home()(subscriptionRequest)
+      lazy val result = testHomeController(showStartPage = false).home()(subscriptionRequest)
 
       "Return status SEE_OTHER (303) redirect" in {
         status(result) must be(Status.SEE_OTHER)
@@ -93,7 +92,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           setupMockGetSubscriptionFound(testNino)
           setupMockKeystoreSaveFunctions()
 
-          val result = TestHomeController().index(fakeRequest)
+          val result = testHomeController().index(fakeRequest)
 
           status(result) must be(Status.SEE_OTHER)
           redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim().url
@@ -111,7 +110,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 setupMockGetSubscriptionNotFound(testNino)
                 mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
 
-                val result = await(TestHomeController().index(fakeRequest))
+                val result = await(testHomeController().index(fakeRequest))
                 status(result) must be(Status.SEE_OTHER)
                 redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
               }
@@ -124,7 +123,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                 setupMockGetSubscriptionNotFound(testNino)
                 mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
 
-                val result = await(TestHomeController().index(fakeRequest))
+                val result = await(testHomeController().index(fakeRequest))
 
                 status(result) mustBe SEE_OTHER
                 redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
@@ -140,7 +139,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                     setupMockGetSubscriptionNotFound(testNino)
                     mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
 
-                    val result = TestHomeController(registrationFeature = true).index()(registrationRequest)
+                    val result = testHomeController(registrationFeature = true).index()(registrationRequest)
 
                     status(result) mustBe SEE_OTHER
                     redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
@@ -154,7 +153,7 @@ class HomeControllerSpec extends ControllerBaseSpec
                     setupMockGetSubscriptionNotFound(testNino)
                     mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
 
-                    val result = TestHomeController(registrationFeature = false).index()(registrationRequest)
+                    val result = testHomeController(registrationFeature = false).index()(registrationRequest)
 
                     status(result) mustBe SEE_OTHER
                     redirectLocation(result).get mustBe controllers.usermatching.routes.NoSAController.show().url
@@ -174,7 +173,7 @@ class HomeControllerSpec extends ControllerBaseSpec
             //mockRetrieveSubscriptionData(testNino)(successfulSubscriptionNotFound)
             mockGetEligibilityStatus(testUtr)(Future.successful(Ineligible))
 
-            val result = await(TestHomeController().index(fakeRequest))
+            val result = await(testHomeController().index(fakeRequest))
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.individual.eligibility.routes.NotEligibleForIncomeTaxController.show().url)
           }
@@ -186,7 +185,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
           setupMockGetSubscriptionFailure(testNino)
 
-          intercept[InternalServerException](await(TestHomeController().index(fakeRequest)))
+          intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
         }
       }
     }
@@ -198,7 +197,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           setupMockGetSubscriptionFound(testNino)
           setupMockKeystoreSaveFunctions()
 
-          val result = TestHomeController().index(fakeRequest)
+          val result = testHomeController().index(fakeRequest)
 
           status(result) must be(Status.SEE_OTHER)
           redirectLocation(result).get mustBe controllers.individual.subscription.routes.ClaimSubscriptionController.claim().url
@@ -215,7 +214,7 @@ class HomeControllerSpec extends ControllerBaseSpec
               setupMockGetSubscriptionNotFound(testNino)
               mockGetEligibilityStatus(testUtr)(Future.successful(Eligible))
 
-              val result = await(TestHomeController().index(fakeRequest))
+              val result = await(testHomeController().index(fakeRequest))
               status(result) must be(Status.SEE_OTHER)
               redirectLocation(result).get mustBe controllers.individual.routes.PreferencesController.checkPreferences().url
               session(result).get(ITSASessionKeys.NINO) must contain(testNino)
@@ -229,7 +228,7 @@ class HomeControllerSpec extends ControllerBaseSpec
             setupMockGetSubscriptionNotFound(testNino)
             mockGetEligibilityStatus(testUtr)(Future.successful(Ineligible))
 
-            val result = await(TestHomeController().index(fakeRequest))
+            val result = await(testHomeController().index(fakeRequest))
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(controllers.individual.eligibility.routes.NotEligibleForIncomeTaxController.show().url)
           }
@@ -241,7 +240,7 @@ class HomeControllerSpec extends ControllerBaseSpec
           mockResolveIdentifiers(Some(testNino), Some(testUtr))(Some(testNino), Some(testUtr))
           setupMockGetSubscriptionFailure(testNino)
 
-          intercept[InternalServerException](await(TestHomeController().index(fakeRequest)))
+          intercept[InternalServerException](await(testHomeController().index(fakeRequest)))
         }
       }
     }
@@ -250,7 +249,7 @@ class HomeControllerSpec extends ControllerBaseSpec
         mockResolveIdentifiers(None, None)(None, None)
         mockIndividualWithNoEnrolments()
 
-        val result = TestHomeController().index(fakeRequest)
+        val result = testHomeController().index(fakeRequest)
 
         status(result) mustBe Status.SEE_OTHER
         redirectLocation(result).get mustBe controllers.usermatching.routes.UserDetailsController.show().url

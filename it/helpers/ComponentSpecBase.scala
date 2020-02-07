@@ -66,7 +66,6 @@ trait ComponentSpecBase extends UnitSpec
     "microservice.services.preferences-frontend.host" -> mockHost,
     "microservice.services.preferences-frontend.port" -> mockPort,
     "preferences-frontend.url" -> mockUrl,
-    "microservice.services.feature-switch.show-guidance" -> "true",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> mockPort,
     "microservice.services.government-gateway.host" -> mockHost,

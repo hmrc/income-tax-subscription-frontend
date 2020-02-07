@@ -47,7 +47,6 @@ trait AppConfig extends FeatureSwitching {
   val softwareUrl: String
   val agentAuthUrl: String
   val agentAccountUrl: String
-  val showGuidance: Boolean
   val whitelistIps: Seq[String]
   val ipExclusionList: Seq[Call]
   val shutterPage: String
@@ -165,9 +164,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override lazy val preferencesFrontendRedirect = loadConfig("preferences-frontend.url")
 
   override lazy val preferencesUrl = baseUrl("preferences")
-
-  // Enable or disable showing the guidance page or go straight to sign ups
-  override lazy val showGuidance: Boolean = loadConfig("feature-switch.show-guidance").toBoolean
 
   override lazy val shutterPage: String = loadConfig("shutter-page.url")
 
