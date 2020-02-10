@@ -26,18 +26,16 @@ import play.api.http.Status._
 
 class HomeControllerISpec extends ComponentSpecBase {
 
-  "GET /report-quarterly/income-and-expenses/sign-up" when {
-    "feature-switch.show-guidance is true" should {
-      "return the guidance page" in {
-        When("We hit to the guidance page route")
-        val res = IncomeTaxSubscriptionFrontend.startPage()
+  "GET /report-quarterly/income-and-expenses/sign-up" should {
+    "return the guidance page" in {
+      When("We hit to the guidance page route")
+      val res = IncomeTaxSubscriptionFrontend.startPage()
 
-        Then("Return the guidance page")
-        res should have(
-          httpStatus(SEE_OTHER),
-          redirectURI(indexURI)
-        )
-      }
+      Then("Return the guidance page")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(indexURI)
+      )
     }
   }
   "GET /report-quarterly/income-and-expenses/sign-up/index" when {

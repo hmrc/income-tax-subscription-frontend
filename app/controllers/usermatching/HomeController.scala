@@ -47,8 +47,6 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                logging: Logging
                               ) extends StatelessController {
 
-  lazy val showGuidance: Boolean = baseConfig.applicationConfig.showGuidance
-
   def home: Action[AnyContent] = Action { implicit request =>
     val redirect = routes.HomeController.index()
     Redirect(redirect)

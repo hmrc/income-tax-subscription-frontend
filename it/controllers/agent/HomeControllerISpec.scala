@@ -25,20 +25,18 @@ import play.api.i18n.Messages
 
 class HomeControllerISpec extends ComponentSpecBase {
 
-  "GET /" when {
-    "feature-switch.show-guidance is true" should {
-      "return the guidance page" in {
-        Given("I setup the wiremock stubs")
+  "GET /" should {
+    "return a redirect to the index page" in {
+      Given("I setup the wiremock stubs")
 
-        When("I call GET /")
-        val res = IncomeTaxSubscriptionFrontend.startPage()
+      When("I call GET /")
+      val res = IncomeTaxSubscriptionFrontend.startPage()
 
-        Then("the result should have a status of OK and the front page title")
-        res should have(
-          httpStatus(OK),
-          pageTitle(Messages("agent.frontpage.title"))
-        )
-      }
+      Then("the result should have a status of SEE_OTHER and the front page title")
+      res should have(
+        httpStatus(SEE_OTHER),
+        redirectURI(controllers.agent.routes.HomeController.index().url)
+      )
     }
   }
 
