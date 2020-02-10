@@ -776,14 +776,6 @@ agent.no-sa.title                                                     = Your cli
 agent.no-sa.heading                                                   = Your client is not registered for Self Assessment
 agent.no-sa.line_1                                                    = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
-# unplanned outage page
-unplanned_outage.title                                                 = Sorry, there is a problem with the service
-unplanned_outage.heading                                               = Sorry, there is a problem with the service
-unplanned_outage.line1                                                 = Try again later.
-unplanned_outage.line2                                                 = In the meantime:
-unplanned_outage.bullet1                                               = go to the <a id="main" href="{0}">Income Tax main page</a>
-unplanned_outage.bullet2                                               = get <a id="related" href="{0}">Income Tax related content</a>
-
 # Not eligible for income tax
 not_eligible_for_income_tax.title                                      = You cannot use this service yet
 not_eligible_for_income_tax.heading                                    = You cannot use this service yet

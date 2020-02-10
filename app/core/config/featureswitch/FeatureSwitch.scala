@@ -44,8 +44,3 @@ case object RegistrationFeature extends FeatureSwitch {
   override val name = s"$prefix.enable-registration"
   override val displayText = "Registration journey"
 }
-
-case object UnplannedShutter extends FeatureSwitch {
-  override val name: String = s"$prefix.unplanned-shutter"
-  override val displayText: String = "Unplanned shutter for the service"
-}
