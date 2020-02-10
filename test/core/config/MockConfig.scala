@@ -86,10 +86,6 @@ trait MockConfig extends AppConfig {
 
   override val betaFeedbackUnauthenticatedUrl: String = "/feedback"
 
-  override val unplannedOutagePageMainContent: String = "https://www.gov.uk/income-tax"
-
-  override val unplannedOutagePageRelatedContent: String = "https://www.gov.uk/browse/tax/income-tax"
-
   override lazy val incomeTaxEligibilityUrl: String = "/income-tax-subscription-incometax.eligibility"
 
   override val incomeTaxEligibilityFrontendUrl: String = "/report-quarterly/income-and-expenses/sign-up/eligibility"

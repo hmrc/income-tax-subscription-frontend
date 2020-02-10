@@ -657,17 +657,6 @@ object MessageLookup {
     val line1 = "You can only sign up if you are an administrator."
   }
 
-  object UnplannedOutage {
-    val title = "Sorry, there is a problem with the service"
-    val heading: String = title
-    val line1 = "Try again later."
-    val line2 = "In the meantime:"
-    val link1 = "Income Tax main page"
-    val link2 = "Income Tax related content"
-    val bullet1 = s"go to the $link1"
-    val bullet2 = s"get $link2"
-  }
-
   object NotEligibleForIncomeTax {
     val title = "You cannot use this service yet"
     val heading: String = "You cannot use this service yet"

@@ -94,10 +94,6 @@ trait AppConfig extends FeatureSwitching {
 
   def betaFeedbackUnauthenticatedUrl: String
 
-  val unplannedOutagePageMainContent: String
-
-  val unplannedOutagePageRelatedContent: String
-
 }
 
 @Singleton
@@ -236,10 +232,6 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override lazy val betaFeedbackUnauthenticatedUrl: String =
     s"$contactFrontendService/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
-
-  override lazy val unplannedOutagePageMainContent: String = loadConfig("unplanned-outage.main")
-
-  override lazy val unplannedOutagePageRelatedContent: String = loadConfig("unplanned-outage.related")
 
 }
 

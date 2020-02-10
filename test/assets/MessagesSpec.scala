@@ -34,14 +34,7 @@ class MessagesSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
     "global.error.pageNotFound404.message",
     "global.error.InternalServerError500.title",
     "global.error.InternalServerError500.heading",
-    "global.error.InternalServerError500.message",
-    // TODO get the welsh langue translation for the following:
-    "unplanned_outage.title",
-    "unplanned_outage.heading",
-    "unplanned_outage.line1",
-    "unplanned_outage.line2",
-    "unplanned_outage.bullet1",
-    "unplanned_outage.bullet2"
+    "global.error.InternalServerError500.message"
   )
 
   "the messages file must have welsh translations" should {
