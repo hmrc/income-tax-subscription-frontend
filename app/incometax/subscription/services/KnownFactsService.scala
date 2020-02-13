@@ -20,8 +20,8 @@ import connectors.individual.subscription.TaxEnrolmentsConnector
 import core.Constants
 import core.Constants.GovernmentGateway._
 import core.config.AppConfig
-import incometax.subscription.models._
 import javax.inject.{Inject, Singleton}
+import models.individual.subscription._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

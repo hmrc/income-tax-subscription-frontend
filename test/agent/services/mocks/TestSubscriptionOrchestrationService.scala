@@ -19,8 +19,8 @@ package agent.services.mocks
 import agent.services.SubscriptionOrchestrationService
 import agent.utils.TestConstants._
 import core.utils.MockTrait
-import incometax.subscription.models.{SubscriptionFailureResponse, SubscriptionSuccess, SummaryModel}
 import incometax.subscription.services.mocks.{MockKnownFactsService, MockSubscriptionService}
+import models.individual.subscription.{SubscriptionFailureResponse, SubscriptionSuccess, SummaryModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier

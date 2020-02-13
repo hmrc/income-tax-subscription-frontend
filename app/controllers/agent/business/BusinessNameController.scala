@@ -17,13 +17,13 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import agent.models.BusinessNameModel
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import forms.agent.BusinessNameForm
 import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
+import models.agent.BusinessNameModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}

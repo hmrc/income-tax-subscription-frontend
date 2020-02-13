@@ -17,7 +17,7 @@
 package testonly.models
 
 //$COVERAGE-OFF$Disabling scoverage on this model as it is only intended to be used by the test only controller
-import core.models.DateModel
+import models.DateModel
 import play.api.libs.json.Json
 
 case class UserToStubModel(firstName: String, lastName: String, nino: String, sautr: Option[String], dateOfBirth: DateModel) {

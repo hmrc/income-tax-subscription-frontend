@@ -22,8 +22,8 @@ import agent.services.{ClientRelationshipService, KeystoreService, SubscriptionO
 import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitching
 import core.services.AuthService
-import incometax.subscription.models.{Business, IncomeSourceType, SubscriptionSuccess}
 import javax.inject.{Inject, Singleton}
+import models.individual.subscription._
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.cache.client.CacheMap

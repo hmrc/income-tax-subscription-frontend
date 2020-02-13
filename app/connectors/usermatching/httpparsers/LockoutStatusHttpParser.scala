@@ -16,11 +16,11 @@
 
 package connectors.usermatching.httpparsers
 
+import models.usermatching._
 import play.api.http.HttpVerbs
 import play.api.http.Status.{CREATED, NOT_FOUND, OK}
 import play.api.libs.json.{JsSuccess, JsValue}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
-import usermatching.models._
 
 object LockoutStatusHttpParser {
   type LockoutStatusResponse = Either[LockoutStatusFailure, LockoutStatus]

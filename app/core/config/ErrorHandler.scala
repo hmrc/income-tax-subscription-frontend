@@ -41,7 +41,7 @@ class ErrorHandler @Inject()(val appConfig: AppConfig,
   }
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]):
-  _root_.play.twirl.api.HtmlFormat.Appendable =
+  play.twirl.api.HtmlFormat.Appendable =
     error_template(pageTitle, heading, message)(implicitly, implicitly, appConfig)
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Result = {

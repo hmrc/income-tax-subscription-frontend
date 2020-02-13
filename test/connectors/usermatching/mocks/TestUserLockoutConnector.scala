@@ -22,11 +22,11 @@ import core.config.AppConfig
 import core.connectors.mocks.MockHttp
 import core.utils.MockTrait
 import core.utils.TestConstants._
+import models.usermatching.{LockoutStatusFailureResponse, NotLockedOut}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.HeaderCarrier
-import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 
 import scala.concurrent.Future
 

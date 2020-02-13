@@ -23,12 +23,13 @@ import core.utils.JsonUtils._
 import core.utils.TestConstants.testException
 import core.utils.TestModels._
 import core.utils.{MockTrait, TestConstants, UnitTestTrait}
+import models.usermatching._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.HeaderCarrier
-import usermatching.models._
+
 
 import scala.concurrent.Future
 

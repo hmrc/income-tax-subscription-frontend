@@ -19,11 +19,11 @@ package controllers.individual.incomesource
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
-import core.models.{No, Yes, YesNo}
 import core.services.mocks.MockKeystoreService
 import forms.individual.incomesource.RentUkPropertyForm
-import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
+import models.individual.incomesource.RentUkPropertyModel
+import models.{No, Yes, YesNo}
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Result}

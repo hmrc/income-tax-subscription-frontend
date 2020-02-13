@@ -16,7 +16,7 @@
 
 package connectors.individual.subscription.httpparsers
 
-import incometax.subscription.models.{KnownFactsFailure, KnownFactsSuccess}
+import models.individual.subscription.{KnownFactsFailure, KnownFactsSuccess}
 import play.api.Logger
 import play.api.http.Status.NO_CONTENT
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}

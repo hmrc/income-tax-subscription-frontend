@@ -22,8 +22,8 @@ import core.config.MockConfig
 import core.connectors.mocks.MockAuth
 import core.utils.MockTrait
 import core.utils.TestConstants._
-import incometax.subscription.models.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import incometax.subscription.services.EnrolmentService
+import models.individual.subscription.{EnrolFailure, EnrolRequest, EnrolSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier

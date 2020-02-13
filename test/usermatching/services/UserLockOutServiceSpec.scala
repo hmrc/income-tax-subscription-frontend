@@ -17,10 +17,10 @@
 package usermatching.services
 
 import core.utils.TestConstants._
+import models.usermatching.{LockoutStatusFailureResponse, NotLockedOut}
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.test.Helpers._
-import usermatching.models.{LockoutStatusFailureResponse, NotLockedOut}
 import usermatching.services.mocks.TestUserLockoutService
 
 class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {

@@ -18,7 +18,7 @@ package forms.individual.business
 
 import forms.submapping.AccountingYearMapping
 import forms.validation.ErrorMessageFactory
-import incometax.business.models.AccountingYearModel
+import models.individual.business.AccountingYearModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 

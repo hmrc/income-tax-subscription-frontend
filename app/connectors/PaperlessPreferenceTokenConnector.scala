@@ -18,7 +18,7 @@ package connectors
 
 import core.config.AppConfig
 import PaperlessPreferenceTokenResultHttpParser._
-import digitalcontact.models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenResult
+import models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenResult
 import javax.inject.Inject
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier

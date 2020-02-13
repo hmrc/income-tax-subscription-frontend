@@ -17,12 +17,12 @@
 package forms.individual.business
 
 import assets.MessageLookup
-import core.models.DateModel
 import forms.submapping.DateMapping
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
-import incometax.business.models.BusinessStartDateModel
+import models.DateModel
+import models.individual.business.BusinessStartDateModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite

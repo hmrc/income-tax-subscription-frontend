@@ -20,8 +20,8 @@ import forms.submapping.DateMapping.dateMapping
 import forms.validation.ErrorMessageFactory
 import forms.validation.models.TargetIds
 import forms.validation.utils.ConstraintUtil._
-import core.models.DateModel
-import incometax.business.models.AccountingPeriodModel
+import models.DateModel
+import models.individual.business.AccountingPeriodModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Valid, ValidationResult}

@@ -22,7 +22,7 @@ import connectors.PaperlessPreferenceTokenConnector
 import core.auth.StatelessController
 import core.config.BaseControllerConfig
 import core.services.AuthService
-import digitalcontact.models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
+import models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json

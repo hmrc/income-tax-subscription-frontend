@@ -17,15 +17,14 @@
 package agent.services
 
 import javax.inject.{Inject, Singleton}
-
 import agent.audit.AuditingService
 import agent.audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
 import core.utils.Implicits._
-import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionService
+import models.individual.subscription.SubscriptionSuccess
+import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.HeaderCarrier
-import usermatching.models.UserDetailsModel
 import usermatching.services.UserMatchingService
 
 import scala.concurrent.ExecutionContext.Implicits.global

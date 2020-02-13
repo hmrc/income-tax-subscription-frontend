@@ -18,8 +18,8 @@ package digitalcontact.services
 
 import core.utils.TestConstants._
 import core.utils.UnitTestTrait
-import digitalcontact.models.{Activated, Unset}
 import digitalcontact.services.mocks.TestPreferencesService
+import models.{Activated, Unset}
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
 import play.api.i18n.{I18nSupport, MessagesApi}

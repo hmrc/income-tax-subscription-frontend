@@ -26,9 +26,9 @@ import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import core.utils.Implicits._
 import incometax.eligibility.services.GetEligibilityStatusService
-import incometax.subscription.models.SubscriptionSuccess
 import incometax.subscription.services.SubscriptionService
 import javax.inject.{Inject, Singleton}
+import models.individual.subscription.SubscriptionSuccess
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException

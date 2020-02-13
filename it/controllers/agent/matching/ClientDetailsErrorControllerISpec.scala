@@ -16,8 +16,8 @@
 
 package controllers.agent.matching
 
-import _root_.agent.helpers.ComponentSpecBase
-import _root_.agent.helpers.servicemocks.AuthStub
+import helpers.agent.ComponentSpecBase
+import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.OK
 import play.api.i18n.Messages
 

@@ -20,16 +20,15 @@ import java.net.URLEncoder
 import java.time.OffsetDateTime
 import java.util.UUID
 
-import assets.MessageLookup.AccountingMethod
 import core.Constants.GovernmentGateway._
 import core.Constants._
-import core.models.{Cash, DateModel}
 import core.utils.TestModels._
-import incometax.subscription.models._
+import models.individual.subscription._
+import models.usermatching._
+import models.{Cash, DateModel}
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.UserId
-import usermatching.models.{LockedOut, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 
 object TestConstants {
   /*

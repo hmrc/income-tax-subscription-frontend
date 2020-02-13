@@ -18,8 +18,8 @@ package incometax.util
 
 import java.time.LocalDate
 
-import core.models.DateModel
-import incometax.business.models.AccountingPeriodModel
+import models.DateModel
+import models.individual.business.AccountingPeriodModel
 
 
 object AccountingPeriodUtil {

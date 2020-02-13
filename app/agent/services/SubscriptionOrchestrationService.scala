@@ -17,13 +17,11 @@
 package agent.services
 
 import javax.inject.{Inject, Singleton}
-
 import cats.data.EitherT
 import cats.implicits._
 import incometax.subscription.services.{KnownFactsService, SubscriptionService}
 import core.connectors.models.ConnectorError
-import incometax.subscription.models.{KnownFactsSuccess, SubscriptionSuccess, SummaryModel}
-
+import models.individual.subscription.{KnownFactsSuccess, SubscriptionSuccess, SummaryModel}
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HeaderCarrier
 

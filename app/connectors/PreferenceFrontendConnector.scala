@@ -23,8 +23,8 @@ import core.audit.Logging
 import core.config.{AppConfig, ITSAHeaderCarrierForPartialsConverter}
 import core.utils.HttpResult._
 import PaperlessPreferenceHttpParser._
-import digitalcontact.models.{PaperlessPreferenceError, PaperlessState}
 import javax.inject.{Inject, Singleton}
+import models.{PaperlessPreferenceError, PaperlessState}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}

@@ -16,14 +16,14 @@
 
 package forms.agent
 
-import agent.models.AccountingYearModel
 import assets.MessageLookup
 import forms.validation.testutils.DataMap.DataMap
-import core.models.Current
 import forms.agent.AccountingYearForm._
 import forms.submapping.AccountingYearMapping
 import forms.validation.testutils._
 import forms.validation.ErrorMessageFactory
+import models.Current
+import models.agent.AccountingYearModel
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 

@@ -18,7 +18,7 @@ package forms.individual.business
 
 import forms.submapping.AccountingMethodMapping
 import forms.validation.ErrorMessageFactory
-import incometax.business.models.AccountingMethodModel
+import models.individual.business.AccountingMethodModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 

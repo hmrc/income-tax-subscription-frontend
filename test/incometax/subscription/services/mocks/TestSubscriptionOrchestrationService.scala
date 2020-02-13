@@ -20,8 +20,8 @@ import core.connectors.models.ConnectorError
 import core.utils.MockTrait
 import core.utils.TestConstants._
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import incometax.subscription.models.SummaryModel
 import incometax.subscription.services.SubscriptionOrchestrationService
+import models.individual.subscription.SummaryModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier

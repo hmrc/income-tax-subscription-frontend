@@ -16,10 +16,10 @@
 
 package usermatching.utils
 
+import models.usermatching.UserDetailsModel
 import org.scalatest.MustMatchers
 import play.api.mvc.{Cookies, Request, Result, Session}
 import play.api.test.FakeRequest
-import usermatching.models.UserDetailsModel
 
 
 trait UserMatchingTestSupport {

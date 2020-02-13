@@ -20,12 +20,12 @@ import core.ITSASessionKeys
 import core.audit.Logging
 import core.auth.{IncomeTaxSAUser, Registration, SignUpController}
 import core.config.{AppConfig, BaseControllerConfig}
-import core.models.{No, Yes}
 import core.services.{AuthService, KeystoreService}
-import incometax.business.models.MatchTaxYearModel
-import incometax.subscription.models._
 import incometax.subscription.services.SubscriptionOrchestrationService
 import javax.inject.{Inject, Singleton}
+import models.individual.business.MatchTaxYearModel
+import models.individual.subscription._
+import models.{No, Yes}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.http.cache.client.CacheMap

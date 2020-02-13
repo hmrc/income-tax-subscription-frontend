@@ -20,8 +20,8 @@ import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import forms.individual.business.BusinessNameForm
-import incometax.business.models.BusinessNameModel
 import javax.inject.{Inject, Singleton}
+import models.individual.business.BusinessNameModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}

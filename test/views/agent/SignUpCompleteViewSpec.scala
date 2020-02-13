@@ -17,9 +17,9 @@
 package views.agent
 
 import agent.assets.MessageLookup
-import core.models.DateModel
 import core.utils.TestModels.testAgentSummaryData
 import core.utils.UnitTestTrait
+import models.DateModel
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest

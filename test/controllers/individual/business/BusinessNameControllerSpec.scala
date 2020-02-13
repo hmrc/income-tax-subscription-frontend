@@ -19,7 +19,7 @@ package controllers.individual.business
 import controllers.ControllerBaseSpec
 import core.services.mocks.MockKeystoreService
 import forms.individual.business.BusinessNameForm
-import incometax.business.models.BusinessNameModel
+import models.individual.business.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._

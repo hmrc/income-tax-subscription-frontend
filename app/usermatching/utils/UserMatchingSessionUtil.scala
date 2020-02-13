@@ -16,9 +16,9 @@
 
 package usermatching.utils
 
-import core.models.DateModel
+import models.DateModel
+import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, Request, Result}
-import usermatching.models.UserDetailsModel
 
 
 object UserMatchingSessionUtil {

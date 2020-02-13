@@ -20,8 +20,8 @@ import core.audit.Logging
 import core.config.AppConfig
 import core.utils.Implicits._
 import forms.individual.subscription.ExitSurveyForm
-import incometax.subscription.models.ExitSurveyModel
 import javax.inject.{Inject, Singleton}
+import models.individual.subscription.ExitSurveyModel
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}

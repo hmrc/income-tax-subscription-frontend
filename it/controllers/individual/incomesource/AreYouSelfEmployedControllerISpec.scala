@@ -21,7 +21,7 @@ import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import incometax.incomesource.models.RentUkPropertyModel
+import models.individual.incomesource.RentUkPropertyModel
 import play.api.http.Status._
 import play.api.i18n.Messages
 

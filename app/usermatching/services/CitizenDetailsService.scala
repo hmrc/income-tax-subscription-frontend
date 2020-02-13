@@ -20,9 +20,9 @@ import connectors.usermatching.CitizenDetailsConnector
 import core.auth.IncomeTaxSAUser
 import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
+import models.usermatching.CitizenDetailsSuccess
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import usermatching.models.CitizenDetailsSuccess
 
 import scala.concurrent.{ExecutionContext, Future}
 

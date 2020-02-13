@@ -16,22 +16,22 @@
 
 package agent.services.mocks
 
-import _root_.agent.services.KeystoreService
-import _root_.core.utils.MockTrait
-import agent.models._
-import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
-import incometax.subscription.models.IncomeSourceType
+import agent.services.KeystoreService
+import core.utils.MockTrait
+import models.agent.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
+import models.individual.subscription.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-
+import agent.services.CacheConstants._
 import scala.concurrent.{ExecutionContext, Future}
 
 
 trait MockKeystoreService extends MockTrait {
 
-  import _root_.agent.services.CacheConstants._
+
 
   val returnedCacheMap: CacheMap = CacheMap("", Map())
 

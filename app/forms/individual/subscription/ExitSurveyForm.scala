@@ -19,7 +19,7 @@ package forms.individual.subscription
 import forms.prevalidation.PreprocessedForm
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil.constraint
-import incometax.subscription.models.ExitSurveyModel
+import models.individual.subscription.ExitSurveyModel
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.validation.{Constraint, Valid}

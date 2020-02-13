@@ -16,7 +16,7 @@
 
 package core
 
-import core.models.DateModel
+import models.DateModel
 
 object Constants {
 

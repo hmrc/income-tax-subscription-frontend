@@ -18,17 +18,16 @@ package core.services
 
 import core.config.featureswitch.FeatureSwitching
 import core.utils.UnitTestTrait
-import incometax.subscription.models.{Both, IndividualSummary}
 import incometax.util.AccountingPeriodUtil.getCurrentTaxYear
+import models.individual.subscription.{Both, IndividualSummary}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
+import core.services.CacheUtil._
+import core.utils.TestModels._
 
 class CacheUtilSpec extends UnitTestTrait
   with FeatureSwitching
   with BeforeAndAfterEach {
-
-  import core.services.CacheUtil._
-  import core.utils.TestModels._
 
   "CacheUtil" should {
 

@@ -16,13 +16,14 @@
 
 package controllers.individual.business
 
-import core.models.{Accruals, Cash}
+import models.Cash
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.{keystoreData, testAccountingMethodProperty}
 import helpers.servicemocks.{AuthStub, KeystoreStub}
-import incometax.business.models.AccountingMethodPropertyModel
+import models.individual.business.AccountingMethodPropertyModel
+import models.{Accruals, Cash}
 import play.api.http.Status._
 import play.api.i18n.Messages
 

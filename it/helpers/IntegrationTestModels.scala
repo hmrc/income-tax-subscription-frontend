@@ -5,17 +5,17 @@ import java.time.LocalDate
 
 import core.Constants
 import core.Constants.GovernmentGateway._
-import core.models._
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
-import incometax.business.models._
-import incometax.business.models.address.{Address, Country, ReturnedAddress}
-import incometax.incomesource.models._
-import incometax.subscription.models._
 import incometax.util.AccountingPeriodUtil
+import models.individual.business.address.{Address, Country, ReturnedAddress}
+import models.individual.business._
+import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.subscription._
+import models.usermatching.UserDetailsModel
+import models._
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
-import usermatching.models.UserDetailsModel
 
 
 object IntegrationTestModels {

@@ -26,7 +26,7 @@ class UserDetailsViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean): _root_.play.twirl.api.HtmlFormat.Appendable = views.html.individual.usermatching.user_details(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): play.twirl.api.HtmlFormat.Appendable = views.html.individual.usermatching.user_details(
     userDetailsForm = UserDetailsForm.userDetailsForm.form.addError(addFormErrors),
     postAction = action,
     isEditMode = isEditMode

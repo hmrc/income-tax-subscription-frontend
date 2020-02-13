@@ -17,18 +17,18 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import agent.models.AccountingMethodModel
 import agent.services.KeystoreService
 import controllers.utils.AgentAnswers._
 import controllers.utils.AgentRequireAnswer
 import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitching
-import core.models.{No, Yes}
 import core.services.AuthService
 import forms.agent.AccountingMethodForm
-import incometax.business.models.MatchTaxYearModel
-import incometax.subscription.models.{Both, Business, IncomeSourceType}
 import javax.inject.{Inject, Singleton}
+import models.agent.AccountingMethodModel
+import models.individual.business.MatchTaxYearModel
+import models.individual.subscription.{Both, Business, IncomeSourceType}
+import models.{No, Yes}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.libs.functional.~

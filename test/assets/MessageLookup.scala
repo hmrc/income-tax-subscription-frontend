@@ -16,7 +16,7 @@
 
 package assets
 
-import core.models.DateModel
+import models.DateModel
 
 object MessageLookup {
 

@@ -16,14 +16,14 @@
 
 package controllers.agent.business
 
-import agent.models.AccountingYearModel
 import agent.services.mocks.MockKeystoreService
 import controllers.agent.AgentControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
-import core.models.Current
 import core.services.mocks.MockAccountingPeriodService
 import forms.agent.AccountingYearForm
+import models.Current
+import models.agent.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

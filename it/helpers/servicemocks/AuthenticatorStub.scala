@@ -18,8 +18,8 @@ package helpers.servicemocks
 
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels
+import models.usermatching.{UserMatchFailureResponseModel, UserMatchRequestModel, UserMatchSuccessResponseModel}
 import play.api.http.Status
-import usermatching.models.{UserMatchFailureResponseModel, UserMatchRequestModel, UserMatchSuccessResponseModel}
 
 object AuthenticatorStub extends WireMockMethods {
   def stubMatchFound(returnedNino: String, returnedUtr: Option[String] = Some(testUtr)): Unit = {

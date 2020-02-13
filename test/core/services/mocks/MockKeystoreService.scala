@@ -18,21 +18,21 @@ package core.services.mocks
 
 import core.services.KeystoreService
 import core.utils.MockTrait
-import incometax.business.models._
-import incometax.business.models.address.Address
-import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
-import incometax.subscription.models.IncomeSourceType
+import models.individual.business.address.Address
+import models.individual.business._
+import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.subscription.IncomeSourceType
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
-
+import core.services.CacheConstants._
 import scala.concurrent.Future
 
 
 trait MockKeystoreService extends MockTrait {
 
-  import core.services.CacheConstants._
+
 
   val returnedCacheMap: CacheMap = CacheMap("", Map())
 

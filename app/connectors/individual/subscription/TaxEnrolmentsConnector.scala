@@ -19,8 +19,8 @@ package connectors.individual.subscription
 import core.config.AppConfig
 import connectors.individual.subscription.httpparsers.AllocateEnrolmentResponseHttpParser._
 import connectors.individual.subscription.httpparsers.UpsertEnrolmentResponseHttpParser._
-import incometax.subscription.models.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
 import javax.inject.Inject
+import models.individual.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 

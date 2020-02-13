@@ -16,17 +16,17 @@
 
 package incometax.subscription.services
 
+import connectors.individual.subscription.SubscriptionConnector
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
-import connectors.individual.subscription.SubscriptionConnector
 import core.audit.Logging
 import core.config.AppConfig
 import core.config.featureswitch.FeatureSwitching
-import core.models.{Next, Yes}
-import incometax.business.models.{AccountingPeriodModel, AccountingYearModel, MatchTaxYearModel}
-import incometax.subscription.models._
 import incometax.util.AccountingPeriodUtil._
 import javax.inject.{Inject, Singleton}
+import models.individual.business.{AccountingPeriodModel, AccountingYearModel, MatchTaxYearModel}
+import models.individual.subscription._
+import models.{Next, Yes}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

@@ -21,10 +21,10 @@ import core.config.{AppConfig, BaseControllerConfig}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import forms.individual.incomesource.AreYouSelfEmployedForm
-import incometax.incomesource.models.AreYouSelfEmployedModel
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models._
 import javax.inject.{Inject, Singleton}
+import models.individual.incomesource.AreYouSelfEmployedModel
+import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}

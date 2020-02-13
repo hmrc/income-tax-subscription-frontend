@@ -18,8 +18,8 @@ package forms.individual.incomesource
 
 import forms.submapping.YesNoMapping
 import forms.validation.ErrorMessageFactory
-import core.models.YesNo
-import incometax.incomesource.models.AreYouSelfEmployedModel
+import models.YesNo
+import models.individual.incomesource.AreYouSelfEmployedModel
 import play.api.data.Forms.mapping
 import play.api.data.{Form, Mapping}
 

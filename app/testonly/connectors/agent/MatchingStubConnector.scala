@@ -24,8 +24,8 @@ import java.time.format.{DateTimeFormatter, ResolverStyle}
 import agent.audit.Logging
 import testonly.TestOnlyAppConfig
 import core.connectors.RawResponseReads
-import core.models.DateModel
 import javax.inject.{Inject, Singleton}
+import models.DateModel
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import testonly.models.agent.ClientToStubModel

@@ -17,12 +17,12 @@
 package forms.individual.business
 
 import assets.MessageLookup
-import core.models.Cash
 import forms.submapping.AccountingMethodMapping
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
-import incometax.business.models.AccountingMethodModel
+import models.Cash
+import models.individual.business.AccountingMethodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._

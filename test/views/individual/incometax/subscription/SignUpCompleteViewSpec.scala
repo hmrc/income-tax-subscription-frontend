@@ -18,9 +18,9 @@ package views.individual.incometax.subscription
 
 import assets.MessageLookup
 import controllers.SignOutController
-import core.models.DateModel
 import core.utils.TestModels.{testAreYouSelfEmployed_no, testSummaryData}
-import incometax.subscription.models.{Both, Business, IncomeSourceType}
+import models.DateModel
+import models.individual.subscription.{Both, Business, IncomeSourceType}
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import play.twirl.api.Html

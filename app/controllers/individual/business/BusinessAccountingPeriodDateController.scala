@@ -18,13 +18,13 @@ package controllers.individual.business
 
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
-import core.models.Yes
 import core.services.{AccountingPeriodService, AuthService, KeystoreService}
 import forms.individual.business.AccountingPeriodDateForm
-import incometax.business.models.AccountingPeriodModel
-import incometax.business.models.enums._
 import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
+import models.Yes
+import models.individual.business.AccountingPeriodModel
+import models.individual.business.enums.{AccountingPeriodViewType, RegistrationAccountingPeriodView, SignUpAccountingPeriodView}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}

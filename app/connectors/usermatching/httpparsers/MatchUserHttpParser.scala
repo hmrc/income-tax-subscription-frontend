@@ -16,10 +16,10 @@
 
 package connectors.usermatching.httpparsers
 
+import models.usermatching.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel, UserMatchUnexpectedError}
 import play.api.http.Status.{OK, UNAUTHORIZED}
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
-import usermatching.models.{UserMatchFailureResponseModel, UserMatchSuccessResponseModel, UserMatchUnexpectedError}
 
 object MatchUserHttpParser {
   type MatchUserResponse = Either[UserMatchFailureResponseModel, Option[UserMatchSuccessResponseModel]]

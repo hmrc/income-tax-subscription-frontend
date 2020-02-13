@@ -16,7 +16,7 @@
 
 package forms.submapping
 
-import core.models.{No, Yes, YesNo}
+import models.{No, Yes, YesNo}
 import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.validation.Invalid

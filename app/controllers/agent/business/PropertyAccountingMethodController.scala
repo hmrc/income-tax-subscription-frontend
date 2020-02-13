@@ -17,15 +17,15 @@
 package controllers.agent.business
 
 import agent.auth.AuthenticatedController
-import agent.models.AccountingMethodPropertyModel
 import agent.services.CacheUtil.CacheMapUtil
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitching
 import core.services.AuthService
 import forms.agent.AccountingMethodPropertyForm
-import incometax.subscription.models.{Both, Property}
 import javax.inject.{Inject, Singleton}
+import models.agent.AccountingMethodPropertyModel
+import models.individual.subscription.{Both, Property}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}

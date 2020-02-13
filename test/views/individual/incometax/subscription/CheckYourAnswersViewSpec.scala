@@ -18,13 +18,13 @@ package views.individual.incometax.subscription
 
 import assets.MessageLookup
 import assets.MessageLookup.{Summary => messages}
-import core.models.DateModel
 import core.utils.{TestModels, UnitTestTrait}
-import incometax.business.models._
-import incometax.business.models.address.Address
-import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
-import incometax.subscription.models.{IncomeSourceType, IndividualSummary}
 import incometax.util.AccountingPeriodUtil._
+import models.DateModel
+import models.individual.business.address.Address
+import models.individual.business._
+import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.subscription.{IncomeSourceType, IndividualSummary}
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages

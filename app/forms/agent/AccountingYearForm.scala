@@ -16,9 +16,9 @@
 
 package forms.agent
 
-import agent.models.AccountingYearModel
 import forms.submapping.AccountingYearMapping
 import forms.validation.ErrorMessageFactory
+import models.agent.AccountingYearModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 

@@ -18,8 +18,8 @@ package usermatching.services
 
 import core.utils.TestConstants._
 import core.utils.UnitTestTrait
+import models.usermatching.CitizenDetailsSuccess
 import org.scalatest.concurrent.ScalaFutures
-import usermatching.models.CitizenDetailsSuccess
 import usermatching.services.mocks.TestCitizenDetailsService
 
 import scala.concurrent.Future

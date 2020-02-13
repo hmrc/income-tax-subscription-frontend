@@ -16,9 +16,9 @@
 
 package helpers
 
+import models.usermatching.UserDetailsModel
 import org.scalatest.Matchers
 import play.api.libs.ws.WSResponse
-import usermatching.models.UserDetailsModel
 import usermatching.utils.UserMatchingSessionUtil._
 
 trait UserMatchingIntegrationResultSupport {

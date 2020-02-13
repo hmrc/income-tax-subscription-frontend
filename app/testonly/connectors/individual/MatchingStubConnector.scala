@@ -23,8 +23,8 @@ import java.time.format.{DateTimeFormatter, ResolverStyle}
 
 import core.audit.Logging
 import core.connectors.RawResponseReads
-import core.models.DateModel
 import javax.inject.{Inject, Singleton}
+import models.DateModel
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import testonly.TestOnlyAppConfig

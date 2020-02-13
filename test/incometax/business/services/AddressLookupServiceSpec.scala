@@ -16,10 +16,10 @@
 
 package incometax.business.services
 
-import core.utils.TestModels._
 import connectors.individual.business.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
-import incometax.business.models.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, UnexpectedStatusReturned}
+import core.utils.TestModels._
 import incometax.business.services.mocks.TestAddressLookupService
+import models.individual.business.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, UnexpectedStatusReturned}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status.BAD_REQUEST
 

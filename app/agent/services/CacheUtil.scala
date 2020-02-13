@@ -17,8 +17,9 @@
 package agent.services
 
 import core.config.AppConfig
-import incometax.business.models._
-import incometax.subscription.models._
+import models.agent
+import models.individual.business._
+import models.individual.subscription._
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -40,7 +41,7 @@ object CacheUtil {
 
     def getAccountingMethod()(implicit read: Reads[AccountingMethodModel]): Option[AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
 
-    def agentGetAccountingMethod()(implicit read: Reads[agent.models.AccountingMethodModel]): Option[agent.models.AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
+    def agentGetAccountingMethod()(implicit read: Reads[agent.AccountingMethodModel]): Option[agent.AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
 
     def getAccountingMethodProperty()(implicit read: Reads[AccountingMethodPropertyModel]): Option[AccountingMethodPropertyModel] = cacheMap.getEntry(AccountingMethodProperty)
 

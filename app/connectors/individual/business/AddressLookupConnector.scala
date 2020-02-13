@@ -19,8 +19,8 @@ package connectors.individual.business
 import core.audit.Logging
 import core.config.AppConfig
 import connectors.individual.business.httpparsers.AddressLookupResponseHttpParser._
-import incometax.business.models.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, MalformatAddressReturned, UnexpectedStatusReturned}
 import javax.inject.{Inject, Singleton}
+import models.individual.business.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, MalformatAddressReturned, UnexpectedStatusReturned}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._

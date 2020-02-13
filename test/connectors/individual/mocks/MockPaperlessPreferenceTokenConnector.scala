@@ -18,7 +18,7 @@ package connectors.individual.mocks
 
 import connectors.PaperlessPreferenceTokenConnector
 import core.utils.MockTrait
-import digitalcontact.models.PaperlessPreferenceTokenResult.{PaperlessPreferenceTokenResult, PaperlessPreferenceTokenSuccess}
+import models.PaperlessPreferenceTokenResult.{PaperlessPreferenceTokenResult, PaperlessPreferenceTokenSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{verify, when}
 import uk.gov.hmrc.http.HeaderCarrier

@@ -16,14 +16,15 @@
 
 package controllers.agent.matching
 
-import _root_.agent.auth.AgentUserMatched
-import _root_.agent.helpers.IntegrationTestConstants._
-import _root_.agent.helpers.servicemocks._
-import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import agent.auth.AgentUserMatched
+import helpers.agent.IntegrationTestConstants._
+import helpers.agent.servicemocks._
+import helpers.agent.SessionCookieCrumbler
 import controllers.agent.ITSASessionKeys
 import helpers.UserMatchingIntegrationResultSupport
+import helpers.agent.servicemocks.{AgentServicesStub, AuthStub, KeystoreStub}
+import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.{AuthStub => _, KeystoreStub => _, _}
-
 import play.api.http.Status._
 
 

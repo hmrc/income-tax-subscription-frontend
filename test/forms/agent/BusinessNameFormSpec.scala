@@ -17,10 +17,10 @@
 package forms.agent
 
 import agent.assets.MessageLookup
-import agent.models.BusinessNameModel
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
+import models.agent.BusinessNameModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite

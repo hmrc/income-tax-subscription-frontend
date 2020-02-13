@@ -16,9 +16,9 @@
 
 package incometax.util
 
-import core.models.DateModel
 import core.utils.TestModels
-import incometax.business.models.AccountingPeriodModel
+import models.DateModel
+import models.individual.business.AccountingPeriodModel
 import uk.gov.hmrc.play.test.UnitSpec
 
 

@@ -17,14 +17,13 @@
 package controllers.individual.business
 
 import controllers.ControllerBaseSpec
-import core.config.MockConfig
 import core.config.featureswitch._
-import core.models.{No, Yes, YesNo}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.business.MatchTaxYearForm
-import incometax.business.models.MatchTaxYearModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
+import models.individual.business.MatchTaxYearModel
+import models.{No, Yes, YesNo}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}

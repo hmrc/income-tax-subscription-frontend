@@ -16,10 +16,10 @@
 
 package views.individual.helpers
 
-import core.models.{Accruals, Cash, Current, Next}
-import incometax.business.models.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
-import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
 import incometax.util.AccountingPeriodUtil.getCurrentTaxEndYear
+import models.individual.business.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel}
+import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
+import models.{Accruals, Cash, Current, Next}
 import play.api.i18n.Messages
 
 object SummaryHelper {

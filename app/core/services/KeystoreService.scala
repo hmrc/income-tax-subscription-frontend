@@ -16,12 +16,12 @@
 
 package core.services
 
-import core.models.YesNo
-import incometax.business.models._
-import incometax.business.models.address.Address
-import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
-import incometax.subscription.models.IncomeSourceType
 import javax.inject._
+import models.YesNo
+import models.individual.business.address.Address
+import models.individual.business._
+import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.subscription.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}

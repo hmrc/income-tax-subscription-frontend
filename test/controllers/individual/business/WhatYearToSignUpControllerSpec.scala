@@ -19,11 +19,11 @@ package controllers.individual.business
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch._
-import core.models.Current
 import core.services.mocks.{MockAccountingPeriodService, MockKeystoreService}
 import forms.individual.business.AccountingYearForm
 import incometax._
-import incometax.business.models.AccountingYearModel
+import models.Current
+import models.individual.business.AccountingYearModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

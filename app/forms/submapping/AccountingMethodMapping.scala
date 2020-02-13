@@ -16,11 +16,11 @@
 
 package forms.submapping
 
-import core.models.{AccountingMethod, Accruals, Cash}
+import models.{AccountingMethod, Accruals, Cash}
 import play.api.data.Forms.of
-import play.api.data.{FormError, Mapping}
 import play.api.data.format.Formatter
 import play.api.data.validation.Invalid
+import play.api.data.{FormError, Mapping}
 
 
 object AccountingMethodMapping {

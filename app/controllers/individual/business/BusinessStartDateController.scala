@@ -20,8 +20,8 @@ import core.auth.RegistrationController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
 import forms.individual.business.BusinessStartDateForm
-import incometax.business.models.BusinessStartDateModel
 import javax.inject.Inject
+import models.individual.business.BusinessStartDateModel
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}

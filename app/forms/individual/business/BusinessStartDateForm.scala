@@ -22,8 +22,8 @@ import forms.submapping.DateMapping.dateMapping
 import forms.validation.ErrorMessageFactory
 import forms.validation.models.TargetIds
 import forms.validation.utils.ConstraintUtil._
-import core.models.DateModel
-import incometax.business.models.BusinessStartDateModel
+import models.DateModel
+import models.individual.business.BusinessStartDateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Valid, ValidationResult}

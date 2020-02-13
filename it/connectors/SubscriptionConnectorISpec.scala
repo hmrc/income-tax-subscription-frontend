@@ -2,12 +2,12 @@
 package connectors
 
 import connectors.individual.subscription.SubscriptionConnector
-import core.models.{Cash, DateModel}
+import connectors.stubs.SubscriptionAPIStub._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.{testMTDID, testNino}
-import incometax.business.models.AccountingPeriodModel
-import incometax.subscription.models._
-import connectors.stubs.SubscriptionAPIStub._
+import models.individual.business.AccountingPeriodModel
+import models.individual.subscription._
+import models.{Cash, DateModel}
 import org.scalatest.Matchers
 import play.api.libs.json.Json
 import play.api.test.Helpers._

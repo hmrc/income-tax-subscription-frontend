@@ -20,10 +20,10 @@ import core.config.featureswitch.FeatureSwitching
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks.{AuthStub, KeystoreStub, UserLockoutStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels, UserMatchingIntegrationResultSupport}
+import models.usermatching.UserDetailsModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.libs.ws.WSResponse
-import usermatching.models.UserDetailsModel
 
 class UserDetailsControllerISpec extends ComponentSpecBase with FeatureSwitching with UserMatchingIntegrationResultSupport {
 

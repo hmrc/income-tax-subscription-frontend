@@ -19,9 +19,9 @@ package controllers.individual.business
 import core.auth.RegistrationController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import incometax.business.models.address.{Address, _}
 import incometax.business.services.AddressLookupService
 import javax.inject.{Inject, Singleton}
+import models.individual.business.address._
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html

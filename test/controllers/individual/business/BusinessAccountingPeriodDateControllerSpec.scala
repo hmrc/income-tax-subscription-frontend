@@ -22,13 +22,13 @@ import assets.MessageLookup
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch.FeatureSwitching
-import core.models.DateModel
 import core.services.mocks.{MockAccountingPeriodService, MockKeystoreService}
 import core.utils.TestModels
 import core.utils.TestModels.testCacheMapCustom
 import forms.individual.business.AccountingPeriodDateForm
-import incometax.business.models.AccountingPeriodModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
+import models.DateModel
+import models.individual.business.AccountingPeriodModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}

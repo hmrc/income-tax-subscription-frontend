@@ -16,14 +16,14 @@
 
 package controllers.agent.business
 
-import agent.models.AccountingMethodPropertyModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels._
 import controllers.agent.AgentControllerBaseSpec
 import core.config.featureswitch._
-import core.models.Cash
 import forms.agent.AccountingMethodPropertyForm
 import incometax.incomesource.services.mocks.MockCurrentTimeService
+import models.Cash
+import models.agent.AccountingMethodPropertyModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

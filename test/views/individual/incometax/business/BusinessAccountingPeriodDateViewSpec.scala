@@ -18,7 +18,7 @@ package views.individual.incometax.business
 
 import assets.MessageLookup.{AccountingPeriod => messages, Base => common}
 import forms.individual.business.AccountingPeriodDateForm
-import incometax.business.models.enums._
+import models.individual.business.enums.{AccountingPeriodViewType, RegistrationAccountingPeriodView, SignUpAccountingPeriodView}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
