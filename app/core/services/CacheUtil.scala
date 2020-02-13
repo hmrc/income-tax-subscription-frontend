@@ -17,13 +17,13 @@
 package core.services
 
 import core.config.AppConfig
-import core.models.{No, Yes}
 import core.services.CacheConstants._
-import incometax.business.models._
-import incometax.business.models.address.Address
-import incometax.incomesource.models._
-import incometax.subscription.models._
 import incometax.util.AccountingPeriodUtil.getCurrentTaxYear
+import models.individual.business._
+import models.individual.business.address.Address
+import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.subscription._
+import models.{No, Yes}
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 

@@ -17,7 +17,7 @@
 package forms.agent
 
 import forms.validation.ErrorMessageFactory
-import incometax.subscription.models.{Both, Business, IncomeSourceType, Property}
+import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import play.api.data.Forms.{of, single}
 import play.api.data.format.Formatter
 import play.api.data.{Form, FormError}

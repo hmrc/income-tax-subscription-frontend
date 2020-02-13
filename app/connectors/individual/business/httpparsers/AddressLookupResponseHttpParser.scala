@@ -16,7 +16,7 @@
 
 package connectors.individual.business.httpparsers
 
-import incometax.business.models.address._
+import models.individual.business.address._
 import play.api.http.HeaderNames
 import play.api.http.Status.{ACCEPTED, OK}
 import play.api.libs.json.Json

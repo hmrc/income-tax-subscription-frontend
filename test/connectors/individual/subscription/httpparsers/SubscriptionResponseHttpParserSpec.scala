@@ -19,7 +19,7 @@ package connectors.individual.subscription.httpparsers
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponseHttpReads
 import core.utils.TestConstants._
 import core.utils.UnitTestTrait
-import incometax.subscription.models.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionSuccess}
+import models.individual.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailureResponse, SubscriptionSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.Json

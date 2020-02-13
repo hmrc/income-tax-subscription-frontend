@@ -20,15 +20,15 @@ import agent.assets.MessageLookup.{ClientDetails => messages}
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestConstants
 import controllers.agent.AgentControllerBaseSpec
-import core.models.DateModel
 import forms.agent.ClientDetailsForm
+import models.DateModel
+import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import uk.gov.hmrc.http.HttpResponse
-import usermatching.models.UserDetailsModel
 import usermatching.services.mocks.MockUserLockoutService
 
 

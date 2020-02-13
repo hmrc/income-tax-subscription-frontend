@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser._
-import usermatching.models.LockOutRequest
+import models.usermatching.LockOutRequest
 
 import scala.concurrent.Future
 

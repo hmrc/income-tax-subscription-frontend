@@ -16,12 +16,12 @@
 
 package forms.agent
 
-import agent.models.BusinessNameModel
 import forms.prevalidation.PreprocessedForm
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
 import forms.validation.utils.Patterns
+import models.agent.BusinessNameModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Valid}

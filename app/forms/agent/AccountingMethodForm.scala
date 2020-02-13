@@ -16,9 +16,9 @@
 
 package forms.agent
 
-import agent.models.AccountingMethodModel
 import forms.submapping.AccountingMethodMapping
 import forms.validation.ErrorMessageFactory
+import models.agent.AccountingMethodModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 

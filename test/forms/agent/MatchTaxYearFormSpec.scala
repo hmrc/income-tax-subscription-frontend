@@ -17,12 +17,12 @@
 package forms.agent
 
 import assets.MessageLookup
-import core.models.Yes
 import forms.submapping.YesNoMapping
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
-import incometax.business.models.MatchTaxYearModel
+import models.Yes
+import models.individual.business.MatchTaxYearModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._

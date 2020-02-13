@@ -18,8 +18,8 @@ package controllers.agent
 
 import agent.assets.MessageLookup
 import agent.audit.Logging
-import agent.models.ExitSurveyModel
 import forms.agent.ExitSurveyForm
+import models.agent.ExitSurveyModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}

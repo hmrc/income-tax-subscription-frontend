@@ -16,15 +16,13 @@
 
 package controllers.agent.business
 
-import agent.models.BusinessNameModel
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels._
 import controllers.agent.AgentControllerBaseSpec
 import core.config.featureswitch.FeatureSwitching
-import core.models.DateModel
 import forms.agent.BusinessNameForm
 import incometax.incomesource.services.mocks.MockCurrentTimeService
-import incometax.subscription.models._
+import models.agent.BusinessNameModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

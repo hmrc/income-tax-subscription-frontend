@@ -18,15 +18,15 @@ package controllers.individual.business
 
 import core.auth.SignUpController
 import core.config.{AppConfig, BaseControllerConfig}
-import core.models.{No, Yes}
 import core.services.CacheUtil.CacheMapUtil
 import core.services.{AuthService, KeystoreService}
 import forms.individual.business.AccountingMethodForm
-import incometax.business.models.{AccountingMethodModel, MatchTaxYearModel}
-import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.Business
 import javax.inject.{Inject, Singleton}
+import models.individual.business.{AccountingMethodModel, MatchTaxYearModel}
+import models.individual.incomesource.RentUkPropertyModel
+import models.individual.subscription.Business
+import models.{No, Yes}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}

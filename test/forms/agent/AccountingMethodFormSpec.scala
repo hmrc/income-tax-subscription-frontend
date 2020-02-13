@@ -17,12 +17,12 @@
 package forms.agent
 
 import agent.assets.MessageLookup
-import agent.models.AccountingMethodModel
-import core.models.Cash
 import forms.submapping.AccountingMethodMapping
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils._
 import forms.validation.testutils.DataMap.DataMap
+import models.Cash
+import models.agent.AccountingMethodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._

@@ -17,11 +17,11 @@
 package controllers.agent
 
 import agent.audit.Logging
-import agent.models.ExitSurveyModel
 import core.config.AppConfig
 import core.utils.Implicits._
 import forms.agent.ExitSurveyForm
 import javax.inject.{Inject, Singleton}
+import models.agent.ExitSurveyModel
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request}

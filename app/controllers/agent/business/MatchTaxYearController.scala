@@ -20,12 +20,12 @@ import agent.auth.AuthenticatedController
 import agent.services.KeystoreService
 import core.config.BaseControllerConfig
 import core.config.featureswitch.FeatureSwitching
-import core.models.No
 import core.services.AuthService
 import forms.agent.MatchTaxYearForm
-import incometax.business.models.MatchTaxYearModel
-import incometax.subscription.models.Both
 import javax.inject.Inject
+import models.No
+import models.individual.business.MatchTaxYearModel
+import models.individual.subscription.Both
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}

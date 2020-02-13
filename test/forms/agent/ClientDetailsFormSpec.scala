@@ -18,14 +18,14 @@ package forms.agent
 
 import agent.assets.MessageLookup
 import agent.utils.TestConstants
-import core.models.DateModel
 import forms.submapping.DateMapping._
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils._
+import models.DateModel
+import models.usermatching.UserDetailsModel
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.Messages.Implicits._
-import usermatching.models.UserDetailsModel
 
 class ClientDetailsFormSpec extends PlaySpec with GuiceOneAppPerSuite {
 

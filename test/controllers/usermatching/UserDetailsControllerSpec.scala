@@ -20,17 +20,17 @@ import assets.MessageLookup.{UserDetails => messages}
 import controllers.ControllerBaseSpec
 import core.ITSASessionKeys
 import core.auth.UserMatching
-import core.models.DateModel
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants._
 import forms.usermatching.UserDetailsForm
+import models.DateModel
+import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
-import usermatching.models.UserDetailsModel
 import usermatching.services.mocks.MockUserLockoutService
 
 class UserDetailsControllerSpec extends ControllerBaseSpec

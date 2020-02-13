@@ -18,7 +18,7 @@ package views.agent.business
 
 import agent.assets.MessageLookup
 import forms.agent.MatchTaxYearForm
-import incometax.business.models.MatchTaxYearModel
+import models.individual.business.MatchTaxYearModel
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.data.Form

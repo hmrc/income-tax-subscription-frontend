@@ -16,7 +16,7 @@
 
 package core.auth
 
-import _root_.uk.gov.hmrc.http.SessionKeys._
+import uk.gov.hmrc.http.SessionKeys._
 import cats.implicits._
 import core.ITSASessionKeys.JourneyStateKey
 import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}

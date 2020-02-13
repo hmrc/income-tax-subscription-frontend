@@ -16,18 +16,19 @@
 
 package testonly.form.individual
 
-import core.models.DateModel
 import forms.prevalidation.PreprocessedForm
 import forms.submapping.DateMapping.dateMapping
 import forms.validation.Constraints._
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
+import models.DateModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Valid, ValidationResult}
 import testonly.models.UserToStubModel
-
+import forms.prevalidation.CaseOption._
+import forms.prevalidation.TrimOption._
 import scala.util.Try
 
 object UserToStubForm {
@@ -87,8 +88,7 @@ object UserToStubForm {
     )(UserToStubModel.apply)(UserToStubModel.unapply)
   )
 
-  import forms.prevalidation.CaseOption._
-  import forms.prevalidation.TrimOption._
+
 
   val userToStubForm = PreprocessedForm(
     validation = userDetailsValidationForm,

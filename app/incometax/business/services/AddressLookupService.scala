@@ -19,7 +19,7 @@ package incometax.business.services
 import connectors.individual.business.AddressLookupConnector
 import javax.inject.{Inject, Singleton}
 import connectors.individual.business.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
-import incometax.business.models.address.AddressLookupInitRequest
+import models.individual.business.address.AddressLookupInitRequest
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

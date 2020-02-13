@@ -19,8 +19,8 @@ package incometax.subscription.services
 import core.Constants.GovernmentGateway._
 import core.utils.TestConstants._
 import core.utils.UnitTestTrait
-import incometax.subscription.models.{EnrolFailure, EnrolSuccess}
 import incometax.subscription.services.mocks.TestEnrolmentService
+import models.individual.subscription.{EnrolFailure, EnrolSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.Retrievals._

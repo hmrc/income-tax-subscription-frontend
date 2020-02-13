@@ -16,14 +16,16 @@
 
 package controllers.agent.matching
 
-import _root_.agent.helpers.IntegrationTestConstants.{agentLockedOutURI, testARN}
-import _root_.agent.helpers.servicemocks.{AgentLockoutStub, AuthStub, KeystoreStub}
-import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
+import helpers.agent.IntegrationTestConstants.{agentLockedOutURI, testARN}
+import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import helpers.agent.IntegrationTestModels
 import helpers.UserMatchingIntegrationResultSupport
+import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub, KeystoreStub}
+import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
+import models.usermatching.UserDetailsModel
 import play.api.http.Status.{BAD_REQUEST, OK, SEE_OTHER}
 import play.api.i18n.Messages
 import play.api.libs.ws.WSResponse
-import usermatching.models.UserDetailsModel
 
 
 class ClientDetailsControllerISpec extends ComponentSpecBase with UserMatchingIntegrationResultSupport {

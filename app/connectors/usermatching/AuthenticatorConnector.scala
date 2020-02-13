@@ -22,7 +22,7 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import connectors.usermatching.httpparsers.MatchUserHttpParser._
-import usermatching.models.{UserDetailsModel, UserMatchRequestModel}
+import models.usermatching.{UserDetailsModel, UserMatchRequestModel}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

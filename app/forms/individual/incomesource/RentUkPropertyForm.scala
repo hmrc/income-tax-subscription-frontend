@@ -20,8 +20,8 @@ import forms.submapping.YesNoMapping
 import forms.submapping.YesNoMapping.{option_no, option_yes}
 import forms.validation.ErrorMessageFactory
 import forms.validation.models.TargetIds
-import core.models.{No, Yes, YesNo}
-import incometax.incomesource.models.RentUkPropertyModel
+import models.individual.incomesource.RentUkPropertyModel
+import models.{No, Yes, YesNo}
 import play.api.data.Forms.{mapping, of}
 import play.api.data.format.Formatter
 import play.api.data.validation.Invalid

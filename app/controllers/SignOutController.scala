@@ -37,11 +37,11 @@ class SignOutController @Inject()(val applicationConfig: AppConfig,
     authService.authorised().retrieve(affinityGroup) {
       case Some(Agent) =>
         Future.successful(Redirect(applicationConfig.ggSignOutUrl(
-          applicationConfig.baseUrl + _root_.controllers.agent.routes.ExitSurveyController.show(origin = origin).url
+          applicationConfig.baseUrl + controllers.agent.routes.ExitSurveyController.show(origin = origin).url
         )))
       case Some(_) =>
         Future.successful(Redirect(applicationConfig.ggSignOutUrl(
-          applicationConfig.baseUrl + _root_.controllers.individual.subscription.routes.ExitSurveyController.show(origin = origin).url
+          applicationConfig.baseUrl + controllers.individual.subscription.routes.ExitSurveyController.show(origin = origin).url
         )))
       case None =>
         Future.failed(new InternalServerException("unexpected state"))

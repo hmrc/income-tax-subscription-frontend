@@ -25,7 +25,7 @@ import core.config.AppConfig
 import core.services.KeystoreService
 import uk.gov.hmrc.http.HeaderCarrier
 import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import usermatching.models.{LockedOut, LockoutStatus, LockoutStatusFailure, NotLockedOut}
+import models.usermatching.{LockoutStatus, LockoutStatusFailure, NotLockedOut}
 
 import scala.concurrent.{ExecutionContext, Future}
 

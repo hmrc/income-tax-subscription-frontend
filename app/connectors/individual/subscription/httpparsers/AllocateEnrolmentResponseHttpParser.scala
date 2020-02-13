@@ -16,7 +16,7 @@
 
 package connectors.individual.subscription.httpparsers
 
-import incometax.subscription.models.{EnrolFailure, EnrolSuccess}
+import models.individual.subscription.{EnrolFailure, EnrolSuccess}
 import play.api.Logger
 import play.api.http.Status.CREATED
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}

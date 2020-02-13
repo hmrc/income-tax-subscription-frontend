@@ -23,7 +23,7 @@ import core.connectors.mocks.MockHttp
 import core.utils.JsonUtils._
 import core.utils.TestConstants._
 import core.utils.{MockTrait, UnitTestTrait}
-import digitalcontact.models.{Activated, PaperlessPreferenceError, PaperlessState, Unset}
+import models.{Activated, PaperlessPreferenceError, PaperlessState, Unset}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._

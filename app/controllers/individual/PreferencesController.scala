@@ -20,9 +20,9 @@ import core.ITSASessionKeys
 import core.auth.StatelessController
 import core.config.BaseControllerConfig
 import core.services.AuthService
-import digitalcontact.models.{Activated, Unset}
 import digitalcontact.services.{PaperlessPreferenceTokenService, PreferencesService}
 import javax.inject.{Inject, Singleton}
+import models.{Activated, Unset}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html

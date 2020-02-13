@@ -16,7 +16,7 @@
 
 package connectors.individual.subscription.httpparsers
 
-import incometax.subscription.models.{BadlyFormattedSubscriptionResponse, SubscriptionFailure, SubscriptionFailureResponse, SubscriptionSuccess}
+import models.individual.subscription.{BadlyFormattedSubscriptionResponse, SubscriptionFailure, SubscriptionFailureResponse, SubscriptionSuccess}
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 

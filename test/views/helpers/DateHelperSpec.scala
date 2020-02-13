@@ -17,10 +17,10 @@
 package views.helpers
 
 import assets.MessageLookup
-import core.models.DateModel
 import core.utils.UnitTestTrait
 import forms.submapping.DateMapping._
 import forms.validation.testutils.DataMap.DataMap
+import models.DateModel
 import org.scalatest.Matchers._
 import play.api.data.{Field, Form}
 import play.api.i18n.Messages

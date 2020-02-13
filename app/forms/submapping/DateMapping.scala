@@ -17,7 +17,7 @@
 package forms.submapping
 
 import forms.validation.utils.MappingUtil._
-import core.models.DateModel
+import models.DateModel
 import play.api.data.Forms.mapping
 import play.api.data.Mapping
 

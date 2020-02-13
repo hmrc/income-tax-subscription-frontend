@@ -28,8 +28,9 @@ import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import incometax.business.models._
-import incometax.incomesource.models.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.individual.business.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel, AccountingYearModel, BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
+import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
+import models.usermatching.UserDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -41,7 +42,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, JsValue, Writes}
 import play.api.libs.ws.WSResponse
 import uk.gov.hmrc.play.test.UnitSpec
-import usermatching.models.UserDetailsModel
 
 trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite

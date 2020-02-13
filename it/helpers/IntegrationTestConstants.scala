@@ -19,7 +19,7 @@ package helpers
 import java.net.URLEncoder
 import java.util.UUID
 
-import core.models.DateModel
+import models.DateModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 

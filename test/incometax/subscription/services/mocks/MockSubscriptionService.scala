@@ -23,8 +23,8 @@ import core.audit.Logging
 import core.config.MockConfig
 import core.utils.MockTrait
 import core.utils.TestConstants._
-import incometax.subscription.models.{SubscriptionFailureResponse, SubscriptionSuccess, SummaryModel}
 import incometax.subscription.services.SubscriptionService
+import models.individual.subscription.{SubscriptionFailureResponse, SubscriptionSuccess, SummaryModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._

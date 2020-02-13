@@ -21,7 +21,7 @@ import agent.utils.TestConstants._
 import core.utils.TestModels.testSummaryData
 import core.connectors.models.ConnectorError
 import core.utils.UnitTestTrait
-import incometax.subscription.models.SubscriptionSuccess
+import models.individual.subscription.SubscriptionSuccess
 import org.scalatest.concurrent.ScalaFutures
 
 import scala.concurrent.Future

@@ -18,14 +18,14 @@ package controllers.individual.business
 
 import core.auth.{Registration, SignUpController}
 import core.config.BaseControllerConfig
-import core.models.{No, Yes}
 import core.services.CacheUtil._
 import core.services.{AuthService, KeystoreService}
 import forms.individual.business.MatchTaxYearForm
-import incometax.business.models.MatchTaxYearModel
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models.Business
 import javax.inject.{Inject, Singleton}
+import models.individual.business.MatchTaxYearModel
+import models.individual.subscription.Business
+import models.{No, Yes}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc._

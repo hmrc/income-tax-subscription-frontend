@@ -23,8 +23,8 @@ import core.config.featureswitch.FeatureSwitching
 import core.services.AuthService
 import forms.agent.IncomeSourceForm
 import incometax.incomesource.services.CurrentTimeService
-import incometax.subscription.models._
 import javax.inject.{Inject, Singleton}
+import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}

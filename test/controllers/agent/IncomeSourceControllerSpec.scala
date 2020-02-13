@@ -21,7 +21,7 @@ import agent.utils.TestModels
 import core.config.featureswitch.FeatureSwitching
 import forms.agent.IncomeSourceForm
 import incometax.incomesource.services.mocks.MockCurrentTimeService
-import incometax.subscription.models._
+import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._

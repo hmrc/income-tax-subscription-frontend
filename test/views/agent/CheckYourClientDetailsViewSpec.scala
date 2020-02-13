@@ -20,13 +20,13 @@ import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Base => common, ConfirmClient => messages}
 import agent.utils.TestConstants
 import core.utils.{TestModels, UnitTestTrait}
+import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import usermatching.models.UserDetailsModel
 import views.agent.helpers.ConfirmClientIdConstants._
 
 class CheckYourClientDetailsViewSpec extends UnitTestTrait {

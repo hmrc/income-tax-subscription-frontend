@@ -16,7 +16,7 @@
 
 package connectors
 
-import digitalcontact.models.PaperlessPreferenceTokenResult.{PaperlessPreferenceTokenFailure, PaperlessPreferenceTokenResult, PaperlessPreferenceTokenSuccess}
+import models.PaperlessPreferenceTokenResult.{PaperlessPreferenceTokenFailure, PaperlessPreferenceTokenResult, PaperlessPreferenceTokenSuccess}
 import play.api.http.Status.CREATED
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 

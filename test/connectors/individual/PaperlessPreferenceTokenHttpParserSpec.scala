@@ -18,7 +18,7 @@ package connectors.individual
 
 import connectors.PaperlessPreferenceTokenResultHttpParser.PaperlessPreferenceTokenResultHttpReads
 import core.utils.UnitTestTrait
-import digitalcontact.models.PaperlessPreferenceTokenResult.{PaperlessPreferenceTokenFailure, PaperlessPreferenceTokenSuccess}
+import models.PaperlessPreferenceTokenResult.{PaperlessPreferenceTokenFailure, PaperlessPreferenceTokenSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import uk.gov.hmrc.http.HttpResponse

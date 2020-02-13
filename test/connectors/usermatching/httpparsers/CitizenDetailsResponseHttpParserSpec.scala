@@ -19,11 +19,11 @@ package connectors.usermatching.httpparsers
 import connectors.usermatching.httpparsers.CitizenDetailsResponseHttpParser.GetCitizenDetailsHttpReads
 import core.utils.TestConstants._
 import core.utils.UnitTestTrait
+import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 import org.scalatest.EitherValues
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpResponse
-import usermatching.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 
 class CitizenDetailsResponseHttpParserSpec extends UnitTestTrait with EitherValues {
   val testHttpVerb = "GET"

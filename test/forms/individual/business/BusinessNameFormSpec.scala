@@ -20,7 +20,7 @@ import assets.MessageLookup
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
-import incometax.business.models.BusinessNameModel
+import models.individual.business.BusinessNameModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite

@@ -19,17 +19,17 @@ package forms.agent
 import java.time.LocalDate
 
 import agent.assets.MessageLookup
-import core.models.DateModel
 import forms.submapping.DateMapping
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils._
-import incometax.business.models.AccountingPeriodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
 import forms.validation.testutils.DataMap.DataMap
 import DateMapping._
 import forms.agent.AccountingPeriodDateForm._
+import models.DateModel
+import models.individual.business.AccountingPeriodModel
 
 class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
 

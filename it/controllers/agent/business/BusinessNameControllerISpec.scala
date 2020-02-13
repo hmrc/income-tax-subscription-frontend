@@ -16,14 +16,13 @@
 
 package controllers.agent.business
 
-import _root_.agent.helpers.IntegrationTestConstants._
-import _root_.agent.helpers.IntegrationTestModels._
-import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
-import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
-import _root_.agent.models._
-import _root_.agent.services.CacheConstants
-import forms.agent.IncomeSourceForm
-import incometax.subscription.models.Both
+import agent.services.CacheConstants
+import helpers.agent.IntegrationTestConstants._
+import helpers.agent.IntegrationTestModels._
+import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
+import models.agent.BusinessNameModel
+import models.individual.subscription.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
 

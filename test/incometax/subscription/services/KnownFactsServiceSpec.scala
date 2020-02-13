@@ -18,11 +18,11 @@ package incometax.subscription.services
 
 import core.Constants
 import core.Constants.GovernmentGateway._
-import incometax.subscription.models.{EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
-import incometax.subscription.services.mocks.TestKnownFactsService
-import org.scalatest.concurrent.ScalaFutures
 import core.utils.TestConstants._
 import core.utils.UnitTestTrait
+import incometax.subscription.services.mocks.TestKnownFactsService
+import models.individual.subscription.{EnrolmentKey, EnrolmentVerifiers, KnownFactsFailure, KnownFactsSuccess}
+import org.scalatest.concurrent.ScalaFutures
 
 import scala.concurrent.Future
 

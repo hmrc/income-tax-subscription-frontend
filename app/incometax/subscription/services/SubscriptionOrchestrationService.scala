@@ -19,10 +19,9 @@ package incometax.subscription.services
 import cats.data.EitherT
 import cats.implicits._
 import core.connectors.models.ConnectorError
-import incometax.subscription.models.{SubscriptionSuccess, SummaryModel}
 import javax.inject.{Inject, Singleton}
+import models.individual.subscription.{SubscriptionSuccess, SummaryModel}
 import uk.gov.hmrc.http.HeaderCarrier
-
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

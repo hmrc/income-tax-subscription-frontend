@@ -20,8 +20,8 @@ import connectors.individual.business.mocks.MockAddressLookupConnector
 import core.utils.MockTrait
 import core.utils.TestConstants.testException
 import core.utils.TestModels.testReturnedAddress
-import incometax.business.models.address.{Country, _}
 import incometax.business.services.AddressLookupService
+import models.individual.business.address._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
 import play.api.http.Status.BAD_REQUEST

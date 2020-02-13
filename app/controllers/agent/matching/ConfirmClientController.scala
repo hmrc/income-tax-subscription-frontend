@@ -26,11 +26,11 @@ import core.config.BaseControllerConfig
 import core.services.AuthService
 import incometax.eligibility.services.GetEligibilityStatusService
 import javax.inject.{Inject, Singleton}
+import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
-import usermatching.models.{LockedOut, NotLockedOut, UserDetailsModel}
 import usermatching.services.{LockoutUpdate, UserLockoutService}
 
 import scala.concurrent.Future

@@ -3,9 +3,9 @@ package connectors.stubs
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import helpers.servicemocks.WireMockMethods
-import incometax.subscription.models.SubscriptionRequest
 import play.api.libs.json.{JsValue, Json}
 import helpers.IntegrationTestConstants.testMTDID
+import models.individual.subscription.SubscriptionRequest
 
 object SubscriptionAPIStub extends WireMockMethods {
 

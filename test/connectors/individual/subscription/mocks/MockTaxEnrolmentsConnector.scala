@@ -21,7 +21,7 @@ import connectors.individual.subscription.httpparsers.AllocateEnrolmentResponseH
 import connectors.individual.subscription.httpparsers.UpsertEnrolmentResponseHttpParser.UpsertEnrolmentResponse
 import core.utils.MockTrait
 import core.utils.TestConstants.{testErrorMessage, testException}
-import incometax.subscription.models._
+import models.individual.subscription._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import uk.gov.hmrc.http.HeaderCarrier

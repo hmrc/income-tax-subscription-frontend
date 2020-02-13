@@ -16,10 +16,11 @@
 
 package controllers.agent.matching
 
-import _root_.agent.helpers.ComponentSpecBase
-import _root_.agent.helpers.IntegrationTestConstants.{clientDetailsURI, testARN}
-import _root_.agent.helpers.servicemocks.{AgentLockoutStub, AuthStub}
-import _root_.helpers.IntegrationTestConstants.signOutURI
+import helpers.agent.IntegrationTestConstants.{clientDetailsURI, testARN}
+import helpers.agent.servicemocks.AuthStub
+import helpers.IntegrationTestConstants.signOutURI
+import helpers.agent.ComponentSpecBase
+import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub}
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 

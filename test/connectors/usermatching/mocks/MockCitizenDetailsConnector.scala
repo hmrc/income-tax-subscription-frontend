@@ -20,6 +20,7 @@ import connectors.usermatching.CitizenDetailsConnector
 import core.audit.Logging
 import core.utils.TestConstants.testException
 import core.utils.{MockTrait, UnitTestTrait}
+import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
@@ -27,7 +28,6 @@ import org.scalatest.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import usermatching.models.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
 
 import scala.concurrent.Future
 

@@ -22,11 +22,11 @@ import core.auth.{IncomeTaxSAUser, UserMatched, UserMatchingController}
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import javax.inject.{Inject, Singleton}
+import models.usermatching.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import usermatching.models.{LockedOut, NotLockedOut, UserDetailsModel, UserMatchSuccessResponseModel}
 import usermatching.services.{LockoutUpdate, UserLockoutService, UserMatchingService}
 
 import scala.concurrent.Future

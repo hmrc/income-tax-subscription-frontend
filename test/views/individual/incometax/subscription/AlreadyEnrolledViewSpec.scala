@@ -18,7 +18,7 @@ package views.individual.incometax.subscription
 
 import assets.MessageLookup
 import controllers.SignOutController
-import core.models.DateModel
+import models.DateModel
 import org.jsoup.Jsoup
 import play.api.i18n.Messages.Implicits._
 import views.ViewSpecTrait

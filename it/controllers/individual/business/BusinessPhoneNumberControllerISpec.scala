@@ -23,8 +23,8 @@ import helpers.IntegrationTestConstants.checkYourAnswersURI
 import helpers.IntegrationTestModels._
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import helpers.{ComponentSpecBase, IntegrationTestModels}
-import incometax.business.models.BusinessPhoneNumberModel
-import incometax.subscription.models.Both
+import models.individual.business.BusinessPhoneNumberModel
+import models.individual.subscription.Both
 import play.api.http.Status._
 import play.api.i18n.Messages
 

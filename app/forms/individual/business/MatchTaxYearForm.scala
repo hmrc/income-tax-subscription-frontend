@@ -18,7 +18,7 @@ package forms.individual.business
 
 import forms.submapping.YesNoMapping
 import forms.validation.ErrorMessageFactory
-import incometax.business.models.MatchTaxYearModel
+import models.individual.business.MatchTaxYearModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 

@@ -17,12 +17,12 @@
 @import core.config.AppConfig
 @import views.html.helpers._
 @import views.html.templates.main_template
-@import incometax.business.models.address.Address
-@import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, BusinessNameModel, BusinessPhoneNumberModel, AccountingYearModel, BusinessStartDateModel, MatchTaxYearModel, AccountingMethodPropertyModel}
-@import incometax.incomesource.models._
-@import incometax.subscription.models.IndividualSummary
+@import models.individual.business.address.Address
+@import models.individual.business._
+@import models.individual.incomesource._
+@import models.individual.subscription.IndividualSummary
 @import uk.gov.hmrc.play.views.html.helpers.form
-@import core.models.{Yes, No}
+@import models.{Yes, No}
 @import views.individual.helpers._
 @import views.individual.helpers.SummaryHelper._
 @import views.individual.helpers.SummaryIdConstants._

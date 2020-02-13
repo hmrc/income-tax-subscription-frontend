@@ -16,7 +16,7 @@
 
 package forms.submapping
 
-import core.models.{AccountingYear, Current, Next}
+import models.{AccountingYear, Current, Next}
 import play.api.data.Forms.of
 import play.api.data.format.Formatter
 import play.api.data.validation.Invalid

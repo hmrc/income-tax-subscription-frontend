@@ -22,7 +22,7 @@ import agent.services.mocks._
 import agent.utils.TestConstants.{testNino, _}
 import agent.utils.TestModels
 import agent.utils.TestModels.testCacheMap
-import incometax.subscription.models.{Both, Business, Property}
+import models.individual.subscription.{Both, Business, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._

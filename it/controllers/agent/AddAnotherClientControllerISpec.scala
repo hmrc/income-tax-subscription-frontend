@@ -16,9 +16,11 @@
 
 package controllers.agent
 
-import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
-import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
+import helpers.agent.servicemocks.KeystoreStub
+import helpers.agent.SessionCookieCrumbler
 import core.config.featureswitch.FeatureSwitching
+import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status.SEE_OTHER
 
 

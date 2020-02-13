@@ -16,15 +16,15 @@
 
 package agent.utils
 
-import _root_.agent.services.CacheConstants
-import core.models._
+import agent.services.CacheConstants
 import core.utils.Implicits
-import incometax.business.models._
-import incometax.subscription.models._
+import models.individual.business._
+import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
+import models.usermatching.UserDetailsModel
+import models._
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap
-import usermatching.models.UserDetailsModel
 
 
 object TestModels extends Implicits {
@@ -109,6 +109,6 @@ object TestModels extends Implicits {
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
   // TODO change when consolidating models
-  lazy val testClientDetails = UserDetailsModel("Test", "User", TestConstants.testNino, core.models.DateModel("01", "04", "2017"))
+  lazy val testClientDetails = UserDetailsModel("Test", "User", TestConstants.testNino, DateModel("01", "04", "2017"))
 
 }

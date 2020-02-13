@@ -20,7 +20,7 @@ import java.time.OffsetDateTime
 
 import play.api.http.Status
 import helpers.IntegrationTestConstants._
-import usermatching.models.LockedOut
+import models.usermatching.LockedOut
 
 
 object UserLockoutStub extends WireMockMethods {

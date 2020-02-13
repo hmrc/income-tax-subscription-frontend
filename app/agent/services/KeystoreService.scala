@@ -16,10 +16,10 @@
 
 package agent.services
 
-import agent.models.{AccountingMethodPropertyModel, _}
-import incometax.business.models.{AccountingPeriodModel, MatchTaxYearModel}
-import incometax.subscription.models.IncomeSourceType
 import javax.inject._
+import models.agent.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
+import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
+import models.individual.subscription.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}

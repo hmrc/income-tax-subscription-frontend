@@ -18,17 +18,17 @@ package controllers.agent.business
 
 import java.time.LocalDate
 
-import _root_.agent.helpers.IntegrationTestConstants._
-import _root_.agent.helpers.IntegrationTestModels.{keystoreData, _}
-import _root_.agent.helpers.servicemocks.{AuthStub, KeystoreStub}
-import _root_.agent.helpers.{ComponentSpecBase, IntegrationTestModels}
-import _root_.agent.services.CacheConstants
+import helpers.agent.IntegrationTestConstants._
+import helpers.agent.IntegrationTestModels.{keystoreData, _}
+import agent.services.CacheConstants
 import agent.services.CacheConstants.IncomeSource
 import core.config.featureswitch.FeatureSwitching
-import core.models.{DateModel, No}
-import incometax.business.models.AccountingPeriodModel
-import incometax.subscription.models._
+import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import incometax.util.AccountingPeriodUtil
+import models.DateModel
+import models.individual.business.AccountingPeriodModel
+import models.individual.subscription.{Both, Business}
 import play.api.http.Status._
 import play.api.i18n.Messages
 import play.api.libs.json.Json

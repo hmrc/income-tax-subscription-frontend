@@ -16,11 +16,11 @@
 
 package controllers.utils
 
-import agent.models.AccountingMethodModel
 import agent.services.{CacheConstants, KeystoreService}
-import core.models.{Cash, Yes}
-import incometax.business.models.MatchTaxYearModel
-import incometax.subscription.models.Both
+import models.agent.AccountingMethodModel
+import models.individual.business.MatchTaxYearModel
+import models.individual.subscription.Both
+import models.{Cash, Yes}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.{MustMatchers, WordSpecLike}

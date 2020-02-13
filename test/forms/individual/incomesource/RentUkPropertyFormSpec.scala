@@ -17,19 +17,18 @@
 package forms.individual.incomesource
 
 import assets.MessageLookup
-import core.models.{No, Yes}
 import forms.submapping.YesNoMapping
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
-import incometax.incomesource.models.RentUkPropertyModel
+import models.individual.incomesource.RentUkPropertyModel
+import models.{No, Yes}
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
+import forms.individual.incomesource.RentUkPropertyForm._
 
 class RentUkPropertyFormSpec extends PlaySpec with OneAppPerTest {
-
-  import forms.individual.incomesource.RentUkPropertyForm._
 
   "The RentUkProperty Form" should {
     "transform the request to the form case class when No is bound to rent uk property question" in {

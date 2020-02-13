@@ -19,13 +19,13 @@ package controllers.individual.business
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch._
-import core.models.Cash
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.business.AccountingMethodPropertyForm
 import incometax._
-import incometax.business.models.AccountingMethodPropertyModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
+import models.Cash
+import models.individual.business.AccountingMethodPropertyModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

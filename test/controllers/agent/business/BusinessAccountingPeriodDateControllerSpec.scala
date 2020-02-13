@@ -21,12 +21,12 @@ import agent.services.mocks.MockKeystoreService
 import agent.utils.TestConstants
 import agent.utils.TestModels._
 import controllers.agent.AgentControllerBaseSpec
-import core.models.DateModel
 import core.services.mocks.MockAccountingPeriodService
 import core.utils.TestModels
 import forms.agent.AccountingPeriodDateForm
-import incometax.business.models.AccountingPeriodModel
 import incometax.util.CurrentDateProvider
+import models.DateModel
+import models.individual.business.AccountingPeriodModel
 import org.jsoup.Jsoup
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

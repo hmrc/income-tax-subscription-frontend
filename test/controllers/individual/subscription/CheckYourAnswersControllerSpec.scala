@@ -24,8 +24,8 @@ import core.services.CacheUtil._
 import core.services.mocks.MockKeystoreService
 import core.utils.TestConstants._
 import core.utils.TestModels._
-import incometax.subscription.models.{Both, Business, Property}
 import incometax.subscription.services.mocks.MockSubscriptionOrchestrationService
+import models.individual.subscription.{Both, Business, Property}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent}
 import play.api.test.Helpers._

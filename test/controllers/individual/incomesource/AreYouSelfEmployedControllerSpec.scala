@@ -22,8 +22,8 @@ import core.config.featureswitch.FeatureSwitching
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.incomesource.AreYouSelfEmployedForm
-import incometax.incomesource.models.AreYouSelfEmployedModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
+import models.individual.incomesource.AreYouSelfEmployedModel
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers.{await, status, _}

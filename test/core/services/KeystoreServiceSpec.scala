@@ -19,7 +19,7 @@ package core.services
 import core.config.SessionCache
 import core.services.mocks.MockKeystoreService
 import core.utils.{TestModels, UnitTestTrait}
-import incometax.business.models.BusinessNameModel
+import models.individual.business.BusinessNameModel
 import org.scalatest.Matchers._
 import play.api.http.Status
 import play.api.test.Helpers._

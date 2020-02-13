@@ -20,7 +20,7 @@ import agent.assets.MessageLookup
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
-import incometax.subscription.models.Business
+import models.individual.subscription.Business
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._

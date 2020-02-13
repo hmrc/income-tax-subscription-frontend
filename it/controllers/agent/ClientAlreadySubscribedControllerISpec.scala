@@ -16,9 +16,9 @@
 
 package controllers.agent
 
-import _root_.agent.helpers.ComponentSpecBase
-import _root_.agent.helpers.IntegrationTestConstants._
-import _root_.agent.helpers.servicemocks.AuthStub
+import helpers.agent.IntegrationTestConstants._
+import helpers.agent.ComponentSpecBase
+import helpers.agent.servicemocks.AuthStub
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 

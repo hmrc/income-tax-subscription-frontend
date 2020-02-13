@@ -18,12 +18,12 @@ package controllers.individual.incomesource
 
 import core.auth.SignUpController
 import core.config.{AppConfig, BaseControllerConfig}
-import core.models.{No, Yes}
 import core.services.{AuthService, KeystoreService}
 import forms.individual.incomesource.RentUkPropertyForm._
-import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.CurrentTimeService
 import javax.inject.{Inject, Singleton}
+import models.individual.incomesource.RentUkPropertyModel
+import models.{No, Yes}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}

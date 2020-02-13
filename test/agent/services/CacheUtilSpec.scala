@@ -16,8 +16,8 @@
 
 package agent.services
 
-import _root_.core.utils.UnitTestTrait
-import incometax.subscription.models.AgentSummary
+import core.utils.UnitTestTrait
+import models.individual.subscription.AgentSummary
 import org.scalatest.Matchers._
 
 class CacheUtilSpec extends UnitTestTrait {

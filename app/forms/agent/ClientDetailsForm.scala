@@ -22,11 +22,11 @@ import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmp
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
-import core.models.DateModel
+import models.DateModel
+import models.usermatching.UserDetailsModel
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Valid, ValidationResult}
-import usermatching.models.UserDetailsModel
 
 import scala.util.Try
 

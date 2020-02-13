@@ -16,10 +16,10 @@
 
 package controllers.utils
 
-import agent.models.AccountingMethodModel
 import agent.services.KeystoreService
-import incometax.business.models.MatchTaxYearModel
-import incometax.subscription.models.IncomeSourceType
+import models.agent.AccountingMethodModel
+import models.individual.business.MatchTaxYearModel
+import models.individual.subscription.IncomeSourceType
 import play.api.libs.functional.~
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Result}

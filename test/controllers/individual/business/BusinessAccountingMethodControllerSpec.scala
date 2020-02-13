@@ -19,14 +19,14 @@ package controllers.individual.business
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
 import core.config.featureswitch._
-import core.models.{Cash, DateModel, No}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
 import forms.individual.business.AccountingMethodForm
-import incometax.business.models.{AccountingMethodModel, AccountingPeriodModel, MatchTaxYearModel}
-import incometax.incomesource.models.RentUkPropertyModel
 import incometax.incomesource.services.mocks.MockCurrentTimeService
-import incometax.subscription.models.{Both, Business, IncomeSourceType}
+import models.individual.business.{AccountingMethodModel, AccountingPeriodModel, MatchTaxYearModel}
+import models.individual.incomesource.RentUkPropertyModel
+import models.individual.subscription.{Both, Business, IncomeSourceType}
+import models.{Cash, DateModel, No}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._

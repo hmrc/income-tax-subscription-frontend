@@ -22,10 +22,10 @@ import agent.services.mocks.MockAgentQualificationService
 import agent.utils.TestConstants._
 import agent.utils.TestModels._
 import agent.utils.{TestConstants, TestModels}
+import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.HeaderCarrier
-import usermatching.models.UserDetailsModel
 
 class AgentQualificationServiceSpec extends MockAgentQualificationService {
 

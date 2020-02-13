@@ -19,7 +19,7 @@ package agent.utils
 import java.time.LocalDate
 
 import agent.common.Constants._
-import incometax.subscription.models._
+import models.individual.subscription._
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
 

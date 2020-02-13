@@ -17,7 +17,7 @@
 package connectors
 
 import core.utils.HttpResult.{HttpConnectorError, HttpResult, HttpResultParser}
-import digitalcontact.models.{Activated, PaperlessState, Unset}
+import models.{Activated, PaperlessState, Unset}
 import play.api.http.Status.{OK, PRECONDITION_FAILED}
 import play.api.libs.json.{JsError, JsSuccess, JsValue}
 import uk.gov.hmrc.http.HttpResponse

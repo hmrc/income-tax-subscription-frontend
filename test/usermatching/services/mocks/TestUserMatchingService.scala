@@ -20,10 +20,10 @@ import connectors.usermatching.mocks.MockAuthenticatiorConnector
 import core.utils.MockTrait
 import core.utils.TestConstants._
 import core.utils.TestModels._
+import models.usermatching.{UserDetailsModel, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
-import usermatching.models.{UserDetailsModel, UserMatchFailureResponseModel, UserMatchSuccessResponseModel}
 import usermatching.services.UserMatchingService
 import usermatching.utils.UserMatchingTestSupport
 

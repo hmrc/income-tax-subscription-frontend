@@ -17,12 +17,12 @@
 package forms.individual.incomesource
 
 import assets.MessageLookup
-import core.models.No
 import forms.submapping.YesNoMapping
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
-import incometax.incomesource.models.AreYouSelfEmployedModel
+import models.No
+import models.individual.incomesource.AreYouSelfEmployedModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._

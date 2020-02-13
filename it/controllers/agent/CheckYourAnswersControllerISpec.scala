@@ -16,10 +16,10 @@
 
 package controllers.agent
 
-import _root_.agent.helpers.IntegrationTestConstants._
-import _root_.agent.helpers.servicemocks._
-import _root_.agent.helpers.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.IntegrationTestModels.testEnrolmentKey
+import helpers.agent.IntegrationTestConstants._
+import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.{SubscriptionStub, TaxEnrolmentsStub}
 import play.api.http.Status._
 import play.api.i18n.Messages

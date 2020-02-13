@@ -16,7 +16,7 @@
 
 package agent.auth
 
-import _root_.uk.gov.hmrc.http.SessionKeys._
+import uk.gov.hmrc.http.SessionKeys._
 import agent.auth.AgentJourneyState._
 import agent.common.Constants.agentServiceEnrolmentName
 import cats.implicits._

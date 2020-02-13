@@ -23,10 +23,10 @@ import core.config.BaseControllerConfig
 import core.services.{AccountingPeriodService, AuthService}
 import core.utils.Implicits._
 import forms.agent.AccountingPeriodDateForm
-import incometax.business.models.AccountingPeriodModel
-import incometax.subscription.models.{Both, IncomeSourceType}
 import incometax.util.{AccountingPeriodUtil, CurrentDateProvider}
 import javax.inject.{Inject, Singleton}
+import models.individual.business.AccountingPeriodModel
+import models.individual.subscription.{Both, IncomeSourceType}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
