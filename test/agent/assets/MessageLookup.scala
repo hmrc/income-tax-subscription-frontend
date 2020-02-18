@@ -28,7 +28,7 @@ object MessageLookup {
     val day = "Day"
     val month = "Month"
     val year = "Year"
-    val errorHeading = "There's a problem"
+    val errorHeading = "There’s a problem"
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
@@ -41,7 +41,7 @@ object MessageLookup {
   }
 
   object FrontPage {
-    val title = "Sign up to report your client's income and expenses quarterly"
+    val title = "Sign up to report your client’s income and expenses quarterly"
     val heading = title
     val subHeading_1 = "Sign up using Government Gateway"
     val subHeading_2 = "Before you start"
@@ -49,7 +49,7 @@ object MessageLookup {
     val linkText_1 = "create an Agent Services account"
     val linkText_2 = "authorise you as their agent"
 
-    val bullet_1 = "using your accounting software to record your client's income and expenses"
+    val bullet_1 = "using your accounting software to record your client’s income and expenses"
     val bullet_2 = "sending details to us regularly from July 2017"
     val bullet_3 = "a sole trader with income from one business"
     val bullet_4 = "someone who rents out a UK property"
@@ -60,11 +60,11 @@ object MessageLookup {
     val bullet_9 = s"you need to $linkText_1"
     val bullet_10 = s"your client needs to $linkText_2"
 
-    val para_1 = "By signing up to HM Revenue and Customs secure service, you're helping to test a new way of working out your client's tax. You'll do this by:"
-    val para_2 = "You can sign up your client if their current accounting period starts after 5 April 2017 and they're one of the following:"
-    val para_3 = "If your client has any income other than those listed above, you won't be able to report it using this service yet."
-    val para_4 = "You'll need to enter the user ID and password you got when you created your Agent Services account."
-    val para_5 = "You'll need your client's:"
+    val para_1 = "By signing up to HM Revenue and Customs secure service, you’re helping to test a new way of working out your client’s tax. You’ll do this by:"
+    val para_2 = "You can sign up your client if their current accounting period starts after 5 April 2017 and they’re one of the following:"
+    val para_3 = "If your client has any income other than those listed above, you won’t be able to report it using this service yet."
+    val para_4 = "You’ll need to enter the user ID and password you got when you created your Agent Services account."
+    val para_5 = "You’ll need your client’s:"
     val para_6 = "To use this service:"
   }
 
@@ -77,7 +77,7 @@ object MessageLookup {
   }
 
   object IncomeSource {
-    val title = "Select your client's income type"
+    val title = "Select your client’s income type"
     val heading: String = title
     val business = "Sole trader business"
     val property = "Renting out a UK property"
@@ -100,15 +100,15 @@ object MessageLookup {
     object SoleTrader {
       val title = "Are you a sole trader?"
       val heading: String = title
-      val line_1 = "As a sole trader, you run your own business as an individual. You can keep all your business's profits after you've paid tax on them. 'Sole trader' means you're responsible for the business, not that you have to work alone."
-      val yes = "Yes - I'm a sole trader"
+      val line_1 = "As a sole trader, you run your own business as an individual. You can keep all your business’s profits after you’ve paid tax on them. ‘Sole trader’ means you’re responsible for the business, not that you have to work alone."
+      val yes = "Yes - I’m a sole trader"
       val no = "No - I am a different type of business"
     }
 
     object MatchTaxYear {
-      val heading = "Does your client's accounting period match the tax year?"
+      val heading = "Does your client’s accounting period match the tax year?"
       val para1 = "The tax year runs from 6 April to 5 April."
-      val para2 = "Your client's accounting period is the same unless you have previously chosen different dates."
+      val para2 = "Your client’s accounting period is the same unless you have previously chosen different dates."
       val yes = "Yes"
       val no = "No"
     }
@@ -117,9 +117,9 @@ object MessageLookup {
       val heading = "What tax year do you want to sign your client up for?"
       val line1 = "You can sign your client up for the current year or the next year."
 
-      def example1(taxYearStart: String, taxYearEnd: String) = s"For example, if your client's accounting period runs from 6 April $taxYearStart to 5 April $taxYearEnd, you will sign your client up for the current year $taxYearStart to $taxYearEnd."
+      def example1(taxYearStart: String, taxYearEnd: String) = s"For example, if your client’s accounting period runs from 6 April $taxYearStart to 5 April $taxYearEnd, you will sign your client up for the current year $taxYearStart to $taxYearEnd."
 
-      def example2(taxYearStart: String, taxYearEnd: String) = s"If your client's accounting period runs from 6 April $taxYearStart to 5 April $taxYearEnd, you will sign your client up for next year $taxYearStart to $taxYearEnd."
+      def example2(taxYearStart: String, taxYearEnd: String) = s"If your client’s accounting period runs from 6 April $taxYearStart to 5 April $taxYearEnd, you will sign your client up for next year $taxYearStart to $taxYearEnd."
 
       def option1(taxYearStart: String, taxYearEnd: String) = s"Current tax year ($taxYearStart to $taxYearEnd)"
 
@@ -141,13 +141,13 @@ object MessageLookup {
   object ContactEmail {
     val title = "Enter your email address"
     val heading: String = title
-    val line_1 = "We'll use this to get in touch with updates about your estimated Income Tax calculations."
+    val line_1 = "We’ll use this to get in touch with updates about your estimated Income Tax calculations."
   }
 
   object BusinessName {
     val title = "Business name"
-    val heading: String = "What's the name of your client's business?"
-    val line_1 = "This is the business name they used to register for Self Assessment. If their business doesn't have a name, enter your client's name."
+    val heading: String = "What’s the name of your client’s business?"
+    val line_1 = "This is the business name they used to register for Self Assessment. If their business doesn’t have a name, enter your client’s name."
   }
 
   object AccountingMethod {
@@ -168,8 +168,8 @@ object MessageLookup {
     val title = "Check your answers"
     val heading: String = title
     val heading_hidden = "before signing up"
-    val h2 = "You've told us"
-    val income_source = "Client's income type"
+    val h2 = "You’ve told us"
+    val income_source = "Client’s income type"
 
     object IncomeSource {
       val business = "Sole trader business"
@@ -177,7 +177,7 @@ object MessageLookup {
       val both = "Sole trader business and property"
     }
 
-    val accounting_period = s"Your client's accounting period dates"
+    val accounting_period = s"Your client’s accounting period dates"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "Business name"
     val selected_tax_year = "Year signed-up for"
@@ -202,18 +202,18 @@ object MessageLookup {
   object Timeout {
     val title = "Your session has timed out"
     val heading = "Your session has timed out"
-    val returnToHome = """To sign your client up for quarterly reporting, you'll have to sign in using your Government Gateway ID."""
+    val returnToHome = """To sign your client up for quarterly reporting, you’ll have to sign in using your Government Gateway ID."""
   }
 
   object ClientAlreadySubscribed {
     val title = "Your client has already signed up"
     val heading = "Your client has already signed up"
-    val para1 = "This client's details are already in use."
+    val para1 = "This client’s details are already in use."
   }
 
   object NoClientRelationship {
-    val title = "You're not authorised for this client"
-    val heading = "You're not authorised for this client"
+    val title = "You’re not authorised for this client"
+    val heading = "You’re not authorised for this client"
     val para1 = "To send quarterly reports, your client must authorise you as their agent."
   }
 
@@ -224,14 +224,14 @@ object MessageLookup {
     object whatHappensNext {
       val heading = "What happens next"
       val para1 = "Either you or your client need to complete the steps below."
-      val para2 = "It's important for your client to choose a software package that can interact with yours."
+      val para2 = "It’s important for your client to choose a software package that can interact with yours."
       val linkText = "Choose accounting software"
-      val number1 = s"$linkText if you haven't already."
+      val number1 = s"$linkText if you haven’t already."
       val number2 = "Sign in to the software with your Government Gateway details and authorise it to interact with HMRC."
       val number3 = "Add any income and expenses that your client has already received or paid out."
-      val number4 = "Record your client's future income and expenses using the software, then send HMRC a report at least every quarter."
+      val number4 = "Record your client’s future income and expenses using the software, then send HMRC a report at least every quarter."
       val number5 = "Add any other income sources in their final report, your client needs to send this report by 31 January."
-      val para3 = "After you've sent a report your client will get an Income Tax estimate. They can view their estimate and report deadlines in their:"
+      val para3 = "After you’ve sent a report your client will get an Income Tax estimate. They can view their estimate and report deadlines in their:"
       val bullet1 = "accounting software"
       val bullet2 = "business tax account"
     }
@@ -250,14 +250,14 @@ object MessageLookup {
 
     object whatNext {
       val heading = "What you need to do next"
-      val para1 = "Either you or your client must complete the steps below. If you both use software, it's important to choose packages that can interact with each other."
+      val para1 = "Either you or your client must complete the steps below. If you both use software, it’s important to choose packages that can interact with each other."
       val linkText = "Choose relevant software (opens in a new window)"
-      val number1 = s"$linkText if you haven't already."
+      val number1 = s"$linkText if you haven’t already."
       val number2 = "Allow your software to interact with HMRC."
       val number3 = "Add all income and expenses your client has already received or paid out from the start of their tax year into the software."
-      val number4 = "Continue to record your client's income and expenses using software and send a quarterly report to HMRC."
-      val number5 = "Send your client's final report by 31 January after the end of the tax year you're signing them up for."
-      val para2 = "After you've sent a report, your client will get an Income Tax estimate. They can see what they owe for the tax year after you’ve sent their final report."
+      val number4 = "Continue to record your client’s income and expenses using software and send a quarterly report to HMRC."
+      val number5 = "Send your client’s final report by 31 January after the end of the tax year you’re signing them up for."
+      val para2 = "After you’ve sent a report, your client will get an Income Tax estimate. They can see what they owe for the tax year after you’ve sent their final report."
     }
 
   }
@@ -278,8 +278,8 @@ object MessageLookup {
       val empty = "Enter an end date"
       val invalid_chars = "Enter an end date using numbers 0 to 9"
       val invalid = "Enter a real end date"
-      val end_violation = "Enter an end date that's after the start date"
-      val end_past = "Enter an end date that's the present date or a future date"
+      val end_violation = "Enter an end date that’s after the start date"
+      val end_past = "Enter an end date that’s the present date or a future date"
     }
 
     object DOBDate {
@@ -291,12 +291,12 @@ object MessageLookup {
 
     object BusinessAccountingPeriod {
       val minStartDate = "The start date of your accounting period must be in the future."
-      val maxEndDate = "Enter an end date that's less than 24 months after your start date"
+      val maxEndDate = "Enter an end date that’s less than 24 months after your start date"
     }
 
     object BusinessName {
-      val empty = "Enter your client's business name"
-      val maxLength = "Enter a business name that's 105 characters or less"
+      val empty = "Enter your client’s business name"
+      val maxLength = "Enter a business name that’s 105 characters or less"
       val invalid = "Enter a valid business name"
     }
 
@@ -322,16 +322,16 @@ object MessageLookup {
     }
 
     object ClientDetails {
-      val firstNameEmpty = "Enter your client's first name"
-      val lastNameEmpty = "Enter your client's last name"
+      val firstNameEmpty = "Enter your client’s first name"
+      val lastNameEmpty = "Enter your client’s last name"
       val firstNameInvalid = "Enter a valid first name"
       val lastNameInvalid = "Enter a valid last name"
-      val firstNameMaxLength = "Enter a first name that's 105 characters or less"
-      val lastNameMaxLength = "Enter a last name that's 105 characters or less"
+      val firstNameMaxLength = "Enter a first name that’s 105 characters or less"
+      val lastNameMaxLength = "Enter a last name that’s 105 characters or less"
     }
 
     object Nino {
-      val empty = "Enter your client's National Insurance number"
+      val empty = "Enter your client’s National Insurance number"
       val invalid = "Enter a valid National Insurance number"
     }
 
@@ -345,92 +345,92 @@ object MessageLookup {
   }
 
   object Not_Eligible {
-    val title = "You can't send digital updates yet"
+    val title = "You can’t send digital updates yet"
     val heading: String = title
-    val line_1 = "Your answers mean you're not eligible to send digital updates to HMRC right now."
+    val line_1 = "Your answers mean you’re not eligible to send digital updates to HMRC right now."
     val line_2 = "You can still sign up for the service. HMRC are working to make digital updates available for all sole traders in the coming months. If you sign up now, you will be able to send digital updates to HMRC when you become eligible."
-    val line_3 = "If you choose to sign up, we'll ask you a few questions about your income and contact details."
+    val line_3 = "If you choose to sign up, we’ll ask you a few questions about your income and contact details."
     val signUp = "I want to sign up"
-    val signOut = "I don't want to sign up - sign me out"
+    val signOut = "I don’t want to sign up - sign me out"
     val question = "Choose what you would like to do next"
   }
 
   object NoNino {
-    val title = "Your client can't use this service yet"
+    val title = "Your client can’t use this service yet"
     val heading = title
     val line1 = "This client can sign up later in the year."
   }
 
   object MainIncomeError {
-    val title = "You can't sign up your client yet"
-    val heading = "You can't sign up your client yet"
+    val title = "You can’t sign up your client yet"
+    val heading = "You can’t sign up your client yet"
     val para1 = "At the moment, you can only sign up if your client is one of the following:"
-    val para2 = "You'll be able to use this reporting method for your client later in the year."
+    val para2 = "You’ll be able to use this reporting method for your client later in the year."
     val bullet1 = "a sole trader with income from one business"
     val bullet2 = "someone who rents out a UK property"
     val bullet3 = "a sole trader with income from one business and they rent out a UK property"
   }
 
   object ClientCannotReportYet {
-    val title = "Your client can't use software to report their Income Tax yet"
+    val title = "Your client can’t use software to report their Income Tax yet"
     val heading: String = title
     val linkText = "send a Self Assessment tax return"
-    val para1 = "You can still sign this client up and use software to record their income and expenses, but they won't be able to submit a report until 6 April 2018."
+    val para1 = "You can still sign this client up and use software to record their income and expenses, but they won’t be able to submit a report until 6 April 2018."
     val para2 = s"Your client still needs to $linkText."
   }
 
   object ClientCannotReportPropertyYet {
-    val title = "You can't use software to report your client's property income yet"
+    val title = "You can’t use software to report your client’s property income yet"
     val heading: String = title
     val linkText = "send a Self Assessment tax return"
-    val para1 = "You can use software to report your client's sole trader income."
-    val para2 = s"They won't be able to submit a report for their property income until 6 April 2018. Your client still needs to $linkText."
+    val para1 = "You can use software to report your client’s sole trader income."
+    val para2 = s"They won’t be able to submit a report for their property income until 6 April 2018. Your client still needs to $linkText."
   }
 
 
   object NotEnrolledAgentServices {
-    val title = "You can't use this service yet"
+    val title = "You can’t use this service yet"
     val heading = title
     val linkText = "set up an agent services account"
     val para1 = s"To use this service, you need to $linkText."
   }
 
   object ClientDetailsError {
-    val title = "There's a problem"
-    val heading = "There's a problem"
-    val line1 = "The details you've entered are not on our system."
+    val title = "There’s a problem"
+    val heading = "There’s a problem"
+    val line1 = "The details you’ve entered are not on our system."
   }
 
   object ClientDetailsLockout {
-    val title = "You've been locked out"
-    val heading = "You've been locked out"
+    val title = "You’ve been locked out"
+    val heading = "You’ve been locked out"
 
-    def line1(testTime: String) = s"To sign your client up for quarterly reporting, you'll have to try again in $testTime."
+    def line1(testTime: String) = s"To sign your client up for quarterly reporting, you’ll have to try again in $testTime."
   }
 
   object ClientDetails {
-    val title = "Enter your client's details"
-    val heading = "Enter your client's details"
+    val title = "Enter your client’s details"
+    val heading = "Enter your client’s details"
     val line1 = "We will attempt to match these details against information we currently hold."
     val field1 = "First name"
     val field2 = "Last name"
     val field3 = "National Insurance number"
     val field4 = "Date of birth"
-    val formhint1_line1 = "For example, 'QQ 12 34 56 C'."
+    val formhint1_line1 = "For example, ‘QQ 12 34 56 C’."
     val formhint2 = "For example, 10 12 1990"
   }
 
   object AgentNotAuthorisedError {
-    val title = "You're not authorised for this client"
+    val title = "You’re not authorised for this client"
     val heading: String = title
-    val para1 = "You can still sign up your client, but we'll hold their information until they've authorised you as their agent."
+    val para1 = "You can still sign up your client, but we’ll hold their information until they’ve authorised you as their agent."
   }
 
   object ConfirmClient {
     val title = "Confirm your client"
     val heading = "Check your answers"
     val heading_hidden = "before looking up your client"
-    val h2 = "You've told us"
+    val h2 = "You’ve told us"
     val firstName = "First name"
     val lastName = "Last name"
     val nino = "National Insurance number"
@@ -440,7 +440,7 @@ object MessageLookup {
   object ExitSurvey {
     val title = "Give feedback"
     val heading = "Give feedback"
-    val line_1 = "Please don't include any personal or financial information, for example your National Insurance or credit card numbers."
+    val line_1 = "Please don’t include any personal or financial information, for example your National Insurance or credit card numbers."
     val submit = "Send feedback"
 
     object Q1 {

@@ -31,7 +31,7 @@ object MessageLookup {
     val day = "Day"
     val month = "Month"
     val year = "Year"
-    val errorHeading = "There's a problem"
+    val errorHeading = "There’s a problem"
     val change = "Change"
     val where_can_i_get_this_information = "Where can I get this information"
     val signUp = "Sign up"
@@ -48,7 +48,7 @@ object MessageLookup {
     val title = "Sign up to report your income and expenses quarterly"
     val heading = title
     val subHeading_1 = "Sign up using Government Gateway"
-    val subHeading_2 = "What happens after you've signed up"
+    val subHeading_2 = "What happens after you’ve signed up"
     val bullet_1 = "using your accounting software to record your income and expenses"
     val bullet_2 = "sending details to us regularly from May 2017"
     val bullet_3 = "agreeing to go paperless"
@@ -58,11 +58,11 @@ object MessageLookup {
     val bullet_7 = "complete your 2016 to 2017 Self Assessment tax return and pay what you owe by 31 January 2018"
     val bullet_8 = "send your summary report for the 2017 to 2018 tax year by 31 January 2019"
     val bullet_9 = "use your business tax account from August 2017 to see your reports and what you might owe"
-    val line_1 = "By signing up to HM Revenue and Customs secure service, you're helping to test a new way of working out your tax. You'll do this by:"
-    val line_2 = "You can sign up if your current accounting period starts after 5 April 2017 and you're one of the following:"
-    val line_3 = "If you have income other than those listed above, you won't be able to report it using this service yet."
-    val line_4 = "You'll need to enter the user ID and password you got when you signed up to the Self Assessment online service."
-    val line_5 = "You'll need to:"
+    val line_1 = "By signing up to HM Revenue and Customs secure service, you’re helping to test a new way of working out your tax. You’ll do this by:"
+    val line_2 = "You can sign up if your current accounting period starts after 5 April 2017 and you’re one of the following:"
+    val line_3 = "If you have income other than those listed above, you won’t be able to report it using this service yet."
+    val line_4 = "You’ll need to enter the user ID and password you got when you signed up to the Self Assessment online service."
+    val line_5 = "You’ll need to:"
     val line_6 = "You can:"
   }
 
@@ -114,8 +114,8 @@ object MessageLookup {
     object SoleTrader {
       val title = "Are you a sole trader?"
       val heading: String = title
-      val line_1 = "As a sole trader, you run your own business as an individual. You can keep all your business's profits after you've paid tax on them. 'Sole trader' means you're responsible for the business, not that you have to work alone."
-      val yes = "Yes - I'm a sole trader"
+      val line_1 = "As a sole trader, you run your own business as an individual. You can keep all your business’s profits after you’ve paid tax on them. ‘Sole trader’ means you’re responsible for the business, not that you have to work alone."
+      val yes = "Yes - I’m a sole trader"
       val no = "No - I am a different type of business"
     }
 
@@ -158,28 +158,28 @@ object MessageLookup {
   }
 
   object CannotReportYet {
-    val title = "You can't use software to report your Income Tax yet"
+    val title = "You can’t use software to report your Income Tax yet"
     val heading: String = title
     val linkText = "Self Assessment tax return"
 
-    def para1(startDate: DateModel) = s"You can sign up and use software to record your income and expenses, but you can't send any reports until ${startDate.toOutputDateFormat}."
+    def para1(startDate: DateModel) = s"You can sign up and use software to record your income and expenses, but you can’t send any reports until ${startDate.toOutputDateFormat}."
 
     val para2 = s"You need to send a $linkText instead."
   }
 
   object CanReportBusinessButNotPropertyYet {
-    val title = "You can't use software to report your property income yet"
+    val title = "You can’t use software to report your property income yet"
     val heading: String = title
     val para1 = "You can use software to report the work you do for yourself."
     val linkText = "send a Self Assessment tax return"
-    val para2 = s"You can't use software to submit a report for your property income until 6 April 2018. You need to $linkText instead."
+    val para2 = s"You can’t use software to submit a report for your property income until 6 April 2018. You need to $linkText instead."
   }
 
   object CannotReportYetBothMisaligned {
-    val title = "You can't use software to report your Income Tax yet"
+    val title = "You can’t use software to report your Income Tax yet"
     val heading: String = title
     val linkText = "send a Self Assessment tax return"
-    val para1 = "You can sign up and use software to record your income and expenses, but you won't be able to submit a report for:"
+    val para1 = "You can sign up and use software to record your income and expenses, but you won’t be able to submit a report for:"
     val bullet1 = "property income until 6 April 2018"
 
     def bullet2(startDate: DateModel) = s"sole trader income until ${startDate.toOutputDateFormat}"
@@ -188,10 +188,10 @@ object MessageLookup {
   }
 
   object AgentCannotReportYetBothMisaligned {
-    val title = "Your client can't use software to report their Income Tax yet"
+    val title = "Your client can’t use software to report their Income Tax yet"
     val heading: String = title
     val linkText = "send a Self Assessment tax return"
-    val para1 = "You can still sign this client up and use software to record their income and expenses, but they won't be able to submit a report for their:"
+    val para1 = "You can still sign this client up and use software to record their income and expenses, but they won’t be able to submit a report for their:"
     val bullet1 = "property income until 6 April 2018"
 
     def bullet2(businessStartDate: DateModel) = s"sole trader income until ${businessStartDate.toOutputDateFormat}"
@@ -201,27 +201,27 @@ object MessageLookup {
 
   object BusinessName {
     val title = "Business name"
-    val heading: String = "What's the name of your business?"
+    val heading: String = "What’s the name of your business?"
 
     object SignUp {
-      val line_1 = "This is the business name you used to register for Self Assessment. If your business doesn't have a name, enter your own name."
+      val line_1 = "This is the business name you used to register for Self Assessment. If your business doesn’t have a name, enter your own name."
     }
 
     object Registration {
-      val line_1 = "If your business doesn't have a name, enter your own name."
+      val line_1 = "If your business doesn’t have a name, enter your own name."
     }
 
   }
 
   object BusinessPhoneNumber {
     val title = "Business phone number"
-    val heading: String = "What's your business telephone number?"
+    val heading: String = "What’s your business telephone number?"
   }
 
   object BusinessAddress {
 
     object Lookup {
-      val heading = "What's your business address?"
+      val heading = "What’s your business address?"
       val nameOrNimber = "House name or number"
       val submit = "Search address"
       val enterManually = "Enter UK address manually"
@@ -235,7 +235,7 @@ object MessageLookup {
     }
 
     object Confirm {
-      val heading = "What's your business address?"
+      val heading = "What’s your business address?"
       val change = "Change"
     }
 
@@ -252,35 +252,35 @@ object MessageLookup {
     val title = "How do you record your income and expenses for your self-employed business?"
     val heading: String = "How do you record your income and expenses for your self-employed business?"
     val accordion = "Show me an example"
-    val accordion_line_1 = "You invoiced someone in March 2017 but didn't receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:"
-    val accordion_bullet_1 = "May 2017, then you use 'cash basis' accounting"
-    val accordion_bullet_2 = "March 2017, then you use 'accruals basis'"
+    val accordion_line_1 = "You invoiced someone in March 2017 but didn’t receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:"
+    val accordion_bullet_1 = "May 2017, then you use ‘cash basis’ accounting"
+    val accordion_bullet_2 = "March 2017, then you use ‘accruals basis’"
     val cash = "Cash basis You record on the date you receive money or pay a bill. Many sole traders and small businesses use this method."
-    val accruals = "Accruals basis You record on the date you send or receive an invoice, even if you don't receive or pay any money. This method is also called 'traditional accounting'."
+    val accruals = "Accruals basis You record on the date you send or receive an invoice, even if you don’t receive or pay any money. This method is also called ‘traditional accounting’."
   }
 
   object PropertyAccountingMethod {
     val title = "How do you record your income and expenses for your property business?"
     val heading = "How do you record your income and expenses for your property business?"
     val accordionSummary = "Show me an example"
-    val accordionContentPara = "You invoiced someone in March 2017 but didn't receive the money until May 2017. If you tell HM Revenue and Customs you received this income in:"
-    val accordionContentBullet1 = "May 2017, you use 'cash basis' accounting"
-    val accordionContentBullet2 = "March 2017, you use 'accruals basis' accounting"
+    val accordionContentPara = "You invoiced someone in March 2017 but didn’t receive the money until May 2017. If you tell HM Revenue and Customs you received this income in:"
+    val accordionContentBullet1 = "May 2017, you use ‘cash basis’ accounting"
+    val accordionContentBullet2 = "March 2017, you use ‘accruals basis’ accounting"
     val radioCash = "Cash basis"
     val radioCashDetail = "You record when you receive a payment from your tenants into your back account and when you pay a bill, for example for repairs and maintenance. Most people use this method."
     val radioAccruals = "Accruals basis"
-    val radioAccrualsDetail = "You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called traditional accounting."
+    val radioAccrualsDetail = "You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘traditional accounting’."
   }
 
   object Summary {
     val title = "Check your answers"
     val heading: String = title
     val heading_hidden = "before signing up"
-    val h2 = "You've told us"
+    val h2 = "You’ve told us"
     val income_source = "Where does your income come from?"
     val rentUkProperty = "You rent out UK property"
     val onlySourceOfIncome = "You only receive income from self-employment"
-    val areYouSelfEmployed = "You're self-employed"
+    val areYouSelfEmployed = "You’re self-employed"
     val accountingMethodProperty = "Your accounting method for your property income"
 
     object IncomeSource {
@@ -291,11 +291,11 @@ object MessageLookup {
 
     val match_tax_year = "Your accounting period matches the tax year"
     val accounting_period = s"Your accounting period dates"
-    val accounting_period_registration = s"When's your current accounting period?"
+    val accounting_period_registration = s"When’s your current accounting period?"
     val accounting_period_month: Int => String = (month: Int) => s"$month month period"
     val business_name = "Your business name"
-    val business_phone_number = "What's your business telephone number?"
-    val business_address = "What's your business address?"
+    val business_phone_number = "What’s your business telephone number?"
+    val business_address = "What’s your business address?"
     val business_start_date = "When did your business start trading?"
     val selected_tax_year = "Year signed-up for"
     val income_type = "Your accounting method for your self-employed business"
@@ -318,31 +318,31 @@ object MessageLookup {
   object Timeout {
     val title = "Your session has timed out"
     val heading: String = title
-    val returnToHome = """To sign up for quarterly reporting, you'll have to sign in using your Government Gateway ID."""
+    val returnToHome = """To sign up for quarterly reporting, you’ll have to sign in using your Government Gateway ID."""
   }
 
   object AlreadyEnrolled {
-    val title = "You've already signed up"
-    val heading = "You've already signed up"
+    val title = "You’ve already signed up"
+    val heading = "You’ve already signed up"
     val line1 = "Your sign in details are already in use."
   }
 
   object ClaimSubscription {
-    val title = "You've already signed up for quarterly reporting"
-    val heading = "You've already signed up for quarterly reporting"
+    val title = "You’ve already signed up for quarterly reporting"
+    val heading = "You’ve already signed up for quarterly reporting"
   }
 
   object UserDetailsError {
     val title = "User match error"
-    val heading = "We couldn't confirm your details"
-    val line1 = "The details you've entered are not on our system."
+    val heading = "We couldn’t confirm your details"
+    val line1 = "The details you’ve entered are not on our system."
   }
 
   object UserDetailsLockout {
-    val title = "You've been locked out"
-    val heading = "You've been locked out"
+    val title = "You’ve been locked out"
+    val heading = "You’ve been locked out"
 
-    def line1(testTime: String) = s"To sign up for quarterly reporting, you'll have to try again in $testTime."
+    def line1(testTime: String) = s"To sign up for quarterly reporting, you’ll have to try again in $testTime."
   }
 
   object UserDetails {
@@ -353,7 +353,7 @@ object MessageLookup {
     val field2 = "Last name"
     val field3 = "National Insurance number"
     val field4 = "Date of birth"
-    val formhint1_line1 = "For example, 'QQ 12 34 56 C'."
+    val formhint1_line1 = "For example, ‘QQ 12 34 56 C’."
     val formhint2 = "For example, 10 12 1990"
   }
 
@@ -361,7 +361,7 @@ object MessageLookup {
     val title = "Confirm your details"
     val heading = "Check your answers"
     val heading_hidden = "before looking up your details"
-    val h2 = "You've told us"
+    val h2 = "You’ve told us"
     val firstName = "First name"
     val lastName = "Last name"
     val nino = "National Insurance number"
@@ -377,7 +377,7 @@ object MessageLookup {
     object whatHappensNext {
       val heading = "What happens next"
       val para1 = "You must use accounting software to record your income and expenses and send a report to HM Revenue and Customs at least every quarter."
-      val para2 = "After you send a report you'll get an Income Tax estimate. You can view your estimate and report deadlines in your:"
+      val para2 = "After you send a report you’ll get an Income Tax estimate. You can view your estimate and report deadlines in your:"
       val bul1 = "accounting software"
       val bul2 = "business tax account"
       val para4 = "It may take a few hours for them all to appear."
@@ -408,10 +408,10 @@ object MessageLookup {
 
 
   object AffinityGroup {
-    val title = "You can't use this service"
-    val heading = "You can't use this service"
+    val title = "You can’t use this service"
+    val heading = "You can’t use this service"
     val line1 = "You can only use this service if you have an individual Government Gateway account."
-    val line2 = """To sign up for quarterly reporting, you'll need to sign in using a different type of account."""
+    val line2 = """To sign up for quarterly reporting, you’ll need to sign in using a different type of account."""
 
     object Agent {
       val linkId: String = "agent-service"
@@ -424,8 +424,8 @@ object MessageLookup {
   object Error {
 
     object MatchTaxYear {
-      val empty = "Select yes if your client's accounting period matches the tax year"
-      val invalid = "Select yes if your client's accounting period matches the tax year"
+      val empty = "Select yes if your client’s accounting period matches the tax year"
+      val invalid = "Select yes if your client’s accounting period matches the tax year"
     }
 
     object AccountingYear {
@@ -443,8 +443,8 @@ object MessageLookup {
       val lastNameEmpty = "Enter your last name"
       val firstNameInvalid = "Enter a valid first name"
       val lastNameInvalid = "Enter a valid last name"
-      val firstNameMaxLength = "Enter a first name that's 105 characters or less"
-      val lastNameMaxLength = "Enter a last name that's 105 characters or less"
+      val firstNameMaxLength = "Enter a first name that’s 105 characters or less"
+      val lastNameMaxLength = "Enter a last name that’s 105 characters or less"
     }
 
     object Nino {
@@ -501,8 +501,8 @@ object MessageLookup {
       val empty = "Enter an end date"
       val invalid_chars = "Enter an end date using numbers 0 to 9"
       val invalid = "Enter a real end date"
-      val end_violation = "Enter an end date that's after the start date"
-      val end_past = "Enter an end date that's the present date or a future date"
+      val end_violation = "Enter an end date that’s after the start date"
+      val end_past = "Enter an end date that’s the present date or a future date"
     }
 
     object BusinessAccountingPeriod {
@@ -512,13 +512,13 @@ object MessageLookup {
 
     object BusinessName {
       val empty = "You must enter your Business name"
-      val maxLength = "You can't enter more than 105 characters for your Business name"
+      val maxLength = "You can’t enter more than 105 characters for your Business name"
       val invalid = "The business name contains invalid characters"
     }
 
     object BusinessPhoneNumber {
       val empty = "You must enter your business phone number"
-      val maxLength = "You can't enter more than 24 characters for your business phone number"
+      val maxLength = "You can’t enter more than 24 characters for your business phone number"
       val invalid = "The business phone number contains invalid characters"
     }
 
@@ -556,7 +556,7 @@ object MessageLookup {
     }
 
     object ExitSurvey {
-      val maxLength = "You can't enter more than 1200 characters for your feedback"
+      val maxLength = "You can’t enter more than 1200 characters for your feedback"
     }
 
     object UnauthroisedAgent {
@@ -593,10 +593,10 @@ object MessageLookup {
   }
 
   object MainIncomeError {
-    val title = "You can't sign up for quarterly reporting yet"
-    val heading = "You can't sign up for quarterly reporting yet"
-    val para1 = "At the moment, you can only sign up if you're one of the following:"
-    val para2 = "You'll be able to send quarterly reports for other income later in the year."
+    val title = "You can’t sign up for quarterly reporting yet"
+    val heading = "You can’t sign up for quarterly reporting yet"
+    val para1 = "At the moment, you can only sign up if you’re one of the following:"
+    val para2 = "You’ll be able to send quarterly reports for other income later in the year."
     val bullet1 = "a sole trader with income from one business"
     val bullet2 = "someone who rents out a UK property"
     val bullet3 = "a sole trader with income from one business and you rent out a UK property"
@@ -605,7 +605,7 @@ object MessageLookup {
   object ExitSurvey {
     val title = "Give feedback"
     val heading = "Give feedback"
-    val line_1 = "Please don't include any personal or financial information, for example your National Insurance or credit card numbers."
+    val line_1 = "Please don’t include any personal or financial information, for example your National Insurance or credit card numbers."
     val line_2 = "We use your feedback to make our services better."
     val submit = "Send feedback"
 
@@ -632,16 +632,16 @@ object MessageLookup {
   }
 
   object IvFailed {
-    val title = "We're unable to confirm your identity"
+    val title = "We’re unable to confirm your identity"
     val heading = title
-    val line_1 = "To help protect your data, you can only sign up to report your income and expenses quarterly once we've confirmed who you are."
+    val line_1 = "To help protect your data, you can only sign up to report your income and expenses quarterly once we’ve confirmed who you are."
     val hmrcLink = "HM Revenue and Customs (opens in new window)"
-    val line_2 = s"If you can't confirm your identity and you have a query you can contact $hmrcLink to get help."
+    val line_2 = s"If you can’t confirm your identity and you have a query you can contact $hmrcLink to get help."
     val tryAgainLink = "Try to confirm your identity again."
   }
 
   object CannotSignUp {
-    val title = "You can't use this service"
+    val title = "You can’t use this service"
     val heading: String = title
     val linktext = "send a Self Assessment tax return"
     val line1 = "You can only use software to report your Income Tax if you either:"
@@ -660,13 +660,13 @@ object MessageLookup {
   object NotEligibleForIncomeTax {
     val title = "You cannot use this service yet"
     val heading: String = "You cannot use this service yet"
-    val para1 = "This is a trial service. You may be able to use the 'Report your income and expenses quarterly' service in the future."
+    val para1 = "This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service in the future."
   }
 
   object AgentNotEligibleForIncomeTax {
     val title = "You cannot use this service yet"
     val heading: String = "You cannot use this service yet"
-    val para1 = "This is a trial service. You may be able to use the 'Report your income and expenses quarterly' service for your clients in the future."
+    val para1 = "This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service for your clients in the future."
   }
 
   object WhatYearToSignUp {
