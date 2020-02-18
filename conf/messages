@@ -13,7 +13,7 @@ base.endDate                                                    = End date
 base.day                                                        = Day
 base.month                                                      = Month
 base.year                                                       = Year
-base.error_heading                                              = There''s a problem
+base.error_heading                                              = There’s a problem
 base.change                                                     = Change
 base.yes                                                        = Yes
 base.no                                                         = No
@@ -24,7 +24,7 @@ base.title.error                                                = Error: {0}
 
 ## base.userResearch.text                                       = This link opens in a new tab. Please note that this service is not available in Welsh.
 base.dismissBanner                                              = No thanks
-base.dismissBanner.screenReader                                 = I don''t want to answer any questions about joining the research panel
+base.dismissBanner.screenReader                                 = I don’t want to answer any questions about joining the research panel
 base.date-to-date                                               = {0} to {1}
 base.hour                                                       = hour
 base.hours                                                      = hours
@@ -36,19 +36,19 @@ base.seconds                                                    = seconds
 ## Front page
 frontpage.title                                                 = Sign up to report your income and expenses quarterly
 frontpage.heading                                               = Sign up to report your income and expenses quarterly
-frontpage.line_1                                                = By signing up to HM Revenue and Customs secure service, you''re helping to test a new way of working out your tax. You''ll do this by:
+frontpage.line_1                                                = By signing up to HM Revenue and Customs secure service, you’re helping to test a new way of working out your tax. You’ll do this by:
 frontpage.bullet_1                                              = using your accounting software to record your income and expenses
 frontpage.bullet_2                                              = sending details to us regularly from May 2017
 frontpage.bullet_3                                              = agreeing to go paperless
-frontpage.line_2                                                = You can sign up if your current accounting period starts after 5 April 2017 and you''re one of the following:
+frontpage.line_2                                                = You can sign up if your current accounting period starts after 5 April 2017 and you’re one of the following:
 frontpage.bullet_4                                              = a sole trader with income from one business
 frontpage.bullet_5                                              = you rent out a UK property
 frontpage.bullet_6                                              = a sole trader with income from one business and you rent out a UK property
-frontpage.line_3                                                = If you have income other than those listed above, you won''t be able to report it using this service yet.
+frontpage.line_3                                                = If you have income other than those listed above, you won’t be able to report it using this service yet.
 frontpage.sub_heading_1                                         = Sign up using Government Gateway
-frontpage.line_4                                                = You''ll need to enter the user ID and password you got when you signed up to the Self Assessment online service.
-frontpage.sub_heading_2                                         = What happens after you''ve signed up
-frontpage.line_5                                                = You''ll need to:
+frontpage.line_4                                                = You’ll need to enter the user ID and password you got when you signed up to the Self Assessment online service.
+frontpage.sub_heading_2                                         = What happens after you’ve signed up
+frontpage.line_5                                                = You’ll need to:
 frontpage.bullet_7                                              = complete your 2016 to 2017 Self Assessment tax return and pay what you owe by 31 January 2018
 frontpage.bullet_8                                              = send your summary report for the 2017 to 2018 tax year by 31 January 2019
 frontpage.line_6                                                = You can:
@@ -61,9 +61,9 @@ preferences_callback.line_1                                     = To sign up for
 preferences_callback.button                                     = Go back
 
 # are you self-employed page
-are_you_selfemployed.title                                         = Are you self-employed?
-are_you_selfemployed.heading                                       = Are you self-employed?
-are_you_selfemployed.para1                                         = This does not include if your business is a limited company or partnership.
+are_you_selfemployed.title                                      = Are you self-employed?
+are_you_selfemployed.heading                                    = Are you self-employed?
+are_you_selfemployed.para1                                      = This does not include if your business is a limited company or partnership.
 
 ## Rent Uk Property page
 rent_uk_property.title                                          = Do you rent out a UK property?
@@ -77,8 +77,8 @@ property.income.heading                                         = How much was y
 property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
 
 # Cannot Sign Up page
-cannot-sign-up.title                                            = You can''t use this service
-cannot-sign-up.heading                                          = You can''t use this service
+cannot-sign-up.title                                            = You can’t use this service
+cannot-sign-up.heading                                          = You can’t use this service
 cannot-sign-up.para1                                            = You can only use software to report your Income Tax if you either:
 cannot-sign-up.bullet1                                          = are you self-employed
 cannot-sign-up.bullet2                                          = rent out UK property
@@ -95,7 +95,7 @@ business.address.title                                          = Business addre
 business.address.heading                                        = Your business address
 business.address.edit                                           = Edit address
 
-business.address.lookup.heading                                 = What''s your business address?
+business.address.lookup.heading                                 = What’s your business address?
 business.address.lookup.name_or_number                          = House name or number
 business.address.lookup.submit                                  = Search address
 business.address.lookup.enter_manually                          = Enter UK address manually
@@ -104,14 +104,13 @@ business.address.select.title                                   = Choose an addr
 business.address.select.heading                                 = Choose an address
 business.address.select.edit                                    = Edit address
 
-business.address.confirm.heading                                = What''s your business address?
+business.address.confirm.heading                                = What’s your business address?
 business.address.confirm.change                                 = Change
 
 business.address.edit.heading                                   = Enter your address
 business.address.edit.add_line_1                                = Address line 1
 business.address.edit.add_line_2                                = Address line 2
 business.address.edit.add_line_3                                = Address line 3
-
 
 # Match tax year
 business.match_tax_year.title.signup                            = Is your accounting period from 6 April to 5 April?
@@ -133,9 +132,9 @@ business.what_year_to_sign_up.option_1.signup                   = Current tax ye
 business.what_year_to_sign_up.option_2.signup                   = Next tax year ({0} to {1})
 
 # Business start date
-business.start_date.title                                        = Business start date
-business.start_date.heading                                      = When did your business start trading?
-business.start_date.exampleStartDate                             = For example, 1 4 2018
+business.start_date.title                                       = Business start date
+business.start_date.heading                                     = When did your business start trading?
+business.start_date.exampleStartDate                            = For example, 1 4 2018
 
 ## Business Accounting Period page
 accounting_period.title                                         = Business accounting period
@@ -152,46 +151,46 @@ accounting_period.exampleEndDate.registration                   = For example, 5
 # Sole trader page
 business.sole_trader.title                                      = Are you a sole trader?
 business.sole_trader.heading                                    = Are you a sole trader?
-business.sole_trader.line_1                                     = As a sole trader, you run your own business as an individual. You can keep all your business''s profits after you''ve paid tax on them. ''Sole trader'' means you''re responsible for the business, not that you have to work alone.
-business.sole_trader.yes                                        = Yes - I''m a sole trader
+business.sole_trader.line_1                                     = As a sole trader, you run your own business as an individual. You can keep all your business’s profits after you’ve paid tax on them. ‘Sole trader’ means you’re responsible for the business, not that you have to work alone.
+business.sole_trader.yes                                        = Yes - I’m a sole trader
 business.sole_trader.no                                         = No - I am a different type of business
 
 ## Business Accounting Method page
 business.accounting_method.title                                = How do you record your income and expenses for your self-employed business?
 business.accounting_method.heading                              = How do you record your income and expenses for your self-employed business?
 business.accounting_method.accordion                            = Show me an example
-business.accounting_method.accordion.line_1                     = You invoiced someone in March 2017 but didn''t receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:
-business.accounting_method.accordion.bullet_1                   = May 2017, then you use ''cash basis'' accounting
-business.accounting_method.accordion.bullet_2                   = March 2017, then you use ''accruals basis''
+business.accounting_method.accordion.line_1                     = You invoiced someone in March 2017 but didn’t receive the money until May 2017. If you would tell HM Revenue and Customs you received this income in:
+business.accounting_method.accordion.bullet_1                   = May 2017, then you use ‘cash basis’ accounting
+business.accounting_method.accordion.bullet_2                   = March 2017, then you use ‘accruals basis’
 business.accounting_method.cash                                 = <span class="heading-small">Cash basis</span><br>You record on the date you receive money or pay a bill. Many sole traders and small businesses use this method.
-business.accounting_method.accruals                             = <span class="heading-small">Accruals basis</span><br>You record on the date you send or receive an invoice, even if you don''t receive or pay any money. This method is also called ''traditional accounting''.
+business.accounting_method.accruals                             = <span class="heading-small">Accruals basis</span><br>You record on the date you send or receive an invoice, even if you don’t receive or pay any money. This method is also called ‘traditional accounting’.
 
 # Property Accounting Method Page
 property.accounting_method.title                                = How do you record your income and expenses for your property business?
 property.accounting_method.heading                              = How do you record your income and expenses for your property business?
 property.accounting_method.accordion.summary                    = Show me an example
-property.accounting_method.accordion.content.para               = You invoiced someone in March 2017 but didn''t receive the money until May 2017. If you tell HM Revenue and Customs you received this income in:
-property.accounting_method.accordion.content.bullet1            = May 2017, you use ''cash basis'' accounting
-property.accounting_method.accordion.content.bullet2            = March 2017, you use ''accruals basis'' accounting
+property.accounting_method.accordion.content.para               = You invoiced someone in March 2017 but didn’t receive the money until May 2017. If you tell HM Revenue and Customs you received this income in:
+property.accounting_method.accordion.content.bullet1            = May 2017, you use ‘cash basis’ accounting
+property.accounting_method.accordion.content.bullet2            = March 2017, you use ‘accruals basis’ accounting
 property.accounting_method.radio.cash                           = Cash basis
 property.accounting_method.radio.cash.detail                    = You record when you receive a payment from your tenants into your back account and when you pay a bill, for example for repairs and maintenance. Most people use this method.
 property.accounting_method.radio.accruals                       = Accruals basis
-property.accounting_method.radio.accruals.detail                = You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called 'traditional accounting'.
+property.accounting_method.radio.accruals.detail                = You record on the date you send your tenants an invoice or request a payment, even if you do not receive any money. You record on the date you receive an invoice for repairs or maintenance. This is also called ‘traditional accounting’.
 
 ## Business Name
 business.name.title                                             = Business name
-business.name.heading                                           = What''s the name of your business?
-business.name.signup.line_1                                     = This is the business name you used to register for Self Assessment. If your business doesn''t have a name, enter your own name.
-business.name.registration.line_1                               = If your business doesn''t have a name, enter your own name.
+business.name.heading                                           = What’s the name of your business?
+business.name.signup.line_1                                     = This is the business name you used to register for Self Assessment. If your business doesn’t have a name, enter your own name.
+business.name.registration.line_1                               = If your business doesn’t have a name, enter your own name.
 
 ## Business Phone number
 business.phone_number.title                                     = Business phone number
-business.phone_number.heading                                   = What''s your business telephone number?
+business.phone_number.heading                                   = What’s your business telephone number?
 
 ## Contact Email Address page ##
 contact_email.title                                             = Enter your email address
 contact_email.heading                                           = Enter your email address
-contact_email.line_1                                            = We''ll use this to get in touch with updates about your estimated Income Tax calculations.
+contact_email.line_1                                            = We’ll use this to get in touch with updates about your estimated Income Tax calculations.
 
 ## Email Preferences ##
 preferences.returnLinkText                                      = Continue
@@ -199,16 +198,16 @@ preferences.returnLinkText                                      = Continue
 ## Timeout page ##
 timeout.title                                                   = Your session has timed out
 timeout.heading                                                 = Your session has timed out
-timeout.returnToHome                                            = To sign up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
+timeout.returnToHome                                            = To sign up for quarterly reporting, you’ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Already enrolled page ##
-already-enrolled.title                                          = You''ve already signed up
-already-enrolled.heading                                        = You''ve already signed up
+already-enrolled.title                                          = You’ve already signed up
+already-enrolled.heading                                        = You’ve already signed up
 already-enrolled.line1                                          = Your sign in details are already in use.
 
 ## Claim subscription page ##
-claim-subscription.title                                        = You''ve already signed up for quarterly reporting
-claim-subscription.heading                                      = You''ve already signed up for quarterly reporting
+claim-subscription.title                                        = You’ve already signed up for quarterly reporting
+claim-subscription.heading                                      = You’ve already signed up for quarterly reporting
 
 
 ## Summary page ##
@@ -216,21 +215,21 @@ summary.title                                                   = Check your ans
 summary.heading                                                 = Check your answers
 summary.heading_hidden                                          = before signing up
 summary.confirm_and_sign_up                                     = Confirm and sign up
-summary.line_1                                                  = You can edit your answers if you need to.<br>When you''re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
-summary.h2                                                      = You''ve told us
+summary.line_1                                                  = You can edit your answers if you need to.<br>When you’re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
+summary.h2                                                      = You’ve told us
 summary.income_source                                           = Where does your income come from?
 summary.rent_uk_property_1                                      = You rent out UK property
 summary.rent_uk_property_2                                      = You only receive income from self-employment
-summary.are_you_selfemployed                                    = You''re self-employed
+summary.are_you_selfemployed                                    = You’re self-employed
 summary.income_source.business                                  = Sole trader business
 summary.income_source.property                                  = Property
 summary.income_source.both                                      = Sole trader business and property
 summary.match_tax_year                                          = Your accounting period matches the tax year
 summary.accounting_period                                       = Your accounting period dates
-summary.accounting_period.registration                          = When''s your current accounting period?
+summary.accounting_period.registration                          = When’s your current accounting period?
 summary.business_name                                           = Your business name
-summary.business_phone                                          = What''s your business telephone number?
-summary.business_address                                        = What''s your business address?
+summary.business_phone                                          = What’s your business telephone number?
+summary.business_address                                        = What’s your business address?
 summary.business_start_date                                     = When did your business start trading?
 summary.income_type                                             = Your accounting method for your self-employed business
 summary.income_type.cash                                        = Cash basis
@@ -245,7 +244,7 @@ confirmation.title                                              = Confirmation p
 confirmation.heading                                            = Sign up complete
 confirmation.whatHappensNext.heading                            = What happens next
 confirmation.whatHappensNext.para1                              = You must use accounting software to record your income and expenses and send a report to HM Revenue and Customs at least every quarter.
-confirmation.whatHappensNext.para2                              = After you send a report you''ll get an Income Tax estimate. You can view your estimate and report deadlines in your:
+confirmation.whatHappensNext.para2                              = After you send a report you’ll get an Income Tax estimate. You can view your estimate and report deadlines in your:
 confirmation.whatHappensNext.bullet1                            = <a id="accountingSoftware" href="{0}">accounting software</a>
 confirmation.whatHappensNext.bullet2                            = <a id="bta" href="{0}">business tax account</a>
 confirmation.whatHappensNext.para4                              = It may take a few hours for them all to appear.
@@ -264,7 +263,6 @@ sign-up-complete.whatHappensNext.para1                          = After you have
 sign-up-complete.whatHappensNext.bullet1                        = accounting software
 sign-up-complete.whatHappensNext.bullet2                        = <a id="bta" href="{0}">HMRC online account</a>
 sign-up-complete.whatHappensNext.para2                          = It may take a few hours for your information to appear.
-
 
 ## Errors ##
 error.back_to_preferences.empty                                 = You must select an option to continue
@@ -293,11 +291,11 @@ error.business.match_tax_year.invalid                           = Select yes if 
 error.business_accounting_period.minStartDate                   = The start date of your accounting period must be in the future.
 
 error.business_name.empty                                       = You must enter your Business name
-error.business_name.maxLength                                   = You can''t enter more than 105 characters for your Business name
+error.business_name.maxLength                                   = You can’t enter more than 105 characters for your Business name
 error.business_name.invalid                                     = The business name contains invalid characters
 
 error.business_phone_number.empty                               = You must enter your business phone number
-error.business_phone_number.maxLength                           = You can''t enter more than 24 characters for your business phone number
+error.business_phone_number.maxLength                           = You can’t enter more than 24 characters for your business phone number
 error.business_phone_number.invalid                             = The business phone number contains invalid characters
 
 error.contact_email.empty                                       = Please enter a contact email
@@ -313,8 +311,8 @@ error.user_details.first_name.empty                             = Enter your fir
 error.user_details.last_name.empty                              = Enter your last name
 error.user_details.first_name.invalid                           = Enter a valid first name
 error.user_details.last_name.invalid                            = Enter a valid last name
-error.user_details.first_name.maxLength                         = Enter a first name that''s 105 characters or less
-error.user_details.last_name.maxLength                          = Enter a last name that''s 105 characters or less
+error.user_details.first_name.maxLength                         = Enter a first name that’s 105 characters or less
+error.user_details.last_name.maxLength                          = Enter a last name that’s 105 characters or less
 
 error.nino.invalid                                              = Enter a valid National Insurance number
 error.nino.empty                                                = Enter your National Insurance number
@@ -340,7 +338,7 @@ error.rent-uk-property.invalid                                  = Select yes if 
 error.rent-uk-property.only-source-empty                        = Select yes if this is your only source of self-employed income
 error.rent-uk-property.only-source-invalid                      = Select yes if this is your only source of self-employed income
 
-error.survey-feedback.maxLength                                 = You can''t enter more than 1200 characters for your feedback
+error.survey-feedback.maxLength                                 = You can’t enter more than 1200 characters for your feedback
 
 error.confirm-agent.empty                                       = You must select an option to continue
 error.confirm-agent.invalid                                     = You must select an option to continue
@@ -359,24 +357,24 @@ user-details.field_1                                            = First name
 user-details.field_2                                            = Last name
 user-details.field_3                                            = National Insurance number
 user-details.field_4                                            = Date of birth
-user_details.formhint.1.line_1                                  = For example, ''QQ 12 34 56 C''.
+user_details.formhint.1.line_1                                  = For example, ‘QQ 12 34 56 C’.
 user-details.formhint.2                                         = For example, 10 12 1990
 
 # User details page
 user-details-error.title                                        = User match error
-user-details-error.heading                                      = We couldn''t confirm your details
-user-details-error.line_1                                       = The details you''ve entered are not on our system.
+user-details-error.heading                                      = We couldn’t confirm your details
+user-details-error.line_1                                       = The details you’ve entered are not on our system.
 
 # User Details Lockout
-user-details-lockout.title                                      = You''ve been locked out
-user-details-lockout.heading                                    = You''ve been locked out
-user-details-lockout.line_1                                     = To sign up for quarterly reporting, you''ll have to try again in {0}.
+user-details-lockout.title                                      = You’ve been locked out
+user-details-lockout.heading                                    = You’ve been locked out
+user-details-lockout.line_1                                     = To sign up for quarterly reporting, you’ll have to try again in {0}.
 
 # Check your details page
 user-details.summary.title                                      = Confirm your details
 user-details.summary.heading                                    = Check your answers
 user-details.summary.heading_hidden                             = before looking up your details
-user-details.summary.h2                                         = You''ve told us
+user-details.summary.h2                                         = You’ve told us
 user-details.summary.first_name                                 = First name
 user-details.summary.last_name                                  = Last name
 user-details.summary.nino                                       = National Insurance number
@@ -389,32 +387,32 @@ no-sa.heading                                                   = You need to re
 no-sa.line_1                                                    = Before you can sign up to use software to report your Income Tax, you need to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
 ## cannot report before 6 April 2018 page ##
-cannot-report-yet.title                                        = You can''t use software to report your Income Tax yet
-cannot-report-yet.heading                                      = You can''t use software to report your Income Tax yet
-cannot-report-yet.para1                                        = You can sign up and use software to record your income and expenses, but you can''t send any reports until {0}.
-cannot-report-yet.para2                                        = You need to send a <a id="sa" href="{0}">Self Assessment tax return</a> instead.
+cannot-report-yet.title                                         = You can’t use software to report your Income Tax yet
+cannot-report-yet.heading                                       = You can’t use software to report your Income Tax yet
+cannot-report-yet.para1                                         = You can sign up and use software to record your income and expenses, but you can’t send any reports until {0}.
+cannot-report-yet.para2                                         = You need to send a <a id="sa" href="{0}">Self Assessment tax return</a> instead.
 
 ## can report business but not property yet page ##
-cannot-report-property-yet.title                               = You can''t use software to report your property income yet
-cannot-report-property-yet.heading                             = You can''t use software to report your property income yet
-cannot-report-property-yet.para1                               = You can use software to report the work you do for yourself.
-cannot-report-property-yet.para2                               = You can''t use software to submit a report for your property income until 6 April 2018. You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead.
+cannot-report-property-yet.title                                = You can’t use software to report your property income yet
+cannot-report-property-yet.heading                              = You can’t use software to report your property income yet
+cannot-report-property-yet.para1                                = You can use software to report the work you do for yourself.
+cannot-report-property-yet.para2                                = You can’t use software to submit a report for your property income until 6 April 2018. You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead.
 
 ## cannot report yet both misaligned page ##
-cannot-report-yet-both-misaligned.title                        = You can''t use software to report your Income Tax yet
-cannot-report-yet-both-misaligned.heading                      = You can''t use software to report your Income Tax yet
-cannot-report-yet-both-misaligned.para1                        = You can sign up and use software to record your income and expenses, but you won''t be able to submit a report for:
-cannot-report-yet-both-misaligned.bullet1                      = property income until 6 April 2018
-cannot-report-yet-both-misaligned.bullet2                      = sole trader income until {0}
-cannot-report-yet-both-misaligned.para2                        = You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead.
+cannot-report-yet-both-misaligned.title                         = You can’t use software to report your Income Tax yet
+cannot-report-yet-both-misaligned.heading                       = You can’t use software to report your Income Tax yet
+cannot-report-yet-both-misaligned.para1                         = You can sign up and use software to record your income and expenses, but you won’t be able to submit a report for:
+cannot-report-yet-both-misaligned.bullet1                       = property income until 6 April 2018
+cannot-report-yet-both-misaligned.bullet2                       = sole trader income until {0}
+cannot-report-yet-both-misaligned.para2                         = You need to <a id="sa" href="{0}">send a Self Assessment tax return</a> instead.
 
 ## agent cannot report yet both misaligned page ##
-agent-cannot-report-yet-both-misaligned.title                  = Your client can''t use software to report their Income Tax yet
-agent-cannot-report-yet-both-misaligned.heading                = Your client can''t use software to report their Income Tax yet
-agent-cannot-report-yet-both-misaligned.para1                  = You can still sign this client up and use software to record their income and expenses, but they won''t be able to submit a report for their:
-agent-cannot-report-yet-both-misaligned.bullet1                = property income until 6 April 2018
-agent-cannot-report-yet-both-misaligned.bullet2                = sole trader income until {0}
-agent-cannot-report-yet-both-misaligned.para2                  = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
+agent-cannot-report-yet-both-misaligned.title                   = Your client can’t use software to report their Income Tax yet
+agent-cannot-report-yet-both-misaligned.heading                 = Your client can’t use software to report their Income Tax yet
+agent-cannot-report-yet-both-misaligned.para1                   = You can still sign this client up and use software to record their income and expenses, but they won’t be able to submit a report for their:
+agent-cannot-report-yet-both-misaligned.bullet1                 = property income until 6 April 2018
+agent-cannot-report-yet-both-misaligned.bullet2                 = sole trader income until {0}
+agent-cannot-report-yet-both-misaligned.para2                   = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Exit survey
 exit-survey.title                                               = Give feedback
@@ -430,7 +428,7 @@ exit-survey.q1.option.5                                         = Very dissatisf
 
 exit-survey.q2                                                  = How could we improve this service?
 
-exit-survey.line_1                                              = Please don''t include any personal or financial information, for example your National Insurance or credit card numbers.
+exit-survey.line_1                                              = Please don’t include any personal or financial information, for example your National Insurance or credit card numbers.
 exit-survey.line_2                                              = We use your feedback to make our services better.
 exit-survey.submit                                              = Send feedback
 
@@ -446,342 +444,340 @@ feedback.title                                                  = Send your feed
 feedback.thankyou.title                                         = Feedback received
 
 ## Affinity Group Error
-affinity-group-error.title                                      = You can''t use this service
-affinity-group-error.heading                                    = You can''t use this service
+affinity-group-error.title                                      = You can’t use this service
+affinity-group-error.heading                                    = You can’t use this service
 affinity-group-error.line1                                      = You can only use this service if you have an individual Government Gateway account.
-affinity-group-error.line2                                      = To sign up for quarterly reporting, you''ll need to <a id="sign-out" href="{0}">sign in using a different type of account.</a>
+affinity-group-error.line2                                      = To sign up for quarterly reporting, you’ll need to <a id="sign-out" href="{0}">sign in using a different type of account.</a>
 affinity-group-error.agent.line1                                = To sign up for quarterly reporting with these sign in details, you need to <a id="agent-service" href="{0}">use our agent service.</a>
 
 ## IV Error
-iv-error.title                                                  = We''re unable to confirm your identity
-iv-error.heading                                                = We''re unable to confirm your identity
-iv-error.line1                                                  = To help protect your data, you can only sign up to report your income and expenses quarterly once we''ve confirmed who you are.
-iv-error.line2                                                  = If you can''t confirm your identity and you have a query you can contact <a id="contact-hmrc" href="{0}" target="_blank"> HM Revenue and Customs (opens in new window)</a> to get help.
+iv-error.title                                                  = We’re unable to confirm your identity
+iv-error.heading                                                = We’re unable to confirm your identity
+iv-error.line1                                                  = To help protect your data, you can only sign up to report your income and expenses quarterly once we’ve confirmed who you are.
+iv-error.line2                                                  = If you can’t confirm your identity and you have a query you can contact <a id="contact-hmrc" href="{0}" target="_blank"> HM Revenue and Customs (opens in new window)</a> to get help.
 iv-error.try_again                                              = <a id="try-again" href="{0}"> Try to confirm your identity again.</a>
 
 ## Base ##
 agent.base.service_name                                         = Sign up your client for quarterly reporting
-agent.base.back                                                       = Back
-agent.base.continue                                                   = Continue
-agent.base.update                                                     = Update
-agent.base.sign-out                                                   = Sign out
-agent.base.sign-up                                                    = Sign up
-agent.base.start-now                                                  = Start now
-agent.base.submit                                                     = Submit
-agent.base.startDate                                                  = Start date
-agent.base.endDate                                                    = End date
-agent.base.day                                                        = Day
-agent.base.month                                                      = Month
-agent.base.year                                                       = Year
-agent.base.error_heading                                              = There''s a problem
-agent.base.change                                                     = Change
-agent.base.yes                                                        = Yes
-agent.base.no                                                         = No
-agent.base.go_back                                                    = Go back
-agent.base.try_again                                                  = Try again
+agent.base.back                                                 = Back
+agent.base.continue                                             = Continue
+agent.base.update                                               = Update
+agent.base.sign-out                                             = Sign out
+agent.base.sign-up                                              = Sign up
+agent.base.start-now                                            = Start now
+agent.base.submit                                               = Submit
+agent.base.startDate                                            = Start date
+agent.base.endDate                                              = End date
+agent.base.day                                                  = Day
+agent.base.month                                                = Month
+agent.base.year                                                 = Year
+agent.base.error_heading                                        = There’s a problem
+agent.base.change                                               = Change
+agent.base.yes                                                  = Yes
+agent.base.no                                                   = No
+agent.base.go_back                                              = Go back
+agent.base.try_again                                            = Try again
 
 # Agent front page
-agent.frontpage.title                                                 = Sign up to report your client''s income and expenses quarterly
-agent.frontpage.heading                                               = Sign up to report your client''s income and expenses quarterly
-agent.frontpage.para_1                                                = By signing up to HM Revenue and Customs secure service, you''re helping to test a new way of working out your client''s tax. You''ll do this by:
-agent.frontpage.bullet_1                                              = using your accounting software to record your client''s income and expenses
-agent.frontpage.bullet_2                                              = sending details to us regularly from July 2017
-agent.frontpage.para_2                                                = You can sign up your client if their current accounting period starts after 5 April 2017 and they''re one of the following:
-agent.frontpage.bullet_3                                              = a sole trader with income from one business
-agent.frontpage.bullet_4                                              = someone who rents out a UK property
-agent.frontpage.bullet_5                                              = a sole trader with income from one business and they rent out a UK property
-agent.frontpage.para_3                                                = If your client has any income other than those listed above, you won''t be able to report it using this service yet.
-agent.frontpage.sub_heading_1                                         = Sign up using Government Gateway
-agent.frontpage.para_4                                                = You''ll need to enter the user ID and password you got when you created your Agent Services account.
-agent.frontpage.sub_heading_2                                         = Before you start
-agent.frontpage.para_5                                                = You''ll need your client''s:
-agent.frontpage.bullet_6                                              = full name
-agent.frontpage.bullet_7                                              = date of birth
-agent.frontpage.bullet_8                                              = National Insurance Number
-agent.frontpage.para_6                                                = To use this service:
-agent.frontpage.bullet_9                                              = you need to <a href="{0}">create an Agent Services account</a>
-agent.frontpage.bullet_10                                             = your client needs to <a href="{0}">authorise you as their agent</a>
+agent.frontpage.title                                           = Sign up to report your client’s income and expenses quarterly
+agent.frontpage.heading                                         = Sign up to report your client’s income and expenses quarterly
+agent.frontpage.para_1                                          = By signing up to HM Revenue and Customs secure service, you’re helping to test a new way of working out your client’s tax. You’ll do this by:
+agent.frontpage.bullet_1                                        = using your accounting software to record your client’s income and expenses
+agent.frontpage.bullet_2                                        = sending details to us regularly from July 2017
+agent.frontpage.para_2                                          = You can sign up your client if their current accounting period starts after 5 April 2017 and they’re one of the following:
+agent.frontpage.bullet_3                                        = a sole trader with income from one business
+agent.frontpage.bullet_4                                        = someone who rents out a UK property
+agent.frontpage.bullet_5                                        = a sole trader with income from one business and they rent out a UK property
+agent.frontpage.para_3                                          = If your client has any income other than those listed above, you won’t be able to report it using this service yet.
+agent.frontpage.sub_heading_1                                   = Sign up using Government Gateway
+agent.frontpage.para_4                                          = You’ll need to enter the user ID and password you got when you created your Agent Services account.
+agent.frontpage.sub_heading_2                                   = Before you start
+agent.frontpage.para_5                                          = You’ll need your client’s:
+agent.frontpage.bullet_6                                        = full name
+agent.frontpage.bullet_7                                        = date of birth
+agent.frontpage.bullet_8                                        = National Insurance Number
+agent.frontpage.para_6                                          = To use this service:
+agent.frontpage.bullet_9                                        = you need to <a href="{0}">create an Agent Services account</a>
+agent.frontpage.bullet_10                                       = your client needs to <a href="{0}">authorise you as their agent</a>
 
 # Client details page
-agent.client-details-error.title                                      = There''s a problem
-agent.client-details-error.heading                                    = There''s a problem
-agent.client-details-error.line_1                                     = The details you''ve entered are not on our system.
+agent.client-details-error.title                                = There’s a problem
+agent.client-details-error.heading                              = There’s a problem
+agent.client-details-error.line_1                               = The details you’ve entered are not on our system.
 
 # Client Details Lockout
-agent.client-details-lockout.title                                    = You''ve been locked out
-agent.client-details-lockout.heading                                  = You''ve been locked out
-agent.client-details-lockout.line_1                                   = To sign your client up for quarterly reporting, you''ll have to try again in {0}.
+agent.client-details-lockout.title                              = You’ve been locked out
+agent.client-details-lockout.heading                            = You’ve been locked out
+agent.client-details-lockout.line_1                             = To sign your client up for quarterly reporting, you’ll have to try again in {0}.
 
-# Check your client's details page
-agent.client-details.summary.title                                    = Confirm your client
-agent.client-details.summary.heading                                  = Check your answers
-agent.client-details.summary.heading_hidden                           = before looking up your client
-agent.client-details.summary.h2                                       = You''ve told us
-agent.client-details.summary.first_name                               = First name
-agent.client-details.summary.last_name                                = Last name
-agent.client-details.summary.nino                                     = National Insurance number
-agent.client-details.summary.dob                                      = Date of birth
+# Check your client’s details page
+agent.client-details.summary.title                              = Confirm your client
+agent.client-details.summary.heading                            = Check your answers
+agent.client-details.summary.heading_hidden                     = before looking up your client
+agent.client-details.summary.h2                                 = You’ve told us
+agent.client-details.summary.first_name                         = First name
+agent.client-details.summary.last_name                          = Last name
+agent.client-details.summary.nino                               = National Insurance number
+agent.client-details.summary.dob                                = Date of birth
 
 ## Income source page
-agent.income_source.title                                             = Select your client''s income type
-agent.income_source.heading                                           = Select your client''s income type
-agent.income_source.business                                          = Sole trader business
-agent.income_source.property                                          = Renting out a UK property
-agent.income_source.both                                              = Their sole trader business and renting out a UK property
-
+agent.income_source.title                                       = Select your client’s income type
+agent.income_source.heading                                     = Select your client’s income type
+agent.income_source.business                                    = Sole trader business
+agent.income_source.property                                    = Renting out a UK property
+agent.income_source.both                                        = Their sole trader business and renting out a UK property
 
 # Property income page
-agent.property.income.title                                           = How much was your income from property this year?
-agent.property.income.heading                                         = How much was your income from property this year?
-agent.property.income.line_1                                          = This is the amount you made before deducting any allowable expenses.
+agent.property.income.title                                     = How much was your income from property this year?
+agent.property.income.heading                                   = How much was your income from property this year?
+agent.property.income.line_1                                    = This is the amount you made before deducting any allowable expenses.
 
 ## Match Tax Year page
-agent.business.match_tax_year.heading                                 = Does your client''s accounting period match the tax year?
-agent.business.match_tax_year.para1                                   = The tax year runs from 6 April to 5 April.
-agent.business.match_tax_year.para2                                   = Your client''s accounting period is the same unless you have previously chosen different dates.
+agent.business.match_tax_year.heading                           = Does your client’s accounting period match the tax year?
+agent.business.match_tax_year.para1                             = The tax year runs from 6 April to 5 April.
+agent.business.match_tax_year.para2                             = Your client’s accounting period is the same unless you have previously chosen different dates.
 
 ## Accounting Year page
-agent.business.what_year_to_sign_up.heading                           = What tax year do you want to sign your client up for?
-agent.business.what_year_to_sign_up.line_1                            = You can sign your client up for the current year or the next year.
-agent.business.what_year_to_sign_up.example_line_1                    = For example, if your client''s accounting period runs from 6 April {0} to 5 April {1}, you will sign your client up for the current year {0} to {1}.
-agent.business.what_year_to_sign_up.example_line_2                    = If your client''s accounting period runs from 6 April {0} to 5 April {1}, you will sign your client up for next year {0} to {1}.
-agent.business.what_year_to_sign_up.option_1                   = Current tax year ({0} to {1})
-agent.business.what_year_to_sign_up.option_2                   = Next tax year ({0} to {1})
+agent.business.what_year_to_sign_up.heading                     = What tax year do you want to sign your client up for?
+agent.business.what_year_to_sign_up.line_1                      = You can sign your client up for the current year or the next year.
+agent.business.what_year_to_sign_up.example_line_1              = For example, if your client’s accounting period runs from 6 April {0} to 5 April {1}, you will sign your client up for the current year {0} to {1}.
+agent.business.what_year_to_sign_up.example_line_2              = If your client’s accounting period runs from 6 April {0} to 5 April {1}, you will sign your client up for next year {0} to {1}.
+agent.business.what_year_to_sign_up.option_1                    = Current tax year ({0} to {1})
+agent.business.what_year_to_sign_up.option_2                    = Next tax year ({0} to {1})
 
 ## Business Accounting Period page
-agent.accounting_period.title                                         = What accounting period are you signing your client up for?
-agent.accounting_period.heading                                       = What accounting period are you signing your client up for?
-agent.accounting_period.line1                                         = For example, if your accounting period is 1 August {0} to 31 July {1}, you will be signing up for the {1} to {2} tax year.
-agent.accounting_period.exampleStartDate.current                      = For example, 1 4 {0}
-agent.accounting_period.exampleEndDate.current                        = For example, 31 3 {0}
-agent.accounting_period.exampleStartDate.next                         = For example, 1 4 {0}
-agent.accounting_period.exampleEndDate.next                           = For example, 31 3 {0}
+agent.accounting_period.title                                   = What accounting period are you signing your client up for?
+agent.accounting_period.heading                                 = What accounting period are you signing your client up for?
+agent.accounting_period.line1                                   = For example, if your accounting period is 1 August {0} to 31 July {1}, you will be signing up for the {1} to {2} tax year.
+agent.accounting_period.exampleStartDate.current                = For example, 1 4 {0}
+agent.accounting_period.exampleEndDate.current                  = For example, 31 3 {0}
+agent.accounting_period.exampleStartDate.next                   = For example, 1 4 {0}
+agent.accounting_period.exampleEndDate.next                     = For example, 31 3 {0}
 
 # Sole trader page
-agent.business.sole_trader.title                                      = Are you a sole trader?
-agent.business.sole_trader.heading                                    = Are you a sole trader?
-agent.business.sole_trader.line_1                                     = As a sole trader, you run your own business as an individual. You can keep all your business''s profits after you''ve paid tax on them. ''Sole trader'' means you''re responsible for the business, not that you have to work alone.
-agent.business.sole_trader.yes                                        = Yes - I''m a sole trader
-agent.business.sole_trader.no                                         = No - I am a different type of business
+agent.business.sole_trader.title                                = Are you a sole trader?
+agent.business.sole_trader.heading                              = Are you a sole trader?
+agent.business.sole_trader.line_1                               = As a sole trader, you run your own business as an individual. You can keep all your business’s profits after you’ve paid tax on them. ‘Sole trader’ means you’re responsible for the business, not that you have to work alone.
+agent.business.sole_trader.yes                                  = Yes - I’m a sole trader
+agent.business.sole_trader.no                                   = No - I am a different type of business
 
 ## Business Income page
-agent.business.accounting_method.title                                = What accounting method does your client use for their self-employed business?
-agent.business.accounting_method.heading                              = What accounting method does your client use for their self-employed business?
-agent.business.accounting_method.cash                                 = Cash basis
-agent.business.accounting_method.accruals                             = Accruals basis
+agent.business.accounting_method.title                          = What accounting method does your client use for their self-employed business?
+agent.business.accounting_method.heading                        = What accounting method does your client use for their self-employed business?
+agent.business.accounting_method.cash                           = Cash basis
+agent.business.accounting_method.accruals                       = Accruals basis
 
 
 # Agent Property Accounting Method Page
-agent.property.accounting_method.title                                = What accounting method does your client use for their property business?
-agent.property.accounting_method.radio.cash                           = Cash basis
-agent.property.accounting_method.radio.accruals                       = Accruals basis
+agent.property.accounting_method.title                          = What accounting method does your client use for their property business?
+agent.property.accounting_method.radio.cash                     = Cash basis
+agent.property.accounting_method.radio.accruals                 = Accruals basis
 
 
 ## Business Name
-agent.business.name.title                                             = Business name
-agent.business.name.heading                                           = What''s the name of your client''s business?
-agent.business.name.line_1                                            = This is the business name they used to register for Self Assessment. If their business doesn''t have a name, enter your client''s name.
+agent.business.name.title                                       = Business name
+agent.business.name.heading                                     = What’s the name of your client’s business?
+agent.business.name.line_1                                      = This is the business name they used to register for Self Assessment. If their business doesn’t have a name, enter your client’s name.
 
 ## Contact Email Address page ##
-agent.contact_email.title                                             = Enter your email address
-agent.contact_email.heading                                           = Enter your email address
-agent.contact_email.line_1                                            = We''ll use this to get in touch with updates about your estimated Income Tax calculations.
+agent.contact_email.title                                       = Enter your email address
+agent.contact_email.heading                                     = Enter your email address
+agent.contact_email.line_1                                      = We’ll use this to get in touch with updates about your estimated Income Tax calculations.
 
 ## Email Preferences ##
-agent.preferences.returnLinkText                                      = Continue
+agent.preferences.returnLinkText                                = Continue
 
 ## Timeout page ##
-agent.timeout.title                                                   = Your session has timed out
-agent.timeout.heading                                                 = Your session has timed out
-agent.timeout.returnToHome                                            = To sign your client up for quarterly reporting, you''ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
+agent.timeout.title                                             = Your session has timed out
+agent.timeout.heading                                           = Your session has timed out
+agent.timeout.returnToHome                                      = To sign your client up for quarterly reporting, you’ll have to <a href="{0}" rel="external">sign in</a> using your Government Gateway ID.
 
 ## Client already subscribed page ##
-agent.client-already-subscribed.title                                 = Your client has already signed up
-agent.client-already-subscribed.heading                               = Your client has already signed up
-agent.client-already-subscribed.para1                                 = This client''s details are already in use.
+agent.client-already-subscribed.title                           = Your client has already signed up
+agent.client-already-subscribed.heading                         = Your client has already signed up
+agent.client-already-subscribed.para1                           = This client’s details are already in use.
 
 ## No client relationship page ##
-agent.no-client-relationship.title                                    = You''re not authorised for this client
-agent.no-client-relationship.heading                                  = You''re not authorised for this client
-agent.no-client-relationship.para1                                    = To send quarterly reports, your client must authorise you as their agent.
+agent.no-client-relationship.title                              = You’re not authorised for this client
+agent.no-client-relationship.heading                            = You’re not authorised for this client
+agent.no-client-relationship.para1                              = To send quarterly reports, your client must authorise you as their agent.
 
 ## Client cannot report property page ##
-agent.cannot-report-property-yet.title                                = You can''t use software to report your client''s property income yet
-agent.cannot-report-property-yet.heading                              = You can''t use software to report your client''s property income yet
-agent.cannot-report-property-yet.para1                                = You can use software to report your client''s sole trader income.
-agent.cannot-report-property-yet.para2                                = They won''t be able to submit a report for their property income until 6 April 2018. Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
+agent.cannot-report-property-yet.title                          = You can’t use software to report your client’s property income yet
+agent.cannot-report-property-yet.heading                        = You can’t use software to report your client’s property income yet
+agent.cannot-report-property-yet.para1                          = You can use software to report your client’s sole trader income.
+agent.cannot-report-property-yet.para2                          = They won’t be able to submit a report for their property income until 6 April 2018. Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Client cannot report before 6 April 2018 page ##
-agent.cannot-report-yet.title                                         = Your client can''t use software to report their Income Tax yet
-agent.cannot-report-yet.heading                                       = Your client can''t use software to report their Income Tax yet
-agent.cannot-report-yet.para1                                         = You can still sign this client up and use software to record their income and expenses, but they won''t be able to submit a report until {0}.
-agent.cannot-report-yet.para2                                         = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
+agent.cannot-report-yet.title                                   = Your client can’t use software to report their Income Tax yet
+agent.cannot-report-yet.heading                                 = Your client can’t use software to report their Income Tax yet
+agent.cannot-report-yet.para1                                   = You can still sign this client up and use software to record their income and expenses, but they won’t be able to submit a report until {0}.
+agent.cannot-report-yet.para2                                   = Your client still needs to <a id="sa" href="{0}">send a Self Assessment tax return</a>.
 
 ## Agent Summary page ##
-agent.summary.title                                                   = Check your answers
-agent.summary.heading                                                 = Check your answers
-agent.summary.heading_hidden                                          = before signing up
-agent.summary.confirm_and_sign_up                                     = Confirm and sign up
-agent.summary.line_1                                                  = You can edit your answers if you need to.<br>When you''re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
-agent.summary.h2                                                      = You''ve told us
-agent.summary.income_source                                           = Client''s income type
-agent.summary.income_source.business                                  = Sole trader business
-agent.summary.income_source.property                                  = Property
-agent.summary.income_source.both                                      = Sole trader business and property
-agent.summary.accounting_period                                       = Your client''s accounting period dates
-agent.summary.business_name                                           = Business name
-agent.summary.income_type                                             = Accounting method for their self-employed business
-agent.summary.income_type_property                                    = Accounting method for their property business
-agent.summary.income_type.cash                                        = Cash basis
-agent.summary.income_type.accruals                                    = Accruals basis
-agent.summary.match_tax_year                                          = Accounting period matches tax year
-agent.summary.selected_year                                           = Year signed-up for
-agent.summary.selected_year.current                                   = Current tax year ({0} to {1})
-agent.summary.selected_year.next                                      = Next tax year ({0} to {1})
+agent.summary.title                                             = Check your answers
+agent.summary.heading                                           = Check your answers
+agent.summary.heading_hidden                                    = before signing up
+agent.summary.confirm_and_sign_up                               = Confirm and sign up
+agent.summary.line_1                                            = You can edit your answers if you need to.<br>When you’re ready, submit your answers to sign up to send HMRC digital income and expenditure updates.
+agent.summary.h2                                                = You’ve told us
+agent.summary.income_source                                     = Client’s income type
+agent.summary.income_source.business                            = Sole trader business
+agent.summary.income_source.property                            = Property
+agent.summary.income_source.both                                = Sole trader business and property
+agent.summary.accounting_period                                 = Your client’s accounting period dates
+agent.summary.business_name                                     = Business name
+agent.summary.income_type                                       = Accounting method for their self-employed business
+agent.summary.income_type_property                              = Accounting method for their property business
+agent.summary.income_type.cash                                  = Cash basis
+agent.summary.income_type.accruals                              = Accruals basis
+agent.summary.match_tax_year                                    = Accounting period matches tax year
+agent.summary.selected_year                                     = Year signed-up for
+agent.summary.selected_year.current                             = Current tax year ({0} to {1})
+agent.summary.selected_year.next                                = Next tax year ({0} to {1})
 
 ## Sign Up Complete page ##
-agent.sign-up-complete.title                                          = You have signed up your client for the Use software to send Income Tax updates pilot
-agent.sign-up-complete.heading                                        = You have signed up your client for the Use software to send Income Tax updates pilot
-agent.sign-up-complete.whatNext.heading                               = What you need to do next
-agent.sign-up-complete.whatNext.para1                                 = Either you or your client must complete the steps below. If you both use software, it''s important to choose packages that can interact with each other.
-agent.sign-up-complete.whatNext.number1                               = <a id="accountingSoftware" href="{0}">Choose relevant software (opens in a new window)</a> if you haven''t already.
-agent.sign-up-complete.whatNext.number2                               = Allow your software to interact with HMRC.
-agent.sign-up-complete.whatNext.number3                               = Add all income and expenses your client has already received or paid out from the start of their tax year into the software.
-agent.sign-up-complete.whatNext.number4                               = Continue to record your client''s income and expenses using software and send a quarterly report to HMRC.
-agent.sign-up-complete.whatNext.number5                               = Send your client''s final report by 31 January after the end of the tax year you''re signing them up for.
-agent.sign-up-complete.whatNext.para2                                 = After you''ve sent a report, your client will get an Income Tax estimate. They can see what they owe for the tax year after you’ve sent their final report.
-agent.sign-up-complete.add_another                                    = Sign up another client
+agent.sign-up-complete.title                                    = You have signed up your client for the Use software to send Income Tax updates pilot
+agent.sign-up-complete.heading                                  = You have signed up your client for the Use software to send Income Tax updates pilot
+agent.sign-up-complete.whatNext.heading                         = What you need to do next
+agent.sign-up-complete.whatNext.para1                           = Either you or your client must complete the steps below. If you both use software, it’s important to choose packages that can interact with each other.
+agent.sign-up-complete.whatNext.number1                         = <a id="accountingSoftware" href="{0}">Choose relevant software (opens in a new window)</a> if you haven’t already.
+agent.sign-up-complete.whatNext.number2                         = Allow your software to interact with HMRC.
+agent.sign-up-complete.whatNext.number3                         = Add all income and expenses your client has already received or paid out from the start of their tax year into the software.
+agent.sign-up-complete.whatNext.number4                         = Continue to record your client’s income and expenses using software and send a quarterly report to HMRC.
+agent.sign-up-complete.whatNext.number5                         = Send your client’s final report by 31 January after the end of the tax year you’re signing them up for.
+agent.sign-up-complete.whatNext.para2                           = After you’ve sent a report, your client will get an Income Tax estimate. They can see what they owe for the tax year after you’ve sent their final report.
+agent.sign-up-complete.add_another                              = Sign up another client
 
 ## Errors ##
-agent.error.back_to_preferences.empty                                 = You must select an option to continue
+agent.error.back_to_preferences.empty                           = You must select an option to continue
 
-agent.error.dob_date.empty                                            = Enter a date of birth
-agent.error.dob_date.invalid_chars                                    = Enter a date of birth using numbers 0 to 9
-agent.error.dob_date.invalid                                          = Enter a real date of birth
+agent.error.dob_date.empty                                      = Enter a date of birth
+agent.error.dob_date.invalid_chars                              = Enter a date of birth using numbers 0 to 9
+agent.error.dob_date.invalid                                    = Enter a real date of birth
 
-agent.error.income_source.empty                                       = Select an income type
-agent.error.income_source.invalid                                     = Select an income type
+agent.error.income_source.empty                                 = Select an income type
+agent.error.income_source.invalid                               = Select an income type
 
-agent.error.business.sole_trader.empty                                = You must select an option to continue
-agent.error.business.sole_trader.invalid                              = You must select an option to continue
+agent.error.business.sole_trader.empty                          = You must select an option to continue
+agent.error.business.sole_trader.invalid                        = You must select an option to continue
 
-agent.error.match_tax_year.empty                                      = Select yes if your client''s accounting period matches the tax year
-agent.error.match_tax_year.invalid                                    = Select yes if your client''s accounting period matches the tax year
+agent.error.match_tax_year.empty                                = Select yes if your client’s accounting period matches the tax year
+agent.error.match_tax_year.invalid                              = Select yes if your client’s accounting period matches the tax year
 
-agent.error.what-year.empty                                           = Select the tax year you want to sign your client up for
-agent.error.what-year.invalid                                         = Select the tax year you want to sign your client up for
+agent.error.what-year.empty                                     = Select the tax year you want to sign your client up for
+agent.error.what-year.invalid                                   = Select the tax year you want to sign your client up for
 
-agent.error.start_date.empty                                          = Enter a start date
-agent.error.start_date.invalid_chars                                  = Enter a start date using numbers 0 to 9
-agent.error.start_date.invalid                                        = Enter a real start date
+agent.error.start_date.empty                                    = Enter a start date
+agent.error.start_date.invalid_chars                            = Enter a start date using numbers 0 to 9
+agent.error.start_date.invalid                                  = Enter a real start date
 
-agent.error.end_date.empty                                            = Enter an end date
-agent.error.end_date.invalid_chars                                    = Enter an end date using numbers 0 to 9
-agent.error.end_date.invalid                                          = Enter a real end date
-agent.error.end_date_violation                                        = Enter an end date that''s after the start date
-agent.error.end_date_past                                             = Enter an end date that''s the present date or a future date
+agent.error.end_date.empty                                      = Enter an end date
+agent.error.end_date.invalid_chars                              = Enter an end date using numbers 0 to 9
+agent.error.end_date.invalid                                    = Enter a real end date
+agent.error.end_date_violation                                  = Enter an end date that’s after the start date
+agent.error.end_date_past                                       = Enter an end date that’s the present date or a future date
 
+agent.error.business_accounting_period.minStartDate             = The start date of your accounting period must be in the future.
+agent.error.business_accounting_period.maxEndDate               = Enter an end date that’s less than 24 months after your start date
 
-agent.error.business_accounting_period.minStartDate                   = The start date of your accounting period must be in the future.
-agent.error.business_accounting_period.maxEndDate                     = Enter an end date that''s less than 24 months after your start date
+agent.error.business_name.empty                                 = Enter your client’s business name
+agent.error.business_name.maxLength                             = Enter a business name that’s 105 characters or less
+agent.error.business_name.invalid                               = Enter a valid business name
 
-agent.error.business_name.empty                                       = Enter your client''s business name
-agent.error.business_name.maxLength                                   = Enter a business name that''s 105 characters or less
-agent.error.business_name.invalid                                     = Enter a valid business name
+agent.error.contact_email.empty                                 = Please enter a contact email
+agent.error.contact_email.maxLength                             = The email is too long
+agent.error.contact_email.invalid                               = The email is invalid
 
-agent.error.contact_email.empty                                       = Please enter a contact email
-agent.error.contact_email.maxLength                                   = The email is too long
-agent.error.contact_email.invalid                                     = The email is invalid
+agent.error.accounting-method.empty                             = Select how your client records their income and expenses for their self-employed business
+agent.error.accounting-method.invalid                           = Select how your client records their income and expenses for their self-employed business
 
-agent.error.accounting-method.empty                                   = Select how your client records their income and expenses for their self-employed business
-agent.error.accounting-method.invalid                                 = Select how your client records their income and expenses for their self-employed business
+agent.error.accounting-method-property.invalid                  = Select how your client records their income and expenses for their property business
 
-agent.error.accounting-method-property.invalid                        = Select how your client records their income and expenses for their property business
+agent.error.not-eligible.empty                                  = You must select an option to continue
+agent.error.not-eligible.invalid                                = You must select an option to continue
 
-agent.error.not-eligible.empty                                        = You must select an option to continue
-agent.error.not-eligible.invalid                                      = You must select an option to continue
+agent.error.client_details.first_name.empty                     = Enter your client’s first name
+agent.error.client_details.last_name.empty                      = Enter your client’s last name
+agent.error.client_details.first_name.invalid                   = Enter a valid first name
+agent.error.client_details.last_name.invalid                    = Enter a valid last name
+agent.error.client_details.first_name.maxLength                 = Enter a first name that’s 105 characters or less
+agent.error.client_details.last_name.maxLength                  = Enter a last name that’s 105 characters or less
 
-agent.error.client_details.first_name.empty                           = Enter your client''s first name
-agent.error.client_details.last_name.empty                            = Enter your client''s last name
-agent.error.client_details.first_name.invalid                         = Enter a valid first name
-agent.error.client_details.last_name.invalid                          = Enter a valid last name
-agent.error.client_details.first_name.maxLength                       = Enter a first name that''s 105 characters or less
-agent.error.client_details.last_name.maxLength                        = Enter a last name that''s 105 characters or less
-
-agent.error.nino.invalid                                              = Enter a valid National Insurance number
-agent.error.nino.empty                                                = Enter your client''s National Insurance number
+agent.error.nino.invalid                                        = Enter a valid National Insurance number
+agent.error.nino.empty                                          = Enter your client’s National Insurance number
 
 ## Eligible page ##
-agent.eligible.title                                                  = You can send digital updates
-agent.eligible.heading                                                = You can send digital updates
-agent.eligible.line_1                                                 = Your answers mean you should be able to start sending HMRC digital updates after you sign up.
-agent.eligible.line_2                                                 = You just need to enter a few more details.
+agent.eligible.title                                            = You can send digital updates
+agent.eligible.heading                                          = You can send digital updates
+agent.eligible.line_1                                           = Your answers mean you should be able to start sending HMRC digital updates after you sign up.
+agent.eligible.line_2                                           = You just need to enter a few more details.
 
 ## Not eligible page ##
-agent.not-eligible.title                                              = You can''t send digital updates yet
-agent.not-eligible.heading                                            = You can''t send digital updates yet
-agent.not-eligible.line_1                                             = Your answers mean you''re not eligible to send digital updates to HMRC right now.
-agent.not-eligible.line_2                                             = You can still sign up for the service. HMRC are working to make digital updates available for all sole traders in the coming months. If you sign up now, you will be able to send digital updates to HMRC when you become eligible.
-agent.not-eligible.line_3                                             = If you choose to sign up, we''ll ask you a few questions about your income and contact details.
-agent.not-eligible.question                                           = Choose what you would like to do next
-agent.not-eligible.signup                                             = I want to sign up
-agent.not-eligible.signout                                            = I don''t want to sign up - sign me out
+agent.not-eligible.title                                        = You can’t send digital updates yet
+agent.not-eligible.heading                                      = You can’t send digital updates yet
+agent.not-eligible.line_1                                       = Your answers mean you’re not eligible to send digital updates to HMRC right now.
+agent.not-eligible.line_2                                       = You can still sign up for the service. HMRC are working to make digital updates available for all sole traders in the coming months. If you sign up now, you will be able to send digital updates to HMRC when you become eligible.
+agent.not-eligible.line_3                                       = If you choose to sign up, we’ll ask you a few questions about your income and contact details.
+agent.not-eligible.question                                     = Choose what you would like to do next
+agent.not-eligible.signup                                       = I want to sign up
+agent.not-eligible.signout                                      = I don’t want to sign up - sign me out
 
 ## No NINO page ##
-agent.no-nino.title                                                   = Your client can''t use this service yet
-agent.no-nino.heading                                                 = Your client can''t use this service yet
-agent.no-nino.line_1                                                  = You can sign up later in the year when this service is available to you.
+agent.no-nino.title                                             = Your client can’t use this service yet
+agent.no-nino.heading                                           = Your client can’t use this service yet
+agent.no-nino.line_1                                            = You can sign up later in the year when this service is available to you.
 
 ## Not Enrolled to Agent Services
-agent.not_enrolled_agent_services.title                               = You can''t use this service yet
-agent.not_enrolled_agent_services.heading                             = You can''t use this service yet
-agent.not_enrolled_agent_services.para1                               = To use this service, you need to <a href="{0}">set up an agent services account</a>.
+agent.not_enrolled_agent_services.title                         = You can’t use this service yet
+agent.not_enrolled_agent_services.heading                       = You can’t use this service yet
+agent.not_enrolled_agent_services.para1                         = To use this service, you need to <a href="{0}">set up an agent services account</a>.
 
 ## Client Details ##
-agent.client-details.title                                            = Enter your client''s details
-agent.client-details.heading                                          = Enter your client''s details
-agent.client-details.line_1                                           = We will attempt to match these details against information we currently hold.
-agent.client-details.field_1                                          = First name
-agent.client-details.field_2                                          = Last name
-agent.client-details.field_3                                          = National Insurance number
-agent.client-details.field_4                                          = Date of birth
-agent.client_details.formhint.1.line_1                                = For example, ''QQ 12 34 56 C''.
-agent.client-details.formhint.2                                       = For example, 10 12 1990
+agent.client-details.title                                      = Enter your client’s details
+agent.client-details.heading                                    = Enter your client’s details
+agent.client-details.line_1                                     = We will attempt to match these details against information we currently hold.
+agent.client-details.field_1                                    = First name
+agent.client-details.field_2                                    = Last name
+agent.client-details.field_3                                    = National Insurance number
+agent.client-details.field_4                                    = Date of birth
+agent.client_details.formhint.1.line_1                          = For example, ‘QQ 12 34 56 C’.
+agent.client-details.formhint.2                                 = For example, 10 12 1990
 
 ## Exit survey
-agent.exit-survey.title                                               = Give feedback
-agent.exit-survey.heading                                             = Give feedback
+agent.exit-survey.title                                         = Give feedback
+agent.exit-survey.heading                                       = Give feedback
 
-agent.exit-survey.q1                                                  = Overall, how did you feel about the service you received today?
-agent.exit-survey.q1.option.size                                      = 5
-agent.exit-survey.q1.option.1                                         = Very satisfied
-agent.exit-survey.q1.option.2                                         = Satisfied
-agent.exit-survey.q1.option.3                                         = Neither satisfied or dissatisfied
-agent.exit-survey.q1.option.4                                         = Dissatisfied
-agent.exit-survey.q1.option.5                                         = Very dissatisfied
+agent.exit-survey.q1                                            = Overall, how did you feel about the service you received today?
+agent.exit-survey.q1.option.size                                = 5
+agent.exit-survey.q1.option.1                                   = Very satisfied
+agent.exit-survey.q1.option.2                                   = Satisfied
+agent.exit-survey.q1.option.3                                   = Neither satisfied or dissatisfied
+agent.exit-survey.q1.option.4                                   = Dissatisfied
+agent.exit-survey.q1.option.5                                   = Very dissatisfied
 
-agent.exit-survey.q2                                                  = How could we improve this service?
+agent.exit-survey.q2                                            = How could we improve this service?
 
-agent.exit-survey.line_1                                              = Please don''t include any personal or financial information, for example your National Insurance or credit card numbers.
-agent.exit-survey.line_2                                              = We use your feedback to make our services better.
-agent.exit-survey.submit                                              = Send feedback
+agent.exit-survey.line_1                                        = Please don’t include any personal or financial information, for example your National Insurance or credit card numbers.
+agent.exit-survey.line_2                                        = We use your feedback to make our services better.
+agent.exit-survey.submit                                        = Send feedback
 
 ## Thank You page ##
-agent.thank-you.title                                                 = Thank you
-agent.thank-you.heading                                               = Thank you
-agent.thank-you.line_1                                                = Your feedback will help us improve this service.
-agent.thank-you.go_to_gov                                             = Go to the GOV.UK page
+agent.thank-you.title                                           = Thank you
+agent.thank-you.heading                                         = Thank you
+agent.thank-you.line_1                                          = Your feedback will help us improve this service.
+agent.thank-you.go_to_gov                                       = Go to the GOV.UK page
 
-agent.no-sa.title                                                     = Your client is not registered for Self Assessment
-agent.no-sa.heading                                                   = Your client is not registered for Self Assessment
-agent.no-sa.line_1                                                    = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
+agent.no-sa.title                                               = Your client is not registered for Self Assessment
+agent.no-sa.heading                                             = Your client is not registered for Self Assessment
+agent.no-sa.line_1                                              = To use this service, your client needs to <a id="sa-signup" href="{0}">register for Self Assessment</a>.
 
 # Not eligible for income tax
-not_eligible_for_income_tax.title                                      = You cannot use this service yet
-not_eligible_for_income_tax.heading                                    = You cannot use this service yet
-not_eligible_for_income_tax.para1                                      = This is a trial service. You may be able to use the ''Report your income and expenses quarterly'' service in the future.
+not_eligible_for_income_tax.title                               = You cannot use this service yet
+not_eligible_for_income_tax.heading                             = You cannot use this service yet
+not_eligible_for_income_tax.para1                               = This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service in the future.
 
 # Not eligible for income tax (agents)
-agent_not_eligible_for_income_tax.title                                = You cannot use this service yet
-agent_not_eligible_for_income_tax.heading                              = You cannot use this service yet
-agent_not_eligible_for_income_tax.para1                                = This is a trial service. You may be able to use the ''Report your income and expenses quarterly'' service for your clients in the future.
+agent_not_eligible_for_income_tax.title                         = You cannot use this service yet
+agent_not_eligible_for_income_tax.heading                       = You cannot use this service yet
+agent_not_eligible_for_income_tax.para1                         = This is a trial service. You may be able to use the ‘Report your income and expenses quarterly’ service for your clients in the future.
