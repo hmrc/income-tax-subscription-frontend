@@ -16,10 +16,10 @@
 
 package models.individual.subscription
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class Identifier(key: String, value: String)
 
 object Identifier {
-  implicit val formats = Json.format[Identifier]
+  implicit val formats: OFormat[Identifier] = Json.format[Identifier]
 }

@@ -20,11 +20,11 @@ import core.Constants
 import core.services.AuthService
 import core.utils.TestConstants
 import org.mockito.Mockito._
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.{BeforeAndAfterEach, Suite}
-import uk.gov.hmrc.auth.core.{AffinityGroup, _}
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.{AffinityGroup, _}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
   self: Suite =>
 
-  val mockAuthService = mock[AuthService]
+  val mockAuthService: AuthService = mock[AuthService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -44,7 +44,7 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
   def mockAuthSuccess(): Unit = {
     when(mockAuthService.authorised())
       .thenReturn(new mockAuthService.AuthorisedFunction(EmptyPredicate) {
-        override def apply[A](body: => Future[A])(implicit hc: HeaderCarrier, ec: ExecutionContext) = body
+        override def apply[A](body: => Future[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] = body
       })
   }
 
@@ -52,35 +52,44 @@ trait MockAuthService extends BeforeAndAfterEach with MockitoSugar {
     when(mockAuthService.authorised())
       .thenReturn(
         new mockAuthService.AuthorisedFunction(EmptyPredicate) {
-          override def retrieve[A](retrieval: Retrieval[A]) = new mockAuthService.AuthorisedFunctionWithResult[A](EmptyPredicate, retrieval) {
-            override def apply[B](body: A => Future[B])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[B] = body.apply(retrievalValue.asInstanceOf[A])
+          override def retrieve[A](retrieval: Retrieval[A]): mockAuthService.AuthorisedFunctionWithResult[A] =
+            new mockAuthService.AuthorisedFunctionWithResult[A](EmptyPredicate, retrieval) {
+            override def apply[B](body: A => Future[B])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[B] =
+              body.apply(retrievalValue.asInstanceOf[A])
           }
         })
   }
 
-  def mockNinoAndUtrRetrieval(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(ninoEnrolment, utrEnrolment)), Some(AffinityGroup.Individual)), Some(Admin)),testConfidenceLevel))
+  def mockNinoAndUtrRetrieval(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(ninoEnrolment, utrEnrolment)),
+    Some(AffinityGroup.Individual)), Some(User)),testConfidenceLevel))
 
-  def mockUtrRetrieval(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(utrEnrolment)), Some(AffinityGroup.Individual)), Some(Admin)),testConfidenceLevel))
+  def mockUtrRetrieval(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(utrEnrolment)),
+    Some(AffinityGroup.Individual)), Some(User)),testConfidenceLevel))
 
-  def mockNinoRetrieval(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(ninoEnrolment)), Some(AffinityGroup.Individual)), Some(Admin)),testConfidenceLevel))
+  def mockNinoRetrieval(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(ninoEnrolment)),
+    Some(AffinityGroup.Individual)), Some(User)),testConfidenceLevel))
 
-  def mockNinoRetrievalWithOrg(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(ninoEnrolment)), Some(AffinityGroup.Organisation)), Some(Admin)),testConfidenceLevel))
+  def mockNinoRetrievalWithOrg(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(ninoEnrolment)),
+    Some(AffinityGroup.Organisation)), Some(User)),testConfidenceLevel))
 
-  def mockNinoRetrievalWithNoAffinity(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(ninoEnrolment)), None), Some(Admin)),testConfidenceLevel))
+  def mockNinoRetrievalWithNoAffinity(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(ninoEnrolment)), None), Some(User)),testConfidenceLevel))
 
-  def mockIndividualWithNoEnrolments(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set.empty), Some(AffinityGroup.Individual)), Some(Admin)),testConfidenceLevel))
+  def mockIndividualWithNoEnrolments(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set.empty),
+    Some(AffinityGroup.Individual)), Some(User)),testConfidenceLevel))
 
   def mockAuthUnauthorised(exception: AuthorisationException = new InvalidBearerToken): Unit =
     when(mockAuthService.authorised())
       .thenReturn(new mockAuthService.AuthorisedFunction(EmptyPredicate) {
-        override def apply[A](body: => Future[A])(implicit hc: HeaderCarrier, ec: ExecutionContext) = Future.failed(exception)
+        override def apply[A](body: => Future[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Nothing] = Future.failed(exception)
 
-        override def retrieve[A](retrieval: Retrieval[A]) = new mockAuthService.AuthorisedFunctionWithResult[A](EmptyPredicate, retrieval) {
+        override def retrieve[A](retrieval: Retrieval[A]): mockAuthService.AuthorisedFunctionWithResult[A] =
+          new mockAuthService.AuthorisedFunctionWithResult[A](EmptyPredicate, retrieval) {
           override def apply[B](body: A => Future[B])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[B] = Future.failed(exception)
         }
       })
 
-  def mockAuthEnrolled(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(ninoEnrolment, utrEnrolment, mtdidEnrolment)), Some(AffinityGroup.Individual)), Some(Admin)), testConfidenceLevel))
+  def mockAuthEnrolled(): Unit = mockRetrievalSuccess(new ~(new ~(new ~(Enrolments(Set(ninoEnrolment, utrEnrolment, mtdidEnrolment)),
+                                                                                    Some(AffinityGroup.Individual)), Some(User)), testConfidenceLevel))
 
   val ninoEnrolment = Enrolment(
     Constants.ninoEnrolmentName,

@@ -16,9 +16,8 @@
 
 package controllers.agent
 
-import helpers.agent.IntegrationTestConstants.testMTDID
-import helpers.agent.servicemocks.KeystoreStub
 import helpers.agent.ComponentSpecBase
+import helpers.agent.IntegrationTestConstants.testMTDID
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.Json

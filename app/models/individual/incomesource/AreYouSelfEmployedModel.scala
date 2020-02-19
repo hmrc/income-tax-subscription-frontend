@@ -17,11 +17,11 @@
 package models.individual.incomesource
 
 import models.YesNo
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class AreYouSelfEmployedModel(areYouSelfEmployed: YesNo)
 
 object AreYouSelfEmployedModel {
-  implicit val format = Json.format[AreYouSelfEmployedModel]
+  implicit val format: OFormat[AreYouSelfEmployedModel] = Json.format[AreYouSelfEmployedModel]
 }
 

@@ -16,20 +16,20 @@
 
 package connectors.individual.subscription
 
-import core.config.AppConfig
 import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser._
 import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser._
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.SubscriptionRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubscriptionConnector @Inject()(val appConfig: AppConfig,
-                                      val http: HttpClient) {
+                                      val http: HttpClient)
+                                     (implicit ec: ExecutionContext) {
 
   def subscriptionUrl(nino: String): String = appConfig.subscriptionUrl + SubscriptionConnector.subscriptionUri(nino)
 

@@ -26,7 +26,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
 trait MockPaperlessPreferenceTokenConnector extends MockTrait {
-  val mockPaperlessPreferenceTokenConnector = mock[PaperlessPreferenceTokenConnector]
+  val mockPaperlessPreferenceTokenConnector: PaperlessPreferenceTokenConnector = mock[PaperlessPreferenceTokenConnector]
 
   private def mockStoreNino(nino: String)(result: Future[PaperlessPreferenceTokenResult]) =
     when(mockPaperlessPreferenceTokenConnector.storeNino(ArgumentMatchers.any[String], ArgumentMatchers.eq(nino))(ArgumentMatchers.any[HeaderCarrier]))

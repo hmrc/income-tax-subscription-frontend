@@ -19,16 +19,18 @@ package views.agent
 import agent.assets.MessageLookup.{IncomeSource => messages}
 import forms.agent.IncomeSourceForm
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Call
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class IncomeSourceViewSpec extends ViewSpecTrait {
 
-  val backUrl = ViewSpecTrait.testBackUrl
+  val backUrl: String = ViewSpecTrait.testBackUrl
 
-  val action = ViewSpecTrait.testCall
+  val action: Call = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean) = views.html.agent.income_source(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.agent.income_source(
     incomeSourceForm = IncomeSourceForm.incomeSourceForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
@@ -36,7 +38,7 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
   )(FakeRequest(), applicationMessages, appConfig)
 
   "The Income source view" should {
-    val testPage = TestView(
+    val testPage: TestView = TestView(
       name = "Income source View",
       title = messages.title,
       heading = messages.heading,
@@ -57,7 +59,7 @@ class IncomeSourceViewSpec extends ViewSpecTrait {
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore() = TestView(
+    def documentCore():TestView = TestView(
       name = "Income source View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,

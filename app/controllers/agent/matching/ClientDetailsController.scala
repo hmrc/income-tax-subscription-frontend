@@ -30,7 +30,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.UserLockoutService
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
@@ -38,7 +38,7 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
                                         val keystoreService: KeystoreService,
                                         val authService: AuthService,
                                         val lockOutService: UserLockoutService
-                                       ) extends UserMatchingController {
+                                       )(implicit val ec: ExecutionContext) extends UserMatchingController {
 
   def view(clientDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.agent.client_details(
@@ -47,12 +47,11 @@ class ClientDetailsController @Inject()(val baseConfig: BaseControllerConfig,
       isEditMode
     )
 
-  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]) = {
-    (lockOutService.getLockoutStatus(user.arn.get) flatMap {
+  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
+    lockOutService.getLockoutStatus(user.arn.get) flatMap {
       case Right(NotLockedOut) => f
       case Right(_) => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show().url))
-    }).recover { case e =>
-      throw new InternalServerException("client details controller: " + e)
+      case Left(_) => throw new InternalServerException("[ClientDetailsController][handleLockOut] lockout failure")
     }
   }
 

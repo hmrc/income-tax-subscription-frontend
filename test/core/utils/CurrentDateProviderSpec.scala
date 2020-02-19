@@ -27,7 +27,7 @@ class CurrentDateProviderSpec extends UnitSpec with GuiceOneAppPerSuite{
     "return the current date" in {
       val provider = app.injector.instanceOf[CurrentDateProvider]
 
-      provider.getCurrentDate() shouldBe LocalDate.now()
+      provider.getCurrentDate shouldBe LocalDate.now()
     }
   }
 }

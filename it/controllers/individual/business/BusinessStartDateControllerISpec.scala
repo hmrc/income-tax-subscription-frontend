@@ -29,7 +29,6 @@ import play.api.libs.json.Json
 
 class BusinessStartDateControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
-  // TODO remove this when registration is enabled by default
   enable(featureswitch.RegistrationFeature)
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/start-date" when {

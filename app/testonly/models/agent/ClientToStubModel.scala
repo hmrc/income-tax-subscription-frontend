@@ -19,14 +19,14 @@ package testonly.models.agent
 //$COVERAGE-OFF$Disabling scoverage on this model as it is only intended to be used by the test only controller
 
 import models.DateModel
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class ClientToStubModel(firstName: String, lastName: String, nino: String, sautr: String, dateOfBirth: DateModel) {
   def ninoFormatted: String = nino.toUpperCase().replace(" ", "")
 }
 
 object ClientToStubModel {
-  implicit val format = Json.format[ClientToStubModel]
+  implicit val format: OFormat[ClientToStubModel] = Json.format[ClientToStubModel]
 }
 
 // $COVERAGE-ON$

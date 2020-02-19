@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
@@ -39,12 +39,12 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val clientRelationshipService: ClientRelationshipService,
                                            val authService: AuthService,
                                            logging: Logging
-                                          ) extends AuthenticatedController with FeatureSwitching {
+                                          )(implicit val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
 
   import agent.services.CacheUtil._
 
   private def journeySafeGuard(processFunc: => IncomeTaxAgentUser => Request[AnyContent] => CacheMap => Future[Result])
-                              (noCacheMapErrMessage: String) =
+                              (noCacheMapErrMessage: String): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
         if (user.clientNino.isDefined) {
@@ -58,13 +58,13 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
     }
 
   def backUrl(incomeSource: Option[IncomeSourceType])(implicit request: Request[_]): String = {
-      incomeSource match {
-        case Some(Business) =>
-          controllers.agent.business.routes.BusinessAccountingMethodController.show().url
-        case Some(_) =>
-          controllers.agent.business.routes.PropertyAccountingMethodController.show().url
-        case None => throw new InternalServerException("User is missing income source type in keystore")
-      }
+    incomeSource match {
+      case Some(Business) =>
+        controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+      case Some(_) =>
+        controllers.agent.business.routes.PropertyAccountingMethodController.show().url
+      case None => throw new InternalServerException("User is missing income source type in keystore")
+    }
   }
 
   val show: Action[AnyContent] = journeySafeGuard { implicit user =>

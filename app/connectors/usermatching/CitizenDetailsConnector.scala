@@ -16,53 +16,28 @@
 
 package connectors.usermatching
 
-import core.audit.Logging
+import connectors.usermatching.httpparsers.CitizenDetailsResponseHttpParser._
 import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import connectors.usermatching.httpparsers.CitizenDetailsResponseHttpParser._
-import models.usermatching.CitizenDetailsFailureResponse
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CitizenDetailsConnector @Inject()(appConfig: AppConfig,
-                                        http: HttpClient,
-                                        logging: Logging) {
+                                        http: HttpClient)
+                                       (implicit ec: ExecutionContext) {
 
   def lookupUtrUrl(nino: String): String = appConfig.citizenDetailsURL + CitizenDetailsConnector.lookupUtrUri(nino)
 
   def lookupNinoUrl(utr: String): String = appConfig.citizenDetailsURL + CitizenDetailsConnector.lookupNinoUri(utr)
 
   def lookupUtr(nino: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
-    http.GET[GetCitizenDetailsResponse](lookupUtrUrl(nino)).map {
-      case r@Right(Some(success)) =>
-        logging.debug("CitizenDetailsConnector.lookupUtr successful, returned OK")
-        r
-      case r@Right(None) =>
-        logging.debug("CitizenDetailsConnector.lookupUtr successful, returned Not Found")
-        r
-      case l@Left(CitizenDetailsFailureResponse(status)) =>
-        logging.warn("CitizenDetailsConnector.lookupUtr failure, status=" + status)
-        l
-    }
+    http.GET[GetCitizenDetailsResponse](lookupUtrUrl(nino))
 
   def lookupNino(utr: String)(implicit hc: HeaderCarrier): Future[GetCitizenDetailsResponse] =
-    http.GET[GetCitizenDetailsResponse](lookupNinoUrl(utr)).map {
-      case r@Right(Some(success)) =>
-        logging.debug("CitizenDetailsConnector.lookupNino successful, returned OK")
-        r
-      case r@Right(None) =>
-        logging.debug("CitizenDetailsConnector.lookupNino successful, returned Not Found")
-        r
-      case l@Left(CitizenDetailsFailureResponse(status)) =>
-        logging.warn("CitizenDetailsConnector.lookupNino failure, status=" + status)
-        l
-    }
-
-
+    http.GET[GetCitizenDetailsResponse](lookupNinoUrl(utr))
 }
 
 object CitizenDetailsConnector {

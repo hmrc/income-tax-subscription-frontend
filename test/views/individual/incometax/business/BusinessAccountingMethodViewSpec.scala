@@ -20,21 +20,23 @@ import assets.MessageLookup.{AccountingMethod => messages}
 import forms.individual.business.AccountingMethodForm
 import forms.submapping.AccountingMethodMapping
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Call
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
-  val backUrl = ViewSpecTrait.testBackUrl
-  val action = ViewSpecTrait.testCall
+  val backUrl: String = ViewSpecTrait.testBackUrl
+  val action: Call = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean) = views.html.individual.incometax.business.accounting_method(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.individual.incometax.business.accounting_method(
     accountingMethodForm = AccountingMethodForm.accountingMethodForm.addError(addFormErrors),
     postAction = action,
     isEditMode,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(isEditMode: Boolean) = TestView(
+  def documentCore(isEditMode: Boolean): TestView = TestView(
     name = "Business Accounting Method View",
     title = messages.title,
     heading = messages.heading,
@@ -80,7 +82,7 @@ class BusinessAccountingMethodViewSpec extends ViewSpecTrait {
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore() = TestView(
+    def documentCore():TestView = TestView(
       name = "Business Accounting Method View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,

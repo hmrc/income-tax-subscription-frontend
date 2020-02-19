@@ -101,7 +101,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
               fetchRentUkProperty = TestModels.testRentUkProperty_no_property
             )
 
-            mockCheckEligibleAccountingPeriod(start, end, false)(true)
+            mockCheckEligibleAccountingPeriod(start, end, hasPropertyIncomeSource = false)(eligible = true)
 
             val goodRequest = callSubmit(isEditMode = false, testAccountingPeriodDates)
             status(goodRequest) must be(SEE_OTHER)
@@ -127,7 +127,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
               fetchRentUkProperty = TestModels.testRentUkProperty_no_property
             )
 
-            mockCheckEligibleAccountingPeriod(start, end, false)(false)
+            mockCheckEligibleAccountingPeriod(start, end, hasPropertyIncomeSource = false)(eligible = false)
 
             val goodRequest = callSubmit(isEditMode = false, testAccountingPeriodDates)
 
@@ -150,7 +150,7 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
             DateModel.dateConvert(end)
           )
 
-          mockCheckEligibleAccountingPeriod(start, end, false)(true)
+          mockCheckEligibleAccountingPeriod(start, end, hasPropertyIncomeSource = false)(eligible = true)
 
           setupMockKeystore(
             fetchRentUkProperty = TestModels.testRentUkProperty_no_property,
@@ -188,19 +188,22 @@ class BusinessAccountingPeriodDateControllerSpec extends ControllerBaseSpec
 
     "The back url for linear journey" should {
       s"point to ${controllers.individual.business.routes.MatchTaxYearController.show().url}" in {
-        testBusinessAccountingPeriodDateController.backUrl(isEditMode = false, editMatch = false)(request) mustBe controllers.individual.business.routes.MatchTaxYearController.show().url
+        testBusinessAccountingPeriodDateController.backUrl(isEditMode = false, editMatch = false)(request) mustBe
+          controllers.individual.business.routes.MatchTaxYearController.show().url
       }
     }
 
     "The back url for edit journey if editmatch is false" should {
       s"point to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-        testBusinessAccountingPeriodDateController.backUrl(isEditMode = true, editMatch = false)(request) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+        testBusinessAccountingPeriodDateController.backUrl(isEditMode = true, editMatch = false)(request) mustBe
+          controllers.individual.subscription.routes.CheckYourAnswersController.show().url
       }
     }
 
     "The back url for edit journey if editmatch is true" should {
       s"point to ${controllers.individual.business.routes.MatchTaxYearController.show(editMode = true).url}" in {
-        testBusinessAccountingPeriodDateController.backUrl(isEditMode = true, editMatch = true)(request) mustBe controllers.individual.business.routes.MatchTaxYearController.show(editMode = true).url
+        testBusinessAccountingPeriodDateController.backUrl(isEditMode = true, editMatch = true)(request) mustBe
+          controllers.individual.business.routes.MatchTaxYearController.show(editMode = true).url
       }
     }
 

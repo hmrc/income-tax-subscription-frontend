@@ -31,7 +31,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
@@ -39,7 +39,7 @@ class IncomeSourceController @Inject()(val baseConfig: BaseControllerConfig,
                                        val keystoreService: KeystoreService,
                                        val authService: AuthService,
                                        val currentTimeService: CurrentTimeService
-                                      ) extends AuthenticatedController with FeatureSwitching {
+                                      )(implicit val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
 
   def view(incomeSourceForm: Form[IncomeSourceType], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.agent.income_source(

@@ -181,7 +181,8 @@ class AreYouSelfEmployedControllerISpec extends ComponentSpecBase {
 
         Given("I setup the wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(testRentUkProperty_property_and_other), areYouSelfEmployed = Some(testAreYouSelfEmployed_no)))
+        KeystoreStub.stubKeystoreData(keystoreData(rentUkProperty = Some(testRentUkProperty_property_and_other),
+          areYouSelfEmployed = Some(testAreYouSelfEmployed_no)))
         KeystoreStub.stubKeystoreSave(CacheConstants.AreYouSelfEmployed)
 
         When("POST /are you self-employed is called")

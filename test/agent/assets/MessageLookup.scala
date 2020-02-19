@@ -42,7 +42,7 @@ object MessageLookup {
 
   object FrontPage {
     val title = "Sign up to report your client’s income and expenses quarterly"
-    val heading = title
+    val heading: String = title
     val subHeading_1 = "Sign up using Government Gateway"
     val subHeading_2 = "Before you start"
 
@@ -357,7 +357,7 @@ object MessageLookup {
 
   object NoNino {
     val title = "Your client can’t use this service yet"
-    val heading = title
+    val heading: String = title
     val line1 = "This client can sign up later in the year."
   }
 
@@ -390,7 +390,7 @@ object MessageLookup {
 
   object NotEnrolledAgentServices {
     val title = "You can’t use this service yet"
-    val heading = title
+    val heading: String = title
     val linkText = "set up an agent services account"
     val para1 = s"To use this service, you need to $linkText."
   }

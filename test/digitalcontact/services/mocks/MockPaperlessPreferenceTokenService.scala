@@ -18,12 +18,12 @@ package digitalcontact.services.mocks
 
 import connectors.individual.mocks.MockPaperlessPreferenceTokenConnector
 import core.services.mocks.MockKeystoreService
+import core.utils.MockTrait
+import core.utils.TestConstants._
 import digitalcontact.services.PaperlessPreferenceTokenService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import uk.gov.hmrc.http.HeaderCarrier
-import core.utils.MockTrait
-import core.utils.TestConstants._
 
 import scala.concurrent.Future
 

@@ -23,13 +23,14 @@ import play.api.libs.json.{JsObject, Json}
 import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolmentStoreStubConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                            http: HttpClient) {
-  lazy val enrolmentStoreUrl = appConfig.enrolmentStoreStubUrl + "/enrolment-store-stub/data"
+                                            http: HttpClient)
+                                           (implicit ec: ExecutionContext) {
+
+  lazy val enrolmentStoreUrl: String = appConfig.enrolmentStoreStubUrl + "/enrolment-store-stub/data"
 
   def updateEnrolments(credId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     http.POST(enrolmentStoreUrl, updateEnrolmentsRequest(credId))

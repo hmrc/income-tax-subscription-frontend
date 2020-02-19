@@ -16,7 +16,9 @@
 
 package testonly.form.agent
 
-import forms.prevalidation.PreprocessedForm
+import forms.prevalidation.CaseOption._
+import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
+import forms.prevalidation.TrimOption._
 import forms.submapping.DateMapping.dateMapping
 import forms.validation.Constraints._
 import forms.validation.ErrorMessageFactory
@@ -27,8 +29,7 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Valid, ValidationResult}
 import testonly.models.agent.ClientToStubModel
-import forms.prevalidation.CaseOption._
-import forms.prevalidation.TrimOption._
+
 import scala.util.Try
 
 object ClientToStubForm {
@@ -50,11 +51,11 @@ object ClientToStubForm {
   val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.client_details.first_name.maxLength")
   val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.client_details.last_name.maxLength")
 
-  val emptyUtr = nonEmpty("You must enter an SA UTR")
+  val emptyUtr: Constraint[String] = nonEmpty("You must enter an SA UTR")
 
   val utrRegex = """^(?:[ \t]*\d[ \t]*){10}$"""
 
-  val validateUtr =
+  val validateUtr: Constraint[String] =
     constraint[String](utr =>
       if (utr.filterNot(_.isWhitespace).matches(utrRegex)) Valid
       else ErrorMessageFactory.error("You must enter a valid SA UTR")
@@ -88,7 +89,7 @@ object ClientToStubForm {
 
 
 
-  val clientToStubForm = PreprocessedForm(
+  val clientToStubForm: PrevalidationAPI[ClientToStubModel] = PreprocessedForm(
     validation = clientDetailsValidationForm,
     trimRules = Map(clientNino -> bothAndCompress),
     caseRules = Map(clientNino -> upper)

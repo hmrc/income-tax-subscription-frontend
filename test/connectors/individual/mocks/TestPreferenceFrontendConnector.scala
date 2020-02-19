@@ -20,7 +20,6 @@ import connectors.PreferenceFrontendConnector
 import core.audit.Logging
 import core.config.{AppConfig, ITSAHeaderCarrierForPartialsConverter}
 import core.connectors.mocks.MockHttp
-import core.utils.JsonUtils._
 import core.utils.TestConstants._
 import core.utils.{MockTrait, UnitTestTrait}
 import models.{Activated, PaperlessPreferenceError, PaperlessState, Unset}
@@ -28,15 +27,16 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.ApplicationCrypto
 
 import scala.concurrent.Future
 
 trait MockPreferenceFrontendConnector extends MockTrait with I18nSupport {
-  val mockPreferenceFrontendConnector = mock[PreferenceFrontendConnector]
-  implicit val messages = app.injector.instanceOf[MessagesApi]
+
+  val mockPreferenceFrontendConnector: PreferenceFrontendConnector = mock[PreferenceFrontendConnector]
+  implicit val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   private def mockCheckPaperless(token: String)(result: Future[Either[PaperlessPreferenceError.type, PaperlessState]]): Unit =
     when(mockPreferenceFrontendConnector.checkPaperless(ArgumentMatchers.eq(token))(ArgumentMatchers.any[Request[AnyContent]], ArgumentMatchers.any[Messages]))
@@ -53,10 +53,9 @@ trait MockPreferenceFrontendConnector extends MockTrait with I18nSupport {
 
 }
 
-trait TestPreferenceFrontendConnector extends UnitTestTrait with I18nSupport
-  with MockHttp {
+trait TestPreferenceFrontendConnector extends UnitTestTrait with I18nSupport with MockHttp {
 
-  implicit val messages = app.injector.instanceOf[MessagesApi]
+  implicit val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   object TestPreferenceFrontendConnector extends PreferenceFrontendConnector(
     app.injector.instanceOf[AppConfig],
@@ -74,13 +73,13 @@ trait TestPreferenceFrontendConnector extends UnitTestTrait with I18nSupport
     setupMockHttpPut[String](url = TestPreferenceFrontendConnector.checkPaperlessUrl(token), "")(status, response)
 
 
-  private final val okResponseJson: Boolean => JsValue =
-    (paperless: Boolean) => s"""{ "optedIn": $paperless }""".stripMargin
+  private def okResponseJson(paperless: Boolean): JsValue = Json.obj(
+    "optedIn" -> paperless
+  )
 
+  val paperlessActivated: (Int, Option[JsValue]) = (OK, okResponseJson(true))
 
-  val paperlessActivated: ((Int, Option[JsValue])) = (OK, okResponseJson(true))
-
-  val paperlessDeclined: ((Int, Option[JsValue])) = (OK, okResponseJson(false))
+  val paperlessDeclined: (Int, Option[JsValue]) = (OK, okResponseJson(false))
 
   val paperlessPreconditionFailed: ((Int, Option[JsValue])) = (PRECONDITION_FAILED, None)
 

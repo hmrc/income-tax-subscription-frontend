@@ -29,7 +29,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
@@ -38,7 +38,7 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                                          val authService: AuthService,
                                          val appConfig: AppConfig,
                                          val currentTimeService: CurrentTimeService
-                                        ) extends SignUpController {
+                                        )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def show(isEditMode: Boolean): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
@@ -73,7 +73,7 @@ class RentUkPropertyController @Inject()(val baseConfig: BaseControllerConfig,
                 case (Yes, Some(No)) =>
                   Redirect(controllers.individual.incomesource.routes.AreYouSelfEmployedController.show())
                 case _ =>
-                    Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
+                  Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
               }
             }
           if (!isEditMode) {

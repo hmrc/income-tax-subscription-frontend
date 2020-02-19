@@ -23,7 +23,7 @@ import play.api.libs.json.{JsValue, Json, Writes}
 case class EmacEnrolmentRequest(userId: String, nino: String)
 
 object EmacEnrolmentRequest {
-  implicit val writes = new Writes[EmacEnrolmentRequest] {
+  implicit val writes: Writes[EmacEnrolmentRequest] = new Writes[EmacEnrolmentRequest] {
     override def writes(request: EmacEnrolmentRequest): JsValue = {
       Json.obj(
         "userId" -> request.userId,

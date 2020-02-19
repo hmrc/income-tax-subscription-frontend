@@ -27,14 +27,14 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessPhoneNumberController @Inject()(val baseConfig: BaseControllerConfig,
                                               val messagesApi: MessagesApi,
                                               val keystoreService: KeystoreService,
                                               val authService: AuthService
-                                             ) extends RegistrationController {
+                                             )(implicit val ec: ExecutionContext) extends RegistrationController {
 
   def view(businessPhoneNumberForm: Form[BusinessPhoneNumberModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.individual.incometax.business.business_phone_number(

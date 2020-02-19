@@ -23,21 +23,21 @@ import core.config.featureswitch.{FeatureSwitch, FeatureSwitching}
 import core.services.AuthService
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, Request}
+import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import testonly.connectors.{BackendFeatureSwitchConnector, EligibilityFeatureSwitchConnector}
 import testonly.models.FeatureSwitchSetting
 import testonly.views.html.feature_switch
 
 import scala.collection.immutable.ListMap
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
                                         val baseConfig: BaseControllerConfig,
                                         val authService: AuthService,
                                         backendFeatureSwitchConnector: BackendFeatureSwitchConnector,
                                         eligibilityFeatureSwitchConnector: EligibilityFeatureSwitchConnector)
-  extends BaseFrontendController with FeatureSwitching with I18nSupport {
+                                       (implicit val ec: ExecutionContext) extends BaseFrontendController with FeatureSwitching with I18nSupport {
 
   private def view(switchNames: Map[FeatureSwitch, Boolean],
                    backendFeatureSwitches: Map[String, Boolean],
@@ -51,21 +51,21 @@ class FeatureSwitchController @Inject()(val messagesApi: MessagesApi,
       testonly.controllers.routes.FeatureSwitchController.submit()
     )
 
-  lazy val show = Action.async { implicit req =>
+  lazy val show: Action[AnyContent] = Action.async { implicit req =>
     for {
       backendFeatureSwitches <- backendFeatureSwitchConnector.getBackendFeatureSwitches
       eligibilityFeatureSwitches <- eligibilityFeatureSwitchConnector.getEligibilityFeatureSwitches
-      featureSwitches = ListMap(switches.toSeq sortBy(_.displayText) map (switch => switch -> isEnabled(switch)):_*)
+      featureSwitches = ListMap(switches.toSeq sortBy (_.displayText) map (switch => switch -> isEnabled(switch)): _*)
     } yield Ok(view(featureSwitches, backendFeatureSwitches, eligibilityFeatureSwitches))
   }
 
-  lazy val submit = Action.async { implicit req =>
+  lazy val submit: Action[AnyContent] = Action.async { implicit req =>
     val submittedData: Set[String] = req.body.asFormUrlEncoded match {
       case None => Set.empty
       case Some(data) => data.keySet
     }
 
-    def settingsFromFeatureSwitchMap (featureSwitches: Future[Map[String, Boolean]]): Future[Set[FeatureSwitchSetting]] =
+    def settingsFromFeatureSwitchMap(featureSwitches: Future[Map[String, Boolean]]): Future[Set[FeatureSwitchSetting]] =
       featureSwitches map {
         _.keySet map {
           switchName => FeatureSwitchSetting(switchName, submittedData contains switchName)

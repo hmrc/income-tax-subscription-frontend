@@ -16,11 +16,11 @@
 
 package models.individual.subscription
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 
 case class KnownFactsRequest(facts: List[TypeValuePair])
 
 object KnownFactsRequest {
-  implicit val formats = Json.format[KnownFactsRequest]
+  implicit val formats: OFormat[KnownFactsRequest] = Json.format[KnownFactsRequest]
 }

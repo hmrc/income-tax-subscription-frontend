@@ -19,7 +19,6 @@ package controllers.individual.business
 import java.time.LocalDate
 
 import core.config.featureswitch.FeatureSwitching
-import models.{DateModel, No}
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
@@ -38,7 +37,7 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
       "show the accounting period dates page with date values entered" in {
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()
-        KeystoreStub.stubFullKeystoreBothPost
+        KeystoreStub.stubFullKeystoreBothPost()
 
         When("GET /business/accounting-period-dates is called")
         val res = IncomeTaxSubscriptionFrontend.businessAccountingPeriodDates()

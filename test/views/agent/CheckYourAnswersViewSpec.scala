@@ -16,13 +16,13 @@
 
 package views.agent
 
-import core.utils.{TestModels, UnitTestTrait}
 import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Summary => messages}
 import core.utils.TestModels.{testAccountingPeriod, testAgentSummaryData, testBusinessName}
+import core.utils.{TestModels, UnitTestTrait}
 import incometax.util.AccountingPeriodUtil
-import models.individual.business.address.Address
 import models.individual.business._
+import models.individual.business.address.Address
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import models.individual.subscription.{AgentSummary, IncomeSourceType}
 import models.{Current, Next, Yes}
@@ -31,7 +31,7 @@ import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import views.agent.helpers.SummaryIdConstants._
 
 
@@ -49,12 +49,12 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testIncomeSource: IncomeSourceType = TestModels.testIncomeSourceBoth
   val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
   val testAreYouSelfEmployed: AreYouSelfEmployedModel = TestModels.testAreYouSelfEmployed_yes
-  val testSummary = customTestSummary()
+  val testSummary: AgentSummary = customTestSummary()
 
   def customTestSummary(matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
                         accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod,
                         selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
-                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) = AgentSummary(
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): AgentSummary = AgentSummary(
     matchTaxYear = matchTaxYear,
     accountingPeriodDate = accountingPeriod,
     businessName = testBusinessName,
@@ -66,7 +66,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     accountingMethodProperty = accountingMethodProperty
   )
 
-  def page(testSummaryModel: AgentSummary): Html = views.html.agent.check_your_answers(
+  def page(testSummaryModel: AgentSummary): HtmlFormat.Appendable = views.html.agent.check_your_answers(
     summaryModel = testSummaryModel,
     postAction = postAction,
     backUrl = backUrl
@@ -131,7 +131,8 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
     }
 
 
-    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String])(setupData: AgentSummary = testAgentSummaryData) = {
+    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String])(
+      setupData: AgentSummary = testAgentSummaryData): Unit = {
       val accountingPeriod = document(setupData).getElementById(sectionId)
       val question = document(setupData).getElementById(questionId(sectionId))
       val answer = document(setupData).getElementById(answerId(sectionId))
@@ -157,10 +158,11 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       "do not display if the user chooses yes to match tax year" in {
         val sectionId = AccountingPeriodDateId
         val doc = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod = None))
-        doc.getElementById(sectionId) mustBe null
+        Option(doc.getElementById(sectionId)) mustBe None
 
-        val doc2 = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod = Some(testAccountingPeriod)))
-        doc2.getElementById(sectionId) mustBe null
+        val doc2 = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes),
+                                                                                                    accountingPeriod = Some(testAccountingPeriod)))
+        Option(doc2.getElementById(sectionId)) mustBe None
       }
       "the user chooses no to match tax year" in {
         val sectionId = AccountingPeriodDateId

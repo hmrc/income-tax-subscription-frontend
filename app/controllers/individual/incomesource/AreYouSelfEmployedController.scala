@@ -30,7 +30,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfig,
@@ -39,7 +39,7 @@ class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfi
                                              val authService: AuthService,
                                              val appConfig: AppConfig,
                                              val currentTimeService: CurrentTimeService
-                                            ) extends SignUpController {
+                                            )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def view(areYouSelfEmployedForm: Form[AreYouSelfEmployedModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.individual.incometax.incomesource.are_you_selfemployed(
@@ -78,7 +78,7 @@ class AreYouSelfEmployedController @Inject()(val baseConfig: BaseControllerConfi
                 case Some(Business | Both) =>
                   Redirect(controllers.individual.business.routes.BusinessNameController.show())
                 case Some(Property) =>
-                    Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
+                  Redirect(controllers.individual.business.routes.PropertyAccountingMethodController.show())
                 case _ =>
                   Redirect(controllers.individual.incomesource.routes.CannotSignUpController.show())
               }

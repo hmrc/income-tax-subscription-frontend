@@ -16,7 +16,6 @@
 
 package connectors.agent.mocks
 
-import agent.audit.Logging
 import connectors.agent.AgentServicesConnector
 import core.utils.MockTrait
 import org.mockito.Mockito._
@@ -26,7 +25,7 @@ import scala.concurrent.Future
 
 trait TestAgentServicesConnector extends MockHttp {
 
-  object TestAgentServicesConnector extends AgentServicesConnector(appConfig, mockHttp, app.injector.instanceOf[Logging])
+  object TestAgentServicesConnector extends AgentServicesConnector(appConfig, mockHttp)
 
   def mockIsPreExistingRelationship(arn: String, nino: String)(status: Int, response: Option[JsValue] = None): Unit =
     setupMockHttpGet(Some(TestAgentServicesConnector.agentClientURL(arn, nino)))(status, response)
@@ -34,7 +33,7 @@ trait TestAgentServicesConnector extends MockHttp {
 
 trait MockAgentServicesConnector extends MockTrait {
 
-  val mockAgentServicesConnector = mock[AgentServicesConnector]
+  val mockAgentServicesConnector: AgentServicesConnector = mock[AgentServicesConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach()

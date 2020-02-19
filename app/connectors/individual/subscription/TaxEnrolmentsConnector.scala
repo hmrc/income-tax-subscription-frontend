@@ -16,9 +16,9 @@
 
 package connectors.individual.subscription
 
-import core.config.AppConfig
 import connectors.individual.subscription.httpparsers.AllocateEnrolmentResponseHttpParser._
 import connectors.individual.subscription.httpparsers.UpsertEnrolmentResponseHttpParser._
+import core.config.AppConfig
 import javax.inject.Inject
 import models.individual.subscription.{EmacEnrolmentRequest, EnrolmentKey, EnrolmentVerifiers}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxEnrolmentsConnector @Inject()(appConfig: AppConfig,
-                                        httpClient: HttpClient)(implicit ec: ExecutionContext) {
+                                       httpClient: HttpClient)(implicit ec: ExecutionContext) {
   def upsertEnrolment(enrolmentKey: EnrolmentKey,
                       verifiers: EnrolmentVerifiers
                      )(implicit hc: HeaderCarrier): Future[UpsertEnrolmentResponse] = {

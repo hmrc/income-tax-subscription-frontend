@@ -101,11 +101,13 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
   "Calling the submit action of the AreYouSelfEmployed controller with an authorised user" when {
 
     def submit(areYouSelfEmployed: AreYouSelfEmployedModel, isEditMode: Boolean): Future[Result] =
-      TestAreYouSelfEmployedController.submit(isEditMode = isEditMode)(subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm, areYouSelfEmployed))
+      TestAreYouSelfEmployedController.submit(isEditMode = isEditMode)(
+        subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm, areYouSelfEmployed))
 
     "invalid submission" should {
       "return bad request (400)" in {
-        status(TestAreYouSelfEmployedController.submit(isEditMode = true)(subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm))) mustBe BAD_REQUEST
+        status(TestAreYouSelfEmployedController.submit(isEditMode = true)(
+          subscriptionRequest.post(AreYouSelfEmployedForm.areYouSelfEmployedForm))) mustBe BAD_REQUEST
       }
     }
 

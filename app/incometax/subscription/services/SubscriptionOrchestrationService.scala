@@ -22,6 +22,7 @@ import core.connectors.models.ConnectorError
 import javax.inject.{Inject, Singleton}
 import models.individual.subscription.{SubscriptionSuccess, SummaryModel}
 import uk.gov.hmrc.http.HeaderCarrier
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

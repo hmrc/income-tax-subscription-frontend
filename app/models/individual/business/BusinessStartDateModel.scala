@@ -17,10 +17,10 @@
 package models.individual.business
 
 import models.DateModel
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class BusinessStartDateModel(startDate: DateModel)
 
 object BusinessStartDateModel {
-  implicit val format = Json.format[BusinessStartDateModel]
+  implicit val format: OFormat[BusinessStartDateModel] = Json.format[BusinessStartDateModel]
 }

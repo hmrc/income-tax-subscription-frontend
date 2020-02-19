@@ -21,7 +21,7 @@ import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels
 import models.individual.subscription.SubscriptionSuccess
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 
 object SubscriptionStub extends WireMockMethods {
   def subscriptionURI(nino: String): String = s"/income-tax-subscription/subscription/$nino"
@@ -68,7 +68,7 @@ object SubscriptionStub extends WireMockMethods {
       .thenReturn(Status.NOT_FOUND)
   }
 
-  def successfulSubscriptionWithBodyBusiness(arn: Option[String] = None, nino: String) = Json.obj(
+  def successfulSubscriptionWithBodyBusiness(arn: Option[String] = None, nino: String): JsObject = Json.obj(
     "nino" -> nino,
     "businessIncome" -> Json.obj(
       "tradingName" -> "test business",
@@ -88,7 +88,7 @@ object SubscriptionStub extends WireMockMethods {
     ), "selectedTaxYear" -> IntegrationTestModels.testAccountingYearNext
   ) ++ arn.fold(Json.obj())(arn => Json.obj("arn" -> arn))
 
-  def successfulSubscriptionWithBodyBoth(arn: Option[String] = None, nino: String) = Json.obj(
+  def successfulSubscriptionWithBodyBoth(arn: Option[String] = None, nino: String): JsObject = Json.obj(
     "nino" -> nino,
     "businessIncome" -> Json.obj(
       "tradingName" -> "test business",
@@ -109,7 +109,7 @@ object SubscriptionStub extends WireMockMethods {
     "propertyIncome" -> Json.obj("accountingMethod" -> "Cash")
   ) ++ arn.fold(Json.obj())(arn => Json.obj("arn" -> arn))
 
-  def successfulSubscriptionWithBodyProperty(arn: Option[String] = None, nino: String) = Json.obj(
+  def successfulSubscriptionWithBodyProperty(arn: Option[String] = None, nino: String): JsObject = Json.obj(
     "nino" -> nino,
     "propertyIncome" -> Json.obj("accountingMethod" -> "Cash")
   ) ++ arn.fold(Json.obj())(arn => Json.obj("arn" -> arn))
@@ -117,6 +117,6 @@ object SubscriptionStub extends WireMockMethods {
 
 
   val successfulSubscriptionResponse = SubscriptionSuccess(testMTDID)
-  val failureSubscriptionResponse = Json.obj()
-  val successfulNoSubscriptionResponse = Json.obj()
+  val failureSubscriptionResponse: JsObject = Json.obj()
+  val successfulNoSubscriptionResponse: JsObject = Json.obj()
 }

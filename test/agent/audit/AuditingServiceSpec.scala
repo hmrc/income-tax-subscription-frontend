@@ -18,21 +18,21 @@ package agent.audit
 
 import agent.audit.AuditingService._
 import agent.audit.models.ClientMatchingAuditing._
+import agent.utils.TestConstants._
+import agent.utils.TestModels._
+import core.utils.MockTrait
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.Configuration
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import core.utils.MockTrait
-import agent.utils.TestConstants._
-import agent.utils.TestModels._
 
 import scala.concurrent.ExecutionContext
-import uk.gov.hmrc.http.HeaderCarrier
 
 class AuditingServiceSpec extends MockTrait with BeforeAndAfterEach {
-  val mockAuditConnector = mock[AuditConnector]
-  val mockConfiguration = mock[Configuration]
+  val mockAuditConnector: AuditConnector = mock[AuditConnector]
+  val mockConfiguration: Configuration = mock[Configuration]
   val testAppName = "app"
 
   val testAuditingService = new AuditingService(mockConfiguration, mockAuditConnector)

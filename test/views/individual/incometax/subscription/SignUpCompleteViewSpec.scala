@@ -22,7 +22,10 @@ import core.utils.TestModels.{testAreYouSelfEmployed_no, testSummaryData}
 import models.DateModel
 import models.individual.subscription.{Both, Business, IncomeSourceType}
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{AnyContentAsEmpty, Call}
+import play.api.test.FakeRequest
 import play.twirl.api.Html
 import views.ViewSpecTrait
 
@@ -30,9 +33,9 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
 
   val submissionDateValue = DateModel("1", "1", "2016")
   val duration: Int = 0
-  val action = ViewSpecTrait.testCall
-  val incomeSource = Business
-  val request = ViewSpecTrait.viewTestRequest
+  val action: Call = ViewSpecTrait.testCall
+  val incomeSource: Business.type = Business
+  val request: FakeRequest[AnyContentAsEmpty.type] = ViewSpecTrait.viewTestRequest
 
   def page(incomeSource: IncomeSourceType): Html = views.html.individual.incometax.subscription.sign_up_complete(
     journeyDuration = duration,
@@ -42,7 +45,7 @@ class SignUpCompleteViewSpec extends ViewSpecTrait {
     }
   )(request, applicationMessages, appConfig)
 
-  def document = Jsoup.parse(page(incomeSource).body)
+  def document: Document = Jsoup.parse(page(incomeSource).body)
 
   "The Confirmation view for Business income source" should {
 

@@ -34,7 +34,8 @@ class InputHelperSpec extends UnitTestTrait {
                            labelClass: Option[String] = None,
                            isNumeric: Boolean = false
                          )
-  = views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength, labelClass = labelClass, isNumeric = isNumeric)(applicationMessages)
+  = views.html.helpers.inputHelper(field, label = label, formHint = formHint, maxLength = maxLength, labelClass = labelClass, isNumeric = isNumeric)(
+    applicationMessages)
 
   case class TestData(input: String)
 

@@ -24,15 +24,15 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CannotSignUpController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        val keystoreService: KeystoreService,
                                        val logging: Logging,
-                                       val authService: AuthService
-                                      ) extends SignUpController {
+                                       val authService: AuthService)
+                                      (implicit val ec: ExecutionContext) extends SignUpController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

@@ -16,19 +16,21 @@
 
 package testonly.controllers.agent
 
-import testonly.models.agent.ClientToStubModel
-import testonly.connectors.agent.{MatchingStubConnector, UserData}
 import core.config.{AppConfig, BaseControllerConfig}
 import core.utils.Implicits._
-import testonly.form.agent.ClientToStubForm
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, Request}
+import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
+import testonly.connectors.agent.{MatchingStubConnector, UserData}
+import testonly.form.agent.ClientToStubForm
+import testonly.models.agent.ClientToStubModel
 import testonly.views.html.agent.{show_stubbed_details, stub_client}
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+
+import scala.concurrent.ExecutionContext
 
 
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
@@ -37,7 +39,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 class MatchingStubController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
                                        matchingStubConnector: MatchingStubConnector
-                                      ) extends FrontendController with I18nSupport {
+                                      )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
   implicit lazy val appConfig: AppConfig = baseConfig.applicationConfig
 
@@ -47,11 +49,11 @@ class MatchingStubController @Inject()(val baseConfig: BaseControllerConfig,
       testonly.controllers.agent.routes.MatchingStubController.submit()
     )
 
-  def show = Action.async { implicit request =>
+  def show: Action[AnyContent] = Action.async { implicit request =>
     Ok(view(ClientToStubForm.clientToStubForm.form.fill(UserData().toClientToStubModel)))
   }
 
-  def submit = Action.async { implicit request =>
+  def submit: Action[AnyContent] = Action.async { implicit request =>
     ClientToStubForm.clientToStubForm.bindFromRequest.fold(
       formWithErrors => BadRequest(view(formWithErrors)),
       clientDetails =>

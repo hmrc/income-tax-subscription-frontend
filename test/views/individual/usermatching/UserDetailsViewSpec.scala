@@ -20,13 +20,14 @@ import assets.MessageLookup.{Base => common, UserDetails => messages}
 import forms.usermatching.UserDetailsForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class UserDetailsViewSpec extends ViewSpecTrait {
 
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean): play.twirl.api.HtmlFormat.Appendable = views.html.individual.usermatching.user_details(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.individual.usermatching.user_details(
     userDetailsForm = UserDetailsForm.userDetailsForm.form.addError(addFormErrors),
     postAction = action,
     isEditMode = isEditMode
@@ -79,13 +80,13 @@ class UserDetailsViewSpec extends ViewSpecTrait {
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore() = TestView(
+    def documentCore():TestView = TestView(
       name = "User Details View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
       page = page(isEditMode = false, addFormErrors = true)
     )
 
-    val testPage = documentCore()
+    val testPage: Unit = documentCore()
   }
 }

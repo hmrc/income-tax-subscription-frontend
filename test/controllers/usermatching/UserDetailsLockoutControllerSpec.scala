@@ -27,7 +27,8 @@ import org.jsoup.Jsoup
 import play.api.Play
 import play.api.http.Status
 import play.api.i18n.Messages.Implicits.applicationMessagesApi
-import play.api.mvc.{Action, AnyContent, Cookie, Request}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Cookie, Request}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.language.LanguageUtils.WelshLangCode
@@ -42,16 +43,17 @@ class UserDetailsLockoutControllerSpec extends ControllerBaseSpec
     "show" -> TestUserDetailsLockoutController.show
   )
 
-  def createTestUserDetailsLockoutController(enableMatchingFeature: Boolean) = new UserDetailsLockoutController(
+  def createTestUserDetailsLockoutController(enableMatchingFeature: Boolean): UserDetailsLockoutController = new UserDetailsLockoutController(
     MockBaseControllerConfig,
     messagesApi,
     mockAuthService,
     mockUserLockoutService
   )
 
-  lazy val TestUserDetailsLockoutController = createTestUserDetailsLockoutController(enableMatchingFeature = true)
+  lazy val TestUserDetailsLockoutController: UserDetailsLockoutController = createTestUserDetailsLockoutController(enableMatchingFeature = true)
 
-  lazy val request = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+  lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
+    SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
 
   "Calling the 'show' action of the UserDetailsLockoutController" when {

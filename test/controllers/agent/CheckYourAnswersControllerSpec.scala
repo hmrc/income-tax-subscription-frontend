@@ -111,9 +111,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           status(result) must be(Status.SEE_OTHER)
           await(result)
           verifyKeystore(fetchAll = 1, saveSubscriptionId = 1)
-
-          //TODO - Test path header being sent to backend
-          // verifySubscriptionHeader(ITSASessionKeys.RequestURI -> request.uri)
         }
 
         s"redirect to '${controllers.agent.routes.ConfirmationController.show().url}'" in {
@@ -132,8 +129,6 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
           ex.message mustBe "Successful response not received from submission"
           verifyKeystore(fetchAll = 1, saveSubscriptionId = 0)
         }
-
-        // TODO re-enable create relationship test once the agent team is ready
         "return a failure if create client relationship fails" ignore {
           val request = authorisedAgentRequest.addingToSession(ITSASessionKeys.ArnKey -> testARN)
 
@@ -160,7 +155,8 @@ class CheckYourAnswersControllerSpec extends AgentControllerBaseSpec
 
     s"point to ${controllers.agent.business.routes.BusinessAccountingMethodController.show().url}" when {
       "on the business only journey" in {
-        TestCheckYourAnswersController.backUrl(Some(Business))(fakeRequest) mustBe controllers.agent.business.routes.BusinessAccountingMethodController.show().url
+        TestCheckYourAnswersController.backUrl(Some(Business))(fakeRequest) mustBe
+          controllers.agent.business.routes.BusinessAccountingMethodController.show().url
       }
     }
 

@@ -20,21 +20,22 @@ import agent.assets.MessageLookup
 import agent.assets.MessageLookup.{Base => common, ConfirmClient => messages}
 import agent.utils.TestConstants
 import core.utils.{TestModels, UnitTestTrait}
+import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.Html
+import play.twirl.api.HtmlFormat
 import views.agent.helpers.ConfirmClientIdConstants._
 
 class CheckYourClientDetailsViewSpec extends UnitTestTrait {
 
   val testFirstName = "Test"
   val testLastName = "User"
-  val testNino = TestConstants.testNino
-  val testDob = TestModels.testStartDate
+  val testNino: String = TestConstants.testNino
+  val testDob: DateModel = TestModels.testStartDate
   val testClientDetails = UserDetailsModel(
     testFirstName,
     testLastName,
@@ -44,7 +45,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
   lazy val postAction: Call = controllers.agent.matching.routes.ConfirmClientController.submit()
   lazy val backUrl: String = "testBackUrl"
 
-  def page(): Html = views.html.agent.check_your_client_details(
+  def page(): HtmlFormat.Appendable = views.html.agent.check_your_client_details(
     userDetailsModel = testClientDetails,
     postAction = postAction,
     backUrl = backUrl
@@ -107,7 +108,7 @@ class CheckYourClientDetailsViewSpec extends UnitTestTrait {
 
     }
 
-    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String]) = {
+    def sectionTest(sectionId: String, expectedQuestion: String, expectedAnswer: String, expectedEditLink: Option[String]): Unit = {
       val accountingPeriod = document().getElementById(sectionId)
       val question = document().getElementById(questionId(sectionId))
       val answer = document().getElementById(answerId(sectionId))

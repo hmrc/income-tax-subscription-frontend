@@ -16,17 +16,15 @@
 
 package controllers.agent
 
-import agent.assets.MessageLookup.FrontPage
-import agent.audit.Logging
 import agent.auth.{AgentSignUp, AgentUserMatching}
 import core.config.{BaseControllerConfig, MockConfig}
-import org.jsoup.Jsoup
 import org.mockito.Mockito.reset
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
+import scala.concurrent.Future
 
 class HomeControllerSpec extends AgentControllerBaseSpec {
 
@@ -43,8 +41,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
   private def testHomeController() = new HomeController(
     mockBaseControllerConfig(),
     messagesApi,
-    mockAuthService,
-    app.injector.instanceOf[Logging]
+    mockAuthService
   )
 
   "Calling the home action of the Home controller with an authorised user" should {
@@ -64,7 +61,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
     "there is no journey state in session" should {
       lazy val request = FakeRequest()
 
-      def result = testHomeController().index()(request)
+      def result: Future[Result] = testHomeController().index()(request)
 
       s"if the user has arn redirect to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in {
         reset(mockAuthService)
@@ -91,7 +88,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
     "journey state is user matching" should {
       lazy val request = userMatchingRequest
 
-      def result = testHomeController().index()(request)
+      def result: Future[Result] = testHomeController().index()(request)
 
       s"redirect user to ${controllers.agent.matching.routes.ClientDetailsController.show().url}" in {
         status(result) must be(Status.SEE_OTHER)
@@ -106,7 +103,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
       "the user has a UTR" should {
         lazy val request = userMatchedRequest
 
-        def result = testHomeController().index()(request)
+        def result: Future[Result] = testHomeController().index()(request)
 
         s"redirect user to ${controllers.agent.routes.IncomeSourceController.show().url}" in {
           status(result) must be(Status.SEE_OTHER)
@@ -120,7 +117,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
       "the user does not have a UTR" should {
         lazy val request = userMatchedRequestNoUtr
 
-        def result = testHomeController().index()(request)
+        def result: Future[Result] = testHomeController().index()(request)
 
         s"redirect user to ${controllers.agent.matching.routes.NoSAController.show().url}" in {
           status(result) must be(Status.SEE_OTHER)
@@ -136,7 +133,7 @@ class HomeControllerSpec extends AgentControllerBaseSpec {
       "the agent is authorised" should {
         lazy val request = subscriptionRequest.withSession(ITSASessionKeys.MTDITID -> "any")
 
-        def result = testHomeController().index()(request)
+        def result: Future[Result] = testHomeController().index()(request)
 
         s"redirect user to ${controllers.agent.routes.ConfirmationController.show().url}" in {
           status(result) must be(Status.SEE_OTHER)

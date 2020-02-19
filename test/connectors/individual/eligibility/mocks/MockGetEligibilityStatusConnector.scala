@@ -30,7 +30,7 @@ import scala.concurrent.Future
 
 trait MockGetEligibilityStatusConnector extends MockTrait {
 
-  val mockGetEligibilityStatusConnector = mock[GetEligibilityStatusConnector]
+  val mockGetEligibilityStatusConnector: GetEligibilityStatusConnector = mock[GetEligibilityStatusConnector]
 
   def mockGetEligibilityStatus(sautr: String)(result: Future[HttpResult[EligibilityStatus]]): Unit =
     when(mockGetEligibilityStatusConnector.getEligibilityStatus(ArgumentMatchers.eq(sautr))(ArgumentMatchers.any())).thenReturn(result)

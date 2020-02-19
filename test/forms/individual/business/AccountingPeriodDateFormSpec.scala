@@ -100,7 +100,6 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           val emptyDateInput = DataMap.emptyDate(endDate)
           val emptyTest = accountingPeriodDateForm.bind(emptyDateInput)
           emptyTest assert endDate hasExpectedErrors empty
-
         }
 
         "it is a date with invalid characters" in {

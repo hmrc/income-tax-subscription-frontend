@@ -1,3 +1,4 @@
+
 package helpers.agent.servicemocks
 
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -6,12 +7,12 @@ import helpers.agent.IntegrationTestConstants.{SessionId, testMTDID}
 import helpers.agent.IntegrationTestModels.{fullKeystoreData, keystoreData}
 import helpers.agent.WiremockHelper
 import play.api.http.Status
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{JsValue, Json, OFormat, Writes}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 object KeystoreStub extends WireMockMethods {
   val keystoreUri = s"/keystore/income-tax-subscription-frontend/$SessionId"
-  implicit val keystoreFormat = Json.format[KeystoreData]
+  implicit val keystoreFormat: OFormat[KeystoreData] = Json.format[KeystoreData]
   val emptyKeystoreData = KeystoreData(SessionId, Map.empty)
 
   def stubPutMtditId(): Unit = {

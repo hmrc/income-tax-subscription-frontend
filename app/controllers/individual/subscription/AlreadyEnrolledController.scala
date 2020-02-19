@@ -22,11 +22,13 @@ import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 
+import scala.concurrent.ExecutionContext
+
 @Singleton
 class AlreadyEnrolledController @Inject()(val baseConfig: BaseControllerConfig,
                                           val messagesApi: MessagesApi,
                                           val authService: AuthService
-                                         ) extends PostSubmissionController {
+                                         )(implicit val ec: ExecutionContext) extends PostSubmissionController {
 
   val show = Authenticated { implicit request =>
     user => Ok(views.html.individual.incometax.subscription.enrolled.already_enrolled())

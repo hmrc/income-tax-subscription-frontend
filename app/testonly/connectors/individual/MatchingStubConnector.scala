@@ -26,19 +26,19 @@ import core.connectors.RawResponseReads
 import javax.inject.{Inject, Singleton}
 import models.DateModel
 import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, OFormat}
 import testonly.TestOnlyAppConfig
 import testonly.models.UserToStubModel
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 case class Value(value: String)
 
 object Value {
-  implicit val format = Json.format[Value]
+  implicit val format: OFormat[Value] = Json.format[Value]
 }
 
 case class UserData(nino: Value = Value("AA 11 11 11 A"),
@@ -76,7 +76,7 @@ object UserData {
 
   // $COVERAGE-ON$
 
-  implicit val format = Json.format[UserData]
+  implicit val format: OFormat[UserData] = Json.format[UserData]
 
 }
 
@@ -94,19 +94,18 @@ case class Request(
                   )
 
 object Request {
-  implicit val format = Json.format[Request]
+  implicit val format: OFormat[Request] = Json.format[Request]
 }
 
 import core.utils.Implicits._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 @Singleton
 class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
                                       http: HttpClient,
-                                      logging: Logging) extends RawResponseReads {
+                                      logging: Logging)
+                                     (implicit ec: ExecutionContext) extends RawResponseReads {
 
-  lazy val dynamicStubUrl = appConfig.matchingStubsURL + "/dynamic-cid"
+  lazy val dynamicStubUrl: String = appConfig.matchingStubsURL + "/dynamic-cid"
 
   /*
   *  N.B. This creates a stubbed user via the MatchingStubs service
@@ -136,5 +135,4 @@ class MatchingStubConnector @Inject()(appConfig: TestOnlyAppConfig,
   }
 
 }
-
 // $COVERAGE-ON$

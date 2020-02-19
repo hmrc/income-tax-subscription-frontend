@@ -25,8 +25,10 @@ import forms.agent.AccountingYearForm
 import models.Current
 import models.agent.AccountingYearModel
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService
@@ -85,11 +87,11 @@ class WhatYearToSignUpControllerSpec extends AgentControllerBaseSpec
 
   "submit" should {
 
-    def callShow(isEditMode: Boolean) = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
+    def callShow(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(AccountingYearForm.accountingYearForm, AccountingYearModel(Current))
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean) = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
+    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 

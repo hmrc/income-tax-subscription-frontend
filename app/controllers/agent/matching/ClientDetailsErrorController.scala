@@ -16,20 +16,21 @@
 
 package controllers.agent.matching
 
-import javax.inject.{Inject, Singleton}
-
 import agent.auth.UserMatchingController
 import core.config.BaseControllerConfig
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
 import core.services.AuthService
 import core.utils.Implicits._
+import javax.inject.{Inject, Singleton}
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent}
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ClientDetailsErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                              val messagesApi: MessagesApi,
                                              val authService: AuthService
-                                            ) extends UserMatchingController {
+                                            )(implicit val ec: ExecutionContext) extends UserMatchingController {
 
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

@@ -18,10 +18,10 @@ package agent.utils
 
 import agent.services.CacheConstants
 import core.utils.Implicits
+import models._
 import models.individual.business._
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import models.usermatching.UserDetailsModel
-import models._
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap

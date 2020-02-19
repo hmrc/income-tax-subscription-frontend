@@ -29,7 +29,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
 trait MockTaxEnrolmentsConnector extends MockTrait {
-  val mockTaxEnrolmentsConnector = mock[TaxEnrolmentsConnector]
+  val mockTaxEnrolmentsConnector: TaxEnrolmentsConnector = mock[TaxEnrolmentsConnector]
 
   private def mockUpsertEnrolment(enrolmentKey: EnrolmentKey,
                                   enrolmentVerifiers: EnrolmentVerifiers

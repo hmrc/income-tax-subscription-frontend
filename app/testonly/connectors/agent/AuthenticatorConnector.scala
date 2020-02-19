@@ -36,5 +36,4 @@ class AuthenticatorConnector @Inject()(appConfig: TestOnlyAppConfig,
     http.POSTEmpty[HttpResponse](refreshURI)
 
 }
-
 // $COVERAGE-ON$

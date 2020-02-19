@@ -18,7 +18,6 @@ package controllers.individual.business
 
 import java.time.LocalDate
 
-import models._
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
 import helpers.IntegrationTestModels.keystoreData

@@ -17,13 +17,13 @@
 package agent.audit.mocks
 
 import agent.audit.{AuditModel, AuditingService}
-import org.mockito.ArgumentMatchers
-import org.scalatest.BeforeAndAfterEach
 import core.utils.MockTrait
+import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext
-import uk.gov.hmrc.http.HeaderCarrier
 
 trait MockAuditingService extends MockTrait with BeforeAndAfterEach {
   override def beforeEach(): Unit = {
@@ -31,7 +31,7 @@ trait MockAuditingService extends MockTrait with BeforeAndAfterEach {
     reset(mockAuditingService)
   }
 
-  val mockAuditingService = mock[AuditingService]
+  val mockAuditingService: AuditingService = mock[AuditingService]
 
   def verifyAudit(model: AuditModel, path: String): Unit =
     verify(mockAuditingService).audit(

@@ -101,7 +101,8 @@ class BusinessAccountingMethodControllerISpec extends ComponentSpecBase {
           When(s"POST ${controllers.individual.business.routes.BusinessAccountingMethodController.submit().url}")
           val res = IncomeTaxSubscriptionFrontend.submitAccountingMethod(inEditMode = false, request = Some(userInput))
 
-          Then(s"Should return a $SEE_OTHER with a redirect location of ${controllers.individual.business.routes.PropertyAccountingMethodController.show().url}")
+          Then(s"Should return a $SEE_OTHER with a redirect location of ${
+                                                      controllers.individual.business.routes.PropertyAccountingMethodController.show().url}")
           res should have(
             httpStatus(SEE_OTHER),
             redirectURI(accountingMethodPropertyURI)

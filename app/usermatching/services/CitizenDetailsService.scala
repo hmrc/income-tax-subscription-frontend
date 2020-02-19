@@ -17,7 +17,6 @@
 package usermatching.services
 
 import connectors.usermatching.CitizenDetailsConnector
-import core.auth.IncomeTaxSAUser
 import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import models.usermatching.CitizenDetailsSuccess

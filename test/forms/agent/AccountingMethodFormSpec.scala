@@ -19,8 +19,8 @@ package forms.agent
 import agent.assets.MessageLookup
 import forms.submapping.AccountingMethodMapping
 import forms.validation.ErrorMessageFactory
-import forms.validation.testutils._
 import forms.validation.testutils.DataMap.DataMap
+import forms.validation.testutils._
 import models.Cash
 import models.agent.AccountingMethodModel
 import org.scalatest.Matchers._

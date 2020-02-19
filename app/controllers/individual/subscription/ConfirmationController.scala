@@ -24,11 +24,13 @@ import core.audit.Logging
 import core.auth.PostSubmissionController
 import core.config.BaseControllerConfig
 import core.services.{AuthService, KeystoreService}
-import views.html.individual.incometax.subscription.sign_up_complete
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.InternalServerException
+import views.html.individual.incometax.subscription.sign_up_complete
+
+import scala.concurrent.ExecutionContext
 
 
 @Singleton
@@ -37,7 +39,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
                                        val keystoreService: KeystoreService,
                                        val logging: Logging,
                                        val authService: AuthService
-                                      ) extends PostSubmissionController {
+                                      )(implicit val ec: ExecutionContext) extends PostSubmissionController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

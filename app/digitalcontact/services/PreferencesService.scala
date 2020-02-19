@@ -27,8 +27,9 @@ import scala.concurrent.Future
 @Singleton
 class PreferencesService @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector) {
 
-  @inline def checkPaperless(token: String)(implicit request: Request[AnyContent], messages: Messages): Future[Either[PaperlessPreferenceError.type, PaperlessState]] =
-    preferenceFrontendConnector.checkPaperless(token)
+  @inline def checkPaperless(token: String)(implicit request: Request[AnyContent], messages: Messages):
+      Future[Either[PaperlessPreferenceError.type, PaperlessState]] =
+      preferenceFrontendConnector.checkPaperless(token)
 
   @inline def defaultChoosePaperlessUrl(implicit request: Request[AnyContent], messages: Messages): String = preferenceFrontendConnector.choosePaperlessUrl
 

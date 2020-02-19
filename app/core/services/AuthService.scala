@@ -17,7 +17,6 @@
 package core.services
 
 import javax.inject.{Inject, Singleton}
-
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 
 @Singleton

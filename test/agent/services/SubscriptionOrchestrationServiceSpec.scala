@@ -18,8 +18,8 @@ package agent.services
 
 import agent.services.mocks.TestSubscriptionOrchestrationService
 import agent.utils.TestConstants._
-import core.utils.TestModels.testSummaryData
 import core.connectors.models.ConnectorError
+import core.utils.TestModels.testSummaryData
 import core.utils.UnitTestTrait
 import models.individual.subscription.SubscriptionSuccess
 import org.scalatest.concurrent.ScalaFutures

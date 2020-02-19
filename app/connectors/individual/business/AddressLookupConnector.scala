@@ -16,48 +16,31 @@
 
 package connectors.individual.business
 
-import core.audit.Logging
-import core.config.AppConfig
 import connectors.individual.business.httpparsers.AddressLookupResponseHttpParser._
+import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
-import models.individual.business.address.{AddressLookupInitFailureResponse, AddressLookupInitRequest, MalformatAddressReturned, UnexpectedStatusReturned}
+import models.individual.business.address.AddressLookupInitRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AddressLookupConnector @Inject()(appConfig: AppConfig,
-                                       http: HttpClient,
-                                       logging: Logging) {
+                                       http: HttpClient)
+                                      (implicit ec: ExecutionContext) {
 
-  lazy val initUrl = appConfig.addressLookupFrontendURL + AddressLookupConnector.initUri
+  lazy val initUrl: String = appConfig.addressLookupFrontendURL + AddressLookupConnector.initUri
 
-  def retrieveAddressUrl(id: String) = s"${appConfig.addressLookupFrontendURL}${AddressLookupConnector.fetchAddressUri}?id=$id"
+  def retrieveAddressUrl(id: String): String = s"${appConfig.addressLookupFrontendURL}${AddressLookupConnector.fetchAddressUri}?id=$id"
 
-  def init(initAddressLookup: AddressLookupInitRequest)(implicit hc: HeaderCarrier): Future[InitAddressLookupResponseResponse] =
-    http.POST[AddressLookupInitRequest, InitAddressLookupResponseResponse](initUrl, initAddressLookup).map {
-      case r@Right(_) =>
-        logging.debug("AddressLookupConnector.init successful, returned OK")
-        r
-      case l@Left(AddressLookupInitFailureResponse(status)) =>
-        logging.warn("AddressLookupConnector.init failure, status=" + status)
-        l
-    }
+  def init(initAddressLookup: AddressLookupInitRequest)(implicit hc: HeaderCarrier): Future[InitAddressLookupResponseResponse] = {
+    http.POST[AddressLookupInitRequest, InitAddressLookupResponseResponse](initUrl, initAddressLookup)
+  }
 
-  def retrieveAddress(journeyId: String)(implicit hc: HeaderCarrier): Future[ConfirmAddressLookupResponseResponse] =
-    http.GET[ConfirmAddressLookupResponseResponse](retrieveAddressUrl(journeyId)).map {
-      case r@Right(_) =>
-        logging.debug("AddressLookupConnector.fetchAddress successful, returned OK")
-        r
-      case l@Left(UnexpectedStatusReturned(status)) =>
-        logging.warn("AddressLookupConnector.fetchAddress failure, status=" + status)
-        l
-      case l@Left(MalformatAddressReturned) =>
-        logging.warn("AddressLookupConnector.fetchAddress returned malformated address")
-        l
-    }
+  def retrieveAddress(journeyId: String)(implicit hc: HeaderCarrier): Future[ConfirmAddressLookupResponseResponse] = {
+    http.GET[ConfirmAddressLookupResponseResponse](retrieveAddressUrl(journeyId))
+  }
 
 }
 

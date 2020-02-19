@@ -19,22 +19,24 @@ package views.agent.business
 import agent.assets.MessageLookup.{BusinessName => messages}
 import forms.agent.BusinessNameForm
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Call
 import play.api.test.FakeRequest
+import play.twirl.api.{Html, HtmlFormat}
 import views.ViewSpecTrait
 
 class BusinessNameViewSpec extends ViewSpecTrait {
 
-  val backUrl = ViewSpecTrait.testBackUrl
-  val action = ViewSpecTrait.testCall
+  val backUrl: String = ViewSpecTrait.testBackUrl
+  val action: Call = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean) = views.html.agent.business.business_name(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.agent.business.business_name(
     businessNameForm = BusinessNameForm.businessNameForm.form.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(isEditMode: Boolean) = TestView(
+  def documentCore(isEditMode: Boolean): TestView = TestView(
     name = "Business Name View",
     title = messages.title,
     heading = messages.heading,
@@ -67,7 +69,7 @@ class BusinessNameViewSpec extends ViewSpecTrait {
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore() = TestView(
+    def documentCore(): TestView = TestView(
       name = "Business Name View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,

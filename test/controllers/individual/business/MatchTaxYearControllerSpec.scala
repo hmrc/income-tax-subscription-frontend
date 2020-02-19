@@ -86,13 +86,16 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
   "The back url" should {
     s"in linear journey for subscription points to ${controllers.individual.business.routes.BusinessNameController.show().url}" in {
-      TestMatchTaxYearController.backUrl(isEditMode = false)(subscriptionRequest) mustBe controllers.individual.business.routes.BusinessNameController.show().url
+      TestMatchTaxYearController.backUrl(isEditMode = false)(subscriptionRequest) mustBe
+        controllers.individual.business.routes.BusinessNameController.show().url
     }
     s"in linear journey for registration points to ${controllers.individual.business.routes.BusinessStartDateController.show().url}" in {
-      TestMatchTaxYearController.backUrl(isEditMode = false)(registrationRequest) mustBe controllers.individual.business.routes.BusinessStartDateController.show().url
+      TestMatchTaxYearController.backUrl(isEditMode = false)(registrationRequest) mustBe
+        controllers.individual.business.routes.BusinessStartDateController.show().url
     }
     s"edit mode points to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-      TestMatchTaxYearController.backUrl(isEditMode = true)(subscriptionRequest) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+      TestMatchTaxYearController.backUrl(isEditMode = true)(subscriptionRequest) mustBe
+        controllers.individual.subscription.routes.CheckYourAnswersController.show().url
     }
   }
 
@@ -171,7 +174,8 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callSubmit(No)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url
+        redirectLocation(goodRequest).get mustBe
+          controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url
         await(goodRequest)
         verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1)
       }
@@ -181,7 +185,8 @@ class MatchTaxYearControllerSpec extends ControllerBaseSpec
 
         val goodRequest = callSubmit(No)
         status(goodRequest) mustBe Status.SEE_OTHER
-        redirectLocation(goodRequest).get mustBe controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url
+        redirectLocation(goodRequest).get mustBe
+          controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true).url
         await(goodRequest)
         verifyKeystore(fetchAll = 1, saveMatchTaxYear = 1)
       }

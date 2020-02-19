@@ -21,12 +21,12 @@ import java.time.LocalDate
 
 import core.services.CacheConstants
 import core.utils.TestConstants._
-import models.individual.business.address.{Address, Country, ReturnedAddress}
+import models._
 import models.individual.business._
+import models.individual.business.address.{Address, Country, ReturnedAddress}
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import models.individual.subscription._
 import models.usermatching.{UserDetailsModel, UserMatchSuccessResponseModel}
-import models._
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.http.cache.client.CacheMap

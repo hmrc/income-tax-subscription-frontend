@@ -20,7 +20,8 @@ class RadioOption(val optionName: String, val message: String, val classes: Opti
 
   override def toString: String = message
 
-  def copy(optionName: String = this.optionName, message: String = this.message, classes: Option[String] = this.classes) = RadioOption(optionName, message, classes)
+  def copy(optionName: String = this.optionName, message: String = this.message, classes: Option[String] = this.classes) =
+    RadioOption(optionName, message, classes)
 
   override def equals(obj: scala.Any): Boolean =
     obj match {
@@ -46,7 +47,7 @@ class RadioOption(val optionName: String, val message: String, val classes: Opti
 }
 
 object RadioOption {
-  def apply(optionName: String, message: String, classes: Option[String] = None) = {
+  def apply(optionName: String, message: String, classes: Option[String] = None): RadioOption = {
     if (optionName.contains(" ")) throw new IllegalArgumentException(s"RadioName: the optionName parameter must not contain any spaces {$optionName}")
     new RadioOption(optionName, message, classes)
   }

@@ -17,8 +17,6 @@
 package core.config
 
 import javax.inject.Inject
-
-import views.html.templates.error_template
 import play.api.i18n.MessagesApi
 import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
@@ -27,6 +25,7 @@ import uk.gov.hmrc.auth.core.{AuthorisationException, BearerTokenExpired, Insuff
 import uk.gov.hmrc.http.NotFoundException
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
+import views.html.templates.error_template
 
 import scala.concurrent.Future
 

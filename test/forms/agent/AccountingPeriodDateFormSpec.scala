@@ -19,17 +19,17 @@ package forms.agent
 import java.time.LocalDate
 
 import agent.assets.MessageLookup
+import forms.agent.AccountingPeriodDateForm._
 import forms.submapping.DateMapping
+import forms.submapping.DateMapping._
 import forms.validation.ErrorMessageFactory
+import forms.validation.testutils.DataMap.DataMap
 import forms.validation.testutils._
+import models.DateModel
+import models.individual.business.AccountingPeriodModel
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
-import forms.validation.testutils.DataMap.DataMap
-import DateMapping._
-import forms.agent.AccountingPeriodDateForm._
-import models.DateModel
-import models.individual.business.AccountingPeriodModel
 
 class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
 
@@ -129,7 +129,6 @@ class AccountingPeriodDateFormSpec extends PlaySpec with OneAppPerTest {
           val violation = ErrorMessageFactory.error("agent.error.end_date_violation")
           violation fieldErrorIs MessageLookup.Error.EndDate.end_violation
           violation summaryErrorIs MessageLookup.Error.EndDate.end_violation
-          
 
           val endDateViolationInput = DataMap.date(startDate)(today.day, today.month, today.year)++
             DataMap.date(endDate)(today.day, today.month, today.year)

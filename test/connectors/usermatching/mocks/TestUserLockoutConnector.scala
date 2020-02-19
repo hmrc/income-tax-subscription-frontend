@@ -31,7 +31,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
 trait MockUserLockoutConnector extends MockTrait {
-  val mockUserLockoutConnector = mock[UserLockoutConnector]
+  val mockUserLockoutConnector: UserLockoutConnector = mock[UserLockoutConnector]
 
   private def setupLockoutUser(arn: String)(result: Future[LockoutStatusResponse]): Unit =
     when(mockUserLockoutConnector.lockoutUser(ArgumentMatchers.eq(arn))(ArgumentMatchers.any[HeaderCarrier]))

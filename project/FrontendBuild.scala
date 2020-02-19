@@ -1,7 +1,7 @@
+
 import sbt._
-import uk.gov.hmrc.SbtAutoBuildPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
+import play.sbt.PlayImport._
+import play.core.PlayVersion
 
 object FrontendBuild {
 
@@ -11,9 +11,6 @@ object FrontendBuild {
 }
 
 private object AppDependencies {
-
-  import play.sbt.PlayImport._
-  import play.core.PlayVersion
 
   private val bootstrapPlayVersion = "5.1.0"
   private val govukTemplateVersion = "5.23.0"

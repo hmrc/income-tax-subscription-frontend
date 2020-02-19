@@ -27,11 +27,13 @@ import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, Request}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
 import uk.gov.hmrc.http.{HttpResponse, SessionKeys}
 import usermatching.services.mocks.MockUserLockoutService
+
+import scala.concurrent.Future
 
 class UserDetailsControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
@@ -60,11 +62,12 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
       dateOfBirth = DateModel("01", "01", "1980")
     )
 
-  lazy val request = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+  lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
+    SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
 
   "Calling the show action of the UserDetailsController with an authorised user" should {
-    def call(request: Request[AnyContent]) = TestUserDetailsController.show(isEditMode = false)(request)
+    def call(request: Request[AnyContent]): Future[Result] = TestUserDetailsController.show(isEditMode = false)(request)
 
     "return ok (200)" in {
       setupMockNotLockedOut(testUserId.value)
@@ -93,7 +96,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
 
       "Calling the submit action of the UserDetailsController with an authorised user and valid submission and" when {
 
-        def callSubmit(request: FakeRequest[_], isEditMode: Boolean) = {
+        def callSubmit(request: FakeRequest[_], isEditMode: Boolean): Future[Result] = {
           TestUserDetailsController.submit(isEditMode = isEditMode)(
             request.post(UserDetailsForm.userDetailsForm.form, testUserDetails)
           )
@@ -175,7 +178,7 @@ class UserDetailsControllerSpec extends ControllerBaseSpec
             nino = testNino,
             dateOfBirth = DateModel("00", "01", "1980")))
 
-        def callSubmit(isEditMode: Boolean) =
+        def callSubmit(isEditMode: Boolean): Future[Result] =
           TestUserDetailsController.submit(isEditMode = isEditMode)(testRequest)
 
         "return a redirect status (BAD_REQUEST - 400)" in {

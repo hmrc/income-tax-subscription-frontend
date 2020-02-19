@@ -16,10 +16,10 @@
 
 package incometax.subscription.services.mocks
 
+import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import core.connectors.models.ConnectorError
 import core.utils.MockTrait
 import core.utils.TestConstants._
-import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import incometax.subscription.services.SubscriptionOrchestrationService
 import models.individual.subscription.SummaryModel
 import org.mockito.ArgumentMatchers

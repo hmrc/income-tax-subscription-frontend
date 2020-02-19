@@ -17,23 +17,22 @@
 package testonly.controllers.individual
 
 import connectors.PreferenceFrontendConnector
-import testonly.connectors.individual.ClearPreferencesConnector
 import core.auth.StatelessController
 import core.config.BaseControllerConfig
 import core.services.AuthService
-import testonly.form.individual.ClearPreferencesForm
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, Request, Result}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
+import testonly.connectors.individual.ClearPreferencesConnector
+import testonly.form.individual.ClearPreferencesForm
 import testonly.models.preferences.{ClearPreferencesModel, ClearPreferencesResult, Cleared, NoPreferences}
 import testonly.views.html.individual.clear_preferences
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClearPreferencesController @Inject()(preferenceFrontendConnector: PreferenceFrontendConnector,
@@ -42,7 +41,7 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
                                            val messagesApi: MessagesApi,
                                            http: HttpClient,
                                            val authService: AuthService
-                                          ) extends StatelessController {
+                                          )(implicit val ec: ExecutionContext) extends StatelessController {
 
   private def clearUser(nino: String)(implicit hc: HeaderCarrier): Future[ClearPreferencesResult] = clearPreferencesConnector.clear(nino).map { response =>
     response.status match {
@@ -52,7 +51,7 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
     }
   }
 
-  val clear = Authenticated.asyncUnrestricted { implicit request =>
+  val clear: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     implicit user =>
       user.nino match {
         case None => Future.failed[Result](new InternalServerException("clear preferences controller, no nino"))
@@ -70,11 +69,11 @@ class ClearPreferencesController @Inject()(preferenceFrontendConnector: Preferen
       postAction = testonly.controllers.individual.routes.ClearPreferencesController.submit()
     )
 
-  val show = Action.async { implicit request =>
+  val show: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(showView(ClearPreferencesForm.ClearPreferenceValidationForm)))
   }
 
-  val submit = Action.async { implicit request =>
+  val submit: Action[AnyContent] = Action.async { implicit request =>
     ClearPreferencesForm.ClearPreferenceForm.bindFromRequest().fold(
       badRequest => Future.successful(BadRequest(showView(badRequest))),
       clearPreferences =>

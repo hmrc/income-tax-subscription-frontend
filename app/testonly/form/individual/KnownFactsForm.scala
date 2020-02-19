@@ -16,7 +16,7 @@
 
 package testonly.form.individual
 
-import forms.prevalidation.{PreprocessedForm, trimAllFunc}
+import forms.prevalidation.{PreprocessedForm, PrevalidationAPI, trimAllFunc}
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
@@ -69,5 +69,5 @@ object KnownFactsForm {
     )(KnownFactsModel.apply)(KnownFactsModel.unapply)
   )
 
-  val knownFactsForm = PreprocessedForm(knownFactsValidationForm)
+  val knownFactsForm: PrevalidationAPI[KnownFactsModel] = PreprocessedForm(knownFactsValidationForm)
 }

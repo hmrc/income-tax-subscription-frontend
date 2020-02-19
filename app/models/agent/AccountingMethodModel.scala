@@ -17,10 +17,10 @@
 package models.agent
 
 import models.AccountingMethod
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class AccountingMethodModel(accountingMethod: AccountingMethod)
 
 object AccountingMethodModel {
-  implicit val format = Json.format[AccountingMethodModel]
+  implicit val format: OFormat[AccountingMethodModel] = Json.format[AccountingMethodModel]
 }

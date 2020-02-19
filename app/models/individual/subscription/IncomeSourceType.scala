@@ -24,15 +24,15 @@ sealed trait IncomeSourceType {
 }
 
 case object Business extends IncomeSourceType {
-  override val source = IncomeSourceType.business
+  override val source: String = IncomeSourceType.business
 }
 
 case object Property extends IncomeSourceType {
-  override val source = IncomeSourceType.property
+  override val source: String = IncomeSourceType.property
 }
 
 case object Both extends IncomeSourceType {
-  override val source = IncomeSourceType.both
+  override val source: String = IncomeSourceType.both
 }
 
 case object Incomplete

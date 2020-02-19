@@ -18,7 +18,7 @@ package models.usermatching
 
 import core.utils.Implicits.StringNinoUtil
 import models.DateModel
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 
 case class UserDetailsModel(firstName: String, lastName: String, nino: String, dateOfBirth: DateModel) {
@@ -30,5 +30,5 @@ case class UserDetailsModel(firstName: String, lastName: String, nino: String, d
 }
 
 object UserDetailsModel {
-  implicit val format = Json.format[UserDetailsModel]
+  implicit val format: OFormat[UserDetailsModel] = Json.format[UserDetailsModel]
 }

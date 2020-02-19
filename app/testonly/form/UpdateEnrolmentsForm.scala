@@ -17,7 +17,7 @@
 package testonly.form
 
 import play.api.data.Form
-import play.api.data.Forms.{single,text}
+import play.api.data.Forms.{single, text}
 
 object UpdateEnrolmentsForm {
   val updateEnrolmentsForm: Form[String] = Form(single("credentialId" -> text))

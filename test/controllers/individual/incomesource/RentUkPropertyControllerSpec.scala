@@ -56,14 +56,14 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
   "test" should {
     "en" in {
       val m: Messages = messagesApi.preferred(subscriptionRequest)
-      m must not be null
+      m must not be None
       m.apply("base.back") must be("Back")
     }
   }
 
   "Calling the show action of the RentUkPropertyController with an authorised user" when {
 
-    def call = new TestRentUkPropertyController().show(isEditMode = true)(subscriptionRequest)
+    def call: Future[Result] = new TestRentUkPropertyController().show(isEditMode = true)(subscriptionRequest)
 
     "the new income source flow feature is enabled" should {
       "return ok (200)" in {

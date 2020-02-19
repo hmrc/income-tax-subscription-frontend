@@ -21,8 +21,8 @@ import assets.MessageLookup.{Summary => messages}
 import core.utils.{TestModels, UnitTestTrait}
 import incometax.util.AccountingPeriodUtil._
 import models.DateModel
-import models.individual.business.address.Address
 import models.individual.business._
+import models.individual.business.address.Address
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import models.individual.subscription.{IncomeSourceType, IndividualSummary}
 import org.jsoup.nodes.{Document, Element}
@@ -30,7 +30,7 @@ import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import views.individual.helpers.SummaryIdConstants._
 
 class CheckYourAnswersViewSpec extends UnitTestTrait {
@@ -46,13 +46,13 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   val testIncomeSource: IncomeSourceType = TestModels.testIncomeSourceBoth
   val testRentUkProperty: RentUkPropertyModel = TestModels.testRentUkProperty_property_and_other
   val testAreYouSelfEmployed: AreYouSelfEmployedModel = TestModels.testAreYouSelfEmployed_yes
-  val testSummary = customTestSummary()
+  val testSummary: IndividualSummary = customTestSummary()
 
   def customTestSummary(rentUkProperty: Option[RentUkPropertyModel] = testRentUkProperty,
                         matchTaxYear: Option[MatchTaxYearModel] = TestModels.testMatchTaxYearNo,
                         accountingPeriod: Option[AccountingPeriodModel] = testAccountingPeriod,
                         selectedTaxYear: Option[AccountingYearModel] = testSelectedTaxYear,
-                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None) = IndividualSummary(
+                        accountingMethodProperty: Option[AccountingMethodPropertyModel] = None): IndividualSummary = IndividualSummary(
     rentUkProperty = rentUkProperty,
     areYouSelfEmployed = testAreYouSelfEmployed,
     matchTaxYear = matchTaxYear,
@@ -69,7 +69,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
   lazy val postAction: Call = controllers.individual.subscription.routes.CheckYourAnswersController.submit()
   lazy val backUrl: String = controllers.individual.subscription.routes.CheckYourAnswersController.show().url
 
-  def page(isRegistration: Boolean, testSummaryModel: IndividualSummary): Html =
+  def page(isRegistration: Boolean, testSummaryModel: IndividualSummary): HtmlFormat.Appendable =
     views.html.individual.incometax.subscription.check_your_answers(
       summaryModel = testSummaryModel,
       isRegistration = isRegistration,
@@ -175,10 +175,11 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
       "do not display if the user is on the sign up journey and chose yes to match tax year" in {
         val sectionId = AccountingPeriodDateId
         val doc = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod = None))
-        doc.getElementById(sectionId) mustBe null
+        Option(doc.getElementById(sectionId)) mustBe None
 
-        val doc2 = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod = Some(testAccountingPeriod)))
-        doc2.getElementById(sectionId) mustBe null
+        val doc2 = document(testSummaryModel = customTestSummary(matchTaxYear = Some(TestModels.testMatchTaxYearYes), accountingPeriod =
+          Some(testAccountingPeriod)))
+        Option(doc2.getElementById(sectionId)) mustBe None
       }
 
       "the user is on the sign up journey" in {
@@ -249,7 +250,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
       val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_no_property))
 
-      doc.getElementById(sectionId) mustBe null
+      Option(doc.getElementById(sectionId)) mustBe None
     }
 
     "display the correct info for the are you self-employed" in {
@@ -271,7 +272,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
       val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_property_only))
 
-      doc.getElementById(sectionId) mustBe null
+      Option(doc.getElementById(sectionId)) mustBe None
     }
 
     "display the correct info for the business name" in {
@@ -377,7 +378,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
       val doc = document(testSummaryModel = customTestSummary(rentUkProperty = TestModels.testRentUkProperty_property_and_other))
 
-      doc.getElementById(sectionId) mustBe null
+      Option(doc.getElementById(sectionId)) mustBe None
     }
 
     "do not display are you Selected Year if match Tax Year is answered with No" in {
@@ -385,7 +386,7 @@ class CheckYourAnswersViewSpec extends UnitTestTrait {
 
       val doc = document(testSummaryModel = customTestSummary(matchTaxYear = TestModels.testMatchTaxYearNo))
 
-      doc.getElementById(sectionId) mustBe null
+      Option(doc.getElementById(sectionId)) mustBe None
     }
 
     "display the correct info for the accounting method" in {

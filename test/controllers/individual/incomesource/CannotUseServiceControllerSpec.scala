@@ -20,8 +20,10 @@ import assets.MessageLookup.{CannotUseService => messages}
 import controllers.ControllerBaseSpec
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class CannotUseServiceControllerSpec extends ControllerBaseSpec {
 
@@ -36,7 +38,7 @@ class CannotUseServiceControllerSpec extends ControllerBaseSpec {
 
   "Calling the show action of the Cannot Use Service Controller" when {
 
-    def call = TestCannotUseServiceController.show(subscriptionRequest)
+    def call: Future[Result] = TestCannotUseServiceController.show(subscriptionRequest)
 
     "return ok (200)" in {
       val result = call

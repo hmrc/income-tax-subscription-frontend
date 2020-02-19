@@ -16,7 +16,6 @@
 
 package models.individual.subscription
 
-import core.utils.JsonUtils._
 import core.utils.TestConstants
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.test.UnitSpec
@@ -34,9 +33,12 @@ class SubscriptionRequestSpec extends UnitSpec {
 
       val request: JsValue = Json.toJson(feRequest)
       val expected = Json.fromJson[SubscriptionRequest](
-        s"""{"nino" : "${TestConstants.testNino}",
-           | "isAgent" : false,
-           | "incomeSource":"${IncomeSourceType.business}"}""".stripMargin).get
+        Json.obj(
+          "nino" -> TestConstants.testNino,
+          "isAgent" -> false,
+          "incomeSource" -> IncomeSourceType.business
+        )
+      ).get
       val actual = Json.fromJson[SubscriptionRequest](request).get
       actual shouldBe expected
     }

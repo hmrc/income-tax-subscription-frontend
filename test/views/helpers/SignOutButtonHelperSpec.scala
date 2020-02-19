@@ -20,16 +20,18 @@ import assets.MessageLookup
 import controllers.SignOutController
 import core.utils.UnitTestTrait
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Request
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.html.helpers.signOutButton
 
 class SignOutButtonHelperSpec extends UnitTestTrait {
 
-  def view(alternateText: Option[String])(request: Request[_]) = signOutButton(alternateText)(request, applicationMessages)
+  def view(alternateText: Option[String])(request: Request[_]): HtmlFormat.Appendable = signOutButton(alternateText)(request, applicationMessages)
 
-  def html(alternateText: Option[String])(request: Request[_]) = Jsoup.parse(view(alternateText)(request).body)
+  def html(alternateText: Option[String])(request: Request[_]): Document = Jsoup.parse(view(alternateText)(request).body)
 
   "The sign out button helper" should {
 

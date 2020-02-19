@@ -17,9 +17,9 @@
 package forms.agent
 
 import forms.validation.models.{FieldError, SummaryError}
+import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.validation.Invalid
-import org.scalatest.Matchers._
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 

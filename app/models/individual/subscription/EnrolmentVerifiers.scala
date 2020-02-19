@@ -21,7 +21,7 @@ import play.api.libs.json.{JsValue, Json, Writes}
 case class EnrolmentVerifiers(verifiers: (String, String)*)
 
 object EnrolmentVerifiers {
-  implicit val writer = new Writes[EnrolmentVerifiers] {
+  implicit val writer: Writes[EnrolmentVerifiers] = new Writes[EnrolmentVerifiers] {
     override def writes(verifiers: EnrolmentVerifiers): JsValue =
       Json.obj("verifiers" ->
         (verifiers.verifiers map {

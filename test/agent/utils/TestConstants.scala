@@ -19,7 +19,9 @@ package agent.utils
 import java.time.LocalDate
 
 import agent.common.Constants._
+import models.DateModel
 import models.individual.subscription._
+import models.usermatching.LockedOut
 import play.api.http.Status._
 import uk.gov.hmrc.domain.Generator
 
@@ -27,15 +29,15 @@ object TestConstants {
   /*
   * this nino is a constant, if you need a fresh one use TestModels.newNino
   */
-  lazy val testNino = core.utils.TestConstants.testNino
-  lazy val testUtr = core.utils.TestConstants.testUtr
-  lazy val testMTDID = core.utils.TestConstants.testMTDID
+  lazy val testNino: String = core.utils.TestConstants.testNino
+  lazy val testUtr: String = core.utils.TestConstants.testUtr
+  lazy val testMTDID: String = core.utils.TestConstants.testMTDID
   //Not a valid MTDID, for test purposes only
-  lazy val startDate = core.utils.TestConstants.startDate
-  lazy val endDate = core.utils.TestConstants.endDate
-  lazy val ggServiceName = mtdItsaEnrolmentName
-  lazy val agentServiceName = agentServiceEnrolmentName
-  lazy val testARN = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
+  lazy val startDate: DateModel = core.utils.TestConstants.startDate
+  lazy val endDate: DateModel = core.utils.TestConstants.endDate
+  lazy val ggServiceName: String = mtdItsaEnrolmentName
+  lazy val agentServiceName: String = agentServiceEnrolmentName
+  lazy val testARN: String = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
 
   lazy val knownFactsRequest = KnownFactsRequest(
     List(
@@ -45,7 +47,7 @@ object TestConstants {
   )
 
   val testErrorMessage = "This is an error"
-  val testException = core.utils.TestConstants.testException
+  val testException: Exception = core.utils.TestConstants.testException
 
   val minStartDate: LocalDate = LocalDate.of(LocalDate.now.getYear, 4, 6)
 
@@ -57,6 +59,6 @@ object TestConstants {
 
   val testKnownFactsFailure = Left(KnownFactsFailure(testErrorMessage))
 
-  lazy val testLockoutResponse = core.utils.TestConstants.testLockoutResponse
+  lazy val testLockoutResponse: LockedOut = core.utils.TestConstants.testLockoutResponse
 
 }

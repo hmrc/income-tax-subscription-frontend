@@ -16,10 +16,8 @@
 
 package controllers.agent.matching
 
-import helpers.agent.IntegrationTestConstants.{agentLockedOutURI, testARN}
-import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
-import helpers.agent.IntegrationTestModels
 import helpers.UserMatchingIntegrationResultSupport
+import helpers.agent.IntegrationTestConstants.{agentLockedOutURI, testARN}
 import helpers.agent.servicemocks.{AgentLockoutStub, AuthStub, KeystoreStub}
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import models.usermatching.UserDetailsModel

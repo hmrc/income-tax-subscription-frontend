@@ -16,42 +16,32 @@
 
 package connectors.agent
 
-import agent.audit.Logging
 import core.config.AppConfig
 import core.connectors.RawResponseReads
 import javax.inject.{Inject, Singleton}
 import play.api.http.Status
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-import scala.concurrent.Future
-import scala.concurrent.Future._
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AgentServicesConnector @Inject()(appConfig: AppConfig,
-                                       http: HttpClient,
-                                       logging: Logging) extends RawResponseReads {
+                                       http: HttpClient)
+                                      (implicit ec: ExecutionContext) extends RawResponseReads {
+
+  def agentClientURL(arn: String, nino: String): String = {
+    appConfig.agentMicroserviceUrl + AgentServicesConnector.agentClientURI(arn, nino)
+  }
+
   def isPreExistingRelationship(arn: String, nino: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     val url = agentClientURL(arn, nino)
 
-    http.GET(url).flatMap {
-      case res if res.status == Status.OK => successful(true)
-      case res if res.status == Status.NOT_FOUND => successful(false)
-      case res => failed(isPreExistingRelationshipFailure(res.status, res.body))
+    http.GET(url).map {
+      case res if res.status == Status.OK => true
+      case res if res.status == Status.NOT_FOUND => false
+      case res => throw new InternalServerException(s"[AgentServicesConnector][isPreExistingRelationship] failure, status: ${res.status} body=${res.body}")
     }
-  }
-
-  def agentClientURL(arn: String, nino: String): String =
-    appConfig.agentMicroserviceUrl + AgentServicesConnector.agentClientURI(arn, nino)
-
-  def isPreExistingRelationshipFailure(status: Int, body: String): Throwable = failure("isPreExistingRelationship", status, body)
-
-  private def failure(methodCall: String, status: Int, body: String) = {
-    val message = s"AgentServicesConnector.$methodCall unexpected response from agent services: status=$status body=$body"
-
-    logging.warn(message)
-    new InternalServerException(message)
   }
 
 }

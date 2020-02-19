@@ -62,7 +62,7 @@ class ExitSurveyControllerSpec extends AgentControllerBaseSpec {
 
   "ExitSurveyController.surveyFormDataToMap" should {
 
-    def result(testData: ExitSurveyModel) = TestExitSurveyController.surveyFormDataToMap(testData)
+    def result(testData: ExitSurveyModel): Map[String, String] = TestExitSurveyController.surveyFormDataToMap(testData)
 
     "generated the correct data map for the test survey" in {
       result(testSurvey) mustBe Map(

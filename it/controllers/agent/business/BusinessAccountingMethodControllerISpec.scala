@@ -16,12 +16,11 @@
 
 package controllers.agent.business
 
-import helpers.agent.IntegrationTestConstants._
-import helpers.agent.IntegrationTestModels._
-import helpers.agent.servicemocks.KeystoreStub
 import agent.services.CacheConstants
 import core.config.featureswitch.FeatureSwitching
 import helpers.agent.ComponentSpecBase
+import helpers.agent.IntegrationTestConstants._
+import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import models.agent.AccountingMethodModel
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}

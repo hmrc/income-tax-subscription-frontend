@@ -18,9 +18,9 @@ package core.auth
 
 import core.ITSASessionKeys
 import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
+import core.auth.AuthPredicates._
+import core.auth.JourneyState._
 import play.api.mvc._
-import AuthPredicates._
-import JourneyState._
 
 import scala.concurrent.Future
 

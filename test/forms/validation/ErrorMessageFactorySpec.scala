@@ -17,8 +17,8 @@
 package forms.validation
 
 import forms.validation.models.{FieldError, SummaryError}
-import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 import org.scalatest.Matchers._
+import org.scalatestplus.play.{OneServerPerSuite, PlaySpec}
 
 class ErrorMessageFactorySpec extends PlaySpec with OneServerPerSuite {
 

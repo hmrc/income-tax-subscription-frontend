@@ -18,12 +18,12 @@ package models.individual.business
 
 import incometax.util.AccountingPeriodUtil
 import models.DateModel
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 
 case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel) {
-  lazy val taxEndYear = AccountingPeriodUtil.getTaxEndYear(this)
-  lazy val adjustedTaxYear =
+  lazy val taxEndYear: Int = AccountingPeriodUtil.getTaxEndYear(this)
+  lazy val adjustedTaxYear: AccountingPeriodModel =
     if (taxEndYear <= 2018) {
       val nextStartDate = this.endDate.toLocalDate.plusDays(1)
       val nextEndDate = nextStartDate.plusYears(1).minusDays(1)
@@ -33,5 +33,5 @@ case class AccountingPeriodModel(startDate: DateModel, endDate: DateModel) {
 }
 
 object AccountingPeriodModel {
-  implicit val format = Json.format[AccountingPeriodModel]
+  implicit val format: OFormat[AccountingPeriodModel] = Json.format[AccountingPeriodModel]
 }

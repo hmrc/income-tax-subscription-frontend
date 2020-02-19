@@ -22,7 +22,6 @@ import agent.utils.TestConstants
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import controllers.ControllerBaseTrait
-import core.utils.JsonUtils
 import org.mockito.Mockito
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
@@ -31,10 +30,10 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 
 
-trait AgentControllerBaseSpec extends ControllerBaseTrait with MockAgentAuthService with JsonUtils {
+trait AgentControllerBaseSpec extends ControllerBaseTrait with MockAgentAuthService {
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
+  implicit val system: ActorSystem = ActorSystem()
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
 
   val controllerName: String
   val authorisedRoutes: Map[String, Action[AnyContent]]

@@ -22,22 +22,22 @@ import connectors.PaperlessPreferenceTokenConnector
 import core.auth.StatelessController
 import core.config.BaseControllerConfig
 import core.services.AuthService
-import models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
 import javax.inject.Inject
+import models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent}
 import testonly.models.preferences.{AddTokenRequest, AddTokenResponse}
 import uk.gov.hmrc.http._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class PreferenceTokenController @Inject()(val baseConfig: BaseControllerConfig,
                                           val messagesApi: MessagesApi,
                                           val paperlessPreferenceTokenConnector: PaperlessPreferenceTokenConnector,
                                           val authService: AuthService
-                                         ) extends StatelessController with I18nSupport {
+                                         )(implicit val ec: ExecutionContext) extends StatelessController with I18nSupport {
 
   private def storeNino(nino: String)(implicit hc: HeaderCarrier): Future[String] = {
     val token = s"${UUID.randomUUID()}"

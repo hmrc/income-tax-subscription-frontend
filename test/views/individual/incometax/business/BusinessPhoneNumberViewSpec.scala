@@ -20,6 +20,7 @@ import assets.MessageLookup.{BusinessPhoneNumber => messages}
 import forms.individual.business.BusinessPhoneNumberForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class BusinessPhoneNumberViewSpec extends ViewSpecTrait {
@@ -27,14 +28,14 @@ class BusinessPhoneNumberViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean) = views.html.individual.incometax.business.business_phone_number(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.individual.incometax.business.business_phone_number(
     businessPhoneNumberForm = BusinessPhoneNumberForm.businessPhoneNumberForm.form.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(isEditMode: Boolean) = TestView(
+  def documentCore(isEditMode: Boolean):TestView = TestView(
     name = "Business phone number View",
     title = messages.title,
     heading = messages.heading,
@@ -65,7 +66,7 @@ class BusinessPhoneNumberViewSpec extends ViewSpecTrait {
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore() = TestView(
+    def documentCore():TestView = TestView(
       name = "Business phone number View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,

@@ -35,13 +35,13 @@ object AccountingPeriodUtil {
 
   def getCurrentTaxEndYear: Int = getTaxEndYear(LocalDate.now())
 
-  def getCurrentTaxYearStartDate = DateModel(sixth.toString, april.toString, (getCurrentTaxEndYear - 1).toString)
+  def getCurrentTaxYearStartDate: DateModel = DateModel(sixth.toString, april.toString, (getCurrentTaxEndYear - 1).toString)
 
-  def getCurrentTaxYearEndDate = DateModel(fifth.toString, april.toString, getCurrentTaxEndYear.toString)
+  def getCurrentTaxYearEndDate: DateModel = DateModel(fifth.toString, april.toString, getCurrentTaxEndYear.toString)
 
-  def getCurrentTaxYear = AccountingPeriodModel(getCurrentTaxYearStartDate, getCurrentTaxYearEndDate)
+  def getCurrentTaxYear: AccountingPeriodModel = AccountingPeriodModel(getCurrentTaxYearStartDate, getCurrentTaxYearEndDate)
 
-  def getNextTaxYear = AccountingPeriodModel(getCurrentTaxYearStartDate.plusYears(1), getCurrentTaxYearEndDate.plusYears(1))
+  def getNextTaxYear: AccountingPeriodModel = AccountingPeriodModel(getCurrentTaxYearStartDate.plusYears(1), getCurrentTaxYearEndDate.plusYears(1))
 
   implicit object LocalDateOrdering extends Ordering[LocalDate] {
     override def compare(x: LocalDate, y: LocalDate): Int = x.compareTo(y)

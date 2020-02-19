@@ -16,8 +16,8 @@
 
 package controllers.agent
 
-import helpers.agent.IntegrationTestConstants.feedbackSubmittedURI
 import helpers.agent.ComponentSpecBase
+import helpers.agent.IntegrationTestConstants.feedbackSubmittedURI
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.i18n.Messages
 

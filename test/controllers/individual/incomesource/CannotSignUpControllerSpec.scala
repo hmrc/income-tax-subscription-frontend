@@ -23,8 +23,10 @@ import core.config.featureswitch.FeatureSwitching
 import core.services.mocks.MockKeystoreService
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class CannotSignUpControllerSpec extends ControllerBaseSpec with MockKeystoreService with FeatureSwitching {
 
@@ -40,7 +42,7 @@ class CannotSignUpControllerSpec extends ControllerBaseSpec with MockKeystoreSer
   )
 
   "Calling the show action of the CannotSignUpController" when {
-    def call = TestCannotSignUpController.show(subscriptionRequest)
+    def call: Future[Result] = TestCannotSignUpController.show(subscriptionRequest)
 
     "return ok (200)" in {
       val result = call

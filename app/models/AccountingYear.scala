@@ -48,5 +48,4 @@ object AccountingYear {
   }
 
   implicit val format: Format[AccountingYear] = Format[AccountingYear](accountingYearReads, accountingYearWrites)
-  
 }

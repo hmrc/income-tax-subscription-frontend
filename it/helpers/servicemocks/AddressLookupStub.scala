@@ -17,8 +17,8 @@
 package helpers.servicemocks
 
 import helpers.IntegrationTestConstants._
-import play.api.http.{HeaderNames, Status}
 import helpers.IntegrationTestModels._
+import play.api.http.{HeaderNames, Status}
 
 
 object AddressLookupStub extends WireMockMethods {

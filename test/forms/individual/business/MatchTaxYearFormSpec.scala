@@ -20,8 +20,8 @@ import assets.MessageLookup
 import forms.individual.business.MatchTaxYearForm._
 import forms.submapping.YesNoMapping
 import forms.validation.ErrorMessageFactory
-import forms.validation.testutils._
 import forms.validation.testutils.DataMap.DataMap
+import forms.validation.testutils._
 import models.Yes
 import models.individual.business.MatchTaxYearModel
 import org.scalatest.Matchers._

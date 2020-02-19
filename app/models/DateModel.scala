@@ -23,10 +23,9 @@ import java.util.Date
 import com.ibm.icu.text.SimpleDateFormat
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
+import DateModel._
 
 case class DateModel(day: String, month: String, year: String) {
-
-  import DateModel._
 
   def toLocalDate: LocalDate = LocalDate.of(year.toInt, month.toInt, day.toInt)
 

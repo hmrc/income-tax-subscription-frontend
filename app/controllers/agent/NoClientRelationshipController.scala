@@ -24,14 +24,15 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NoClientRelationshipController @Inject()(val baseConfig: BaseControllerConfig,
                                                val messagesApi: MessagesApi,
                                                clientRelationshipService: ClientRelationshipService,
                                                keystoreService: KeystoreService,
-                                               val authService: AuthService) extends UserMatchingController {
+                                               val authService: AuthService)
+                                              (implicit val ec: ExecutionContext) extends UserMatchingController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

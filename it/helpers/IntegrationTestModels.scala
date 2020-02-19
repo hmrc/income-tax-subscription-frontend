@@ -8,12 +8,12 @@ import core.Constants.GovernmentGateway._
 import core.services.CacheConstants
 import helpers.IntegrationTestConstants._
 import incometax.util.AccountingPeriodUtil
-import models.individual.business.address.{Address, Country, ReturnedAddress}
+import models._
 import models.individual.business._
+import models.individual.business.address.{Address, Country, ReturnedAddress}
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import models.individual.subscription._
 import models.usermatching.UserDetailsModel
-import models._
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.domain.Generator
 
@@ -27,10 +27,10 @@ object IntegrationTestModels {
    */
   def newNino: String = new Generator().nextNino.nino
 
-  val testStartDate = DateModel.dateConvert(LocalDate.now)
-  val testEndDate = DateModel.dateConvert(LocalDate.now.plusYears(1).plusDays(-1))
-  val testEndDateNext = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1).plusDays(-1)
-  val testEndDatePlus1Y = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1)
+  val testStartDate: DateModel = DateModel.dateConvert(LocalDate.now)
+  val testEndDate: DateModel = DateModel.dateConvert(LocalDate.now.plusYears(1).plusDays(-1))
+  val testEndDateNext: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1).plusDays(-1)
+  val testEndDatePlus1Y: DateModel = AccountingPeriodUtil.getCurrentTaxYearEndDate.plusYears(1)
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testMatchTaxYearNo: MatchTaxYearModel = MatchTaxYearModel(No)
   val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
@@ -101,11 +101,11 @@ object IntegrationTestModels {
       propertyAccountingMethod.map(model => PropertyAccountingMethod -> AccountingMethodPropertyModel.format.writes(model))
   }
 
-  lazy val testIncomeSourceBusiness = Business
+  lazy val testIncomeSourceBusiness: Business.type = Business
 
-  lazy val testIncomeSourceProperty = Property
+  lazy val testIncomeSourceProperty: Property.type = Property
 
-  lazy val testIncomeSourceBoth = Both
+  lazy val testIncomeSourceBoth: Both.type = Both
 
   lazy val testRentUkProperty_no_property = RentUkPropertyModel(No, None)
   lazy val testRentUkProperty_property_only = RentUkPropertyModel(Yes, Some(Yes))

@@ -16,11 +16,11 @@
 
 package models.individual.business
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 
 case class BusinessPhoneNumberModel(phoneNumber: String)
 
 object BusinessPhoneNumberModel {
-  implicit val format = Json.format[BusinessPhoneNumberModel]
+  implicit val format: OFormat[BusinessPhoneNumberModel] = Json.format[BusinessPhoneNumberModel]
 }

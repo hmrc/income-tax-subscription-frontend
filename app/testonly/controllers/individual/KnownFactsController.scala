@@ -15,6 +15,7 @@
  */
 
 //$COVERAGE-OFF$Disabling scoverage on this test only controller as it is only required by our acceptance test
+
 package testonly.controllers.individual
 
 import core.auth.SignUpController
@@ -30,19 +31,19 @@ import testonly.form.individual.KnownFactsForm._
 import testonly.models.KnownFactsModel
 import testonly.views.html.individual.add_known_facts
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class KnownFactsController @Inject()(val baseConfig: BaseControllerConfig,
                                      val messagesApi: MessagesApi,
                                      val authService: AuthService,
                                      knownFactsService: KnownFactsService
-                                    ) extends SignUpController {
+                                    )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def view(form: Form[KnownFactsModel])(implicit request: Request[_]): Html =
     add_known_facts(
       knownFactsForm = form,
-      postAction = testonly.controllers.individual.routes.KnownFactsController.submit
+      postAction = testonly.controllers.individual.routes.KnownFactsController.submit()
     )
 
   def show: Action[AnyContent] = Action { implicit request =>
@@ -59,9 +60,7 @@ class KnownFactsController @Inject()(val baseConfig: BaseControllerConfig,
 
         knownFactsService.addKnownFacts(mtdid, nino).map {
           case Right(_) => Ok(s"known facts added: nino=$nino mtdid=$mtdid")
-        }.recoverWith {
-          case e =>
-            Future.successful(Ok("add known facts failed: " + e))
+          case Left(_) => Ok("add known facts failed")
         }
       }
     )

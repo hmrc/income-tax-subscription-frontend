@@ -16,8 +16,8 @@
 
 package controllers.language
 
-import javax.inject.{Inject, Singleton}
 import core.config.FrontendAppConfig
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, Controller}
 import uk.gov.hmrc.play.language.LanguageUtils
@@ -29,7 +29,7 @@ class LanguageSwitchController @Inject()(val appConfig: FrontendAppConfig,
 
   def langToCall(lang: String) : String => Call = appConfig.routeToSwitchLanguage
 
-  protected def fallbackURL: String = controllers.usermatching.routes.HomeController.home.url
+  protected def fallbackURL: String = controllers.usermatching.routes.HomeController.home().url
 
   def languageMap: Map[String, Lang] = appConfig.languageMap
 

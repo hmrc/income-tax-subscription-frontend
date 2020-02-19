@@ -17,12 +17,12 @@
 package models.individual.subscription
 
 import core.connectors.models.ConnectorError
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class SubscriptionSuccess(mtditId: String)
 
 object SubscriptionSuccess {
-  implicit val format = Json.format[SubscriptionSuccess]
+  implicit val format: OFormat[SubscriptionSuccess] = Json.format[SubscriptionSuccess]
 }
 
 sealed trait SubscriptionFailure extends ConnectorError

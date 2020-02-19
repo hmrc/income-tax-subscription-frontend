@@ -24,7 +24,7 @@ import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetailsSuccess
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.BAD_REQUEST
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -75,8 +75,7 @@ trait TestCitizenDetailsConnector extends UnitTestTrait with MockitoSugar with B
 
   object TestCitizenDetailsConnector extends CitizenDetailsConnector(
     appConfig,
-    app.injector.instanceOf[HttpClient],
-    app.injector.instanceOf[Logging]
+    app.injector.instanceOf[HttpClient]
   )
 
 }

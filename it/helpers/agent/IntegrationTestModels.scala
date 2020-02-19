@@ -1,18 +1,20 @@
+
 package helpers.agent
 
 import agent.services.CacheConstants
+import models._
 import models.agent.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingYearModel, BusinessNameModel}
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
-import models._
+import models.usermatching.UserDetailsModel
 import play.api.libs.json.JsValue
 
 object IntegrationTestModels {
 
   import CacheConstants._
 
-  val testStartDate = helpers.IntegrationTestModels.testStartDate
-  val testEndDate = helpers.IntegrationTestModels.testEndDate
+  val testStartDate: DateModel = helpers.IntegrationTestModels.testStartDate
+  val testEndDate: DateModel = helpers.IntegrationTestModels.testEndDate
   val testMatchTaxYearYes: MatchTaxYearModel = MatchTaxYearModel(Yes)
   val testAccountingYearNext: AccountingYearModel = AccountingYearModel(Next)
   val testAccountingYearCurrent: AccountingYearModel = AccountingYearModel(Current)
@@ -56,13 +58,13 @@ object IntegrationTestModels {
       selectedTaxYear.map(model => WhatYearToSignUp -> AccountingYearModel.format.writes(model))
   }
 
-  lazy val testIncomeSourceBusiness = Business
+  lazy val testIncomeSourceBusiness: Business.type = Business
 
-  lazy val testIncomeSourceProperty = Property
+  lazy val testIncomeSourceProperty: Property.type = Property
 
-  lazy val testIncomeSourceBoth = Both
+  lazy val testIncomeSourceBoth: Both.type = Both
 
   // we don't verify date of birth since an incorrect one would not result in a match so it can be any date
-  lazy val testClientDetails = helpers.IntegrationTestModels.testUserDetails
+  lazy val testClientDetails: UserDetailsModel = helpers.IntegrationTestModels.testUserDetails
 
 }

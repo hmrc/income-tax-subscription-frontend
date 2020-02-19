@@ -16,16 +16,15 @@
 
 package agent.audit
 
-import javax.inject.{Inject, Singleton}
-
 import agent.audit.AuditingService.toDataEvent
+import javax.inject.{Inject, Singleton}
 import play.api.Configuration
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.DataEvent
 
 import scala.concurrent.ExecutionContext
-import uk.gov.hmrc.http.HeaderCarrier
 
 @Singleton
 class AuditingService @Inject()(configuration: Configuration,

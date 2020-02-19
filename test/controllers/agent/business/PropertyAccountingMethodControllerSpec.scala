@@ -25,9 +25,11 @@ import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.Cash
 import models.agent.AccountingMethodPropertyModel
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
+
+import scala.concurrent.Future
 
 class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService
@@ -87,11 +89,11 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
 
   "submit" should {
 
-    def callShow(isEditMode: Boolean) = TestPropertyAccountingMethodController.submit(isEditMode = isEditMode)(
+    def callShow(isEditMode: Boolean): Future[Result] = TestPropertyAccountingMethodController.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(AccountingMethodPropertyForm.accountingMethodPropertyForm, AccountingMethodPropertyModel(Cash))
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean) = TestPropertyAccountingMethodController.submit(isEditMode = isEditMode)(
+    def callShowWithErrorForm(isEditMode: Boolean): Future[Result] = TestPropertyAccountingMethodController.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 
@@ -184,6 +186,4 @@ class PropertyAccountingMethodControllerSpec extends AgentControllerBaseSpec
       }
     }
   }
-
-
 }

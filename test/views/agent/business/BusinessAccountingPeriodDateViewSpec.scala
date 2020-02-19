@@ -20,17 +20,18 @@ import agent.assets.MessageLookup.{AccountingPeriod => messages, Base => common}
 import forms.agent.AccountingPeriodDateForm
 import incometax.util.AccountingPeriodUtil
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.Html
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 
-  val backUrl = ViewSpecTrait.testBackUrl
-  val action = ViewSpecTrait.testCall
-  val taxEndYear = AccountingPeriodUtil.getCurrentTaxYear.taxEndYear
+  val backUrl: String = ViewSpecTrait.testBackUrl
+  val action: Call = ViewSpecTrait.testCall
+  val taxEndYear: Int = AccountingPeriodUtil.getCurrentTaxYear.taxEndYear
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean): Html = views.html.agent.business.accounting_period_date(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.agent.business.accounting_period_date(
     accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
@@ -80,7 +81,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
 
   "Append Error to the page title if the form has error" should {
 
-    def documentCore() = TestView(
+    def documentCore(): TestView = TestView(
       name = s"Business Accounting Period Date View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,

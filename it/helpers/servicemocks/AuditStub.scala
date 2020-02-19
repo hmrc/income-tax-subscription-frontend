@@ -1,6 +1,5 @@
-package helpers.servicemocks
 
-import uk.gov.hmrc.http.HeaderCarrier
+package helpers.servicemocks
 
 object AuditStub extends WireMockMethods {
 

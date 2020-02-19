@@ -16,8 +16,6 @@
 
 package controllers.agent
 
-import helpers.agent.servicemocks.KeystoreStub
-import helpers.agent.SessionCookieCrumbler
 import core.config.featureswitch.FeatureSwitching
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}

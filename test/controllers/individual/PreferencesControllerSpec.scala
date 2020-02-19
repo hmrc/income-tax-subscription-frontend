@@ -26,9 +26,11 @@ import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class PreferencesControllerSpec extends ControllerBaseSpec
   with MockPreferencesService
@@ -50,9 +52,9 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   )
 
   "Calling the checkPreference action of the PreferencesController with an authorised user" when {
-    implicit lazy val request = subscriptionRequest
+    implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = subscriptionRequest
 
-    def result = TestPreferencesController.checkPreferences(request)
+    def result: Future[Result] = TestPreferencesController.checkPreferences(request)
 
     "Redirect to rent uk property if paperless is activated and in SignUp journey" in {
       mockStoreNinoSuccess(testNino)
@@ -74,9 +76,9 @@ class PreferencesControllerSpec extends ControllerBaseSpec
 
   "Calling the callback action of the PreferencesController with an authorised user" should {
 
-    implicit lazy val request = subscriptionRequest
+    implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = subscriptionRequest
 
-    def result = TestPreferencesController.callback(request)
+    def result: Future[Result] = TestPreferencesController.callback(request)
 
     "Redirect to rent uk property if paperless is activated and in SignUp journey" in {
       mockStoreNinoSuccess(testNino)
@@ -113,9 +115,9 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submit action of the PreferencesController with an authorised user with yes" should {
-    implicit lazy val request = subscriptionRequest
+    implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = subscriptionRequest
 
-    def callShow() = TestPreferencesController.submit()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
+    def callShow(): Future[Result] = TestPreferencesController.submit()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
 
     "return a redirect status (SEE_OTHER - 303)" in {
       val goodRequest = callShow()
@@ -132,9 +134,9 @@ class PreferencesControllerSpec extends ControllerBaseSpec
   }
 
   "Calling the submit action of the PreferencesController with an authorised user with the redirect url in the session" should {
-    implicit lazy val request = subscriptionRequest
+    implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = subscriptionRequest
 
-    def callShow() = TestPreferencesController.submit()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
+    def callShow(): Future[Result] = TestPreferencesController.submit()(request.withSession(ITSASessionKeys.PreferencesRedirectUrl -> testUrl))
 
     "use the redirect location from the session" in {
       val goodRequest = callShow()

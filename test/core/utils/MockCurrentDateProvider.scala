@@ -26,5 +26,5 @@ trait MockCurrentDateProvider  extends MockitoSugar {
   val mockCurrentDateProvider: CurrentDateProvider = mock[CurrentDateProvider]
 
   def mockCurrentDate(date: LocalDate): Unit =
-    when(mockCurrentDateProvider.getCurrentDate()) thenReturn date
+    when(mockCurrentDateProvider.getCurrentDate) thenReturn date
 }

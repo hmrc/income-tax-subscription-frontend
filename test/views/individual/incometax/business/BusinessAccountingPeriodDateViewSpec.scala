@@ -21,6 +21,7 @@ import forms.individual.business.AccountingPeriodDateForm
 import models.individual.business.enums.{AccountingPeriodViewType, RegistrationAccountingPeriodView, SignUpAccountingPeriodView}
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
@@ -28,7 +29,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean, addFormErrors: Boolean) =
+  def page(viewType: AccountingPeriodViewType, isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable =
     views.html.individual.incometax.business.accounting_period_date(
       accountingPeriodForm = AccountingPeriodDateForm.accountingPeriodDateForm.addError(addFormErrors),
       postAction = action,
@@ -37,7 +38,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
       isEditMode = isEditMode
     )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(prefix: String, suffix: Option[String] = None, viewType: AccountingPeriodViewType, isEditMode: Boolean) = TestView(
+  def documentCore(prefix: String, suffix: Option[String] = None, viewType: AccountingPeriodViewType, isEditMode: Boolean):TestView = TestView(
     name = s"$prefix Business Accounting Period Date View${suffix.fold("")(x => x)}",
     title = messages.title,
     heading = (isEditMode, viewType) match {
@@ -102,7 +103,7 @@ class BusinessAccountingPeriodDateViewSpec extends ViewSpecTrait {
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore() = TestView(
+    def documentCore(): TestView = TestView(
       name = "Business Accounting Period Date View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading_signup,

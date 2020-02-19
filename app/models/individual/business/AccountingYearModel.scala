@@ -17,10 +17,10 @@
 package models.individual.business
 
 import models.AccountingYear
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class AccountingYearModel(accountingYear: AccountingYear)
 
 object AccountingYearModel {
-  implicit val format = Json.format[AccountingYearModel]
+  implicit val format: OFormat[AccountingYearModel] = Json.format[AccountingYearModel]
 }

@@ -22,9 +22,12 @@ import play.api.mvc.{Action, AnyContent}
 import testonly.connectors.agent.ResetAgentLockoutConnector
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
+import scala.concurrent.ExecutionContext
+
 @Singleton
 class ResetAgentLockoutController @Inject()(val baseConfig: BaseControllerConfig,
-                                            val resetAgentLockoutConnector: ResetAgentLockoutConnector) extends FrontendController {
+                                            val resetAgentLockoutConnector: ResetAgentLockoutConnector)
+                                           (implicit ec: ExecutionContext) extends FrontendController {
 
   val resetLockout: Action[AnyContent] = Action.async { implicit request =>
     for {

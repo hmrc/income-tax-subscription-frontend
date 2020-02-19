@@ -16,17 +16,15 @@
 
 package agent.services.mocks
 
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
 import agent.services.ClientRelationshipService
 import connectors.agent.mocks.MockAgentServicesConnector
-import uk.gov.hmrc.http.HeaderCarrier
 import core.utils.MockTrait
+import org.mockito.Mockito._
 
 import scala.concurrent.Future
 
 trait MockClientRelationshipService extends MockTrait {
-  val mockClientRelationshipService = mock[ClientRelationshipService]
+  val mockClientRelationshipService: ClientRelationshipService = mock[ClientRelationshipService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()

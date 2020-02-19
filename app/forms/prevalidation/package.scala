@@ -32,7 +32,8 @@ package object prevalidation {
   val trimBothFunc: String => String = (value: String) => value.trim
   val trimBothAndCompressFunc: String => String = (value: String) => value.trim.replaceAll("[\\s]{2,}", " ")
 
-  def PreprocessedForm[T](validation: Form[T], trimRules: Map[String, TrimOption] = defaultTrims, caseRules: Map[String, CaseOption] = defaultCases): PrevalidationAPI[T] = {
+  def PreprocessedForm[T](validation: Form[T], trimRules: Map[String, TrimOption] =
+                          defaultTrims, caseRules: Map[String, CaseOption] = defaultCases): PrevalidationAPI[T] = {
     val trules = trimRules
     val crules = caseRules
     new PrevalidationAPI[T] {

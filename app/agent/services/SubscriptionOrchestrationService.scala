@@ -16,14 +16,15 @@
 
 package agent.services
 
-import javax.inject.{Inject, Singleton}
 import cats.data.EitherT
 import cats.implicits._
-import incometax.subscription.services.{KnownFactsService, SubscriptionService}
 import core.connectors.models.ConnectorError
+import incometax.subscription.services.{KnownFactsService, SubscriptionService}
+import javax.inject.{Inject, Singleton}
 import models.individual.subscription.{KnownFactsSuccess, SubscriptionSuccess, SummaryModel}
-import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubscriptionOrchestrationService @Inject()(subscriptionService: SubscriptionService,

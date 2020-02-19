@@ -22,12 +22,12 @@ import testonly.TestOnlyAppConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClearPreferencesConnector @Inject()(appConfig: TestOnlyAppConfig,
-                                          http: HttpClient) extends RawResponseReads {
+                                          http: HttpClient)
+                                         (implicit ec: ExecutionContext) extends RawResponseReads {
 
   val clearPreferencesURL: String => String = (nino: String) => appConfig.entityResolverURL + s"/entity-resolver-admin/paye/$nino"
 

@@ -21,12 +21,13 @@ import core.config.MockConfig
 import core.config.featureswitch._
 import core.services.mocks.{MockAccountingPeriodService, MockKeystoreService}
 import forms.individual.business.AccountingYearForm
-import incometax._
 import models.Current
 import models.individual.business.AccountingYearModel
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
   with MockKeystoreService
@@ -85,11 +86,11 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
 
   "submit" should {
 
-    def callShow(isEditMode: Boolean) = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
+    def callShow(isEditMode: Boolean):Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
       subscriptionRequest.post(AccountingYearForm.accountingYearForm, AccountingYearModel(Current))
     )
 
-    def callShowWithErrorForm(isEditMode: Boolean) = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
+    def callShowWithErrorForm(isEditMode: Boolean):Future[Result] = TestWhatYearToSignUpController.submit(isEditMode = isEditMode)(
       subscriptionRequest
     )
 

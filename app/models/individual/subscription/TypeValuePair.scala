@@ -16,10 +16,10 @@
 
 package models.individual.subscription
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class TypeValuePair(`type`: String, value: String)
 
 object TypeValuePair {
-  implicit val format = Json.format[TypeValuePair]
+  implicit val format: OFormat[TypeValuePair] = Json.format[TypeValuePair]
 }

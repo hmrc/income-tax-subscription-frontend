@@ -32,7 +32,7 @@ import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
@@ -41,7 +41,7 @@ class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControlle
                                                    val authService: AuthService,
                                                    val appConfig: AppConfig,
                                                    val currentTimeService: CurrentTimeService
-                                                  ) extends SignUpController {
+                                                  )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
     for {

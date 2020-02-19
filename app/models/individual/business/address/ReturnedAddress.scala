@@ -17,7 +17,7 @@
 package models.individual.business.address
 
 import core.connectors.models.ConnectorError
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class ReturnedAddress(auditRef: String,
                            id: Option[String] = None,
@@ -26,7 +26,7 @@ case class ReturnedAddress(auditRef: String,
 }
 
 object ReturnedAddress {
-  implicit val format = Json.format[ReturnedAddress]
+  implicit val format: OFormat[ReturnedAddress] = Json.format[ReturnedAddress]
 }
 
 sealed trait ReturnedAddressFailure extends ConnectorError

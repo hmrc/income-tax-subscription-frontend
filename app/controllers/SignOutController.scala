@@ -23,15 +23,16 @@ import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, Request}
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
-import uk.gov.hmrc.auth.core.retrieve.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SignOutController @Inject()(val applicationConfig: AppConfig,
-                                  authService: AuthService) extends FrontendController {
+                                  authService: AuthService)
+                                 (implicit ec: ExecutionContext) extends FrontendController {
 
   def signOut(origin: String): Action[AnyContent] = Action.async { implicit request =>
     authService.authorised().retrieve(affinityGroup) {
@@ -57,5 +58,4 @@ object SignOutController {
 
   def signOut(origin: String): Call =
     routes.SignOutController.signOut(origin = URLEncoder.encode(origin, "UTF-8"))
-
 }

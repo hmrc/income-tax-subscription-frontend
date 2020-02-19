@@ -16,7 +16,6 @@
 
 package core.auth
 
-import agent.auth.IncomeTaxAgentUser
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
 
 trait PostSubmissionController extends BaseFrontendController {

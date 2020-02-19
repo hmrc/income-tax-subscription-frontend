@@ -25,9 +25,12 @@ import core.utils.TestConstants._
 import forms.individual.business.BusinessPhoneNumberForm
 import models.individual.business.BusinessPhoneNumberModel
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Result}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.NotFoundException
+
+import scala.concurrent.Future
 
 class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
   with MockKeystoreService {
@@ -41,7 +44,7 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
   def createTestBusinessPhoneNumberController(setEnableRegistration: Boolean): BusinessPhoneNumberController =
     new BusinessPhoneNumberController(
       mockBaseControllerConfig(new MockConfig {
-        override val enableRegistration = setEnableRegistration
+        override val enableRegistration: Boolean = setEnableRegistration
       }),
       messagesApi,
       MockKeystoreService,
@@ -51,7 +54,7 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
   lazy val TestBusinessPhoneNumberController: BusinessPhoneNumberController =
     createTestBusinessPhoneNumberController(setEnableRegistration = true)
 
-  lazy val request = subscriptionRequest.withSession(ITSASessionKeys.JourneyStateKey -> Registration.name)
+  lazy val request: FakeRequest[AnyContentAsEmpty.type] = subscriptionRequest.withSession(ITSASessionKeys.JourneyStateKey -> Registration.name)
 
   "When registration is disabled" should {
     lazy val TestBusinessPhoneNumberController: BusinessPhoneNumberController =
@@ -97,7 +100,7 @@ class BusinessPhoneNumberControllerSpec extends ControllerBaseSpec
 
     "Calling the submit action of the BusinessPhoneNumberController with an authorised user and valid submission" should {
 
-      def callShow(isEditMode: Boolean) =
+      def callShow(isEditMode: Boolean): Future[Result] =
         TestBusinessPhoneNumberController.submit(isEditMode = isEditMode)(
           request
             .post(BusinessPhoneNumberForm.businessPhoneNumberForm.form, BusinessPhoneNumberModel(testPhoneNumber))

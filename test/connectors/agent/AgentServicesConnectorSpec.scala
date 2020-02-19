@@ -47,7 +47,7 @@ class AgentServicesConnectorSpec extends TestAgentServicesConnector {
       val res = TestAgentServicesConnector.isPreExistingRelationship(testARN, testNino)
 
       val ex = intercept[InternalServerException](await(res))
-      ex.getMessage mustBe TestAgentServicesConnector.isPreExistingRelationshipFailure(INTERNAL_SERVER_ERROR, invalidBody.toString()).getMessage
+      ex.getMessage mustBe s"[AgentServicesConnector][isPreExistingRelationship] failure, status: $INTERNAL_SERVER_ERROR body=$invalidBody"
     }
   }
 }
