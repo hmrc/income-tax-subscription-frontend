@@ -18,13 +18,13 @@ package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, stubFor}
+import connectors.PaperlessPreferenceHttpParser._
 import core.Constants._
 import core.config.AppConfig
-import connectors.PaperlessPreferenceHttpParser._
 import helpers.IntegrationTestConstants._
 import play.api.http.Status
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 
 
 object PreferencesStub extends WireMockMethods {
@@ -97,5 +97,5 @@ object PreferencesStub extends WireMockMethods {
   }
 
 
-  val preconditionFailedJson = Json.obj(redirectUserTo -> testUrl)
+  val preconditionFailedJson: JsObject = Json.obj(redirectUserTo -> testUrl)
 }

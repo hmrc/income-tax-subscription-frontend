@@ -18,21 +18,19 @@ package connectors
 
 import java.net.URLEncoder
 
+import connectors.PaperlessPreferenceHttpParser._
 import core.Constants._
 import core.audit.Logging
 import core.config.{AppConfig, ITSAHeaderCarrierForPartialsConverter}
 import core.utils.HttpResult._
-import PaperlessPreferenceHttpParser._
 import javax.inject.{Inject, Singleton}
 import models.{PaperlessPreferenceError, PaperlessState}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.crypto.{ApplicationCrypto, PlainText}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-import scala.concurrent.Future
-
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
@@ -41,7 +39,7 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
                                             val messagesApi: MessagesApi,
                                             logging: Logging,
                                             applicationCrypto: ApplicationCrypto
-                                           ) {
+                                           )(implicit ec: ExecutionContext) {
 
   import hc._
 
@@ -53,7 +51,8 @@ class PreferenceFrontendConnector @Inject()(appConfig: AppConfig,
   def choosePaperlessUrl(implicit messages: Messages): String =
     appConfig.preferencesFrontendRedirect + choosePaperlessUri(returnUrl)
 
-  def checkPaperless(token: String)(implicit request: Request[AnyContent], messages: Messages): Future[Either[PaperlessPreferenceError.type, PaperlessState]] = {
+  def checkPaperless(token: String)(implicit request: Request[AnyContent], messages: Messages):
+                                    Future[Either[PaperlessPreferenceError.type, PaperlessState]] = {
     // The header carrier must include the current user's session in order to be authenticated by the preferences-frontend service
     // this header is converted implicitly by functions in core.config.ITSAHeaderCarrierForPartialsConverter which implements
     // uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter

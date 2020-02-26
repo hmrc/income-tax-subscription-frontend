@@ -18,6 +18,7 @@ package core.auth
 
 import core.utils.TestConstants.{testNino, testUtr}
 import core.{Constants, ITSASessionKeys}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L50
 import uk.gov.hmrc.auth.core._
@@ -27,7 +28,7 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
   "IncomeTaxSAUser" when {
     "Nino and UTR are retrieved from auth" should {
-      implicit lazy val request = FakeRequest()
+      implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
       val confidenceLevel = L50
 
@@ -65,7 +66,7 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
     "Nino and UTR are stored in session after being pulled from CID" should {
       val confidenceLevel = ConfidenceLevel.L0
 
-      implicit lazy val request = FakeRequest().withSession(
+      implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         ITSASessionKeys.NINO -> testNino,
         ITSASessionKeys.UTR -> testUtr
       )
@@ -91,7 +92,7 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
     }
 
 
-    def user(credentialRole: Option[CredentialRole]) =
+    def user(credentialRole: Option[CredentialRole]): IncomeTaxSAUser =
       IncomeTaxSAUser(
         Enrolments(Set.empty),
         None,
@@ -101,7 +102,7 @@ class IncomeTaxSAUserSpec extends UnitSpec with WithFakeApplication {
 
     "role is Admin" should {
       "return false for isAssistant" in {
-        user(Some(Admin)).isAssistant shouldBe false
+        user(Some(User)).isAssistant shouldBe false
       }
     }
 

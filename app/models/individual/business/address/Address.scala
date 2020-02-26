@@ -16,7 +16,7 @@
 
 package models.individual.business.address
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 
 case class Address(lines: Option[List[String]] = None,
@@ -27,7 +27,7 @@ case class Address(lines: Option[List[String]] = None,
 }
 
 object Address {
-  implicit val format = Json.format[Address]
+  implicit val format: OFormat[Address] = Json.format[Address]
   val UKCountryCode = "GB"
 }
 

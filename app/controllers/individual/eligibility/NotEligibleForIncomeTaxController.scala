@@ -23,13 +23,13 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NotEligibleForIncomeTaxController @Inject()(val baseConfig: BaseControllerConfig,
                                                   val messagesApi: MessagesApi,
-                                                  val authService: AuthService
-                                      ) extends StatelessController {
+                                                  val authService: AuthService)
+                                                 (implicit val ec: ExecutionContext) extends StatelessController {
 
   val show: Action[AnyContent] = Authenticated.asyncUnrestricted { implicit request =>
     implicit user => Future.successful(Ok(views.html.individual.incometax.eligibility.not_eligible_for_income_tax()))

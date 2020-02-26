@@ -25,11 +25,12 @@ import forms.individual.business.AccountingMethodForm
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.individual.business.{AccountingMethodModel, AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.incomesource.RentUkPropertyModel
-import models.individual.subscription.{Both, Business, IncomeSourceType}
+import models.individual.subscription.{Both, Business, IncomeSourceType, Property}
 import models.{Cash, DateModel, No}
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
 
@@ -59,10 +60,12 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
     testCacheMap(
       incomeSource = incomeSourceType match {
         case Business => testIncomeSourceBusiness
+        case Property => None
         case Both => testIncomeSourceBoth
       },
       rentUkProperty = incomeSourceType match {
         case Business => testRentUkProperty_no_property
+        case Property => None
         case Both => testRentUkProperty_property_and_other
       },
       areYouSelfEmployed = testAreYouSelfEmployed_yes,
@@ -73,15 +76,20 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
   val taxYear2018AccountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2017"), DateModel("5", "4", "2018"))
   val taxYear2019AccountingPeriod = AccountingPeriodModel(DateModel("6", "4", "2017"), DateModel("5", "4", "2019"))
 
-  def matchTaxYearCacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
+  def matchTaxYearCacheMap(incomeSourceType: IncomeSourceType = Business): CacheMap = fetchAllCacheMap(
+                                                                              matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
 
-  def matchTaxYearYesIncomeSourceBoth(incomeSourceType: IncomeSourceType = Both) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
+  def matchTaxYearYesIncomeSourceBoth(incomeSourceType: IncomeSourceType = Both): CacheMap = fetchAllCacheMap(
+                                                                                    matchTaxYear = testMatchTaxYearYes, incomeSourceType = incomeSourceType)
 
-  def matchTaxYearNoIncomeSourceBoth(incomeSourceType: IncomeSourceType = Both) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, incomeSourceType = incomeSourceType)
+  def matchTaxYearNoIncomeSourceBoth(incomeSourceType: IncomeSourceType = Both): CacheMap = fetchAllCacheMap(
+                                                                                    matchTaxYear = testMatchTaxYearNo, incomeSourceType = incomeSourceType)
 
-  def taxYear2018CacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2018AccountingPeriod, incomeSourceType = incomeSourceType)
+  def taxYear2018CacheMap(incomeSourceType: IncomeSourceType = Business): CacheMap = fetchAllCacheMap(
+    matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2018AccountingPeriod, incomeSourceType = incomeSourceType)
 
-  def taxYear2019CacheMap(incomeSourceType: IncomeSourceType = Business) = fetchAllCacheMap(matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2019AccountingPeriod, incomeSourceType = incomeSourceType)
+  def taxYear2019CacheMap(incomeSourceType: IncomeSourceType = Business): CacheMap = fetchAllCacheMap(
+    matchTaxYear = testMatchTaxYearNo, accountingPeriod = taxYear2019AccountingPeriod, incomeSourceType = incomeSourceType)
 
 
   "Calling the show action of the BusinessAccountingMethod with an authorised user" should {
@@ -175,27 +183,31 @@ class BusinessAccountingMethodControllerSpec extends ControllerBaseSpec
       )
       s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
         setupMockKeystore(fetchAll = matchTaxYearCacheMap())
-        await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe controllers.individual.business.routes.WhatYearToSignUpController.show().url
+        await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe
+          controllers.individual.business.routes.WhatYearToSignUpController.show().url
       }
 
       "income source type is not business and match tax year is answered with no" should {
         s"point to ${controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url}" in {
           setupMockKeystore(fetchAll = matchTaxYearNoIncomeSourceBoth())
-          await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
+          await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe
+          controllers.individual.business.routes.BusinessAccountingPeriodDateController.show().url
         }
       }
 
       "income source type is not business and match tax year is answered with yes" should {
         s"point to ${controllers.individual.business.routes.WhatYearToSignUpController.show().url}" in {
           setupMockKeystore(fetchAll = matchTaxYearYesIncomeSourceBoth())
-          await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe controllers.individual.business.routes.MatchTaxYearController.show().url
+          await(TestBusinessAccountingMethodController2.backUrl(isEditMode = false)) mustBe
+            controllers.individual.business.routes.MatchTaxYearController.show().url
         }
       }
     }
 
     "The back url in edit mode" should {
       s"point to ${controllers.individual.subscription.routes.CheckYourAnswersController.show().url}" in {
-        await(TestBusinessAccountingMethodController.backUrl(isEditMode = true)) mustBe controllers.individual.subscription.routes.CheckYourAnswersController.show().url
+        await(TestBusinessAccountingMethodController.backUrl(isEditMode = true)) mustBe
+          controllers.individual.subscription.routes.CheckYourAnswersController.show().url
       }
     }
   }

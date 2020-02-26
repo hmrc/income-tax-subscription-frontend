@@ -23,7 +23,8 @@ import core.auth.UserMatching
 import core.utils.TestConstants.testUserId
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty}
+import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, contentType, _}
 import uk.gov.hmrc.http.SessionKeys
 
@@ -36,15 +37,16 @@ class UserDetailsErrorControllerSpec extends ControllerBaseSpec {
     "submit" -> TestUserDetailsErrorController.submit
   )
 
-  def createTestUserDetailsErrorController(enableMatchingFeature: Boolean) = new UserDetailsErrorController(
+  def createTestUserDetailsErrorController(enableMatchingFeature: Boolean): UserDetailsErrorController = new UserDetailsErrorController(
     MockBaseControllerConfig,
     messagesApi,
     mockAuthService
   )
 
-  lazy val TestUserDetailsErrorController = createTestUserDetailsErrorController(enableMatchingFeature = true)
+  lazy val TestUserDetailsErrorController: UserDetailsErrorController = createTestUserDetailsErrorController(enableMatchingFeature = true)
 
-  lazy val request = userMatchingRequest.withSession(SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+  lazy val request: FakeRequest[AnyContentAsEmpty.type] = userMatchingRequest.withSession(
+    SessionKeys.userId -> testUserId.value, ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
 
   "Calling the 'show' action of the UserDetailsErrorController" should {

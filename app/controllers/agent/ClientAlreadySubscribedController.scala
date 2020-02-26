@@ -23,13 +23,13 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClientAlreadySubscribedController @Inject()(val baseConfig: BaseControllerConfig,
                                                   val messagesApi: MessagesApi,
                                                   val authService: AuthService
-                                                 ) extends UserMatchingController {
+                                                 )(implicit val ec: ExecutionContext) extends UserMatchingController {
 
   val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

@@ -16,7 +16,7 @@
 
 package forms.agent
 
-import forms.prevalidation.PreprocessedForm
+import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.submapping.DateMapping.dateMapping
 import forms.validation.Constraints.{invalidFormat, maxLength, ninoRegex, nonEmpty}
 import forms.validation.ErrorMessageFactory
@@ -94,7 +94,7 @@ object ClientDetailsForm {
   import forms.prevalidation.CaseOption._
   import forms.prevalidation.TrimOption._
 
-  val clientDetailsForm = PreprocessedForm(
+  val clientDetailsForm: PrevalidationAPI[UserDetailsModel] = PreprocessedForm(
     validation = clientDetailsValidationForm,
     trimRules = Map(clientNino -> bothAndCompress),
     caseRules = Map(clientNino -> upper)

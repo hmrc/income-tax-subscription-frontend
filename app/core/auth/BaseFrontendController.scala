@@ -18,25 +18,26 @@ package core.auth
 
 import core.auth.AuthPredicate._
 import core.auth.JourneyState.{RequestFunctions, SessionFunctions}
-import core.config.BaseControllerConfig
+import core.config.{AppConfig, BaseControllerConfig}
 import core.services.AuthService
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import uk.gov.hmrc.auth.core.retrieve.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait BaseFrontendController extends FrontendController with I18nSupport with AuthPredicates {
 
   val authService: AuthService
   val baseConfig: BaseControllerConfig
 
-  override lazy implicit val applicationConfig = baseConfig.applicationConfig
+  implicit val ec: ExecutionContext
+
+  override lazy implicit val applicationConfig: AppConfig = baseConfig.applicationConfig
 
   type ActionBody[User <: IncomeTaxUser] = Request[AnyContent] => User => Future[Result]
   type AuthenticatedAction[User <: IncomeTaxUser] = ActionBody[User] => Action[AnyContent]
@@ -51,7 +52,7 @@ trait BaseFrontendController extends FrontendController with I18nSupport with Au
       Action.async { implicit request =>
         authService.authorised().retrieve(allEnrolments and affinityGroup and credentialRole and confidenceLevel) {
           case enrolments ~ affinity ~ role ~ confidence =>
-            implicit val user = userApply(enrolments, affinity, role, confidence)
+            implicit val user: User = userApply(enrolments, affinity, role, confidence)
 
             predicate.apply(request)(user) match {
               case Right(AuthPredicateSuccess) => action(request)(user)
@@ -68,8 +69,8 @@ trait BaseFrontendController extends FrontendController with I18nSupport with Au
     def fill(data: Option[T]): Form[T] = data.fold(form)(form.fill)
   }
 
-  implicit val cacheSessionFunctions: (Session) => SessionFunctions = JourneyState.SessionFunctions
-  implicit val cacheRequestFunctions: (Request[_]) => RequestFunctions = JourneyState.RequestFunctions
+  implicit val cacheSessionFunctions: Session => SessionFunctions = JourneyState.SessionFunctions
+  implicit val cacheRequestFunctions: Request[_] => RequestFunctions = JourneyState.RequestFunctions
 
 }
 

@@ -16,9 +16,9 @@
 
 package agent.services
 
-import play.api.test.Helpers._
 import agent.services.mocks.TestClientRelationshipService
 import agent.utils.TestConstants._
+import play.api.test.Helpers._
 
 class ClientRelationshipServiceSpec extends TestClientRelationshipService {
   "isPreExistingRelationship" should {

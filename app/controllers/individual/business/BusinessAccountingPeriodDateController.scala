@@ -30,7 +30,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseControllerConfig,
@@ -39,7 +39,7 @@ class BusinessAccountingPeriodDateController @Inject()(val baseConfig: BaseContr
                                                        val authService: AuthService,
                                                        val currentTimeService: CurrentTimeService,
                                                        val accountingPeriodService: AccountingPeriodService
-                                                      ) extends SignUpController {
+                                                      )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def view(form: Form[AccountingPeriodModel], backUrl: String, isEditMode: Boolean, editMatch: Boolean)(implicit request: Request[_]): Html =
     views.html.individual.incometax.business.accounting_period_date(

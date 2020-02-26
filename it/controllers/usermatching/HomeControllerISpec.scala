@@ -65,7 +65,7 @@ class HomeControllerISpec extends ComponentSpecBase {
             AuthStub.stubAuthSuccess()
             CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
             SubscriptionStub.stubGetNoSubscription()
-            EligibilityStub.stubEligibilityResponse(testUtr)(true)
+            EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
 
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -83,7 +83,7 @@ class HomeControllerISpec extends ComponentSpecBase {
             AuthStub.stubAuthSuccess()
             CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
             SubscriptionStub.stubGetNoSubscription()
-            EligibilityStub.stubEligibilityResponse(testUtr)(false)
+            EligibilityStub.stubEligibilityResponse(testUtr)(response = false)
 
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -121,7 +121,7 @@ class HomeControllerISpec extends ComponentSpecBase {
             AuthStub.stubAuthNoUtr()
             SubscriptionStub.stubGetNoSubscription()
             CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
-            EligibilityStub.stubEligibilityResponse(testUtr)(true)
+            EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
 
             When("GET /index is called")
             val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -196,7 +196,7 @@ class HomeControllerRegEnabledISpec extends ComponentSpecBase with FeatureSwitch
           AuthStub.stubAuthSuccess()
           CitizenDetailsStub.stubCIDUserWithNinoAndUtr(testNino, testUtr)
           SubscriptionStub.stubGetNoSubscription()
-          EligibilityStub.stubEligibilityResponse(testUtr)(true)
+          EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
 
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()
@@ -232,7 +232,7 @@ class HomeControllerRegEnabledISpec extends ComponentSpecBase with FeatureSwitch
           AuthStub.stubAuthNoUtr()
           SubscriptionStub.stubGetNoSubscription()
           CitizenDetailsStub.stubCIDUserWithNoUtr(testNino)
-          EligibilityStub.stubEligibilityResponse(testUtr)(true)
+          EligibilityStub.stubEligibilityResponse(testUtr)(response = true)
 
           When("GET /index is called")
           val res = IncomeTaxSubscriptionFrontend.indexPage()

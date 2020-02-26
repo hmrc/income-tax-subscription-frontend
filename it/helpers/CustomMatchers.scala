@@ -59,7 +59,7 @@ trait CustomMatchers {
   def pageTitle(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
 
-      def apply(response: WSResponse) = {
+      def apply(response: WSResponse): HavePropertyMatchResult[String] = {
         val body = Jsoup.parse(response.body)
 
         HavePropertyMatchResult(
@@ -74,7 +74,7 @@ trait CustomMatchers {
   def mainHeading(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
 
-      def apply(response: WSResponse) = {
+      def apply(response: WSResponse): HavePropertyMatchResult[String] = {
         val body = Jsoup.parse(response.body)
         val h1 = body.select("h1").first().text()
         HavePropertyMatchResult(
@@ -89,7 +89,7 @@ trait CustomMatchers {
   def dateField(id: String, expectedValue: DateModel): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
 
-      def apply(response: WSResponse) = {
+      def apply(response: WSResponse): HavePropertyMatchResult[String] = {
         val body = Jsoup.parse(response.body)
         val day = body.getElementById(id + ".dateDay").`val`()
         val month = body.getElementById(id + ".dateMonth").`val`()
@@ -106,7 +106,7 @@ trait CustomMatchers {
   def textField(id: String, expectedValue: String): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
 
-      def apply(response: WSResponse) = {
+      def apply(response: WSResponse): HavePropertyMatchResult[String] = {
         val body = Jsoup.parse(response.body)
         val text = body.getElementById(id).`val`()
         HavePropertyMatchResult(
@@ -120,7 +120,7 @@ trait CustomMatchers {
 
   def errorDisplayed(): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
-      def apply(response: WSResponse) = {
+      def apply(response: WSResponse): HavePropertyMatchResult[String] = {
         val body = Jsoup.parse(response.body)
         val errorHeader = body.getElementById("error-summary-heading")
 
@@ -136,7 +136,7 @@ trait CustomMatchers {
   def elementValueByID(id: String)(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
 
-      def apply(response: WSResponse) = {
+      def apply(response: WSResponse): HavePropertyMatchResult[String] = {
         val body = Jsoup.parse(response.body)
 
         HavePropertyMatchResult(
@@ -151,7 +151,7 @@ trait CustomMatchers {
   def elementTextByID(id: String)(expectedValue: String): HavePropertyMatcher[WSResponse, String] =
     new HavePropertyMatcher[WSResponse, String] {
 
-      def apply(response: WSResponse) = {
+      def apply(response: WSResponse): HavePropertyMatchResult[String] = {
         val body = Jsoup.parse(response.body)
 
         HavePropertyMatchResult(
@@ -164,7 +164,7 @@ trait CustomMatchers {
     }
 
   def redirectURI(expectedValue: String): HavePropertyMatcher[WSResponse, String] = new HavePropertyMatcher[WSResponse, String] {
-    def apply(response: WSResponse) = {
+    def apply(response: WSResponse): HavePropertyMatchResult[String] = {
       val redirectLocation: Option[String] = response.header("Location")
 
       val matchCondition = redirectLocation.exists(_.contains(expectedValue))

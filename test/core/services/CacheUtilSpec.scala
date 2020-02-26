@@ -17,13 +17,13 @@
 package core.services
 
 import core.config.featureswitch.FeatureSwitching
+import core.services.CacheUtil._
+import core.utils.TestModels._
 import core.utils.UnitTestTrait
 import incometax.util.AccountingPeriodUtil.getCurrentTaxYear
 import models.individual.subscription.{Both, IndividualSummary}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Matchers._
-import core.services.CacheUtil._
-import core.utils.TestModels._
 
 class CacheUtilSpec extends UnitTestTrait
   with FeatureSwitching
@@ -77,7 +77,8 @@ class CacheUtilSpec extends UnitTestTrait
       "the income source is business or both" when {
         "match tax year is yes" should {
           "return the accounting period of the current tax year" in {
-            testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearYes).getAccountingPeriodDate() shouldBe Some(getCurrentTaxYear)
+            testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearYes)
+              .getAccountingPeriodDate()shouldBe Some(getCurrentTaxYear)
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_and_other,
               areYouSelfEmployed = testAreYouSelfEmployed_yes,
@@ -87,7 +88,8 @@ class CacheUtilSpec extends UnitTestTrait
 
         "match tax year is no" should {
           "return the entered accounting period" in {
-            testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearNo).getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
+            testCacheMapCustom(incomeSource = testIncomeSourceBusiness, matchTaxYear = testMatchTaxYearNo)
+              .getAccountingPeriodDate() shouldBe Some(testAccountingPeriod)
             testCacheMapCustom(
               rentUkProperty = testRentUkProperty_property_and_other,
               areYouSelfEmployed = testAreYouSelfEmployed_yes,

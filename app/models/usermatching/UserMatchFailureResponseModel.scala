@@ -16,7 +16,7 @@
 
 package models.usermatching
 
-import play.api.libs.json.{JsError, Json}
+import play.api.libs.json.{JsError, Json, OFormat}
 import uk.gov.hmrc.http.HttpResponse
 
 // the response from authenticator/match with message to indicate why matching failed
@@ -25,7 +25,7 @@ case class UserMatchFailureResponseModel(errors: String)
 object UserMatchUnexpectedError extends UserMatchFailureResponseModel("Internal error: unexpected result from matching")
 
 object UserMatchFailureResponseModel {
-  implicit val format = Json.format[UserMatchFailureResponseModel]
+  implicit val format: OFormat[UserMatchFailureResponseModel] = Json.format[UserMatchFailureResponseModel]
 
   def apply(response: HttpResponse): UserMatchFailureResponseModel =
     UserMatchFailureResponseModel(s"status: ${response.status} body: ${response.body}")

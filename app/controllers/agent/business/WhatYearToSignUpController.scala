@@ -29,7 +29,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class WhatYearToSignUpController @Inject()(val baseConfig: BaseControllerConfig,
                                            val messagesApi: MessagesApi,
@@ -37,13 +37,15 @@ class WhatYearToSignUpController @Inject()(val baseConfig: BaseControllerConfig,
                                            val authService: AuthService,
                                            val appConfig: AppConfig,
                                            val accountingPeriodService: AccountingPeriodService
-                                          ) extends AuthenticatedController with FeatureSwitching {
+                                          )(implicit val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
 
-  def backUrl(isEditMode: Boolean): String =
-    if (isEditMode)
+  def backUrl(isEditMode: Boolean): String = {
+    if (isEditMode) {
       controllers.agent.routes.CheckYourAnswersController.show().url
-    else
+    } else {
       controllers.agent.business.routes.MatchTaxYearController.show().url
+    }
+  }
 
   def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     views.html.agent.business.what_year_to_sign_up(
@@ -72,8 +74,7 @@ class WhatYearToSignUpController @Inject()(val baseConfig: BaseControllerConfig,
           Future.successful(keystoreService.saveWhatYearToSignUp(accountingYear)) map { _ =>
             if (isEditMode) {
               Redirect(controllers.agent.routes.CheckYourAnswersController.show())
-            }
-            else {
+            } else {
               Redirect(controllers.agent.business.routes.BusinessAccountingMethodController.show())
             }
           }

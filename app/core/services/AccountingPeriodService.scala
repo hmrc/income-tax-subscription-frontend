@@ -45,5 +45,5 @@ class AccountingPeriodService @Inject()(currentDateProvider: CurrentDateProvider
     isEligibleTaxYear && isEligibleStartDate
   }
 
-  def currentTaxYear: Int = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate())
+  def currentTaxYear: Int = AccountingPeriodUtil.getTaxEndYear(currentDateProvider.getCurrentDate)
 }

@@ -68,12 +68,12 @@ object AccountingPeriodDateForm {
     }
   )
 
-  val startDateConstraints = {
+  val startDateConstraints: Constraint[DateModel] = {
     val name = "start_date"
     dateEmpty(name) andThen dateIsNumeric(name) andThen dateValidation(name)
   }
 
-  val endDateConstraints = {
+  val endDateConstraints: Constraint[DateModel] = {
     val name = "end_date"
     dateEmpty(name) andThen dateIsNumeric(name) andThen dateValidation(name)
   }

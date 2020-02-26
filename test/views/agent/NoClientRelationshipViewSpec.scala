@@ -18,17 +18,19 @@ package views.agent
 
 import agent.assets.MessageLookup.{Base => common, NoClientRelationship => messages}
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import views.ViewSpecTrait
 
 class NoClientRelationshipViewSpec extends ViewSpecTrait {
 
-  val action = ViewSpecTrait.testCall
+  val action: Call = ViewSpecTrait.testCall
 
   lazy val page = views.html.agent.no_client_relationship(action)(FakeRequest(), applicationMessages, appConfig)
 
-  lazy val document = Jsoup.parse(page.body)
+  lazy val document: Document = Jsoup.parse(page.body)
 
   "The No Client Relationship View" should {
     val testPage = TestView(

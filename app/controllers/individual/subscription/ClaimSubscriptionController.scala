@@ -27,9 +27,10 @@ import incometax.subscription.services.SubscriptionOrchestrationService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
+import play.twirl.api.Html
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig,
@@ -37,7 +38,8 @@ class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig
                                             val authService: AuthService,
                                             val subscriptionOrchestrationService: SubscriptionOrchestrationService,
                                             val keystoreService: KeystoreService
-                                           ) extends SignUpController {
+                                           )(implicit val ec: ExecutionContext) extends SignUpController {
+
   val claim: Action[AnyContent] = Authenticated.async {
     implicit request =>
       user =>
@@ -50,9 +52,12 @@ class ClaimSubscriptionController @Inject()(val baseConfig: BaseControllerConfig
         res.valueOr(ex => throw new InternalServerException(ex.toString))
   }
 
-  private def getMtditId()(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] =
+  private def getMtditId()(implicit hc: HeaderCarrier): Future[Either[ConnectorError, String]] = {
     keystoreService.fetchSubscriptionId() map (_.toRight(left = KeystoreMissingError(MtditId)))
+  }
 
-  private def confirmationPage(id: String)(implicit request: Request[AnyContent]) =
+  private def confirmationPage(id: String)(implicit request: Request[AnyContent]): Html = {
     views.html.individual.incometax.subscription.enrolled.claim_subscription()
+  }
+
 }

@@ -16,12 +16,9 @@
 
 package core.auth
 
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel, CredentialRole, Enrolments}
-import uk.gov.hmrc.http.NotFoundException
 import usermatching.utils.UserMatchingSessionUtil.{UserMatchingSessionRequestUtil, UserMatchingSessionResultUtil}
-
-import scala.concurrent.Future
 
 trait UserMatchingController extends BaseFrontendController {
 

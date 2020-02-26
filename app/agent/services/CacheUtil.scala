@@ -43,7 +43,8 @@ object CacheUtil {
 
     def agentGetAccountingMethod()(implicit read: Reads[agent.AccountingMethodModel]): Option[agent.AccountingMethodModel] = cacheMap.getEntry(AccountingMethod)
 
-    def getAccountingMethodProperty()(implicit read: Reads[AccountingMethodPropertyModel]): Option[AccountingMethodPropertyModel] = cacheMap.getEntry(AccountingMethodProperty)
+    def getAccountingMethodProperty()(implicit read: Reads[AccountingMethodPropertyModel]):
+                                                                      Option[AccountingMethodPropertyModel] = cacheMap.getEntry(AccountingMethodProperty)
 
     def getSummary()(implicit appConfig: AppConfig): AgentSummary = {
       getIncomeSource() match {

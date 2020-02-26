@@ -16,7 +16,7 @@
 
 package forms.usermatching
 
-import forms.prevalidation.PreprocessedForm
+import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.submapping.DateMapping.dateMapping
 import forms.validation.Constraints._
 import forms.validation.ErrorMessageFactory
@@ -87,7 +87,7 @@ object UserDetailsForm {
   import forms.prevalidation.CaseOption._
   import forms.prevalidation.TrimOption._
 
-  val userDetailsForm = PreprocessedForm(
+  val userDetailsForm: PrevalidationAPI[UserDetailsModel] = PreprocessedForm(
     validation = userDetailsValidationForm,
     trimRules = Map(userNino -> bothAndCompress),
     caseRules = Map(userNino -> upper)

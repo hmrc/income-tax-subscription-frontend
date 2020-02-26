@@ -63,12 +63,11 @@ class HomeControllerSpec extends ControllerBaseSpec
     MockKeystoreService,
     mockAuthService,
     mockCitizenDetailsService,
-    mockGetEligibilityStatusService,
-    app.injector.instanceOf[Logging]
+    mockGetEligibilityStatusService
   )
 
-  val testNino = TestConstants.testNino
-  val testUtr = TestConstants.testUtr
+  val testNino: String = TestConstants.testNino
+  val testUtr: String = TestConstants.testUtr
 
   "Calling the home action of the Home controller with an authorised user" when {
     "there is no start page" should {

@@ -19,17 +19,16 @@ package digitalcontact.services
 import java.util.UUID
 
 import connectors.PaperlessPreferenceTokenConnector
-import javax.inject.Inject
 import core.services.KeystoreService
+import javax.inject.Inject
 import models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenSuccess
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-
+import scala.concurrent.{ExecutionContext, Future}
 
 class PaperlessPreferenceTokenService @Inject()(keystoreService: KeystoreService,
-                                                paperlessPreferenceTokenConnector: PaperlessPreferenceTokenConnector) {
+                                                paperlessPreferenceTokenConnector: PaperlessPreferenceTokenConnector)
+                                               (implicit ec: ExecutionContext) {
   def storeNino(nino: String)(implicit hc: HeaderCarrier): Future[String] =
     keystoreService.fetchPaperlessPreferenceToken() flatMap {
       case Some(token) => Future.successful(token)

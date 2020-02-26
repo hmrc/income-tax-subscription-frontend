@@ -137,5 +137,4 @@ class MatchTaxYearControllerISpec extends ComponentSpecBase with FeatureSwitchin
 
     }
   }
-
 }

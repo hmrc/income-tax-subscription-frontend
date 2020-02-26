@@ -25,11 +25,13 @@ import models.DateModel
 import models.usermatching.UserDetailsModel
 import org.jsoup.Jsoup
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent, AnyContentAsEmpty, Request}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, contentAsString, contentType, _}
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HttpResponse, InternalServerException}
 import usermatching.services.mocks.MockUserLockoutService
+
+import scala.concurrent.Future
 
 
 class ClientDetailsControllerSpec extends AgentControllerBaseSpec
@@ -50,14 +52,14 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
     mockUserLockoutService
   )
 
-  val testNino = TestConstants.testNino
-  val testARN = TestConstants.testARN
+  val testNino: String = TestConstants.testNino
+  val testARN: String = TestConstants.testARN
 
   "Calling the show action of the ClientDetailsController with an authorised user" should {
 
-    def call(request: Request[AnyContent]) = TestClientDetailsController.show(isEditMode = false)(request)
+    def call(request: Request[AnyContent]): Future[Result] = TestClientDetailsController.show(isEditMode = false)(request)
 
-    "return ok (200)" in {
+    "return ok (200) when not locked out" in {
       lazy val r = userMatchingRequest.buildRequest(None)
       setupMockNotLockedOut(testARN)
       lazy val result = call(r)
@@ -76,6 +78,29 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
         document.title mustBe messages.title
       }
     }
+
+    "return see_other (303) when locked out" in {
+      lazy val r = userMatchingRequest.buildRequest(None)
+      setupMockLockedOut(testARN)
+      lazy val result = call(r)
+
+      status(result) must be(Status.SEE_OTHER)
+
+      await(result).verifyStoredUserDetailsIs(None)(r)
+
+      withClue(s"redirect to ${controllers.agent.matching.routes.ClientDetailsLockoutController.show().url}") {
+        redirectLocation(result) mustBe Some(controllers.agent.matching.routes.ClientDetailsLockoutController.show().url)
+      }
+    }
+
+    "throw an internal server exception when a lockout error occurs" in {
+      lazy val r = userMatchingRequest.buildRequest(None)
+      setupMockLockStatusFailureResponse(testARN)
+      lazy val result = await(call(r))
+
+      intercept[InternalServerException](result).getMessage mustBe "[ClientDetailsController][handleLockOut] lockout failure"
+    }
+
   }
 
 
@@ -93,7 +118,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
             dateOfBirth = DateModel("01", "01", "1980")
           )
 
-        def callSubmit(request: FakeRequest[AnyContentAsEmpty.type])(isEditMode: Boolean) =
+        def callSubmit(request: FakeRequest[AnyContentAsEmpty.type])(isEditMode: Boolean): Future[Result] =
           TestClientDetailsController.submit(isEditMode = isEditMode)(
             request.post(ClientDetailsForm.clientDetailsForm.form, testClientDetails)
           )
@@ -172,7 +197,7 @@ class ClientDetailsControllerSpec extends AgentControllerBaseSpec
           nino = testNino,
           dateOfBirth = DateModel("00", "01", "1980"))
 
-        def callSubmit(isEditMode: Boolean) =
+        def callSubmit(isEditMode: Boolean): Future[Result] =
           TestClientDetailsController.submit(isEditMode = isEditMode)(
             userMatchingRequest
               .post(ClientDetailsForm.clientDetailsForm.form, newTestUserDetails)

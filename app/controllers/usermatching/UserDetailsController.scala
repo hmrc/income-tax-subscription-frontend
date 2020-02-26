@@ -29,7 +29,7 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.services.UserLockoutService
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
@@ -37,7 +37,7 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
                                       val keystoreService: KeystoreService,
                                       val authService: AuthService,
                                       val lockOutService: UserLockoutService
-                                     ) extends UserMatchingController {
+                                     )(implicit val ec: ExecutionContext) extends UserMatchingController {
 
   def view(userDetailsForm: Form[UserDetailsModel], isEditMode: Boolean)(implicit request: Request[_]): Html =
     views.html.individual.usermatching.user_details(
@@ -46,14 +46,13 @@ class UserDetailsController @Inject()(val baseConfig: BaseControllerConfig,
       isEditMode
     )
 
-  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
+  private def handleLockOut(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]): Future[Result] = {
     val bearerToken = implicitly[HeaderCarrier].userId.get.value
 
-    (lockOutService.getLockoutStatus(bearerToken) flatMap {
+    lockOutService.getLockoutStatus(bearerToken) flatMap {
       case Right(NotLockedOut) => f
       case Right(_) => Future.successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show().url))
-    }).recover { case e =>
-      throw new InternalServerException("user details controller: " + e)
+      case Left(_) => throw new InternalServerException("[UserDetailsController][handleLockOut] failure response from lockout service")
     }
   }
 

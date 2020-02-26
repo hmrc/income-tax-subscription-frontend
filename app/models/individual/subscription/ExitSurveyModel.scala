@@ -16,7 +16,7 @@
 
 package models.individual.subscription
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class ExitSurveyModel(
                             satisfaction: Option[String],
@@ -24,5 +24,5 @@ case class ExitSurveyModel(
                           )
 
 object ExitSurveyModel {
-  implicit val format = Json.format[ExitSurveyModel]
+  implicit val format: OFormat[ExitSurveyModel] = Json.format[ExitSurveyModel]
 }

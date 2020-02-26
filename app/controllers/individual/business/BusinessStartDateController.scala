@@ -27,14 +27,14 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class BusinessStartDateController @Inject()(val baseConfig: BaseControllerConfig,
                                             val messagesApi: MessagesApi,
                                             val keystoreService: KeystoreService,
                                             val authService: AuthService
-                                           ) extends RegistrationController {
+                                           )(implicit val ec: ExecutionContext) extends RegistrationController {
 
   def view(businessStartDateForm: Form[BusinessStartDateModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html =
     views.html.individual.incometax.business.business_start_date(
@@ -66,7 +66,6 @@ class BusinessStartDateController @Inject()(val baseConfig: BaseControllerConfig
       )
   }
 
-  // TODO change the end point for linear journey when the edit page comes into play
   def backUrl(isEditMode: Boolean): String =
     if (isEditMode)
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url

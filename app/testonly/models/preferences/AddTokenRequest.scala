@@ -16,11 +16,11 @@
 
 package testonly.models.preferences
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 
 case class AddTokenRequest(nino: String)
 
 object AddTokenRequest {
-  implicit val format = Json.format[AddTokenRequest]
+  implicit val format: OFormat[AddTokenRequest] = Json.format[AddTokenRequest]
 }

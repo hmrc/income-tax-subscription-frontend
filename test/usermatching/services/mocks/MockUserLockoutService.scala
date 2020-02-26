@@ -16,18 +16,18 @@
 
 package usermatching.services.mocks
 
+import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
+import connectors.usermatching.mocks.MockUserLockoutConnector
 import core.audit.Logging
 import core.services.mocks.MockKeystoreService
 import core.utils.MockTrait
 import core.utils.TestConstants.{testException, testLockoutResponse}
+import models.usermatching.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.http.Status
 import play.api.http.Status._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
-import connectors.usermatching.mocks.MockUserLockoutConnector
-import models.usermatching.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import usermatching.services.{LockoutUpdate, UserLockoutService}
 import usermatching.utils.UserMatchingTestSupport
 

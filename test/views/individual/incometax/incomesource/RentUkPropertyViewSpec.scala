@@ -21,16 +21,18 @@ import forms.individual.incomesource.RentUkPropertyForm
 import forms.submapping.YesNoMapping
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Call
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class RentUkPropertyViewSpec extends ViewSpecTrait {
 
-  val backUrl = ViewSpecTrait.testBackUrl
+  val backUrl: String = ViewSpecTrait.testBackUrl
 
-  val action = ViewSpecTrait.testCall
+  val action: Call = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean) = views.html.individual.incometax.incomesource.rent_uk_property(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.individual.incometax.incomesource.rent_uk_property(
     rentUkPropertyForm = RentUkPropertyForm.rentUkPropertyForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
@@ -70,7 +72,7 @@ class RentUkPropertyViewSpec extends ViewSpecTrait {
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore() = TestView(
+    def documentCore(): TestView = TestView(
       name = "Rent Uk Property View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,

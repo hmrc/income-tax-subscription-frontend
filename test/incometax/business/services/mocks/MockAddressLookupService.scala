@@ -16,6 +16,7 @@
 
 package incometax.business.services.mocks
 
+import connectors.individual.business.httpparsers.AddressLookupResponseHttpParser.{ConfirmAddressLookupResponseResponse, InitAddressLookupResponseResponse}
 import connectors.individual.business.mocks.MockAddressLookupConnector
 import core.utils.MockTrait
 import core.utils.TestConstants.testException
@@ -24,6 +25,7 @@ import incometax.business.services.AddressLookupService
 import models.individual.business.address._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{reset, when}
+import org.mockito.stubbing.OngoingStubbing
 import play.api.http.Status.BAD_REQUEST
 
 import scala.concurrent.Future
@@ -31,7 +33,7 @@ import scala.concurrent.Future
 
 trait MockAddressLookupService extends MockTrait {
 
-  val mockAddressLookupService = mock[AddressLookupService]
+  val mockAddressLookupService: AddressLookupService = mock[AddressLookupService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -41,27 +43,33 @@ trait MockAddressLookupService extends MockTrait {
   private def mockInit(request: AddressLookupInitRequest)(response: Future[Either[AddressLookupInitFailureResponse, String]]) =
     when(mockAddressLookupService.init(ArgumentMatchers.eq(request))(ArgumentMatchers.any())).thenReturn(response)
 
-  def mockInitSuccess(request: AddressLookupInitRequest)(testRedirectionUrl: String) = mockInit(request)(Right(testRedirectionUrl))
+  def mockInitSuccess(request: AddressLookupInitRequest)(testRedirectionUrl: String): OngoingStubbing[Future[InitAddressLookupResponseResponse]] =
+    mockInit(request)(Right(testRedirectionUrl))
 
-  def mockInitFailure(request: AddressLookupInitRequest) = mockInit(request)(Future.successful(Left(AddressLookupInitFailureResponse(BAD_REQUEST))))
+  def mockInitFailure(request: AddressLookupInitRequest): OngoingStubbing[Future[InitAddressLookupResponseResponse]] =
+    mockInit(request)(Future.successful(Left(AddressLookupInitFailureResponse(BAD_REQUEST))))
 
-  def mockInitException(request: AddressLookupInitRequest) = mockInit(request)(Future.failed(testException))
+  def mockInitException(request: AddressLookupInitRequest): OngoingStubbing[Future[InitAddressLookupResponseResponse]] =
+    mockInit(request)(Future.failed(testException))
 
   private def mockRetrieveAddress(journeyId: String)(response: Future[Either[ReturnedAddressFailure, ReturnedAddress]]) =
     when(mockAddressLookupService.retrieveAddress(ArgumentMatchers.eq(journeyId))(ArgumentMatchers.any())).thenReturn(response)
 
-  def mockRetrieveAddressSuccess(journeyId: String) = mockRetrieveAddress(journeyId)(Right(testReturnedAddress))
+  def mockRetrieveAddressSuccess(journeyId: String): OngoingStubbing[Future[ConfirmAddressLookupResponseResponse]] =
+    mockRetrieveAddress(journeyId)(Right(testReturnedAddress))
 
-  def mockRetrieveAddressNoneUK(journeyId: String) =
+  def mockRetrieveAddressNoneUK(journeyId: String): OngoingStubbing[Future[ConfirmAddressLookupResponseResponse]] =
     mockRetrieveAddress(journeyId)(
       Right(testReturnedAddress.copy(address =
         testReturnedAddress.address.copy(country = Some(Country("NOTUK", "NOTUK"))))
       )
     )
 
-  def MockRetrieveAddressFailure(journeyId: String) = mockRetrieveAddress(journeyId)(Left(UnexpectedStatusReturned(BAD_REQUEST)))
+  def MockRetrieveAddressFailure(journeyId: String): OngoingStubbing[Future[ConfirmAddressLookupResponseResponse]] =
+    mockRetrieveAddress(journeyId)(Left(UnexpectedStatusReturned(BAD_REQUEST)))
 
-  def MockRetrieveAddressException(journeyId: String) = mockRetrieveAddress(journeyId)(Future.failed(testException))
+  def MockRetrieveAddressException(journeyId: String): OngoingStubbing[Future[ConfirmAddressLookupResponseResponse]] =
+    mockRetrieveAddress(journeyId)(Future.failed(testException))
 
 }
 

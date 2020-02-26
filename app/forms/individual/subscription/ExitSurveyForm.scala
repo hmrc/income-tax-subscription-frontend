@@ -16,7 +16,7 @@
 
 package forms.individual.subscription
 
-import forms.prevalidation.PreprocessedForm
+import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil.constraint
 import models.individual.subscription.ExitSurveyModel
@@ -43,6 +43,6 @@ object ExitSurveyForm {
     )(ExitSurveyModel.apply)(ExitSurveyModel.unapply)
   )
 
-  val exitSurveyForm = PreprocessedForm(exitSurveyValidationForm)
+  val exitSurveyForm: PrevalidationAPI[ExitSurveyModel] = PreprocessedForm(exitSurveyValidationForm)
 
 }

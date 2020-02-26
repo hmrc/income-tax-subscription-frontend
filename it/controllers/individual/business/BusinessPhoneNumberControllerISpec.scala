@@ -30,7 +30,6 @@ import play.api.i18n.Messages
 
 class BusinessPhoneNumberControllerISpec extends ComponentSpecBase with FeatureSwitching {
 
-  // TODO remove this when registration is enabled by default
   enable(featureswitch.RegistrationFeature)
 
   "GET /report-quarterly/income-and-expenses/sign-up/business/phone-number" when {

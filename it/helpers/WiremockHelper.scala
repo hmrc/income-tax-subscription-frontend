@@ -19,12 +19,13 @@ package helpers
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import helpers.IntegrationTestConstants._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.libs.ws.WSClient
-import IntegrationTestConstants._
+import play.api.libs.ws.{WSClient, WSRequest}
 
 object WiremockHelper extends Eventually with IntegrationPatience {
   val wiremockPort = 11111
@@ -116,20 +117,20 @@ trait WiremockHelper {
 
   import WiremockHelper._
 
-  lazy val ws = app.injector.instanceOf[WSClient]
+  lazy val ws: WSClient = app.injector.instanceOf[WSClient]
 
-  lazy val wmConfig = wireMockConfig().port(wiremockPort)
+  lazy val wmConfig: WireMockConfiguration = wireMockConfig().port(wiremockPort)
   lazy val wireMockServer = new WireMockServer(wmConfig)
 
-  def startWiremock() = {
+  def startWiremock(): Unit = {
     wireMockServer.start()
     WireMock.configureFor(wiremockHost, wiremockPort)
   }
 
-  def stopWiremock() = wireMockServer.stop()
+  def stopWiremock(): Unit = wireMockServer.stop()
 
-  def resetWiremock() = WireMock.reset()
+  def resetWiremock(): Unit = WireMock.reset()
 
-  def buildClient(path: String) = ws.url(s"http://localhost:$port$baseURI$path").withFollowRedirects(false)
+  def buildClient(path: String): WSRequest = ws.url(s"http://localhost:$port$baseURI$path").withFollowRedirects(false)
 }
 

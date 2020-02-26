@@ -16,28 +16,31 @@
 
 package core.auth
 
-import uk.gov.hmrc.http.SessionKeys._
 import core.ITSASessionKeys
 import core.auth.AuthPredicate.AuthPredicateSuccess
 import core.auth.JourneyState._
+import core.config.AppConfig
 import core.services.mocks.MockAuthService
 import core.utils.UnitTestTrait
 import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.NotFoundException
+import uk.gov.hmrc.http.SessionKeys._
 
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
 
-  val authPredicates = new AuthPredicates {
-    override val applicationConfig = appConfig
+  val authPredicates: AuthPredicates = new AuthPredicates {
+    override val applicationConfig: AppConfig = appConfig
   }
 
   import authPredicates._
 
-  private def testUser(affinityGroup: Option[AffinityGroup], credentialRole: Option[CredentialRole], confidenceLevel: ConfidenceLevel, enrolments: Enrolment*): IncomeTaxSAUser = IncomeTaxSAUser(
+  private def testUser(affinityGroup: Option[AffinityGroup], credentialRole: Option[CredentialRole], confidenceLevel: ConfidenceLevel,
+                       enrolments: Enrolment*): IncomeTaxSAUser = IncomeTaxSAUser(
     enrolments = Enrolments(enrolments.toSet),
     affinityGroup = affinityGroup,
     credentialRole = credentialRole,
@@ -47,35 +50,35 @@ class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFu
   private def testUser(affinityGroup: Option[AffinityGroup], enrolments: Enrolment*): IncomeTaxSAUser =
     testUser(affinityGroup, Some(User), testConfidenceLevel, enrolments: _*)
 
-  val userWithNinoEnrolment = testUser(None, ninoEnrolment)
-  val userWithMtditIdEnrolment = testUser(None, mtdidEnrolment)
-  val userWithMtditIdEnrolmentAndNino = testUser(None, ninoEnrolment, mtdidEnrolment)
-  val userWithUtrButNoNino = testUser(Some(AffinityGroup.Individual), utrEnrolment)
-  val blankUser = testUser(None, None, confidenceLevel = ConfidenceLevel.L0)
+  val userWithNinoEnrolment: IncomeTaxSAUser = testUser(None, ninoEnrolment)
+  val userWithMtditIdEnrolment: IncomeTaxSAUser = testUser(None, mtdidEnrolment)
+  val userWithMtditIdEnrolmentAndNino: IncomeTaxSAUser = testUser(None, ninoEnrolment, mtdidEnrolment)
+  val userWithUtrButNoNino: IncomeTaxSAUser = testUser(Some(AffinityGroup.Individual), utrEnrolment)
+  val blankUser: IncomeTaxSAUser = testUser(None, None, confidenceLevel = ConfidenceLevel.L0)
 
-  val userWithIndividualAffinity = testUser(Some(AffinityGroup.Individual))
-  val userWithAgentAffinity = testUser(Some(AffinityGroup.Agent))
-  val userWithOrganisationAffinity = testUser(Some(AffinityGroup.Organisation))
+  val userWithIndividualAffinity: IncomeTaxSAUser = testUser(Some(AffinityGroup.Individual))
+  val userWithAgentAffinity: IncomeTaxSAUser = testUser(Some(AffinityGroup.Agent))
+  val userWithOrganisationAffinity: IncomeTaxSAUser = testUser(Some(AffinityGroup.Organisation))
 
-  val defaultPredicateUser = testUser(Some(AffinityGroup.Individual), ninoEnrolment)
-  val enrolledPredicateUser = testUser(Some(AffinityGroup.Individual), ninoEnrolment, mtdidEnrolment)
+  val defaultPredicateUser: IncomeTaxSAUser = testUser(Some(AffinityGroup.Individual), ninoEnrolment)
+  val enrolledPredicateUser: IncomeTaxSAUser = testUser(Some(AffinityGroup.Individual), ninoEnrolment, mtdidEnrolment)
 
-  lazy val authorisedRequest = FakeRequest().withSession(
+  lazy val authorisedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     authToken -> "",
     lastRequestTimestamp -> "",
     ITSASessionKeys.JourneyStateKey -> SignUp.name
   )
-  lazy val homelessAuthorisedRequest = FakeRequest().withSession(authToken -> "", lastRequestTimestamp -> "")
+  lazy val homelessAuthorisedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(authToken -> "", lastRequestTimestamp -> "")
 
-  lazy val registrationRequest = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> Registration.name)
+  lazy val registrationRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> Registration.name)
 
-  lazy val signUpRequest = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> SignUp.name)
+  lazy val signUpRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> SignUp.name)
 
-  lazy val userMatchingRequest = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> UserMatching.name)
+  lazy val userMatchingRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(ITSASessionKeys.JourneyStateKey -> UserMatching.name)
 
 
   "ninoPredicate" should {
-    implicit val request = FakeRequest()
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
     "return an AuthPredicateSuccess where a nino enrolment exists" in {
       AuthPredicates.ninoPredicate(FakeRequest())(userWithNinoEnrolment).right.value mustBe AuthPredicateSuccess

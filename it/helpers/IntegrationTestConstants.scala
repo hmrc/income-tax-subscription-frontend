@@ -34,16 +34,16 @@ object IntegrationTestConstants {
 
   val SessionId = s"stubbed-${UUID.randomUUID}"
   val userId = s"/auth/oid/1234567890"
-  val testUserIdEncoded = URLEncoder.encode(userId, "UTF-8")
+  val testUserIdEncoded: String = URLEncoder.encode(userId, "UTF-8")
   val testFirstName = "Test"
   val testLastName = "Name"
   val dateOfBirth = DateModel("01", "01", "1980")
   val testPaperlessPreferenceToken = s"${UUID.randomUUID()}"
   val testId = "12345"
-  val testGroupId = UUID.randomUUID.toString
-  val testCredId = UUID.randomUUID.toString
-  val testArn = UUID.randomUUID.toString
-  val testAgencyName = UUID.randomUUID.toString
+  val testGroupId: String = UUID.randomUUID.toString
+  val testCredId: String = UUID.randomUUID.toString
+  val testArn: String = UUID.randomUUID.toString
+  val testAgencyName: String = UUID.randomUUID.toString
 
 
   val testUrl = "/test/url/"

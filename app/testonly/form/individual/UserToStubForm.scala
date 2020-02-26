@@ -16,7 +16,9 @@
 
 package testonly.form.individual
 
-import forms.prevalidation.PreprocessedForm
+import forms.prevalidation.CaseOption._
+import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
+import forms.prevalidation.TrimOption._
 import forms.submapping.DateMapping.dateMapping
 import forms.validation.Constraints._
 import forms.validation.ErrorMessageFactory
@@ -27,8 +29,7 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Valid, ValidationResult}
 import testonly.models.UserToStubModel
-import forms.prevalidation.CaseOption._
-import forms.prevalidation.TrimOption._
+
 import scala.util.Try
 
 object UserToStubForm {
@@ -50,11 +51,11 @@ object UserToStubForm {
   val firstNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.user_details.first_name.maxLength")
   val lastNameMaxLength: Constraint[String] = maxLength(nameMaxLength, "error.user_details.last_name.maxLength")
 
-  val emptyUtr = nonEmpty("You must enter an SA UTR")
+  val emptyUtr: Constraint[String] = nonEmpty("You must enter an SA UTR")
 
   val utrRegex = """^(?:[ \t]*\d[ \t]*){10}$"""
 
-  val validateUtr =
+  val validateUtr: Constraint[Option[String]] =
     constraint[Option[String]] {
       case Some(utr) =>
         if (utr.filterNot(_.isWhitespace).matches(utrRegex)) Valid
@@ -90,7 +91,7 @@ object UserToStubForm {
 
 
 
-  val userToStubForm = PreprocessedForm(
+  val userToStubForm: PrevalidationAPI[UserToStubModel] = PreprocessedForm(
     validation = userDetailsValidationForm,
     trimRules = Map(userNino -> bothAndCompress),
     caseRules = Map(userNino -> upper)

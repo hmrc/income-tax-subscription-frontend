@@ -27,11 +27,11 @@ import models.individual.business.MatchTaxYearModel
 import models.individual.subscription._
 import models.{No, Yes}
 import play.api.i18n.MessagesApi
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
@@ -41,21 +41,20 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val authService: AuthService,
                                            val appConfig: AppConfig,
                                            logging: Logging
-                                          ) extends SignUpController {
+                                          )(implicit val ec: ExecutionContext) extends SignUpController {
 
   import core.services.CacheUtil._
 
-
   def backUrl(incomeSource: IncomeSourceType): String = {
-      incomeSource match {
-        case Property | Both =>
-          controllers.individual.business.routes.PropertyAccountingMethodController.show().url
-        case Business =>
-          controllers.individual.business.routes.BusinessAccountingMethodController.show().url
-      }
+    incomeSource match {
+      case Property | Both =>
+        controllers.individual.business.routes.PropertyAccountingMethodController.show().url
+      case Business =>
+        controllers.individual.business.routes.BusinessAccountingMethodController.show().url
+    }
   }
 
-  val show = journeySafeGuard { implicit user =>
+  val show: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
         Future.successful(
@@ -66,9 +65,9 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
             backUrl = backUrl(cache.getIncomeSourceType().get)
           ))
         )
-  }(noCacheMapErrMessage = "User attempted to view 'Check Your Answers' without any keystore cached data")
+  }
 
-  val submit = journeySafeGuard { implicit user =>
+  val submit: Action[AnyContent] = journeySafeGuard { implicit user =>
     implicit request =>
       cache =>
         val nino = user.nino.get
@@ -80,23 +79,25 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
           case Left(failure) =>
             error("Successful response not received from submission: \n" + failure.toString)
         }
-  }(noCacheMapErrMessage = "User attempted to submit 'Check Your Answers' without any keystore cached data")
+  }
 
-  private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CacheMap => Future[Result])
-                              (noCacheMapErrMessage: String) =
+  private def journeySafeGuard(processFunc: IncomeTaxSAUser => Request[AnyContent] => CacheMap => Future[Result]): Action[AnyContent] =
     Authenticated.async { implicit request =>
       implicit user =>
         keystoreService.fetchAll().flatMap { cache =>
           val isProperty = cache.getIncomeSourceType().contains(Property)
-          if (isProperty)
+          if (isProperty) {
             processFunc(user)(request)(cache)
-          else
+          } else {
             (cache.getMatchTaxYear(), cache.getEnteredAccountingPeriodDate()) match {
               case (Some(MatchTaxYearModel(Yes)), _) | (Some(MatchTaxYearModel(No)), Some(_)) =>
                 processFunc(user)(request)(cache)
               case (Some(MatchTaxYearModel(No)), _) =>
-                Future.successful(Redirect(controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(editMode = true, editMatch = true)))
+                Future.successful(Redirect(controllers.individual.business.routes.BusinessAccountingPeriodDateController.show(
+                                                                                                                editMode = true, editMatch = true)))
+              case _ => throw new InternalServerException("Required answers have not been answered by the user")
             }
+          }
         }
     }
 

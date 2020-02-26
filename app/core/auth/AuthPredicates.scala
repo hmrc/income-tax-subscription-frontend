@@ -16,7 +16,6 @@
 
 package core.auth
 
-import uk.gov.hmrc.http.SessionKeys._
 import cats.implicits._
 import core.ITSASessionKeys.JourneyStateKey
 import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
@@ -26,6 +25,7 @@ import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.http.NotFoundException
+import uk.gov.hmrc.http.SessionKeys._
 import usermatching.userjourneys.ConfirmAgentSubscription
 
 import scala.concurrent.Future

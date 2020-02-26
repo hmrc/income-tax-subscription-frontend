@@ -17,9 +17,9 @@
 package incometax.incomesource.services
 
 import java.time.LocalDate
-import javax.inject.Singleton
 
 import incometax.util.AccountingPeriodUtil
+import javax.inject.Singleton
 
 // this service is so that we can test conditions which depends on the current date
 @Singleton

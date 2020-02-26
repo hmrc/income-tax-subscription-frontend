@@ -16,18 +16,22 @@
 
 package usermatching.services
 
+import connectors.usermatching.httpparsers.LockoutStatusHttpParser.LockoutStatusResponse
 import core.utils.TestConstants._
-import models.usermatching.{LockoutStatusFailureResponse, NotLockedOut}
+import models.usermatching.{LockoutStatusFailure, LockoutStatusFailureResponse, NotLockedOut}
 import org.scalatest.EitherValues
 import org.scalatest.Matchers._
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import usermatching.services.mocks.TestUserLockoutService
+
+import scala.concurrent.Future
 
 class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
   "UserLockoutService.getLockOutStatus" should {
 
-    def call = await(TestUserLockoutService.getLockoutStatus(token = testUserId.value))
+    def call: LockoutStatusResponse = await(TestUserLockoutService.getLockoutStatus(token = testUserId.value))
 
     "return the not locked out status" in {
       setupMockNotLockedOut(escapedUserId)
@@ -52,7 +56,7 @@ class UserLockOutServiceSpec extends TestUserLockoutService with EitherValues {
 
   "UserLockoutService.incrementLockout" should {
 
-    def call(counter: Int) = await(TestUserLockoutService.incrementLockout(token = testUserId.value, counter))
+    def call(counter: Int): Either[LockoutStatusFailure, LockoutUpdate] = await(TestUserLockoutService.incrementLockout(token = testUserId.value, counter))
 
     "when counter is under the limit should return not locked out and updated new counter, should not clear keystore" in {
       setupMockLockCreated(escapedUserId)

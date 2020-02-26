@@ -16,7 +16,7 @@
 
 package forms.individual.business
 
-import forms.prevalidation.PreprocessedForm
+import forms.prevalidation.{PreprocessedForm, PrevalidationAPI}
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
@@ -59,5 +59,5 @@ object BusinessPhoneNumberForm {
     )(BusinessPhoneNumberModel.apply)(BusinessPhoneNumberModel.unapply)
   )
 
-  val businessPhoneNumberForm = PreprocessedForm(businessPhoneNumberValidationForm)
+  val businessPhoneNumberForm: PrevalidationAPI[BusinessPhoneNumberModel] = PreprocessedForm(businessPhoneNumberValidationForm)
 }

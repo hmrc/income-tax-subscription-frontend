@@ -17,7 +17,7 @@
 package models.individual.business.address
 
 import core.connectors.models.ConnectorError
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class ConfirmPage(title: Option[String] = None,
                        heading: Option[String] = None,
@@ -78,23 +78,23 @@ case class AddressLookupInitRequest(continueUrl: String,
 
 
 object EditPage {
-  implicit val format = Json.format[EditPage]
+  implicit val format: OFormat[EditPage] = Json.format[EditPage]
 }
 
 object SelectPage {
-  implicit val format = Json.format[SelectPage]
+  implicit val format: OFormat[SelectPage] = Json.format[SelectPage]
 }
 
 object LookupPage {
-  implicit val format = Json.format[LookupPage]
+  implicit val format: OFormat[LookupPage] = Json.format[LookupPage]
 }
 
 object ConfirmPage {
-  implicit val format = Json.format[ConfirmPage]
+  implicit val format: OFormat[ConfirmPage] = Json.format[ConfirmPage]
 }
 
 object AddressLookupInitRequest {
-  implicit val format = Json.format[AddressLookupInitRequest]
+  implicit val format: OFormat[AddressLookupInitRequest] = Json.format[AddressLookupInitRequest]
 }
 
 

@@ -16,7 +16,7 @@
 
 package testonly.form.individual
 
-import forms.prevalidation.{CaseOption, PreprocessedForm, TrimOption, trimAllFunc}
+import forms.prevalidation.{CaseOption, PreprocessedForm, PrevalidationAPI, TrimOption, trimAllFunc}
 import forms.validation.ErrorMessageFactory
 import forms.validation.utils.ConstraintUtil._
 import forms.validation.utils.MappingUtil._
@@ -50,7 +50,7 @@ object ClearPreferencesForm {
     )(ClearPreferencesModel.apply)(ClearPreferencesModel.unapply)
   )
 
-  val ClearPreferenceForm =
+  val ClearPreferenceForm: PrevalidationAPI[ClearPreferencesModel] =
     PreprocessedForm(
       ClearPreferenceValidationForm,
       trimRules = Map(nino -> TrimOption.all),

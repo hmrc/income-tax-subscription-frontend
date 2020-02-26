@@ -18,11 +18,9 @@ package controllers.agent
 
 import agent.auth.{AgentSignUp, AgentUserMatched, AgentUserMatching}
 import helpers.agent.IntegrationTestConstants._
-import helpers.agent.SessionCookieCrumbler
 import helpers.agent.servicemocks.AuthStub
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import play.api.http.Status._
-import play.api.i18n.Messages
 
 class HomeControllerISpec extends ComponentSpecBase {
 

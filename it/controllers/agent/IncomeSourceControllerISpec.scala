@@ -16,11 +16,11 @@
 
 package controllers.agent
 
+import agent.services.CacheConstants
 import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
-import agent.services.CacheConstants
 import models.individual.subscription._
 import play.api.http.Status._
 import play.api.i18n.Messages

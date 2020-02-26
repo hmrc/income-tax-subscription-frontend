@@ -24,11 +24,13 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 
+import scala.concurrent.ExecutionContext
+
 @Singleton
 class UserDetailsErrorController @Inject()(val baseConfig: BaseControllerConfig,
                                            val messagesApi: MessagesApi,
                                            val authService: AuthService
-                                          ) extends UserMatchingController {
+                                          )(implicit val ec: ExecutionContext) extends UserMatchingController {
 
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

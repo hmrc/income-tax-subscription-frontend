@@ -21,7 +21,7 @@ import core.utils.Implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, Request}
+import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import testonly.connectors.individual.{MatchingStubConnector, UserData}
 import testonly.form.individual.UserToStubForm
@@ -30,25 +30,28 @@ import testonly.views.html.individual.stub_user
 import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
+import scala.concurrent.ExecutionContext
+
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 
 @Singleton
 class MatchingStubController @Inject()(implicit val applicationConfig: AppConfig,
                                        val messagesApi: MessagesApi,
-                                       matchingStubConnector: MatchingStubConnector
+                                       matchingStubConnector: MatchingStubConnector,
+                                       ec: ExecutionContext
                                       ) extends FrontendController with I18nSupport {
 
   def view(clientToStubForm: Form[UserToStubModel])(implicit request: Request[_]): Html =
-   stub_user(
+    stub_user(
       clientToStubForm,
       routes.MatchingStubController.submit()
     )
 
-  def show = Action.async { implicit request =>
+  def show: Action[AnyContent] = Action.async { implicit request =>
     Ok(view(UserToStubForm.userToStubForm.form.fill(UserData().toUserToStubModel)))
   }
 
-  def submit = Action.async { implicit request =>
+  def submit: Action[AnyContent] = Action.async { implicit request =>
     UserToStubForm.userToStubForm.bindFromRequest.fold(
       formWithErrors => BadRequest(view(formWithErrors)),
       userDetails =>

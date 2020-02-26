@@ -17,7 +17,6 @@
 package core.audit
 
 import javax.inject.{Inject, Singleton}
-
 import play.api.{Configuration, Logger}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions

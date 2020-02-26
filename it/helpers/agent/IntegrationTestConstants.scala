@@ -1,23 +1,25 @@
+
 package helpers.agent
 
 import java.net.URLEncoder
 import java.util.UUID
 
+import models.DateModel
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.Generator
 
 object IntegrationTestConstants {
   lazy val testNino: String = helpers.IntegrationTestConstants.testNino
   lazy val testUtr: String = helpers.IntegrationTestConstants.testUtr
-  lazy val testMTDID = helpers.IntegrationTestConstants.testMTDID
-  lazy val startDate = helpers.IntegrationTestConstants.startDate
-  lazy val endDate = helpers.IntegrationTestConstants.endDate
+  lazy val testMTDID: String = helpers.IntegrationTestConstants.testMTDID
+  lazy val startDate: DateModel = helpers.IntegrationTestConstants.startDate
+  lazy val endDate: DateModel = helpers.IntegrationTestConstants.endDate
   lazy val ggServiceName = "HMRC-MTD-IT"
   val SessionId = s"stubbed-${UUID.randomUUID}"
   val userId = "/auth/oid/1234567890"
-  val dateOfBirth = helpers.IntegrationTestConstants.dateOfBirth
-  lazy val testARN = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
-  val testUserIdEncoded = URLEncoder.encode(userId, "UTF-8")
+  val dateOfBirth: DateModel = helpers.IntegrationTestConstants.dateOfBirth
+  lazy val testARN: String = new Generator().nextAtedUtr.utr //Not a valid ARN, for test purposes only
+  val testUserIdEncoded: String = URLEncoder.encode(userId, "UTF-8")
 
   val baseURI = "/report-quarterly/income-and-expenses/sign-up/client"
   val indexURI = s"$baseURI/index"
@@ -40,7 +42,6 @@ object IntegrationTestConstants {
   val checkYourAnswersURI = s"$baseURI/check-your-answers"
   val feedbackSubmittedURI = s"$baseURI/feedback-submitted"
   val ineligibleURI = s"$baseURI/cannot-use-service-yet"
-    //TODO see if this needs to be different for agents/individuals
   val ggSignOutURI = s"/gg/sign-out"
   val signOutURI = s"/report-quarterly/income-and-expenses/sign-up/logout"
 

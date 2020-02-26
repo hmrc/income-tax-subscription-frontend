@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.HttpResponse
 class LockoutStatusHttpParserSpec extends UnitTestTrait with EitherValues {
   val testUri = "/"
 
-  val testTime = OffsetDateTime.now()
+  val testTime: OffsetDateTime = OffsetDateTime.now()
   val testResponsJson: JsValue = Json.parse(
     s"""
        | {

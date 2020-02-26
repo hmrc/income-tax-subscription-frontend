@@ -25,7 +25,7 @@ import org.scalatest.Matchers._
 import play.api.i18n.Messages.Implicits.applicationMessages
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.twirl.api.Html
+import play.twirl.api.{Html, HtmlFormat}
 import views.individual.helpers.ConfirmUserIdConstants._
 
 class CheckYourUserDetailsViewSpec extends UnitTestTrait {
@@ -45,7 +45,7 @@ class CheckYourUserDetailsViewSpec extends UnitTestTrait {
 
   val expectedEditLink = controllers.usermatching.routes.UserDetailsController.show(editMode = true).url
 
-  def page(): Html = views.html.individual.usermatching.check_your_user_details(
+  def page(): HtmlFormat.Appendable = views.html.individual.usermatching.check_your_user_details(
     userDetailsModel = testUserDetails,
     postAction = postAction,
     backUrl = backUrl

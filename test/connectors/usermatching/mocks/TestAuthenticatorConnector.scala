@@ -19,7 +19,6 @@ package connectors.usermatching.mocks
 import connectors.usermatching.AuthenticatorConnector
 import core.audit.Logging
 import core.connectors.mocks.MockHttp
-import core.utils.JsonUtils._
 import core.utils.TestConstants.testException
 import core.utils.TestModels._
 import core.utils.{MockTrait, TestConstants, UnitTestTrait}
@@ -27,9 +26,8 @@ import models.usermatching._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.http.Status.{NOT_FOUND, OK, UNAUTHORIZED}
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HeaderCarrier
-
 
 import scala.concurrent.Future
 
@@ -53,24 +51,16 @@ trait TestAuthenticatorConnector extends UnitTestTrait with MockHttp {
   def matchUserMatched(nino: String = TestConstants.testNino): (Int, JsValue) = (OK,
     UserMatchSuccessResponseModel.format.writes(testMatchSuccessModel.copy(nino = nino)))
 
-  val matchUserNoMatch: (Int, JsValue) = (UNAUTHORIZED,
-    """{
-      | "errors" : "CID returned no record"
-      |}""".stripMargin: JsValue)
+  val matchUserNoMatch: (Int, JsValue) = (UNAUTHORIZED, Json.obj("errors" -> "CID returned no record"))
 
-  val matchUserUnexpectedFailure: (Int, JsValue) = (UNAUTHORIZED,
-    """{
-      | "errors" : "Internal error: unexpected result from matching"
-      |}""".stripMargin: JsValue)
+  val matchUserUnexpectedFailure: (Int, JsValue) = (UNAUTHORIZED, Json.obj("errors" -> "Internal error: unexpected result from matching"))
 
-  val matchUserUnexpectedStatus: (Int, JsValue) = (NOT_FOUND,
-    """{}""".stripMargin: JsValue)
+  val matchUserUnexpectedStatus: (Int, JsValue) = (NOT_FOUND, Json.obj())
 }
 
 trait MockAuthenticatiorConnector extends MockTrait {
 
-  val mockAuthenticatiorConnector = mock[AuthenticatorConnector]
-
+  val mockAuthenticatiorConnector: AuthenticatorConnector = mock[AuthenticatorConnector]
 
   private def mockUserMatch(userDetails: UserDetailsModel)
                            (response: Future[Either[UserMatchFailureResponseModel, Option[UserMatchSuccessResponseModel]]]): Unit =

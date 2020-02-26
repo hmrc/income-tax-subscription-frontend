@@ -16,19 +16,19 @@
 
 package connectors
 
+import connectors.PaperlessPreferenceTokenResultHttpParser._
 import core.config.AppConfig
-import PaperlessPreferenceTokenResultHttpParser._
-import models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenResult
 import javax.inject.Inject
+import models.PaperlessPreferenceTokenResult.PaperlessPreferenceTokenResult
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class PaperlessPreferenceTokenConnector @Inject()(http: HttpClient,
-                                                  appConfig: AppConfig) {
+                                                  appConfig: AppConfig)
+                                                 (implicit ec: ExecutionContext) {
 
   def storeNino(token: String, nino: String)(implicit hc: HeaderCarrier): Future[PaperlessPreferenceTokenResult] = {
     http.POST[JsObject, PaperlessPreferenceTokenResult](

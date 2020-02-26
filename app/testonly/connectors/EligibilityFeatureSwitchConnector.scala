@@ -22,19 +22,19 @@ import testonly.models.FeatureSwitchSetting
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class EligibilityFeatureSwitchConnector @Inject()(http: HttpClient, appConfig: AppConfig) {
+class EligibilityFeatureSwitchConnector @Inject()(http: HttpClient, appConfig: AppConfig)
+                                                 (implicit ec: ExecutionContext) {
 
   def getEligibilityFeatureSwitches(implicit hc: HeaderCarrier): Future[Map[String, Boolean]] = for {
     featureSwitches <- http.GET[Set[FeatureSwitchSetting]](appConfig.eligibilityFeatureSwitchUrl)
   } yield {
     featureSwitches map { case FeatureSwitchSetting(name, isEnabled) => name -> isEnabled }
-  }.toMap
+    }.toMap
 
   def submitEligibilityFeatureSwitches(featureSwitches: Set[FeatureSwitchSetting])
-                                  (implicit hc: HeaderCarrier): Future[HttpResponse] =
+                                      (implicit hc: HeaderCarrier): Future[HttpResponse] =
     http.POST(appConfig.eligibilityFeatureSwitchUrl, featureSwitches)
 
 }

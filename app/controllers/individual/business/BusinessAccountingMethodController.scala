@@ -17,7 +17,7 @@
 package controllers.individual.business
 
 import core.auth.SignUpController
-import core.config.{AppConfig, BaseControllerConfig}
+import core.config.BaseControllerConfig
 import core.services.CacheUtil.CacheMapUtil
 import core.services.{AuthService, KeystoreService}
 import forms.individual.business.AccountingMethodForm
@@ -33,7 +33,7 @@ import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
@@ -41,10 +41,7 @@ class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControlle
                                                    val keystoreService: KeystoreService,
                                                    val authService: AuthService,
                                                    val currentTimeService: CurrentTimeService
-                                                  ) extends SignUpController {
-
-
-  val appConfig: AppConfig = baseConfig.applicationConfig
+                                                  )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
     for {

@@ -28,7 +28,7 @@ import forms.usermatching.UserDetailsForm
 import helpers.IntegrationTestConstants._
 import helpers.SessionCookieBaker._
 import helpers.servicemocks.{AuditStub, WireMockMethods}
-import models.individual.business.{AccountingMethodModel, AccountingMethodPropertyModel, AccountingPeriodModel, AccountingYearModel, BusinessNameModel, BusinessPhoneNumberModel, BusinessStartDateModel, MatchTaxYearModel}
+import models.individual.business._
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import models.usermatching.UserDetailsModel
 import org.scalatest._
@@ -49,8 +49,8 @@ trait ComponentSpecBase extends UnitSpec
   with WiremockHelper with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
   with I18nSupport with CustomMatchers with WireMockMethods with FeatureSwitching {
 
-  val mockHost = WiremockHelper.wiremockHost
-  val mockPort = WiremockHelper.wiremockPort.toString
+  val mockHost: String = WiremockHelper.wiremockHost
+  val mockPort: String = WiremockHelper.wiremockPort.toString
   val mockUrl = s"http://$mockHost:$mockPort"
 
   def config: Map[String, String] = Map(
@@ -89,9 +89,9 @@ trait ComponentSpecBase extends UnitSpec
     .configure(config)
     .build
 
-  implicit lazy val appConfig = app.injector.instanceOf[AppConfig]
+  implicit lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
-  override lazy val messagesApi = app.injector.instanceOf[MessagesApi]
+  override lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -111,7 +111,7 @@ trait ComponentSpecBase extends UnitSpec
   }
 
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
-    val csrfToken = UUID.randomUUID().toString
+    val csrfToken: String = UUID.randomUUID().toString
 
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse = await(
       buildClient(uri)

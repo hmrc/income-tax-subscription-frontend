@@ -32,7 +32,7 @@ import play.twirl.api.Html
 
 trait ViewSpecTrait extends UnitTestTrait {
 
-  val titleErrPrefix = MessageLookup.Base.titleError
+  val titleErrPrefix: String = MessageLookup.Base.titleError
 
   case class Selector(name: String, cssQuery: String)
 
@@ -44,7 +44,7 @@ trait ViewSpecTrait extends UnitTestTrait {
     // n.b. should not be made public since it is not a test nor does it return an ElementTest
     protected def getById(id: String): Element = {
       val ele = element.getElementById(id)
-      if (ele == null) fail(s"unable to locate: $id")
+      if (ele.isEmpty) fail(s"unable to locate: $id")
       ele
     }
 
@@ -76,7 +76,7 @@ trait ViewSpecTrait extends UnitTestTrait {
     def mustHaveALink(text: String, href: => String): Unit =
       s"$name have a link with text '$text' pointed to '$href'" in {
         val link = element.select("a")
-        if (link == null) fail(s"Unable to locate any links in $name\n$element\n")
+        if (link.isEmpty) fail(s"Unable to locate any links in $name\n$element\n")
         if (link.size() > 1) fail(s"Multiple links located in $name, please specify an id")
         link.attr("href") mustBe href
         link.text() mustBe text
@@ -86,7 +86,7 @@ trait ViewSpecTrait extends UnitTestTrait {
     def mustHaveALink(id: String, text: String, href: => String): Unit =
       s"$name have a link with text '$text' pointed to '$href'" in {
         val link = element.getElementById(id)
-        if (link == null) fail(s"Unable to locate $id")
+        if (link.isEmpty) fail(s"Unable to locate $id")
         if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
         link.attr("href") mustBe href
         link.text() mustBe text
@@ -314,6 +314,7 @@ trait ViewSpecTrait extends UnitTestTrait {
         signOutButton.text() mustBe text
         optOrigin match {
           case Some(origin) => signOutButton.attr("href") mustBe SignOutController.signOut(optOrigin.get).url
+          case _ => None
         }
       }
 
@@ -324,7 +325,7 @@ trait ViewSpecTrait extends UnitTestTrait {
         case _ =>
           s"$name have a link with text '$text' pointed to 'Sign Out'" in {
             val link = element.getElementById(id)
-            if (link == null) fail(s"Unable to locate $id")
+            if (link.isEmpty) fail(s"Unable to locate $id")
             if (!link.tagName().equals("a")) fail(s"The element with id=$id is not a link")
             link.text() mustBe text
           }
@@ -380,8 +381,8 @@ trait ViewSpecTrait extends UnitTestTrait {
     def apply(name: String, element: () => Element): ElementTest = {
       val n = name
       val ele = element
-      if (ele == null) {
-        throw new IllegalArgumentException("creation of name failed: element is null")
+      if (ele.isEmpty) {
+        throw new IllegalArgumentException("creation of name failed: element is Empty")
       }
       new ElementTest {
         override lazy val name: String = n
@@ -405,14 +406,14 @@ trait ViewSpecTrait extends UnitTestTrait {
     if (showSignOutInBanner) {
       s"$name must have a sign out link in the banner" in {
         val signOut = document.getElementById("logOutNavHref")
-        if (signOut == null) fail("Signout link was not located in the banner\nIf this is the expected behaviour then please set 'signOutInBanner' to true when creating the TestView object")
+        if (signOut.isEmpty) fail("Signout link was not located in the banner\nIf this is the expected behaviour then please set 'signOutInBanner' to true when creating the TestView object")
         signOut.text() mustBe common.signOut
         signOut.attr("href") must startWith(controllers.SignOutController.signOut("").url)
       }
     } else {
       s"$name must not have a sign out link in the banner" in {
         val signOut = document.getElementById("logOutNavHref")
-        signOut mustBe null
+        Option(signOut) mustBe None
       }
     }
 

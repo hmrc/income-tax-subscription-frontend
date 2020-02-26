@@ -18,6 +18,7 @@ package core.config
 
 import core.config.featureswitch.FeatureSwitching
 import javax.inject.{Inject, Singleton}
+import play.api.Mode.Mode
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment}
@@ -88,7 +89,7 @@ trait AppConfig extends FeatureSwitching {
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy"))
 
-  def routeToSwitchLanguage = (lang: String) => controllers.language.routes.LanguageSwitchController.switchToLanguage(lang)
+  def routeToSwitchLanguage: String => Call = (lang: String) => controllers.language.routes.LanguageSwitchController.switchToLanguage(lang)
 
   def betaFeedbackUrl: String
 
@@ -100,11 +101,11 @@ trait AppConfig extends FeatureSwitching {
 class FrontendAppConfig @Inject()(configuration: Configuration,
                                   environment: Environment) extends AppConfig with ServicesConfig {
 
-  override lazy val mode = environment.mode
+  override lazy val mode: Mode = environment.mode
 
   override protected def runModeConfiguration: Configuration = configuration
 
-  protected def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
+  protected def loadConfig(key: String): String = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   protected def splitString(value: String, separator: String): Seq[String] = value.split(separator).toSeq
 
@@ -114,52 +115,52 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   //Authentication/Authorisation Config
   override lazy val ggSignInContinueUrl = s"$baseUrl$contextRoute/index"
-  override lazy val authUrl = baseUrl("auth")
+  override lazy val authUrl: String = baseUrl("auth")
 
   // sign out
-  override lazy val ggUrl = loadConfig(s"government-gateway.url")
+  override lazy val ggUrl: String = loadConfig(s"government-gateway.url")
 
-  override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl) = s"$ggUrl/gg/sign-out?continue=$redirectionUrl"
+  override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String = s"$ggUrl/gg/sign-out?continue=$redirectionUrl"
 
   // BTA link
-  override lazy val btaUrl = loadConfig(s"bta.url")
+  override lazy val btaUrl: String = loadConfig(s"bta.url")
 
   // Software choices link
   override lazy val softwareUrl: String = "https://www.gov.uk/guidance/find-software-thats-compatible-with-making-tax-digital-for-income-tax"
 
   // Agent Auth link
-  override lazy val agentAuthUrl = loadConfig(s"agent-auth.url")
+  override lazy val agentAuthUrl: String = loadConfig(s"agent-auth.url")
 
   // Agent Services Account link
-  override lazy val agentAccountUrl = loadConfig(s"agent-account.url")
+  override lazy val agentAccountUrl: String = loadConfig(s"agent-account.url")
 
   //Contact Frontend Config
-  protected lazy val contactFrontendService = baseUrl("contact-frontend")
-  protected lazy val contactHost = loadConfig("contact-frontend.host")
+  protected lazy val contactFrontendService: String = baseUrl("contact-frontend")
+  protected lazy val contactHost: String = loadConfig("contact-frontend.host")
   override lazy val contactFormServiceIdentifier = "MTDIT"
   override lazy val contactFrontendPartialBaseUrl = s"$contactFrontendService"
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   // protected microservice
-  protected lazy val protectedMicroServiceUrl = baseUrl("subscription-service")
+  protected lazy val protectedMicroServiceUrl: String = baseUrl("subscription-service")
   override lazy val subscriptionUrl = s"$protectedMicroServiceUrl/income-tax-subscription/subscription"
   override lazy val subscriptionUrlPost = s"$protectedMicroServiceUrl/income-tax-subscription/subscription-v2"
   override lazy val userMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
   override lazy val clientMatchingUrl = s"$protectedMicroServiceUrl/income-tax-subscription/client-matching"
 
-  override def storeNinoUrl(token: String) = s"$protectedMicroServiceUrl/income-tax-subscription/identifier-mapping/$token"
+  override def storeNinoUrl(token: String): String = s"$protectedMicroServiceUrl/income-tax-subscription/identifier-mapping/$token"
 
   //agent frontend
-  protected lazy val agentFrontendUrl = loadConfig("income-tax-subscription-agent-frontend.url")
+  protected lazy val agentFrontendUrl: String = loadConfig("income-tax-subscription-agent-frontend.url")
   override lazy val agentSignUpUrl = s"$agentFrontendUrl/report-quarterly/income-and-expenses/sign-up/client"
 
   // Digital Preferences
-  override lazy val preferencesFrontend = baseUrl("preferences-frontend")
+  override lazy val preferencesFrontend: String = baseUrl("preferences-frontend")
 
-  override lazy val preferencesFrontendRedirect = loadConfig("preferences-frontend.url")
+  override lazy val preferencesFrontendRedirect: String = loadConfig("preferences-frontend.url")
 
-  override lazy val preferencesUrl = baseUrl("preferences")
+  override lazy val preferencesUrl: String = baseUrl("preferences")
 
   override lazy val shutterPage: String = loadConfig("shutter-page.url")
 
@@ -169,8 +170,8 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override lazy val ipExclusionList: Seq[Call] = whitelistConfig("ip-whitelist.excludeCalls").map(ip => Call("GET", ip))
 
-  override lazy val ggAuthenticationURL = baseUrl("gg-authentication")
-  override lazy val ggURL = baseUrl("government-gateway")
+  override lazy val ggAuthenticationURL: String = baseUrl("gg-authentication")
+  override lazy val ggURL: String = baseUrl("government-gateway")
 
   override lazy val identityVerificationURL: String = loadConfig("identity-verification-frontend.url")
 
@@ -219,7 +220,7 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
 
   override lazy val eligibilityFeatureSwitchUrl: String = s"$incomeTaxEligibilityUrl/test-only/feature-switch"
 
-  lazy val taxEnrolments = baseUrl("tax-enrolments")
+  lazy val taxEnrolments: String = baseUrl("tax-enrolments")
 
   override def upsertEnrolmentUrl(enrolmentKey: String): String =
     s"$taxEnrolments/tax-enrolments/enrolments/$enrolmentKey"

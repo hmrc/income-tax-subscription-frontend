@@ -33,7 +33,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
 trait MockSubscriptionConnector extends MockTrait {
-  val mockSubscriptionConnector = mock[SubscriptionConnector]
+  val mockSubscriptionConnector: SubscriptionConnector = mock[SubscriptionConnector]
 
   private def setupMockSubscribe(request: SubscriptionRequest)(result: Future[SubscriptionResponse]): Unit =
     when(mockSubscriptionConnector.subscribe(ArgumentMatchers.eq(request))(ArgumentMatchers.any[HeaderCarrier]))

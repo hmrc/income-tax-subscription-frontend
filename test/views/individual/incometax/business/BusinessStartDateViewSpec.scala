@@ -20,6 +20,7 @@ import assets.MessageLookup.{Base => common, BusinessStartDate => messages}
 import forms.individual.business.BusinessStartDateForm
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class BusinessStartDateViewSpec extends ViewSpecTrait {
@@ -27,14 +28,14 @@ class BusinessStartDateViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean) = views.html.individual.incometax.business.business_start_date(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.individual.incometax.business.business_start_date(
     businessStartDateForm = BusinessStartDateForm.businessStartDateForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
     isEditMode = isEditMode
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(prefix: String, suffix: Option[String] = None, isEditMode: Boolean) = TestView(
+  def documentCore(prefix: String, suffix: Option[String] = None, isEditMode: Boolean): TestView = TestView(
     name = s"$prefix Business Start Date View${suffix.fold("")(x => x)}",
     title = messages.title,
     heading = messages.heading,
@@ -69,7 +70,7 @@ class BusinessStartDateViewSpec extends ViewSpecTrait {
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore() = TestView(
+    def documentCore(): TestView = TestView(
       name = s"Business Start Date View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,

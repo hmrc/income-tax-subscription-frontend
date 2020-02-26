@@ -27,7 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatYearToSignUpController @Inject()(val baseConfig: BaseControllerConfig,
@@ -36,7 +36,7 @@ class WhatYearToSignUpController @Inject()(val baseConfig: BaseControllerConfig,
                                            val authService: AuthService,
                                            val appConfig: AppConfig,
                                            val accountingPeriodService: AccountingPeriodService
-                                          ) extends SignUpController {
+                                          )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def view(accountingYearForm: Form[AccountingYearModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     views.html.individual.incometax.business.what_year_to_sign_up(
@@ -74,9 +74,11 @@ class WhatYearToSignUpController @Inject()(val baseConfig: BaseControllerConfig,
       )
   }
 
-  def backUrl(isEditMode: Boolean): String =
-    if (isEditMode)
+  def backUrl(isEditMode: Boolean): String = {
+    if (isEditMode) {
       controllers.individual.subscription.routes.CheckYourAnswersController.show().url
-    else
+    } else {
       controllers.individual.business.routes.MatchTaxYearController.show().url
+    }
+  }
 }

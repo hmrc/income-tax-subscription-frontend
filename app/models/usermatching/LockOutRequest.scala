@@ -16,11 +16,11 @@
 
 package models.usermatching
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 
 case class LockOutRequest(timeoutSeconds: Int)
 
 object LockOutRequest {
-  implicit val format = Json.format[LockOutRequest]
+  implicit val format: OFormat[LockOutRequest] = Json.format[LockOutRequest]
 }

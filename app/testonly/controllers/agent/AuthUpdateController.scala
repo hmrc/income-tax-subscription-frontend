@@ -24,9 +24,10 @@ import core.services.AuthService
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.libs.json.Json
+import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.http.HttpPatch
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 /**
@@ -39,14 +40,14 @@ class AuthUpdateController @Inject()(val baseConfig: BaseControllerConfig,
                                      val messagesApi: MessagesApi,
                                      val http: HttpPatch,
                                      val authService: AuthService
-                                    ) extends StatelessController {
+                                    )(implicit val ec: ExecutionContext) extends StatelessController {
 
-  lazy val noAction = Future.successful("no actions taken")
-  lazy val updated = Future.successful(Ok("updated"))
+  lazy val noAction: Future[String] = Future.successful("no actions taken")
+  lazy val updated: Future[Result] = Future.successful(Ok("updated"))
 
   lazy val updateURL = s"${baseConfig.applicationConfig.authUrl}/auth/authority"
 
-  val update = Authenticated.async { implicit user =>
+  val update: Action[AnyContent] = Authenticated.async { implicit user =>
     implicit request =>
       val confidencePatch = http.PATCH(updateURL, Json.obj("confidenceLevel" -> 200))
       confidencePatch.flatMap(_ => updated)

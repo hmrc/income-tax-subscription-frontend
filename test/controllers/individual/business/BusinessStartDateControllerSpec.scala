@@ -18,10 +18,10 @@ package controllers.individual.business
 
 import controllers.ControllerBaseSpec
 import core.config.MockConfig
-import forms.submapping.YesNoMapping.{option_no, option_yes}
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels.testBusinessStartDate
 import forms.individual.business.BusinessStartDateForm
+import forms.submapping.YesNoMapping.{option_no, option_yes}
 import org.jsoup.Jsoup
 import play.api.http.Status
 import play.api.mvc.{Action, AnyContent, Result}
@@ -42,7 +42,7 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
   def createTestBusinessStartDateController(setEnableRegistration: Boolean): BusinessStartDateController =
     new BusinessStartDateController(
       mockBaseControllerConfig(new MockConfig {
-        override val enableRegistration = setEnableRegistration
+        override val enableRegistration: Boolean = setEnableRegistration
       }),
       messagesApi,
       MockKeystoreService,
@@ -102,7 +102,7 @@ class BusinessStartDateControllerSpec extends ControllerBaseSpec
 
     "Calling the submit action of the BusinessStartDateController with an authorised user and valid submission" should {
 
-      def callShow(isEditMode: Boolean) =
+      def callShow(isEditMode: Boolean): Future[Result] =
         TestBusinessStartDateController.submit(isEditMode = isEditMode)(
           request
             .post(BusinessStartDateForm.businessStartDateForm, testBusinessStartDate)

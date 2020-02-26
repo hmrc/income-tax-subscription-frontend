@@ -20,16 +20,18 @@ import assets.MessageLookup.{AreYouSelfEmployed => messages, Base => coomon}
 import forms.individual.incomesource.AreYouSelfEmployedForm
 import forms.submapping.YesNoMapping
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Call
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class AreYouSelfEmployedViewSpec extends ViewSpecTrait {
 
-  val backUrl = ViewSpecTrait.testBackUrl
+  val backUrl: String = ViewSpecTrait.testBackUrl
 
-  val action = ViewSpecTrait.testCall
+  val action: Call = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean) = views.html.individual.incometax.incomesource.are_you_selfemployed(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.individual.incometax.incomesource.are_you_selfemployed(
     areYouSelfEmployedForm = AreYouSelfEmployedForm.areYouSelfEmployedForm.addError(addFormErrors),
     postAction = action,
     backUrl = backUrl,
@@ -70,13 +72,13 @@ class AreYouSelfEmployedViewSpec extends ViewSpecTrait {
   }
 
   "Append Error to the page title if the form has error" should {
-    def documentCore() = TestView(
+    def documentCore(): Unit = TestView(
       name = "Are you self-employed View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,
       page = page(isEditMode = false, addFormErrors = true)
     )
 
-    val testPage = documentCore()
+    val testPage: Unit = documentCore()
   }
 }

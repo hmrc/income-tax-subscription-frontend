@@ -1,21 +1,25 @@
+
 package helpers.agent
 
 import java.util.UUID
 
 import agent.auth.{AgentJourneyState, AgentSignUp, AgentUserMatching}
-import helpers.agent.IntegrationTestConstants._
-import helpers.agent.SessionCookieBaker._
-import helpers.agent.servicemocks.WireMockMethods
-import models.agent._
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import controllers.agent.ITSASessionKeys
 import forms.agent._
 import helpers.UserMatchingIntegrationRequestSupport
+import helpers.agent.IntegrationTestConstants._
+import helpers.agent.SessionCookieBaker._
+import helpers.agent.WiremockHelper._
+import helpers.agent.servicemocks.WireMockMethods
 import helpers.servicemocks.AuditStub
+import models.agent._
 import models.individual.business.{AccountingPeriodModel, MatchTaxYearModel}
 import models.individual.subscription.IncomeSourceType
+import models.usermatching.UserDetailsModel
 import org.scalatest._
 import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -25,12 +29,11 @@ import play.api.http.HeaderNames
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsArray, JsValue, Writes}
-import play.api.libs.ws.{WSClient, WSResponse}
+import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.mvc.Headers
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.test.UnitSpec
-import models.usermatching.UserDetailsModel
-import WiremockHelper._
 
 trait ComponentSpecBase extends UnitSpec
   with GivenWhenThen with TestSuite
@@ -40,27 +43,27 @@ trait ComponentSpecBase extends UnitSpec
 
   lazy val ws = app.injector.instanceOf[WSClient]
 
-  lazy val wmConfig = wireMockConfig().port(wiremockPort)
+  lazy val wmConfig: WireMockConfiguration = wireMockConfig().port(wiremockPort)
   lazy val wireMockServer = new WireMockServer(wmConfig)
 
-  def startWiremock() = {
+  def startWiremock(): Unit = {
     wireMockServer.start()
     WireMock.configureFor(wiremockHost, wiremockPort)
   }
 
-  def stopWiremock() = wireMockServer.stop()
+  def stopWiremock(): Unit = wireMockServer.stop()
 
-  def resetWiremock() = WireMock.reset()
+  def resetWiremock(): Unit = WireMock.reset()
 
-  def buildClient(path: String) = ws.url(s"http://localhost:$port$baseURI$path").withFollowRedirects(false)
+  def buildClient(path: String): WSRequest = ws.url(s"http://localhost:$port$baseURI$path").withFollowRedirects(false)
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))
     .configure(config)
     .build
-  override lazy val messagesApi = app.injector.instanceOf[MessagesApi]
-  val mockHost = WiremockHelper.wiremockHost
-  val mockPort = WiremockHelper.wiremockPort.toString
+  override lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val mockHost: String = WiremockHelper.wiremockHost
+  val mockPort: String = WiremockHelper.wiremockPort.toString
   val mockUrl = s"http://$mockHost:$mockPort"
 
   def config: Map[String, String] = Map(
@@ -102,19 +105,19 @@ trait ComponentSpecBase extends UnitSpec
 
 
   object IncomeTaxSubscriptionFrontend extends UserMatchingIntegrationRequestSupport {
-    val csrfToken = UUID.randomUUID().toString
+    val csrfToken: String = UUID.randomUUID().toString
 
-    val defaultCookies = Map(
+    val defaultCookies: Map[String, String] = Map(
       ITSASessionKeys.ArnKey -> IntegrationTestConstants.testARN,
       ITSASessionKeys.JourneyStateKey -> AgentSignUp.name
     )
 
-    val headers = Seq(
+    val headers: Seq[(String, String)] = Seq(
       HeaderNames.COOKIE -> bakeSessionCookie(defaultCookies),
       "Csrf-Token" -> "nocheck"
     )
 
-    implicit val headerCarrier = HeaderCarrierConverter.fromHeadersAndSession(Headers(headers: _*))
+    implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(Headers(headers: _*))
 
     def get(uri: String, additionalCookies: Map[String, String] = Map.empty): WSResponse =
       await(

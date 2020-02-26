@@ -17,14 +17,13 @@
 package controllers.individual.subscription
 
 import core.services.CacheConstants._
-import core.utils.JsonUtils._
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants.testMTDID
 import helpers.IntegrationTestModels.testRentUkProperty_property_only
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status._
 import play.api.i18n.Messages
-import play.api.libs.json.JsString
+import play.api.libs.json.{JsString, Json}
 
 class ConfirmationControllerISpec extends ComponentSpecBase {
 
@@ -33,7 +32,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       Given("I setup the Wiremock stubs")
       AuthStub.stubEnrolled()
       KeystoreStub.stubKeystoreData(Map(
-        RentUkProperty -> testRentUkProperty_property_only,
+        RentUkProperty -> Json.toJson(testRentUkProperty_property_only),
         MtditId -> JsString(testMTDID)
       ))
 

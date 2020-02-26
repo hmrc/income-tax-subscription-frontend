@@ -28,8 +28,10 @@ import incometax.util.CurrentDateProvider
 import models.DateModel
 import models.individual.business.AccountingPeriodModel
 import org.jsoup.Jsoup
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService with MockAccountingPeriodService {
@@ -65,11 +67,14 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
   }
 
   "Calling the submitAccountingPeriod action of the BusinessAccountingPeriodDate with an authorised user and a valid submission" when {
-    val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert TestConstants.minStartDate, DateModel dateConvert TestConstants.minStartDate.plusYears(1))
-    val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert TestConstants.minStartDate, DateModel dateConvert TestConstants.minStartDate.plusYears(2))
+    val testAccountingPeriodDates = AccountingPeriodModel(DateModel dateConvert TestConstants.minStartDate,
+      DateModel dateConvert TestConstants.minStartDate.plusYears(1))
+    val testAccountingPeriodDatesDifferentTaxYear = AccountingPeriodModel(DateModel dateConvert TestConstants.minStartDate,
+      DateModel dateConvert TestConstants.minStartDate.plusYears(2))
 
-    def callShow(isEditMode: Boolean, accountingPeriod: AccountingPeriodModel = testAccountingPeriodDates) = TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(subscriptionRequest
-      .post(AccountingPeriodDateForm.accountingPeriodDateForm, accountingPeriod))
+    def callShow(isEditMode: Boolean, accountingPeriod: AccountingPeriodModel = testAccountingPeriodDates): Future[Result] =
+      TestBusinessAccountingPeriodController.submit(isEditMode = isEditMode)(
+        subscriptionRequest.post(AccountingPeriodDateForm.accountingPeriodDateForm, accountingPeriod))
 
     "When it is ineligible dates" should {
       s"return a redirect status (SEE_OTHER - 303) to kickout page" in {
@@ -79,7 +84,8 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
             accountingPeriodDate = Some(testAccountingPeriodDates)
           )
         )
-        mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), hasPropertyIncomeSource = false)(eligible = false)
+        mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1),
+          hasPropertyIncomeSource = false)(eligible = false)
 
         val goodRequest = callShow(isEditMode = false)
 
@@ -98,7 +104,8 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
             )
           )
           setupMockKeystore(fetchAccountingPeriodDate = testAccountingPeriodDates)
-          mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), hasPropertyIncomeSource = false)(eligible = true)
+          mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1),
+            hasPropertyIncomeSource = false)(eligible = true)
 
           val goodRequest = await(callShow(isEditMode = false))
 
@@ -115,7 +122,8 @@ class BusinessAccountingPeriodDateControllerSpec extends AgentControllerBaseSpec
               accountingPeriodDate = Some(testAccountingPeriodDatesDifferentTaxYear)
             )
           )
-          mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1), hasPropertyIncomeSource = false)(eligible = true)
+          mockCheckEligibleAccountingPeriod(TestConstants.minStartDate, TestConstants.minStartDate.plusYears(1),
+            hasPropertyIncomeSource = false)(eligible = true)
 
           val goodRequest = await(callShow(isEditMode = false))
 

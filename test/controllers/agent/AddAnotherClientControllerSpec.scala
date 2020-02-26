@@ -16,12 +16,13 @@
 
 package controllers.agent
 
-import agent.audit.Logging
 import agent.services.mocks.MockKeystoreService
 import core.config.featureswitch.FeatureSwitching
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
+
+import scala.concurrent.Future
 
 
 class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
@@ -36,15 +37,14 @@ class AddAnotherClientControllerSpec extends AgentControllerBaseSpec
     MockBaseControllerConfig,
     messagesApi,
     MockKeystoreService,
-    mockAuthService,
-    app.injector.instanceOf[Logging]
+    mockAuthService
   )
 
   "AddAnotherClientController.addAnother" should {
 
     lazy val request = subscriptionRequest.addingToSession(ITSASessionKeys.MTDITID -> "anyValue")
 
-    def call = TestAddAnotherClientController.addAnother()(request)
+    def call: Future[Result]= TestAddAnotherClientController.addAnother()(request)
 
 
     "redirect to the agent eligibility frontend terms page, clearing keystore and session values" in {

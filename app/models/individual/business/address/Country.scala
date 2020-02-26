@@ -16,11 +16,11 @@
 
 package models.individual.business.address
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class Country(code: String, name: String)
 
 object Country {
-  implicit val format = Json.format[Country]
+  implicit val format: OFormat[Country] = Json.format[Country]
 }
 

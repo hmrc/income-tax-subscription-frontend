@@ -18,7 +18,6 @@ package controllers.agent
 
 import java.net.URLEncoder
 
-import views.html.agent.feedback.feedback_thankyou
 import core.config.AppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
@@ -33,6 +32,7 @@ import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAc
 import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.partials._
+import views.html.agent.feedback.feedback_thankyou
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,11 +41,12 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
                                    protected val authConnector: AuthConnector,
                                    val sessionCookieCrypto: SessionCookieCrypto,
                                    val http: HttpClient,
-                                   val messagesApi: MessagesApi
+                                   val messagesApi: MessagesApi,
+                                   ec: ExecutionContext
                                   ) extends FrontendController with PartialRetriever with I18nSupport {
   private val TICKET_ID = "ticketId"
 
-  override val httpGet = http
+  override val httpGet: HttpClient = http
 
   implicit val cachedStaticHtmlPartialRetriever: CachedStaticHtmlPartialRetriever = new CachedStaticHtmlPartialRetriever {
     override val httpGet: HttpGet = http
@@ -54,14 +55,14 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
   implicit val formPartialRetriever: FormPartialRetriever = new FormPartialRetriever {
     override def httpGet: HttpGet = http
 
-    override def crypto: (String) => String = cookie => sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
+    def crypto: (String) => String = cookie => sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
   }
 
   def contactFormReferer(implicit request: Request[AnyContent]): String = request.headers.get(REFERER).getOrElse("")
 
   def localSubmitUrl(implicit request: Request[AnyContent]): String = routes.FeedbackController.submit().url
 
-  protected def loadPartial(url: String)(implicit request: RequestHeader): HtmlPartial= ???
+  protected def loadPartial(url: String)(implicit request: RequestHeader): HtmlPartial = ???
 
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =
     s"${applicationConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/?submitUrl=${urlEncode(localSubmitUrl)}" +
@@ -83,8 +84,8 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
 
   def submit: Action[AnyContent] = UnauthorisedAction.async {
     implicit request =>
-      request.body.asFormUrlEncoded.map { formData =>
-        http.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(rds = readPartialsForm, hc = partialsReadyHeaderCarrier, implicitly[ExecutionContext]).map {
+      request.body.asFormUrlEncoded.map { formData => http.POSTForm[HttpResponse](feedbackHmrcSubmitPartialUrl, formData)(
+        rds = readPartialsForm, hc = partialsReadyHeaderCarrier, implicitly[ExecutionContext]).map {
           resp =>
             resp.status match {
               case HttpStatus.OK => Redirect(routes.FeedbackController.thankyou()).withSession(request.session + (TICKET_ID -> resp.body))
@@ -114,7 +115,7 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
   }
 
   object PlaHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsConverter {
-    override val crypto = encryptCookieString _
+    override val crypto: String => String = encryptCookieString
 
     def encryptCookieString(cookie: String): String = {
       sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value

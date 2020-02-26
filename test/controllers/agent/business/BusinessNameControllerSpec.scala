@@ -24,8 +24,10 @@ import forms.agent.BusinessNameForm
 import incometax.incomesource.services.mocks.MockCurrentTimeService
 import models.agent.BusinessNameModel
 import play.api.http.Status
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.test.Helpers._
+
+import scala.concurrent.Future
 
 class BusinessNameControllerSpec extends AgentControllerBaseSpec
   with MockKeystoreService with MockCurrentTimeService with FeatureSwitching {
@@ -76,7 +78,7 @@ class BusinessNameControllerSpec extends AgentControllerBaseSpec
 
   "Calling the submitBusinessName action of the BusinessNameController with an authorised user and valid submission" should {
 
-    def callShow(isEditMode: Boolean) =
+    def callShow(isEditMode: Boolean): Future[Result] =
       TestBusinessNameController.submit(isEditMode = isEditMode)(
         subscriptionRequest.post(BusinessNameForm.businessNameForm.form, BusinessNameModel("Test business"))
       )

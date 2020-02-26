@@ -16,7 +16,6 @@
 
 package controllers.agent
 
-import agent.audit.Logging
 import agent.auth.AgentJourneyState._
 import agent.auth._
 import controllers.agent.ITSASessionKeys._
@@ -27,17 +26,16 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 
-import scala.concurrent.Future._
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                override val messagesApi: MessagesApi,
-                               val authService: AuthService,
-                               logging: Logging
-                              ) extends StatelessController {
+                               val authService: AuthService
+                              )(implicit val ec: ExecutionContext) extends StatelessController {
 
   def home: Action[AnyContent] = Action.async { implicit request =>
-      Redirect(controllers.agent.routes.HomeController.index())
+    Redirect(controllers.agent.routes.HomeController.index())
   }
 
   def index: Action[AnyContent] = Authenticated.async { implicit request =>
@@ -46,15 +44,15 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
         case Some(arn) =>
           (user.clientNino, user.clientUtr) match {
             case (Some(nino), Some(utr)) =>
-              successful(Redirect(controllers.agent.routes.IncomeSourceController.show()).withJourneyState(AgentSignUp))
+              Future.successful(Redirect(controllers.agent.routes.IncomeSourceController.show()).withJourneyState(AgentSignUp))
             case (Some(nino), _) =>
-              successful(Redirect(controllers.agent.matching.routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey))
+              Future.successful(Redirect(controllers.agent.matching.routes.NoSAController.show()).removingFromSession(ITSASessionKeys.JourneyStateKey))
             case _ =>
-              successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
+              Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsController.show())
                 .addingToSession(ArnKey -> arn).withJourneyState(AgentUserMatching))
           }
         case None =>
-          successful(Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show()))
+          Future.successful(Redirect(controllers.agent.routes.NotEnrolledAgentServicesController.show()))
       }
   }
 

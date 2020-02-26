@@ -21,20 +21,21 @@ import forms.agent.AccountingMethodPropertyForm
 import forms.submapping.AccountingMethodMapping
 import play.api.i18n.Messages.Implicits._
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class PropertyAccountingMethodViewSpec extends ViewSpecTrait {
   val backUrl = ViewSpecTrait.testBackUrl
   val action = ViewSpecTrait.testCall
 
-  def page(isEditMode: Boolean, addFormErrors: Boolean) = views.html.agent.business.property_accounting_method(
+  def page(isEditMode: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable = views.html.agent.business.property_accounting_method(
     accountingMethodPropertyForm = AccountingMethodPropertyForm.accountingMethodPropertyForm.addError(addFormErrors),
     postAction = action,
     isEditMode,
     backUrl = backUrl
   )(FakeRequest(), applicationMessages, appConfig)
 
-  def documentCore(isEditMode: Boolean) = TestView(
+  def documentCore(isEditMode: Boolean): TestView = TestView(
     name = "Property Accounting Method View",
     title = messages.title,
     heading = messages.heading,
@@ -68,7 +69,7 @@ class PropertyAccountingMethodViewSpec extends ViewSpecTrait {
 
   "Append Error to the page title if the form has error" should {
 
-    def documentCore() = TestView(
+    def documentCore(): TestView = TestView(
       name = "Property Accounting Method View",
       title = titleErrPrefix + messages.title,
       heading = messages.heading,

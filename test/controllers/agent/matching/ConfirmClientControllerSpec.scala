@@ -81,7 +81,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
   "Calling the show action of the ConfirmClientController with an authorised user" should {
 
-    def call(request: Request[AnyContent]) = TestConfirmClientController.show()(request)
+    def call(request: Request[AnyContent]): Future[Result] = TestConfirmClientController.show()(request)
 
     "when there are no client details store redirect them to client details" in {
       setupMockNotLockedOut(arn)
@@ -105,6 +105,16 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
       status(result) must be(Status.OK)
 
       await(result).verifyStoredUserDetailsIs(TestModels.testClientDetails)(r)
+    }
+
+    "if there is a failure response from the lockout service" in {
+      setupMockLockStatusFailureResponse(arn)
+
+      val r = request.buildRequest(TestModels.testClientDetails)
+
+      val result = call(r)
+
+      intercept[InternalServerException](await(result)).getMessage mustBe "[ClientDetailsLockoutController][handleLockOut] lockout status failure"
     }
   }
 
@@ -162,7 +172,7 @@ class ConfirmClientControllerSpec extends AgentControllerBaseSpec
 
     "AgentQualificationService returned UnQualifiedAgent" should {
       s"redirect user to ${controllers.agent.routes.NoClientRelationshipController.show().url}" in {
-        mockOrchestrateAgentQualificationSuccess(arn, nino, utr, false)
+        mockOrchestrateAgentQualificationSuccess(arn, nino, utr, preExistingRelationship = false)
         setupMockNotLockedOut(arn)
 
         val result = callSubmit()

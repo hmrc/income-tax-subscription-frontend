@@ -17,6 +17,7 @@
 package connectors.usermatching.httpparsers
 
 import models.usermatching.{CitizenDetailsFailureResponse, CitizenDetailsSuccess}
+import play.api.Logger
 import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
@@ -26,9 +27,15 @@ object CitizenDetailsResponseHttpParser {
   implicit object GetCitizenDetailsHttpReads extends HttpReads[GetCitizenDetailsResponse] {
     override def read(method: String, url: String, response: HttpResponse): GetCitizenDetailsResponse = {
       response.status match {
-        case OK => Right(Some(response.json.as[CitizenDetailsSuccess]))
-        case NOT_FOUND => Right(None)
-        case status => Left(CitizenDetailsFailureResponse(status))
+        case OK =>
+          Logger.debug(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] successful, returned $OK")
+          Right(Some(response.json.as[CitizenDetailsSuccess]))
+        case NOT_FOUND =>
+          Logger.debug(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] successful, returned $NOT_FOUND")
+          Right(None)
+        case status =>
+          Logger.warn(s"[CitizenDetailsResponseHttpParser][GetCitizenDetailsHttpReads] failure, status: $status")
+          Left(CitizenDetailsFailureResponse(status))
       }
     }
   }

@@ -18,8 +18,8 @@ package core.connectors.mocks
 
 import core.utils.MockTrait
 import org.mockito.ArgumentMatchers
-import uk.gov.hmrc.auth.core.AuthConnector
 import org.mockito.Mockito._
+import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.http.HeaderCarrier

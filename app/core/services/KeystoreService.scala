@@ -17,20 +17,19 @@
 package core.services
 
 import javax.inject._
-import models.YesNo
-import models.individual.business.address.Address
 import models.individual.business._
+import models.individual.business.address.Address
 import models.individual.incomesource.{AreYouSelfEmployedModel, RentUkPropertyModel}
 import models.individual.subscription.IncomeSourceType
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class KeystoreService @Inject()(val session: SessionCache) {
+class KeystoreService @Inject()(val session: SessionCache)
+                               (implicit ec: ExecutionContext) {
 
   type FO[T] = Future[Option[T]]
   type FC = Future[CacheMap]
@@ -56,14 +55,6 @@ class KeystoreService @Inject()(val session: SessionCache) {
 
   def saveAreYouSelfEmployed(areYouSelfEmployed: AreYouSelfEmployedModel)(implicit hc: HeaderCarrier, reads: Reads[AreYouSelfEmployedModel]): FC =
     save[AreYouSelfEmployedModel](AreYouSelfEmployed, areYouSelfEmployed)
-
-  //TODO remove when we switch to the new income source flow
-  def fetchIncomeSource()(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FO[IncomeSourceType] =
-    fetch[IncomeSourceType](IncomeSource)
-
-  //TODO remove when we switch to the new income source flow
-  def saveIncomeSource(incomeSource: IncomeSourceType)(implicit hc: HeaderCarrier, reads: Reads[IncomeSourceType]): FC =
-    save[IncomeSourceType](IncomeSource, incomeSource)
 
   def fetchRentUkProperty()(implicit hc: HeaderCarrier, reads: Reads[RentUkPropertyModel]): FO[RentUkPropertyModel] =
     fetch[RentUkPropertyModel](RentUkProperty)
@@ -116,8 +107,9 @@ class KeystoreService @Inject()(val session: SessionCache) {
   def fetchAccountingMethodProperty()(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodPropertyModel]): FO[AccountingMethodPropertyModel] =
     fetch[AccountingMethodPropertyModel](PropertyAccountingMethod)
 
-  def saveAccountingMethodProperty(accountingMethodProperty: AccountingMethodPropertyModel)(implicit hc: HeaderCarrier, reads: Reads[AccountingMethodPropertyModel]): FC =
-    save[AccountingMethodPropertyModel](PropertyAccountingMethod, accountingMethodProperty)
+  def saveAccountingMethodProperty(accountingMethodProperty: AccountingMethodPropertyModel)
+                                  (implicit hc: HeaderCarrier, reads: Reads[AccountingMethodPropertyModel]): FC = save[AccountingMethodPropertyModel](
+                                    PropertyAccountingMethod, accountingMethodProperty)
 
   def fetchSelectedTaxYear()(implicit hc: HeaderCarrier, reads: Reads[AccountingYearModel]): FO[AccountingYearModel] =
     fetch[AccountingYearModel](SelectedTaxYear)

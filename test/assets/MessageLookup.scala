@@ -46,7 +46,7 @@ object MessageLookup {
 
   object FrontPage {
     val title = "Sign up to report your income and expenses quarterly"
-    val heading = title
+    val heading: String = title
     val subHeading_1 = "Sign up using Government Gateway"
     val subHeading_2 = "What happens after you’ve signed up"
     val bullet_1 = "using your accounting software to record your income and expenses"
@@ -162,7 +162,7 @@ object MessageLookup {
     val heading: String = title
     val linkText = "Self Assessment tax return"
 
-    def para1(startDate: DateModel) = s"You can sign up and use software to record your income and expenses, but you can’t send any reports until ${startDate.toOutputDateFormat}."
+    def para1(startDate: DateModel): String  = s"You can sign up and use software to record your income and expenses, but you can’t send any reports until ${startDate.toOutputDateFormat}."
 
     val para2 = s"You need to send a $linkText instead."
   }
@@ -182,7 +182,7 @@ object MessageLookup {
     val para1 = "You can sign up and use software to record your income and expenses, but you won’t be able to submit a report for:"
     val bullet1 = "property income until 6 April 2018"
 
-    def bullet2(startDate: DateModel) = s"sole trader income until ${startDate.toOutputDateFormat}"
+    def bullet2(startDate: DateModel): String  = s"sole trader income until ${startDate.toOutputDateFormat}"
 
     val para2 = s"You need to $linkText instead."
   }
@@ -194,7 +194,7 @@ object MessageLookup {
     val para1 = "You can still sign this client up and use software to record their income and expenses, but they won’t be able to submit a report for their:"
     val bullet1 = "property income until 6 April 2018"
 
-    def bullet2(businessStartDate: DateModel) = s"sole trader income until ${businessStartDate.toOutputDateFormat}"
+    def bullet2(businessStartDate: DateModel): String = s"sole trader income until ${businessStartDate.toOutputDateFormat}"
 
     val para2 = s"Your client still needs to $linkText."
   }
@@ -306,9 +306,9 @@ object MessageLookup {
     }
 
     object SelectedTaxYear {
-      def current(staringYear: Int, endYear: Int) = s"Current tax year ($staringYear to $endYear)"
+      def current(staringYear: Int, endYear: Int): String  = s"Current tax year ($staringYear to $endYear)"
 
-      def next(staringYear: Int, endYear: Int) = s"Next tax year ($staringYear to $endYear)"
+      def next(staringYear: Int, endYear: Int): String = s"Next tax year ($staringYear to $endYear)"
     }
 
     val contact_email = "Do you want to receive electronic communications from HMRC?"
@@ -342,7 +342,7 @@ object MessageLookup {
     val title = "You’ve been locked out"
     val heading = "You’ve been locked out"
 
-    def line1(testTime: String) = s"To sign up for quarterly reporting, you’ll have to try again in $testTime."
+    def line1(testTime: String): String  = s"To sign up for quarterly reporting, you’ll have to try again in $testTime."
   }
 
   object UserDetails {
@@ -579,13 +579,13 @@ object MessageLookup {
 
   object NoSA {
     val title = "You need to register for Self Assessment"
-    val heading = title
+    val heading: String = title
     val linkText = "register for Self Assessment"
     val line1 = s"Before you can sign up to use software to report your Income Tax, you need to $linkText."
 
     object Agent {
       val title = "Your client is not registered for Self Assessment"
-      val heading = title
+      val heading: String = title
       val linkText = "register for Self Assessment"
       val line1 = s"To use this service, your client needs to $linkText."
     }
@@ -633,7 +633,7 @@ object MessageLookup {
 
   object IvFailed {
     val title = "We’re unable to confirm your identity"
-    val heading = title
+    val heading: String = title
     val line_1 = "To help protect your data, you can only sign up to report your income and expenses quarterly once we’ve confirmed who you are."
     val hmrcLink = "HM Revenue and Customs (opens in new window)"
     val line_2 = s"If you can’t confirm your identity and you have a query you can contact $hmrcLink to get help."
@@ -674,13 +674,13 @@ object MessageLookup {
     val heading: String = title
     val line1 = "You can sign up for the current year or the next year."
 
-    def example1(fromYear: String, toYear: String) = s"For example, if your accounting period runs from 6 April $fromYear to 5 April $toYear, you will sign up for the current year $fromYear to $toYear."
+    def example1(fromYear: String, toYear: String): String  = s"For example, if your accounting period runs from 6 April $fromYear to 5 April $toYear, you will sign up for the current year $fromYear to $toYear."
 
-    def example2(fromYear: String, toYear: String) = s"If your accounting period runs from 6 April $fromYear to 5 April $toYear, you will sign up for next year $fromYear to $toYear."
+    def example2(fromYear: String, toYear: String): String  = s"If your accounting period runs from 6 April $fromYear to 5 April $toYear, you will sign up for next year $fromYear to $toYear."
 
-    def option1(fromYear: String, toYear: String) = s"Current tax year ($fromYear to $toYear)"
+    def option1(fromYear: String, toYear: String): String  = s"Current tax year ($fromYear to $toYear)"
 
-    def option2(fromYear: String, toYear: String) = s"Next tax year ($fromYear to $toYear)"
+    def option2(fromYear: String, toYear: String): String = s"Next tax year ($fromYear to $toYear)"
   }
 
 }

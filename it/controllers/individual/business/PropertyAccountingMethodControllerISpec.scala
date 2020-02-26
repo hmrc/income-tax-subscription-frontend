@@ -16,7 +16,6 @@
 
 package controllers.individual.business
 
-import models.Cash
 import core.services.CacheConstants
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._

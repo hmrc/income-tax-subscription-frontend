@@ -17,15 +17,17 @@
 package agent.services
 
 import agent.audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
-import play.api.test.Helpers._
 import agent.services.mocks.MockAgentQualificationService
 import agent.utils.TestConstants._
 import agent.utils.TestModels._
 import agent.utils.{TestConstants, TestModels}
 import models.usermatching.UserDetailsModel
-import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request, Result}
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.Future
 
 class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
@@ -45,7 +47,8 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
   "AgentQualificationService.matchClient" should {
 
-    def call(request: Request[AnyContent]) = TestAgentQualificationService.matchClient(testARN)(implicitly[HeaderCarrier], request)
+    def call(request: Request[AnyContent]): Future[TestAgentQualificationService.ReturnType] =
+      TestAgentQualificationService.matchClient(testARN)(implicitly[HeaderCarrier], request)
 
     "return NoClientDetails if there's no client details in session" in {
       val result = call(request())
@@ -76,7 +79,7 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
   "AgentQualificationService.checkExistingSubscription" should {
 
-    def call = TestAgentQualificationService.checkExistingSubscription(matchedClient)
+    def call: Future[TestAgentQualificationService.ReturnType] = TestAgentQualificationService.checkExistingSubscription(matchedClient)
 
     "return UnexpectedFailure if something went awry" in {
       setupMockGetSubscriptionFailure(testNino)
@@ -105,7 +108,8 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
   "AgentQualificationService.checkClientRelationship" should {
 
-    def call = TestAgentQualificationService.checkClientRelationship(testARN, matchedClient)
+    def call: Future[TestAgentQualificationService.ReturnType] =
+      TestAgentQualificationService.checkClientRelationship(testARN, matchedClient)
 
     "return UnexpectedFailure if something went awry" in {
       preExistingRelationshipFailure(testARN, testNino)(new Exception())
@@ -132,7 +136,8 @@ class AgentQualificationServiceSpec extends MockAgentQualificationService {
 
   "AgentQualificationService.orchestrateAgentQualification" should {
 
-    def call(request: Request[AnyContent]) = TestAgentQualificationService.orchestrateAgentQualification(testARN)(implicitly[HeaderCarrier], request)
+    def call(request: Request[AnyContent]): Future[TestAgentQualificationService.ReturnType] =
+      TestAgentQualificationService.orchestrateAgentQualification(testARN)(implicitly[HeaderCarrier], request)
 
     "return UnexpectedFailure if something went awry" in {
       setupOrchestrateAgentQualificationFailure(UnexpectedFailure)

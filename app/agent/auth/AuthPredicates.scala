@@ -16,7 +16,6 @@
 
 package agent.auth
 
-import uk.gov.hmrc.http.SessionKeys._
 import agent.auth.AgentJourneyState._
 import agent.common.Constants.agentServiceEnrolmentName
 import cats.implicits._
@@ -24,6 +23,7 @@ import controllers.agent.ITSASessionKeys
 import core.auth.AuthPredicate.{AuthPredicate, AuthPredicateSuccess}
 import play.api.mvc.{Result, Results}
 import uk.gov.hmrc.http.NotFoundException
+import uk.gov.hmrc.http.SessionKeys._
 
 import scala.concurrent.Future
 

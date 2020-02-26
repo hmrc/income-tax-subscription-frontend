@@ -28,7 +28,7 @@ class ResetAgentLockoutConnector @Inject()(val appConfig: AppConfig,
                                            val http: HttpClient
                                           )(implicit ec: ExecutionContext) {
 
-  lazy val resetUrl = appConfig.clientMatchingUrl + ResetAgentLockoutConnector.resetUri
+  lazy val resetUrl: String = appConfig.clientMatchingUrl + ResetAgentLockoutConnector.resetUri
 
   def resetLockout(implicit hc: HeaderCarrier): Future[HttpResponse] = http.GET(resetUrl)
 

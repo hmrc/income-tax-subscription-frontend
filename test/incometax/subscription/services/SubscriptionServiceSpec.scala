@@ -16,6 +16,8 @@
 
 package incometax.subscription.services
 
+import connectors.individual.subscription.httpparsers.GetSubscriptionResponseHttpParser.GetSubscriptionResponse
+import connectors.individual.subscription.httpparsers.SubscriptionResponseHttpParser.SubscriptionResponse
 import core.utils.TestConstants._
 import core.utils.TestModels._
 import core.utils.{TestConstants, TestModels}
@@ -73,7 +75,8 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
     "convert the user's data into the correct format when they are self employed and they are signing up in next Tax year" in {
       val nino = TestModels.newNino
-      val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataBusinessMatchTaxYear.copy(selectedTaxYear = Some(testSelectedTaxYearNext)), None)
+      val request = TestSubscriptionService.buildRequestPost(nino, testSummaryDataBusinessMatchTaxYear.copy(selectedTaxYear =
+        Some(testSelectedTaxYearNext)), None)
 
       val expectedTaxYear = AccountingPeriodUtil.getNextTaxYear
 
@@ -90,7 +93,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
   "SubscriptionService.submitSubscription" should {
 
-      def call = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData, arn = None))
+      def call: SubscriptionResponse = await(TestSubscriptionService.submitSubscription(nino = testNino, summaryData = testSummaryData, arn = None))
 
       "return the safeId when the subscription is successful" in {
         setupMockSubscribeSuccess(testSubmissionRequest)
@@ -115,7 +118,7 @@ class SubscriptionServiceSpec extends TestSubscriptionService
 
   "SubscriptionService.getSubscription" should {
 
-    def call = await(TestSubscriptionService.getSubscription(nino = testNino))
+    def call: GetSubscriptionResponse = await(TestSubscriptionService.getSubscription(nino = testNino))
 
     "return the safeId when the subscription is returned" in {
       setupMockGetSubscriptionFound(testNino)

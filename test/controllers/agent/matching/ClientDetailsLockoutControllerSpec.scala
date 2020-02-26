@@ -28,6 +28,7 @@ import play.api.i18n.Messages.Implicits.applicationMessagesApi
 import play.api.mvc.{Action, AnyContent, Cookie, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, contentType, _}
+import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.language.LanguageUtils.WelshLangCode
 import usermatching.services.mocks.MockUserLockoutService
 
@@ -76,6 +77,16 @@ class ClientDetailsLockoutControllerSpec extends AgentControllerBaseSpec
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe controllers.agent.matching.routes.ClientDetailsController.show().url
+      }
+    }
+
+    "there is a failure response from the lockout service" should {
+      "return an internal server exception" in {
+        setupMockLockStatusFailureResponse(testARN)
+
+        lazy val result = TestClientDetailsLockoutController.show(userMatchingRequest)
+
+        intercept[InternalServerException](await(result)).getMessage mustBe "[ClientDetailsLockoutController][handleLockOut] lockout status failure"
       }
     }
 

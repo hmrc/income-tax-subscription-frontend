@@ -34,7 +34,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.{CitizenDetailsService, OptionalIdentifiers}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
@@ -43,9 +43,8 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
                                keystoreService: KeystoreService,
                                val authService: AuthService,
                                citizenDetailsService: CitizenDetailsService,
-                               getEligibilityStatusService: GetEligibilityStatusService,
-                               logging: Logging
-                              ) extends StatelessController {
+                               getEligibilityStatusService: GetEligibilityStatusService
+                              )(implicit val ec: ExecutionContext) extends StatelessController {
 
   def home: Action[AnyContent] = Action { implicit request =>
     val redirect = routes.HomeController.index()

@@ -37,7 +37,7 @@ trait MockConfig extends AppConfig {
   override val userMatchingUrl = "/income-tax-subscription/user-matching"
   override lazy val ggUrl = ""
 
-  override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl) = s"$ggUrl/gg/sign-out?continue=$redirectionUrl"
+  override def ggSignOutUrl(redirectionUrl: String = ggSignInContinueUrl): String = s"$ggUrl/gg/sign-out?continue=$redirectionUrl"
 
   override lazy val btaUrl = "https://www.tax.service.gov.uk/business-account"
   override lazy val softwareUrl = "https://www.gov.uk/guidance/software-for-sending-income-tax-updates"

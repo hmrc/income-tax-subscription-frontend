@@ -16,19 +16,18 @@
 
 package agent.services
 
-import javax.inject.{Inject, Singleton}
 import agent.audit.AuditingService
 import agent.audit.models.ClientMatchingAuditing.ClientMatchingAuditModel
 import core.utils.Implicits._
 import incometax.subscription.services.SubscriptionService
+import javax.inject.{Inject, Singleton}
 import models.individual.subscription.SubscriptionSuccess
 import models.usermatching.UserDetailsModel
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.HeaderCarrier
 import usermatching.services.UserMatchingService
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait UnqualifiedAgent
 
@@ -40,19 +39,22 @@ case object ClientAlreadySubscribed extends UnqualifiedAgent
 
 case object UnexpectedFailure extends UnqualifiedAgent
 
-trait QualifiedAgent{
+sealed trait QualifiedAgent {
   def clientNino: String
+
   def clientUtr: Option[String]
 }
 
 case class ApprovedAgent(clientNino: String, clientUtr: Option[String]) extends QualifiedAgent
+
 case class UnApprovedAgent(clientNino: String, clientUtr: Option[String]) extends QualifiedAgent
 
 @Singleton
 class AgentQualificationService @Inject()(clientMatchingService: UserMatchingService,
                                           clientRelationshipService: ClientRelationshipService,
                                           subscriptionService: SubscriptionService,
-                                          auditingService: AuditingService) {
+                                          auditingService: AuditingService)
+                                         (implicit ec: ExecutionContext) {
 
   import usermatching.utils.UserMatchingSessionUtil._
 
@@ -71,10 +73,12 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
         clientMatchingService.matchUser(cd)
           .collect {
             case Right(Some(matchedClient)) =>
-              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = true), controllers.agent.matching.routes.ConfirmClientController.submit().url)
+              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = true),
+                                                                  controllers.agent.matching.routes.ConfirmClientController.submit().url)
               Right(ApprovedAgent(matchedClient.nino, matchedClient.saUtr))
             case Right(None) =>
-              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = false), controllers.agent.matching.routes.ConfirmClientController.submit().url)
+              auditingService.audit(ClientMatchingAuditModel(arn, cd, isSuccess = false),
+                                                                  controllers.agent.matching.routes.ConfirmClientController.submit().url)
               Left(NoClientMatched)
           }
           .recoverWith { case _ => Left(UnexpectedFailure) }
@@ -90,7 +94,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
           case Right(Some(SubscriptionSuccess(_))) => Left(ClientAlreadySubscribed)
         }
     } yield agentClientResponse
-  }.recoverWith { case _ => Left(UnexpectedFailure) }
+    }.recoverWith { case _ => Left(UnexpectedFailure) }
 
   private[services]
   def checkClientRelationship(arn: String,
@@ -101,7 +105,7 @@ class AgentQualificationService @Inject()(clientMatchingService: UserMatchingSer
     } yield
       if (isPreExistingRelationship) Right(matchedClient)
       else Right(UnApprovedAgent(matchedClient.clientNino, matchedClient.clientUtr))
-  }.recoverWith { case _ => Left(UnexpectedFailure) }
+    }.recoverWith { case _ => Left(UnexpectedFailure) }
 
   private implicit class Util[A, B](first: Future[Either[A, B]]) {
     def flatMapRight(next: B => Future[Either[A, B]]): Future[Either[A, B]] =

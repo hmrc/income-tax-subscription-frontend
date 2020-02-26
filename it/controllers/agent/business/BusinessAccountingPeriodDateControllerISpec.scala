@@ -18,11 +18,11 @@ package controllers.agent.business
 
 import java.time.LocalDate
 
-import helpers.agent.IntegrationTestConstants._
-import helpers.agent.IntegrationTestModels.{keystoreData, _}
 import agent.services.CacheConstants
 import agent.services.CacheConstants.IncomeSource
 import core.config.featureswitch.FeatureSwitching
+import helpers.agent.IntegrationTestConstants._
+import helpers.agent.IntegrationTestModels.{keystoreData, _}
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
 import helpers.agent.{ComponentSpecBase, IntegrationTestModels}
 import incometax.util.AccountingPeriodUtil
@@ -185,8 +185,10 @@ class BusinessAccountingPeriodDateControllerISpec extends ComponentSpecBase with
         val keystoreIncomeSource = Business
         val startCurrenttestYear = AccountingPeriodUtil.getTaxEndYear(LocalDate.now().plusYears(-1))
         val endCurrenttestYear = startCurrenttestYear + 1
-        val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "04", startCurrenttestYear.toString), DateModel("04", "04", endCurrenttestYear.toString))
-        val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "04", startCurrenttestYear.toString), DateModel("05", "04", endCurrenttestYear.toString))
+        val keystoreAccountingPeriodDates = AccountingPeriodModel(DateModel("06", "04", startCurrenttestYear.toString),
+                                                                                                    DateModel("04", "04", endCurrenttestYear.toString))
+        val userInput: AccountingPeriodModel = AccountingPeriodModel(DateModel("06", "04", startCurrenttestYear.toString),
+                                                                                                    DateModel("05", "04", endCurrenttestYear.toString))
 
         Given("I setup the Wiremock stubs")
         AuthStub.stubAuthSuccess()

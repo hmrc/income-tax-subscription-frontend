@@ -25,27 +25,31 @@ import play.api.mvc.{Action, AnyContent}
 import testonly.connectors.EnrolmentStoreStubConnector
 import testonly.form.UpdateEnrolmentsForm
 import testonly.views.html.individual.update_enrolments
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrievals}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class UpdateEnrolmentsController @Inject()(implicit val applicationConfig: AppConfig,
                                            val messagesApi: MessagesApi,
                                            enrolmentStoreStubConnector: EnrolmentStoreStubConnector,
-                                           authService: AuthService
+                                           authService: AuthService,
+                                           ec: ExecutionContext
                                           ) extends FrontendController with I18nSupport {
 
   import authService._
 
   def show: Action[AnyContent] = Action.async(implicit req =>
     authorised().retrieve(Retrievals.credentials) {
-      case Credentials(credId, _) =>
+      case Some(Credentials(credId, _)) =>
         Future.successful(Ok(update_enrolments(
           UpdateEnrolmentsForm.updateEnrolmentsForm.fill(credId),
           testonly.controllers.routes.UpdateEnrolmentsController.submit()
         )))
+      case _ => throw new InternalServerException("[UpdateEnrolmentsController][show] could not retrieve credentials from auth")
     }
   )
 

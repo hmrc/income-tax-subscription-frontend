@@ -17,7 +17,7 @@ class SubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
 
   implicit val hc = HeaderCarrier()
 
-  val TestSubscriptionConnector = app.injector.instanceOf[SubscriptionConnector]
+  val TestSubscriptionConnector: SubscriptionConnector = app.injector.instanceOf[SubscriptionConnector]
 
   val testSubscriptionRequest = SubscriptionRequest(
     nino = testNino,

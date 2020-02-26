@@ -24,10 +24,9 @@ import core.services.mocks.MockAuthService
 import core.utils.TestConstants
 import org.mockito.Mockito
 import play.api.data.Form
-import play.api.test.Helpers._
 import play.api.mvc.{Action, AnyContent, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.await
+import play.api.test.Helpers.{await, _}
 import uk.gov.hmrc.auth.core.{AuthorisationException, InvalidBearerToken}
 
 trait ControllerBaseSpec extends ControllerBaseTrait with MockAuthService {

@@ -19,7 +19,7 @@ package models.usermatching
 import java.time.LocalDate
 
 import models.DateModel
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.domain.Nino
 
 
@@ -34,5 +34,5 @@ object UserMatchRequestModel {
       Nino(userDetailsModel.ninoInBackendFormat)
     )
 
-  implicit val format = Json.format[UserMatchRequestModel]
+  implicit val format: OFormat[UserMatchRequestModel] = Json.format[UserMatchRequestModel]
 }

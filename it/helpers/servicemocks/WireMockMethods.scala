@@ -97,15 +97,15 @@ trait WireMockMethods {
     val wireMockMapping: UrlPattern => MappingBuilder
   }
   case object GET extends HTTPMethod {
-    override val wireMockMapping = get(_: UrlPattern)
+    override val wireMockMapping: UrlPattern => MappingBuilder = get(_: UrlPattern)
   }
   case object POST extends HTTPMethod {
-    override val wireMockMapping = post(_: UrlPattern)
+    override val wireMockMapping: UrlPattern => MappingBuilder = post(_: UrlPattern)
   }
   case object PUT extends HTTPMethod{
-    override val wireMockMapping = put(_: UrlPattern)
+    override val wireMockMapping: UrlPattern => MappingBuilder = put(_: UrlPattern)
   }
   case object DELETE extends HTTPMethod{
-    override val wireMockMapping = delete(_: UrlPattern)
+    override val wireMockMapping: UrlPattern => MappingBuilder = delete(_: UrlPattern)
   }
 }

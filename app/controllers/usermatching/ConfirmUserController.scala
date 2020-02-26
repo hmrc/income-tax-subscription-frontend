@@ -29,8 +29,8 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import usermatching.services.{LockoutUpdate, UserLockoutService, UserMatchingService}
 
-import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Left
 
 @Singleton
@@ -39,7 +39,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
                                       val authService: AuthService,
                                       val userMatching: UserMatchingService,
                                       val lockOutService: UserLockoutService
-                                     ) extends UserMatchingController {
+                                     )(implicit val ec: ExecutionContext) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     views.html.individual.usermatching.check_your_user_details(
@@ -48,14 +48,13 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       backUrl
     )
 
-  private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]) = {
+  private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxSAUser, request: Request[_]): Future[Result] = {
     val bearerToken = implicitly[HeaderCarrier].userId.get
-    (lockOutService.getLockoutStatus(bearerToken.value) flatMap {
+    lockOutService.getLockoutStatus(bearerToken.value) flatMap {
       case Right(NotLockedOut) => f
       case Right(_: LockedOut) =>
         Future.successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show().url))
-    }).recover {
-      case e => throw new InternalServerException("user details controller: " + e)
+      case Left(_) => throw new InternalServerException("[ConfirmUserController][withLockOutCheck] received failure response from lockout service")
     }
   }
 
@@ -92,11 +91,11 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
       case Right(LockoutUpdate(_: LockedOut, _)) =>
         successful(Redirect(controllers.usermatching.routes.UserDetailsLockoutController.show())
           .removingFromSession(FailedUserMatching))
-      case Left(failure) => failed(new InternalServerException("ConfirmUserController.lockUser: " + failure))
+      case _ => failed(new InternalServerException("ConfirmUserController.lockUser"))
     }
   }
 
-  private def matchUserDetails(userDetails: UserDetailsModel)(implicit request: Request[AnyContent]) = for {
+  private def matchUserDetails(userDetails: UserDetailsModel)(implicit request: Request[AnyContent]): Future[Result] = for {
     user <- userMatching.matchUser(userDetails)
     result <- user match {
       case Right(Some(matchedDetails)) => handleMatchedUser(matchedDetails)
@@ -123,7 +122,7 @@ class ConfirmUserController @Inject()(val baseConfig: BaseControllerConfig,
             .addingToSession(NINO -> matchedDetails.nino)
         )
     }
-  }.map(_.removingFromSession(FailedUserMatching).withJourneyState(UserMatched).clearUserDetails)
+    }.map(_.removingFromSession(FailedUserMatching).withJourneyState(UserMatched).clearUserDetails)
 
 }
 

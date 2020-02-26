@@ -32,14 +32,14 @@ import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
                                                    val authService: AuthService
-                                                  ) extends AuthenticatedController with FeatureSwitching {
+                                                  )(implicit val ec: ExecutionContext) extends AuthenticatedController with FeatureSwitching {
 
   def view(accountingMethodPropertyForm: Form[AccountingMethodPropertyModel], isEditMode: Boolean)(implicit request: Request[_]): Future[Html] = {
     for {

@@ -17,6 +17,7 @@
 package forms.individual.incomesource
 
 import assets.MessageLookup
+import forms.individual.incomesource.RentUkPropertyForm._
 import forms.submapping.YesNoMapping
 import forms.validation.ErrorMessageFactory
 import forms.validation.testutils.DataMap.DataMap
@@ -26,7 +27,6 @@ import models.{No, Yes}
 import org.scalatest.Matchers._
 import org.scalatestplus.play.{OneAppPerTest, PlaySpec}
 import play.api.i18n.Messages.Implicits._
-import forms.individual.incomesource.RentUkPropertyForm._
 
 class RentUkPropertyFormSpec extends PlaySpec with OneAppPerTest {
 

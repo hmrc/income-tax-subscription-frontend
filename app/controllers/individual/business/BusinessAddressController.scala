@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
@@ -35,7 +35,7 @@ class BusinessAddressController @Inject()(val baseConfig: BaseControllerConfig,
                                           val authService: AuthService,
                                           addressLookupService: AddressLookupService,
                                           keystoreService: KeystoreService
-                                         ) extends RegistrationController {
+                                         )(implicit val ec: ExecutionContext) extends RegistrationController {
 
 
   private[controllers] def callbackUrl(editMode: Boolean)(implicit request: Request[AnyContent]): String =

@@ -18,7 +18,7 @@ package views.helpers
 
 import assets.MessageLookup.{Base => common}
 import core.utils.UnitTestTrait
-import forms.validation.ErrorMessageFactory
+import forms.validation.ErrorMessageFactory._
 import forms.validation.models.SummaryError
 import forms.validation.testutils.DataMap.DataMap
 import forms.validation.utils.MappingUtil._
@@ -26,14 +26,13 @@ import org.scalatest.Matchers._
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.Invalid
-import ErrorMessageFactory._
-import scala.collection.JavaConversions._
 import play.api.i18n.Messages.Implicits._
+
+import scala.collection.JavaConversions._
 
 class SummaryErrorHelperSpec extends UnitTestTrait {
 
-  private def summaryErrorHelper(form: Form[_])
-  = views.html.helpers.summaryErrorHelper(form)(applicationMessages)
+  private def summaryErrorHelper(form: Form[_]) = views.html.helpers.summaryErrorHelper(form)(applicationMessages)
 
   case class TestData(field1: String, field2: String, field3: String)
 
@@ -57,7 +56,7 @@ class SummaryErrorHelperSpec extends UnitTestTrait {
       val page = summaryErrorHelper(testForm)
       val doc = page.doc
       val summaryDiv = doc.getElementById("error-summary-display")
-      summaryDiv shouldBe null
+      Option(summaryDiv) shouldBe None
     }
 
     "if the form does present an error, the error should be displayed back" in {
@@ -66,7 +65,7 @@ class SummaryErrorHelperSpec extends UnitTestTrait {
       val doc = page.doc
 
       val summary = doc.getElementById("error-summary-display")
-      summary should not be null
+      Option(summary) should not be None
       summary.attr("class") shouldBe "flash error-summary error-summary--show"
       summary.attr("role") shouldBe "alert"
       summary.attr("aria-labelledby") shouldBe "error-summary-heading"

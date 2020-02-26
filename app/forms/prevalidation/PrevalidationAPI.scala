@@ -140,7 +140,8 @@ private object FormUtils {
 
   def fromJson(prefix: String = "", js: JsValue): Map[String, String] = js match {
     case JsObject(fields) => {
-      fields.map { case (key, value) => fromJson(Option(prefix).filterNot(_.isEmpty).map(_ + ".").getOrElse("") + key, value) }.foldLeft(Map.empty[String, String])(_ ++ _)
+      fields.map { case (key, value) => fromJson(Option(prefix).filterNot(_.isEmpty).map(_ + ".").getOrElse("") + key, value) }.foldLeft(
+                                                                                                                Map.empty[String, String])(_ ++ _)
     }
     case JsArray(values) => {
       values.zipWithIndex.map { case (value, i) => fromJson(prefix + "[" + i + "]", value) }.foldLeft(Map.empty[String, String])(_ ++ _)

@@ -16,7 +16,7 @@
 
 package models.individual.subscription
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 
 case class EnrolRequest(portalId: String,
@@ -25,5 +25,5 @@ case class EnrolRequest(portalId: String,
                         knownFacts: List[String])
 
 object EnrolRequest {
-  implicit val format = Json.format[EnrolRequest]
+  implicit val format: OFormat[EnrolRequest] = Json.format[EnrolRequest]
 }

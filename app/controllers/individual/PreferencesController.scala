@@ -17,7 +17,8 @@
 package controllers.individual
 
 import core.ITSASessionKeys
-import core.auth.StatelessController
+import core.auth.AuthPredicate.AuthPredicate
+import core.auth.{IncomeTaxSAUser, StatelessController}
 import core.config.BaseControllerConfig
 import core.services.AuthService
 import digitalcontact.services.{PaperlessPreferenceTokenService, PreferencesService}
@@ -28,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
@@ -36,9 +37,9 @@ class PreferencesController @Inject()(val baseConfig: BaseControllerConfig,
                                       val preferencesService: PreferencesService,
                                       val authService: AuthService,
                                       paperlessPreferenceTokenService: PaperlessPreferenceTokenService
-                                     ) extends StatelessController {
+                                     )(implicit val ec: ExecutionContext) extends StatelessController {
 
-  override val statelessDefaultPredicate = preferencesPredicate
+  override val statelessDefaultPredicate: AuthPredicate[IncomeTaxSAUser] = preferencesPredicate
 
   def view()(implicit request: Request[AnyContent]): Html = {
     views.html.individual.continue_registration(

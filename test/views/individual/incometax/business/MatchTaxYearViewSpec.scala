@@ -21,15 +21,18 @@ import assets.MessageLookup.{Base => common}
 import forms.individual.business.MatchTaxYearForm
 import forms.submapping.YesNoMapping
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Call
 import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat
 import views.ViewSpecTrait
 
 class MatchTaxYearViewSpec extends ViewSpecTrait {
 
-  val backUrl = ViewSpecTrait.testBackUrl
-  val action = ViewSpecTrait.testCall
+  val backUrl: String = ViewSpecTrait.testBackUrl
+  val action: Call = ViewSpecTrait.testCall
 
-  private def page(isEditMode: Boolean, isRegistration: Boolean, addFormErrors: Boolean) = views.html.individual.incometax.business.match_to_tax_year(
+  private def page(isEditMode: Boolean, isRegistration: Boolean, addFormErrors: Boolean): HtmlFormat.Appendable =
+    views.html.individual.incometax.business.match_to_tax_year(
     matchTaxYearForm = MatchTaxYearForm.matchTaxYearForm.addError(addFormErrors),
     postAction = action,
     isRegistration = isRegistration,
@@ -41,7 +44,7 @@ class MatchTaxYearViewSpec extends ViewSpecTrait {
   "The Match tax year view" when {
     "in subscription mode" should {
 
-      def documentCore(isEditMode: Boolean) =
+      def documentCore(isEditMode: Boolean): TestView =
         TestView(
           name = "Match tax year View",
           title = messages.SignUp.title,
@@ -76,7 +79,7 @@ class MatchTaxYearViewSpec extends ViewSpecTrait {
       }
 
       "Append Error to the page title if the form has error" should {
-        def documentCore() = TestView(
+        def documentCore(): TestView = TestView(
           name = "Match tax year View",
           title = titleErrPrefix + messages.SignUp.title,
           heading = messages.SignUp.heading,
@@ -89,8 +92,7 @@ class MatchTaxYearViewSpec extends ViewSpecTrait {
 
     "in registration mode" should {
 
-      def documentCore(isEditMode: Boolean) =
-        TestView(
+      def documentCore(isEditMode: Boolean): TestView = TestView(
           name = "Match tax year View",
           title = messages.Registration.title,
           heading = messages.Registration.heading,
@@ -125,14 +127,14 @@ class MatchTaxYearViewSpec extends ViewSpecTrait {
       }
 
       "Append Error to the page title if the form has error" should {
-        def documentCore() = TestView(
+        def documentCore(): TestView = TestView(
           name = "Match tax year View",
           title = titleErrPrefix + messages.Registration.title,
           heading = messages.Registration.heading,
           page = page(isEditMode = false, addFormErrors = true, isRegistration = true)
         )
 
-        val testPage = documentCore()
+        val testPage: Unit = documentCore()
       }
 
     }

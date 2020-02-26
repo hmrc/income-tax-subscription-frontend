@@ -17,6 +17,7 @@
 package connectors.individual.business.httpparsers
 
 import models.individual.business.address._
+import play.api.Logger
 import play.api.http.HeaderNames
 import play.api.http.Status.{ACCEPTED, OK}
 import play.api.libs.json.Json
@@ -29,8 +30,12 @@ object AddressLookupResponseHttpParser {
   implicit object InitAddressLookupHttpReads extends HttpReads[InitAddressLookupResponseResponse] {
     override def read(method: String, url: String, response: HttpResponse): InitAddressLookupResponseResponse = {
       response.status match {
-        case ACCEPTED => Right(response.header(HeaderNames.LOCATION).fold("")(identity))
-        case status => Left(AddressLookupInitFailureResponse(status))
+        case ACCEPTED =>
+          Logger.debug(s"[AddressLookupResponseHttpParser][InitAddressLookupHttpReads] successful, returned status: $ACCEPTED")
+          Right(response.header(HeaderNames.LOCATION).fold("")(identity))
+        case status =>
+          Logger.warn(s"[AddressLookupResponseHttpParser][InitAddressLookupHttpReads] failure, returned status: $status")
+          Left(AddressLookupInitFailureResponse(status))
       }
     }
   }
@@ -41,10 +46,16 @@ object AddressLookupResponseHttpParser {
     override def read(method: String, url: String, response: HttpResponse): ConfirmAddressLookupResponseResponse = {
       response.status match {
         case OK => Json.fromJson[ReturnedAddress](response.json).asOpt match {
-          case Some(address) => Right(address)
-          case _ => Left(MalformatAddressReturned)
+          case Some(address) =>
+            Logger.debug(s"[AddressLookupResponseHttpParser][ConfirmAddressLookupHttpReads] successful, returned $OK")
+            Right(address)
+          case _ =>
+            Logger.warn(s"[AddressLookupResponseHttpParser][ConfirmAddressLookupHttpReads] failure, returned malformated address")
+            Left(MalformatAddressReturned)
         }
-        case status => Left(UnexpectedStatusReturned(status))
+        case status =>
+          Logger.warn(s"[AddressLookupResponseHttpParser][ConfirmAddressLookupHttpReads] failure, returned status: $status")
+          Left(UnexpectedStatusReturned(status))
       }
     }
   }

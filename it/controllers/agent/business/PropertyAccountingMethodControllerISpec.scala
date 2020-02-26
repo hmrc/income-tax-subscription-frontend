@@ -16,16 +16,16 @@
 
 package controllers.agent.business
 
+import agent.services.CacheConstants
+import core.config.featureswitch.FeatureSwitching
+import helpers.agent.ComponentSpecBase
 import helpers.agent.IntegrationTestConstants._
 import helpers.agent.IntegrationTestModels._
-import agent.services.CacheConstants
-import models.agent._
-import core.config.featureswitch.FeatureSwitching
-import models.{Accruals, Cash}
-import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.{AuthStub, KeystoreStub}
+import models.agent._
 import models.individual.business.AccountingPeriodModel
 import models.individual.subscription.Both
+import models.{Accruals, Cash}
 import play.api.http.Status._
 import play.api.i18n.Messages
 

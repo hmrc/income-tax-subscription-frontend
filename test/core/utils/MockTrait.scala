@@ -18,7 +18,7 @@ package core.utils
 
 import org.mockito.{ArgumentMatcher, ArgumentMatchers}
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 
 import scala.concurrent.Future
 
@@ -27,7 +27,7 @@ trait MockTrait extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach 
 
   // used to help mock setup functions to clarify if certain results should be mocked.
   sealed trait MockConfiguration[+A] {
-    final def get = this match {
+    final def get: A = this match {
       case Configure(config) => config
       case _ => throw new RuntimeException("This element is not to be configured")
     }
@@ -54,7 +54,7 @@ trait MockTrait extends UnitTestTrait with MockitoSugar with BeforeAndAfterEach 
 
   implicit class VerificationUtil(someCount: Option[Int]) {
     // util function designed for aiding verify functions
-    def ifDefinedThen(action: (Int) => Unit) = someCount match {
+    def ifDefinedThen(action: (Int) => Unit): Unit = someCount match {
       case Some(count) => action(count)
       case _ =>
     }

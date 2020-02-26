@@ -29,7 +29,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
@@ -37,7 +37,7 @@ class BusinessNameController @Inject()(val baseConfig: BaseControllerConfig,
                                        val keystoreService: KeystoreService,
                                        val authService: AuthService,
                                        currentTimeService: CurrentTimeService
-                                      ) extends AuthenticatedController {
+                                      )(implicit val ec: ExecutionContext) extends AuthenticatedController {
 
   def view(businessNameForm: Form[BusinessNameModel], isEditMode: Boolean)(implicit request: Request[_]): Html = {
     views.html.agent.business.business_name(

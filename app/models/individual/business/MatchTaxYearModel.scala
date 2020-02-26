@@ -17,10 +17,10 @@
 package models.individual.business
 
 import models.YesNo
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class MatchTaxYearModel(matchTaxYear: YesNo)
 
 object MatchTaxYearModel {
-  implicit val format = Json.format[MatchTaxYearModel]
+  implicit val format: OFormat[MatchTaxYearModel] = Json.format[MatchTaxYearModel]
 }

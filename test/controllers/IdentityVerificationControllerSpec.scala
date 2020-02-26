@@ -34,8 +34,7 @@ class IdentityVerificationControllerSpec extends ControllerBaseSpec {
   object TestIdentityVerificationController extends IdentityVerificationController(
     MockBaseControllerConfig,
     messagesApi,
-    mockAuthService,
-    app.injector.instanceOf[Logging]
+    mockAuthService
   )
 
   // not a real journey id and its value doesn't really matter for unit test purposes

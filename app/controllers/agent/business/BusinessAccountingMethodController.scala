@@ -35,13 +35,15 @@ import play.api.libs.functional.~
 import play.api.mvc.{Action, AnyContent, Request}
 import play.twirl.api.Html
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessAccountingMethodController @Inject()(val baseConfig: BaseControllerConfig,
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
-                                                   val authService: AuthService) extends AuthenticatedController with FeatureSwitching with AgentRequireAnswer {
+                                                   val authService: AuthService)
+                                                  (implicit val ec: ExecutionContext)
+  extends AuthenticatedController with FeatureSwitching with AgentRequireAnswer {
 
   def view(accountingMethodForm: Form[AccountingMethodModel], isEditMode: Boolean, backUrl: String)(implicit request: Request[_]): Html = {
     views.html.agent.business.accounting_method(

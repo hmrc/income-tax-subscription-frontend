@@ -16,12 +16,12 @@
 
 package agent.services
 
-import core.config.SessionCache
-import org.scalatest.Matchers._
 import agent.services.mocks.MockKeystoreService
 import agent.utils.TestModels
+import core.config.SessionCache
 import core.utils.UnitTestTrait
 import models.agent.BusinessNameModel
+import org.scalatest.Matchers._
 import uk.gov.hmrc.http.HttpResponse
 
 class KeystoreServiceSpec extends UnitTestTrait
@@ -30,8 +30,7 @@ class KeystoreServiceSpec extends UnitTestTrait
   "Keystore service" should {
     "be DIed with the correct session cache object" in {
       val cache = app.injector.instanceOf[SessionCache]
-      //TODO Verify if we need to split this for agent/individual
-//      cache.defaultSource shouldBe cache.getConfString("session-cache.income-tax-subscription-agent-frontend.cache", "income-tax-subscription-agent-frontend")
+      cache.defaultSource shouldBe cache.getConfString("session-cache.income-tax-subscription-frontend.cache", "income-tax-subscription-frontend")
       cache.baseUri shouldBe cache.baseUrl("session-cache")
       cache.domain shouldBe cache.getConfString("session-cache.domain", throw new Exception(s"Could not find config 'session-cache.domain'"))
     }

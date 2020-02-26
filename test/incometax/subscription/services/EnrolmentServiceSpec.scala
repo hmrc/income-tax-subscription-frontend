@@ -23,34 +23,36 @@ import incometax.subscription.services.mocks.TestEnrolmentService
 import models.individual.subscription.{EnrolFailure, EnrolSuccess}
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core.retrieve.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 
 import scala.concurrent.Future
 
 class EnrolmentServiceSpec extends UnitTestTrait with TestEnrolmentService with ScalaFutures {
+
   "addKnownFacts" should {
     def result: Future[Either[EnrolFailure, EnrolSuccess.type]] = TestEnrolmentServiceFeatureSwitched.enrol(testMTDID, testNino)
 
     "return a success from the EnrolmentStoreConnector" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, GGProviderId)), Some(testGroupId)))
       mockAllocateEnrolmentSuccess(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
       whenReady(result)(_ mustBe Right(EnrolSuccess))
     }
 
     "return a failure from the EnrolmentStoreConnector" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, GGProviderId)), Some(testGroupId)))
       mockAllocateEnrolmentFailure(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
       whenReady(result)(_ mustBe Left(EnrolFailure(testErrorMessage)))
     }
 
     "pass through the exception if the EnrolmentStoreConnector fails" in {
-      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Credentials(testCredId, GGProviderId), Some(testGroupId)))
+      mockAuthorise(EmptyPredicate, credentials and groupIdentifier)(new ~(Some(Credentials(testCredId, GGProviderId)), Some(testGroupId)))
       mockAllocateEnrolmentException(testGroupId, testEnrolmentKey, testEnrolmentRequest)
 
       whenReady(result.failed)(_ mustBe testException)
     }
   }
+
 }

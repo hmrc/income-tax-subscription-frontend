@@ -16,10 +16,9 @@
 
 package controllers.agent.matching
 
-import helpers.agent.IntegrationTestConstants.signOutURI
 import helpers.agent.ComponentSpecBase
 import helpers.agent.servicemocks.AuthStub
-import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.http.Status.OK
 import play.api.i18n.Messages
 
 class NoSAControllerISpec extends ComponentSpecBase {

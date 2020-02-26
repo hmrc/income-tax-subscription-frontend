@@ -17,9 +17,9 @@
 package connectors.individual.eligibility
 
 import connectors.individual.eligibility.httpparsers.EligibilityStatus
+import connectors.individual.eligibility.httpparsers.GetEligibilityStatusHttpParser._
 import core.config.AppConfig
 import core.utils.HttpResult.HttpResult
-import connectors.individual.eligibility.httpparsers.GetEligibilityStatusHttpParser._
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.HttpClient

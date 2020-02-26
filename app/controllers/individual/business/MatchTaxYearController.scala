@@ -31,7 +31,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.twirl.api.Html
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
@@ -39,7 +39,7 @@ class MatchTaxYearController @Inject()(val baseConfig: BaseControllerConfig,
                                        val keystoreService: KeystoreService,
                                        val authService: AuthService,
                                        val currentTimeService: CurrentTimeService
-                                      ) extends SignUpController {
+                                      )(implicit val ec: ExecutionContext) extends SignUpController {
 
   def view(matchTaxYearForm: Form[MatchTaxYearModel], isEditMode: Boolean)(implicit request: Request[AnyContent]): Html =
     views.html.individual.incometax.business.match_to_tax_year(

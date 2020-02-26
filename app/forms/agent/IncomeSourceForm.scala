@@ -25,9 +25,9 @@ import play.api.data.{Form, FormError}
 object IncomeSourceForm {
 
   val incomeSource = "incomeSource"
-  val option_business = IncomeSourceType.business
-  val option_property = IncomeSourceType.property
-  val option_both = IncomeSourceType.both
+  val option_business: String = IncomeSourceType.business
+  val option_property: String = IncomeSourceType.property
+  val option_both: String = IncomeSourceType.both
 
   val incomeSourceError: Seq[FormError] = ErrorMessageFactory.formError(incomeSource, "agent.error.income_source.invalid")
 

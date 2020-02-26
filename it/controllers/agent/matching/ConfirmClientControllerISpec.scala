@@ -17,11 +17,9 @@
 package controllers.agent.matching
 
 import agent.auth.AgentUserMatched
-import helpers.agent.IntegrationTestConstants._
-import helpers.agent.servicemocks._
-import helpers.agent.SessionCookieCrumbler
 import controllers.agent.ITSASessionKeys
 import helpers.UserMatchingIntegrationResultSupport
+import helpers.agent.IntegrationTestConstants._
 import helpers.agent.servicemocks.{AgentServicesStub, AuthStub, KeystoreStub}
 import helpers.agent.{ComponentSpecBase, SessionCookieCrumbler}
 import helpers.servicemocks.{AuthStub => _, KeystoreStub => _, _}

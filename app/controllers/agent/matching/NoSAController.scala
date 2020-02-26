@@ -16,9 +16,8 @@
 
 package controllers.agent.matching
 
-import javax.inject.{Inject, Singleton}
-
 import core.config.AppConfig
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController

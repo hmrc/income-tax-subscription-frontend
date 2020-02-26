@@ -33,8 +33,8 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http.InternalServerException
 import usermatching.services.{LockoutUpdate, UserLockoutService}
 
-import scala.concurrent.Future
 import scala.concurrent.Future.{failed, successful}
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Left
 
 
@@ -45,7 +45,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
                                         val authService: AuthService,
                                         val lockOutService: UserLockoutService,
                                         val eligibilityService: GetEligibilityStatusService
-                                       ) extends UserMatchingController {
+                                       )(implicit val ec: ExecutionContext) extends UserMatchingController {
 
   def view(userDetailsModel: UserDetailsModel)(implicit request: Request[_]): Html =
     views.html.agent.check_your_client_details(
@@ -54,13 +54,11 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
       backUrl
     )
 
-  private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]) = {
-    (lockOutService.getLockoutStatus(user.arn.get) flatMap {
+  private def withLockOutCheck(f: => Future[Result])(implicit user: IncomeTaxAgentUser, request: Request[_]): Future[Result] = {
+    lockOutService.getLockoutStatus(user.arn.get) flatMap {
       case Right(NotLockedOut) => f
-      case Right(_: LockedOut) =>
-        Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show().url))
-    }).recover { case e =>
-      throw new InternalServerException("ConfirmClientController.handleLockOut: " + e)
+      case Right(_: LockedOut) => Future.successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show().url))
+      case Left(_) => throw new InternalServerException("[ClientDetailsLockoutController][handleLockOut] lockout status failure")
     }
   }
 
@@ -83,7 +81,7 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
       case Right(LockoutUpdate(_: LockedOut, _)) =>
         successful(Redirect(controllers.agent.matching.routes.ClientDetailsLockoutController.show())
           .removingFromSession(FailedClientMatching).clearUserDetails)
-      case Left(failure) => failed(new InternalServerException("ConfirmClientController.lockUser: " + failure))
+      case _ => failed(new InternalServerException("ConfirmClientController.lockUser failure"))
     }
   }
 
@@ -103,7 +101,9 @@ class ConfirmClientController @Inject()(val baseConfig: BaseControllerConfig,
             Redirect(controllers.agent.routes.ClientAlreadySubscribedController.show())
               .removingFromSession(FailedClientMatching)
           )
-          case Right(unapprovedAgent@UnApprovedAgent(clientNino, clientUtr)) =>
+          case Left(UnexpectedFailure) =>
+            throw new InternalServerException("[ConfirmClientController][submit] orchestrate agent qualification failed with an unexpected failure")
+          case Right(_: UnApprovedAgent) =>
             successful(
               Redirect(controllers.agent.routes.NoClientRelationshipController.show())
                 .removingFromSession(FailedClientMatching))
