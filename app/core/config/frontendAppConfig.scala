@@ -22,6 +22,7 @@ import play.api.Mode.Mode
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.play.config
 import uk.gov.hmrc.play.config.ServicesConfig
 
 trait AppConfig extends FeatureSwitching {
@@ -67,9 +68,19 @@ trait AppConfig extends FeatureSwitching {
 
   def storeNinoUrl(token: String): String
 
+  def getAllocatedEnrolmentUrl(utr: String): String
+
+  def queryUsersUrl(utr: String): String
+
   def upsertEnrolmentUrl(enrolmentKey: String): String
 
+  def upsertEnrolmentEnrolmentStoreUrl(enrolmentKey: String): String
+
   def allocateEnrolmentUrl(groupId: String, enrolmentKey: String): String
+
+  def allocateEnrolmentEnrolmentStoreUrl(groupId: String, enrolmentKey: String): String
+
+  def assignEnrolmentUrl(userId: String, enrolmentKey: String): String
 
   val addressLookupFrontendURL: String
   val signUpToSaLink: String
@@ -221,6 +232,20 @@ class FrontendAppConfig @Inject()(configuration: Configuration,
   override lazy val eligibilityFeatureSwitchUrl: String = s"$incomeTaxEligibilityUrl/test-only/feature-switch"
 
   lazy val taxEnrolments: String = baseUrl("tax-enrolments")
+
+  lazy val enrolmentStoreProxyUrl: String = baseUrl("enrolment-store-proxy") + "/enrolment-store-proxy/enrolment-store"
+
+  def getAllocatedEnrolmentUrl(utr: String): String =
+    s"$enrolmentStoreProxyUrl/enrolments/IR-SA~UTR~$utr/groups"
+
+  def queryUsersUrl(utr: String): String =
+    s"$enrolmentStoreProxyUrl/enrolments/IR-SA~UTR~$utr/users"
+
+  def upsertEnrolmentEnrolmentStoreUrl(enrolmentKey: String): String = s"$enrolmentStoreProxyUrl/enrolments/$enrolmentKey"
+
+  def assignEnrolmentUrl(userId: String, enrolmentKey: String): String = s"$enrolmentStoreProxyUrl/users/$userId/enrolments/$enrolmentKey"
+
+  def allocateEnrolmentEnrolmentStoreUrl(groupId: String, enrolmentKey: String): String = s"$enrolmentStoreProxyUrl/groups/$groupId/enrolments/$enrolmentKey"
 
   override def upsertEnrolmentUrl(enrolmentKey: String): String =
     s"$taxEnrolments/tax-enrolments/enrolments/$enrolmentKey"

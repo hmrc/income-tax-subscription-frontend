@@ -18,7 +18,7 @@ package controllers.individual.subscription
 
 import core.services.CacheConstants.MtditId
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{testGroupId, testMTDID}
+import helpers.IntegrationTestConstants.{testGroupId, testMtdId}
 import helpers.IntegrationTestModels.testEnrolmentKey
 import helpers.servicemocks._
 import play.api.http.Status._
@@ -30,7 +30,7 @@ class ClaimSubscriptionControllerISpec extends ComponentSpecBase {
     "show the check your answers page" in {
       Given("I setup the Wiremock stubs")
       AuthStub.stubAuthSuccess()
-      KeystoreStub.stubKeystoreData(Map(MtditId -> toJson(testMTDID)))
+      KeystoreStub.stubKeystoreData(Map(MtditId -> toJson(testMtdId)))
       TaxEnrolmentsStub.stubAllocateEnrolmentResult(testGroupId, testEnrolmentKey.asString, CREATED)
       When("GET /claim-subscription is called")
       val res = IncomeTaxSubscriptionFrontend.claimSubscription()

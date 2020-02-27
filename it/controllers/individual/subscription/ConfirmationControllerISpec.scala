@@ -18,7 +18,7 @@ package controllers.individual.subscription
 
 import core.services.CacheConstants._
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.testMTDID
+import helpers.IntegrationTestConstants.testMtdId
 import helpers.IntegrationTestModels.testRentUkProperty_property_only
 import helpers.servicemocks.{AuthStub, KeystoreStub}
 import play.api.http.Status._
@@ -33,7 +33,7 @@ class ConfirmationControllerISpec extends ComponentSpecBase {
       AuthStub.stubEnrolled()
       KeystoreStub.stubKeystoreData(Map(
         RentUkProperty -> Json.toJson(testRentUkProperty_property_only),
-        MtditId -> JsString(testMTDID)
+        MtditId -> JsString(testMtdId)
       ))
 
       When("GET /confirmation is called")

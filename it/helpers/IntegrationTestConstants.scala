@@ -27,9 +27,9 @@ object IntegrationTestConstants {
   lazy val testNino: String = new Generator().nextNino.nino
   lazy val staticTestNino = "AA111111A"
   lazy val testUtr: String = new Generator().nextAtedUtr.utr
-  lazy val testMTDID = "XE0001234567890"
-  lazy val startDate = DateModel("05", "04", "2017")
-  lazy val endDate = DateModel("04", "04", "2018")
+  lazy val testMtdId = "XE0001234567890"
+  lazy val startDate: DateModel = DateModel("05", "04", "2017")
+  lazy val endDate: DateModel = DateModel("04", "04", "2018")
   lazy val ggServiceName = "HMRC-MTD-IT"
 
   val SessionId = s"stubbed-${UUID.randomUUID}"
@@ -37,11 +37,14 @@ object IntegrationTestConstants {
   val testUserIdEncoded: String = URLEncoder.encode(userId, "UTF-8")
   val testFirstName = "Test"
   val testLastName = "Name"
-  val dateOfBirth = DateModel("01", "01", "1980")
+  val dateOfBirth: DateModel = DateModel("01", "01", "1980")
   val testPaperlessPreferenceToken = s"${UUID.randomUUID()}"
   val testId = "12345"
   val testGroupId: String = UUID.randomUUID.toString
   val testCredId: String = UUID.randomUUID.toString
+  val testCredentialId: String = UUID.randomUUID().toString
+  val testCredentialId2: String = UUID.randomUUID().toString
+  val testCredentialId3: String = UUID.randomUUID().toString
   val testArn: String = UUID.randomUUID.toString
   val testAgencyName: String = UUID.randomUUID.toString
 

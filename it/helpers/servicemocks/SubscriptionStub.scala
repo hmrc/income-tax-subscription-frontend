@@ -115,8 +115,7 @@ object SubscriptionStub extends WireMockMethods {
   ) ++ arn.fold(Json.obj())(arn => Json.obj("arn" -> arn))
 
 
-
-  val successfulSubscriptionResponse = SubscriptionSuccess(testMTDID)
-  val failureSubscriptionResponse: JsObject = Json.obj()
-  val successfulNoSubscriptionResponse: JsObject = Json.obj()
+  val successfulSubscriptionResponse = SubscriptionSuccess(testMtdId)
+  val failureSubscriptionResponse = Json.obj()
+  val successfulNoSubscriptionResponse = Json.obj()
 }
