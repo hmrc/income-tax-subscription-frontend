@@ -51,4 +51,3 @@ object EnrolmentStoreProxyHttpParser {
   case class EnrolmentStoreProxyFailure(status: Int) extends EnrolmentStoreFailure
 
 }
-

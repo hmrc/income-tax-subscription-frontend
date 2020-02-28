@@ -34,4 +34,3 @@ object AllocateEnrolmentResponseHttpParser {
 
   case class EnrolFailure(message: String)
 }
-
