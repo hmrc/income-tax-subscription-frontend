@@ -4,7 +4,7 @@ package connectors
 import connectors.individual.subscription.SubscriptionConnector
 import connectors.stubs.SubscriptionAPIStub._
 import helpers.ComponentSpecBase
-import helpers.IntegrationTestConstants.{testMTDID, testNino}
+import helpers.IntegrationTestConstants.{testMtdId, testNino}
 import models.individual.business.AccountingPeriodModel
 import models.individual.subscription._
 import models.{Cash, DateModel}
@@ -46,7 +46,7 @@ class SubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
 
         val res = TestSubscriptionConnector.subscribe(testSubscriptionRequest)
 
-        await(res) shouldBe Right(SubscriptionSuccess(testMTDID))
+        await(res) shouldBe Right(SubscriptionSuccess(testMtdId))
       }
       "business income is defined but property income isn't defined" in {
         val testSubscriptionWithBusiness = testSubscriptionRequest.copy(businessIncome = Some(testBusinessIncome))
@@ -54,7 +54,7 @@ class SubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
 
         val res = TestSubscriptionConnector.subscribe(testSubscriptionWithBusiness)
 
-        await(res) shouldBe Right(SubscriptionSuccess(testMTDID))
+        await(res) shouldBe Right(SubscriptionSuccess(testMtdId))
       }
       "property income is defined but business income isn't defined" in {
         val testSubscriptionWithProperty = testSubscriptionRequest.copy(propertyIncome = Some(testPropertyIncome))
@@ -62,7 +62,7 @@ class SubscriptionConnectorISpec extends ComponentSpecBase with Matchers {
 
         val res = TestSubscriptionConnector.subscribe(testSubscriptionWithProperty)
 
-        await(res) shouldBe Right(SubscriptionSuccess(testMTDID))
+        await(res) shouldBe Right(SubscriptionSuccess(testMtdId))
       }
     }
     "return BadlyFormattedSubscriptionResponse when the request is malformed" in {

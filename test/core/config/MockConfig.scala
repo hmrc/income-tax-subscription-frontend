@@ -19,6 +19,7 @@ package core.config
 import play.api.mvc.Call
 
 trait MockConfig extends AppConfig {
+
   override val reportAProblemPartialUrl: String = ""
   override val reportAProblemNonJSUrl: String = ""
   override val ggSignInContinueUrl: String = "/income-tax-subscription-frontend"
@@ -92,6 +93,15 @@ trait MockConfig extends AppConfig {
 
   override lazy val eligibilityFeatureSwitchUrl: String = s"$incomeTaxEligibilityUrl/test-only/feature-switch"
 
+  override def getAllocatedEnrolmentUrl(utr: String): String = ???
+
+  override def queryUsersUrl(utr: String): String = ???
+
+  override def upsertEnrolmentEnrolmentStoreUrl(enrolmentKey: String): String = ???
+
+  override def allocateEnrolmentEnrolmentStoreUrl(groupId: String, enrolmentKey: String): String = ???
+
+  override def assignEnrolmentUrl(userId: String, enrolmentKey: String): String = ???
 }
 
 object MockConfig extends MockConfig

@@ -118,6 +118,6 @@ object IntegrationTestModels {
 
   lazy val testReturnedAddress = ReturnedAddress("ref", Some("id"), testAddress)
 
-  lazy val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMTDID)
+  lazy val testEnrolmentKey = EnrolmentKey(Constants.mtdItsaEnrolmentName, MTDITID -> testMtdId)
 
 }

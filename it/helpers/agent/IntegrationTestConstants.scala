@@ -11,9 +11,10 @@ import uk.gov.hmrc.domain.Generator
 object IntegrationTestConstants {
   lazy val testNino: String = helpers.IntegrationTestConstants.testNino
   lazy val testUtr: String = helpers.IntegrationTestConstants.testUtr
-  lazy val testMTDID: String = helpers.IntegrationTestConstants.testMTDID
+  lazy val testMTDID: String = helpers.IntegrationTestConstants.testMtdId
   lazy val startDate: DateModel = helpers.IntegrationTestConstants.startDate
   lazy val endDate: DateModel = helpers.IntegrationTestConstants.endDate
+
   lazy val ggServiceName = "HMRC-MTD-IT"
   val SessionId = s"stubbed-${UUID.randomUUID}"
   val userId = "/auth/oid/1234567890"

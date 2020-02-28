@@ -77,7 +77,7 @@ object AuthStub extends WireMockMethods {
     "identifiers" -> Json.arr(
       Json.obj(
         "key" -> mtdItsaEnrolmentIdentifierKey,
-        "value" -> testMTDID
+        "value" -> testMtdId
       )
     )
   )

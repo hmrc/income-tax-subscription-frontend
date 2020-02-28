@@ -34,7 +34,7 @@ object KeystoreStub extends WireMockMethods {
     val id = "MtditId"
 
     when(method = PUT, uri = putUri(id))
-      .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreDataBothPost + (id -> Json.toJson(testMTDID))))
+      .thenReturn(Status.OK, CacheMap(SessionId, fullKeystoreDataBothPost + (id -> Json.toJson(testMtdId))))
   }
 
   def putUri(key: String) = s"$keystoreUri/data/$key"
