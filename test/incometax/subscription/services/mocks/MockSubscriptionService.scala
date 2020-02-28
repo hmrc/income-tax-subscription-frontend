@@ -77,7 +77,7 @@ trait MockSubscriptionService extends MockTrait {
 trait TestSubscriptionService extends MockSubscriptionConnector {
 
   object TestSubscriptionService extends SubscriptionService(
-    applicationConfig = MockConfig,
+    appConfig = MockConfig,
     logging = app.injector.instanceOf[Logging],
     subscriptionConnector = mockSubscriptionConnector
   )

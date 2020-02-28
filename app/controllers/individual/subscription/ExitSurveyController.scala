@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 @Singleton
 class ExitSurveyController @Inject()(val logging: Logging,
-                                     implicit val applicationConfig: AppConfig,
+                                     implicit val appConfig: AppConfig,
                                      val messagesApi: MessagesApi
                                     ) extends FrontendController with I18nSupport {
 

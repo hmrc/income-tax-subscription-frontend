@@ -17,7 +17,6 @@
 package controllers.individual.business
 
 import controllers.ControllerBaseSpec
-import core.config.MockConfig
 import core.config.featureswitch._
 import core.services.mocks.MockKeystoreService
 import core.utils.TestModels._
@@ -48,7 +47,6 @@ class PropertyAccountingMethodControllerSpec extends ControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     mockAuthService,
-    MockConfig,
     mockCurrentTimeService
   )
 

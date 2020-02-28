@@ -33,10 +33,10 @@ class IdentityVerificationController @Inject()(override val baseConfig: BaseCont
                                               )(implicit val ec: ExecutionContext) extends StatelessController {
 
   def identityVerificationUrl(implicit request: Request[AnyContent]): String =
-    applicationConfig.identityVerificationURL +
+    appConfig.identityVerificationURL +
       IdentityVerificationController.identityVerificationUrl(
-        applicationConfig.contactFormServiceIdentifier,
-        applicationConfig.baseUrl
+        appConfig.contactFormServiceIdentifier,
+        appConfig.baseUrl
       )
 
   def gotoIV: Action[AnyContent] = Authenticated.asyncUnrestricted {

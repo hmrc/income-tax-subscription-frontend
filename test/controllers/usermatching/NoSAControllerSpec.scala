@@ -29,7 +29,7 @@ class NoSAControllerSpec extends ControllerBaseSpec {
   override val authorisedRoutes: Map[String, Action[AnyContent]] = Map()
 
   object TestNoSAController extends NoSAController()(
-    MockBaseControllerConfig.applicationConfig,
+    MockBaseControllerConfig.appConfig,
     messagesApi
   )
 

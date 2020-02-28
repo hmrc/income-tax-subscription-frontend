@@ -67,7 +67,7 @@ class ClientDetailsLockoutController @Inject()(val baseConfig: BaseControllerCon
   lazy val show: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       handleLockOut {
-        val duration = Duration.ofSeconds(baseConfig.applicationConfig.matchingLockOutSeconds)
+        val duration = Duration.ofSeconds(baseConfig.appConfig.matchingLockOutSeconds)
         Ok(views.html.agent.client_details_lockout(durationText(duration)))
       }
   }

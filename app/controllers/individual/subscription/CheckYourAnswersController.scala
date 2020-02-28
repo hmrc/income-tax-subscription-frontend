@@ -39,7 +39,6 @@ class CheckYourAnswersController @Inject()(val baseConfig: BaseControllerConfig,
                                            val keystoreService: KeystoreService,
                                            val subscriptionService: SubscriptionOrchestrationService,
                                            val authService: AuthService,
-                                           val appConfig: AppConfig,
                                            logging: Logging
                                           )(implicit val ec: ExecutionContext) extends SignUpController {
 

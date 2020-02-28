@@ -37,7 +37,7 @@ import views.html.agent.feedback.feedback_thankyou
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
+class FeedbackController @Inject()(implicit val appConfig: AppConfig,
                                    protected val authConnector: AuthConnector,
                                    val sessionCookieCrypto: SessionCookieCrypto,
                                    val http: HttpClient,
@@ -65,14 +65,14 @@ class FeedbackController @Inject()(implicit val applicationConfig: AppConfig,
   protected def loadPartial(url: String)(implicit request: RequestHeader): HtmlPartial = ???
 
   private def feedbackFormPartialUrl(implicit request: Request[AnyContent]) =
-    s"${applicationConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/?submitUrl=${urlEncode(localSubmitUrl)}" +
-      s"&service=${urlEncode(applicationConfig.contactFormServiceIdentifier)}&referer=${urlEncode(contactFormReferer)}"
+    s"${appConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/?submitUrl=${urlEncode(localSubmitUrl)}" +
+      s"&service=${urlEncode(appConfig.contactFormServiceIdentifier)}&referer=${urlEncode(contactFormReferer)}"
 
   private def feedbackHmrcSubmitPartialUrl(implicit request: Request[AnyContent]) =
-    s"${applicationConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form?resubmitUrl=${urlEncode(localSubmitUrl)}"
+    s"${appConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form?resubmitUrl=${urlEncode(localSubmitUrl)}"
 
   private def feedbackThankYouPartialUrl(ticketId: String)(implicit request: Request[AnyContent]) =
-    s"${applicationConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/confirmation?ticketId=${urlEncode(ticketId)}"
+    s"${appConfig.contactFrontendPartialBaseUrl}/contact/beta-feedback/form/confirmation?ticketId=${urlEncode(ticketId)}"
 
   def show: Action[AnyContent] = UnauthorisedAction {
     implicit request =>

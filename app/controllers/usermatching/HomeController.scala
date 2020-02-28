@@ -95,7 +95,7 @@ class HomeController @Inject()(override val baseConfig: BaseControllerConfig,
       .withJourneyState(SignUp)
 
   private def goToRegistration(timestamp: String)(implicit request: Request[AnyContent]): Result =
-    if (applicationConfig.enableRegistration) {
+    if (appConfig.enableRegistration) {
       goToPreferences
         .addingToSession(StartTime -> timestamp)
         .withJourneyState(Registration)

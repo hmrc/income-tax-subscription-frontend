@@ -41,7 +41,7 @@ class MatchingStubController @Inject()(val baseConfig: BaseControllerConfig,
                                        matchingStubConnector: MatchingStubConnector
                                       )(implicit val ec: ExecutionContext) extends FrontendController with I18nSupport {
 
-  implicit lazy val appConfig: AppConfig = baseConfig.applicationConfig
+  implicit lazy val appConfig: AppConfig = baseConfig.appConfig
 
   def view(clientToStubForm: Form[ClientToStubModel])(implicit request: Request[_]): Html =
     stub_client(

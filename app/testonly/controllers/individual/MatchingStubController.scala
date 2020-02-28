@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext
 //$COVERAGE-OFF$Disabling scoverage on this class as it is only intended to be used by the test only controller
 
 @Singleton
-class MatchingStubController @Inject()(implicit val applicationConfig: AppConfig,
+class MatchingStubController @Inject()(implicit val appConfig: AppConfig,
                                        val messagesApi: MessagesApi,
                                        matchingStubConnector: MatchingStubConnector,
                                        ec: ExecutionContext

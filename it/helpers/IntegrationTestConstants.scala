@@ -47,8 +47,6 @@ object IntegrationTestConstants {
   val testCredentialId3: String = UUID.randomUUID().toString
   val testArn: String = UUID.randomUUID.toString
   val testAgencyName: String = UUID.randomUUID.toString
-
-
   val testUrl = "/test/url/"
 
   val baseURI = "/report-quarterly/income-and-expenses/sign-up"

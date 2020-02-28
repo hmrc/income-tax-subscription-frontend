@@ -23,7 +23,7 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 @Singleton
-class ExitSurveyThankYouController @Inject()(implicit val applicationConfig: AppConfig,
+class ExitSurveyThankYouController @Inject()(implicit val appConfig: AppConfig,
                                              val messagesApi: MessagesApi
                                             ) extends FrontendController with I18nSupport {
 

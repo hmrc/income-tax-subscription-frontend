@@ -34,7 +34,6 @@ class WhatYearToSignUpController @Inject()(val baseConfig: BaseControllerConfig,
                                            val messagesApi: MessagesApi,
                                            val keystoreService: KeystoreService,
                                            val authService: AuthService,
-                                           val appConfig: AppConfig,
                                            val accountingPeriodService: AccountingPeriodService
                                           )(implicit val ec: ExecutionContext) extends SignUpController {
 

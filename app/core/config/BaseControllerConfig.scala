@@ -19,6 +19,6 @@ package core.config
 import javax.inject._
 
 @Singleton
-class BaseControllerConfig @Inject()(val applicationConfig: AppConfig) {
-  lazy val postSignInRedirectUrl: String = applicationConfig.ggSignInContinueUrl
+class BaseControllerConfig @Inject()(val appConfig: AppConfig) {
+  lazy val postSignInRedirectUrl: String = appConfig.ggSignInContinueUrl
 }

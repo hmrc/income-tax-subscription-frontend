@@ -45,7 +45,7 @@ class AuthUpdateController @Inject()(val baseConfig: BaseControllerConfig,
   lazy val noAction: Future[String] = Future.successful("no actions taken")
   lazy val updated: Future[Result] = Future.successful(Ok("updated"))
 
-  lazy val updateURL = s"${baseConfig.applicationConfig.authUrl}/auth/authority"
+  lazy val updateURL = s"${baseConfig.appConfig.authUrl}/auth/authority"
 
   val update: Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>

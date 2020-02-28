@@ -30,19 +30,19 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SignOutController @Inject()(val applicationConfig: AppConfig,
+class SignOutController @Inject()(val appConfig: AppConfig,
                                   authService: AuthService)
                                  (implicit ec: ExecutionContext) extends FrontendController {
 
   def signOut(origin: String): Action[AnyContent] = Action.async { implicit request =>
     authService.authorised().retrieve(affinityGroup) {
       case Some(Agent) =>
-        Future.successful(Redirect(applicationConfig.ggSignOutUrl(
-          applicationConfig.baseUrl + controllers.agent.routes.ExitSurveyController.show(origin = origin).url
+        Future.successful(Redirect(appConfig.ggSignOutUrl(
+          appConfig.baseUrl + controllers.agent.routes.ExitSurveyController.show(origin = origin).url
         )))
       case Some(_) =>
-        Future.successful(Redirect(applicationConfig.ggSignOutUrl(
-          applicationConfig.baseUrl + controllers.individual.subscription.routes.ExitSurveyController.show(origin = origin).url
+        Future.successful(Redirect(appConfig.ggSignOutUrl(
+          appConfig.baseUrl + controllers.individual.subscription.routes.ExitSurveyController.show(origin = origin).url
         )))
       case None =>
         Future.failed(new InternalServerException("unexpected state"))

@@ -32,7 +32,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
 @Singleton
-class SubscriptionService @Inject()(applicationConfig: AppConfig,
+class SubscriptionService @Inject()(appConfig: AppConfig,
                                     logging: Logging,
                                     subscriptionConnector: SubscriptionConnector
                                    ) extends FeatureSwitching {

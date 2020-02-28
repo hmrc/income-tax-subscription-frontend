@@ -34,7 +34,7 @@ import uk.gov.hmrc.http.SessionKeys._
 class AuthPredicatesSpec extends UnitTestTrait with MockAuthService with ScalaFutures with EitherValues {
 
   val authPredicates: AuthPredicates = new AuthPredicates {
-    override val applicationConfig: AppConfig = appConfig
+    val appConfig: AppConfig = appConfig
   }
 
   import authPredicates._
