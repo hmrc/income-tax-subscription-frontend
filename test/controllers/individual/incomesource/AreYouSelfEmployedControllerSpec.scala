@@ -44,7 +44,6 @@ class AreYouSelfEmployedControllerSpec extends ControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     mockAuthService,
-    MockConfig,
     mockCurrentTimeService
   )
 

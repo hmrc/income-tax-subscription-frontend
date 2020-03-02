@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.Future
 
 @Singleton
-class NoSAController @Inject()(implicit val applicationConfig: AppConfig,
+class NoSAController @Inject()(implicit val appConfig: AppConfig,
                                val messagesApi: MessagesApi
                               ) extends FrontendController with I18nSupport {
 

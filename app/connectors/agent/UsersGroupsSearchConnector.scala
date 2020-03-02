@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package controllers
+package connectors.agent
 
-import core.config.AppConfig
+import connectors.agent.httpparsers.GetUsersForGroupsHttpParser._
+import core.config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SessionTimeoutController @Inject()(implicit val appConfig: AppConfig,
-                                         val messagesApi: MessagesApi
-                                        ) extends FrontendController with I18nSupport {
+class UsersGroupsSearchConnector @Inject()(val http:HttpClient, appConfig: FrontendAppConfig)
+                                          (implicit ec: ExecutionContext) {
 
-  val show = Action.async { implicit request =>
-    Future.successful(Ok(views.html.individual.timeout()))
-  }
+  def getUsersForGroups(groupID: String)(implicit hc:HeaderCarrier): Future[GetUsersForGroupsResponse] = http.GET(appConfig.getUsersForGroupsUrl(groupID))
 
 }

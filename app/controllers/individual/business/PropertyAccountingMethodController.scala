@@ -39,7 +39,6 @@ class PropertyAccountingMethodController @Inject()(val baseConfig: BaseControlle
                                                    val messagesApi: MessagesApi,
                                                    val keystoreService: KeystoreService,
                                                    val authService: AuthService,
-                                                   val appConfig: AppConfig,
                                                    val currentTimeService: CurrentTimeService
                                                   )(implicit val ec: ExecutionContext) extends SignUpController {
 

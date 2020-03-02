@@ -37,7 +37,7 @@ trait BaseFrontendController extends FrontendController with I18nSupport with Au
 
   implicit val ec: ExecutionContext
 
-  override lazy implicit val applicationConfig: AppConfig = baseConfig.applicationConfig
+  lazy implicit val appConfig: AppConfig = baseConfig.appConfig
 
   type ActionBody[User <: IncomeTaxUser] = Request[AnyContent] => User => Future[Result]
   type AuthenticatedAction[User <: IncomeTaxUser] = ActionBody[User] => Action[AnyContent]

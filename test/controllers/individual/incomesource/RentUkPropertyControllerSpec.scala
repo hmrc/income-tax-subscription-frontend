@@ -42,7 +42,6 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     mockAuthService,
-    MockConfig,
     mockCurrentTimeService
   )
 
@@ -168,7 +167,6 @@ class RentUkPropertyControllerSpec extends ControllerBaseSpec
         messagesApi,
         MockKeystoreService,
         mockAuthService,
-        MockConfig,
         mockCurrentTimeService
       )
 

@@ -112,6 +112,11 @@ trait AppConfig extends FeatureSwitching {
 class FrontendAppConfig @Inject()(configuration: Configuration,
                                   environment: Environment) extends AppConfig with ServicesConfig {
 
+  // AutoEnrolment links
+  def usersGroupsSearchUrl: String = baseUrl("users-groups-search")
+
+  def getUsersForGroupsUrl(groupId: String): String = s"$usersGroupsSearchUrl/users-groups-search/groups/$groupId/users"
+
   override lazy val mode: Mode = environment.mode
 
   override protected def runModeConfiguration: Configuration = configuration

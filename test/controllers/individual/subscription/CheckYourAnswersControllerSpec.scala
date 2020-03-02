@@ -50,7 +50,6 @@ class CheckYourAnswersControllerSpec extends ControllerBaseSpec
     MockKeystoreService,
     subscriptionService = mockSubscriptionOrchestrationService,
     mockAuthService,
-    MockConfig,
     app.injector.instanceOf[Logging]
   )
 

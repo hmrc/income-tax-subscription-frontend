@@ -45,7 +45,6 @@ class WhatYearToSignUpControllerSpec extends ControllerBaseSpec
     messagesApi,
     MockKeystoreService,
     mockAuthService,
-    MockConfig,
     mockAccountingPeriodService
   )
 

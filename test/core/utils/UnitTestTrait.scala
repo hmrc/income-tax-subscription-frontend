@@ -32,7 +32,7 @@ trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits 
 
   implicit val executionContext: ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
 
-  implicit val hc = HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   implicit def futureWrapperUtil[T](value: T): Future[T] = Future.successful(value)
 
@@ -46,6 +46,6 @@ trait UnitTestTrait extends PlaySpec with GuiceOneServerPerSuite with Implicits 
 
   implicit val appConfig: AppConfig = MockConfig
 
-  implicit lazy val messagesApi = app.injector.instanceOf[MessagesApi]
+  implicit lazy val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
 }

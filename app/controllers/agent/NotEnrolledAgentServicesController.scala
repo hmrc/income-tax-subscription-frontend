@@ -29,7 +29,7 @@ class NotEnrolledAgentServicesController @Inject()(val baseConfig: BaseControlle
                                                    val messagesApi: MessagesApi
                                                   ) extends FrontendController with I18nSupport {
 
-  implicit lazy val appConfig: AppConfig = baseConfig.applicationConfig
+  implicit lazy val appConfig: AppConfig = baseConfig.appConfig
 
   val show: Action[AnyContent] = Action.async {
     implicit request =>

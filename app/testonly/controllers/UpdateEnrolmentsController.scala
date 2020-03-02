@@ -33,7 +33,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 
 
-class UpdateEnrolmentsController @Inject()(implicit val applicationConfig: AppConfig,
+class UpdateEnrolmentsController @Inject()(implicit val appConfig: AppConfig,
                                            val messagesApi: MessagesApi,
                                            enrolmentStoreStubConnector: EnrolmentStoreStubConnector,
                                            authService: AuthService,

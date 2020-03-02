@@ -34,8 +34,6 @@ trait AuthPredicates extends Results {
 
   import AuthPredicates._
 
-  def applicationConfig: AppConfig
-
   val emptyPredicate: AuthPredicate[IncomeTaxSAUser] = _ => _ => Right(AuthPredicateSuccess)
 
   lazy val alreadyEnrolled: Result = Redirect(controllers.individual.subscription.routes.AlreadyEnrolledController.show())

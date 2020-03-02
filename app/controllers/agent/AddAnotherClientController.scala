@@ -40,7 +40,7 @@ class AddAnotherClientController @Inject()(override val baseConfig: BaseControll
   def addAnother(): Action[AnyContent] = Authenticated.async { implicit request =>
     implicit user =>
       keystore.deleteAll() map { _ =>
-        Redirect(s"${applicationConfig.incomeTaxEligibilityFrontendUrl}/client/other-income")
+        Redirect(s"${appConfig.incomeTaxEligibilityFrontendUrl}/client/other-income")
           .removingFromSession(ITSASessionKeys.JourneyStateKey)
           .removingFromSession(ITSASessionKeys.clientData: _*)
       }
