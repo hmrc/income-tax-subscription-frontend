@@ -32,7 +32,6 @@ import views.html.individual.incometax.subscription.sign_up_complete
 
 import scala.concurrent.ExecutionContext
 
-
 @Singleton
 class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
                                        val messagesApi: MessagesApi,
@@ -48,7 +47,7 @@ class ConfirmationController @Inject()(val baseConfig: BaseControllerConfig,
       val startTime = LocalDateTime.parse(request.session.get(ITSASessionKeys.StartTime).get)
       val endTime = java.time.LocalDateTime.now()
       val journeyDuration = ChronoUnit.MILLIS.between(startTime, endTime).toInt
-      
+
       keystoreService.fetchAll() map (_.getSummary()) map { summary =>
         summary.incomeSource match {
           case Some(_) =>

@@ -100,4 +100,3 @@ object EnrolmentStoreProxyConnector {
   val principalQueryKey: (String, String) = "type" -> "principal"
 
 }
-
